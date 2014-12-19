@@ -3,12 +3,15 @@ package nc.mairie.gestionagent.process.election;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.enums.EnumTypeAbsence;
+import nc.mairie.enums.EnumTypeGroupeAbsence;
 import nc.mairie.gestionagent.absence.dto.AgentOrganisationSyndicaleDto;
 import nc.mairie.gestionagent.absence.dto.CompteurDto;
+import nc.mairie.gestionagent.absence.dto.DemandeDto;
 import nc.mairie.gestionagent.absence.dto.MotifCompteurDto;
 import nc.mairie.gestionagent.absence.dto.OrganisationSyndicaleDto;
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
@@ -56,13 +59,13 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 	private String[] LB_MOTIF;
 	private ArrayList<MotifCompteurDto> listeMotifCompteur;
 
-	public String ACTION_MODIFICATION = "Modification d'un compteur ";
-	public String ACTION_CREATION = "Création d'un compteur ";
-	public String ACTION_VISUALISATION = "Consultation d'un compteur ";
-	public String ACTION_VISU_REPRESENTANT = "Visualisation des représentants ";
-	public String ACTION_MODIFICATION_REPRESENTANT = "Modification des représentants ";
-	public String ACTION_CREATION_REPRE = "Création d'un représentant ";
-	public String ACTION_MODIFICATION_REPRE = "Modification d'un représentant ";
+	public String ACTION_MODIFICATION = "Modification d'un compteur -";
+	public String ACTION_CREATION = "Création d'un compteur -";
+	public String ACTION_VISUALISATION = "Consultation d'un compteur -";
+	public String ACTION_VISU_REPRESENTANT = "Visualisation des représentants -";
+	public String ACTION_MODIFICATION_REPRESENTANT = "Modification des représentants -";
+	public String ACTION_CREATION_REPRE = "Création d'un représentant -";
+	public String ACTION_MODIFICATION_REPRE = "Modification d'un représentant -";
 
 	private AgentDao agentDao;
 
@@ -229,8 +232,8 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 				}
 			}
 
-			// Si clic sur le bouton PB_MODIFIER_REPRESENTANT
 			for (int i = 0; i < getListeCompteur().size(); i++) {
+				// Si clic sur le bouton PB_MODIFIER_REPRESENTANT
 				if (testerParametre(request, getNOM_PB_MODIFIER_REPRESENTANT(i))) {
 					return performPB_MODIFIER_REPRESENTANT(request, i);
 				}
@@ -241,11 +244,15 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 				return performPB_AJOUTER_REPRESENTANT(request);
 			}
 
-			// Si clic sur le bouton PB_MODIFIER_REPRE
 			for (int j = 0; j < getListeRepresentant().size(); j++) {
 				Integer i = getListeRepresentant().get(j).getIdAgent();
+				// Si clic sur le bouton PB_MODIFIER_REPRE
 				if (testerParametre(request, getNOM_PB_MODIFIER_REPRE(i))) {
 					return performPB_MODIFIER_REPRE(request, i);
+				}
+				// Si clic sur le bouton PB_SUPPRIMER_REPRE
+				if (testerParametre(request, getNOM_PB_SUPPRIMER_REPRE(i))) {
+					return performPB_SUPPRIMER_REPRE(request, i);
 				}
 			}
 
@@ -926,5 +933,32 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 
 	public String getNOM_RB_OUI() {
 		return "NOM_RB_OUI";
+	}
+
+	public String getNOM_PB_SUPPRIMER_REPRE(int i) {
+		return "NOM_PB_SUPPRIMER_REPRE" + i;
+	}
+
+	public boolean performPB_SUPPRIMER_REPRE(HttpServletRequest request, int indiceEltAModifier) throws Exception {
+		// on supprime le representant de la liste
+		AgentOrganisationSyndicaleDto dto = new AgentOrganisationSyndicaleDto();
+		dto.setIdAgent(indiceEltAModifier);
+
+		getListeRepresentant().remove(dto);
+		affichageRepresentant(request);
+
+		setStatut(STATUT_MEME_PROCESS);
+		return true;
+	}
+
+	public boolean peutSupprimerAgent(Integer idAgent) {
+		// on cherche si il y a dejà des demandes de decharge de service pour
+		// cet agent
+		SirhAbsWSConsumer consu = new SirhAbsWSConsumer();
+		List<DemandeDto> list = consu.getListeDemandes(null, null, null, EnumTypeAbsence.ASA_A52.getCode(), idAgent,
+				EnumTypeGroupeAbsence.AS.getValue(), false);
+		if (list.size() == 0)
+			return true;
+		return false;
 	}
 }

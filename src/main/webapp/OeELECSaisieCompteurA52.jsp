@@ -236,6 +236,9 @@ function testClickEnrigistrer(){
 									<tr id="<%=i%>" onmouseover="SelectLigne(<%=i%>,<%=process.getListeRepresentant().size()%>)">
 										<td class="sigp2NewTab-liste" align="center">
 											<INPUT title="modifier" type="image" src="images/modifier.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_MODIFIER_REPRE(i)%>">
+											<%if(process.peutSupprimerAgent(i)){ %>
+											<INPUT title="supprimer" type="image" src="images/suppression.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_SUPPRIMER_REPRE(i)%>">
+											<%} %>
 										</td>
 										<td class="sigp2NewTab-liste" width="300px;"><%=process.getVAL_ST_AGENT_REPRESENTANT(i)%></td>
 										<td class="sigp2NewTab-liste"><%=process.getVAL_ST_AGENT_REPRESENTANT_ACTIF(i)%></td>
@@ -245,7 +248,7 @@ function testClickEnrigistrer(){
 							}%>
 						</table>
 						<br/><br/>
-						<INPUT type="submit" class="sigp2-Bouton-200" value="Valider la liste" name="<%=process.getNOM_PB_VALIDER_REPRESENTANT()%>">
+						<INPUT type="submit" class="sigp2-Bouton-200" value="Valider les modifications" name="<%=process.getNOM_PB_VALIDER_REPRESENTANT()%>">
                         <INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">	
 						<%if(!process.getVAL_ST_ACTION_REPRESENTANT().equals(Const.CHAINE_VIDE)){ %>
 						<br/><br/><br/>
