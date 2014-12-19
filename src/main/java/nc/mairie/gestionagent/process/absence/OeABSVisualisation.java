@@ -103,6 +103,8 @@ public class OeABSVisualisation extends BasicProcess {
 	private AgentDao agentDao;
 	private AffectationDao affectationDao;
 
+	private String typeFiltre;
+
 	@Override
 	public String getJSP() {
 		return "OeABSVisualisation.jsp";
@@ -652,6 +654,8 @@ public class OeABSVisualisation extends BasicProcess {
 		loadHistory();
 
 		afficheListeAbsence();
+
+		setTypeFiltre("GLOBAL");
 
 		return true;
 	}
@@ -1318,7 +1322,11 @@ public class OeABSVisualisation extends BasicProcess {
 
 		// On pose le statut
 		setStatut(STATUT_MEME_PROCESS);
-		performPB_FILTRER(request);
+		if (getTypeFiltre().equals("GLOBAL")) {
+			performPB_FILTRER(request);
+		} else {
+			performPB_FILTRER_DEMANDE_A_VALIDER(request);
+		}
 		return true;
 	}
 
@@ -1397,7 +1405,11 @@ public class OeABSVisualisation extends BasicProcess {
 
 		// On pose le statut
 		setStatut(STATUT_MEME_PROCESS);
-		performPB_FILTRER(request);
+		if (getTypeFiltre().equals("GLOBAL")) {
+			performPB_FILTRER(request);
+		} else {
+			performPB_FILTRER_DEMANDE_A_VALIDER(request);
+		}
 		return true;
 	}
 
@@ -1476,7 +1488,11 @@ public class OeABSVisualisation extends BasicProcess {
 				}
 				getTransaction().declarerErreur(inf);
 			}
-			performPB_FILTRER(request);
+			if (getTypeFiltre().equals("GLOBAL")) {
+				performPB_FILTRER(request);
+			} else {
+				performPB_FILTRER_DEMANDE_A_VALIDER(request);
+			}
 		}
 	}
 
@@ -1564,7 +1580,11 @@ public class OeABSVisualisation extends BasicProcess {
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 		// On pose le statut
 		setStatut(STATUT_MEME_PROCESS);
-		performPB_FILTRER(request);
+		if (getTypeFiltre().equals("GLOBAL")) {
+			performPB_FILTRER(request);
+		} else {
+			performPB_FILTRER_DEMANDE_A_VALIDER(request);
+		}
 		return true;
 	}
 
@@ -1613,7 +1633,11 @@ public class OeABSVisualisation extends BasicProcess {
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 		// On pose le statut
 		setStatut(STATUT_MEME_PROCESS);
-		performPB_FILTRER(request);
+		if (getTypeFiltre().equals("GLOBAL")) {
+			performPB_FILTRER(request);
+		} else {
+			performPB_FILTRER_DEMANDE_A_VALIDER(request);
+		}
 		return true;
 	}
 
@@ -2027,6 +2051,8 @@ public class OeABSVisualisation extends BasicProcess {
 
 		afficheListeAbsence();
 
+		setTypeFiltre("VALIDER");
+
 		return true;
 	}
 
@@ -2076,5 +2102,13 @@ public class OeABSVisualisation extends BasicProcess {
 			return dureeDto.getDuree().toString();
 		}
 		return null;
+	}
+
+	public String getTypeFiltre() {
+		return typeFiltre;
+	}
+
+	public void setTypeFiltre(String typeFiltre) {
+		this.typeFiltre = typeFiltre;
 	}
 }
