@@ -156,7 +156,7 @@
 				    
 				    <%if(process.isAfficheSoldeAsaA52()){ %>
 				    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:450px;">
-				    	<legend class="sigp2Legend">* Décharge de service</legend>
+				    	<legend class="sigp2Legend">* Décharge de service CTP</legend>
 						<table class="sigp2NewTab" style="text-align:left;width:400px;">
 							<tr bgcolor="#EFEFEF">
 								<td width="150px;" align="center">En cours pour OS</td>

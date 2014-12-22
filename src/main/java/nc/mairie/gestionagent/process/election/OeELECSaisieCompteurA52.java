@@ -357,6 +357,7 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 		videZonesDeSaisie(request);
 
 		CompteurDto compteurCourant = (CompteurDto) getListeCompteur().get(indiceEltAModifier);
+		setOrganisationCourante(compteurCourant.getOrganisationSyndicaleDto());
 
 		if (!initialiseCompteurCourant(request, compteurCourant))
 			return false;
@@ -400,6 +401,7 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 		videZonesDeSaisie(request);
 
 		CompteurDto compteurCourant = (CompteurDto) getListeCompteur().get(indiceEltAConsulter);
+		setOrganisationCourante(compteurCourant.getOrganisationSyndicaleDto());
 
 		if (!initialiseCompteurCourant(request, compteurCourant))
 			return false;
