@@ -57,6 +57,7 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 	private boolean afficheSoldeAsaA52;
 	private ArrayList<SoldeSpecifiqueDto> listeSoldeCongesExcep;
 	private OrganisationSyndicaleDto organisationAgent;
+	private boolean agentReposComp;
 
 	private ArrayList<String> listeAnnee;
 	private String[] LB_ANNEE;
@@ -123,6 +124,23 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 				return;
 			}
 		}
+
+		// si l'agent n'est pas contractuel ou convention collectives, alors il
+		// n'a pas le droit au repos compensateur
+		Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), getAgentCourant());
+		if (getTransaction().isErreur()) {
+			getTransaction().traiterErreur();
+			// "ERR136", "Cet agent n'a aucune carrière active."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR136"));
+			return;
+		}
+
+		if (!(carr.getCodeCategorie().equals("4") || carr.getCodeCategorie().equals("7"))) {
+			setAgentReposComp(false);
+		} else {
+			setAgentReposComp(true);
+		}
+
 	}
 
 	private void initialiseListeDeroulante() {
@@ -575,31 +593,6 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 		this.listeSoldeA55 = listeSoldeA55;
 	}
 
-	public boolean isAgentReposComp() throws Exception {
-		// si l'agent n'est pas contractuel ou convention collectives, alors il
-		// n'a pas le droit au repos compensateur
-		try {
-			Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), getAgentCourant());
-			if (getTransaction().isErreur()) {
-				getTransaction().traiterErreur();
-				// "ERR136", "Cet agent n'a aucune carrière active."
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR136"));
-				return false;
-			}
-
-			if (!(carr.getCodeCategorie().equals("4") || carr.getCodeCategorie().equals("7"))) {
-				// "ERR802",
-				// "Cet agent n'est ni contractuel ni convention collective, il ne peut avoir de repos compensateur."
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR802"));
-				return false;
-			}
-		} catch (Exception e) {
-			return false;
-		}
-
-		return true;
-	}
-
 	public ArrayList<SoldeSpecifiqueDto> getListeSoldeCongesExcep() {
 		return listeSoldeCongesExcep;
 	}
@@ -662,6 +655,14 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 
 	public void setOrganisationAgent(OrganisationSyndicaleDto organisationAgent) {
 		this.organisationAgent = organisationAgent;
+	}
+
+	public void setAgentReposComp(boolean agentReposComp) {
+		this.agentReposComp = agentReposComp;
+	}
+
+	public boolean isAgentReposComp() {
+		return agentReposComp;
 	}
 
 }
