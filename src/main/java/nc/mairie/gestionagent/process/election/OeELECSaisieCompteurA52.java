@@ -684,6 +684,7 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 		videZonesDeSaisie(request);
 
 		CompteurDto compteurCourant = (CompteurDto) getListeCompteur().get(indiceEltAConsulter);
+		setOrganisationCourante(compteurCourant.getOrganisationSyndicaleDto());
 
 		setListeRepresentant((ArrayList<AgentOrganisationSyndicaleDto>) compteurCourant.getOrganisationSyndicaleDto()
 				.getListeAgents());
