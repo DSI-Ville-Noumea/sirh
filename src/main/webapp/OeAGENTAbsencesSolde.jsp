@@ -159,7 +159,11 @@
 				    	<legend class="sigp2Legend">* Décharge de service CTP</legend>
 						<table class="sigp2NewTab" style="text-align:left;width:400px;">
 							<tr bgcolor="#EFEFEF">
-								<td width="150px;" align="center">En cours pour OS</td>
+							<%if(process.getOrganisationAgent()!=null){%>
+								<td width="150px;" align="center">En cours pour <%=process.getOrganisationAgent().getSigle() %></td>
+							<%}else{ %>
+								<td width="150px;" align="center">En cours pourOS</td>
+							<%} %>
 								<td width="90px;" align="center">Début</td>
 								<td width="90px;" align="center">Fin</td>
 								<td>Historique</td>
@@ -177,16 +181,16 @@
 				    <BR/>
 				    <%} %>
 				    
-				     <FIELDSET class="sigp2Fieldset" style="text-align:left;width:450px;">
+				     <FIELDSET class="sigp2Fieldset" style="text-align:left;width:950px;">
 				    	<legend class="sigp2Legend">* Congés Exceptionnels</legend>
-						<table class="sigp2NewTab" style="text-align:left;width:400px;">
+						<table class="sigp2NewTab" style="text-align:left;width:900px;">
 							<tr bgcolor="#EFEFEF">
-								<td width="150px;" align="center">Type</td>
+								<td width="750px;">Type</td>
 								<td width="150px;" align="center">Congés déjà pris ou en cours</td>
 							</tr>
 							<% for(int i = 0; i< process.getListeSoldeCongesExcep().size();i++){ %>
 							<tr>
-								<td width="150px;" style="text-align: center"><%=process.getVAL_ST_TYPE_CONGES_EXCEP(i)%></td>
+								<td width="750px;"><%=process.getVAL_ST_TYPE_CONGES_EXCEP(i)%></td>
 								<td width="150px;" style="text-align: center"><%=process.getVAL_ST_SOLDE_CONGES_EXCEP(i)%></td>
 							</tr>
 							<% } %>

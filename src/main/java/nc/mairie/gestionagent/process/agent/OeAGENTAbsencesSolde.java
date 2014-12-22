@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.gestionagent.absence.dto.FiltreSoldeDto;
 import nc.mairie.gestionagent.absence.dto.HistoriqueSoldeDto;
+import nc.mairie.gestionagent.absence.dto.OrganisationSyndicaleDto;
 import nc.mairie.gestionagent.absence.dto.SoldeDto;
 import nc.mairie.gestionagent.absence.dto.SoldeMonthDto;
 import nc.mairie.gestionagent.absence.dto.SoldeSpecifiqueDto;
@@ -55,6 +56,7 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 	private ArrayList<SoldeMonthDto> listeSoldeA52;
 	private boolean afficheSoldeAsaA52;
 	private ArrayList<SoldeSpecifiqueDto> listeSoldeCongesExcep;
+	private OrganisationSyndicaleDto organisationAgent;
 
 	private ArrayList<String> listeAnnee;
 	private String[] LB_ANNEE;
@@ -207,7 +209,10 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 
 		// Solde ASA A52
 		setListeSoldeA52((ArrayList<SoldeMonthDto>) soldeGlobal.getListeSoldeAsaA52());
-		setAfficheSoldeAsaA52(getListeSoldeA52().size()!=0);
+		setAfficheSoldeAsaA52(getListeSoldeA52().size() != 0);
+		if (getListeSoldeA52().size() != 0) {
+			setOrganisationAgent(soldeGlobal.getOrganisationA52());
+		}
 		for (int i = 0; i < getListeSoldeA52().size(); i++) {
 			SoldeMonthDto monthDto = getListeSoldeA52().get(i);
 			String soldeAsaA52Heure = (monthDto.getSoldeAsa() / 60) == 0 ? Const.CHAINE_VIDE : monthDto.getSoldeAsa()
@@ -649,6 +654,14 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 
 	public void setAfficheSoldeAsaA52(boolean afficheSoldeAsaA52) {
 		this.afficheSoldeAsaA52 = afficheSoldeAsaA52;
+	}
+
+	public OrganisationSyndicaleDto getOrganisationAgent() {
+		return organisationAgent;
+	}
+
+	public void setOrganisationAgent(OrganisationSyndicaleDto organisationAgent) {
+		this.organisationAgent = organisationAgent;
 	}
 
 }

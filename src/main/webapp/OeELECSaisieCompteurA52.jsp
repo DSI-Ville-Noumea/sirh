@@ -99,7 +99,7 @@ function testClickEnrigistrer(){
 		</FIELDSET>
 		<%if (! "".equals(process.getVAL_ST_ACTION()) ) {%>
 		<FIELDSET class="sigp2Fieldset" style="text-align: left; width:1030px;">
-			<legend class="sigp2Legend"><%=process.getVAL_ST_ACTION()%> <%=process.getOrganisationCourante().getSigle() %></legend>
+			<legend class="sigp2Legend"><%=process.getVAL_ST_ACTION()%> <%=process.getOrganisationCourante()==null ? "" : process.getOrganisationCourante().getSigle() %></legend>
 			<%if(process.getVAL_ST_ACTION().equals(process.ACTION_CREATION) || process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION)){ %>
 			
 			<table>
