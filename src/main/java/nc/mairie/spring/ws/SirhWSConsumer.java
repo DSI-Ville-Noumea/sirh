@@ -97,7 +97,7 @@ public class SirhWSConsumer implements ISirhWSConsumer {
 	@Override
 	public RefTypeSaisiCongeAnnuelDto getBaseHoraireAbsence(Integer idAgent, Date date) {
 		SimpleDateFormat sf = new SimpleDateFormat("YYYYMMdd");
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_WS");
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_WS_URL");
 		String url = urlWS + sirhBaseCongeUrl;
 
 		Map<String, String> parameters = new HashMap<String, String>();
@@ -111,7 +111,7 @@ public class SirhWSConsumer implements ISirhWSConsumer {
 
 	@Override
 	public DateAvctDto getCalculDateAvct(Integer idAgent) throws Exception {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_WS");
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_WS_URL");
 		String url = urlWS + sirhDateAvancementUrl;
 
 		HashMap<String, String> params = new HashMap<>();
@@ -124,7 +124,7 @@ public class SirhWSConsumer implements ISirhWSConsumer {
 	@Override
 	public boolean miseAJourArbreFDP() {
 
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_WS");
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_WS_URL");
 		String urlTotal = urlWS + sirhConstruitArbreFDPUrl;
 
 		boolean response = true;
@@ -153,7 +153,7 @@ public class SirhWSConsumer implements ISirhWSConsumer {
 	@Override
 	public byte[] downloadTableauAvancement(int idCap, int idCadreEmploi, boolean avisEAE, String format)
 			throws Exception {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_WS");
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_WS_URL");
 		String url = urlWS + sirhDownloadTabAvctPUrl;
 
 		String urlWSTableauAvctCAP = url + "?idCap=" + idCap + "&idCadreEmploi=" + idCadreEmploi + "&avisEAE="
@@ -171,7 +171,7 @@ public class SirhWSConsumer implements ISirhWSConsumer {
 	@Override
 	public byte[] downloadArrete(String csvAgents, boolean isChangementClasse, int anneeAvct, boolean isAffecte)
 			throws Exception {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_WS");
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_WS_URL");
 		String url = urlWS + sirhDownloadArretesPUrl;
 		String urlWSArretes = url + "?isChangementClasse=" + isChangementClasse + "&csvIdAgents=" + csvAgents
 				+ "&annee=" + anneeAvct + "&isDetache=" + isAffecte;
@@ -188,7 +188,7 @@ public class SirhWSConsumer implements ISirhWSConsumer {
 
 	@Override
 	public byte[] downloadFichePoste(Integer idFichePoste) throws Exception {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_WS");
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_WS_URL");
 		String url = urlWS + sirhDownloadFichePosteSIRHPUrl;
 		String urlWSArretes = url + "?idFichePoste=" + idFichePoste;
 
@@ -203,7 +203,7 @@ public class SirhWSConsumer implements ISirhWSConsumer {
 
 	@Override
 	public byte[] downloadNoteService(Integer idAffectation, String typeDocument) throws Exception {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_WS");
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_WS_URL");
 		if (typeDocument == null) {
 			urlWS = urlWS + sirhDownloadNoteServiceInterneSIRHPUrl + "?idAffectation=" + idAffectation;
 		} else {
@@ -223,7 +223,7 @@ public class SirhWSConsumer implements ISirhWSConsumer {
 	@Override
 	public byte[] downloadConvocation(String csvIdSuiviMedical, String typePopulation, String mois, String annee)
 			throws Exception {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_WS");
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_WS_URL");
 		String url = urlWS + sirhDownloadConvocationVisiteMedPUrl;
 		String urlWSConvocation = url + "?csvIdSuiviMedical=" + csvIdSuiviMedical + "&typePopulation=" + typePopulation
 				+ "&mois=" + mois + "&annee=" + annee;
@@ -240,7 +240,7 @@ public class SirhWSConsumer implements ISirhWSConsumer {
 	@Override
 	public byte[] downloadAccompagnement(String csvIdSuiviMedical, String typePopulation, String mois, String annee)
 			throws Exception {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_WS");
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_WS_URL");
 		String url = urlWS + sirhDownloadLettreAccompagnementVisiteMedPUrl;
 		String urlWSAccomp = url + "?csvIdSuiviMedical=" + csvIdSuiviMedical + "&typePopulation=" + typePopulation
 				+ "&mois=" + mois + "&annee=" + annee;
@@ -256,7 +256,7 @@ public class SirhWSConsumer implements ISirhWSConsumer {
 
 	@Override
 	public byte[] downloadContrat(Integer idAgent, Integer idContrat) throws Exception {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_WS");
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_WS_URL");
 		String url = urlWS + sirhDownloadContratUrl;
 		String urlWSContrat = url + "?idAgent=" + idAgent + "&idContrat=" + idContrat;
 

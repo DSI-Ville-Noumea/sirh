@@ -68,7 +68,7 @@
 	<!-- -->
 	<!-- WS SIRH -->
 	<!-- -->
-	<Parameter description="SIRH WS url" name="SIRH_WS" override="false"
+	<Parameter description="SIRH WS url" name="SIRH_WS_URL" override="false"
 		value="http://svi-tomcat0:8085/sirhws/" />
 
 
