@@ -110,6 +110,7 @@
 		
 		/*Module ABSENCE*/
 		listeDroits.add("ABSVisualisation");
+		listeDroits.add("ABSRestitution");
 		
 		
 		/*Module ELECTION*/

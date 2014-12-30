@@ -10,6 +10,7 @@ import nc.mairie.gestionagent.process.OeENFANTGestion;
 import nc.mairie.gestionagent.process.OeSMConvocation;
 import nc.mairie.gestionagent.process.OeSMHistorique;
 import nc.mairie.gestionagent.process.OeVOIESelection;
+import nc.mairie.gestionagent.process.absence.OeABSRestitution;
 import nc.mairie.gestionagent.process.absence.OeABSVisualisation;
 import nc.mairie.gestionagent.process.agent.OeAGENTADMINISTRATIONGestion;
 import nc.mairie.gestionagent.process.agent.OeAGENTAbsencesCompteur;
@@ -270,6 +271,8 @@ public class RobotAgent extends Robot {
 		}// Module ABSENCE
 		else if (activite.equals("ABSVisualisation")) {
 			return new OeABSVisualisation();
+		} else if (activite.equals("ABSRestitution")) {
+			return new OeABSRestitution();
 			// Module ELECTION
 		} else if (activite.equals("ELECSaisieCompteurA48")) {
 			return new OeELECSaisieCompteurA48();
@@ -588,7 +591,8 @@ public class RobotAgent extends Robot {
 		navigation.put(OePARAMETRAGEKiosque.class.getName() + OePARAMETRAGEKiosque.STATUT_RECHERCHER_AGENT_GLOBAL,
 				OeAGENTRecherche.class.getName());
 		// Classe OeELECSaisieCompteurA52
-		navigation.put(OeELECSaisieCompteurA52.class.getName() + OeELECSaisieCompteurA52.STATUT_RECHERCHER_AGENT_CREATE,
+		navigation.put(
+				OeELECSaisieCompteurA52.class.getName() + OeELECSaisieCompteurA52.STATUT_RECHERCHER_AGENT_CREATE,
 				OeAGENTRecherche.class.getName());
 
 		// ///////////////////
@@ -731,6 +735,8 @@ public class RobotAgent extends Robot {
 
 		// ABSENCE
 		navigation.put(OeABSVisualisation.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
+				OeAGENTRecherche.class.getName());
+		navigation.put(OeABSRestitution.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
 				OeAGENTRecherche.class.getName());
 
 		// ELECTION
