@@ -31,7 +31,7 @@ public class RadiWSConsumer implements IRadiWSConsumer {
 
 	@Override
 	public boolean asAgentCompteAD(Integer nomatr) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("RADI_WS");
+		String urlWS = (String) ServletAgent.getMesParametres().get("RADI_WS_URL");
 		String url = urlWS + searchAgentRadi;
 		HashMap<String, String> params = new HashMap<>();
 		params.put("employeenumber", getEmployeeNumberWithNomatr(nomatr).toString());
@@ -71,7 +71,7 @@ public class RadiWSConsumer implements IRadiWSConsumer {
 
 	@Override
 	public LightUserDto getAgentCompteAD(Integer nomatr) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("RADI_WS");
+		String urlWS = (String) ServletAgent.getMesParametres().get("RADI_WS_URL");
 		String url = urlWS + searchAgentRadi;
 		HashMap<String, String> params = new HashMap<>();
 		params.put("employeenumber", getEmployeeNumberWithNomatr(nomatr).toString());
@@ -118,7 +118,7 @@ public class RadiWSConsumer implements IRadiWSConsumer {
 
 	@Override
 	public LightUserDto getAgentCompteADByLogin(String login) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("RADI_WS");
+		String urlWS = (String) ServletAgent.getMesParametres().get("RADI_WS_URL");
 		String url = urlWS + searchAgentRadi;
 		HashMap<String, String> params = new HashMap<>();
 		params.put("sAMAccountName", login);

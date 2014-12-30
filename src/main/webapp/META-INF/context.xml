@@ -62,7 +62,7 @@
 	<!-- -->
 	<!-- WS RADI pour interroger AD -->
 	<!-- -->
-	<Parameter description="RADI WS url" name="RADI_WS" override="false"
+	<Parameter description="RADI WS url" name="RADI_WS_URL" override="false"
 		value="http://svi-tomcat0:8085/radi/" />
 
 	<!-- -->
