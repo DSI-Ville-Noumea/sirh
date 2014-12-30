@@ -2,7 +2,6 @@ package nc.mairie.gestionagent.process.agent;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -16,7 +15,6 @@ import nc.mairie.enums.EnumImpressionAffectation;
 import nc.mairie.enums.EnumTempsTravail;
 import nc.mairie.enums.EnumTypeGroupeAbsence;
 import nc.mairie.enums.EnumTypeHisto;
-import nc.mairie.gestionagent.absence.dto.RefGroupeAbsenceDto;
 import nc.mairie.gestionagent.absence.dto.RefTypeSaisiCongeAnnuelDto;
 import nc.mairie.gestionagent.absence.dto.TypeAbsenceDto;
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
@@ -80,6 +78,7 @@ import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.spring.ws.RadiWSConsumer;
 import nc.mairie.spring.ws.SirhAbsWSConsumer;
 import nc.mairie.spring.ws.SirhPtgWSConsumer;
+import nc.mairie.spring.ws.SirhWSConsumer;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
@@ -97,11 +96,6 @@ import org.apache.commons.vfs2.VFS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
-import org.springframework.http.HttpStatus;
-
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
 
 /**
  * Process OeAGENTEmploisAffectation Date de création : (04/08/11 15:20:56)
@@ -2102,9 +2096,11 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		try {
 			byte[] fileAsBytes = null;
 			if (typeDocument.equals("Interne")) {
-				fileAsBytes = getNoteServiceInterneReportAsByteArray(getAffectationCourant().getIdAffectation());
+				fileAsBytes = new SirhWSConsumer()
+						.downloadNoteService(getAffectationCourant().getIdAffectation(), null);
 			} else {
-				fileAsBytes = getNoteServiceReportAsByteArray(getAffectationCourant().getIdAffectation(), typeDocument);
+				fileAsBytes = new SirhWSConsumer().downloadNoteService(getAffectationCourant().getIdAffectation(),
+						typeDocument);
 			}
 
 			if (!saveFileToRemoteFileSystem(fileAsBytes, repPartage, destination)) {
@@ -2147,39 +2143,6 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		}
 
 		return true;
-	}
-
-	private byte[] getNoteServiceInterneReportAsByteArray(Integer idAffectation) throws Exception {
-
-		ClientResponse response = createAndFireRequestNoteService(idAffectation, null);
-
-		return readResponseAsByteArray(response);
-	}
-
-	private byte[] getNoteServiceReportAsByteArray(Integer idAffectation, String typeDocument) throws Exception {
-
-		ClientResponse response = createAndFireRequestNoteService(idAffectation, typeDocument);
-
-		return readResponseAsByteArray(response);
-	}
-
-	private ClientResponse createAndFireRequestNoteService(Integer idAffectation, String typeDocument) {
-		String urlWS = null;
-		if (typeDocument == null) {
-			urlWS = (String) ServletAgent.getMesParametres().get("SIRH_WS_URL_NS_INTERNE_SIRH") + "?idAffectation="
-					+ idAffectation;
-		} else {
-			urlWS = (String) ServletAgent.getMesParametres().get("SIRH_WS_URL_NS_SIRH") + "?idAffectation="
-					+ idAffectation + "&typeNoteService=" + typeDocument;
-		}
-
-		Client client = Client.create();
-
-		WebResource webResource = client.resource(urlWS);
-
-		ClientResponse response = webResource.get(ClientResponse.class);
-
-		return response;
 	}
 
 	/**
@@ -4865,7 +4828,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		String destinationFDP = "SauvegardeFDP/SauvFP_" + idFichePoste + "_" + dateJour + ".doc";
 
 		try {
-			byte[] fileAsBytes = getFDPReportAsByteArray(idFichePoste);
+			byte[] fileAsBytes = new SirhWSConsumer().downloadFichePoste(idFichePoste);
 
 			if (!saveFileToRemoteFileSystem(fileAsBytes, repPartage, destinationFDP)) {
 				// "ERR185",
@@ -5386,47 +5349,6 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		this.listeRegimeASupprimer = listeRegimeASupprimer;
 	}
 
-	private byte[] getFDPReportAsByteArray(Integer idFichePoste) throws Exception {
-
-		ClientResponse response = createAndFireRequest(idFichePoste);
-
-		return readResponseAsByteArray(response);
-	}
-
-	public ClientResponse createAndFireRequest(Integer idFichePoste) {
-		String urlWSArretes = (String) ServletAgent.getMesParametres().get("SIRH_WS_URL_FDP_SIRH") + "?idFichePoste="
-				+ idFichePoste;
-
-		Client client = Client.create();
-
-		WebResource webResource = client.resource(urlWSArretes);
-
-		ClientResponse response = webResource.get(ClientResponse.class);
-
-		return response;
-	}
-
-	public byte[] readResponseAsByteArray(ClientResponse response) throws Exception {
-
-		if (response.getStatus() != HttpStatus.OK.value()) {
-			throw new Exception(String.format("An error occured ", response.getStatus()));
-		}
-
-		byte[] reponseData = null;
-		File reportFile = null;
-
-		try {
-			reportFile = response.getEntity(File.class);
-			reponseData = IOUtils.toByteArray(new FileInputStream(reportFile));
-		} catch (Exception e) {
-			throw new Exception("An error occured while reading the downloaded report.", e);
-		} finally {
-			if (reportFile != null && reportFile.exists())
-				reportFile.delete();
-		}
-
-		return reponseData;
-	}
 
 	public boolean saveFileToRemoteFileSystem(byte[] fileAsBytes, String chemin, String filename) throws Exception {
 

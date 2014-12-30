@@ -2,7 +2,6 @@ package nc.mairie.gestionagent.process.agent;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.ListIterator;
@@ -72,6 +71,7 @@ import nc.mairie.spring.dao.metier.specificites.RegIndemnDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.spring.ws.SirhPtgWSConsumer;
+import nc.mairie.spring.ws.SirhWSConsumer;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
@@ -86,11 +86,6 @@ import org.apache.commons.vfs2.VFS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
-import org.springframework.http.HttpStatus;
-
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
 
 /**
  * Process OeAGENTEmploisPoste Date de création : (03/08/11 17:03:03)
@@ -1576,7 +1571,7 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 		}
 
 		try {
-			byte[] fileAsBytes = getFDPReportAsByteArray(getFichePosteCourant().getIdFichePoste());
+			byte[] fileAsBytes = new SirhWSConsumer().downloadFichePoste(getFichePosteCourant().getIdFichePoste());
 
 			if (!saveFileToRemoteFileSystem(fileAsBytes, repPartage, destinationFDP)) {
 				// "ERR185",
@@ -2289,48 +2284,6 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 	 */
 	private void setTitrePosteResponsable(TitrePoste titrePosteResponsable) {
 		this.titrePosteResponsable = titrePosteResponsable;
-	}
-
-	private byte[] getFDPReportAsByteArray(Integer idFichePoste) throws Exception {
-
-		ClientResponse response = createAndFireRequest(idFichePoste);
-
-		return readResponseAsByteArray(response);
-	}
-
-	public ClientResponse createAndFireRequest(Integer idFichePoste) {
-		String urlWSArretes = (String) ServletAgent.getMesParametres().get("SIRH_WS_URL_FDP_SIRH") + "?idFichePoste="
-				+ idFichePoste;
-
-		Client client = Client.create();
-
-		WebResource webResource = client.resource(urlWSArretes);
-
-		ClientResponse response = webResource.get(ClientResponse.class);
-
-		return response;
-	}
-
-	public byte[] readResponseAsByteArray(ClientResponse response) throws Exception {
-
-		if (response.getStatus() != HttpStatus.OK.value()) {
-			throw new Exception(String.format("An error occured ", response.getStatus()));
-		}
-
-		byte[] reponseData = null;
-		File reportFile = null;
-
-		try {
-			reportFile = response.getEntity(File.class);
-			reponseData = IOUtils.toByteArray(new FileInputStream(reportFile));
-		} catch (Exception e) {
-			throw new Exception("An error occured while reading the downloaded report.", e);
-		} finally {
-			if (reportFile != null && reportFile.exists())
-				reportFile.delete();
-		}
-
-		return reponseData;
 	}
 
 	public boolean saveFileToRemoteFileSystem(byte[] fileAsBytes, String chemin, String filename) throws Exception {

@@ -2,7 +2,6 @@ package nc.mairie.gestionagent.process;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.text.DateFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -44,6 +43,7 @@ import nc.mairie.spring.dao.metier.suiviMedical.SuiviMedicalDao;
 import nc.mairie.spring.dao.utils.MairieDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
+import nc.mairie.spring.ws.SirhWSConsumer;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
@@ -61,11 +61,6 @@ import org.apache.commons.vfs2.VFS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
-import org.springframework.http.HttpStatus;
-
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
 
 /**
  * Process OeAGENTAccidentTravail Date de création : (30/06/11 13:56:32)
@@ -2641,8 +2636,9 @@ public class OeSMConvocation extends BasicProcess {
 			String destination = "SuiviMedical/SM_Lettre_Accompagnement_F_" + getMoisSelectionne(indiceMois) + "_"
 					+ getAnneeSelectionne(indiceMois) + ".doc";
 
-			byte[] fileAsBytes = getAccompagnementAsByteArray(smFonctionnaireAImprimer, "F",
-					getMoisSelectionne(indiceMois), getAnneeSelectionne(indiceMois));
+			byte[] fileAsBytes = new SirhWSConsumer().downloadAccompagnement(smFonctionnaireAImprimer.toString()
+					.replace("[", "").replace("]", "").replace(" ", ""), "F",
+					getMoisSelectionne(indiceMois).toString(), getAnneeSelectionne(indiceMois).toString());
 
 			if (!saveFileToRemoteFileSystem(fileAsBytes, repPartage, destination)) {
 				// "ERR185",
@@ -2656,8 +2652,9 @@ public class OeSMConvocation extends BasicProcess {
 			String destination = "SuiviMedical/SM_Lettre_Accompagnement_CC_" + getMoisSelectionne(indiceMois) + "_"
 					+ getAnneeSelectionne(indiceMois) + ".doc";
 
-			byte[] fileAsBytes = getAccompagnementAsByteArray(smCCAImprimer, "CC", getMoisSelectionne(indiceMois),
-					getAnneeSelectionne(indiceMois));
+			byte[] fileAsBytes = new SirhWSConsumer().downloadAccompagnement(smCCAImprimer.toString().replace("[", "")
+					.replace("]", "").replace(" ", ""), "CC", getMoisSelectionne(indiceMois).toString(),
+					getAnneeSelectionne(indiceMois).toString());
 
 			if (!saveFileToRemoteFileSystem(fileAsBytes, repPartage, destination)) {
 				// "ERR185",
@@ -2769,8 +2766,9 @@ public class OeSMConvocation extends BasicProcess {
 			String destination = "SuiviMedical/SM_Convocation_F_" + getMoisSelectionne(indiceMois) + "_"
 					+ getAnneeSelectionne(indiceMois) + ".doc";
 
-			byte[] fileAsBytes = getConvocationAsByteArray(smFonctionnaireAImprimer, "F",
-					getMoisSelectionne(indiceMois), getAnneeSelectionne(indiceMois));
+			byte[] fileAsBytes = new SirhWSConsumer().downloadConvocation(
+					smFonctionnaireAImprimer.toString().replace("[", "").replace("]", "").replace(" ", ""), "F",
+					getMoisSelectionne(indiceMois).toString(), getAnneeSelectionne(indiceMois).toString());
 
 			if (!saveFileToRemoteFileSystem(fileAsBytes, repPartage, destination)) {
 				// "ERR185",
@@ -2783,8 +2781,9 @@ public class OeSMConvocation extends BasicProcess {
 			String destination = "SuiviMedical/SM_Convocation_CC_" + getMoisSelectionne(indiceMois) + "_"
 					+ getAnneeSelectionne(indiceMois) + ".doc";
 
-			byte[] fileAsBytes = getConvocationAsByteArray(smCCAImprimer, "CC", getMoisSelectionne(indiceMois),
-					getAnneeSelectionne(indiceMois));
+			byte[] fileAsBytes = new SirhWSConsumer().downloadConvocation(smCCAImprimer.toString().replace("[", "")
+					.replace("]", "").replace(" ", ""), "CC", getMoisSelectionne(indiceMois).toString(),
+					getAnneeSelectionne(indiceMois).toString());
 
 			if (!saveFileToRemoteFileSystem(fileAsBytes, repPartage, destination)) {
 				// "ERR185",
@@ -2822,78 +2821,6 @@ public class OeSMConvocation extends BasicProcess {
 			return false;
 		}
 		return true;
-	}
-
-	public ClientResponse createAndFireRequestConvocation(String csvIdSuiviMedical, String typePopulation, String mois,
-			String annee) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_WS_URL_CONVOCATION_VM_SIRH")
-				+ "?csvIdSuiviMedical=" + csvIdSuiviMedical + "&typePopulation=" + typePopulation + "&mois=" + mois
-				+ "&annee=" + annee;
-
-		Client client = Client.create();
-
-		WebResource webResource = client.resource(urlWS);
-
-		ClientResponse response = webResource.get(ClientResponse.class);
-
-		return response;
-	}
-
-	public ClientResponse createAndFireRequestAccompagnement(String csvIdSuiviMedical, String typePopulation,
-			String mois, String annee) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_WS_URL_ACCOMPAGNEMENT_VM_SIRH")
-				+ "?csvIdSuiviMedical=" + csvIdSuiviMedical + "&typePopulation=" + typePopulation + "&mois=" + mois
-				+ "&annee=" + annee;
-
-		Client client = Client.create();
-
-		WebResource webResource = client.resource(urlWS);
-
-		ClientResponse response = webResource.get(ClientResponse.class);
-
-		return response;
-	}
-
-	private byte[] getConvocationAsByteArray(ArrayList<Integer> smFonctionnaireAImprimer, String typePopulation,
-			Integer moisSelectionne, Integer anneeSelectionne) throws Exception {
-
-		ClientResponse response = createAndFireRequestConvocation(smFonctionnaireAImprimer.toString().replace("[", "")
-				.replace("]", "").replace(" ", ""), typePopulation, moisSelectionne.toString(),
-				anneeSelectionne.toString());
-
-		return readResponseAsByteArray(response);
-	}
-
-	private byte[] getAccompagnementAsByteArray(ArrayList<Integer> smFonctionnaireAImprimer, String typePopulation,
-			Integer moisSelectionne, Integer anneeSelectionne) throws Exception {
-
-		ClientResponse response = createAndFireRequestAccompagnement(
-				smFonctionnaireAImprimer.toString().replace("[", "").replace("]", "").replace(" ", ""), typePopulation,
-				moisSelectionne.toString(), anneeSelectionne.toString());
-
-		return readResponseAsByteArray(response);
-	}
-
-	public byte[] readResponseAsByteArray(ClientResponse response) throws Exception {
-
-		if (response.getStatus() != HttpStatus.OK.value()) {
-			throw new Exception(String.format("An error occured ", response.getStatus()));
-		}
-
-		byte[] reponseData = null;
-		File reportFile = null;
-
-		try {
-			reportFile = response.getEntity(File.class);
-			reponseData = IOUtils.toByteArray(new FileInputStream(reportFile));
-		} catch (Exception e) {
-			throw new Exception("An error occured while reading the downloaded report.", e);
-		} finally {
-			if (reportFile != null && reportFile.exists())
-				reportFile.delete();
-		}
-
-		return reponseData;
 	}
 
 	private void verifieRepertoire(String codTypeDoc) {

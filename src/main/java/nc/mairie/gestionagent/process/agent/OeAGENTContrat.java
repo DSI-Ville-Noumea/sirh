@@ -2,7 +2,6 @@ package nc.mairie.gestionagent.process.agent;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -28,6 +27,7 @@ import nc.mairie.spring.dao.metier.referentiel.MotifDao;
 import nc.mairie.spring.dao.metier.referentiel.TypeContratDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
+import nc.mairie.spring.ws.SirhWSConsumer;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
@@ -43,11 +43,6 @@ import org.apache.commons.vfs2.VFS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
-import org.springframework.http.HttpStatus;
-
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
 
 /**
  * Process OeAGENTContrat Date de création : (16/05/11 09:36:20)
@@ -1529,8 +1524,8 @@ public class OeAGENTContrat extends BasicProcess {
 		}
 
 		try {
-			byte[] fileAsBytes = getContratReportAsByteArray(getAgentCourant().getIdAgent(), getContratCourant()
-					.getIdContrat());
+			byte[] fileAsBytes = new SirhWSConsumer().downloadContrat(getAgentCourant().getIdAgent(),
+					getContratCourant().getIdContrat());
 
 			if (!saveFileToRemoteFileSystem(fileAsBytes, repPartage, destination)) {
 				// "ERR185",
@@ -1603,48 +1598,6 @@ public class OeAGENTContrat extends BasicProcess {
 			return false;
 		}
 		return true;
-	}
-
-	private byte[] getContratReportAsByteArray(Integer idAgent, Integer idContrat) throws Exception {
-
-		ClientResponse response = createAndFireRequestContrat(idAgent, idContrat);
-
-		return readResponseAsByteArray(response);
-	}
-
-	private ClientResponse createAndFireRequestContrat(Integer idAgent, Integer idContrat) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_WS_URL_CONTRAT_SIRH") + "?idAgent=" + idAgent
-				+ "&idContrat=" + idContrat;
-
-		Client client = Client.create();
-
-		WebResource webResource = client.resource(urlWS);
-
-		ClientResponse response = webResource.get(ClientResponse.class);
-
-		return response;
-	}
-
-	public byte[] readResponseAsByteArray(ClientResponse response) throws Exception {
-
-		if (response.getStatus() != HttpStatus.OK.value()) {
-			throw new Exception(String.format("An error occured ", response.getStatus()));
-		}
-
-		byte[] reponseData = null;
-		File reportFile = null;
-
-		try {
-			reportFile = response.getEntity(File.class);
-			reponseData = IOUtils.toByteArray(new FileInputStream(reportFile));
-		} catch (Exception e) {
-			throw new Exception("An error occured while reading the downloaded report.", e);
-		} finally {
-			if (reportFile != null && reportFile.exists())
-				reportFile.delete();
-		}
-
-		return reponseData;
 	}
 
 	private void setURLFichier(String scriptOuverture) {

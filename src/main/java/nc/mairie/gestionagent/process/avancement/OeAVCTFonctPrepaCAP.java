@@ -2,7 +2,6 @@ package nc.mairie.gestionagent.process.avancement;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -51,6 +50,7 @@ import nc.mairie.spring.dao.utils.EaeDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.spring.ws.RadiWSConsumer;
+import nc.mairie.spring.ws.SirhWSConsumer;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
@@ -69,11 +69,6 @@ import org.apache.commons.vfs2.VFS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
-import org.springframework.http.HttpStatus;
-
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
 
 /**
  * Process OeAVCTFonctionnaires Date de création : (21/11/11 09:55:36)
@@ -1503,7 +1498,8 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 			Cap cap = getCapDao().chercherCapByCodeCap(indiceCap);
 			CadreEmploi cadre = getCadreEmploiDao().chercherCadreEmploiByLib(indiceCadreEmploi);
 
-			byte[] fileAsBytes = getTabAvctCapReportAsByteArray(cap.getIdCap(), cadre.getIdCadreEmploi(), false, "PDF");
+			byte[] fileAsBytes = new SirhWSConsumer().downloadTableauAvancement(cap.getIdCap(),
+					cadre.getIdCadreEmploi(), false, "PDF");
 			if (!saveFileToRemoteFileSystem(fileAsBytes, repPartage, destination)) {
 				// "ERR182",
 				// "Une erreur est survenue dans la génération du tableau. Merci de contacter le responsable du projet."
@@ -1517,49 +1513,6 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 			return false;
 		}
 		return true;
-	}
-
-	public byte[] getTabAvctCapReportAsByteArray(int idCap, int idCadreEmploi, boolean avisEAE, String format)
-			throws Exception {
-
-		ClientResponse response = createAndFireRequest(idCap, idCadreEmploi, avisEAE, format);
-
-		return readResponseAsByteArray(response, format);
-	}
-
-	public byte[] readResponseAsByteArray(ClientResponse response, String format) throws Exception {
-
-		if (response.getStatus() != HttpStatus.OK.value()) {
-			throw new Exception(String.format("An error occured ", response.getStatus()));
-		}
-
-		byte[] reponseData = null;
-		File reportFile = null;
-
-		try {
-			reportFile = response.getEntity(File.class);
-			reponseData = IOUtils.toByteArray(new FileInputStream(reportFile));
-		} catch (Exception e) {
-			throw new Exception("An error occured while reading the downloaded report.", e);
-		} finally {
-			if (reportFile != null && reportFile.exists())
-				reportFile.delete();
-		}
-
-		return reponseData;
-	}
-
-	public ClientResponse createAndFireRequest(int idCap, int idCadreEmploi, boolean avisEAE, String format) {
-		String urlWSTableauAvctCAP = (String) ServletAgent.getMesParametres().get("SIRH_WS_URL_TABLEAU_AVCT_CAP")
-				+ "?idCap=" + idCap + "&idCadreEmploi=" + idCadreEmploi + "&avisEAE=" + avisEAE;
-
-		Client client = Client.create();
-
-		WebResource webResource = client.resource(urlWSTableauAvctCAP);
-
-		ClientResponse response = webResource.get(ClientResponse.class);
-
-		return response;
 	}
 
 	public boolean saveFileToRemoteFileSystem(byte[] fileAsBytes, String chemin, String filename) throws Exception {
@@ -2091,7 +2044,8 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 			Cap cap = getCapDao().chercherCapByCodeCap(indiceCap);
 			CadreEmploi cadre = getCadreEmploiDao().chercherCadreEmploiByLib(indiceCadreEmploi);
 
-			byte[] fileAsBytes = getTabAvctCapReportAsByteArray(cap.getIdCap(), cadre.getIdCadreEmploi(), true, "PDF");
+			byte[] fileAsBytes = new SirhWSConsumer().downloadTableauAvancement(cap.getIdCap(),
+					cadre.getIdCadreEmploi(), true, "PDF");
 			if (!saveFileToRemoteFileSystem(fileAsBytes, repPartage, destination)) {
 				// "ERR182",
 				// "Une erreur est survenue dans la génération du tableau. Merci de contacter le responsable du projet."

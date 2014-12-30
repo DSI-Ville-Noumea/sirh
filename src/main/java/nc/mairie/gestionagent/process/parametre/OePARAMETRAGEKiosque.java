@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.Agent;
-import nc.mairie.metier.avancement.AvancementFonctionnaires;
 import nc.mairie.metier.parametrage.AccueilKiosque;
 import nc.mairie.metier.parametrage.ReferentRh;
 import nc.mairie.metier.poste.Service;

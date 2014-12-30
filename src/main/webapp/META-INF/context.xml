@@ -71,32 +71,8 @@
 	<Parameter description="SIRH WS url" name="SIRH_WS" override="false"
 		value="http://svi-tomcat0:8085/sirhws/" />
 
-	<!-- -->
-	<!-- WS SIRH Pour la date d'avancement  -->
-	<!-- -->
-	<Parameter description="SIRH WS endpoint url for Date Avct theroique" name="SIRH_WS_URL_DATE_AVCT" override="false"
-		value="http://svi-tomcat0:8085/sirhws/calculEae/calculDateAvancement" />
 
-	<!-- -->
-	<!-- Pour l'arbre des FDP -->
-	<!-- -->
-	<Parameter description="SIRH WS endpoint url for FichePoste tree"
-		name="SIRH_WS_URL_ARBRE_FDP" override="false"
-		value="http://svi-tomcat0:8085/sirhws/fichePostes/rebuildFichePosteTree" />
-
-
-	<!-- -->
-	<!-- Pour l'edition BIRT des avancements -->
-	<!-- -->
-	<Parameter description="SIRH WS url pour le tableau des avancements CAP"
-		name="SIRH_WS_URL_TABLEAU_AVCT_CAP" override="false"
-		value="http://svi-tomcat0:8085/sirhws/avancements/downloadTableauAvancements" />
-	<Parameter description="SIRH WS url pour les arretes des avancements"
-		name="SIRH_WS_URL_ARRETES_AVCT" override="false"
-		value="http://svi-tomcat0:8085/sirhws/avancements/downloadArretes" />
-
-
-
+	
 	<!-- -->
 	<!-- SHAREPOINT -->
 	<!-- -->
@@ -183,24 +159,6 @@
 	<!-- -->
 	<!-- Parametres pour la gestion des documents -->
 	<!-- -->
-	<Parameter description="SIRH WS url pour les FDP SIRH" name="SIRH_WS_URL_FDP_SIRH"
-		override="false"
-		value="http://svi-tomcat0:8085/sirhws/fichePostes/downloadFichePosteSIRH" />
-	<Parameter description="SIRH WS url pour les Notes de service SIRH"
-		name="SIRH_WS_URL_NS_SIRH" override="false"
-		value="http://svi-tomcat0:8085/sirhws/noteService/downloadNoteServiceSIRH" />
-	<Parameter description="SIRH WS url pour les Notes de service interne SIRH"
-		name="SIRH_WS_URL_NS_INTERNE_SIRH" override="false"
-		value="http://svi-tomcat0:8085/sirhws/noteService/downloadNoteServiceInterneSIRH" />
-	<Parameter description="SIRH WS url pour les convocations aux VM SIRH"
-		name="SIRH_WS_URL_CONVOCATION_VM_SIRH" override="false"
-		value="http://svi-tomcat0:8085/sirhws/suiviMedical/downloadConvocationSIRH" />
-	<Parameter description="SIRH WS url pour les lettre d'accompagnement aux VM SIRH"
-		name="SIRH_WS_URL_ACCOMPAGNEMENT_VM_SIRH" override="false"
-		value="http://svi-tomcat0:8085/sirhws/suiviMedical/downloadLettreAccompagnementSIRH" />
-	<Parameter description="SIRH WS url pour les contrats de travail SIRH"
-		name="SIRH_WS_URL_CONTRAT_SIRH" override="false"
-		value="http://svi-tomcat0:8085/sirhws/contrat/downloadContratSIRH" />
 	<Parameter description="repertoire pour les documents issus des modeles"
 		name="REPERTOIRE_ACTES" override="false"
 		value="file://///cristal/drh$/DRH/SIRH-document/DEV/Document_Associe/" />

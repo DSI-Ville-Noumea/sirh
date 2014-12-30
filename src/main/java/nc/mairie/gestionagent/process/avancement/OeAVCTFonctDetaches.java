@@ -2,7 +2,6 @@ package nc.mairie.gestionagent.process.avancement;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -29,6 +28,7 @@ import nc.mairie.spring.dao.metier.parametrage.MotifAvancementDao;
 import nc.mairie.spring.dao.metier.referentiel.AutreAdministrationDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
+import nc.mairie.spring.ws.SirhWSConsumer;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.UserAppli;
@@ -44,11 +44,6 @@ import org.apache.commons.vfs2.VFS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
-import org.springframework.http.HttpStatus;
-
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
 
 /**
  * Process OeAVCTCampagneTableauBord Date de création : (21/11/11 09:55:36)
@@ -1268,9 +1263,9 @@ public class OeAVCTFonctDetaches extends BasicProcess {
 		if (listeImpressionChangementClasse.size() > 0) {
 
 			try {
-				byte[] fileAsBytes = getArretesReportAsByteArray(
-						listeImpressionChangementClasse.toString().replace("[", "").replace("]", "").replace(" ", ""),
-						true, Integer.valueOf(getAnneeSelect()), true);
+				byte[] fileAsBytes = new SirhWSConsumer().downloadArrete(listeImpressionChangementClasse.toString()
+						.replace("[", "").replace("]", "").replace(" ", ""), true, Integer.valueOf(getAnneeSelect()),
+						true);
 
 				if (!saveFileToRemoteFileSystem(fileAsBytes, repPartage, docuChangementClasse)) {
 					// "ERR185",
@@ -1288,10 +1283,9 @@ public class OeAVCTFonctDetaches extends BasicProcess {
 		}
 		if (listeImpressionAvancementDiff.size() > 0) {
 			try {
-
-				byte[] fileAsBytes = getArretesReportAsByteArray(
-						listeImpressionAvancementDiff.toString().replace("[", "").replace("]", "").replace(" ", ""),
-						false, Integer.valueOf(getAnneeSelect()), true);
+				byte[] fileAsBytes = new SirhWSConsumer().downloadArrete(listeImpressionAvancementDiff.toString()
+						.replace("[", "").replace("]", "").replace(" ", ""), false, Integer.valueOf(getAnneeSelect()),
+						true);
 				if (!saveFileToRemoteFileSystem(fileAsBytes, repPartage, docuAvctDiff)) {
 					// "ERR185",
 					// "Une erreur est survenue dans la génération des documents. Merci de contacter le responsable du projet."
@@ -1341,51 +1335,6 @@ public class OeAVCTFonctDetaches extends BasicProcess {
 		if (!ssDossier.exists()) {
 			ssDossier.mkdir();
 		}
-	}
-
-	public byte[] getArretesReportAsByteArray(String csvAgents, boolean isChangementClasse, int anneeAvct,
-			boolean isDetache) throws Exception {
-
-		ClientResponse response = createAndFireRequest(csvAgents, isChangementClasse, anneeAvct, isDetache);
-
-		return readResponseAsByteArray(response);
-	}
-
-	public ClientResponse createAndFireRequest(String csvAgents, boolean isChangementClasse, int anneeAvct,
-			boolean isDetache) {
-		String urlWSArretes = (String) ServletAgent.getMesParametres().get("SIRH_WS_URL_ARRETES_AVCT")
-				+ "?isChangementClasse=" + isChangementClasse + "&csvIdAgents=" + csvAgents + "&annee=" + anneeAvct
-				+ "&isDetache=" + isDetache;
-
-		Client client = Client.create();
-
-		WebResource webResource = client.resource(urlWSArretes);
-
-		ClientResponse response = webResource.get(ClientResponse.class);
-
-		return response;
-	}
-
-	public byte[] readResponseAsByteArray(ClientResponse response) throws Exception {
-
-		if (response.getStatus() != HttpStatus.OK.value()) {
-			throw new Exception(String.format("An error occured ", response.getStatus()));
-		}
-
-		byte[] reponseData = null;
-		File reportFile = null;
-
-		try {
-			reportFile = response.getEntity(File.class);
-			reponseData = IOUtils.toByteArray(new FileInputStream(reportFile));
-		} catch (Exception e) {
-			throw new Exception("An error occured while reading the downloaded report.", e);
-		} finally {
-			if (reportFile != null && reportFile.exists())
-				reportFile.delete();
-		}
-
-		return reponseData;
 	}
 
 	public boolean saveFileToRemoteFileSystem(byte[] fileAsBytes, String chemin, String filename) throws Exception {

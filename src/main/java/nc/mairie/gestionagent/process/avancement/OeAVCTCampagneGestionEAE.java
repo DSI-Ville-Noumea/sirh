@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.ListIterator;
 
@@ -101,10 +100,10 @@ import nc.mairie.spring.dao.metier.referentiel.TypeCompetenceDao;
 import nc.mairie.spring.dao.utils.EaeDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
-import nc.mairie.spring.ws.MSDateTransformer;
 import nc.mairie.spring.ws.RadiWSConsumer;
 import nc.mairie.spring.ws.SirhKiosqueWSConsumer;
 import nc.mairie.spring.ws.SirhKiosqueWSConsumerException;
+import nc.mairie.spring.ws.SirhWSConsumer;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
@@ -118,15 +117,6 @@ import nc.mairie.utils.VariablesActivite;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientHandlerException;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
-
-import flexjson.JSONDeserializer;
 
 /**
  * Process OeAVCTFonctionnaires Date de création : (21/11/11 09:55:36)
@@ -2863,7 +2853,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 				} catch (Exception e2) {
 					// si il n'y a pas d'avancement alors on calcul la date
 					// d'avancement #11504
-					DateAvctDto dateAvct = getCalculDateAvct(ag.getIdAgent());
+					SirhWSConsumer consu = new SirhWSConsumer();
+					DateAvctDto dateAvct = consu.getCalculDateAvct(ag.getIdAgent());
 					evalAModif.setDateEffetAvct(dateAvct.getDateAvct());
 				}
 			}
@@ -2901,62 +2892,6 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 						evalAModif.getAvctDurMax(), evalAModif.isAgentDetache());
 			}
 		}
-	}
-
-	private DateAvctDto getCalculDateAvct(Integer idAgent) throws Exception {
-
-		String urlWSDateAVct = (String) ServletAgent.getMesParametres().get("SIRH_WS_URL_DATE_AVCT");
-
-		HashMap<String, String> params = new HashMap<>();
-		params.put("idAgent", idAgent.toString());
-		logger.debug("Call " + urlWSDateAVct + " with idAgent : " + idAgent);
-		ClientResponse res = createAndFireRequest(params, urlWSDateAVct);
-		return readResponse(DateAvctDto.class, res, urlWSDateAVct);
-	}
-
-	public <T> T readResponse(Class<T> targetClass, ClientResponse response, String url) throws Exception {
-
-		T result = null;
-
-		try {
-			result = targetClass.newInstance();
-		} catch (Exception ex) {
-			throw new Exception(
-					"An error occured when instantiating return type when deserializing JSON from SIRH ABS WS request.",
-					ex);
-		}
-
-		if (response.getStatus() == HttpStatus.NO_CONTENT.value()) {
-			return null;
-		}
-
-		if (response.getStatus() != HttpStatus.OK.value()) {
-			throw new Exception(String.format("An error occured when querying '%s'. Return code is : %s", url,
-					response.getStatus()));
-		}
-
-		String output = response.getEntity(String.class);
-		logger.trace("json recu:" + output);
-		result = new JSONDeserializer<T>().use(Date.class, new MSDateTransformer()).deserializeInto(output, result);
-		return result;
-	}
-
-	private ClientResponse createAndFireRequest(HashMap<String, String> parameters, String url) throws Exception {
-		Client client = Client.create();
-		WebResource webResource = client.resource(url);
-
-		for (String key : parameters.keySet()) {
-			webResource = webResource.queryParam(key, parameters.get(key));
-		}
-
-		ClientResponse response = null;
-
-		try {
-			response = webResource.accept(MediaType.APPLICATION_JSON_VALUE).get(ClientResponse.class);
-		} catch (ClientHandlerException ex) {
-			throw new Exception(String.format("An error occured when querying '%s'.", url), ex);
-		}
-		return response;
 	}
 
 	public Integer getIdCreerFichePosteSecondaire() {

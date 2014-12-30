@@ -2,9 +2,6 @@ package nc.mairie.gestionagent.process.poste;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -108,6 +105,7 @@ import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.spring.ws.SirhAbsWSConsumer;
 import nc.mairie.spring.ws.SirhPtgWSConsumer;
+import nc.mairie.spring.ws.SirhWSConsumer;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
@@ -127,11 +125,6 @@ import org.apache.commons.vfs2.VFS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
-import org.springframework.http.HttpStatus;
-
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
 
 /**
  * Process OePOSTEFichePoste Date de création : (07/07/11 10:59:29)
@@ -2659,7 +2652,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 		}
 
 		// appel WS mise à jour Abre FDP
-		if (!miseAJourArbreFDP()) {
+		if (!new SirhWSConsumer().miseAJourArbreFDP()) {
 			// "ERR970","Une erreur est survenue lors de la mise à jour de l'arbre des Fiche de poste. Merci de contacter le responsable du projet car celà engendre un soucis sur le Kiosque RH."
 			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
@@ -2672,33 +2665,6 @@ public class OePOSTEFichePoste extends BasicProcess {
 		return true;
 	}
 
-	private boolean miseAJourArbreFDP() {
-
-		String urlWSArbreFDP = (String) ServletAgent.getMesParametres().get("SIRH_WS_URL_ARBRE_FDP");
-		boolean response = true;
-
-		try {
-			URL url = new URL(urlWSArbreFDP);
-			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-			conn.setRequestMethod("GET");
-			conn.setRequestProperty("Accept", "application/json");
-			try {
-				if (conn.getResponseCode() != 200) {
-					response = false;
-					logger.error("Failed Arbre service : HTTP error code : " + conn.getResponseCode());
-				}
-			} catch (Exception e) {
-				response = false;
-				logger.error("Erreur dans la connexion à l'url des WS SIRH", e);
-			}
-		} catch (Exception e) {
-			logger.error("Erreur dans la connexion à l'url des WS SIRH", e);
-		}
-
-		return response;
-
-	}
-
 	private boolean sauvegardeFDP() throws Exception {
 		// on verifie que les repertoires existent
 		verifieRepertoire("SauvegardeFDP");
@@ -2709,7 +2675,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 				+ ".doc";
 
 		try {
-			byte[] fileAsBytes = getFDPReportAsByteArray(getFichePosteCourante().getIdFichePoste());
+			byte[] fileAsBytes = new SirhWSConsumer().downloadFichePoste(getFichePosteCourante().getIdFichePoste());
 
 			if (!saveFileToRemoteFileSystem(fileAsBytes, repPartage, destinationFDP)) {
 				// "ERR185",
@@ -5412,7 +5378,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 		String destinationFDP = "FichePosteVierge/FP_" + getFichePosteCourante().getIdFichePoste() + ".doc";
 
 		try {
-			byte[] fileAsBytes = getFDPReportAsByteArray(getFichePosteCourante().getIdFichePoste());
+			byte[] fileAsBytes = new SirhWSConsumer().downloadFichePoste(getFichePosteCourante().getIdFichePoste());
 
 			if (!saveFileToRemoteFileSystem(fileAsBytes, repPartage, destinationFDP)) {
 				// "ERR185",
@@ -6778,48 +6744,6 @@ public class OePOSTEFichePoste extends BasicProcess {
 					MessageUtils.getMessage("ERR125", "la fiche de poste " + getVAL_EF_RECHERCHE()));
 			return false;
 		}
-	}
-
-	private byte[] getFDPReportAsByteArray(Integer idFichePoste) throws Exception {
-
-		ClientResponse response = createAndFireRequest(idFichePoste);
-
-		return readResponseAsByteArray(response);
-	}
-
-	public ClientResponse createAndFireRequest(Integer idFichePoste) {
-		String urlWSArretes = (String) ServletAgent.getMesParametres().get("SIRH_WS_URL_FDP_SIRH") + "?idFichePoste="
-				+ idFichePoste;
-
-		Client client = Client.create();
-
-		WebResource webResource = client.resource(urlWSArretes);
-
-		ClientResponse response = webResource.get(ClientResponse.class);
-
-		return response;
-	}
-
-	public byte[] readResponseAsByteArray(ClientResponse response) throws Exception {
-
-		if (response.getStatus() != HttpStatus.OK.value()) {
-			throw new Exception(String.format("An error occured ", response.getStatus()));
-		}
-
-		byte[] reponseData = null;
-		File reportFile = null;
-
-		try {
-			reportFile = response.getEntity(File.class);
-			reponseData = IOUtils.toByteArray(new FileInputStream(reportFile));
-		} catch (Exception e) {
-			throw new Exception("An error occured while reading the downloaded report.", e);
-		} finally {
-			if (reportFile != null && reportFile.exists())
-				reportFile.delete();
-		}
-
-		return reponseData;
 	}
 
 	public boolean saveFileToRemoteFileSystem(byte[] fileAsBytes, String chemin, String filename) throws Exception {
