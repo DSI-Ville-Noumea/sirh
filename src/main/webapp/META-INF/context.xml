@@ -50,7 +50,7 @@
 	<!-- -->
 	<!-- WS DES POINTAGES -->
 	<!-- -->
-	<Parameter description="SIRH PTG WS url" name="SIRH_PTG_WS"
+	<Parameter description="SIRH PTG WS url" name="SIRH_PTG_WS_URL"
 		override="false" value="http://svi-tomcat0:8085/sirh-ptg-ws/" />
 
 	<!-- -->
