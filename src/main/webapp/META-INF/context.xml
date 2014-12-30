@@ -56,7 +56,7 @@
 	<!-- -->
 	<!-- WS DES ABSENCES -->
 	<!-- -->
-	<Parameter description="SIRH ABS WS url" name="SIRH_ABS_WS"
+	<Parameter description="SIRH ABS WS url" name="SIRH_ABS_WS_URL"
 		override="false" value="http://svi-tomcat0:8085/sirh-abs-ws/" />
 
 	<!-- -->
