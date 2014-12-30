@@ -47,10 +47,10 @@
 						<INPUT type="image" src="images/ajout.gif" height="16px" width="16px" name="<%=process.getNOM_PB_AJOUTER_AGENT()%>">
 						<table class="sigp2NewTab">
 							<%
-							int indice = 0;
 								for (int i = 0;i<process.getListeAgent().size();i++){
+									Integer indice = process.getListeAgent().get(i).getIdAgent();
 							%>
-							<tr id="<%=indice%>" onmouseover="SelectLigne(<%=indice%>,<%=process.getListeAgent().size()%>)" >
+							<tr>
 								<td class="sigp2NewTab-liste" style="width:30px;" align="center">		
 									<INPUT title="supprimer" type="image" src="images/suppression.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_SUPPRIMER_AGENT(indice)%>">
 								</td>
