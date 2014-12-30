@@ -96,7 +96,6 @@
 		listeDroits.add("AVCTMasseSalarialeDetaches");
 		listeDroits.add("AVCTSimulationDetaches");
 		listeDroits.add("AVCTDetaches");
-		listeDroits.add("AVCTTest");
 		
 		/*Module POINTAGE*/
 		listeDroits.add("PTGSaisie");

@@ -118,11 +118,6 @@ document.write(menuAVCTAvancementFonctionnaire.afficher());
 var menuAVCTAvancementContractuels = new MenuHaut("Module_avct_simulationContractuels");
 menuAVCTAvancementContractuels.ajouterFils(new Lien("AVCTSimulationContractuels", "SIMU CONTRACTUELS", "Simulation pour les contractuels", true, false,"SIMULATION"));
 menuAVCTAvancementContractuels.ajouterFils(new Lien("AVCTContractuels", "CONTRACTUELS", "Avancement des contractuels", true, false,"CONTRACTUELS"));
-<% 
-String affTest =  (String) ServletAgent.getMesParametres().get("AFFICHAGE_TEST");
-if (affTest.equals("TRUE")){ %>
-menuAVCTAvancementContractuels.ajouterFils(new Lien("AVCTTest", "test", "Page de test", true, false,"AVCT/TEST"));
-<%}%>
 document.write(menuAVCTAvancementContractuels.afficher());
 
 var menuAVCTAvancementDetaches = new MenuHaut("Module_avct_simulationDetaches");

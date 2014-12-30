@@ -57,7 +57,6 @@ import nc.mairie.gestionagent.process.avancement.OeAVCTSimulationContractuels;
 import nc.mairie.gestionagent.process.avancement.OeAVCTSimulationConvCol;
 import nc.mairie.gestionagent.process.avancement.OeAVCTSimulationDetaches;
 import nc.mairie.gestionagent.process.avancement.OeAVCTSimulationFonctionnaires;
-import nc.mairie.gestionagent.process.avancement.OeAVCTTest;
 import nc.mairie.gestionagent.process.election.OeELECSaisieCompteurA48;
 import nc.mairie.gestionagent.process.election.OeELECSaisieCompteurA52;
 import nc.mairie.gestionagent.process.election.OeELECSaisieCompteurA53;
@@ -245,9 +244,6 @@ public class RobotAgent extends Robot {
 			return new OeAVCTMasseSalarialeConvention();
 		} else if (activite.equals("AVCTMasseSalarialeDetaches")) {
 			return new OeAVCTMasseSalarialeDetaches();
-		} // TEST
-		else if (activite.equals("AVCTTest")) {
-			return new OeAVCTTest();
 		} // Module SUIVI MEDICAL
 		else if (activite.equals("SMConvocation")) {
 			return new OeSMConvocation();
@@ -488,10 +484,6 @@ public class RobotAgent extends Robot {
 		navigation.put(OeAVCTCampagneGestionEAE.class.getName()
 				+ OeAVCTCampagneGestionEAE.STATUT_RECHERCHER_AGENT_EVALUE, OeAGENTRecherche.class.getName());
 		navigation.put(OeAVCTCampagneGestionEAE.class.getName() + OeAVCTCampagneGestionEAE.STATUT_RECHERCHER_AGENT,
-				OeAGENTRecherche.class.getName());
-
-		// Classe OeAVCTTest
-		navigation.put(OeAVCTTest.class.getName() + OeAVCTTest.STATUT_RECHERCHER_AGENT,
 				OeAGENTRecherche.class.getName());
 
 		// Classe SIMULATION
