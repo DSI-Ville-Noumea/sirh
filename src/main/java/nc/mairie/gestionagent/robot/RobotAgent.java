@@ -565,6 +565,9 @@ public class RobotAgent extends Robot {
 				OeAGENTRecherche.class.getName());
 		navigation.put(OeABSVisualisation.class.getName() + OeABSVisualisation.STATUT_RECHERCHER_AGENT_CREATION,
 				OeAGENTRecherche.class.getName());
+		// Classe OeABSRestitution
+		navigation.put(OeABSRestitution.class.getName() + OeABSRestitution.STATUT_RECHERCHER_AGENT_CREATION,
+				OeAGENTRecherche.class.getName());
 
 		// ///////////////////
 		// ELECTION //
