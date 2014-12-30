@@ -66,6 +66,12 @@
 		value="http://svi-tomcat0:8085/radi/" />
 
 	<!-- -->
+	<!-- WS SIRH -->
+	<!-- -->
+	<Parameter description="SIRH WS url" name="SIRH_WS" override="false"
+		value="http://svi-tomcat0:8085/sirhws/" />
+
+	<!-- -->
 	<!-- WS SIRH Pour la date d'avancement  -->
 	<!-- -->
 	<Parameter description="SIRH WS endpoint url for Date Avct theroique" name="SIRH_WS_URL_DATE_AVCT" override="false"

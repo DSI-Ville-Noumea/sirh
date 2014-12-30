@@ -6,11 +6,13 @@
         <META name="GENERATOR" content="IBM WebSphere Page Designer V3.5.3 for Windows">
         <META http-equiv="Content-Style-Type" content="text/css">
         <LINK href="theme/sigp2.css" rel="stylesheet" type="text/css">
+		<LINK rel="stylesheet" href="theme/calendrier-mairie.css" type="text/css">
         <jsp:useBean class="nc.mairie.gestionagent.process.absence.OeABSRestitution" id="process" scope="session"></jsp:useBean>
             <TITLE>Restitution massive des congés annuels</TITLE>		
 
 
             <SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT> 
+			<SCRIPT type="text/javascript" src="js/GestionCalendrier.js"></SCRIPT> 
 
             <SCRIPT type="text/javascript">
                 function executeBouton(nom)
@@ -34,7 +36,8 @@
                 
 				<span class="sigp2Mandatory">Date du jour à restituer :</span>          
 				<input id="<%=process.getNOM_ST_DATE_RESTITUTION()%>" class="sigp2-saisie" name="<%= process.getNOM_ST_DATE_RESTITUTION() %>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_RESTITUTION() %>">
-				<IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_RESTITUTION()%>', 'dd/mm/y');">
+				<IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_RESTITUTION()%>', 'dd/mm/y');">			
+				<INPUT type="submit" class="sigp2-Bouton-200" value="Lancer la restitution" name="<%=process.getNOM_PB_LANCER_RESTITUTION()%>">
 				<br/><br/>
 				<span class="sigp2Mandatory">Type restitution :</span>  			
                 <input type="radio" <%= process.forRadioHTML(process.getNOM_RG_TYPE_RESTITUTION(), process.getNOM_RB_TYPE_MATIN()) %> > <span class="sigp2Mandatory">Matin</span> 
@@ -71,9 +74,11 @@
 	                <INPUT type="submit" class="sigp2-Bouton-200" value="Ajouter l'agent à la liste" name="<%=process.getNOM_PB_AJOUTER()%>">
 				<%} %>
 			<%} %>
+				
              </FIELDSET>             
             
             
+        <INPUT type="submit" style="display:none;" name="<%=process.getNOM_PB_RECHERCHER_AGENT_CREATION()%>" value="RECHERCHERAGENTCREATION"> 
         </FORM>
     </BODY>
 </HTML>

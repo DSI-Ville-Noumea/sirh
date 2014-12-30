@@ -1,16 +1,22 @@
 package nc.mairie.gestionagent.process.absence;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import nc.mairie.gestionagent.absence.dto.RefTypeSaisiCongeAnnuelDto;
+import nc.mairie.gestionagent.absence.dto.TypeAbsenceDto;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.Agent;
 import nc.mairie.spring.dao.metier.agent.AgentDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
+import nc.mairie.spring.ws.SirhAbsWSConsumer;
+import nc.mairie.spring.ws.SirhWSConsumer;
 import nc.mairie.technique.BasicProcess;
+import nc.mairie.technique.Services;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
@@ -113,6 +119,14 @@ public class OeABSRestitution extends BasicProcess {
 			if (testerParametre(request, getNOM_PB_AJOUTER())) {
 				return performPB_AJOUTER(request);
 			}
+			// Si clic sur le bouton PB_RECHERCHER_AGENT_CREATION
+			if (testerParametre(request, getNOM_PB_RECHERCHER_AGENT_CREATION())) {
+				return performPB_RECHERCHER_AGENT_CREATION(request);
+			}
+			// Si clic sur le bouton PB_LANCER_RESTITUTION
+			if (testerParametre(request, getNOM_PB_LANCER_RESTITUTION())) {
+				return performPB_LANCER_RESTITUTION(request);
+			}
 
 		}
 		// Si TAG INPUT non géré par le process
@@ -171,6 +185,7 @@ public class OeABSRestitution extends BasicProcess {
 				getListeAgent().remove(a);
 			}
 		}
+		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 		return true;
 	}
 
@@ -227,6 +242,20 @@ public class OeABSRestitution extends BasicProcess {
 
 	public boolean performPB_AJOUTER(HttpServletRequest request) throws Exception {
 		String idAgent = Const.CHAINE_VIDE;
+		// La date est obligatoire pour tester si l'agent est en base A ou D à
+		// cette date
+		// date
+		if (getZone(getNOM_ST_DATE_RESTITUTION()).equals(Const.CHAINE_VIDE)) {
+			// "ERR002", "La zone @ est obligatoire."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "date de restitution"));
+			return false;
+		} else if (!Services.estUneDate(getZone(getNOM_ST_DATE_RESTITUTION()))) {
+			// "ERR007",
+			// "La date @ est incorrecte. Elle doit être au format date."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR007", "de restitution"));
+			return false;
+		}
+
 		if (getVAL_ST_AGENT_CREATION().equals(Const.CHAINE_VIDE)) {
 			// "ERR002","La zone @ est obligatoire."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "agent"));
@@ -236,6 +265,28 @@ public class OeABSRestitution extends BasicProcess {
 			try {
 				Agent a = getAgentDao().chercherAgent(Integer.valueOf(idAgent));
 				if (a != null) {
+					// on verifie si l'agent est en base A ou D
+					String dateRestitution = Services.formateDate(getVAL_ST_DATE_RESTITUTION());
+					SirhWSConsumer consu = new SirhWSConsumer();
+					RefTypeSaisiCongeAnnuelDto dtoIdConge = consu.getBaseHoraireAbsence(a.getIdAgent(),
+							new SimpleDateFormat("dd/MM/yyyy").parse(dateRestitution));
+					if (dtoIdConge == null || dtoIdConge.getIdRefTypeSaisiCongeAnnuel() == null) {
+						// "ERR805",
+						// "L'agent @ n'a pas de base horaire d'absence. Merci de la renseigner dans l'affectation de l'agent."
+						getTransaction().declarerErreur(MessageUtils.getMessage("ERR805", a.getNomatr().toString()));
+						return false;
+
+					}
+					SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
+					TypeAbsenceDto dtoConge = consuAbs.getTypeAbsence(dtoIdConge.getIdRefTypeSaisiCongeAnnuel());
+					if (!(dtoConge.getTypeSaisiCongeAnnuelDto().getCodeBaseHoraireAbsence().equals("A") || dtoConge
+							.getTypeSaisiCongeAnnuelDto().getCodeBaseHoraireAbsence().equals("D"))) {
+						// "ERR807",
+						// "Cet agent n'a pas pour base congé A ou D. Il ne peut avoir de restitution de congés annuel."
+						getTransaction().declarerErreur(MessageUtils.getMessage("ERR807"));
+						return false;
+					}
+
 					if (!getListeAgent().contains(a)) {
 						getListeAgent().add(a);
 					}
@@ -290,5 +341,48 @@ public class OeABSRestitution extends BasicProcess {
 		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new Agent());
 		setStatut(STATUT_RECHERCHER_AGENT_CREATION, true);
 		return true;
+	}
+
+	public String getNOM_PB_LANCER_RESTITUTION() {
+		return "NOM_PB_LANCER_RESTITUTION";
+	}
+
+	public boolean performPB_LANCER_RESTITUTION(HttpServletRequest request) throws Exception {
+		// vérification de la validité du formulaire
+		if (!performControlerChamps(request)) {
+			return false;
+		}
+
+		logger.debug("Appel au WS pour inserer une ligne pour le lancement du job");
+		// TODO appel au WS
+
+		return true;
+	}
+
+	private boolean performControlerChamps(HttpServletRequest request) {
+		// type matin,am, journée
+		if (getZone(getNOM_RG_TYPE_RESTITUTION()).equals(Const.CHAINE_VIDE)) {
+			// "ERR002", "La zone @ est obligatoire."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "type de restitution"));
+			return false;
+		}
+		// date
+		if (getZone(getNOM_ST_DATE_RESTITUTION()).equals(Const.CHAINE_VIDE)) {
+			// "ERR002", "La zone @ est obligatoire."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "date de restitution"));
+			return false;
+		} else if (!Services.estUneDate(getZone(getNOM_ST_DATE_RESTITUTION()))) {
+			// "ERR007",
+			// "La date @ est incorrecte. Elle doit être au format date."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR007", "de restitution"));
+			return false;
+		}
+		// agents
+		if (getListeAgent().size() == 0) {
+			// "ERR002", "La zone @ est obligatoire."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "liste des agents"));
+			return false;
+		}
+		return false;
 	}
 }
