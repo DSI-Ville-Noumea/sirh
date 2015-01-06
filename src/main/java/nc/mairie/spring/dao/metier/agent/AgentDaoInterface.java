@@ -34,8 +34,6 @@ public interface AgentDaoInterface {
 
 	public ArrayList<Agent> listerAgentWithListNomatr(String listNoMatr) throws Exception;
 
-	public ArrayList<Agent> listerAgentEligibleEAE(String listeNomatr, Date dateJourFormatSIRH) throws Exception;
-
 	public ArrayList<Agent> listerAgentSansVMPAEnCours(String listeNomatr) throws Exception;
 
 	public ArrayList<Agent> listerAgentNouveauxArrivant(Integer moisChoisi, Integer anneeChoisi) throws Exception;

@@ -228,18 +228,6 @@ public class AgentDao extends SirhDao implements AgentDaoInterface {
 	}
 
 	@Override
-	public ArrayList<Agent> listerAgentEligibleEAE(String listeNomatr, Date dateJourFormatSIRH) throws Exception {
-		String sql = "select a.* from " + NOM_TABLE + " a inner join AFFECTATION aff on a." + CHAMP_ID
-				+ " = aff.id_agent inner join FICHE_POSTE fp on aff.id_fiche_poste= fp.id_fiche_poste "
-				+ "where aff.date_debut_aff <=? and (aff.date_fin_aff is null or aff.date_fin_aff>=?) and a."
-				+ CHAMP_NOMATR + " in (" + listeNomatr + ") ";
-
-		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { dateJourFormatSIRH,
-				dateJourFormatSIRH });
-		return mapAgent(rows);
-	}
-
-	@Override
 	public ArrayList<Agent> listerAgentSansVMPAEnCours(String listeNomatr) throws Exception {
 		String sql = "select * from " + NOM_TABLE + "  where " + CHAMP_ID
 				+ " not in (select vm.id_agent from visite_medicale vm) and " + CHAMP_NOMATR + " in(" + listeNomatr

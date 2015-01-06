@@ -1,10 +1,10 @@
 package nc.mairie.spring.dao.metier.EAE;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import nc.mairie.enums.EnumEtatEAE;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.Agent;
 import nc.mairie.metier.eae.EAE;
@@ -41,40 +41,6 @@ public class EaeEAEDao extends EaeDao implements EaeEAEDaoInterface {
 	}
 
 	@Override
-	public ArrayList<EAE> listerEAETravailPourCampagne(String etat, Integer idCampagneEAE) throws Exception {
-		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ETAT + "=? and  " + CHAMP_ID_CAMPAGNE_EAE + "=?";
-
-		ArrayList<EAE> listeEAE = new ArrayList<EAE>();
-
-		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { etat, idCampagneEAE });
-		for (Map<String, Object> row : rows) {
-			EAE eae = new EAE();
-			eae.setIdEae((Integer) row.get(CHAMP_ID));
-			eae.setIdCampagneEae((Integer) row.get(CHAMP_ID_CAMPAGNE_EAE));
-			eae.setEtat((String) row.get(CHAMP_ETAT));
-			eae.setCap((boolean) row.get(CHAMP_CAP));
-			eae.setDocAttache((boolean) row.get(CHAMP_DOC_ATTACHE));
-			eae.setDateCreation((Date) row.get(CHAMP_DATE_CREATION));
-			eae.setDateFin((Date) row.get(CHAMP_DATE_FIN));
-			eae.setDateEntretien((Date) row.get(CHAMP_DATE_ENTRETIEN));
-			eae.setDureeEntretien((Integer) row.get(CHAMP_DUREE_ENTRETIEN));
-			eae.setDateFinalise((Date) row.get(CHAMP_DATE_FINALISE));
-			eae.setDateControle((Date) row.get(CHAMP_DATE_CONTROLE));
-			eae.setHeureControle((String) row.get(CHAMP_HEURE_CONTROLE));
-			eae.setUserControle((String) row.get(CHAMP_USER_CONTROLE));
-			eae.setIdDelegataire((Integer) row.get(CHAMP_ID_DELEGATAIRE));
-			listeEAE.add(eae);
-		}
-
-		return listeEAE;
-	}
-
-	@Override
-	public void supprimerEAE(Integer idEAE) throws Exception {
-		super.supprimerObject(idEAE);
-	}
-
-	@Override
 	public EAE chercherEAEAgent(Integer idAgent, Integer idCampagneEAE) {
 		String sql = "select * from " + NOM_TABLE
 				+ " e inner join EAE_EVALUE ev on e.id_eae=ev.id_eae where ev.id_agent = ? and "
@@ -91,31 +57,9 @@ public class EaeEAEDao extends EaeDao implements EaeEAEDaoInterface {
 	}
 
 	@Override
-	public Integer creerEAE(Integer idCampagneEae, String etat, boolean cap, boolean docAttache, Date dateCreation,
-			Date dateFin, Date dateEntretien, Integer dureeEntretien, Date dateFinalise, Date dateControle,
-			String heureControle, String userControle, Integer idDelegataire) throws Exception {
-
-		String sqlClePrimaire = "select nextval('" + NOM_SEQUENCE + "')";
-		Integer id = jdbcTemplate.queryForInt(sqlClePrimaire);
-
-		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_ID + "," + CHAMP_ID_CAMPAGNE_EAE + "," + CHAMP_ETAT
-				+ "," + CHAMP_CAP + "," + CHAMP_DOC_ATTACHE + "," + CHAMP_DATE_CREATION + "," + CHAMP_DATE_FIN + ","
-				+ CHAMP_DATE_ENTRETIEN + "," + CHAMP_DUREE_ENTRETIEN + "," + CHAMP_DATE_FINALISE + ","
-				+ CHAMP_DATE_CONTROLE + "," + CHAMP_HEURE_CONTROLE + "," + CHAMP_USER_CONTROLE + ","
-				+ CHAMP_ID_DELEGATAIRE + ") " + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-
-		jdbcTemplate
-				.update(sql, new Object[] { id, idCampagneEae, etat, cap, docAttache, dateCreation, dateFin,
-						dateEntretien, dureeEntretien, dateFinalise, dateControle, heureControle, userControle,
-						idDelegataire });
-
-		return id;
-	}
-
-	@Override
 	public ArrayList<EAE> listerEAEPourCampagne(Integer idCampagneEAE, String etat, String statut,
-			ArrayList<String> listeSousService, String capBool, Agent agentEvaluateur, Agent agentEvalue,
-			String affecte) throws Exception {
+			ArrayList<String> listeSousService, String capBool, Agent agentEvaluateur, Agent agentEvalue, String affecte)
+			throws Exception {
 		String reqWhere = Const.CHAINE_VIDE;
 		String reqInner = Const.CHAINE_VIDE;
 		if (!etat.equals(Const.CHAINE_VIDE)) {
@@ -198,13 +142,6 @@ public class EaeEAEDao extends EaeDao implements EaeEAEDaoInterface {
 	}
 
 	@Override
-	public void modifierSuiteCreation(Integer idEAE, Date dateCreation, String etat) throws Exception {
-		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_DATE_CREATION + " =?," + CHAMP_ETAT + "=? where "
-				+ CHAMP_ID + "=?";
-		jdbcTemplate.update(sql, new Object[] { dateCreation, etat, idEAE });
-	}
-
-	@Override
 	public void modifierEtat(Integer idEAE, String etat) throws Exception {
 		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_ETAT + "=? where " + CHAMP_ID + "=?";
 		jdbcTemplate.update(sql, new Object[] { etat, idEAE });
@@ -216,37 +153,6 @@ public class EaeEAEDao extends EaeDao implements EaeEAEDaoInterface {
 		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_DATE_CONTROLE + "=?," + CHAMP_HEURE_CONTROLE + "=?,"
 				+ CHAMP_USER_CONTROLE + "=?," + CHAMP_ETAT + "=? where " + CHAMP_ID + "=?";
 		jdbcTemplate.update(sql, new Object[] { dateControle, heureControle, userControle, etat, idEAE });
-	}
-
-	@Override
-	public ArrayList<EAE> listerEAEFinaliseControlePourCampagne(Integer idCampagneEAE) throws Exception {
-		String sql = "select * from " + NOM_TABLE + " where (" + CHAMP_ETAT + "=? or " + CHAMP_ETAT + "=?) and  "
-				+ CHAMP_ID_CAMPAGNE_EAE + "=?";
-
-		ArrayList<EAE> listeEAE = new ArrayList<EAE>();
-
-		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { EnumEtatEAE.FINALISE.getCode(),
-				EnumEtatEAE.CONTROLE.getCode(), idCampagneEAE });
-		for (Map<String, Object> row : rows) {
-			EAE eae = new EAE();
-			eae.setIdEae((Integer) row.get(CHAMP_ID));
-			eae.setIdCampagneEae((Integer) row.get(CHAMP_ID_CAMPAGNE_EAE));
-			eae.setEtat((String) row.get(CHAMP_ETAT));
-			eae.setCap((boolean) row.get(CHAMP_CAP));
-			eae.setDocAttache((boolean) row.get(CHAMP_DOC_ATTACHE));
-			eae.setDateCreation((Date) row.get(CHAMP_DATE_CREATION));
-			eae.setDateFin((Date) row.get(CHAMP_DATE_FIN));
-			eae.setDateEntretien((Date) row.get(CHAMP_DATE_ENTRETIEN));
-			eae.setDureeEntretien((Integer) row.get(CHAMP_DUREE_ENTRETIEN));
-			eae.setDateFinalise((Date) row.get(CHAMP_DATE_FINALISE));
-			eae.setDateControle((Date) row.get(CHAMP_DATE_CONTROLE));
-			eae.setHeureControle((String) row.get(CHAMP_HEURE_CONTROLE));
-			eae.setUserControle((String) row.get(CHAMP_USER_CONTROLE));
-			eae.setIdDelegataire((Integer) row.get(CHAMP_ID_DELEGATAIRE));
-			listeEAE.add(eae);
-		}
-
-		return listeEAE;
 	}
 
 	@Override
