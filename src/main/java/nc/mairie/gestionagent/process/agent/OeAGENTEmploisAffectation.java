@@ -2230,7 +2230,9 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 					initialiserFichePosteSecondaire();
 				}
 			}
+		}
 
+		if (getAffectationCourant() != null) {
 			// Récup du motif d'affectation et temps de travail
 			if (getAffectationCourant().getIdMotifAffectation() != null) {
 				MotifAffectation ma = getMotifAffectationDao().chercherMotifAffectation(
@@ -2274,7 +2276,6 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 							String.valueOf(getListeBaseHoraireAbsence().indexOf(dto) + 1));
 				}
 			}
-
 		}
 		return true;
 	}
@@ -5348,7 +5349,6 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	public void setListeRegimeASupprimer(ArrayList<RegimeIndemnitaire> listeRegimeASupprimer) {
 		this.listeRegimeASupprimer = listeRegimeASupprimer;
 	}
-
 
 	public boolean saveFileToRemoteFileSystem(byte[] fileAsBytes, String chemin, String filename) throws Exception {
 
