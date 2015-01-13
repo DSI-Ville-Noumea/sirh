@@ -335,7 +335,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		getListeContactASupprimer().clear();
 
 		commitTransaction();
-		//on re-initialise la liste des contacts
+		// on re-initialise la liste des contacts
 		initialiseListeContact(request);
 
 		// si date de premiere embauche sup à la date du jour alors on affiche
@@ -455,7 +455,8 @@ public class OeAGENTEtatCivil extends BasicProcess {
 				getVAL_EF_CODE_POSTAL_BP().equals(Const.CHAINE_VIDE) ? null : Integer
 						.valueOf(getVAL_EF_CODE_POSTAL_BP()));
 		getAgentCourant().setCcomVilleBp(
-				getCommuneBPCourant() != null ? Integer.valueOf(getCommuneBPCourant().getCodCommune()) : null);
+				getCommuneBPCourant() != null && getCommuneBPCourant().getCodCommune() != null ? Integer
+						.valueOf(getCommuneBPCourant().getCodCommune()) : null);
 
 		// /////////////////////////////////////////////////////////////////////////
 		// ////////////////////// ALIMENTATION DU COMPTE
