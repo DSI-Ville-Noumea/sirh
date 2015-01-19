@@ -96,7 +96,7 @@ public class SirhWSConsumer implements ISirhWSConsumer {
 
 	@Override
 	public RefTypeSaisiCongeAnnuelDto getBaseHoraireAbsence(Integer idAgent, Date date) {
-		SimpleDateFormat sf = new SimpleDateFormat("YYYYMMdd");
+		SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd");
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_WS_URL");
 		String url = urlWS + sirhBaseCongeUrl;
 
