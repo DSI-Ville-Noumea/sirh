@@ -12,6 +12,7 @@ import nc.mairie.enums.EnumCollectivite;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.Agent;
 import nc.mairie.metier.agent.Contact;
+import nc.mairie.metier.commun.VoieQuartier;
 import nc.mairie.metier.referentiel.SituationFamiliale;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.technique.Services;
@@ -67,6 +68,7 @@ public class AgentDao extends SirhDao implements AgentDaoInterface {
 	public static final String CHAMP_NUM_CLR = "NUM_CLR";
 	public static final String CHAMP_CODE_ELECTION = "CODE_ELECTION";
 	public static final String CHAMP_RUE_NON_NOUMEA = "RUE_NON_NOUMEA";
+	public static final String CHAMP_QUARTIER = "QUARTIER";
 
 	public AgentDao(SirhDao sirhDao) {
 		super.dataSource = sirhDao.getDataSource();
@@ -428,6 +430,7 @@ public class AgentDao extends SirhDao implements AgentDaoInterface {
 			a.setNumClr((String) row.get(CHAMP_NUM_CLR));
 			a.setCodeElection((String) row.get(CHAMP_CODE_ELECTION));
 			a.setRueNonNoumea((String) row.get(CHAMP_RUE_NON_NOUMEA));
+			a.setQuartier((String) row.get(CHAMP_QUARTIER));
 			liste.add(a);
 		}
 		return liste;
@@ -456,6 +459,21 @@ public class AgentDao extends SirhDao implements AgentDaoInterface {
 		}
 
 		// Modification du Agent
+		// on traite le quartier
+		if (agent.getIdVoie() != null) {
+			VoieQuartier quartier = VoieQuartier.chercherVoieQuartierAvecCodVoie(aTransaction, agent.getIdVoie()
+					.toString());
+			if (aTransaction.isErreur()) {
+				aTransaction.traiterErreur();
+				agent.setQuartier(null);
+			} else {
+				agent.setQuartier(quartier.getLibQuartier().trim().toUpperCase());
+			}
+
+		} else {
+			agent.setQuartier(null);
+		}
+
 		modifierAgent(aTransaction, agent, lContact, situFam);
 	}
 
@@ -520,7 +538,7 @@ public class AgentDao extends SirhDao implements AgentDaoInterface {
 				+ "=?," + CHAMP_VCAT + "=?," + CHAMP_DEBUT_SERVICE + "=?," + CHAMP_FIN_SERVICE + "=? ,"
 				+ CHAMP_NUM_CAFAT + "=? ," + CHAMP_NUM_RUAMM + "=? ," + CHAMP_NUM_MUTUELLE + "=? ," + CHAMP_NUM_CRE
 				+ "=? ," + CHAMP_NUM_IRCAFEX + "=? ," + CHAMP_NUM_CLR + "=? ," + CHAMP_CODE_ELECTION + "=? ,"
-				+ CHAMP_RUE_NON_NOUMEA + "=? where " + CHAMP_ID + " =?";
+				+ CHAMP_RUE_NON_NOUMEA + "=?, " + CHAMP_QUARTIER + "=? where " + CHAMP_ID + " =?";
 
 		jdbcTemplate.update(
 				sql,
@@ -536,6 +554,7 @@ public class AgentDao extends SirhDao implements AgentDaoInterface {
 						agent.getCdGuichet(), agent.getNumCompte(), agent.getRib(), agent.getIntituleCompte(),
 						agent.getVcat(), agent.getDebutService(), agent.getFinService(), agent.getNumCafat(),
 						agent.getNumRuamm(), agent.getNumMutuelle(), agent.getNumCre(), agent.getNumIrcafex(),
-						agent.getNumClr(), agent.getCodeElection(), agent.getRueNonNoumea(), agent.getIdAgent() });
+						agent.getNumClr(), agent.getCodeElection(), agent.getRueNonNoumea(), agent.getQuartier(),
+						agent.getIdAgent() });
 	}
 }
