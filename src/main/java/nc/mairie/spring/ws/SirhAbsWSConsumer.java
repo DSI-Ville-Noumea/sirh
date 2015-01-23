@@ -70,6 +70,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 
 	private static final String sirhAbsAddCompteurRecup = "recuperations/addManual";
 	private static final String sirhAbsAddCompteurCongeAnnuel = "congeannuel/addManual";
+	private static final String sirhAbsRestitutionMassive = "congeannuel/restitutionMassive";
 	private static final String sirhAbsAddCompteurReposComp = "reposcomps/addManual";
 	private static final String sirhAbsAddCompteurAsaA48 = "asaA48/addManual";
 	private static final String sirhAbsAddCompteurAsaA54 = "asaA54/addManual";
@@ -604,6 +605,16 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 		String url = urlWS + sirhAbsAddRepresentantAsaA52;
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idOrganisationSyndicale", idOrganisationSyndicale.toString());
+		ClientResponse res = createAndPostRequest(params, url, json);
+		return readResponseWithReturnMessageDto(ReturnMessageDto.class, res, url);
+	}
+
+	@Override
+	public ReturnMessageDto addRestitutionMassive(Integer idAgent, String json) {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
+		String url = urlWS + sirhAbsRestitutionMassive;
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idAgent", idAgent.toString());
 		ClientResponse res = createAndPostRequest(params, url, json);
 		return readResponseWithReturnMessageDto(ReturnMessageDto.class, res, url);
 	}

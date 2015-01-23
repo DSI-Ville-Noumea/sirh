@@ -102,4 +102,6 @@ public interface ISirhAbsWSConsumer {
 
 	DemandeDto getDureeCongeAnnuel(DemandeDto demandeDto);
 
+	ReturnMessageDto addRestitutionMassive(Integer idAgent, String json);
+
 }

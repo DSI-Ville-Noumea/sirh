@@ -2,21 +2,28 @@ package nc.mairie.gestionagent.process.absence;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.gestionagent.absence.dto.RefTypeSaisiCongeAnnuelDto;
+import nc.mairie.gestionagent.absence.dto.RestitutionMassiveDto;
 import nc.mairie.gestionagent.absence.dto.TypeAbsenceDto;
+import nc.mairie.gestionagent.dto.ReturnMessageDto;
+import nc.mairie.gestionagent.radi.dto.LightUserDto;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.Agent;
 import nc.mairie.spring.dao.metier.agent.AgentDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
+import nc.mairie.spring.ws.MSDateTransformer;
+import nc.mairie.spring.ws.RadiWSConsumer;
 import nc.mairie.spring.ws.SirhAbsWSConsumer;
 import nc.mairie.spring.ws.SirhWSConsumer;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.Services;
+import nc.mairie.technique.UserAppli;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
@@ -25,6 +32,8 @@ import nc.mairie.utils.VariablesActivite;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
+
+import flexjson.JSONSerializer;
 
 public class OeABSRestitution extends BasicProcess {
 	/**
@@ -40,6 +49,8 @@ public class OeABSRestitution extends BasicProcess {
 
 	private List<Agent> listeAgent = new ArrayList<Agent>();
 	private AgentDao agentDao;
+	
+	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
 	@Override
 	public String getJSP() {
@@ -164,6 +175,14 @@ public class OeABSRestitution extends BasicProcess {
 
 	public String getNOM_RB_TYPE_JOURNEE() {
 		return "NOM_RB_TYPE_JOURNEE";
+	}
+	
+	public String getNOM_ST_MOTIF() {
+		return "NOM_RG_MOTIF";
+	}
+
+	public String getVAL_ST_MOTIF() {
+		return getZone(getNOM_ST_MOTIF());
 	}
 
 	public List<Agent> getListeAgent() {
@@ -353,10 +372,72 @@ public class OeABSRestitution extends BasicProcess {
 			return false;
 		}
 
-		logger.debug("Appel au WS pour inserer une ligne pour le lancement du job");
-		// TODO appel au WS
+		
+		SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
+		ReturnMessageDto srm = null;
+		
+		String err = Const.CHAINE_VIDE;
+		String info = Const.CHAINE_VIDE;
+		
+		for(Agent agent : getListeAgent()){
+		
+			RestitutionMassiveDto dto = new RestitutionMassiveDto();
+			dto.setApresMidi(getVAL_RG_TYPE_RESTITUTION().equals(getNOM_RB_TYPE_AM()));
+			dto.setDateRestitution(sdf.parse(getZone(getNOM_ST_DATE_RESTITUTION())));
+			dto.setIdAgent(agent.getIdAgent());
+			dto.setJournee(getVAL_RG_TYPE_RESTITUTION().equals(getNOM_RB_TYPE_JOURNEE()));
+			dto.setMatin(getVAL_RG_TYPE_RESTITUTION().equals(getNOM_RB_TYPE_MATIN()));
+			dto.setMotif(getVAL_ST_MOTIF());
 
+			logger.debug("Appel au WS pour restituer un CA a l'agent : " + agent.getIdAgent());
+			
+			String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class)
+					.deepSerialize(dto);
+			
+			srm = consuAbs.addRestitutionMassive(getAgentConnecte(request).getIdAgent(), json);
+			
+			if (srm.getErrors().size() > 0) {
+				for (String erreur : srm.getErrors()) {
+					err += " " + erreur;
+				}
+			}
+			if (srm.getInfos().size() > 0) {
+				for (String erreur : srm.getInfos()) {
+					info += " " + erreur;
+				}
+			}
+		}
+		
+		if (!err.equals(Const.CHAINE_VIDE)) {
+			err += info;
+			getTransaction().declarerErreur(err);
+			return false;
+		}
+		if (!info.equals(Const.CHAINE_VIDE)) {
+			getTransaction().declarerErreur(info);
+		}
+		// On nomme l'action
+		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 		return true;
+	}
+	
+	private Agent getAgentConnecte(HttpServletRequest request) throws Exception {
+		UserAppli u = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
+		Agent agentConnecte = null;
+		// on fait la correspondance entre le login et l'agent via RADI
+		RadiWSConsumer radiConsu = new RadiWSConsumer();
+		LightUserDto user = radiConsu.getAgentCompteADByLogin(u.getUserName());
+		if (user == null) {
+			return null;
+		}
+		try {
+			agentConnecte = getAgentDao().chercherAgentParMatricule(
+					radiConsu.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
+		} catch (Exception e) {
+			return null;
+		}
+
+		return agentConnecte;
 	}
 
 	private boolean performControlerChamps(HttpServletRequest request) {
@@ -383,6 +464,6 @@ public class OeABSRestitution extends BasicProcess {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "liste des agents"));
 			return false;
 		}
-		return false;
+		return true;
 	}
 }

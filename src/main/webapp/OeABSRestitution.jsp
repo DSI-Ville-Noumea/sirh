@@ -43,7 +43,9 @@
                 <input type="radio" <%= process.forRadioHTML(process.getNOM_RG_TYPE_RESTITUTION(), process.getNOM_RB_TYPE_MATIN()) %> > <span class="sigp2Mandatory">Matin</span> 
 				<input type="radio" <%= process.forRadioHTML(process.getNOM_RG_TYPE_RESTITUTION(), process.getNOM_RB_TYPE_AM()) %> > <span class="sigp2Mandatory">Après-midi</span> 
 				<input type="radio" <%= process.forRadioHTML(process.getNOM_RG_TYPE_RESTITUTION(), process.getNOM_RB_TYPE_JOURNEE()) %> > <span class="sigp2Mandatory">Journée</span> 
-					
+				<br/><br/>
+				<span class="sigp2Mandatory">Motif :</span>
+				<INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_MOTIF()%>" size="20" type="text" value="<%= process.getVAL_ST_MOTIF()%>" style="margin-right:10px;">
 				<br/><br/>
 				<span class="sigp2Mandatory">Agents concernés :</span>  
 					<div style="overflow: auto;height: 120px;width:800px;">
