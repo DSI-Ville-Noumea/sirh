@@ -85,7 +85,7 @@ public class OeABSAlimentationMensuelle extends BasicProcess {
 
 			SimpleDateFormat sdf = new SimpleDateFormat("MM/yyyy");
 
-			int[] tailles = { 100 };
+			int[] tailles = { 30 };
 			String padding[] = { "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
 			for (ListIterator<MoisAlimAutoCongesAnnuelsDto> list = getListeMois().listIterator(); list.hasNext();) {

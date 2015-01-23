@@ -33,21 +33,21 @@
             <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
                 <legend class="sigp2Legend">Alimentation mensuelle des congés annuels</legend>   
 				<span class="sigp2Mandatory">Retrouver ici toutes les alimenations automatiques de congés annuels.</span>      
-				<br>   
+				<br/><br/>   
 				<span class="sigp2" style="width:100px">Choisissez le mois à afficher : </span>
-				<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_MOIS_ALIM_AUTO() %>" style="width:350px;">
+				<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_MOIS_ALIM_AUTO() %>" style="width:100px;">
 					<%=process.forComboHTML(process.getVAL_LB_MOIS_ALIM_AUTO(), process.getVAL_LB_MOIS_ALIM_AUTO_SELECT()) %>
 				</SELECT>  
 	            <BR/><BR/>
 				<INPUT type="submit" class="sigp2-Bouton-100" value="Afficher" name="<%=process.getNOM_PB_AFFICHER()%>">   
-				
-						<table class="sigp2NewTab">
+	            <BR/><BR/>				
+						<table class="sigp2NewTab" width="1000px">
 							<%
 								for (int i = 0;i<process.getListeAlimAuto().size();i++){
 									Integer indice = process.getListeAlimAuto().get(i).getAgent().getIdAgent();
 							%>
 							<tr>
-								<td class="sigp2NewTab-liste" align="left" style="width:150px;"><%=process.getVAL_ST_NOMATR_AGENT(indice)%></td>
+								<td class="sigp2NewTab-liste" align="left" style="width:50px;"><%=process.getVAL_ST_NOMATR_AGENT(indice)%></td>
 								<td class="sigp2NewTab-liste" align="left" style="width:150px;"><%=process.getVAL_ST_LIB_AGENT(indice)%></td>
 								<td class="sigp2NewTab-liste" align="left"><%=process.getVAL_ST_STATUT(indice)%></td>
 							</tr>
