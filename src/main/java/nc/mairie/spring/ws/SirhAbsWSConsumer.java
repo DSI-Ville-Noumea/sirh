@@ -9,6 +9,7 @@ import java.util.Map;
 import nc.mairie.gestionagent.absence.dto.CompteurDto;
 import nc.mairie.gestionagent.absence.dto.DemandeDto;
 import nc.mairie.gestionagent.absence.dto.HistoriqueSoldeDto;
+import nc.mairie.gestionagent.absence.dto.MoisAlimAutoCongesAnnuelsDto;
 import nc.mairie.gestionagent.absence.dto.MotifCompteurDto;
 import nc.mairie.gestionagent.absence.dto.MotifDto;
 import nc.mairie.gestionagent.absence.dto.OrganisationSyndicaleDto;
@@ -85,6 +86,9 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 
 	private static final String sirhAbsListeUnitePeriodeQuota = "filtres/getUnitePeriodeQuota";
 	private static final String sirhAbsGroupeAbsenceUrl = "filtres/getGroupesAbsence";
+
+	private static final String sirhAbsMoisAlimAutoUrl = "congeannuel/getListeMoisAlimAutoCongeAnnuel";
+	private static final String sirhAbsAlimAutoUrl = "congeannuel/getListeAlimAutoCongeAnnuel";
 
 	private Logger logger = LoggerFactory.getLogger(SirhAbsWSConsumer.class);
 
@@ -617,6 +621,28 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 		params.put("idAgent", idAgent.toString());
 		ClientResponse res = createAndPostRequest(params, url, json);
 		return readResponseWithReturnMessageDto(ReturnMessageDto.class, res, url);
+	}
+
+	@Override
+	public List<MoisAlimAutoCongesAnnuelsDto> getListeMoisALimAUtoCongeAnnuel() {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
+		String url = urlWS + sirhAbsMoisAlimAutoUrl;
+		HashMap<String, String> params = new HashMap<>();
+		ClientResponse res = createAndFireRequest(params, url);
+		return readResponseAsList(MoisAlimAutoCongesAnnuelsDto.class, res, url);
+	}
+
+	@Override
+	public List<MoisAlimAutoCongesAnnuelsDto> getListeAlimAutoCongeAnnuel(MoisAlimAutoCongesAnnuelsDto moisChoisi) {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
+		String url = urlWS + sirhAbsAlimAutoUrl;
+		HashMap<String, String> params = new HashMap<>();
+
+		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class)
+				.deepSerialize(moisChoisi);
+
+		ClientResponse res = createAndPostRequest(params, url, json);
+		return readResponseAsList(MoisAlimAutoCongesAnnuelsDto.class, res, url);
 	}
 
 }

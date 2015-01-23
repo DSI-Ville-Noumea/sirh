@@ -131,6 +131,7 @@ if (affAbsence.equals("TRUE")){ %>
 	var Module_absence = new Dossier("Module_absence", "Gestion des absences","GESTION DES ABSENCES");
 	Module_absence.ajouterFils(new Lien("visualisationAbsence", "ABSVisualisation", "Visualisation et validation", "Gestion des absences", true));
 	Module_absence.ajouterFils(new Lien("restitutionAbsence", "ABSRestitution", "Restitution massive", "Resitution massive des congés", true));
+	Module_absence.ajouterFils(new Lien("alimenationMensuelleAbsence", "ABSAlimentationMensuelle", "Alimentation mensuelle", "Alimentation mensuelle des congés", true));
 <%}%>
 
 //***************************************************************

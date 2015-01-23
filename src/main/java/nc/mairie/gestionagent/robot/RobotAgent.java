@@ -10,6 +10,7 @@ import nc.mairie.gestionagent.process.OeENFANTGestion;
 import nc.mairie.gestionagent.process.OeSMConvocation;
 import nc.mairie.gestionagent.process.OeSMHistorique;
 import nc.mairie.gestionagent.process.OeVOIESelection;
+import nc.mairie.gestionagent.process.absence.OeABSAlimentationMensuelle;
 import nc.mairie.gestionagent.process.absence.OeABSRestitution;
 import nc.mairie.gestionagent.process.absence.OeABSVisualisation;
 import nc.mairie.gestionagent.process.agent.OeAGENTADMINISTRATIONGestion;
@@ -269,6 +270,8 @@ public class RobotAgent extends Robot {
 			return new OeABSVisualisation();
 		} else if (activite.equals("ABSRestitution")) {
 			return new OeABSRestitution();
+		} else if (activite.equals("ABSAlimentationMensuelle")) {
+			return new OeABSAlimentationMensuelle();
 			// Module ELECTION
 		} else if (activite.equals("ELECSaisieCompteurA48")) {
 			return new OeELECSaisieCompteurA48();
@@ -732,6 +735,8 @@ public class RobotAgent extends Robot {
 		navigation.put(OeABSVisualisation.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
 				OeAGENTRecherche.class.getName());
 		navigation.put(OeABSRestitution.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
+				OeAGENTRecherche.class.getName());
+		navigation.put(OeABSAlimentationMensuelle.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
 				OeAGENTRecherche.class.getName());
 
 		// ELECTION

@@ -5,6 +5,7 @@ import java.util.List;
 import nc.mairie.gestionagent.absence.dto.CompteurDto;
 import nc.mairie.gestionagent.absence.dto.DemandeDto;
 import nc.mairie.gestionagent.absence.dto.HistoriqueSoldeDto;
+import nc.mairie.gestionagent.absence.dto.MoisAlimAutoCongesAnnuelsDto;
 import nc.mairie.gestionagent.absence.dto.MotifCompteurDto;
 import nc.mairie.gestionagent.absence.dto.MotifDto;
 import nc.mairie.gestionagent.absence.dto.OrganisationSyndicaleDto;
@@ -29,8 +30,8 @@ public interface ISirhAbsWSConsumer {
 	List<OrganisationSyndicaleDto> getListeOrganisationSyndicale();
 
 	ReturnMessageDto saveOrganisationSyndicale(String json);
-	
-	ReturnMessageDto saveRepresentantAsaA52(Integer idOrganisationSyndicale,String json); 
+
+	ReturnMessageDto saveRepresentantAsaA52(Integer idOrganisationSyndicale, String json);
 
 	// Type d'absences
 	List<RefGroupeAbsenceDto> getRefGroupeAbsence();
@@ -103,5 +104,10 @@ public interface ISirhAbsWSConsumer {
 	DemandeDto getDureeCongeAnnuel(DemandeDto demandeDto);
 
 	ReturnMessageDto addRestitutionMassive(Integer idAgent, String json);
+
+	// alimentation auto des congés annuels
+	List<MoisAlimAutoCongesAnnuelsDto> getListeMoisALimAUtoCongeAnnuel();
+
+	List<MoisAlimAutoCongesAnnuelsDto> getListeAlimAutoCongeAnnuel(MoisAlimAutoCongesAnnuelsDto moisChoisi);
 
 }
