@@ -8,6 +8,8 @@ import java.util.Map;
 import nc.mairie.metier.parametrage.SPBASE;
 import nc.mairie.spring.dao.utils.MairieDao;
 
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+
 public class SPBASEDao extends MairieDao implements SPBASEDaoInterface {
 
 	public static final String CHAMP_CDBASE = "CDBASE";
@@ -84,6 +86,14 @@ public class SPBASEDao extends MairieDao implements SPBASEDaoInterface {
 				+ CHAMP_NBAHDI + "=?," + CHAMP_NBASCH + "=?," + CHAMP_NBASHH + "=? where " + CHAMP_CDBASE + " =?";
 		jdbcTemplate.update(sql, new Object[] { liBase, nbhLu, nbhMa, nbhMe, nbhJe, nbhVe, nbhSa, nbhDi, nbasCH,
 				nbasHH, cdBase });
-
+	}
+	
+	@Override
+	public SPBASE chercherBaseHoraire(String codeBase) {
+		String sql = "select * from " + NOM_TABLE + " where CDBASE =? ";
+		
+		SPBASE vm = (SPBASE) jdbcTemplate.queryForObject(sql, new Object[] { codeBase }, 
+				new BeanPropertyRowMapper<SPBASE>(SPBASE.class));
+		return vm;
 	}
 }

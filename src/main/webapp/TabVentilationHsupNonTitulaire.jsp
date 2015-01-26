@@ -69,9 +69,7 @@
 									prenom = agent.getPrenomAgent();
 									nom = agent.getNomAgent();
 									affMois = moisAnnee.format(t.getDateLundi());
-									Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(process.getTransaction(), agent);
-									BaseHoraire baseHoraire = BaseHoraire.chercherBaseHoraire(process.getTransaction(), carr.getCodeBase());
-									weekBase = Double.valueOf(baseHoraire.getNbashh().replace(",", "."));
+									weekBase = process.getWeekBase(agent);
 								}
 								
 								if(minutesHorsContrat > 0) {

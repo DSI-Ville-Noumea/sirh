@@ -21,7 +21,12 @@ import nc.mairie.gestionagent.pointage.dto.VentilHSupDto;
 import nc.mairie.gestionagent.radi.dto.LightUserDto;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.Agent;
+import nc.mairie.metier.carriere.Carriere;
+import nc.mairie.metier.parametrage.SPBASE;
 import nc.mairie.spring.dao.metier.agent.AgentDao;
+import nc.mairie.spring.dao.metier.carriere.CarriereDao;
+import nc.mairie.spring.dao.metier.parametrage.SPBASEDao;
+import nc.mairie.spring.dao.utils.MairieDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.spring.ws.RadiWSConsumer;
@@ -70,6 +75,9 @@ public class OePTGVentilationFonct extends BasicProcess {
 
 	private AgentDao agentDao;
 
+	private CarriereDao carriereDao;
+	private SPBASEDao baseDao;
+	
 	public OePTGVentilationFonct() {
 		super();
 	}
@@ -125,6 +133,12 @@ public class OePTGVentilationFonct extends BasicProcess {
 		ApplicationContext context = ApplicationContextProvider.getContext();
 		if (getAgentDao() == null) {
 			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getCarriereDao() == null) {
+			setCarriereDao(new CarriereDao((MairieDao) context.getBean("mairieDao")));
+		}
+		if (getBaseDao() == null) {
+			setBaseDao(new SPBASEDao((MairieDao) context.getBean("mairieDao")));
 		}
 	}
 
@@ -914,6 +928,7 @@ public class OePTGVentilationFonct extends BasicProcess {
 				typePointage, new JSONSerializer().exclude("*.class").serialize(agents), allVentilation);
 		Hashtable<Hashtable<Integer, String>, List<VentilHSupDto>> hashVentilHsup = new Hashtable<Hashtable<Integer, String>, List<VentilHSupDto>>();
 		for (VentilHSupDto abs : rep) {
+			
 			Hashtable<Integer, String> cle = new Hashtable<Integer, String>();
 			cle.put(abs.getId_agent(), moisAnnee.format(abs.getDateLundi()));
 			List<VentilHSupDto> listVentilHsup = consum.getVentilationsHistory(VentilHSupDto.class,
@@ -923,6 +938,13 @@ public class OePTGVentilationFonct extends BasicProcess {
 			hashVentilHsup.put(cle, listVentilHsup);
 		}
 		setHashVentilHsup(hashVentilHsup);
+	}
+	
+	public double getWeekBase(Agent agent) throws Exception {
+		
+		Carriere carr = getCarriereDao().chercherCarriereEnCoursAvecAgent(agent);
+		SPBASE baseHoraire = getBaseDao().chercherBaseHoraire(carr.getCodeBase());
+		return baseHoraire.getNbasHH();
 	}
 
 	private void setHashVentilHsup(Hashtable<Hashtable<Integer, String>, List<VentilHSupDto>> hashVentilHsup2) {
@@ -940,6 +962,22 @@ public class OePTGVentilationFonct extends BasicProcess {
 
 	public void setAgentDao(AgentDao agentDao) {
 		this.agentDao = agentDao;
+	}
+	
+	public CarriereDao getCarriereDao() {
+		return carriereDao;
+	}
+
+	public void setCarriereDao(CarriereDao carriereDao) {
+		this.carriereDao = carriereDao;
+	}
+
+	public SPBASEDao getBaseDao() {
+		return baseDao;
+	}
+
+	public void setBaseDao(SPBASEDao baseDao) {
+		this.baseDao = baseDao;
 	}
 
 	public Agent getAgent(Integer idAgent) throws Exception {

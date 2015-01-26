@@ -21,7 +21,12 @@ import nc.mairie.gestionagent.pointage.dto.VentilHSupDto;
 import nc.mairie.gestionagent.radi.dto.LightUserDto;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.Agent;
+import nc.mairie.metier.carriere.Carriere;
+import nc.mairie.metier.parametrage.SPBASE;
 import nc.mairie.spring.dao.metier.agent.AgentDao;
+import nc.mairie.spring.dao.metier.carriere.CarriereDao;
+import nc.mairie.spring.dao.metier.parametrage.SPBASEDao;
+import nc.mairie.spring.dao.utils.MairieDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.spring.ws.RadiWSConsumer;
@@ -68,6 +73,9 @@ public class OePTGVentilationConvCol extends BasicProcess {
 	private Hashtable<Hashtable<Integer, String>, List<VentilHSupDto>> hashVentilHsup;
 
 	private AgentDao agentDao;
+
+	private CarriereDao carriereDao;
+	private SPBASEDao baseDao;
 
 	@Override
 	public String getJSP() {
@@ -120,6 +128,12 @@ public class OePTGVentilationConvCol extends BasicProcess {
 		ApplicationContext context = ApplicationContextProvider.getContext();
 		if (getAgentDao() == null) {
 			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getCarriereDao() == null) {
+			setCarriereDao(new CarriereDao((MairieDao) context.getBean("mairieDao")));
+		}
+		if (getBaseDao() == null) {
+			setBaseDao(new SPBASEDao((MairieDao) context.getBean("mairieDao")));
 		}
 	}
 
@@ -938,6 +952,22 @@ public class OePTGVentilationConvCol extends BasicProcess {
 	public void setAgentDao(AgentDao agentDao) {
 		this.agentDao = agentDao;
 	}
+	
+	public CarriereDao getCarriereDao() {
+		return carriereDao;
+	}
+
+	public void setCarriereDao(CarriereDao carriereDao) {
+		this.carriereDao = carriereDao;
+	}
+
+	public SPBASEDao getBaseDao() {
+		return baseDao;
+	}
+
+	public void setBaseDao(SPBASEDao baseDao) {
+		this.baseDao = baseDao;
+	}
 
 	public Agent getAgent(Integer idAgent) throws Exception {
 		return getAgentDao().chercherAgent(idAgent);
@@ -990,5 +1020,12 @@ public class OePTGVentilationConvCol extends BasicProcess {
 
 	public void setShowAllVentilation(boolean showAllVentilation) {
 		this.showAllVentilation = showAllVentilation;
+	}
+	
+	public double getWeekBase(Agent agent) throws Exception {
+		
+		Carriere carr = getCarriereDao().chercherCarriereEnCoursAvecAgent(agent);
+		SPBASE baseHoraire = getBaseDao().chercherBaseHoraire(carr.getCodeBase());
+		return baseHoraire.getNbasHH();
 	}
 }
