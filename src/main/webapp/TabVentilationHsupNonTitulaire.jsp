@@ -15,8 +15,8 @@
 									<th>Nom prénom</th>
 									<th>Mois- année</th>
 									<th>Total Abs</th>
+									<th>Abs Sans Titre</th>
 									<th>Abs</th>
-									<th>Abs (AS400)</th>
 									<th>Base</th>
 									<th>Total</th>
 									<th>Compl</th>
