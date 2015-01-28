@@ -2418,7 +2418,17 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 			// pour l'anciennete on met le resultat en nb de jours
 			if (carrCours != null && carrCours.getDateDebut() != null
 					&& !carrCours.getDateDebut().equals(Const.DATE_NULL)) {
-				int nbJours = Services.compteJoursEntreDates(carrCours.getDateDebut(), "31/12/"
+				// redmine #13152
+				// on regarde si il y a d'autre carrieres avec le meme grade
+				// si oui on prend la carriere plus lointaine
+				Carriere carriereGrade = carrCours;
+				ArrayList<Carriere> listeCarrMemeGrade = Carriere.listerCarriereAvecGradeEtStatut(getTransaction(),
+						ag.getNomatr(), carrCours.getCodeGrade(), carrCours.getCodeCategorie());
+				if (listeCarrMemeGrade != null && listeCarrMemeGrade.size() > 0) {
+					carriereGrade = (Carriere) listeCarrMemeGrade.get(0);
+				}
+
+				int nbJours = Services.compteJoursEntreDates(carriereGrade.getDateDebut(), "31/12/"
 						+ (getCampagneCourante().getAnnee() - 1));
 				evalAModif.setAncienneteEchelonJours(nbJours > 0 ? nbJours - 1 : 0);
 			}
