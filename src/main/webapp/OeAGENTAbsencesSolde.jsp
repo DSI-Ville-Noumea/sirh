@@ -52,134 +52,148 @@
 				
 				<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
 				    <legend class="sigp2Legend">Liste des soldes de l'agent</legend>
-				    <BR/>
-				    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:450px;">
-				    	<legend class="sigp2Legend">Congés</legend>
-						<table class="sigp2NewTab" style="text-align:left;width:200px;">
-							<tr bgcolor="#EFEFEF">
-								<td width="100px;" align="center">année prec.</td>
-								<td width="100px;" align="center">année</td>
-								<td>Historique</td>
-							</tr>
-							<tr>
-								<td style="text-align: center"><%=process.getVAL_ST_SOLDE_CONGE_PREC()%></td>
-								<td style="text-align: center"><%=process.getVAL_ST_SOLDE_CONGE()%></td>
-								<td style="text-align: center"><INPUT title="historique" type="image" src="images/oeil.gif" height="15px" width="15px" name="<%=process.getNOM_PB_HISTORIQUE(EnumTypeAbsence.CONGE.getCode())%>"></td>
-							</tr>
-						</table>				    
-				    </FIELDSET>
-				    <BR/>
-				    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:450px;">
-				    	<legend class="sigp2Legend">Récupérations</legend>
-						<table class="sigp2NewTab" style="text-align:left;width:200px;">
-							<tr bgcolor="#EFEFEF">
-								<td width="200px;" align="center">En cours</td>
-								<td>Historique</td>
-							</tr>
-							<tr>
-								<td style="text-align: center"><%=process.getVAL_ST_SOLDE_RECUP()%></td>
-								<td style="text-align: center"><INPUT title="historique" type="image" src="images/oeil.gif" height="15px" width="15px" name="<%=process.getNOM_PB_HISTORIQUE(EnumTypeAbsence.RECUP.getCode())%>"></td>
-							</tr>
-						</table>				    
-				    </FIELDSET>
-				    <BR/>
+				    <table>
+				    	<tr>
+				    		<td width="50%">
+							    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:450px;">
+							    	<legend class="sigp2Legend">Congés</legend>
+									<table class="sigp2NewTab" style="text-align:left;width:200px;">
+										<tr bgcolor="#EFEFEF">
+											<td width="100px;" align="center">année prec.</td>
+											<td width="100px;" align="center">année</td>
+											<td>Historique</td>
+										</tr>
+										<tr>
+											<td style="text-align: center"><%=process.getVAL_ST_SOLDE_CONGE_PREC()%></td>
+											<td style="text-align: center"><%=process.getVAL_ST_SOLDE_CONGE()%></td>
+											<td style="text-align: center"><INPUT title="historique" type="image" src="images/oeil.gif" height="15px" width="15px" name="<%=process.getNOM_PB_HISTORIQUE(EnumTypeAbsence.CONGE.getCode())%>"></td>
+										</tr>
+									</table>				    
+							    </FIELDSET>
+				    		</td>
+				    		<td>
+							    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:450px;">
+							    	<legend class="sigp2Legend">Récupérations</legend>
+									<table class="sigp2NewTab" style="text-align:left;width:200px;">
+										<tr bgcolor="#EFEFEF">
+											<td width="200px;" align="center">En cours</td>
+											<td>Historique</td>
+										</tr>
+										<tr>
+											<td style="text-align: center"><%=process.getVAL_ST_SOLDE_RECUP()%></td>
+											<td style="text-align: center"><INPUT title="historique" type="image" src="images/oeil.gif" height="15px" width="15px" name="<%=process.getNOM_PB_HISTORIQUE(EnumTypeAbsence.RECUP.getCode())%>"></td>
+										</tr>
+									</table>				    
+							    </FIELDSET>
+				    		</td>
+				    	</tr>
+				    	<tr>
+				    		<td>
+					    		 <FIELDSET class="sigp2Fieldset" style="text-align:left;width:450px;">
+							    	<legend class="sigp2Legend">* Réunion des membres du bureau directeur</legend>
+									<table class="sigp2NewTab" style="text-align:left;width:200px;">
+										<tr bgcolor="#EFEFEF">
+											<td width="200px;" align="center">En cours</td>
+											<td>Historique</td>
+										</tr>
+										<tr>
+											<td style="text-align: center"><%=process.getVAL_ST_SOLDE_ASA_A48()%></td>
+											<td style="text-align: center"><INPUT title="historique" type="image" src="images/oeil.gif" height="15px" width="15px" name="<%=process.getNOM_PB_HISTORIQUE(EnumTypeAbsence.ASA_A48.getCode())%>"></td>
+										</tr>
+									</table>				    
+							    </FIELDSET>	
+				    		</td>
+				    		<td>
+					    		 <FIELDSET class="sigp2Fieldset" style="text-align:left;width:450px;">
+							    	<legend class="sigp2Legend">* Congrès et conseil syndical</legend>
+									<table class="sigp2NewTab" style="text-align:left;width:200px;">
+										<tr bgcolor="#EFEFEF">
+											<td width="200px;" align="center">En cours</td>
+											<td>Historique</td>
+										</tr>
+										<tr>
+											<td style="text-align: center"><%=process.getVAL_ST_SOLDE_ASA_A54()%></td>
+											<td style="text-align: center"><INPUT title="historique" type="image" src="images/oeil.gif" height="15px" width="15px" name="<%=process.getNOM_PB_HISTORIQUE(EnumTypeAbsence.ASA_A54.getCode())%>"></td>
+										</tr>
+									</table>				    
+							    </FIELDSET>
+				    		</td>
+				    	</tr>
+				    	<tr>
+				    		<td>
+					    		 <FIELDSET class="sigp2Fieldset" style="text-align:left;width:450px;">
+							    	<legend class="sigp2Legend">* Délégation DP</legend>
+									<table class="sigp2NewTab" style="text-align:left;width:400px;">
+										<tr bgcolor="#EFEFEF">
+											<td width="150px;" align="center">En cours</td>
+											<td width="90px;" align="center">Début</td>
+											<td width="90px;" align="center">Fin</td>
+											<td>Historique</td>
+										</tr>
+										<% for(int i = 0; i< process.getListeSoldeA55().size();i++){ %>
+										<tr>
+											<td style="text-align: center"><%=process.getVAL_ST_SOLDE_ASA_A55(i)%></td>
+											<td style="text-align: center"><%=process.getVAL_ST_DEBUT_ASA_A55(i)%></td>
+											<td style="text-align: center"><%=process.getVAL_ST_FIN_ASA_A55(i)%></td>
+											<td style="text-align: center"><INPUT title="historique" type="image" src="images/oeil.gif" height="15px" width="15px" name="<%=process.getNOM_PB_HISTORIQUE(EnumTypeAbsence.ASA_A55.getCode())%>"></td>
+										</tr>
+										<% } %>
+									</table>				    
+							    </FIELDSET>
+				    		</td>
+				    		<td>
+					    		<FIELDSET class="sigp2Fieldset" style="text-align:left;width:450px;">
+							    	<legend class="sigp2Legend">* Décharge de service CTP</legend>
+							    	
+								    <%if(process.isAfficheSoldeAsaA52()){ %>
+										<table class="sigp2NewTab" style="text-align:left;width:400px;">
+											<tr bgcolor="#EFEFEF">
+											<%if(process.getOrganisationAgent()!=null){%>
+												<td width="150px;" align="center">En cours pour <%=process.getOrganisationAgent().getSigle() %></td>
+											<%}else{ %>
+												<td width="150px;" align="center">En cours pourOS</td>
+											<%} %>
+												<td width="90px;" align="center">Début</td>
+												<td width="90px;" align="center">Fin</td>
+												<td>Historique</td>
+											</tr>
+											<% for(int i = 0; i< process.getListeSoldeA52().size();i++){ %>
+											<tr>
+												<td style="text-align: center"><%=process.getVAL_ST_SOLDE_ASA_A52(i)%></td>
+												<td style="text-align: center"><%=process.getVAL_ST_DEBUT_ASA_A52(i)%></td>
+												<td style="text-align: center"><%=process.getVAL_ST_FIN_ASA_A52(i)%></td>
+												<td style="text-align: center"><INPUT title="historique" type="image" src="images/oeil.gif" height="15px" width="15px" name="<%=process.getNOM_PB_HISTORIQUE(EnumTypeAbsence.ASA_A52.getCode())%>"></td>
+											</tr>
+											<% } %>
+										</table>	
+								    <%}else{ %>	
+								    <span>Agent non concerné</span>
+								    <%} %>		    
+							    </FIELDSET>
+				    		</td>
+				    	</tr>
+				    </table>
 				    
-				    <%if(process.isAgentReposComp()){ %>
 				    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:450px;">
 				    	<legend class="sigp2Legend">Repos compensateurs</legend>
-						<table class="sigp2NewTab" style="text-align:left;width:200px;">
-							<tr bgcolor="#EFEFEF">
-								<td width="100px;" align="center">année prec.</td>
-								<td width="100px;" align="center">année</td>
-								<td>Historique</td>
-							</tr>
-							<tr>
-								<td style="text-align: center"><%=process.getVAL_ST_SOLDE_REPOS_COMP_PREC()%></td>
-								<td style="text-align: center"><%=process.getVAL_ST_SOLDE_REPOS_COMP()%></td>
-								<td style="text-align: center"><INPUT title="historique" type="image" src="images/oeil.gif" height="15px" width="15px" name="<%=process.getNOM_PB_HISTORIQUE(EnumTypeAbsence.REPOS_COMP.getCode())%>"></td>
-							</tr>
-						</table>				    
-				    </FIELDSET>
-				    <BR/>
-				    <%} %>
-				    
-				    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:450px;">
-				    	<legend class="sigp2Legend">* Réunion des membres du bureau directeur</legend>
-						<table class="sigp2NewTab" style="text-align:left;width:200px;">
-							<tr bgcolor="#EFEFEF">
-								<td width="200px;" align="center">En cours</td>
-								<td>Historique</td>
-							</tr>
-							<tr>
-								<td style="text-align: center"><%=process.getVAL_ST_SOLDE_ASA_A48()%></td>
-								<td style="text-align: center"><INPUT title="historique" type="image" src="images/oeil.gif" height="15px" width="15px" name="<%=process.getNOM_PB_HISTORIQUE(EnumTypeAbsence.ASA_A48.getCode())%>"></td>
-							</tr>
-						</table>				    
-				    </FIELDSET>
-				    <BR/>
-				    
-				    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:450px;">
-				    	<legend class="sigp2Legend">* Congrès et conseil syndical</legend>
-						<table class="sigp2NewTab" style="text-align:left;width:200px;">
-							<tr bgcolor="#EFEFEF">
-								<td width="200px;" align="center">En cours</td>
-								<td>Historique</td>
-							</tr>
-							<tr>
-								<td style="text-align: center"><%=process.getVAL_ST_SOLDE_ASA_A54()%></td>
-								<td style="text-align: center"><INPUT title="historique" type="image" src="images/oeil.gif" height="15px" width="15px" name="<%=process.getNOM_PB_HISTORIQUE(EnumTypeAbsence.ASA_A54.getCode())%>"></td>
-							</tr>
-						</table>				    
+					    <%if(process.isAgentReposComp()){ %>
+							<table class="sigp2NewTab" style="text-align:left;width:200px;">
+								<tr bgcolor="#EFEFEF">
+									<td width="100px;" align="center">année prec.</td>
+									<td width="100px;" align="center">année</td>
+									<td>Historique</td>
+								</tr>
+								<tr>
+									<td style="text-align: center"><%=process.getVAL_ST_SOLDE_REPOS_COMP_PREC()%></td>
+									<td style="text-align: center"><%=process.getVAL_ST_SOLDE_REPOS_COMP()%></td>
+									<td style="text-align: center"><INPUT title="historique" type="image" src="images/oeil.gif" height="15px" width="15px" name="<%=process.getNOM_PB_HISTORIQUE(EnumTypeAbsence.REPOS_COMP.getCode())%>"></td>
+								</tr>
+							</table>	
+					    <%}else{ %>
+					    <span>Agent non concerné</span>
+					    <%} %>			    
 				    </FIELDSET>
 				    <BR/>	
-				    
-				    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:450px;">
-				    	<legend class="sigp2Legend">* Délégation DP</legend>
-						<table class="sigp2NewTab" style="text-align:left;width:400px;">
-							<tr bgcolor="#EFEFEF">
-								<td width="150px;" align="center">En cours</td>
-								<td width="90px;" align="center">Début</td>
-								<td width="90px;" align="center">Fin</td>
-								<td>Historique</td>
-							</tr>
-							<% for(int i = 0; i< process.getListeSoldeA55().size();i++){ %>
-							<tr>
-								<td style="text-align: center"><%=process.getVAL_ST_SOLDE_ASA_A55(i)%></td>
-								<td style="text-align: center"><%=process.getVAL_ST_DEBUT_ASA_A55(i)%></td>
-								<td style="text-align: center"><%=process.getVAL_ST_FIN_ASA_A55(i)%></td>
-								<td style="text-align: center"><INPUT title="historique" type="image" src="images/oeil.gif" height="15px" width="15px" name="<%=process.getNOM_PB_HISTORIQUE(EnumTypeAbsence.ASA_A55.getCode())%>"></td>
-							</tr>
-							<% } %>
-						</table>				    
-				    </FIELDSET>
-				    <BR/>
-				    
-				    <%if(process.isAfficheSoldeAsaA52()){ %>
-				    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:450px;">
-				    	<legend class="sigp2Legend">* Décharge de service CTP</legend>
-						<table class="sigp2NewTab" style="text-align:left;width:400px;">
-							<tr bgcolor="#EFEFEF">
-							<%if(process.getOrganisationAgent()!=null){%>
-								<td width="150px;" align="center">En cours pour <%=process.getOrganisationAgent().getSigle() %></td>
-							<%}else{ %>
-								<td width="150px;" align="center">En cours pourOS</td>
-							<%} %>
-								<td width="90px;" align="center">Début</td>
-								<td width="90px;" align="center">Fin</td>
-								<td>Historique</td>
-							</tr>
-							<% for(int i = 0; i< process.getListeSoldeA52().size();i++){ %>
-							<tr>
-								<td style="text-align: center"><%=process.getVAL_ST_SOLDE_ASA_A52(i)%></td>
-								<td style="text-align: center"><%=process.getVAL_ST_DEBUT_ASA_A52(i)%></td>
-								<td style="text-align: center"><%=process.getVAL_ST_FIN_ASA_A52(i)%></td>
-								<td style="text-align: center"><INPUT title="historique" type="image" src="images/oeil.gif" height="15px" width="15px" name="<%=process.getNOM_PB_HISTORIQUE(EnumTypeAbsence.ASA_A52.getCode())%>"></td>
-							</tr>
-							<% } %>
-						</table>				    
-				    </FIELDSET>
-				    <BR/>
-				    <%} %>
 				    
 				     <FIELDSET class="sigp2Fieldset" style="text-align:left;width:950px;">
 				    	<legend class="sigp2Legend">* Congés Exceptionnels</legend>
