@@ -182,7 +182,7 @@
 								String id = "HS:" + i + ":" + j;
 								Date heureDebut = null;
 								Date heureFin = null;
-								boolean checkedRecupere = process.isDPM()? true : false;
+								boolean checkedRecupere = process.isDPM() || process.isINASuperieur315() ? true : false;
 								boolean checkedRappelService = false;
 								String motif = "";
 								String commentaire = "";
@@ -229,7 +229,7 @@
 										</tr>
 										<tr bgcolor="#BFEFFF">
 											<td>
-												<input type="checkbox"  <% if(process.isDPM()){ %> disabled="disabled" <% } %> name="NOM_CK_RECUP_<%=id %>" <% if(checkedRecupere){ %> checked="checked" <% } %> /> A récupérer
+												<input type="checkbox"  <% if(process.isDPM() || process.isINASuperieur315()){ %> disabled="disabled" <% } %> name="NOM_CK_RECUP_<%=id %>" <% if(checkedRecupere){ %> checked="checked" <% } %> /> A récupérer
 											</td>
 										</tr>
 										<%if(process.isDPM()){ %>

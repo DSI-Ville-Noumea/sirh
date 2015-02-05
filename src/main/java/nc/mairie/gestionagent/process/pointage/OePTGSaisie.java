@@ -57,6 +57,7 @@ public class OePTGSaisie extends BasicProcess {
 	private Integer idAgent = null;
 	private Date dateLundi = new Date();
 	private boolean isDPM;
+	private boolean isINASuperieur315;
 	private List<List<PrimeDto>> primess = new ArrayList<>();
 	private FichePointageDto listeFichePointage;
 	private HashMap<String, List<AbsenceDto>> absences = new HashMap<>();
@@ -90,6 +91,8 @@ public class OePTGSaisie extends BasicProcess {
 		String date = wsdf.format(getDateLundi(0));
 		FichePointageDto dto = t.getSaisiePointage(idAgent, date);
 		setListeFichePointage(dto);
+		
+		setINASuperieur315(dto.isINASuperieur315());
 		setDPM(dto.isDPM());
 	}
 
@@ -409,7 +412,7 @@ public class OePTGSaisie extends BasicProcess {
 		}
 		if (saisie) {
 			ret = new HeureSupDto();
-			ret.setRecuperee(getListeFichePointage().isDPM() ? true : data.getChk().equals("CHECKED_ON"));
+			ret.setRecuperee(getListeFichePointage().isDPM() || getListeFichePointage().isINASuperieur315() ? true : data.getChk().equals("CHECKED_ON"));
 			ret.setRappelService(getListeFichePointage().isDPM() ? data.getChkRappelService().equals("CHECKED_ON")
 					: false);
 			ret.setHeureDebut(data.getTimeD());
@@ -738,4 +741,13 @@ public class OePTGSaisie extends BasicProcess {
 	public void setDPM(boolean isDPM) {
 		this.isDPM = isDPM;
 	}
+
+	public boolean isINASuperieur315() {
+		return isINASuperieur315;
+	}
+
+	public void setINASuperieur315(boolean isINASuperieur315) {
+		this.isINASuperieur315 = isINASuperieur315;
+	}
+	
 }
