@@ -2252,13 +2252,15 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 				addZone(getNOM_LB_BASE_HORAIRE_POINTAGE_SELECT(),
 						String.valueOf(getListeBaseHorairePointage().indexOf(ma) + 1));
 			} else {
-				// si c'est null alors on prend la base horaire de la FDP
-				if (getFichePosteCourant() != null && getFichePosteCourant().getIdBaseHorairePointage() != null) {
-					BaseHorairePointage ma = getBaseHorairePointageDao().chercherBaseHorairePointage(
-							getFichePosteCourant().getIdBaseHorairePointage());
-					addZone(getNOM_LB_BASE_HORAIRE_POINTAGE_SELECT(),
-							String.valueOf(getListeBaseHorairePointage().indexOf(ma) + 1));
-				}
+				addZone(getNOM_LB_BASE_HORAIRE_POINTAGE_SELECT(), Const.ZERO);
+			}
+			// on affiche la base horaire de la FDP
+			if (getFichePosteCourant() != null && getFichePosteCourant().getIdBaseHorairePointage() != null) {
+				BaseHorairePointage ma = getBaseHorairePointageDao().chercherBaseHorairePointage(
+						getFichePosteCourant().getIdBaseHorairePointage());
+				addZone(getNOM_EF_INFO_POINTAGE_FDP(), "FDP : " + ma.getCodeBaseHorairePointage());
+			} else {
+				addZone(getNOM_EF_INFO_POINTAGE_FDP(), Const.CHAINE_VIDE);
 			}
 
 			// Récup base horaire absence
@@ -2268,14 +2270,19 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 				addZone(getNOM_LB_BASE_HORAIRE_ABSENCE_SELECT(),
 						String.valueOf(getListeBaseHoraireAbsence().indexOf(dto) + 1));
 			} else {
-				// si c'est null alors on prend la base horaire de la FDP
-				if (getFichePosteCourant() != null && getFichePosteCourant().getIdBaseHoraireAbsence() != null) {
-					RefTypeSaisiCongeAnnuelDto dto = new RefTypeSaisiCongeAnnuelDto();
-					dto.setIdRefTypeSaisiCongeAnnuel(getFichePosteCourant().getIdBaseHoraireAbsence());
-					addZone(getNOM_LB_BASE_HORAIRE_ABSENCE_SELECT(),
-							String.valueOf(getListeBaseHoraireAbsence().indexOf(dto) + 1));
-				}
+				addZone(getNOM_LB_BASE_HORAIRE_ABSENCE_SELECT(), Const.ZERO);
 			}
+			// on affiche la base horaire de la FDP
+			if (getFichePosteCourant() != null && getFichePosteCourant().getIdBaseHoraireAbsence() != null) {
+				RefTypeSaisiCongeAnnuelDto dto = new RefTypeSaisiCongeAnnuelDto();
+				dto.setIdRefTypeSaisiCongeAnnuel(getFichePosteCourant().getIdBaseHoraireAbsence());
+				RefTypeSaisiCongeAnnuelDto base = getListeBaseHoraireAbsence().get(
+						getListeBaseHoraireAbsence().indexOf(dto));
+				addZone(getNOM_EF_INFO_ABSENCE_FDP(), "FDP : " + base.getCodeBaseHoraireAbsence());
+			} else {
+				addZone(getNOM_EF_INFO_ABSENCE_FDP(), Const.CHAINE_VIDE);
+			}
+
 		}
 		return true;
 	}
@@ -2311,6 +2318,9 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		addZone(getNOM_LB_MOTIF_AFFECTATION_SELECT(), Const.ZERO);
 		addZone(getNOM_LB_TEMPS_TRAVAIL_SELECT(), Const.ZERO);
 		addZone(getNOM_LB_BASE_HORAIRE_POINTAGE_SELECT(), Const.ZERO);
+		addZone(getNOM_LB_BASE_HORAIRE_ABSENCE_SELECT(), Const.ZERO);
+		addZone(getNOM_EF_INFO_POINTAGE_FDP(), Const.CHAINE_VIDE);
+		addZone(getNOM_EF_INFO_ABSENCE_FDP(), Const.CHAINE_VIDE);
 
 	}
 
@@ -3512,6 +3522,18 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			return false;
 		}
 
+		// **********************
+		// Verification Base horaire d'absence
+		// **********************
+		int numLigneBaseHoraireAbsence = (Services.estNumerique(getZone(getNOM_LB_BASE_HORAIRE_ABSENCE_SELECT())) ? Integer
+				.parseInt(getZone(getNOM_LB_BASE_HORAIRE_ABSENCE_SELECT())) : -1);
+
+		if (numLigneBaseHoraireAbsence == 0 || getListeBaseHoraireAbsence().isEmpty()
+				|| numLigneBaseHoraireAbsence > getListeBaseHoraireAbsence().size()) {
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "base de congé"));
+			return false;
+		}
+
 		return true;
 	}
 
@@ -4291,7 +4313,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 			if (numLigneBaseHoraireAbsence == 0 || getListeBaseHoraireAbsence().isEmpty()
 					|| numLigneBaseHoraireAbsence > getListeBaseHoraireAbsence().size()) {
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "base horaire de congé"));
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "base de congé"));
 				return false;
 			}
 
@@ -5639,6 +5661,22 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	public void setListeBaseHoraireAbsence(ArrayList<RefTypeSaisiCongeAnnuelDto> listeBaseHoraireAbsence) {
 		this.listeBaseHoraireAbsence = listeBaseHoraireAbsence;
+	}
+
+	public String getNOM_EF_INFO_POINTAGE_FDP() {
+		return "NOM_EF_INFO_POINTAGE_FDP";
+	}
+
+	public String getVAL_EF_INFO_POINTAGE_FDP() {
+		return getZone(getNOM_EF_INFO_POINTAGE_FDP());
+	}
+
+	public String getNOM_EF_INFO_ABSENCE_FDP() {
+		return "NOM_EF_INFO_ABSENCE_FDP";
+	}
+
+	public String getVAL_EF_INFO_ABSENCE_FDP() {
+		return getZone(getNOM_EF_INFO_ABSENCE_FDP());
 	}
 
 }

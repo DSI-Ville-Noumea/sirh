@@ -814,11 +814,13 @@
 				<SELECT class="sigp2-saisie" name="<%=process.getNOM_LB_BASE_HORAIRE_POINTAGE()%>" style="width: 140px;">
 					<%=process.forComboHTML(process.getVAL_LB_BASE_HORAIRE_POINTAGE(), process.getVAL_LB_BASE_HORAIRE_POINTAGE_SELECT())%>
 				</SELECT>
+				<span class="sigp2Mandatory" style="margin-left: 20px; position: relative; width: 120px;"><%=process.getVAL_EF_INFO_POINTAGE_FDP()%></span> 
 				<BR /> <BR />
 				<span class="sigp2Mandatory" style="margin-left: 20px; position: relative; width: 120px;">Base congé :</span> 
 				<SELECT class="sigp2-saisie" name="<%=process.getNOM_LB_BASE_HORAIRE_ABSENCE()%>" style="width: 140px;">
 					<%=process.forComboHTML(process.getVAL_LB_BASE_HORAIRE_ABSENCE(), process.getVAL_LB_BASE_HORAIRE_ABSENCE_SELECT())%>
 				</SELECT>
+				<span class="sigp2Mandatory" style="margin-left: 20px; position: relative; width: 120px;"><%=process.getVAL_EF_INFO_ABSENCE_FDP()%></span> 
 				
 			<%
 				} else if (process.getVAL_ST_ACTION().equals(process.ACTION_IMPRESSION)) {
@@ -879,11 +881,13 @@
 				<SELECT class="sigp2-saisie" name="<%=process.getNOM_LB_BASE_HORAIRE_POINTAGE()%>" style="width: 140px;" disabled="disabled">
 					<%=process.forComboHTML(process.getVAL_LB_BASE_HORAIRE_POINTAGE(), process.getVAL_LB_BASE_HORAIRE_POINTAGE_SELECT())%>
 				</SELECT>
+				<span class="sigp2Mandatory" style="margin-left: 20px; position: relative; width: 120px;"><%=process.getVAL_EF_INFO_POINTAGE_FDP()%></span> 
 				<BR /> <BR />
 				<span class="sigp2Mandatory" style="margin-left: 20px; position: relative; width: 120px;">Base congé :</span> 
 				<SELECT class="sigp2-saisie" name="<%=process.getNOM_LB_BASE_HORAIRE_ABSENCE()%>" style="width: 140px;" disabled="disabled">
 					<%=process.forComboHTML(process.getVAL_LB_BASE_HORAIRE_ABSENCE(), process.getVAL_LB_BASE_HORAIRE_ABSENCE_SELECT())%>
 				</SELECT>
+				<span class="sigp2Mandatory" style="margin-left: 20px; position: relative; width: 120px;"><%=process.getVAL_EF_INFO_ABSENCE_FDP()%></span> 
 			<%
 				}
 			%>
