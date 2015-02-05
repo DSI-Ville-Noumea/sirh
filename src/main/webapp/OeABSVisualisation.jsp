@@ -552,7 +552,7 @@
 		            		<% if(typeCreation.getTypeSaisiDto().isPieceJointe()) { %>
 		            		<tr>
 		            			<td>
-	                        		<span class="sigp2Mandatory">Pièce jointe :</span>
+<!-- 	                        		<span class="sigp2Mandatory">Pièce jointe :</span> -->
 		            			</td>
 		            			<td><!-- TODO --></td>
 		            		</tr>
