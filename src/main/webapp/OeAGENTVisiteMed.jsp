@@ -88,7 +88,8 @@
 												<tr id="<%=indiceVisite%>" <%if(vm.getIdVisite()==null){%> bgcolor="#B0C4DE"<%}else{%> onmouseover="SelectLigne(<%=indiceVisite%>,<%=process.getListeVisites().size()%>)"  <%} %>  ondblclick='executeBouton("<%=process.getNOM_PB_INIT_INAPT(indiceVisite)%>")'>
 													<td class="sigp2NewTab-liste" style="position:relative;width:90px;" align="center">
 													<%if(vm.getIdVisite()!=null){ %>
-														<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, "") %>" name="<%=process.getNOM_PB_CONSULTER(indiceVisite)%>">
+														<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, "") %>" name="<%=process.getNOM_PB_CONSULTER(indiceVisite)%>">								
+														<INPUT title="documents" type="image" src="images/ajout-doc.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, "") %>" name="<%=process.getNOM_PB_DOCUMENT(indiceVisite)%>">
 													<%}%>
 														<INPUT title="modifier" type="image" src="images/modifier.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_MODIFIER(indiceVisite)%>">
 													<%if(vm.getIdVisite()!=null){ %>
