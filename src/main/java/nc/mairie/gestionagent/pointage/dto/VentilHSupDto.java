@@ -17,7 +17,6 @@ public class VentilHSupDto extends VentilDto {
 	private int m1Mai;
 	private int mNuit;
 	private int mNormales;
-	private int mComplementaires;
 	private int mSimples;
 	private int mComposees;
 	private int mRecuperees;
@@ -27,7 +26,6 @@ public class VentilHSupDto extends VentilDto {
 	private int m1maiR;
 	private int mNuitR;
 	private int mNormalesR;
-	private int mComplementairesR;
 	private int mSimplesR;
 	private int mComposeesR;
 
@@ -122,14 +120,6 @@ public class VentilHSupDto extends VentilDto {
 		this.mNormales = mNormales;
 	}
 
-	public int getmComplementaires() {
-		return mComplementaires;
-	}
-
-	public void setmComplementaires(int mComplementaires) {
-		this.mComplementaires = mComplementaires;
-	}
-
 	public int getmSimples() {
 		return mSimples;
 	}
@@ -200,14 +190,6 @@ public class VentilHSupDto extends VentilDto {
 
 	public void setmNormalesR(int mNormalesR) {
 		this.mNormalesR = mNormalesR;
-	}
-
-	public int getmComplementairesR() {
-		return mComplementairesR;
-	}
-
-	public void setmComplementairesR(int mComplementairesR) {
-		this.mComplementairesR = mComplementairesR;
 	}
 
 	public int getmSimplesR() {

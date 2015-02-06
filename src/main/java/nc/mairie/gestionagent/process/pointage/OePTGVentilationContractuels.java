@@ -876,9 +876,9 @@ public class OePTGVentilationContractuels extends BasicProcess {
 						.equals(Const.CHAINE_VIDE) ? "&nbsp;" : OePTGVentilationUtils.getHeureMinute(hsup
 						.getmHorsContrat() - hsup.getmRecuperees());
 				ret[index][6] = OePTGVentilationUtils.getHeureMinute(
-						hsup.getmComplementaires() - hsup.getmComplementairesR()).equals(Const.CHAINE_VIDE) ? "&nbsp;"
+						hsup.getmNormales() - hsup.getmNormalesR()).equals(Const.CHAINE_VIDE) ? "&nbsp;"
 						: OePTGVentilationUtils
-								.getHeureMinute(hsup.getmComplementaires() - hsup.getmComplementairesR());
+								.getHeureMinute(hsup.getmNormales() - hsup.getmNormalesR());
 				ret[index][7] = OePTGVentilationUtils.getHeureMinute(hsup.getmSup25() - hsup.getmSup25R()).equals(
 						Const.CHAINE_VIDE) ? "&nbsp;" : OePTGVentilationUtils.getHeureMinute(hsup.getmSup25()
 						- hsup.getmSup25R());

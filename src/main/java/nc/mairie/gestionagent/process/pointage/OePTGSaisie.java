@@ -419,6 +419,7 @@ public class OePTGSaisie extends BasicProcess {
 			ret.setHeureFin(data.getTimeF());
 			ret.setCommentaire(data.getComment());
 			ret.setIdMotifHsup(data.getIdMotifHsup());
+			ret.setMotif(data.getMotif());
 			ret.setIdPointage(data.getIdPtg());
 			ret.setIdRefEtat(data.getIdRefEtat());
 			logger.debug("Heure sup " + id);

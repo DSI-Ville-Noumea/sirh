@@ -19,7 +19,7 @@
 									<th>Abs</th>
 									<th>Base</th>
 									<th>Total</th>
-									<th>Compl</th>
+									<th>Normales</th>
 									<th>25%</th>
 									<th>50%</th>
 									<th>Nuit</th>
@@ -43,7 +43,7 @@
 								int abs = 0;
 								int absAs400 = 0;
 								int minutesHorsContrat = 0;								
-								int minutesComplementaires = 0;					
+								int minutesNormales = 0;					
 								int minutes25 = 0;				
 								int minutes50 = 0;		
 								int minutesNuit = 0;
@@ -58,7 +58,7 @@
 									abs += t.getMabs();
 									absAs400 += t.getMabsAs400();
 									minutesHorsContrat += t.getmHorsContrat()-t.getmRecuperees();									
-									minutesComplementaires += t.getmComplementaires() - t.getmComplementairesR();					
+									minutesNormales += t.getmNormales() - t.getmNormalesR();					
 									minutes25 += t.getmSup25() - t.getmSup25R();			
 									minutes50 += t.getmSup50() - t.getmSup50R();	
 									minutesNuit += t.getmNuit() - t.getmNuitR();
@@ -83,7 +83,7 @@
 									<td><%= OePTGVentilationUtils.getHeureMinute(absAs400) %></td>
 									<td><%= OePTGVentilationUtils.roundDecimal(weekBase, 2) %></td>
 									<td><%= OePTGVentilationUtils.getHeureMinute(minutesHorsContrat)%></td>
-									<td><%= OePTGVentilationUtils.getHeureMinute(minutesComplementaires)%></td>
+									<td><%= OePTGVentilationUtils.getHeureMinute(minutesNormales)%></td>
 									<td><%= OePTGVentilationUtils.getHeureMinute(minutes25)%></td>
 									<td><%= OePTGVentilationUtils.getHeureMinute(minutes50)%></td>
 									<td><%= OePTGVentilationUtils.getHeureMinute(minutesNuit)%></td>
