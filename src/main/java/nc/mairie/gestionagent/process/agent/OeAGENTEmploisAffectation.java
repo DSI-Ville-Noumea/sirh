@@ -2260,7 +2260,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 						getFichePosteCourant().getIdBaseHorairePointage());
 				addZone(getNOM_EF_INFO_POINTAGE_FDP(), "FDP : " + ma.getCodeBaseHorairePointage());
 			} else {
-				addZone(getNOM_EF_INFO_POINTAGE_FDP(), Const.CHAINE_VIDE);
+				addZone(getNOM_EF_INFO_POINTAGE_FDP(), "FDP : non renseigné");
 			}
 
 			// Récup base horaire absence
@@ -2280,7 +2280,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 						getListeBaseHoraireAbsence().indexOf(dto));
 				addZone(getNOM_EF_INFO_ABSENCE_FDP(), "FDP : " + base.getCodeBaseHoraireAbsence());
 			} else {
-				addZone(getNOM_EF_INFO_ABSENCE_FDP(), Const.CHAINE_VIDE);
+				addZone(getNOM_EF_INFO_ABSENCE_FDP(), "FDP : non renseigné");
 			}
 
 		}
