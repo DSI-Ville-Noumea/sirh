@@ -349,10 +349,10 @@
                             <th>Etat</th>
                             <th>Date de saisie</th>
                             <th align="center">
-                            	<img onkeydown="" onkeypress="" onkeyup="" src="images/valid.png" height="16px" width="16px" title="Approuver tous les pointages" onClick="executeBouton('<%=process.getVal_ValidAll()%>')" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>">
+                            	<img onkeydown="" onkeypress="" onkeyup="" src="images/hand-vert.png" height="16px" width="16px" title="Approuver tous les pointages" onClick="executeBouton('<%=process.getVal_ValidAll()%>')" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>">
                             </th>
                             <th align="center">
-                            	<img onkeydown="" onkeypress="" onkeyup="" src="images/del.png" height="16px" width="16px" title="Rejeter tous les pointages" onClick="executeBouton('<%=process.getVal_DelAll()%>')" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>">
+                            	<img onkeydown="" onkeypress="" onkeyup="" src="images/hand-rouge.png" height="16px" width="16px" title="Rejeter tous les pointages" onClick="executeBouton('<%=process.getVal_DelAll()%>')" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>">
                             </th>
                             <th align="center">
                             	<img onkeydown="" onkeypress="" onkeyup="" src="images/clock.png" height="16px" width="16px" title="Mettre en attente tous les pointages" onClick="executeBouton('<%=process.getVal_DelayAll()%>')" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>">
@@ -398,10 +398,10 @@
                             <td><%=process.getVAL_ST_ETAT(indicePtg)%></td>			
                             <td><%=process.getVAL_ST_DATE_SAISIE(indicePtg)%></td>			
                             <td align="center">
-                            	<img onkeydown="" onkeypress="" onkeyup="" src="images/valid.png" height="16px" width="16px" title="Approuver le pointage" onClick="executeBouton('<%=process.getVal_Valid(indicePtg)%>')" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>">
+                            	<img onkeydown="" onkeypress="" onkeyup="" src="images/hand-vert.png" height="16px" width="16px" title="Approuver le pointage" onClick="executeBouton('<%=process.getVal_Valid(indicePtg)%>')" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>">
                             </td>
                             <td align="center">
-								<img onkeydown="" onkeypress="" onkeyup="" src="images/del.png" height="16px" width="16px" title="Rejeter le pointage" onClick="executeBouton('<%=process.getVal_Del(indicePtg)%>')" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>">
+								<img onkeydown="" onkeypress="" onkeyup="" src="images/hand-rouge.png" height="16px" width="16px" title="Rejeter le pointage" onClick="executeBouton('<%=process.getVal_Del(indicePtg)%>')" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>">
                             </td>
                             <td align="center">                                               
                             	<img onkeydown="" onkeypress="" onkeyup="" src="images/clock.png" height="16px" width="16px" title="Mettre en attente le pointage" onClick="executeBouton('<%=process.getVal_Delay(indicePtg)%>')" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>">
