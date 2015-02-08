@@ -193,10 +193,16 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 					.getLibelle());
 			addZone(getNOM_ST_DATE_DEBUT_TT(i),
 					dto.getDateDebut() == null ? "&nbsp;" : sdfDate.format(dto.getDateDebut()));
+			addZone(getNOM_ST_DATE_FIN_TT(i), dto.getDateFin() == null ? "&nbsp;" : sdfDate.format(dto.getDateFin()));
 
 			if (dto.getTypeSaisi() != null && "minutes".equals(dto.getTypeSaisi().getUniteDecompte())) {
 				addZone(getNOM_ST_HEURE_DEBUT_TT(i),
 						dto.getDateDebut() == null ? "&nbsp;" : sdfHeure.format(dto.getDateDebut()));
+				addZone(getNOM_ST_HEURE_FIN_TT(i),
+						dto.getDateFin() == null ? "&nbsp;" : sdfHeure.format(dto.getDateFin()));
+			} else if (dto.getTypeSaisi() != null && "jours".equals(dto.getTypeSaisi().getUniteDecompte())) {
+				addZone(getNOM_ST_HEURE_DEBUT_TT(i), dto.isDateDebutAM() ? "M" : dto.isDateDebutPM() ? "AM" : "&nbsp;");
+				addZone(getNOM_ST_HEURE_FIN_TT(i), dto.isDateFinAM() ? "M" : dto.isDateFinPM() ? "AM" : "&nbsp;");
 			}
 			if (dto.getIdTypeDemande() == EnumTypeAbsence.RECUP.getCode()
 					|| dto.getIdTypeDemande() == EnumTypeAbsence.REPOS_COMP.getCode()
@@ -251,9 +257,15 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 					.getLibelle());
 			addZone(getNOM_ST_DATE_DEBUT_EC(i),
 					dto.getDateDebut() == null ? "&nbsp;" : sdfDate.format(dto.getDateDebut()));
+			addZone(getNOM_ST_DATE_FIN_EC(i), dto.getDateFin() == null ? "&nbsp;" : sdfDate.format(dto.getDateFin()));
 			if (dto.getTypeSaisi() != null && "minutes".equals(dto.getTypeSaisi().getUniteDecompte())) {
 				addZone(getNOM_ST_HEURE_DEBUT_EC(i),
 						dto.getDateDebut() == null ? "&nbsp;" : sdfHeure.format(dto.getDateDebut()));
+				addZone(getNOM_ST_HEURE_FIN_EC(i),
+						dto.getDateFin() == null ? "&nbsp;" : sdfHeure.format(dto.getDateFin()));
+			} else if (dto.getTypeSaisi() != null && "jours".equals(dto.getTypeSaisi().getUniteDecompte())) {
+				addZone(getNOM_ST_HEURE_DEBUT_EC(i), dto.isDateDebutAM() ? "M" : dto.isDateDebutPM() ? "AM" : "&nbsp;");
+				addZone(getNOM_ST_HEURE_FIN_EC(i), dto.isDateFinAM() ? "M" : dto.isDateFinPM() ? "AM" : "&nbsp;");
 			}
 			if (dto.getIdTypeDemande() == EnumTypeAbsence.RECUP.getCode()
 					|| dto.getIdTypeDemande() == EnumTypeAbsence.REPOS_COMP.getCode()
@@ -309,9 +321,15 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 					.getLibelle());
 			addZone(getNOM_ST_DATE_DEBUT_NP(i),
 					dto.getDateDebut() == null ? "&nbsp;" : sdfDate.format(dto.getDateDebut()));
+			addZone(getNOM_ST_DATE_FIN_NP(i), dto.getDateFin() == null ? "&nbsp;" : sdfDate.format(dto.getDateFin()));
 			if (dto.getTypeSaisi() != null && "minutes".equals(dto.getTypeSaisi().getUniteDecompte())) {
 				addZone(getNOM_ST_HEURE_DEBUT_NP(i),
 						dto.getDateDebut() == null ? "&nbsp;" : sdfHeure.format(dto.getDateDebut()));
+				addZone(getNOM_ST_HEURE_FIN_NP(i),
+						dto.getDateFin() == null ? "&nbsp;" : sdfHeure.format(dto.getDateFin()));
+			} else if (dto.getTypeSaisi() != null && "jours".equals(dto.getTypeSaisi().getUniteDecompte())) {
+				addZone(getNOM_ST_HEURE_DEBUT_NP(i), dto.isDateDebutAM() ? "M" : dto.isDateDebutPM() ? "AM" : "&nbsp;");
+				addZone(getNOM_ST_HEURE_FIN_NP(i), dto.isDateFinAM() ? "M" : dto.isDateFinPM() ? "AM" : "&nbsp;");
 			}
 			if (dto.getIdTypeDemande() == EnumTypeAbsence.RECUP.getCode()
 					|| dto.getIdTypeDemande() == EnumTypeAbsence.REPOS_COMP.getCode()
@@ -1002,5 +1020,53 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 
 	public String getVAL_ST_DATE_DEMANDE_TT() {
 		return getZone(getNOM_ST_DATE_DEMANDE_TT());
+	}
+
+	public String getNOM_ST_DATE_FIN_NP(int i) {
+		return "NOM_ST_DATE_FIN_NP" + i;
+	}
+
+	public String getVAL_ST_DATE_FIN_NP(int i) {
+		return getZone(getNOM_ST_DATE_FIN_NP(i));
+	}
+
+	public String getNOM_ST_HEURE_FIN_NP(int i) {
+		return "NOM_ST_HEURE_FIN_NP" + i;
+	}
+
+	public String getVAL_ST_HEURE_FIN_NP(int i) {
+		return getZone(getNOM_ST_HEURE_FIN_NP(i));
+	}
+
+	public String getNOM_ST_DATE_FIN_EC(int i) {
+		return "NOM_ST_DATE_FIN_EC" + i;
+	}
+
+	public String getVAL_ST_DATE_FIN_EC(int i) {
+		return getZone(getNOM_ST_DATE_FIN_EC(i));
+	}
+
+	public String getNOM_ST_HEURE_FIN_EC(int i) {
+		return "NOM_ST_HEURE_FIN_EC" + i;
+	}
+
+	public String getVAL_ST_HEURE_FIN_EC(int i) {
+		return getZone(getNOM_ST_HEURE_FIN_EC(i));
+	}
+
+	public String getNOM_ST_DATE_FIN_TT(int i) {
+		return "NOM_ST_DATE_FIN_TT" + i;
+	}
+
+	public String getVAL_ST_DATE_FIN_TT(int i) {
+		return getZone(getNOM_ST_DATE_FIN_TT(i));
+	}
+
+	public String getNOM_ST_HEURE_FIN_TT(int i) {
+		return "NOM_ST_HEURE_FIN_TT" + i;
+	}
+
+	public String getVAL_ST_HEURE_FIN_TT(int i) {
+		return getZone(getNOM_ST_HEURE_FIN_TT(i));
 	}
 }
