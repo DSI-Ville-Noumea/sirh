@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import nc.mairie.gestionagent.absence.dto.RefTypeSaisiCongeAnnuelDto;
+import nc.mairie.gestionagent.dto.BaseHorairePointageDto;
 import nc.mairie.gestionagent.dto.DateAvctDto;
 import nc.mairie.gestionagent.servlets.ServletAgent;
 
@@ -43,6 +44,7 @@ public class SirhWSConsumer implements ISirhWSConsumer {
 	private static final String sirhDownloadConvocationVisiteMedPUrl = "suiviMedical/downloadConvocationSIRH";
 	private static final String sirhDownloadLettreAccompagnementVisiteMedPUrl = "suiviMedical/downloadLettreAccompagnementSIRH";
 	private static final String sirhDownloadContratUrl = "contrat/downloadContratSIRH";
+	private static final String sirhBaseHorairePointageUrl = "pointages/baseHoraire";
 
 	private Logger logger = LoggerFactory.getLogger(SirhWSConsumer.class);
 
@@ -289,6 +291,22 @@ public class SirhWSConsumer implements ISirhWSConsumer {
 		}
 
 		return reponseData;
+	}
+
+	@Override
+	public BaseHorairePointageDto getBaseHorairePointageAgent(Integer idAgent, Date date) {
+		
+		SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd");
+
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_WS_URL");
+		String url = urlWS + sirhBaseHorairePointageUrl;
+
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idAgent", idAgent.toString());
+		params.put("date", sf.format(date));
+		
+		ClientResponse res = createAndFireRequest(params, url);
+		return readResponse(BaseHorairePointageDto.class, res, url);
 	}
 
 }

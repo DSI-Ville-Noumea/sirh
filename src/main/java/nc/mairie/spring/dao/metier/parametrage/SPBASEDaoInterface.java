@@ -13,6 +13,4 @@ public interface SPBASEDaoInterface {
 
 	public void modifierSPBASE(String cdBase, String liBase, Double nbhLu, Double nbhMa, Double nbhMe, Double nbhJe, Double nbhVe, Double nbhSa,
 			Double nbhDi, Double nbasCH, Double nbasHH);
-
-	SPBASE chercherBaseHoraire(String codeBase);
 }

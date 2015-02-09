@@ -15,22 +15,19 @@ import java.util.TimeZone;
 
 import javax.servlet.http.HttpServletRequest;
 
+import nc.mairie.gestionagent.dto.BaseHorairePointageDto;
 import nc.mairie.gestionagent.pointage.dto.VentilAbsenceDto;
 import nc.mairie.gestionagent.pointage.dto.VentilDateDto;
 import nc.mairie.gestionagent.pointage.dto.VentilHSupDto;
 import nc.mairie.gestionagent.radi.dto.LightUserDto;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.Agent;
-import nc.mairie.metier.carriere.Carriere;
-import nc.mairie.metier.parametrage.SPBASE;
 import nc.mairie.spring.dao.metier.agent.AgentDao;
-import nc.mairie.spring.dao.metier.carriere.CarriereDao;
-import nc.mairie.spring.dao.metier.parametrage.SPBASEDao;
-import nc.mairie.spring.dao.utils.MairieDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.spring.ws.RadiWSConsumer;
 import nc.mairie.spring.ws.SirhPtgWSConsumer;
+import nc.mairie.spring.ws.SirhWSConsumer;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.UserAppli;
@@ -73,9 +70,6 @@ public class OePTGVentilationConvCol extends BasicProcess {
 	private Hashtable<Hashtable<Integer, String>, List<VentilHSupDto>> hashVentilHsup;
 
 	private AgentDao agentDao;
-
-	private CarriereDao carriereDao;
-	private SPBASEDao baseDao;
 
 	@Override
 	public String getJSP() {
@@ -120,7 +114,6 @@ public class OePTGVentilationConvCol extends BasicProcess {
 		initialiseListeAgent();
 
 		initialiseTabErreurVentil();
-
 	}
 
 	private void initialiseDao() {
@@ -128,12 +121,6 @@ public class OePTGVentilationConvCol extends BasicProcess {
 		ApplicationContext context = ApplicationContextProvider.getContext();
 		if (getAgentDao() == null) {
 			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
-		}
-		if (getCarriereDao() == null) {
-			setCarriereDao(new CarriereDao((MairieDao) context.getBean("mairieDao")));
-		}
-		if (getBaseDao() == null) {
-			setBaseDao(new SPBASEDao((MairieDao) context.getBean("mairieDao")));
 		}
 	}
 
@@ -952,22 +939,6 @@ public class OePTGVentilationConvCol extends BasicProcess {
 	public void setAgentDao(AgentDao agentDao) {
 		this.agentDao = agentDao;
 	}
-	
-	public CarriereDao getCarriereDao() {
-		return carriereDao;
-	}
-
-	public void setCarriereDao(CarriereDao carriereDao) {
-		this.carriereDao = carriereDao;
-	}
-
-	public SPBASEDao getBaseDao() {
-		return baseDao;
-	}
-
-	public void setBaseDao(SPBASEDao baseDao) {
-		this.baseDao = baseDao;
-	}
 
 	public Agent getAgent(Integer idAgent) throws Exception {
 		return getAgentDao().chercherAgent(idAgent);
@@ -1022,10 +993,10 @@ public class OePTGVentilationConvCol extends BasicProcess {
 		this.showAllVentilation = showAllVentilation;
 	}
 	
-	public double getWeekBase(Agent agent) throws Exception {
+	public double getWeekBase(Agent agent, Date dateLundi) throws Exception {
 		
-		Carriere carr = getCarriereDao().chercherCarriereEnCoursAvecAgent(agent);
-		SPBASE baseHoraire = getBaseDao().chercherBaseHoraire(carr.getCodeBase());
-		return baseHoraire.getNbasHH();
+		SirhWSConsumer t = new SirhWSConsumer();
+		BaseHorairePointageDto dto = t.getBaseHorairePointageAgent(agent.getIdAgent(), dateLundi);
+		return dto.getBaseLegale();
 	}
 }

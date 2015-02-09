@@ -69,7 +69,7 @@
 									prenom = agent.getPrenomAgent();
 									nom = agent.getNomAgent();
 									affMois = moisAnnee.format(t.getDateLundi());
-									weekBase = process.getWeekBase(agent);
+									weekBase = process.getWeekBase(agent, t.getDateLundi());
 								}
 								
 								if(minutesHorsContrat > 0) {
