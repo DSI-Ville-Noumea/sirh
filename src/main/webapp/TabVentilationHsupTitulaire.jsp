@@ -32,7 +32,8 @@
 							<%
 							SimpleDateFormat moisAnnee = new SimpleDateFormat("MM-yyyy");
 							Enumeration<Hashtable<Integer, String>> e = process.getHashVentilHsup().keys();
-												Agent agent;
+							Agent agent;
+							
 							while (e.hasMoreElements()) {
 								Hashtable<Integer, String> ag = e.nextElement();
 								Enumeration<Integer> o = ag.keys();
@@ -64,12 +65,15 @@
 									minutesNuit += t.getmNuit() - t.getmNuitR();
 									minutesDJF += t.getmDjf() - t.getmDjfR();
 									minutesMai += t.getM1Mai() - t.getM1maiR();
-														agent = process.getAgent(t.getId_agent());
-														nomatr = agent.getNomatr().toString();
-									prenom = agent.getPrenomAgent();
-									nom = agent.getNomAgent();
 									affMois = moisAnnee.format(t.getDateLundi());
-									weekBase = process.getWeekBase(agent, t.getDateLundi());
+									
+									if(minutesHorsContrat > 0) {
+										agent = process.getAgent(t.getId_agent());
+										nomatr = agent.getNomatr().toString();
+										prenom = agent.getPrenomAgent();
+										nom = agent.getNomAgent();
+										weekBase = process.getWeekBase(agent, t.getDateLundi());
+									}
 								}
 								
 								if(minutesHorsContrat > 0) {
