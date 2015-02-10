@@ -46,41 +46,8 @@
 				<br/><br/>
 				<span class="sigp2Mandatory">Motif :</span>
 				<INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_MOTIF()%>" size="20" type="text" value="<%= process.getVAL_ST_MOTIF()%>" style="margin-right:10px;">
-				<br/><br/>
-				<span class="sigp2Mandatory">Agents concernés :</span>  
-					<div style="overflow: auto;height: 120px;width:800px;">
-						<INPUT type="image" src="images/ajout.gif" height="16px" width="16px" name="<%=process.getNOM_PB_AJOUTER_AGENT()%>">
-						<table class="sigp2NewTab">
-							<%
-								for (int i = 0;i<process.getListeAgent().size();i++){
-									Integer indice = process.getListeAgent().get(i).getIdAgent();
-							%>
-							<tr>
-								<td class="sigp2NewTab-liste" style="width:30px;" align="center">		
-									<INPUT title="supprimer" type="image" src="images/suppression.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_SUPPRIMER_AGENT(indice)%>">
-								</td>
-								<td class="sigp2NewTab-liste" align="left" style="width:150px;"><%=process.getVAL_ST_NOMATR_AGENT(indice)%></td>
-								<td class="sigp2NewTab-liste" align="left" style="width:150px;"><%=process.getVAL_ST_LIB_AGENT(indice)%></td>
-							</tr>
-							<%
-							indice++;										
-							}%>
-						</table>	
-					</div>
-					
-			<%if (! "".equals(process.getVAL_ST_ACTION()) ) {%>
-				<%if(process.getVAL_ST_ACTION().equals(process.ACTION_AJOUT)){ %>
-				 	<span class="sigp2Mandatory" style="width:50px;margin-left: 20px;">Agent :</span>
-	                <INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_AGENT_CREATION()%>" size="10" type="text" value="<%= process.getVAL_ST_AGENT_CREATION()%>" style="margin-right:10px;">
-	                <img border="0" src="images/loupe.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_RECHERCHER_AGENT_CREATION()%>');">
-	                <INPUT type="submit" class="sigp2-Bouton-200" value="Ajouter l'agent à la liste" name="<%=process.getNOM_PB_AJOUTER()%>">
-				<%} %>
-			<%} %>
-				
-             </FIELDSET>             
-            
-            
-        <INPUT type="submit" style="display:none;" name="<%=process.getNOM_PB_RECHERCHER_AGENT_CREATION()%>" value="RECHERCHERAGENTCREATION"> 
+				<br/><br/>	
+             </FIELDSET>
         </FORM>
     </BODY>
 </HTML>
