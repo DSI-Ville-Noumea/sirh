@@ -1488,7 +1488,7 @@ public class OeABSVisualisation extends BasicProcess {
 				}
 				getTransaction().declarerErreur(inf);
 			}
-			if (getTypeFiltre().equals("GLOBAL")) {
+			if (null != getTypeFiltre() && getTypeFiltre().equals("GLOBAL")) {
 				performPB_FILTRER(request);
 			} else {
 				performPB_FILTRER_DEMANDE_A_VALIDER(request);
