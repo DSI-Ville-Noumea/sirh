@@ -57,16 +57,18 @@
 				    		<td width="50%">
 							    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:450px;">
 							    	<legend class="sigp2Legend">Congés</legend>
-									<table class="sigp2NewTab" style="text-align:left;width:200px;">
+									<table class="sigp2NewTab" style="text-align:left;width:400px;">
 										<tr bgcolor="#EFEFEF">
 											<td width="100px;" align="center">année prec.</td>
-											<td width="100px;" align="center">année</td>
-											<td>Historique</td>
+											<td width="120px;" align="center">année</td>
+											<td width="80px;">Historique</td>
+											<td>Samedi offert</td>
 										</tr>
 										<tr>
 											<td style="text-align: center"><%=process.getVAL_ST_SOLDE_CONGE_PREC()%></td>
 											<td style="text-align: center"><%=process.getVAL_ST_SOLDE_CONGE()%></td>
 											<td style="text-align: center"><INPUT title="historique" type="image" src="images/oeil.gif" height="15px" width="15px" name="<%=process.getNOM_PB_HISTORIQUE(EnumTypeAbsence.CONGE.getCode())%>"></td>
+											<td style="text-align: center"><%=process.getVAL_ST_SAMEDI_OFFERT_SOLDE_CONGE()%></td>
 										</tr>
 									</table>				    
 							    </FIELDSET>

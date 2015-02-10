@@ -185,6 +185,7 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 				.getSoldeCongeAnnee().toString() + " j");
 		addZone(getNOM_ST_SOLDE_CONGE_PREC(), soldeGlobal.getSoldeCongeAnneePrec() == 0 ? "&nbsp;" : soldeGlobal
 				.getSoldeCongeAnneePrec().toString() + " j");
+		addZone(getNOM_ST_SAMEDI_OFFERT_SOLDE_CONGE(), soldeGlobal.isSamediOffert() ? "pris" : "non pris");
 
 		// Solde recup
 		int soldeRecup = soldeGlobal.getSoldeRecup().intValue();
@@ -663,6 +664,14 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 
 	public boolean isAgentReposComp() {
 		return agentReposComp;
+	}
+
+	public String getNOM_ST_SAMEDI_OFFERT_SOLDE_CONGE() {
+		return "NOM_ST_SAMEDI_OFFERT_SOLDE_CONGE";
+	}
+
+	public String getVAL_ST_SAMEDI_OFFERT_SOLDE_CONGE() {
+		return getZone(getNOM_ST_SAMEDI_OFFERT_SOLDE_CONGE());
 	}
 
 }
