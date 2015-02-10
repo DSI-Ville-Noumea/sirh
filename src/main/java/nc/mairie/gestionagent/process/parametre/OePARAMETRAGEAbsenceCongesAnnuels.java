@@ -441,7 +441,7 @@ public class OePARAMETRAGEAbsenceCongesAnnuels extends BasicProcess {
 				for (String erreur : srm.getErrors()) {
 					err += " " + erreur;
 				}
-				getTransaction().declarerErreur(err);
+				getTransaction().declarerErreur("ERREUR : "+err);
 				return false;
 			}
 		}

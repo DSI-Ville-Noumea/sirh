@@ -91,7 +91,7 @@ public class OePTGSaisie extends BasicProcess {
 		String date = wsdf.format(getDateLundi(0));
 		FichePointageDto dto = t.getSaisiePointage(idAgent, date);
 		setListeFichePointage(dto);
-		
+
 		setINASuperieur315(dto.isINASuperieur315());
 		setDPM(dto.isDPM());
 	}
@@ -181,7 +181,7 @@ public class OePTGSaisie extends BasicProcess {
 				for (String erreur : message.getErrors()) {
 					err += " " + erreur;
 				}
-				getTransaction().declarerErreur(err);
+				getTransaction().declarerErreur("ERREUR : " + err);
 				return false;
 			}
 		}
@@ -286,7 +286,7 @@ public class OePTGSaisie extends BasicProcess {
 			for (HeureSupDto hsdto : jour.getHeuresSup()) {
 				if (hsdto != null) {
 					// vérification motif obligatoire
-					if (hsdto.getIdMotifHsup()==null) {
+					if (hsdto.getIdMotifHsup() == null) {
 						getTransaction().traiterErreur();
 						logger.debug("Tentative de sauvegarde d'une heure supplémentaire sans motif");
 						getTransaction()
@@ -412,7 +412,8 @@ public class OePTGSaisie extends BasicProcess {
 		}
 		if (saisie) {
 			ret = new HeureSupDto();
-			ret.setRecuperee(getListeFichePointage().isDPM() || getListeFichePointage().isINASuperieur315() ? true : data.getChk().equals("CHECKED_ON"));
+			ret.setRecuperee(getListeFichePointage().isDPM() || getListeFichePointage().isINASuperieur315() ? true
+					: data.getChk().equals("CHECKED_ON"));
 			ret.setRappelService(getListeFichePointage().isDPM() ? data.getChkRappelService().equals("CHECKED_ON")
 					: false);
 			ret.setHeureDebut(data.getTimeD());
@@ -750,5 +751,5 @@ public class OePTGSaisie extends BasicProcess {
 	public void setINASuperieur315(boolean isINASuperieur315) {
 		this.isINASuperieur315 = isINASuperieur315;
 	}
-	
+
 }

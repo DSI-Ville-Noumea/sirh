@@ -841,7 +841,7 @@ public class OePARAMETRAGEAbsenceCongesExceptionnels extends BasicProcess {
 				for (String erreur : srm.getErrors()) {
 					err += " " + erreur;
 				}
-				getTransaction().declarerErreur(err);
+				getTransaction().declarerErreur("ERREUR : " + err);
 				return false;
 			}
 		} else {
@@ -907,7 +907,7 @@ public class OePARAMETRAGEAbsenceCongesExceptionnels extends BasicProcess {
 				for (String erreur : srm.getErrors()) {
 					err += " " + erreur;
 				}
-				getTransaction().declarerErreur(err);
+				getTransaction().declarerErreur("ERREUR : " + err);
 				return false;
 			}
 		}

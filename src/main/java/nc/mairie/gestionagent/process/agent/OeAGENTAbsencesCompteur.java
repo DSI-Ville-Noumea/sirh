@@ -363,8 +363,8 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 			}
 		} else if (getTypeAbsenceCourant().getIdRefTypeAbsence().toString()
 				.equals(EnumTypeAbsence.CONGE.getCode().toString())) {
-			if (carr.getCodeCategorie().equals("9") || carr.getCodeCategorie().equals("10") || carr
-					.getCodeCategorie().equals("11")) {
+			if (carr.getCodeCategorie().equals("9") || carr.getCodeCategorie().equals("10")
+					|| carr.getCodeCategorie().equals("11")) {
 				// "ERR806",
 				// "Cet agent est adjoint, conseiller municipal ou maire, il ne peut avoir de congé annuel."
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR806"));
@@ -669,7 +669,7 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 			for (String erreur : message.getErrors()) {
 				err += " " + erreur;
 			}
-			getTransaction().declarerErreur(err);
+			getTransaction().declarerErreur("ERREUR : " + err);
 		} else {
 			// "INF010", "Le compteur @ a bien été mis à jour."
 			setStatut(STATUT_MEME_PROCESS, false,

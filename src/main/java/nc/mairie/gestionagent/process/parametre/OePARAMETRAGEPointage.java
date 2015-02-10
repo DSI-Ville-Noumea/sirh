@@ -278,7 +278,7 @@ public class OePARAMETRAGEPointage extends BasicProcess {
 					for (String erreur : message.getErrors()) {
 						err += " " + erreur;
 					}
-					getTransaction().declarerErreur(err);
+					getTransaction().declarerErreur("ERREUR : " + err);
 				}
 
 			}

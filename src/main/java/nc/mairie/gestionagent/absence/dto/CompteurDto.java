@@ -3,6 +3,8 @@ package nc.mairie.gestionagent.absence.dto;
 import java.util.Date;
 
 public class CompteurDto {
+	
+	private Integer idCompteur;
 
 	private Integer idAgent;
 
@@ -82,6 +84,14 @@ public class CompteurDto {
 
 	public void setMotifCompteurDto(MotifCompteurDto motifCompteurDto) {
 		this.motifCompteurDto = motifCompteurDto;
+	}
+
+	public Integer getIdCompteur() {
+		return idCompteur;
+	}
+
+	public void setIdCompteur(Integer idCompteur) {
+		this.idCompteur = idCompteur;
 	}
 
 }

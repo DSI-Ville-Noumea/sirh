@@ -110,19 +110,19 @@ public class OePTGVisualisation extends BasicProcess {
 				addZone(getNOM_ST_DATE_FIN(i), hrs.format(ptg.getFin()));
 			}
 			addZone(getNOM_ST_DUREE(i), ptg.getQuantite());
-			
+
 			String strMotif = "";
-			if(null != ptg.getMotif() && !Const.CHAINE_VIDE.equals(ptg.getMotif())) {
+			if (null != ptg.getMotif() && !Const.CHAINE_VIDE.equals(ptg.getMotif())) {
 				strMotif = ptg.getMotif();
 			}
-			if(null != ptg.getMotif() && !Const.CHAINE_VIDE.equals(ptg.getMotif())
-					&& null != ptg.getCommentaire() && !Const.CHAINE_VIDE.equals(ptg.getCommentaire())) {
+			if (null != ptg.getMotif() && !Const.CHAINE_VIDE.equals(ptg.getMotif()) && null != ptg.getCommentaire()
+					&& !Const.CHAINE_VIDE.equals(ptg.getCommentaire())) {
 				strMotif += " - ";
 			}
-			if(null != ptg.getCommentaire() && !Const.CHAINE_VIDE.equals(ptg.getCommentaire())) {
+			if (null != ptg.getCommentaire() && !Const.CHAINE_VIDE.equals(ptg.getCommentaire())) {
 				strMotif += ptg.getCommentaire();
 			}
-			
+
 			addZone(getNOM_ST_MOTIF(i), strMotif);
 
 			AgentDto opPtg = ptg.getOperateur();
@@ -1222,7 +1222,7 @@ public class OePTGVisualisation extends BasicProcess {
 					for (String erreur : message.getErrors()) {
 						err += " " + erreur;
 					}
-					getTransaction().declarerErreur(err);
+					getTransaction().declarerErreur("ERREUR : " + err);
 				}
 				performPB_FILTRER();
 			} catch (Exception e) {

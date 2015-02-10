@@ -377,7 +377,7 @@ public class OePARAMETRAGEAbsence extends BasicProcess {
 					for (String erreur : message.getErrors()) {
 						err += " " + erreur;
 					}
-					getTransaction().declarerErreur(err);
+					getTransaction().declarerErreur("ERREUR : " + err);
 				}
 
 			}
@@ -555,7 +555,7 @@ public class OePARAMETRAGEAbsence extends BasicProcess {
 					for (String erreur : message.getErrors()) {
 						err += " " + erreur;
 					}
-					getTransaction().declarerErreur(err);
+					getTransaction().declarerErreur("ERREUR : " + err);
 				}
 
 			}

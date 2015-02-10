@@ -1479,7 +1479,7 @@ public class OeABSVisualisation extends BasicProcess {
 				for (String erreur : message.getErrors()) {
 					err += " " + erreur;
 				}
-				getTransaction().declarerErreur(err);
+				getTransaction().declarerErreur("ERREUR : "+err);
 			}
 			if (message.getInfos().size() > 0) {
 				String inf = Const.CHAINE_VIDE;
@@ -1889,7 +1889,7 @@ public class OeABSVisualisation extends BasicProcess {
 			for (String erreur : srm.getErrors()) {
 				err += " " + erreur;
 			}
-			getTransaction().declarerErreur(err);
+			getTransaction().declarerErreur("ERREUR : "+err);
 			return false;
 		}
 		if (srm.getInfos().size() > 0) {

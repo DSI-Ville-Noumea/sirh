@@ -52,6 +52,7 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 	private Logger logger = LoggerFactory.getLogger(OeELECSaisieCompteurA52.class);
 
 	private ArrayList<CompteurDto> listeCompteur;
+	private CompteurDto compteurCourant;
 	private ArrayList<OrganisationSyndicaleDto> listeOrganisationSyndicale;
 	private OrganisationSyndicaleDto organisationCourante;
 	private ArrayList<AgentOrganisationSyndicaleDto> listeRepresentant;
@@ -332,6 +333,7 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 		addZone(getNOM_LB_OS_SELECT(), Const.ZERO);
 		addZone(getNOM_ST_AGENT_CREATE(), Const.CHAINE_VIDE);
 		addZone(getNOM_RG_REPRESENTANT_INACTIF(), getNOM_RB_NON());
+		setCompteurCourant(null);
 	}
 
 	public String getNOM_PB_AJOUTER() {
@@ -357,6 +359,7 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 		videZonesDeSaisie(request);
 
 		CompteurDto compteurCourant = (CompteurDto) getListeCompteur().get(indiceEltAModifier);
+		setCompteurCourant(compteurCourant);
 		setOrganisationCourante(compteurCourant.getOrganisationSyndicaleDto());
 
 		if (!initialiseCompteurCourant(request, compteurCourant))
@@ -528,6 +531,8 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 		String dateFin = Services.formateDate(getVAL_ST_DATE_FIN()) + " 23:59:59";
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 		CompteurDto compteurDto = new CompteurDto();
+		if (getCompteurCourant() != null)
+			compteurDto = getCompteurCourant();
 		OrganisationSyndicaleDto orgaDto = new OrganisationSyndicaleDto();
 		orgaDto.setIdOrganisation(os.getIdOrganisation());
 		compteurDto.setOrganisationSyndicaleDto(orgaDto);
@@ -547,7 +552,7 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 			for (String erreur : message.getErrors()) {
 				err += " " + erreur;
 			}
-			getTransaction().declarerErreur(err);
+			getTransaction().declarerErreur("ERREUR :  " + err);
 		} else {
 			// "INF010", "Le compteur @ a bien été mis à jour."
 			setStatut(STATUT_MEME_PROCESS, false, MessageUtils.getMessage("INF010", EnumTypeAbsence.ASA_A52.getValue()));
@@ -902,7 +907,7 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 			for (String erreur : message.getErrors()) {
 				err += " " + erreur;
 			}
-			getTransaction().declarerErreur(err);
+			getTransaction().declarerErreur("ERREUR : " + err);
 		} else {
 			// "INF700", "Les représentants ont bien été mis à jour."
 			setStatut(STATUT_MEME_PROCESS, false, MessageUtils.getMessage("INF700"));
@@ -963,5 +968,13 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 		if (list.size() == 0)
 			return true;
 		return false;
+	}
+
+	public CompteurDto getCompteurCourant() {
+		return compteurCourant;
+	}
+
+	public void setCompteurCourant(CompteurDto compteurCourant) {
+		this.compteurCourant = compteurCourant;
 	}
 }

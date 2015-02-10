@@ -491,7 +491,7 @@ public class OeELECSaisieCompteurA53 extends BasicProcess {
 			for (String erreur : message.getErrors()) {
 				err += " " + erreur;
 			}
-			getTransaction().declarerErreur(err);
+			getTransaction().declarerErreur("ERREUR : " + err);
 		} else {
 			// "INF010", "Le compteur @ a bien été mis à jour."
 			setStatut(STATUT_MEME_PROCESS, false, MessageUtils.getMessage("INF010", EnumTypeAbsence.ASA_A53.getValue()));

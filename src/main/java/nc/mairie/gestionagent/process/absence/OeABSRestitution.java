@@ -196,7 +196,7 @@ public class OeABSRestitution extends BasicProcess {
 
 		if (!err.equals(Const.CHAINE_VIDE)) {
 			err += info;
-			getTransaction().declarerErreur(err);
+			getTransaction().declarerErreur("ERREUR : " + err);
 			return false;
 		}
 		if (!info.equals(Const.CHAINE_VIDE)) {
