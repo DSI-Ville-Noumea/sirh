@@ -1467,13 +1467,16 @@ public class OeABSVisualisation extends BasicProcess {
 				dto.setIdRefEtat(state.getCode());
 				dto.setMotif(motif);
 				listDto.add(dto);
-				refreshHistory(d.getIdDemande());
 			}
 
 			String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class)
 					.deepSerialize(listDto);
 			ReturnMessageDto message = t.setAbsState(agentConnecte.getIdAgent(), json);
 
+			for (DemandeDto d : dem) {
+				refreshHistory(d.getIdDemande());
+			}
+			
 			if (message.getErrors().size() > 0) {
 				String err = Const.CHAINE_VIDE;
 				for (String erreur : message.getErrors()) {
