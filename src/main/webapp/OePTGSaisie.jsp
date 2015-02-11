@@ -188,6 +188,7 @@
 								String commentaire = "";
 								Integer idPtg = 0;
 								Integer idRefEtat = 0;
+								Integer idMotifHSup = 0;
 								
 								if (process.getHsups().containsKey(dateIndex)
 										&& process.getHsups().get(dateIndex).size() > j) {
@@ -200,7 +201,7 @@
 									heureFin = hs.getHeureFin(); 
 									checkedRecupere = hs.isRecuperee();
 									checkedRappelService = hs.isRappelService();
-									motif = hs.getMotif();
+									idMotifHSup = hs.getIdMotifHsup();
 									commentaire = hs.getCommentaire();
 									idPtg = hs.getIdPointage();
 									idRefEtat = hs.getIdRefEtat();
@@ -241,7 +242,7 @@
 										<%} %>
 										<tr bgcolor="#BFEFFF">
 											<td>
-												<INPUT type="text" size="22px" class="sigp2-saisie" name="NOM_motif_<%=id %>" value="<%=motif %>" title="Zone de saisie du motif" />
+												<select name="NOM_motif_<%=id %>" style="width:200px;"><%=process.getMotifHsup(idMotifHSup) %></select>
 											</td>
 										</tr>
 										<tr bgcolor="#BFEFFF">

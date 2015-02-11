@@ -20,6 +20,7 @@ import nc.mairie.gestionagent.dto.ReturnMessageDto;
 import nc.mairie.gestionagent.pointage.dto.FichePointageDto;
 import nc.mairie.gestionagent.pointage.dto.HeureSupDto;
 import nc.mairie.gestionagent.pointage.dto.JourPointageDto;
+import nc.mairie.gestionagent.pointage.dto.MotifHeureSupDto;
 import nc.mairie.gestionagent.pointage.dto.PrimeDto;
 import nc.mairie.gestionagent.radi.dto.LightUserDto;
 import nc.mairie.metier.Const;
@@ -70,6 +71,8 @@ public class OePTGSaisie extends BasicProcess {
 	private AffectationDao affectationDao;
 	private AgentDao agentDao;
 	public String focus = null;
+	
+	private List<MotifHeureSupDto> listMotifHsup;
 
 	@Override
 	public String getJSP() {
@@ -92,6 +95,8 @@ public class OePTGSaisie extends BasicProcess {
 		FichePointageDto dto = t.getSaisiePointage(idAgent, date);
 		setListeFichePointage(dto);
 
+		setListMotifHsup(t.getListeMotifHeureSup());
+		
 		setINASuperieur315(dto.isINASuperieur315());
 		setDPM(dto.isDPM());
 	}
@@ -430,7 +435,6 @@ public class OePTGSaisie extends BasicProcess {
 
 	private DataContainer getData(String id, Date d, boolean isAbsence, boolean isHeureSup) {
 		DataContainer ret = new DataContainer();
-		ret.setMotif(getZone("NOM_motif_" + id));
 		ret.setComment(getZone("NOM_comm_" + id));
 		ret.setNbr(getZone("NOM_nbr_" + id));
 		ret.setMins(getZone("NOM_mins_" + id));
@@ -443,6 +447,7 @@ public class OePTGSaisie extends BasicProcess {
 		} else if (isHeureSup) {
 			ret.setChk(getZone("NOM_CK_RECUP_" + id));
 			ret.setChkRappelService(getZone("NOM_CK_RAPPEL_" + id));
+			ret.setIdMotifHsup(Integer.parseInt("0" + getZone("NOM_motif_" + id)));
 		} else {
 			ret.setChk(getZone("NOM_CK_" + id));
 		}
@@ -636,6 +641,25 @@ public class OePTGSaisie extends BasicProcess {
 		}
 		return ret.toString();
 	}
+	
+	public String getMotifHsup(Integer idMotifHsup) {
+
+		Integer selected = 0;
+		if (null != idMotifHsup) {
+			selected = idMotifHsup;
+		}
+
+		StringBuilder ret = new StringBuilder();
+		ret.append("<option value=''></option>");
+
+		for (MotifHeureSupDto motif : getListMotifHsup()) {
+			ret.append("<option value='" + motif.getIdMotifHsup() + "'"
+					+ (selected == motif.getIdMotifHsup() ? "selected" : "") + " title='"+motif.getLibelle()+"' >" + motif.getLibelle()
+					+ "</option>");
+
+		}
+		return ret.toString();
+	}
 
 	// /////////////////////////////////// FIN COMBOX BOX POUR LA JSP
 	// //////////////////////////////////////////////////////
@@ -750,6 +774,14 @@ public class OePTGSaisie extends BasicProcess {
 
 	public void setINASuperieur315(boolean isINASuperieur315) {
 		this.isINASuperieur315 = isINASuperieur315;
+	}
+
+	public List<MotifHeureSupDto> getListMotifHsup() {
+		return listMotifHsup;
+	}
+
+	public void setListMotifHsup(List<MotifHeureSupDto> listMotifHsup) {
+		this.listMotifHsup = listMotifHsup;
 	}
 
 }
