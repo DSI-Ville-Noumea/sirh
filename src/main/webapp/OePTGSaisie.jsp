@@ -242,7 +242,7 @@
 										<%} %>
 										<tr bgcolor="#BFEFFF">
 											<td>
-												<select name="NOM_motif_<%=id %>" style="width:200px;"><%=process.getMotifHsup(idMotifHSup) %></select>
+												<select name="NOM_motif_<%=id %>" style="width:150px;"><%=process.getMotifHsup(idMotifHSup) %></select>
 											</td>
 										</tr>
 										<tr bgcolor="#BFEFFF">
