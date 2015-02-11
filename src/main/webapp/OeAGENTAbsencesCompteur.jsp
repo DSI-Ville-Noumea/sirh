@@ -61,8 +61,8 @@
 		            			<span class="sigp2Mandatory">Durée à ajouter :</span>
 							</td>
 							<td>
-								<INPUT class="sigp2-saisie" maxlength="3" size="3"  name="<%= process.getNOM_ST_DUREE_HEURE_AJOUT() %>" type="text" value="<%= process.getVAL_ST_DUREE_HEURE_AJOUT() %>"><span class="sigp2-saisie">heures</span>
-								<INPUT class="sigp2-saisie" maxlength="2" size="2"  name="<%= process.getNOM_ST_DUREE_MIN_AJOUT() %>" type="text" value="<%= process.getVAL_ST_DUREE_MIN_AJOUT() %>"><span class="sigp2-saisie">minutes</span>
+								<INPUT class="sigp2-saisie" maxlength="4" size="3"  name="<%= process.getNOM_ST_DUREE_HEURE_AJOUT() %>" type="text" value="<%= process.getVAL_ST_DUREE_HEURE_AJOUT() %>"><span class="sigp2-saisie">heures</span>
+								<INPUT class="sigp2-saisie" maxlength="4" size="2"  name="<%= process.getNOM_ST_DUREE_MIN_AJOUT() %>" type="text" value="<%= process.getVAL_ST_DUREE_MIN_AJOUT() %>"><span class="sigp2-saisie">minutes</span>
 							</td>
 						</tr>
 						<tr>
@@ -176,7 +176,7 @@
 		            			<span class="sigp2Mandatory">Durée à ajouter :</span>
 							</td>
 							<td>
-								<INPUT class="sigp2-saisie" maxlength="3" size="3"  name="<%= process.getNOM_ST_DUREE_JOUR_AJOUT() %>" type="text" value="<%= process.getVAL_ST_DUREE_JOUR_AJOUT() %>"><span class="sigp2-saisie">jours</span>
+								<INPUT class="sigp2-saisie" maxlength="4" size="3"  name="<%= process.getNOM_ST_DUREE_JOUR_AJOUT() %>" type="text" value="<%= process.getVAL_ST_DUREE_JOUR_AJOUT() %>"><span class="sigp2-saisie">jours</span>
 							</td>
 						</tr>
 						<tr>
@@ -184,7 +184,7 @@
 		           				<span class="sigp2Mandatory">Durée à retrancher :</span>
 							</td>
 							<td>
-								<INPUT class="sigp2-saisie" maxlength="3" size="3"  name="<%= process.getNOM_ST_DUREE_JOUR_RETRAIT() %>" type="text" value="<%= process.getVAL_ST_DUREE_JOUR_RETRAIT() %>"><span class="sigp2-saisie">jours</span>
+								<INPUT class="sigp2-saisie" maxlength="4" size="3"  name="<%= process.getNOM_ST_DUREE_JOUR_RETRAIT() %>" type="text" value="<%= process.getVAL_ST_DUREE_JOUR_RETRAIT() %>"><span class="sigp2-saisie">jours</span>
 							</td>
 						</tr>
 						<tr>
