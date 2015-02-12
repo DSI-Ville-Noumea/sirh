@@ -964,7 +964,7 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 		// cet agent
 		SirhAbsWSConsumer consu = new SirhAbsWSConsumer();
 		List<DemandeDto> list = consu.getListeDemandes(null, null, null, EnumTypeAbsence.ASA_A52.getCode(), idAgent,
-				EnumTypeGroupeAbsence.AS.getValue(), false);
+				EnumTypeGroupeAbsence.AS.getValue(), false, null);
 		if (list.size() == 0)
 			return true;
 		return false;

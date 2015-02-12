@@ -384,7 +384,8 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 
 	@Override
 	public List<DemandeDto> getListeDemandes(String dateDebut, String dateFin, Integer idRefEtat, Integer idRefType,
-			Integer idAgentRecherche, Integer idRefGroupe, boolean aValider) {
+			Integer idAgentRecherche, Integer idRefGroupe, boolean aValider, List<String> idAgentsService) {
+		
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
 		String url = urlWS + sirhAbsDemandes;
 		HashMap<String, String> params = new HashMap<>();
@@ -402,9 +403,22 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 			params.put("idAgentRecherche", idAgentRecherche.toString());
 		if (idRefGroupe != null)
 			params.put("groupe", idRefGroupe.toString());
+
+		if (idAgentsService != null) {
+			String csvId = Const.CHAINE_VIDE;
+			for (String id : idAgentsService) {
+				csvId += id + ",";
+			}
+			if (csvId != Const.CHAINE_VIDE) {
+				csvId = csvId.substring(0, csvId.length() - 1);
+			}
+			params.put("idAgents", csvId);
+		}
+		
 		logger.debug("Call " + url + " with from : " + dateDebut + ",to : " + dateFin + ",etat : " + idRefEtat
 				+ ",type : " + idRefType + ",idAgentRecherche : " + idAgentRecherche + ",groupe : " + idRefGroupe
-				+ ",aValider : " + aValider);
+				+ ",aValider : " + aValider + ", idAgents : " + idAgentsService);
+		
 		ClientResponse res = createAndFireRequest(params, url);
 		return readResponseAsList(DemandeDto.class, res, url);
 	}

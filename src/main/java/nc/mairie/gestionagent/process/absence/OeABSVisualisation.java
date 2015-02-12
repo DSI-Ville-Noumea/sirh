@@ -48,6 +48,7 @@ import nc.mairie.utils.MessageUtils;
 import nc.mairie.utils.TreeHierarchy;
 import nc.mairie.utils.VariablesActivite;
 
+import org.codehaus.plexus.util.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -642,12 +643,49 @@ public class OeABSVisualisation extends BasicProcess {
 
 		String idAgentDemande = getVAL_ST_AGENT_DEMANDE().equals(Const.CHAINE_VIDE) ? null : "900"
 				+ getVAL_ST_AGENT_DEMANDE();
+		
+		// SERVICE
+		List<String> idAgentService = new ArrayList<>();
+		String sigleService = getVAL_EF_SERVICE().toUpperCase();
+		if (!sigleService.equals(Const.CHAINE_VIDE) && null == idAgentDemande) {
+			// on cherche le code service associé
+			Service siserv = Service.chercherServiceBySigle(getTransaction(), sigleService);
+			String codeService = siserv.getCodService();
+			// Récupération des agents
+			// on recupere les sous-service du service selectionne
+			ArrayList<String> listeSousService = null;
+			if (!codeService.equals(Const.CHAINE_VIDE)) {
+				Service serv = Service.chercherService(getTransaction(), codeService);
+				listeSousService = Service.listSousService(getTransaction(), serv.getSigleService());
+			}
+
+			if (!codeService.equals(Const.CHAINE_VIDE)) {
+				ArrayList<String> codesServices = listeSousService;
+				if (!codesServices.contains(codeService))
+					codesServices.add(codeService);
+				ArrayList<Agent> listAgent = getAgentDao().listerAgentAvecServicesETMatricules(codesServices,
+						null, null);
+				for (Agent ag : listAgent) {
+					if (!idAgentService.contains(ag.getIdAgent().toString())) {
+						idAgentService.add(ag.getIdAgent().toString());
+					}
+				}
+			}
+		}
+		
+		if (idAgentService.size() >= 1000) {
+			// "ERR501",
+			// "La sélection des filtres engendre plus de 1000 agents. Merci de réduire la sélection."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR501"));
+			return false;
+		}
 
 		SirhAbsWSConsumer t = new SirhAbsWSConsumer();
 		List<DemandeDto> listeDemande = t.getListeDemandes(dateMin, dateMax, etat == null ? null : etat.getCode(),
 				type == null ? null : type.getIdRefTypeAbsence(),
 				idAgentDemande == null ? null : Integer.valueOf(idAgentDemande),
-				groupe == null ? null : groupe.getIdRefGroupeAbsence(), false);
+				groupe == null ? null : groupe.getIdRefGroupeAbsence(), false, idAgentService);
+		
 		logger.debug("Taille liste absences : " + listeDemande.size());
 		setListeAbsence((ArrayList<DemandeDto>) listeDemande);
 
@@ -2045,7 +2083,7 @@ public class OeABSVisualisation extends BasicProcess {
 	public boolean performPB_FILTRER_DEMANDE_A_VALIDER(HttpServletRequest request) throws Exception {
 
 		SirhAbsWSConsumer t = new SirhAbsWSConsumer();
-		List<DemandeDto> listeDemande = t.getListeDemandes(null, null, null, null, null, null, true);
+		List<DemandeDto> listeDemande = t.getListeDemandes(null, null, null, null, null, null, true, null);
 		logger.debug("Taille liste absences : " + listeDemande.size());
 
 		setListeAbsence((ArrayList<DemandeDto>) listeDemande);
