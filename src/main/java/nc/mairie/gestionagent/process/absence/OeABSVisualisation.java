@@ -688,6 +688,7 @@ public class OeABSVisualisation extends BasicProcess {
 		logger.debug("Taille liste absences : " + listeDemande.size());
 		setListeAbsence((ArrayList<DemandeDto>) listeDemande);
 
+		// redmine #13453
 		// loadHistory();
 
 		afficheListeAbsence();
@@ -2086,6 +2087,7 @@ public class OeABSVisualisation extends BasicProcess {
 
 		setListeAbsence((ArrayList<DemandeDto>) listeDemande);
 
+		// redmine #13453
 		// loadHistory();
 
 		afficheListeAbsence();
