@@ -48,7 +48,6 @@ import nc.mairie.utils.MessageUtils;
 import nc.mairie.utils.TreeHierarchy;
 import nc.mairie.utils.VariablesActivite;
 
-import org.codehaus.plexus.util.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -643,7 +642,7 @@ public class OeABSVisualisation extends BasicProcess {
 
 		String idAgentDemande = getVAL_ST_AGENT_DEMANDE().equals(Const.CHAINE_VIDE) ? null : "900"
 				+ getVAL_ST_AGENT_DEMANDE();
-		
+
 		// SERVICE
 		List<String> idAgentService = new ArrayList<>();
 		String sigleService = getVAL_EF_SERVICE().toUpperCase();
@@ -663,8 +662,8 @@ public class OeABSVisualisation extends BasicProcess {
 				ArrayList<String> codesServices = listeSousService;
 				if (!codesServices.contains(codeService))
 					codesServices.add(codeService);
-				ArrayList<Agent> listAgent = getAgentDao().listerAgentAvecServicesETMatricules(codesServices,
-						null, null);
+				ArrayList<Agent> listAgent = getAgentDao().listerAgentAvecServicesETMatricules(codesServices, null,
+						null);
 				for (Agent ag : listAgent) {
 					if (!idAgentService.contains(ag.getIdAgent().toString())) {
 						idAgentService.add(ag.getIdAgent().toString());
@@ -672,7 +671,7 @@ public class OeABSVisualisation extends BasicProcess {
 				}
 			}
 		}
-		
+
 		if (idAgentService.size() >= 1000) {
 			// "ERR501",
 			// "La sélection des filtres engendre plus de 1000 agents. Merci de réduire la sélection."
@@ -685,11 +684,11 @@ public class OeABSVisualisation extends BasicProcess {
 				type == null ? null : type.getIdRefTypeAbsence(),
 				idAgentDemande == null ? null : Integer.valueOf(idAgentDemande),
 				groupe == null ? null : groupe.getIdRefGroupeAbsence(), false, idAgentService);
-		
+
 		logger.debug("Taille liste absences : " + listeDemande.size());
 		setListeAbsence((ArrayList<DemandeDto>) listeDemande);
 
-		loadHistory();
+		// loadHistory();
 
 		afficheListeAbsence();
 
@@ -1183,10 +1182,9 @@ public class OeABSVisualisation extends BasicProcess {
 	}
 
 	public String getHistory(int absId) {
-		if (!history.containsKey(absId)) {
-			SirhAbsWSConsumer t = new SirhAbsWSConsumer();
-			history.put(absId, t.getVisualisationHistory(absId));
-		}
+		SirhAbsWSConsumer t = new SirhAbsWSConsumer();
+		history.put(absId, t.getVisualisationHistory(absId));
+
 		List<DemandeDto> data = history.get(absId);
 		int numParams = 7;
 		String[][] ret = new String[data.size()][numParams];
@@ -1514,13 +1512,13 @@ public class OeABSVisualisation extends BasicProcess {
 			for (DemandeDto d : dem) {
 				refreshHistory(d.getIdDemande());
 			}
-			
+
 			if (message.getErrors().size() > 0) {
 				String err = Const.CHAINE_VIDE;
 				for (String erreur : message.getErrors()) {
 					err += " " + erreur;
 				}
-				getTransaction().declarerErreur("ERREUR : "+err);
+				getTransaction().declarerErreur("ERREUR : " + err);
 			}
 			if (message.getInfos().size() > 0) {
 				String inf = Const.CHAINE_VIDE;
@@ -1930,7 +1928,7 @@ public class OeABSVisualisation extends BasicProcess {
 			for (String erreur : srm.getErrors()) {
 				err += " " + erreur;
 			}
-			getTransaction().declarerErreur("ERREUR : "+err);
+			getTransaction().declarerErreur("ERREUR : " + err);
 			return false;
 		}
 		if (srm.getInfos().size() > 0) {
@@ -2088,7 +2086,7 @@ public class OeABSVisualisation extends BasicProcess {
 
 		setListeAbsence((ArrayList<DemandeDto>) listeDemande);
 
-		loadHistory();
+		// loadHistory();
 
 		afficheListeAbsence();
 

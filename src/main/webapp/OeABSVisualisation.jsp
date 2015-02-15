@@ -22,7 +22,7 @@
             <TITLE>Visualisation des absences</TITLE>		
 
 
-            <SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT> 
+<!--             <SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT>  -->
             <SCRIPT language="javascript" src="js/dtree.js"></SCRIPT>
 			<SCRIPT type="text/javascript" src="js/GestionCalendrier.js"></SCRIPT> 
             <script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
@@ -122,15 +122,30 @@
                     });
                 });
 
-                function loadAbsenceHistory(absId, list) {
-                    var oTable = $('#VisualisationAbsenceList').dataTable();
-                    var tr = document.getElementById('tr' + absId);
-
-                    if (oTable.fnIsOpen(tr)) {
+                function loadAbsenceHistory(absId) {     
+                	var oTable = $('#VisualisationAbsenceList').dataTable();
+                	var tr = document.getElementById('tr' + absId);   
+                	
+                	if (oTable.fnIsOpen(tr)) {
                         oTable.fnClose(tr);
                     } else {
-                        oTable.fnOpen(tr, buildDetailTable(list));
+	                	var url = "HistoriqueAbsence?idAbsence=" + absId;
+	                	
+	                	$.ajax({
+	                		type: "GET",
+	                		url: url,
+	                		dataType : "html",
+	                		//affichage de l'erreur en cas de problème
+	                		error:function(msg, string){
+	                				alert( "Error !: " + string );
+	                			},
+	                		success:function(html){
+	                			var list = html;
+	                            oTable.fnOpen(tr, buildDetailTable(list));
+	                		}
+	        			}); 
                     }
+                    return 0;
                 }
 
                 /**
@@ -343,7 +358,7 @@
                             <%} %>
 							</td>  
                             <td width="30px" align="center">
-                            	<img onkeydown="" onkeypress="" onkeyup="" src="images/loupe.gif" height="16px" width="16px" title="Voir l'historique de l'absence" onClick="loadAbsenceHistory('<%=process.getValHistory(indiceAbs)%>', '<%=process.getHistory(indiceAbs)%>')">
+                            	<img onkeydown="" onkeypress="" onkeyup="" src="images/loupe.gif" height="16px" width="16px" title="Voir l'historique de l'absence" onClick="loadAbsenceHistory('<%=process.getValHistory(indiceAbs)%>')">
                             </td>
                             <td width="40px" align="center">
                             <%if(abs.isDepassementCompteur()){ %>
