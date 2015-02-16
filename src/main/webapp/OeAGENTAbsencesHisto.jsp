@@ -94,10 +94,8 @@
 						<table class="sigp2NewTab" style="text-align:left;width:980px;">
 							<tr bgcolor="#EFEFEF">
 								<td width="300px;">Type Demande</td>
-								<td width="90px;" align="center">Date début</td>
-								<td width="90px;" align="center">Heure Début</td>
-								<td width="90px;" align="center">Date fin</td>
-								<td width="90px;" align="center">Heure Fin</td>
+								<td width="100px;" align="left">Date début</td>
+								<td width="100px;" align="left">Date fin</td>
 								<td width="90px;" align="center">Durée</td>
 								<td width="90px;" align="center">Date Demande</td>
 								<td>Etat</td>
@@ -107,10 +105,8 @@
 							%>
 							<tr id="<%=i%>" onmouseover="SelectLigne(<%=i%>,<%=process.getListeDemandeNonPrises().size()%>)">
 								<td class="sigp2NewTab-liste"><%=process.getVAL_ST_TYPE_DEMANDE_NP(i)%></td>
-								<td style="text-align: center;" class="sigp2NewTab-liste"><%=process.getVAL_ST_DATE_DEBUT_NP(i)%></td>
-								<td style="text-align: center;" class="sigp2NewTab-liste"><%=process.getVAL_ST_HEURE_DEBUT_NP(i)%></td>
-								<td class="sigp2NewTab-liste" style="text-align: center;"><%=process.getVAL_ST_DATE_FIN_NP(i)%></td>
-								<td class="sigp2NewTab-liste" style="text-align: center;"><%=process.getVAL_ST_HEURE_FIN_NP(i)%></td>
+								<td style="text-align: left;" class="sigp2NewTab-liste"><%=process.getVAL_ST_DATE_DEBUT_NP(i)%></td>
+								<td class="sigp2NewTab-liste" style="text-align: left;"><%=process.getVAL_ST_DATE_FIN_NP(i)%></td>
 								<td style="text-align: center;" class="sigp2NewTab-liste"><%=process.getVAL_ST_DUREE_NP(i)%></td>
 								<td style="text-align: center;" class="sigp2NewTab-liste"><%=process.getVAL_ST_DATE_DEMANDE_NP(i)%></td>
 								<td style="text-align: left;" class="sigp2NewTab-liste"><%=process.getVAL_ST_ETAT_DEMANDE_NP(i)%></td>
@@ -155,10 +151,8 @@
 						<table class="sigp2NewTab" style="text-align:left;width:980px;">
 							<tr bgcolor="#EFEFEF">
 								<td width="300px;">Type Demande</td>
-								<td width="90px;" align="center">Date début</td>
-								<td width="90px;" align="center">Heure Début</td>
-								<td width="90px;" align="center">Date fin</td>
-								<td width="90px;" align="center">Heure Fin</td>
+								<td width="100px;" align="left">Date début</td>
+								<td width="100px;" align="left">Date fin</td>
 								<td width="90px;" align="center">Durée</td>
 								<td width="90px;" align="center">Date Demande</td>
 								<td>Etat</td>
@@ -168,10 +162,8 @@
 							%>
 							<tr id="<%=i%>" onmouseover="SelectLigne(<%=i%>,<%=process.getListeDemandeEnCours().size()%>)">
 								<td class="sigp2NewTab-liste"><%=process.getVAL_ST_TYPE_DEMANDE_EC(i)%></td>
-								<td class="sigp2NewTab-liste" style="text-align: center;"><%=process.getVAL_ST_DATE_DEBUT_EC(i)%></td>
-								<td class="sigp2NewTab-liste" style="text-align: center;"><%=process.getVAL_ST_HEURE_DEBUT_EC(i)%></td>
-								<td class="sigp2NewTab-liste" style="text-align: center;"><%=process.getVAL_ST_DATE_FIN_EC(i)%></td>
-								<td class="sigp2NewTab-liste" style="text-align: center;"><%=process.getVAL_ST_HEURE_FIN_EC(i)%></td>
+								<td class="sigp2NewTab-liste" style="text-align: left;"><%=process.getVAL_ST_DATE_DEBUT_EC(i)%></td>
+								<td class="sigp2NewTab-liste" style="text-align: left;"><%=process.getVAL_ST_DATE_FIN_EC(i)%></td>
 								<td class="sigp2NewTab-liste" style="text-align: center;"><%=process.getVAL_ST_DUREE_EC(i)%></td>
 								<td class="sigp2NewTab-liste" style="text-align: center;"><%=process.getVAL_ST_DATE_DEMANDE_EC(i)%></td>
 								<td class="sigp2NewTab-liste" style="text-align: left;"><%=process.getVAL_ST_ETAT_DEMANDE_EC(i)%></td>
@@ -216,10 +208,8 @@
 						<table class="sigp2NewTab" style="text-align:left;width:980px;">
 							<tr bgcolor="#EFEFEF">
 								<td width="300px;">Type Demande</td>
-								<td width="90px;" align="center">Date début</td>
-								<td width="90px;" align="center">Heure Début</td>
-								<td width="90px;" align="center">Date fin</td>
-								<td width="90px;" align="center">Heure Fin</td>
+								<td width="100px;" align="left">Date début</td>
+								<td width="100px;" align="left">Date fin</td>
 								<td width="90px;" align="center">Durée</td>
 								<td width="90px;" align="center">Date Demande</td>
 								<td>Etat</td>
@@ -229,10 +219,8 @@
 							%>
 							<tr id="<%=i%>" onmouseover="SelectLigne(<%=i%>,<%=process.getListeToutesDemandes().size()%>)">
 								<td class="sigp2NewTab-liste"><%=process.getVAL_ST_TYPE_DEMANDE_TT(i)%></td>
-								<td class="sigp2NewTab-liste" style="text-align: center;"><%=process.getVAL_ST_DATE_DEBUT_TT(i)%></td>
-								<td class="sigp2NewTab-liste" style="text-align: center;"><%=process.getVAL_ST_HEURE_DEBUT_TT(i)%></td>
-								<td class="sigp2NewTab-liste" style="text-align: center;"><%=process.getVAL_ST_DATE_FIN_TT(i)%></td>
-								<td class="sigp2NewTab-liste" style="text-align: center;"><%=process.getVAL_ST_HEURE_FIN_TT(i)%></td>
+								<td class="sigp2NewTab-liste" style="text-align: left;"><%=process.getVAL_ST_DATE_DEBUT_TT(i)%></td>
+								<td class="sigp2NewTab-liste" style="text-align: left;"><%=process.getVAL_ST_DATE_FIN_TT(i)%></td>
 								<td class="sigp2NewTab-liste" style="text-align: center;"><%=process.getVAL_ST_DUREE_TT(i)%></td>
 								<td class="sigp2NewTab-liste" style="text-align: center;"><%=process.getVAL_ST_DATE_DEMANDE_TT(i)%></td>
 								<td class="sigp2NewTab-liste" style="text-align: left;"><%=process.getVAL_ST_ETAT_DEMANDE_TT(i)%></td>
