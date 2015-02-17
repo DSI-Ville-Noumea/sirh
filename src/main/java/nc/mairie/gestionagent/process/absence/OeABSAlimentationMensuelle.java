@@ -174,6 +174,9 @@ public class OeABSAlimentationMensuelle extends BasicProcess {
 
 	private void afficheAlimAuto() {
 		for (MoisAlimAutoCongesAnnuelsDto histo : getListeAlimAuto()) {
+			if (histo.getAgent() == null || histo.getAgent().getIdAgent() == null) {
+				break;
+			}
 			Integer i = histo.getAgent().getIdAgent();
 			addZone(getNOM_ST_NOMATR_AGENT(i),
 					histo.getAgent().getIdAgent().toString()
