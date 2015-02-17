@@ -137,11 +137,9 @@
 		            	</tr>
 		            	<tr>
 		            		<td>
-	                			<span class="sigp2Mandatory">Message alerte : </span><span class="sigp2-saisie"><%=process.getVAL_ST_MESSAGE_ALERTE()%></span>
-		            		</td>
-		            		<td>
 	                			<span class="sigp2Mandatory">Quota : </span><span class="sigp2-saisie"><%=process.getVAL_ST_QUOTA()%></span>
 		            		</td>
+		            		<td> </td>
 		            	</tr>
 		            	<tr>
 		            		<td>
@@ -149,6 +147,17 @@
 		            		</td>
 		            		<td>
 	                			<span class="sigp2Mandatory">Desc motif : </span><span class="sigp2-saisie"><%=process.getVAL_ST_INFO_COMPL()%></span>
+		            		</td>
+		            	</tr>
+		            	<tr>
+		            		<td>
+								<span class="sigp2Mandatory">Alerte depassement lors saisie : </span>
+		            			<span class="sigp2-saisie"><% if(process.getTypeCreation().getTypeSaisiDto().isAlerte()){%>oui<%}else {%>non<%}%></span>
+							</td>
+		            		<td>
+		            			<%if(process.getTypeCreation().getTypeSaisiDto().isAlerte()){ %>
+	                				<span class="sigp2Mandatory">Message alerte : </span><span class="sigp2-saisie"><%=process.getVAL_ST_MESSAGE_ALERTE()%></span>
+	                			<%} %>
 		            		</td>
 		            	</tr>
 		            </table>
