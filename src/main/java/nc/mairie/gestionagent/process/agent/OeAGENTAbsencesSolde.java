@@ -65,6 +65,7 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 	private DecimalFormat df = new DecimalFormat("0");
 
 	private AgentDao agentDao;
+	public String focus = null;
 
 	/**
 	 * Constructeur du process OeAGENTAbsences. Date de création : (05/09/11
@@ -470,6 +471,7 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION(), ACTION_VISUALISATION);
+		setFocus(getNOM_PB_ANNULER());
 
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
@@ -672,6 +674,21 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 
 	public String getVAL_ST_SAMEDI_OFFERT_SOLDE_CONGE() {
 		return getZone(getNOM_ST_SAMEDI_OFFERT_SOLDE_CONGE());
+	}
+
+	public String getFocus() {
+		if (focus == null) {
+			focus = getDefaultFocus();
+		}
+		return focus;
+	}
+
+	public String getDefaultFocus() {
+		return getNOM_PB_ANNULER();
+	}
+
+	public void setFocus(String focus) {
+		this.focus = focus;
 	}
 
 }
