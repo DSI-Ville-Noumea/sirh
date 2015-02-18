@@ -2,6 +2,7 @@ package nc.mairie.gestionagent.process.absence;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -42,6 +43,10 @@ public class OeABSRestitution extends BasicProcess {
 
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
+	private List<RestitutionMassiveDto> listHistoRestitutionMassive;
+	
+	private RestitutionMassiveDto detailsHisto;
+	
 	@Override
 	public String getJSP() {
 		return "OeABSRestitution.jsp";
@@ -78,6 +83,8 @@ public class OeABSRestitution extends BasicProcess {
 		}
 
 		initialiseDao();
+		// #13594
+		initialiseHisto(request);
 	}
 
 	private void initialiseDao() {
@@ -87,6 +94,11 @@ public class OeABSRestitution extends BasicProcess {
 			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
 		}
 
+	}
+	
+	private void initialiseHisto(HttpServletRequest request) throws Exception {
+		SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
+		setListHistoRestitutionMassive(consuAbs.getHistoRestitutionMassive(getAgentConnecte(request).getIdAgent()));
 	}
 
 	@Override
@@ -99,6 +111,14 @@ public class OeABSRestitution extends BasicProcess {
 				return performPB_LANCER_RESTITUTION(request);
 			}
 
+			// Si clic sur les boutons du tableau
+			for (RestitutionMassiveDto histo : getListHistoRestitutionMassive()) {
+				int indice = histo.getIdRestitutionMassive();
+				// Si clic sur le bouton PB_DUPLIQUER
+				if (testerParametre(request, getNOM_PB_DETAILS_RESTITUTION(indice))) {
+					return performPB_DETAILS_RESTITUTION(request, indice);
+				}
+			}
 		}
 		// Si TAG INPUT non géré par le process
 		setStatut(STATUT_MEME_PROCESS);
@@ -157,6 +177,10 @@ public class OeABSRestitution extends BasicProcess {
 		return "NOM_PB_LANCER_RESTITUTION";
 	}
 
+	public String getNOM_PB_DETAILS_RESTITUTION(Integer i) {
+		return "NOM_PB_DETAILS_RESTITUTION_" + i;
+	}
+
 	public boolean performPB_LANCER_RESTITUTION(HttpServletRequest request) throws Exception {
 		// vérification de la validité du formulaire
 		if (!performControlerChamps(request)) {
@@ -204,6 +228,16 @@ public class OeABSRestitution extends BasicProcess {
 		}
 		return true;
 	}
+	
+	public boolean performPB_DETAILS_RESTITUTION(HttpServletRequest request, Integer id) throws Exception {
+		
+		SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
+		RestitutionMassiveDto details = consuAbs.getDetailsHistoRestitutionMassive(getAgentConnecte(request).getIdAgent(), getRestitutionMassiveById(id));
+		
+		setDetailsHisto(details);
+		
+		return true;
+	}
 
 	private Agent getAgentConnecte(HttpServletRequest request) throws Exception {
 		UserAppli u = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
@@ -244,4 +278,35 @@ public class OeABSRestitution extends BasicProcess {
 		}
 		return true;
 	}
+
+	public List<RestitutionMassiveDto> getListHistoRestitutionMassive() {
+		return listHistoRestitutionMassive;
+	}
+
+	public void setListHistoRestitutionMassive(
+			List<RestitutionMassiveDto> listHistoRestitutionMassive) {
+		this.listHistoRestitutionMassive = listHistoRestitutionMassive;
+	}
+	
+	private RestitutionMassiveDto getRestitutionMassiveById(Integer id)  {
+		for(RestitutionMassiveDto dto : getListHistoRestitutionMassive()) {
+			if(dto.getIdRestitutionMassive().equals(id)) {
+				return dto;
+			}
+		}
+		return null;
+	}
+
+	public RestitutionMassiveDto getDetailsHisto() {
+		return detailsHisto;
+	}
+
+	public void setDetailsHisto(RestitutionMassiveDto detailsHisto) {
+		this.detailsHisto = detailsHisto;
+	}
+
+	public Agent getAgent(Integer idAgent) throws Exception {
+		return getAgentDao().chercherAgent(idAgent);
+	}
+	
 }
