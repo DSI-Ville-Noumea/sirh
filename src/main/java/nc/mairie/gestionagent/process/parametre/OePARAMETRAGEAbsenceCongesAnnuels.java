@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.enums.EnumTypeAbsence;
 import nc.mairie.enums.EnumTypeGroupeAbsence;
+import nc.mairie.gestionagent.absence.dto.RefAlimCongesAnnuelsDto;
 import nc.mairie.gestionagent.absence.dto.RefGroupeAbsenceDto;
 import nc.mairie.gestionagent.absence.dto.RefTypeSaisiCongeAnnuelDto;
 import nc.mairie.gestionagent.absence.dto.TypeAbsenceDto;
@@ -45,9 +46,13 @@ public class OePARAMETRAGEAbsenceCongesAnnuels extends BasicProcess {
 	public String focus = null;
 	private ArrayList<RefTypeSaisiCongeAnnuelDto> listeTypeAbsence;
 	private RefTypeSaisiCongeAnnuelDto typeAbsenceCourant;
+	private ArrayList<RefAlimCongesAnnuelsDto> listeAlimMensuelle;
+	private RefAlimCongesAnnuelsDto alimAutoCongesAnnuelsCourant;
 
 	public String ACTION_MODIFICATION = "Modification d'un congé annuel :";
 	public String ACTION_VISUALISATION = "Visualisation d'un congé annuel :";
+	public String ACTION_ALIM_MENSUELLE = "Visualisation des alimentations mensuelles d'un congé annuel :";
+	public String ACTION_MODIF_ALIM_MENSUELLE = "Modification des alimentations mensuelles d'un congé annuel :";
 
 	private AgentDao agentDao;
 
@@ -92,7 +97,6 @@ public class OePARAMETRAGEAbsenceCongesAnnuels extends BasicProcess {
 		List<TypeAbsenceDto> listeTypeAbsence = consuAbs.getListeRefTypeAbsenceDto(EnumTypeGroupeAbsence.CONGES_ANNUELS
 				.getValue());
 
-
 		ArrayList<RefTypeSaisiCongeAnnuelDto> liste = new ArrayList<RefTypeSaisiCongeAnnuelDto>();
 
 		for (TypeAbsenceDto abs : listeTypeAbsence) {
@@ -105,9 +109,7 @@ public class OePARAMETRAGEAbsenceCongesAnnuels extends BasicProcess {
 			addZone(getNOM_ST_DESCRIPTION(i), type.getDescription());
 			addZone(getNOM_ST_QUOTA_MULTIPLE(i), type.getQuotaMultiple() == null ? Const.CHAINE_VIDE : type
 					.getQuotaMultiple().toString());
-
 		}
-
 	}
 
 	/**
@@ -150,6 +152,20 @@ public class OePARAMETRAGEAbsenceCongesAnnuels extends BasicProcess {
 				if (testerParametre(request, getNOM_PB_VISUALISATION(indiceAbs))) {
 					return performPB_VISUALISATION(request, indiceAbs);
 				}
+				// Si clic sur le bouton PB_ALIM_MENSUELLE
+				if (testerParametre(request, getNOM_PB_ALIM_MENSUELLE(indiceAbs))) {
+					return performPB_ALIM_MENSUELLE(request, indiceAbs);
+				}
+			}
+
+			// Si clic sur les boutons du tableau des alim mensuelles
+			for (RefAlimCongesAnnuelsDto alim : getListeAlimMensuelle()) {
+				int indiceAnnee = alim.getAnnee();
+				// Si clic sur le bouton PB_MODIFIER_ALIM_MENSUELLE
+				if (testerParametre(request, getNOM_PB_MODIFIER_ALIM_MENSUELLE(indiceAnnee))) {
+					return performPB_MODIFIER_ALIM_MENSUELLE(request, indiceAnnee);
+				}
+
 			}
 		}
 		// Si TAG INPUT non géré par le process
@@ -441,7 +457,7 @@ public class OePARAMETRAGEAbsenceCongesAnnuels extends BasicProcess {
 				for (String erreur : srm.getErrors()) {
 					err += " " + erreur;
 				}
-				getTransaction().declarerErreur("ERREUR : "+err);
+				getTransaction().declarerErreur("ERREUR : " + err);
 				return false;
 			}
 		}
@@ -574,4 +590,205 @@ public class OePARAMETRAGEAbsenceCongesAnnuels extends BasicProcess {
 		return "NOM_RB_DATE_REPRISE_NON";
 	}
 
+	public String getNOM_PB_ALIM_MENSUELLE(int i) {
+		return "NOM_PB_ALIM_MENSUELLE" + i;
+	}
+
+	public boolean performPB_ALIM_MENSUELLE(HttpServletRequest request, int indiceEltAConsulter) throws Exception {
+		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+		viderZoneSaisie(request);
+
+		// on recupere la demande
+		RefTypeSaisiCongeAnnuelDto aChercher = new RefTypeSaisiCongeAnnuelDto();
+		aChercher.setIdRefTypeSaisiCongeAnnuel(indiceEltAConsulter);
+		RefTypeSaisiCongeAnnuelDto type = getListeTypeAbsence().get(getListeTypeAbsence().indexOf(aChercher));
+		setTypeAbsenceCourant(type);
+
+		initialiseListeAlimMensuelle(request);
+
+		// On nomme l'action
+		addZone(getNOM_ST_ACTION(), ACTION_ALIM_MENSUELLE);
+
+		// On pose le statut
+		setStatut(STATUT_MEME_PROCESS);
+		return true;
+	}
+
+	private void initialiseListeAlimMensuelle(HttpServletRequest request) {
+		SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
+		List<RefAlimCongesAnnuelsDto> listeAlimMensuelle = consuAbs
+				.getListeRefAlimCongesAnnuels(getTypeAbsenceCourant().getIdRefTypeSaisiCongeAnnuel());
+		setListeAlimMensuelle((ArrayList<RefAlimCongesAnnuelsDto>) listeAlimMensuelle);
+
+		for (RefAlimCongesAnnuelsDto type : getListeAlimMensuelle()) {
+			Integer i = type.getAnnee();
+			addZone(getNOM_ST_ANNEE_ALIM(i), type.getAnnee().toString());
+			addZone(getNOM_ST_JANVIER_ALIM(i), type.getJanvier().toString());
+			addZone(getNOM_ST_FEVRIER_ALIM(i), type.getFevrier().toString());
+			addZone(getNOM_ST_MARS_ALIM(i), type.getMars().toString());
+			addZone(getNOM_ST_AVRIL_ALIM(i), type.getAvril().toString());
+			addZone(getNOM_ST_MAI_ALIM(i), type.getMai().toString());
+			addZone(getNOM_ST_JUIN_ALIM(i), type.getJuin().toString());
+			addZone(getNOM_ST_JUILLET_ALIM(i), type.getJuillet().toString());
+			addZone(getNOM_ST_AOUT_ALIM(i), type.getAout().toString());
+			addZone(getNOM_ST_SEPTEMBRE_ALIM(i), type.getSeptembre().toString());
+			addZone(getNOM_ST_OCTOBRE_ALIM(i), type.getOctobre().toString());
+			addZone(getNOM_ST_NOVEMBRE_ALIM(i), type.getNovembre().toString());
+			addZone(getNOM_ST_DECEMBRE_ALIM(i), type.getDecembre().toString());
+		}
+	}
+
+	public ArrayList<RefAlimCongesAnnuelsDto> getListeAlimMensuelle() {
+		return listeAlimMensuelle;
+	}
+
+	public void setListeAlimMensuelle(ArrayList<RefAlimCongesAnnuelsDto> listeAlimMensuelle) {
+		this.listeAlimMensuelle = listeAlimMensuelle;
+	}
+
+	public String getNOM_ST_ANNEE_ALIM(int i) {
+		return "NOM_ST_ANNEE_ALIM_" + i;
+	}
+
+	public String getVAL_ST_ANNEE_ALIM(int i) {
+		return getZone(getNOM_ST_ANNEE_ALIM(i));
+	}
+
+	public RefAlimCongesAnnuelsDto getAlimAutoCongesAnnuelsCourant() {
+		return alimAutoCongesAnnuelsCourant;
+	}
+
+	public void setAlimAutoCongesAnnuelsCourant(RefAlimCongesAnnuelsDto alimAutoCongesAnnuelsCourant) {
+		this.alimAutoCongesAnnuelsCourant = alimAutoCongesAnnuelsCourant;
+	}
+
+	public String getNOM_ST_JANVIER_ALIM(int i) {
+		return "NOM_ST_JANVIER_ALIM_" + i;
+	}
+
+	public String getVAL_ST_JANVIER_ALIM(int i) {
+		return getZone(getNOM_ST_JANVIER_ALIM(i));
+	}
+
+	public String getNOM_ST_FEVRIER_ALIM(int i) {
+		return "NOM_ST_FEVRIER_ALIM_" + i;
+	}
+
+	public String getVAL_ST_FEVRIER_ALIM(int i) {
+		return getZone(getNOM_ST_FEVRIER_ALIM(i));
+	}
+
+	public String getNOM_ST_MARS_ALIM(int i) {
+		return "NOM_ST_MARS_ALIM_" + i;
+	}
+
+	public String getVAL_ST_MARS_ALIM(int i) {
+		return getZone(getNOM_ST_MARS_ALIM(i));
+	}
+
+	public String getNOM_ST_AVRIL_ALIM(int i) {
+		return "NOM_ST_AVRIL_ALIM_" + i;
+	}
+
+	public String getVAL_ST_AVRIL_ALIM(int i) {
+		return getZone(getNOM_ST_AVRIL_ALIM(i));
+	}
+
+	public String getNOM_ST_MAI_ALIM(int i) {
+		return "NOM_ST_MAI_ALIM_" + i;
+	}
+
+	public String getVAL_ST_MAI_ALIM(int i) {
+		return getZone(getNOM_ST_MAI_ALIM(i));
+	}
+
+	public String getNOM_ST_JUIN_ALIM(int i) {
+		return "NOM_ST_JUIN_ALIM_" + i;
+	}
+
+	public String getVAL_ST_JUIN_ALIM(int i) {
+		return getZone(getNOM_ST_JUIN_ALIM(i));
+	}
+
+	public String getNOM_ST_JUILLET_ALIM(int i) {
+		return "NOM_ST_JUILLET_ALIM_" + i;
+	}
+
+	public String getVAL_ST_JUILLET_ALIM(int i) {
+		return getZone(getNOM_ST_JUILLET_ALIM(i));
+	}
+
+	public String getNOM_ST_AOUT_ALIM(int i) {
+		return "NOM_ST_AOUT_ALIM_" + i;
+	}
+
+	public String getVAL_ST_AOUT_ALIM(int i) {
+		return getZone(getNOM_ST_AOUT_ALIM(i));
+	}
+
+	public String getNOM_ST_SEPTEMBRE_ALIM(int i) {
+		return "NOM_ST_SEPTEMBRE_ALIM_" + i;
+	}
+
+	public String getVAL_ST_SEPTEMBRE_ALIM(int i) {
+		return getZone(getNOM_ST_SEPTEMBRE_ALIM(i));
+	}
+
+	public String getNOM_ST_OCTOBRE_ALIM(int i) {
+		return "NOM_ST_OCTOBRE_ALIM_" + i;
+	}
+
+	public String getVAL_ST_OCTOBRE_ALIM(int i) {
+		return getZone(getNOM_ST_OCTOBRE_ALIM(i));
+	}
+
+	public String getNOM_ST_NOVEMBRE_ALIM(int i) {
+		return "NOM_ST_NOVEMBRE_ALIM_" + i;
+	}
+
+	public String getVAL_ST_NOVEMBRE_ALIM(int i) {
+		return getZone(getNOM_ST_NOVEMBRE_ALIM(i));
+	}
+
+	public String getNOM_ST_DECEMBRE_ALIM(int i) {
+		return "NOM_ST_DECEMBRE_ALIM_" + i;
+	}
+
+	public String getVAL_ST_DECEMBRE_ALIM(int i) {
+		return getZone(getNOM_ST_DECEMBRE_ALIM(i));
+	}
+
+	public String getNOM_PB_MODIFIER_ALIM_MENSUELLE(int i) {
+		return "NOM_PB_MODIFIER_ALIM_MENSUELLE" + i;
+	}
+
+	public boolean performPB_MODIFIER_ALIM_MENSUELLE(HttpServletRequest request, int indiceEltAConsulter)
+			throws Exception {
+		addZone(getNOM_ST_ACTION_ALIM_MANUELLE(), Const.CHAINE_VIDE);
+
+		// // on recupere la demande
+		// RefTypeSaisiCongeAnnuelDto aChercher = new
+		// RefTypeSaisiCongeAnnuelDto();
+		// aChercher.setIdRefTypeSaisiCongeAnnuel(indiceEltAConsulter);
+		// RefTypeSaisiCongeAnnuelDto type =
+		// getListeTypeAbsence().get(getListeTypeAbsence().indexOf(aChercher));
+		// setTypeAbsenceCourant(type);
+		//
+		// initialiseListeAlimMensuelle(request);
+		//
+		// On nomme l'action
+		addZone(getNOM_ST_ACTION_ALIM_MANUELLE(), ACTION_MODIF_ALIM_MENSUELLE);
+
+		// On pose le statut
+		setStatut(STATUT_MEME_PROCESS);
+		return true;
+	}
+
+	public String getNOM_ST_ACTION_ALIM_MANUELLE() {
+		return "NOM_ST_ACTION_ALIM_MANUELLE";
+	}
+
+	public String getVAL_ST_ACTION_ALIM_MANUELLE() {
+		return getZone(getNOM_ST_ACTION_ALIM_MANUELLE());
+	}
 }

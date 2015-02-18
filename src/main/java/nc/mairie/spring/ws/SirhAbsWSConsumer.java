@@ -13,6 +13,7 @@ import nc.mairie.gestionagent.absence.dto.MoisAlimAutoCongesAnnuelsDto;
 import nc.mairie.gestionagent.absence.dto.MotifCompteurDto;
 import nc.mairie.gestionagent.absence.dto.MotifDto;
 import nc.mairie.gestionagent.absence.dto.OrganisationSyndicaleDto;
+import nc.mairie.gestionagent.absence.dto.RefAlimCongesAnnuelsDto;
 import nc.mairie.gestionagent.absence.dto.RefGroupeAbsenceDto;
 import nc.mairie.gestionagent.absence.dto.SoldeDto;
 import nc.mairie.gestionagent.absence.dto.TypeAbsenceDto;
@@ -89,6 +90,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 
 	private static final String sirhAbsMoisAlimAutoUrl = "congeannuel/getListeMoisAlimAutoCongeAnnuel";
 	private static final String sirhAbsAlimAutoUrl = "congeannuel/getListeAlimAutoCongeAnnuel";
+	private static final String sirhAbsListRefAlimUrl = "congeannuel/getListRefAlimCongeAnnuel";
 
 	private Logger logger = LoggerFactory.getLogger(SirhAbsWSConsumer.class);
 
@@ -385,7 +387,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	@Override
 	public List<DemandeDto> getListeDemandes(String dateDebut, String dateFin, Integer idRefEtat, Integer idRefType,
 			Integer idAgentRecherche, Integer idRefGroupe, boolean aValider, List<String> idAgentsService) {
-		
+
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
 		String url = urlWS + sirhAbsDemandes;
 		HashMap<String, String> params = new HashMap<>();
@@ -414,11 +416,11 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 			}
 			params.put("idAgents", csvId);
 		}
-		
+
 		logger.debug("Call " + url + " with from : " + dateDebut + ",to : " + dateFin + ",etat : " + idRefEtat
 				+ ",type : " + idRefType + ",idAgentRecherche : " + idAgentRecherche + ",groupe : " + idRefGroupe
 				+ ",aValider : " + aValider + ", idAgents : " + idAgentsService);
-		
+
 		ClientResponse res = createAndFireRequest(params, url);
 		return readResponseAsList(DemandeDto.class, res, url);
 	}
@@ -657,6 +659,17 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 
 		ClientResponse res = createAndPostRequest(params, url, json);
 		return readResponseAsList(MoisAlimAutoCongesAnnuelsDto.class, res, url);
+	}
+
+	@Override
+	public List<RefAlimCongesAnnuelsDto> getListeRefAlimCongesAnnuels(Integer idRefTypeSaisiCongeAnnuel) {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
+		String url = urlWS + sirhAbsListRefAlimUrl;
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idRefTypeSaisiCongeAnnuel", idRefTypeSaisiCongeAnnuel.toString());
+		logger.debug("Call " + url + " with idRefTypeSaisiCongeAnnuel : " + idRefTypeSaisiCongeAnnuel);
+		ClientResponse res = createAndFireRequest(params, url);
+		return readResponseAsList(RefAlimCongesAnnuelsDto.class, res, url);
 	}
 
 }

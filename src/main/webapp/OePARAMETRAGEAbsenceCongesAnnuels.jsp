@@ -1,4 +1,5 @@
 <!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@page import="nc.mairie.gestionagent.absence.dto.RefAlimCongesAnnuelsDto"%>
 <%@page import="nc.mairie.gestionagent.absence.dto.RefTypeSaisiCongeAnnuelDto"%>
 <%@page import="nc.mairie.enums.EnumTypeDroit"%>
 <%@page import="nc.mairie.utils.MairieUtils"%>
@@ -46,6 +47,18 @@
 					} );
 				</script>
 		
+				<script type="text/javascript">
+					$(document).ready(function() {
+					    $('#refAlim').dataTable({
+							"oLanguage": {"sUrl": "media/dataTables/language/fr_FR.txt"},
+							"aoColumns": [{"bSortable":false,"bSearchable":false},null,null,null,null,null,null,null,null,null,null,null,null,null],
+							"sDom": '<"H"l>t<"F"i>',
+							"sScrollY": "100px",
+							"bPaginate": false
+					    });
+					} );
+				</script>
+		
 		<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 	</HEAD>
 	<jsp:useBean class="nc.mairie.gestionagent.process.parametre.OePARAMETRAGEAbsenceCongesAnnuels" id="process" scope="session"></jsp:useBean>
@@ -73,7 +86,9 @@
 			                            	<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, "") %>" name="<%=process.getNOM_PB_VISUALISATION(indiceAbs)%>">
 											<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_VISUALISATION(indiceAbs)%>">
 											<INPUT title="modifier" type="image" src="images/modifier.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_MODIFIER_CONGES(indiceAbs)%>">
-                           					</td>                            
+                           					<INPUT title="Voir l'alimentaion manuelle" type="image" src="images/ajout-doc.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, "") %>" name="<%=process.getNOM_PB_ALIM_MENSUELLE(indiceAbs)%>">
+											<INPUT title="Gérer l'alimentaion manuelle" type="image" src="images/ajout-doc.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_ALIM_MENSUELLE(indiceAbs)%>">
+											</td>                            
 			                            <td><%=process.getVAL_ST_CODE_CONGE(indiceAbs)%></td> 
 			                            <td><%=process.getVAL_ST_DESCRIPTION(indiceAbs)%></td> 
 			                            <td align="center"><%=process.getVAL_ST_QUOTA_MULTIPLE(indiceAbs)%></td>  
@@ -200,6 +215,55 @@
 	                    <INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
                     </div>          
             	</FIELDSET>  
+            <%}else if(process.getVAL_ST_ACTION().equals(process.ACTION_ALIM_MENSUELLE)){ %>
+						<FIELDSET class="sigp2Fieldset" style="text-align: left;">
+					    	<legend class="sigp2Legend">Gestion de l'alimenation mensuelle des congés annuels de la base <%=process.getTypeAbsenceCourant().getCodeBaseHoraireAbsence() %></legend>
+							<br/>
+							<table cellpadding="0" cellspacing="0" border="0"  class="display" id="refAlim"> 
+			                    <thead>
+			                        <tr>
+			                            <th width="30px">&nbsp;</th> 
+			                            <th>Année</th>     
+			                            <th>Janvier</th>     
+			                            <th>Février</th>     
+			                            <th>Mars</th>     
+			                            <th>Avril</th>     
+			                            <th>Mai</th>     
+			                            <th>Juin</th>     
+			                            <th>Juillet</th>     
+			                            <th>Aout</th>     
+			                            <th>Septembre</th>     
+			                            <th>Octobre</th>     
+			                            <th>Novembre</th>     
+			                            <th>Décembre</th>                           
+			                        </tr>
+			                    </thead>
+			                    <tbody>
+			                        <%for (RefAlimCongesAnnuelsDto alim : process.getListeAlimMensuelle()) {
+			                        	int indiceAlim = alim.getAnnee();
+			                        %>
+			                        <tr>
+			                            <td align="center">
+			                            	<INPUT title="modifier" type="image" src="images/modifier.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_MODIFIER_ALIM_MENSUELLE(indiceAlim)%>">
+                           				</td>                            
+			                            <td align="center"><%=process.getVAL_ST_ANNEE_ALIM(indiceAlim)%></td>  
+			                            <td align="center"><%=process.getVAL_ST_JANVIER_ALIM(indiceAlim)%></td>  
+			                            <td align="center"><%=process.getVAL_ST_FEVRIER_ALIM(indiceAlim)%></td>  
+			                            <td align="center"><%=process.getVAL_ST_MARS_ALIM(indiceAlim)%></td>  
+			                            <td align="center"><%=process.getVAL_ST_AVRIL_ALIM(indiceAlim)%></td>  
+			                            <td align="center"><%=process.getVAL_ST_MAI_ALIM(indiceAlim)%></td>  
+			                            <td align="center"><%=process.getVAL_ST_JUIN_ALIM(indiceAlim)%></td>  
+			                            <td align="center"><%=process.getVAL_ST_JUILLET_ALIM(indiceAlim)%></td>  
+			                            <td align="center"><%=process.getVAL_ST_AOUT_ALIM(indiceAlim)%></td>  
+			                            <td align="center"><%=process.getVAL_ST_SEPTEMBRE_ALIM(indiceAlim)%></td>  
+			                            <td align="center"><%=process.getVAL_ST_OCTOBRE_ALIM(indiceAlim)%></td>  
+			                            <td align="center"><%=process.getVAL_ST_NOVEMBRE_ALIM(indiceAlim)%></td>  
+			                            <td align="center"><%=process.getVAL_ST_DECEMBRE_ALIM(indiceAlim)%></td>  
+			                        </tr>
+			                        <%}%>
+			                    </tbody>
+			                </table>
+						</FIELDSET>	
             <%} %>
 		</FORM>
 	</BODY>
