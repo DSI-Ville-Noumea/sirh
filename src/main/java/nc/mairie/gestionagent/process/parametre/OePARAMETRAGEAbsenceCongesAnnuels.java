@@ -47,12 +47,13 @@ public class OePARAMETRAGEAbsenceCongesAnnuels extends BasicProcess {
 	private ArrayList<RefTypeSaisiCongeAnnuelDto> listeTypeAbsence;
 	private RefTypeSaisiCongeAnnuelDto typeAbsenceCourant;
 	private ArrayList<RefAlimCongesAnnuelsDto> listeAlimMensuelle;
-	private RefAlimCongesAnnuelsDto alimAutoCongesAnnuelsCourant;
+	private RefAlimCongesAnnuelsDto alimCongesAnnuelsCourant;
 
 	public String ACTION_MODIFICATION = "Modification d'un congé annuel :";
 	public String ACTION_VISUALISATION = "Visualisation d'un congé annuel :";
-	public String ACTION_ALIM_MENSUELLE = "Visualisation des alimentations mensuelles d'un congé annuel :";
-	public String ACTION_MODIF_ALIM_MENSUELLE = "Modification des alimentations mensuelles d'un congé annuel :";
+	public String ACTION_ALIM_MENSUELLE = "Visualisation des alimentations mensuelles d'un congé annuel";
+	public String ACTION_MODIF_ALIM_MENSUELLE = "Modification des alimentations mensuelles d'un congé annuel";
+	public String ACTION_CREATION_ALIM_MENSUELLE = "Création d'une alimentation mensuelle d'un congé annuel";
 
 	private AgentDao agentDao;
 
@@ -166,6 +167,21 @@ public class OePARAMETRAGEAbsenceCongesAnnuels extends BasicProcess {
 					return performPB_MODIFIER_ALIM_MENSUELLE(request, indiceAnnee);
 				}
 
+			}
+
+			// Si clic sur le bouton PB_CREER_ALIM_MENSUELLE
+			if (testerParametre(request, getNOM_PB_CREER_ALIM_MENSUELLE())) {
+				return performPB_CREER_ALIM_MENSUELLE(request);
+			}
+
+			// Si clic sur le bouton PB_VALIDER_ALIM_MENSUELLE
+			if (testerParametre(request, getNOM_PB_VALIDER_ALIM_MENSUELLE())) {
+				return performPB_VALIDER_ALIM_MENSUELLE(request);
+			}
+
+			// Si clic sur le bouton PB_ANNULER_ALIM_MENSUELLE
+			if (testerParametre(request, getNOM_PB_ANNULER_ALIM_MENSUELLE())) {
+				return performPB_ANNULER_ALIM_MENSUELLE(request);
 			}
 		}
 		// Si TAG INPUT non géré par le process
@@ -598,7 +614,7 @@ public class OePARAMETRAGEAbsenceCongesAnnuels extends BasicProcess {
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 		viderZoneSaisie(request);
 
-		// on recupere la demande
+		// on recupere l'alim
 		RefTypeSaisiCongeAnnuelDto aChercher = new RefTypeSaisiCongeAnnuelDto();
 		aChercher.setIdRefTypeSaisiCongeAnnuel(indiceEltAConsulter);
 		RefTypeSaisiCongeAnnuelDto type = getListeTypeAbsence().get(getListeTypeAbsence().indexOf(aChercher));
@@ -652,14 +668,6 @@ public class OePARAMETRAGEAbsenceCongesAnnuels extends BasicProcess {
 
 	public String getVAL_ST_ANNEE_ALIM(int i) {
 		return getZone(getNOM_ST_ANNEE_ALIM(i));
-	}
-
-	public RefAlimCongesAnnuelsDto getAlimAutoCongesAnnuelsCourant() {
-		return alimAutoCongesAnnuelsCourant;
-	}
-
-	public void setAlimAutoCongesAnnuelsCourant(RefAlimCongesAnnuelsDto alimAutoCongesAnnuelsCourant) {
-		this.alimAutoCongesAnnuelsCourant = alimAutoCongesAnnuelsCourant;
 	}
 
 	public String getNOM_ST_JANVIER_ALIM(int i) {
@@ -765,17 +773,28 @@ public class OePARAMETRAGEAbsenceCongesAnnuels extends BasicProcess {
 	public boolean performPB_MODIFIER_ALIM_MENSUELLE(HttpServletRequest request, int indiceEltAConsulter)
 			throws Exception {
 		addZone(getNOM_ST_ACTION_ALIM_MANUELLE(), Const.CHAINE_VIDE);
+		viderZoneSaisieAlimMensuelle(request);
 
-		// // on recupere la demande
-		// RefTypeSaisiCongeAnnuelDto aChercher = new
-		// RefTypeSaisiCongeAnnuelDto();
-		// aChercher.setIdRefTypeSaisiCongeAnnuel(indiceEltAConsulter);
-		// RefTypeSaisiCongeAnnuelDto type =
-		// getListeTypeAbsence().get(getListeTypeAbsence().indexOf(aChercher));
-		// setTypeAbsenceCourant(type);
-		//
-		// initialiseListeAlimMensuelle(request);
-		//
+		// on recupere l'alim
+		RefAlimCongesAnnuelsDto aChercher = new RefAlimCongesAnnuelsDto();
+		aChercher.setAnnee(indiceEltAConsulter);
+		RefAlimCongesAnnuelsDto type = getListeAlimMensuelle().get(getListeAlimMensuelle().indexOf(aChercher));
+		setAlimCongesAnnuelsCourant(type);
+
+		addZone(getNOM_EF_ANNEE_ALIM(), getAlimCongesAnnuelsCourant().getAnnee().toString());
+		addZone(getNOM_EF_JANVIER_ALIM(), getAlimCongesAnnuelsCourant().getJanvier().toString());
+		addZone(getNOM_EF_FEVRIER_ALIM(), getAlimCongesAnnuelsCourant().getFevrier().toString());
+		addZone(getNOM_EF_MARS_ALIM(), getAlimCongesAnnuelsCourant().getMars().toString());
+		addZone(getNOM_EF_AVRIL_ALIM(), getAlimCongesAnnuelsCourant().getAvril().toString());
+		addZone(getNOM_EF_MAI_ALIM(), getAlimCongesAnnuelsCourant().getMai().toString());
+		addZone(getNOM_EF_JUIN_ALIM(), getAlimCongesAnnuelsCourant().getJuin().toString());
+		addZone(getNOM_EF_JUILLET_ALIM(), getAlimCongesAnnuelsCourant().getJuillet().toString());
+		addZone(getNOM_EF_AOUT_ALIM(), getAlimCongesAnnuelsCourant().getAout().toString());
+		addZone(getNOM_EF_SEPTEMBRE_ALIM(), getAlimCongesAnnuelsCourant().getSeptembre().toString());
+		addZone(getNOM_EF_OCTOBRE_ALIM(), getAlimCongesAnnuelsCourant().getOctobre().toString());
+		addZone(getNOM_EF_NOVEMBRE_ALIM(), getAlimCongesAnnuelsCourant().getNovembre().toString());
+		addZone(getNOM_EF_DECEMBRE_ALIM(), getAlimCongesAnnuelsCourant().getDecembre().toString());
+
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION_ALIM_MANUELLE(), ACTION_MODIF_ALIM_MENSUELLE);
 
@@ -784,11 +803,404 @@ public class OePARAMETRAGEAbsenceCongesAnnuels extends BasicProcess {
 		return true;
 	}
 
+	private void viderZoneSaisieAlimMensuelle(HttpServletRequest request) {
+
+		addZone(getNOM_EF_ANNEE_ALIM(), Const.CHAINE_VIDE);
+		addZone(getNOM_EF_JANVIER_ALIM(), Const.CHAINE_VIDE);
+		addZone(getNOM_EF_FEVRIER_ALIM(), Const.CHAINE_VIDE);
+		addZone(getNOM_EF_MARS_ALIM(), Const.CHAINE_VIDE);
+		addZone(getNOM_EF_AVRIL_ALIM(), Const.CHAINE_VIDE);
+		addZone(getNOM_EF_MAI_ALIM(), Const.CHAINE_VIDE);
+		addZone(getNOM_EF_JUIN_ALIM(), Const.CHAINE_VIDE);
+		addZone(getNOM_EF_JUILLET_ALIM(), Const.CHAINE_VIDE);
+		addZone(getNOM_EF_AOUT_ALIM(), Const.CHAINE_VIDE);
+		addZone(getNOM_EF_SEPTEMBRE_ALIM(), Const.CHAINE_VIDE);
+		addZone(getNOM_EF_OCTOBRE_ALIM(), Const.CHAINE_VIDE);
+		addZone(getNOM_EF_NOVEMBRE_ALIM(), Const.CHAINE_VIDE);
+		addZone(getNOM_EF_DECEMBRE_ALIM(), Const.CHAINE_VIDE);
+
+		setAlimCongesAnnuelsCourant(null);
+
+	}
+
 	public String getNOM_ST_ACTION_ALIM_MANUELLE() {
 		return "NOM_ST_ACTION_ALIM_MANUELLE";
 	}
 
 	public String getVAL_ST_ACTION_ALIM_MANUELLE() {
 		return getZone(getNOM_ST_ACTION_ALIM_MANUELLE());
+	}
+
+	public String getNOM_PB_CREER_ALIM_MENSUELLE() {
+		return "NOM_PB_CREER_ALIM_MENSUELLE";
+	}
+
+	public boolean performPB_CREER_ALIM_MENSUELLE(HttpServletRequest request) throws Exception {
+		addZone(getNOM_ST_ACTION_ALIM_MANUELLE(), Const.CHAINE_VIDE);
+		viderZoneSaisieAlimMensuelle(request);
+
+		// On nomme l'action
+		addZone(getNOM_ST_ACTION_ALIM_MANUELLE(), ACTION_CREATION_ALIM_MENSUELLE);
+
+		setStatut(STATUT_MEME_PROCESS);
+		return true;
+	}
+
+	public String getNOM_PB_ANNULER_ALIM_MENSUELLE() {
+		return "NOM_PB_ANNULER_ALIM_MENSUELLE";
+	}
+
+	public boolean performPB_ANNULER_ALIM_MENSUELLE(HttpServletRequest request) throws Exception {
+		addZone(getNOM_ST_ACTION_ALIM_MANUELLE(), Const.CHAINE_VIDE);
+		viderZoneSaisieAlimMensuelle(request);
+
+		setStatut(STATUT_MEME_PROCESS);
+		return true;
+	}
+
+	public String getNOM_PB_VALIDER_ALIM_MENSUELLE() {
+		return "NOM_PB_VALIDER_ALIM_MENSUELLE";
+	}
+
+	public boolean performPB_VALIDER_ALIM_MENSUELLE(HttpServletRequest request) throws Exception {
+
+		// vérification de la validité du formulaire
+		if (!performControlerChampsAlimMensuelle(request))
+			return false;
+
+		Agent agentConnecte = getAgentConnecte(request);
+		if (agentConnecte == null) {
+			// "ERR183",
+			// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
+			return false;
+		}
+
+		if (getVAL_ST_ACTION_ALIM_MANUELLE().equals(ACTION_MODIF_ALIM_MENSUELLE)
+				|| getVAL_ST_ACTION_ALIM_MANUELLE().equals(ACTION_CREATION_ALIM_MENSUELLE)) {
+
+			RefAlimCongesAnnuelsDto dto = new RefAlimCongesAnnuelsDto();
+			dto.setAnnee(Integer.valueOf(getVAL_EF_ANNEE_ALIM()));
+			dto.setIdRefTypeSaisiCongeAnnuel(getTypeAbsenceCourant().getIdRefTypeSaisiCongeAnnuel());
+			dto.setJanvier(Double.valueOf(getVAL_EF_JANVIER_ALIM()));
+			dto.setFevrier(Double.valueOf(getVAL_EF_FEVRIER_ALIM()));
+			dto.setMars(Double.valueOf(getVAL_EF_MARS_ALIM()));
+			dto.setAvril(Double.valueOf(getVAL_EF_AVRIL_ALIM()));
+			dto.setMai(Double.valueOf(getVAL_EF_MAI_ALIM()));
+			dto.setJuin(Double.valueOf(getVAL_EF_JUIN_ALIM()));
+			dto.setJuillet(Double.valueOf(getVAL_EF_JUILLET_ALIM()));
+			dto.setAout(Double.valueOf(getVAL_EF_AOUT_ALIM()));
+			dto.setSeptembre(Double.valueOf(getVAL_EF_SEPTEMBRE_ALIM()));
+			dto.setOctobre(Double.valueOf(getVAL_EF_OCTOBRE_ALIM()));
+			dto.setNovembre(Double.valueOf(getVAL_EF_NOVEMBRE_ALIM()));
+			dto.setDecembre(Double.valueOf(getVAL_EF_DECEMBRE_ALIM()));
+
+			String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class)
+					.deepSerialize(dto);
+
+			SirhAbsWSConsumer consu = new SirhAbsWSConsumer();
+			ReturnMessageDto srm = consu.saveRefAlimMensuelle(agentConnecte.getIdAgent(), json);
+
+			String err = Const.CHAINE_VIDE;
+			String info = Const.CHAINE_VIDE;
+			if (srm.getErrors().size() > 0) {
+				for (String erreur : srm.getErrors()) {
+					err += " " + erreur;
+				}
+			}
+			if (srm.getInfos().size() > 0) {
+				for (String erreur : srm.getInfos()) {
+					info += " " + erreur;
+				}
+			}
+
+			if (!err.equals(Const.CHAINE_VIDE)) {
+				err += info;
+				getTransaction().declarerErreur("ERREUR : " + err);
+				return false;
+			}
+			if (!info.equals(Const.CHAINE_VIDE)) {
+				getTransaction().declarerErreur(info);
+			}
+		}
+
+		// on recharge le tableau
+		addZone(getNOM_ST_ACTION_ALIM_MANUELLE(), Const.CHAINE_VIDE);
+		viderZoneSaisieAlimMensuelle(request);
+		initialiseListeAlimMensuelle(request);
+		return true;
+	}
+
+	private boolean performControlerChampsAlimMensuelle(HttpServletRequest request) {
+		// Verification année not null
+		if (getZone(getNOM_EF_ANNEE_ALIM()).length() == 0) {
+			// "ERR002","La zone @ est obligatoire."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "année"));
+			return false;
+		}
+		// format année
+		if (!Services.estNumerique(getVAL_EF_ANNEE_ALIM())) {
+			// "ERR992", "La zone @ doit être numérique."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "année"));
+			return false;
+		}
+		// Verification janvier not null
+		if (getZone(getNOM_EF_JANVIER_ALIM()).length() == 0) {
+			// "ERR002","La zone @ est obligatoire."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "janvier"));
+			return false;
+		}
+		// format janvier
+		if (!Services.estFloat(getVAL_EF_JANVIER_ALIM())) {
+			// "ERR992", "La zone @ doit être numérique."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "janvier"));
+			return false;
+		}
+		// Verification février not null
+		if (getZone(getNOM_EF_FEVRIER_ALIM()).length() == 0) {
+			// "ERR002","La zone @ est obligatoire."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "février"));
+			return false;
+		}
+		// format année
+		if (!Services.estFloat(getVAL_EF_FEVRIER_ALIM())) {
+			// "ERR992", "La zone @ doit être numérique."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "février"));
+			return false;
+		}
+		// Verification mars not null
+		if (getZone(getNOM_EF_MARS_ALIM()).length() == 0) {
+			// "ERR002","La zone @ est obligatoire."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "mars"));
+			return false;
+		}
+		// format année
+		if (!Services.estFloat(getVAL_EF_MARS_ALIM())) {
+			// "ERR992", "La zone @ doit être numérique."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "mars"));
+			return false;
+		}
+		// Verification avril not null
+		if (getZone(getNOM_EF_AVRIL_ALIM()).length() == 0) {
+			// "ERR002","La zone @ est obligatoire."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "avril"));
+			return false;
+		}
+		// format avril
+		if (!Services.estFloat(getVAL_EF_AVRIL_ALIM())) {
+			// "ERR992", "La zone @ doit être numérique."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "avril"));
+			return false;
+		}
+		// Verification mai not null
+		if (getZone(getNOM_EF_MAI_ALIM()).length() == 0) {
+			// "ERR002","La zone @ est obligatoire."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "mai"));
+			return false;
+		}
+		// format mai
+		if (!Services.estFloat(getVAL_EF_MAI_ALIM())) {
+			// "ERR992", "La zone @ doit être numérique."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "mai"));
+			return false;
+		}
+		// Verification juin not null
+		if (getZone(getNOM_EF_JUIN_ALIM()).length() == 0) {
+			// "ERR002","La zone @ est obligatoire."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "juin"));
+			return false;
+		}
+		// format juin
+		if (!Services.estFloat(getVAL_EF_JUIN_ALIM())) {
+			// "ERR992", "La zone @ doit être numérique."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "juin"));
+			return false;
+		}
+		// Verification juillet not null
+		if (getZone(getNOM_EF_JUILLET_ALIM()).length() == 0) {
+			// "ERR002","La zone @ est obligatoire."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "juillet"));
+			return false;
+		}
+		// format juillet
+		if (!Services.estFloat(getVAL_EF_JUILLET_ALIM())) {
+			// "ERR992", "La zone @ doit être numérique."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "juillet"));
+			return false;
+		}
+		// Verification aout not null
+		if (getZone(getNOM_EF_AOUT_ALIM()).length() == 0) {
+			// "ERR002","La zone @ est obligatoire."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "aout"));
+			return false;
+		}
+		// format aout
+		if (!Services.estFloat(getVAL_EF_AOUT_ALIM())) {
+			// "ERR992", "La zone @ doit être numérique."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "aout"));
+			return false;
+		}
+		// Verification septembre not null
+		if (getZone(getNOM_EF_SEPTEMBRE_ALIM()).length() == 0) {
+			// "ERR002","La zone @ est obligatoire."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "septembre"));
+			return false;
+		}
+		// format septembre
+		if (!Services.estFloat(getVAL_EF_SEPTEMBRE_ALIM())) {
+			// "ERR992", "La zone @ doit être numérique."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "septembre"));
+			return false;
+		}
+		// Verification octobre not null
+		if (getZone(getNOM_EF_OCTOBRE_ALIM()).length() == 0) {
+			// "ERR002","La zone @ est obligatoire."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "octobre"));
+			return false;
+		}
+		// format octobre
+		if (!Services.estFloat(getVAL_EF_OCTOBRE_ALIM())) {
+			// "ERR992", "La zone @ doit être numérique."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "octobre"));
+			return false;
+		}
+		// Verification novembre not null
+		if (getZone(getNOM_EF_NOVEMBRE_ALIM()).length() == 0) {
+			// "ERR002","La zone @ est obligatoire."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "novembre"));
+			return false;
+		}
+		// format novembre
+		if (!Services.estFloat(getVAL_EF_NOVEMBRE_ALIM())) {
+			// "ERR992", "La zone @ doit être numérique."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "novembre"));
+			return false;
+		}
+		// Verification décembre not null
+		if (getZone(getNOM_EF_DECEMBRE_ALIM()).length() == 0) {
+			// "ERR002","La zone @ est obligatoire."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "décembre"));
+			return false;
+		}
+		// format décembre
+		if (!Services.estFloat(getVAL_EF_DECEMBRE_ALIM())) {
+			// "ERR992", "La zone @ doit être numérique."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "décembre"));
+			return false;
+		}
+
+		return true;
+	}
+
+	public String getNOM_EF_JANVIER_ALIM() {
+		return "NOM_EF_JANVIER_ALIM";
+	}
+
+	public String getVAL_EF_JANVIER_ALIM() {
+		return getZone(getNOM_EF_JANVIER_ALIM());
+	}
+
+	public String getNOM_EF_FEVRIER_ALIM() {
+		return "NOM_EF_FEVRIER_ALIM";
+	}
+
+	public String getVAL_EF_FEVRIER_ALIM() {
+		return getZone(getNOM_EF_FEVRIER_ALIM());
+	}
+
+	public String getNOM_EF_MARS_ALIM() {
+		return "NOM_EF_MARS_ALIM";
+	}
+
+	public String getVAL_EF_MARS_ALIM() {
+		return getZone(getNOM_EF_MARS_ALIM());
+	}
+
+	public String getNOM_EF_AVRIL_ALIM() {
+		return "NOM_EF_AVRIL_ALIM";
+	}
+
+	public String getVAL_EF_AVRIL_ALIM() {
+		return getZone(getNOM_EF_AVRIL_ALIM());
+	}
+
+	public String getNOM_EF_MAI_ALIM() {
+		return "NOM_EF_MAI_ALIM";
+	}
+
+	public String getVAL_EF_MAI_ALIM() {
+		return getZone(getNOM_EF_MAI_ALIM());
+	}
+
+	public String getNOM_EF_JUIN_ALIM() {
+		return "NOM_EF_JUIN_ALIM";
+	}
+
+	public String getVAL_EF_JUIN_ALIM() {
+		return getZone(getNOM_EF_JUIN_ALIM());
+	}
+
+	public String getNOM_EF_JUILLET_ALIM() {
+		return "NOM_EF_JUILLET_ALIM";
+	}
+
+	public String getVAL_EF_JUILLET_ALIM() {
+		return getZone(getNOM_EF_JUILLET_ALIM());
+	}
+
+	public String getNOM_EF_AOUT_ALIM() {
+		return "NOM_EF_AOUT_ALIM";
+	}
+
+	public String getVAL_EF_AOUT_ALIM() {
+		return getZone(getNOM_EF_AOUT_ALIM());
+	}
+
+	public String getNOM_EF_SEPTEMBRE_ALIM() {
+		return "NOM_EF_SEPTEMBRE_ALIM";
+	}
+
+	public String getVAL_EF_SEPTEMBRE_ALIM() {
+		return getZone(getNOM_EF_SEPTEMBRE_ALIM());
+	}
+
+	public String getNOM_EF_OCTOBRE_ALIM() {
+		return "NOM_EF_OCTOBRE_ALIM";
+	}
+
+	public String getVAL_EF_OCTOBRE_ALIM() {
+		return getZone(getNOM_EF_OCTOBRE_ALIM());
+	}
+
+	public String getNOM_EF_NOVEMBRE_ALIM() {
+		return "NOM_EF_NOVEMBRE_ALIM";
+	}
+
+	public String getVAL_EF_NOVEMBRE_ALIM() {
+		return getZone(getNOM_EF_NOVEMBRE_ALIM());
+	}
+
+	public String getNOM_EF_DECEMBRE_ALIM() {
+		return "NOM_EF_DECEMBRE_ALIM";
+	}
+
+	public String getVAL_EF_DECEMBRE_ALIM() {
+		return getZone(getNOM_EF_DECEMBRE_ALIM());
+	}
+
+	public String getNOM_EF_ANNEE_ALIM() {
+		return "NOM_EF_ANNEE_ALIM";
+	}
+
+	public String getVAL_EF_ANNEE_ALIM() {
+		return getZone(getNOM_EF_ANNEE_ALIM());
+	}
+
+	public RefAlimCongesAnnuelsDto getAlimCongesAnnuelsCourant() {
+		return alimCongesAnnuelsCourant;
+	}
+
+	public void setAlimCongesAnnuelsCourant(RefAlimCongesAnnuelsDto alimCongesAnnuelsCourant) {
+		this.alimCongesAnnuelsCourant = alimCongesAnnuelsCourant;
 	}
 }

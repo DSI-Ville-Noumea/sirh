@@ -1,4 +1,5 @@
 <!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@page import="java.util.Date"%>
 <%@page import="nc.mairie.gestionagent.absence.dto.RefAlimCongesAnnuelsDto"%>
 <%@page import="nc.mairie.gestionagent.absence.dto.RefTypeSaisiCongeAnnuelDto"%>
 <%@page import="nc.mairie.enums.EnumTypeDroit"%>
@@ -222,7 +223,9 @@
 							<table cellpadding="0" cellspacing="0" border="0"  class="display" id="refAlim"> 
 			                    <thead>
 			                        <tr>
-			                            <th width="30px">&nbsp;</th> 
+			                            <th width="30px">
+											<INPUT type="image" src="images/ajout.gif" height="20px" width="20px" name="<%=process.getNOM_PB_CREER_ALIM_MENSUELLE()%>" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>">
+										</th> 
 			                            <th>Année</th>     
 			                            <th>Janvier</th>     
 			                            <th>Février</th>     
@@ -244,7 +247,9 @@
 			                        %>
 			                        <tr>
 			                            <td align="center">
+			                            <%if(alim.getAnnee()>= new Date().getYear()){ %>
 			                            	<INPUT title="modifier" type="image" src="images/modifier.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_MODIFIER_ALIM_MENSUELLE(indiceAlim)%>">
+			                            <%} %>
                            				</td>                            
 			                            <td align="center"><%=process.getVAL_ST_ANNEE_ALIM(indiceAlim)%></td>  
 			                            <td align="center"><%=process.getVAL_ST_JANVIER_ALIM(indiceAlim)%></td>  
@@ -263,6 +268,274 @@
 			                        <%}%>
 			                    </tbody>
 			                </table>
+			                <%if(process.getVAL_ST_ACTION_ALIM_MANUELLE().equals(process.ACTION_MODIF_ALIM_MENSUELLE)){ %>
+								<FIELDSET class="sigp2Fieldset" style="text-align: left;">
+					    			<legend class="sigp2Legend">Modification de l'alimenation mensuelle des congés annuels de la base <%=process.getTypeAbsenceCourant().getCodeBaseHoraireAbsence() %></legend>
+					    			<table>
+										<tr>
+											<td colspan="3">
+													<label class="sigp2Mandatory" style="color: red;">Les jours sont à saisir sous la forme "0.0"</label>
+											</td>
+										</tr>
+					            		<tr>
+					            			<td colspan="2">
+												<label class="sigp2Mandatory">Année :</label>
+					            			</td>
+					            			<td>
+												<INPUT class="sigp2-saisiemajuscule" disabled="disabled" maxlength="4" name="<%= process.getNOM_EF_ANNEE_ALIM() %>" size="5" type="text" value="<%= process.getVAL_EF_ANNEE_ALIM() %>">
+					            			</td>
+					            		</tr>
+					            		<tr>
+					            			<td>
+												<label class="sigp2Mandatory">Janvier :</label>
+					            			</td>
+					            			<td>
+					            			<%if(new Date().getMonth()>=1 ){ %>
+												<INPUT class="sigp2-saisiemajuscule" disabled="disabled" name="<%= process.getNOM_EF_JANVIER_ALIM() %>" size="5" type="text" value="<%= process.getVAL_EF_JANVIER_ALIM() %>">
+					            			<%}else{ %>
+												<INPUT class="sigp2-saisiemajuscule" name="<%= process.getNOM_EF_JANVIER_ALIM() %>" size="5" type="text" value="<%= process.getVAL_EF_JANVIER_ALIM() %>">
+					            			<%} %>
+											</td>
+					            			<td>
+												<label class="sigp2Mandatory">Février :</label>
+					            			</td>
+					            			<td>
+					            			<%if(new Date().getMonth()>=2 ){ %>
+												<INPUT class="sigp2-saisiemajuscule" disabled="disabled"  name="<%= process.getNOM_EF_FEVRIER_ALIM() %>" size="5" type="text" value="<%= process.getVAL_EF_FEVRIER_ALIM() %>">
+					            			<%}else{ %>
+												<INPUT class="sigp2-saisiemajuscule" name="<%= process.getNOM_EF_FEVRIER_ALIM() %>" size="5" type="text" value="<%= process.getVAL_EF_FEVRIER_ALIM() %>">
+					            			<%} %>
+											</td>
+					            		</tr>
+					            		<tr>
+					            			<td>
+												<label class="sigp2Mandatory">Mars :</label>
+					            			</td>
+					            			<td>
+					            			<%if(new Date().getMonth()>=3 ){ %>
+												<INPUT class="sigp2-saisiemajuscule" disabled="disabled"  name="<%= process.getNOM_EF_MARS_ALIM() %>" size="5" type="text" value="<%= process.getVAL_EF_MARS_ALIM() %>">
+											<%}else{ %>
+												<INPUT class="sigp2-saisiemajuscule"   name="<%= process.getNOM_EF_MARS_ALIM() %>" size="5" type="text" value="<%= process.getVAL_EF_MARS_ALIM() %>">
+											<%} %>
+					            			</td>
+					            			<td>
+												<label class="sigp2Mandatory">Avril :</label>
+					            			</td>
+					            			<td>												
+					            			<%if(new Date().getMonth()>=4 ){ %>
+												<INPUT class="sigp2-saisiemajuscule" disabled="disabled"  name="<%= process.getNOM_EF_AVRIL_ALIM() %>" size="5" type="text" value="<%= process.getVAL_EF_AVRIL_ALIM() %>">
+					            			<%}else{ %>
+												<INPUT class="sigp2-saisiemajuscule" name="<%= process.getNOM_EF_AVRIL_ALIM() %>" size="5" type="text" value="<%= process.getVAL_EF_AVRIL_ALIM() %>">
+					            			<%} %>
+											</td>
+					            		</tr>
+					            		<tr>
+					            			<td>
+												<label class="sigp2Mandatory">Mai :</label>
+					            			</td>
+					            			<td>												
+					            			<%if(new Date().getMonth()>=5 ){ %>
+												<INPUT class="sigp2-saisiemajuscule" disabled="disabled" name="<%= process.getNOM_EF_MAI_ALIM() %>" size="5" type="text" value="<%= process.getVAL_EF_MAI_ALIM() %>">
+					            			<%}else{ %>
+												<INPUT class="sigp2-saisiemajuscule" name="<%= process.getNOM_EF_MAI_ALIM() %>" size="5" type="text" value="<%= process.getVAL_EF_MAI_ALIM() %>">
+					            			<%} %>
+											</td>
+					            			<td>
+												<label class="sigp2Mandatory">Juin :</label>
+					            			</td>
+					            			<td>												
+					            			<%if(new Date().getMonth()>=6 ){ %>
+												<INPUT class="sigp2-saisiemajuscule" disabled="disabled" name="<%= process.getNOM_EF_JUIN_ALIM() %>" size="5" type="text" value="<%= process.getVAL_EF_JUIN_ALIM() %>">
+					            			<%}else{ %>
+												<INPUT class="sigp2-saisiemajuscule" name="<%= process.getNOM_EF_JUIN_ALIM() %>" size="5" type="text" value="<%= process.getVAL_EF_JUIN_ALIM() %>">
+					            			<%} %>
+											</td>
+					            		</tr>
+					            		<tr>
+					            			<td>
+												<label class="sigp2Mandatory">Juillet :</label>
+					            			</td>
+					            			<td>												
+					            			<%if(new Date().getMonth()>=7 ){ %>
+												<INPUT class="sigp2-saisiemajuscule" disabled="disabled" name="<%= process.getNOM_EF_JUILLET_ALIM() %>" size="5" type="text" value="<%= process.getVAL_EF_JUILLET_ALIM() %>">
+					            			<%}else{ %>
+												<INPUT class="sigp2-saisiemajuscule" name="<%= process.getNOM_EF_JUILLET_ALIM() %>" size="5" type="text" value="<%= process.getVAL_EF_JUILLET_ALIM() %>">
+					            			<%} %>
+											</td>
+					            			<td>
+												<label class="sigp2Mandatory">Aout :</label>
+					            			</td>
+					            			<td>												
+					            			<%if(new Date().getMonth()>=8 ){ %>
+												<INPUT class="sigp2-saisiemajuscule" disabled=disabled" name="<%= process.getNOM_EF_AOUT_ALIM() %>" size="5" type="text" value="<%= process.getVAL_EF_AOUT_ALIM() %>">
+					            			<%}else{ %>
+												<INPUT class="sigp2-saisiemajuscule" name="<%= process.getNOM_EF_AOUT_ALIM() %>" size="5" type="text" value="<%= process.getVAL_EF_AOUT_ALIM() %>">
+					            			<%} %>
+											</td>
+					            		</tr>
+					            		<tr>
+					            			<td>
+												<label class="sigp2Mandatory">Septembre :</label>
+					            			</td>
+					            			<td>												
+					            			<%if(new Date().getMonth()>=9 ){ %>
+												<INPUT class="sigp2-saisiemajuscule" disabled="disabled" name="<%= process.getNOM_EF_SEPTEMBRE_ALIM() %>" size="5" type="text" value="<%= process.getVAL_EF_SEPTEMBRE_ALIM() %>">
+					            			<%}else{ %>
+												<INPUT class="sigp2-saisiemajuscule" name="<%= process.getNOM_EF_SEPTEMBRE_ALIM() %>" size="5" type="text" value="<%= process.getVAL_EF_SEPTEMBRE_ALIM() %>">
+					            			<%} %>
+											</td>
+					            			<td>
+												<label class="sigp2Mandatory">Octobre :</label>
+					            			</td>
+					            			<td>												
+					            			<%if(new Date().getMonth()>=10 ){ %>
+												<INPUT class="sigp2-saisiemajuscule" disabled="disabled" name="<%= process.getNOM_EF_OCTOBRE_ALIM() %>" size="5" type="text" value="<%= process.getVAL_EF_OCTOBRE_ALIM() %>">
+					            			<%}else{ %>
+												<INPUT class="sigp2-saisiemajuscule" name="<%= process.getNOM_EF_OCTOBRE_ALIM() %>" size="5" type="text" value="<%= process.getVAL_EF_OCTOBRE_ALIM() %>">
+					            			<%} %>
+											</td>
+					            		</tr>
+					            		<tr>
+					            			<td>
+												<label class="sigp2Mandatory">Novembre :</label>
+					            			</td>
+					            			<td>												
+					            			<%if(new Date().getMonth()>=11 ){ %>
+												<INPUT class="sigp2-saisiemajuscule" disabled="disabled" name="<%= process.getNOM_EF_NOVEMBRE_ALIM() %>" size="5" type="text" value="<%= process.getVAL_EF_NOVEMBRE_ALIM() %>">
+					            			<%}else{ %>
+												<INPUT class="sigp2-saisiemajuscule" name="<%= process.getNOM_EF_NOVEMBRE_ALIM() %>" size="5" type="text" value="<%= process.getVAL_EF_NOVEMBRE_ALIM() %>">
+					            			<%} %>
+											</td>
+					            			<td>
+												<label class="sigp2Mandatory">Décembre :</label>
+					            			</td>
+					            			<td>												
+					            			<%if(new Date().getMonth()>=12 ){ %>
+												<INPUT class="sigp2-saisiemajuscule" disabled="disabled" name="<%= process.getNOM_EF_DECEMBRE_ALIM() %>" size="5" type="text" value="<%= process.getVAL_EF_DECEMBRE_ALIM() %>">
+					            			<%}else{ %>
+												<INPUT class="sigp2-saisiemajuscule" name="<%= process.getNOM_EF_DECEMBRE_ALIM() %>" size="5" type="text" value="<%= process.getVAL_EF_DECEMBRE_ALIM() %>">
+					            			<%} %>
+											</td>
+					            		</tr>
+					            		<tr>
+					            			<td colspan="4" align="center">
+					            			<INPUT type="submit" class="sigp2-Bouton-100" value="Valider" name="<%=process.getNOM_PB_VALIDER_ALIM_MENSUELLE()%>">
+					            			<INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER_ALIM_MENSUELLE()%>">
+					            			</td>
+					            		</tr>
+					            	</table>
+					    		</FIELDSET>
+			                <%}else if(process.getVAL_ST_ACTION_ALIM_MANUELLE().equals(process.ACTION_CREATION_ALIM_MENSUELLE)){ %>
+								<FIELDSET class="sigp2Fieldset" style="text-align: left;">
+					    			<legend class="sigp2Legend">Création de l'alimenation mensuelle des congés annuels de la base <%=process.getTypeAbsenceCourant().getCodeBaseHoraireAbsence() %></legend>
+					    			<table>
+										<tr>
+											<td colspan="3">
+													<label class="sigp2Mandatory" style="color: red;">Les jours sont à saisir sous la forme "0.0"</label>
+											</td>
+										</tr>
+					            		<tr>
+					            			<td colspan="2">
+												<label class="sigp2Mandatory">Année :</label>
+					            			</td>
+					            			<td>
+												<INPUT class="sigp2-saisiemajuscule" maxlength="4" name="<%= process.getNOM_EF_ANNEE_ALIM() %>" size="5" type="text" value="<%= process.getVAL_EF_ANNEE_ALIM() %>">
+					            			</td>
+					            		</tr>
+					            		<tr>
+					            			<td>
+												<label class="sigp2Mandatory">Janvier :</label>
+					            			</td>
+					            			<td>
+												<INPUT class="sigp2-saisiemajuscule" name="<%= process.getNOM_EF_JANVIER_ALIM() %>" size="5" type="text" value="<%= process.getVAL_EF_JANVIER_ALIM() %>">
+					            			</td>
+					            			<td>
+												<label class="sigp2Mandatory">Février :</label>
+					            			</td>
+					            			<td>
+												<INPUT class="sigp2-saisiemajuscule" name="<%= process.getNOM_EF_FEVRIER_ALIM() %>" size="5" type="text" value="<%= process.getVAL_EF_FEVRIER_ALIM() %>">
+					            			</td>
+					            		</tr>
+					            		<tr>
+					            			<td>
+												<label class="sigp2Mandatory">Mars :</label>
+					            			</td>
+					            			<td>
+					            				<INPUT class="sigp2-saisiemajuscule"   name="<%= process.getNOM_EF_MARS_ALIM() %>" size="5" type="text" value="<%= process.getVAL_EF_MARS_ALIM() %>">
+					            			</td>
+					            			<td>
+												<label class="sigp2Mandatory">Avril :</label>
+					            			</td>
+					            			<td>	
+												<INPUT class="sigp2-saisiemajuscule" name="<%= process.getNOM_EF_AVRIL_ALIM() %>" size="5" type="text" value="<%= process.getVAL_EF_AVRIL_ALIM() %>">
+											</td>
+					            		</tr>
+					            		<tr>
+					            			<td>
+												<label class="sigp2Mandatory">Mai :</label>
+					            			</td>
+					            			<td>		
+												<INPUT class="sigp2-saisiemajuscule" name="<%= process.getNOM_EF_MAI_ALIM() %>" size="5" type="text" value="<%= process.getVAL_EF_MAI_ALIM() %>">
+											</td>
+					            			<td>
+												<label class="sigp2Mandatory">Juin :</label>
+					            			</td>
+					            			<td>		
+												<INPUT class="sigp2-saisiemajuscule" name="<%= process.getNOM_EF_JUIN_ALIM() %>" size="5" type="text" value="<%= process.getVAL_EF_JUIN_ALIM() %>">
+											</td>
+					            		</tr>
+					            		<tr>
+					            			<td>
+												<label class="sigp2Mandatory">Juillet :</label>
+					            			</td>
+					            			<td>			
+												<INPUT class="sigp2-saisiemajuscule" name="<%= process.getNOM_EF_JUILLET_ALIM() %>" size="5" type="text" value="<%= process.getVAL_EF_JUILLET_ALIM() %>">
+											</td>
+					            			<td>
+												<label class="sigp2Mandatory">Aout :</label>
+					            			</td>
+					            			<td>			
+												<INPUT class="sigp2-saisiemajuscule" name="<%= process.getNOM_EF_AOUT_ALIM() %>" size="5" type="text" value="<%= process.getVAL_EF_AOUT_ALIM() %>">
+											</td>
+					            		</tr>
+					            		<tr>
+					            			<td>
+												<label class="sigp2Mandatory">Septembre :</label>
+					            			</td>
+					            			<td>			
+												<INPUT class="sigp2-saisiemajuscule" name="<%= process.getNOM_EF_SEPTEMBRE_ALIM() %>" size="5" type="text" value="<%= process.getVAL_EF_SEPTEMBRE_ALIM() %>">
+											</td>
+					            			<td>
+												<label class="sigp2Mandatory">Octobre :</label>
+					            			</td>
+					            			<td>			
+												<INPUT class="sigp2-saisiemajuscule" name="<%= process.getNOM_EF_OCTOBRE_ALIM() %>" size="5" type="text" value="<%= process.getVAL_EF_OCTOBRE_ALIM() %>">
+											</td>
+					            		</tr>
+					            		<tr>
+					            			<td>
+												<label class="sigp2Mandatory">Novembre :</label>
+					            			</td>
+					            			<td>			
+												<INPUT class="sigp2-saisiemajuscule" name="<%= process.getNOM_EF_NOVEMBRE_ALIM() %>" size="5" type="text" value="<%= process.getVAL_EF_NOVEMBRE_ALIM() %>">
+											</td>
+					            			<td>
+												<label class="sigp2Mandatory">Décembre :</label>
+					            			</td>
+					            			<td>				
+												<INPUT class="sigp2-saisiemajuscule" name="<%= process.getNOM_EF_DECEMBRE_ALIM() %>" size="5" type="text" value="<%= process.getVAL_EF_DECEMBRE_ALIM() %>">
+											</td>
+					            		</tr>
+					            		<tr>
+					            			<td colspan="4" align="center">
+					            			<INPUT type="submit" class="sigp2-Bouton-100" value="Valider" name="<%=process.getNOM_PB_VALIDER_ALIM_MENSUELLE()%>">
+					            			<INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER_ALIM_MENSUELLE()%>">
+					            			</td>
+					            		</tr>
+					            	</table>
+					    		</FIELDSET>
+			                <%} %>
+			                
 						</FIELDSET>	
             <%} %>
 		</FORM>

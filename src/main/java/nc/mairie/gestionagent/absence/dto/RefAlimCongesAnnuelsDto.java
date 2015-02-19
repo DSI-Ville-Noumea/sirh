@@ -2,6 +2,7 @@ package nc.mairie.gestionagent.absence.dto;
 
 public class RefAlimCongesAnnuelsDto {
 
+	private Integer idRefTypeSaisiCongeAnnuel;
 	private Integer annee;
 	private Double janvier;
 	private Double fevrier;
@@ -118,6 +119,19 @@ public class RefAlimCongesAnnuelsDto {
 
 	public void setDecembre(Double decembre) {
 		this.decembre = decembre;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return annee.toString().equals(((RefAlimCongesAnnuelsDto) obj).getAnnee().toString());
+	}
+
+	public Integer getIdRefTypeSaisiCongeAnnuel() {
+		return idRefTypeSaisiCongeAnnuel;
+	}
+
+	public void setIdRefTypeSaisiCongeAnnuel(Integer idRefTypeSaisiCongeAnnuel) {
+		this.idRefTypeSaisiCongeAnnuel = idRefTypeSaisiCongeAnnuel;
 	}
 
 }
