@@ -350,7 +350,7 @@
                         %>
                         <tr id="tr<%=process.getValHistory(indiceAbs)%>">
                             <td width="20px" align="center">
-                            <%if(abs.getIdRefEtat()==EnumEtatAbsence.APPROUVE.getCode() && (abs.getGroupeAbsence().getIdRefGroupeAbsence()==EnumTypeGroupeAbsence.AS.getValue()||abs.getGroupeAbsence().getIdRefGroupeAbsence()==EnumTypeGroupeAbsence.CONGES_EXCEP.getValue()||abs.getGroupeAbsence().getIdRefGroupeAbsence()==EnumTypeGroupeAbsence.CONGES_ANNUELS.getValue())){ %>                            	
+                            <%if(abs.getIdRefEtat()==EnumEtatAbsence.ANNULEE.getCode() && (abs.getGroupeAbsence().getIdRefGroupeAbsence()==EnumTypeGroupeAbsence.AS.getValue()||abs.getGroupeAbsence().getIdRefGroupeAbsence()==EnumTypeGroupeAbsence.CONGES_EXCEP.getValue()||abs.getGroupeAbsence().getIdRefGroupeAbsence()==EnumTypeGroupeAbsence.CONGES_ANNUELS.getValue())){ %>                            	
                             	<img onkeydown="" onkeypress="" onkeyup="" title="dupliquer" type="image" src="images/dupliquer.gif"  height="15px" width="15px" class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_DUPLIQUER(indiceAbs)%>" onclick="executeBouton('<%=process.getNOM_PB_DUPLIQUER(indiceAbs)%>');">
 								<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_DUPLIQUER(indiceAbs)%>" value="">
                             <%} %>

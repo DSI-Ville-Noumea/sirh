@@ -758,7 +758,17 @@ public class OeABSVisualisation extends BasicProcess {
 				} else {
 					addZone(getNOM_ST_DUREE(i), "&nbsp;");
 				}
-				addZone(getNOM_ST_MOTIF(i), abs.getMotif() == null ? "&nbsp;" : abs.getMotif());
+				String motif = "";
+				if(null != abs.getMotif()) {
+					motif += " " + abs.getMotif();
+					if(null != abs.getCommentaire()) {
+						motif += " - ";
+					}
+				}
+				if(null != abs.getCommentaire()) {
+					motif += abs.getCommentaire();
+				}
+				addZone(getNOM_ST_MOTIF(i), motif);
 				addZone(getNOM_ST_ETAT(i), EnumEtatAbsence.getValueEnumEtatAbsence(abs.getIdRefEtat()));
 			} catch (Exception e) {
 				continue;
@@ -1278,7 +1288,22 @@ public class OeABSVisualisation extends BasicProcess {
 		TypeAbsenceDto t = new TypeAbsenceDto();
 		t.setIdRefTypeAbsence(dem.getIdTypeDemande());
 		TypeAbsenceDto type = getListeFamilleAbsenceCreation().get(getListeFamilleAbsenceCreation().indexOf(t));
-
+		
+		if (type.getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.CONGE.getCode().toString())) {
+			// on cherche la base horaire absence de l'agent
+			Affectation aff = getAffectationDao().chercherAffectationActiveAvecAgent(
+					dem.getAgentWithServiceDto().getIdAgent());
+			if (aff == null || aff.getIdBaseHoraireAbsence() == null) {
+				// "ERR805",
+				// "L'agent @ n'a pas de base horaire d'absence. Merci de la renseigner dans l'affectation de l'agent."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR805", dem.getAgentWithServiceDto().getIdAgent().toString()));
+				return false;
+			}
+			SirhAbsWSConsumer consu = new SirhAbsWSConsumer();
+			type = consu.getTypeAbsence(aff.getIdBaseHoraireAbsence());
+		}
+		setTypeCreation(type);
+		
 		addZone(getNOM_LB_FAMILLE_CREATION_SELECT(), String.valueOf(getListeFamilleAbsenceCreation().indexOf(type)));
 
 		Agent agt = getAgentDao().chercherAgent(dem.getAgentWithServiceDto().getIdAgent());
@@ -1286,11 +1311,17 @@ public class OeABSVisualisation extends BasicProcess {
 
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		// date de debut
-		if (type.getTypeSaisiDto().isCalendarDateDebut()) {
+		if ((null != type.getTypeSaisiDto()
+				&& type.getTypeSaisiDto().isCalendarDateDebut())
+				|| (null != type.getTypeSaisiCongeAnnuelDto()
+						&& type.getTypeSaisiCongeAnnuelDto().isCalendarDateDebut())) {
 			addZone(getNOM_ST_DATE_DEBUT(), sdf.format(dem.getDateDebut()));
 		}
 		// date de fin
-		if (type.getTypeSaisiDto().isCalendarDateFin()) {
+		if ((null != type.getTypeSaisiDto()
+				&& type.getTypeSaisiDto().isCalendarDateFin())
+				|| (null != type.getTypeSaisiCongeAnnuelDto()
+				&& type.getTypeSaisiCongeAnnuelDto().isCalendarDateFin())) {
 			addZone(getNOM_ST_DATE_FIN(), sdf.format(dem.getDateFin()));
 		}
 		// checkbox
@@ -1299,17 +1330,20 @@ public class OeABSVisualisation extends BasicProcess {
 
 		SimpleDateFormat sdfHeure = new SimpleDateFormat("HH:mm");
 		// HEURE DEBUT
-		if (type.getTypeSaisiDto().isCalendarHeureDebut()) {
+		if (null != type.getTypeSaisiDto()
+				&& type.getTypeSaisiDto().isCalendarHeureDebut()) {
 			Integer resHeure = getListeHeure().indexOf(sdfHeure.format(dem.getDateDebut()));
-			addZone(getVAL_LB_HEURE_DEBUT_SELECT(), resHeure.toString());
+			addZone(getNOM_LB_HEURE_DEBUT_SELECT(), resHeure.toString());
 		}
 		// HEURE FIN
-		if (type.getTypeSaisiDto().isCalendarHeureFin()) {
+		if (null != type.getTypeSaisiDto()
+				&& type.getTypeSaisiDto().isCalendarHeureFin()) {
 			Integer resHeure = getListeHeure().indexOf(sdfHeure.format(dem.getDateFin()));
-			addZone(getVAL_LB_HEURE_FIN_SELECT(), resHeure.toString());
+			addZone(getNOM_LB_HEURE_FIN_SELECT(), resHeure.toString());
 		}
 		// organisation syndicale
-		if (type.getTypeSaisiDto().isCompteurCollectif()) {
+		if (null != type.getTypeSaisiDto()
+				&& type.getTypeSaisiDto().isCompteurCollectif()) {
 			// on recup l'organisation syndicale
 			OrganisationSyndicaleDto orga = null;
 			if (dem.getOrganisationSyndicale() != null) {
@@ -1319,13 +1353,19 @@ public class OeABSVisualisation extends BasicProcess {
 					orga == null ? Const.ZERO : String.valueOf(getListeOrganisationSyndicale().indexOf(orga)));
 		}
 		// /////////////// MOTIF ////////////////////
-		if (type.getTypeSaisiDto().isMotif()) {
+		if ((null != type.getTypeSaisiDto()
+				&& type.getTypeSaisiDto().isMotif())
+				|| (null != type.getTypeSaisiCongeAnnuelDto())) {
 			addZone(getNOM_ST_MOTIF_CREATION(), dem.getMotif() == null ? Const.CHAINE_VIDE : dem.getMotif().trim());
 		}
 
 		// /////////////// DUREE ////////////////////
-		if (type.getTypeSaisiDto().isDuree()) {
+		if (null != type.getTypeSaisiDto()
+				&& type.getTypeSaisiDto().isDuree()) {
 			String duree = (dem.getDuree() / 60) == 0 ? Const.CHAINE_VIDE : dem.getDuree() / 60 + Const.CHAINE_VIDE;
+			addZone(getNOM_ST_DUREE(), duree);
+		}else if(null != type.getTypeSaisiCongeAnnuelDto()) {
+			String duree = dem.getDuree() == 0 ? Const.CHAINE_VIDE : dem.getDuree() + Const.CHAINE_VIDE;
 			addZone(getNOM_ST_DUREE(), duree);
 		}
 
