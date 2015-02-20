@@ -29,9 +29,11 @@ import nc.mairie.gestionagent.radi.dto.LightUserDto;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.Agent;
 import nc.mairie.metier.carriere.Carriere;
+import nc.mairie.metier.parametrage.ReferentRh;
 import nc.mairie.metier.poste.Affectation;
 import nc.mairie.metier.poste.Service;
 import nc.mairie.spring.dao.metier.agent.AgentDao;
+import nc.mairie.spring.dao.metier.parametrage.ReferentRhDao;
 import nc.mairie.spring.dao.metier.poste.AffectationDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
@@ -71,7 +73,7 @@ public class OeABSVisualisation extends BasicProcess {
 	private Logger logger = LoggerFactory.getLogger(OeABSVisualisation.class);
 
 	public static final int STATUT_RECHERCHER_AGENT_DEMANDE = 1;
-	public static final int STATUT_RECHERCHER_AGENT_ACTION = 2;
+	public static final int STATUT_RECHERCHER_GESTIONNAIRE = 2;
 	public static final int STATUT_RECHERCHER_AGENT_CREATION = 3;
 
 	private String[] LB_ETAT;
@@ -102,6 +104,7 @@ public class OeABSVisualisation extends BasicProcess {
 	private Agent agentCreation;
 	private AgentDao agentDao;
 	private AffectationDao affectationDao;
+	private ReferentRhDao referentRhDao;
 
 	private String typeFiltre;
 
@@ -152,18 +155,18 @@ public class OeABSVisualisation extends BasicProcess {
 				addZone(getNOM_ST_AGENT_DEMANDE(), agt.getNomatr().toString());
 			}
 		}
-		if (etatStatut() == STATUT_RECHERCHER_AGENT_ACTION) {
-			Agent agt = (Agent) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
-			VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
-			if (agt != null) {
-				addZone(getNOM_ST_AGENT_ACTION(), agt.getNomatr().toString());
-			}
-		}
 		if (etatStatut() == STATUT_RECHERCHER_AGENT_CREATION) {
 			Agent agt = (Agent) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
 			VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
 			if (agt != null) {
 				addZone(getNOM_ST_AGENT_CREATION(), agt.getNomatr().toString());
+			}
+		}
+		if (etatStatut() == STATUT_RECHERCHER_GESTIONNAIRE) {
+			Agent agt = (Agent) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
+			VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
+			if (agt != null) {
+				addZone(getNOM_ST_GESTIONNAIRE(), agt.getNomatr().toString());
 			}
 		}
 	}
@@ -176,6 +179,9 @@ public class OeABSVisualisation extends BasicProcess {
 		}
 		if (getAffectationDao() == null) {
 			setAffectationDao(new AffectationDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getReferentRhDao() == null) {
+			setReferentRhDao(new ReferentRhDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -361,12 +367,12 @@ public class OeABSVisualisation extends BasicProcess {
 				return performPB_SUPPRIMER_RECHERCHER_SERVICE(request);
 			}
 			// Si clic sur le bouton PB_RECHERCHER_AGENT_ACTION
-			if (testerParametre(request, getNOM_PB_RECHERCHER_AGENT_ACTION())) {
-				return performPB_RECHERCHER_AGENT_ACTION(request);
+			if (testerParametre(request, getNOM_PB_RECHERCHER_GESTIONNAIRE())) {
+				return performPB_RECHERCHER_GESTIONNAIRE(request);
 			}
 			// Si clic sur le bouton PB_SUPPRIMER_RECHERCHER_AGENT_ACTION
-			if (testerParametre(request, getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_ACTION())) {
-				return performPB_SUPPRIMER_RECHERCHER_AGENT_ACTION(request);
+			if (testerParametre(request, getNOM_PB_SUPPRIMER_RECHERCHER_GESTIONNAIRE())) {
+				return performPB_SUPPRIMER_RECHERCHER_GESTIONNAIRE(request);
 			}
 			// Si clic sur le bouton PB_FILTRER
 			if (testerParametre(request, getNOM_PB_FILTRER())) {
@@ -555,32 +561,32 @@ public class OeABSVisualisation extends BasicProcess {
 		return getZone(getNOM_LB_FAMILLE_SELECT());
 	}
 
-	public String getNOM_ST_AGENT_ACTION() {
-		return "NOM_ST_AGENT_ACTION";
+	public String getNOM_ST_GESTIONNAIRE() {
+		return "NOM_ST_GESTIONNAIRE";
 	}
 
-	public String getVAL_ST_AGENT_ACTION() {
-		return getZone(getNOM_ST_AGENT_ACTION());
+	public String getVAL_ST_GESTIONNAIRE() {
+		return getZone(getNOM_ST_GESTIONNAIRE());
 	}
 
-	public String getNOM_PB_RECHERCHER_AGENT_ACTION() {
-		return "NOM_PB_RECHERCHER_AGENT_ACTION";
+	public String getNOM_PB_RECHERCHER_GESTIONNAIRE() {
+		return "NOM_PB_RECHERCHER_GESTIONNAIRE";
 	}
 
-	public boolean performPB_RECHERCHER_AGENT_ACTION(HttpServletRequest request) throws Exception {
+	public String getNOM_PB_SUPPRIMER_RECHERCHER_GESTIONNAIRE() {
+		return "NOM_PB_SUPPRIMER_RECHERCHER_GESTIONNAIRE";
+	}
+
+	public boolean performPB_RECHERCHER_GESTIONNAIRE(HttpServletRequest request) throws Exception {
 		// On met l'agent courant en var d'activité
 		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new Agent());
-		setStatut(STATUT_RECHERCHER_AGENT_ACTION, true);
+		setStatut(STATUT_RECHERCHER_GESTIONNAIRE, true);
 		return true;
 	}
 
-	public String getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_ACTION() {
-		return "NOM_PB_SUPPRIMER_RECHERCHER_AGENT_ACTION";
-	}
-
-	public boolean performPB_SUPPRIMER_RECHERCHER_AGENT_ACTION(HttpServletRequest request) throws Exception {
+	public boolean performPB_SUPPRIMER_RECHERCHER_GESTIONNAIRE(HttpServletRequest request) throws Exception {
 		// On enlève l'agent selectionnée
-		addZone(getNOM_ST_AGENT_ACTION(), Const.CHAINE_VIDE);
+		addZone(getNOM_ST_GESTIONNAIRE(), Const.CHAINE_VIDE);
 		return true;
 	}
 
@@ -677,6 +683,50 @@ public class OeABSVisualisation extends BasicProcess {
 			// "La sélection des filtres engendre plus de 1000 agents. Merci de réduire la sélection."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR501"));
 			return false;
+		}
+		
+		//GESTIONNAIRE
+		if (sigleService.equals(Const.CHAINE_VIDE) && null == idAgentDemande) {
+			String idGestionnaire = getVAL_ST_GESTIONNAIRE();
+			List<ReferentRh> listServiceRH = null;
+			try {
+				Integer idReferentRH = new Integer(idGestionnaire);
+				idReferentRH += 9000000;
+				listServiceRH = getReferentRhDao().listerServiceAvecReferentRh(idReferentRH);
+			} catch(NumberFormatException e) {
+				getTransaction().declarerErreur("Une erreur de saisie sur le gestionnaire est survenue.");
+				return false;
+			}
+			if(null == listServiceRH || listServiceRH.isEmpty()) {
+				getTransaction().declarerErreur("Le gestionnaire saisi n'est pas un référent RH.");
+				return false;
+			}
+			// Récupération des agents
+			// on recupere les sous-service du service selectionne
+			List<String> listeService = new ArrayList<String>();
+			for(ReferentRh service : listServiceRH) {
+				listeService.add(service.getServi());
+			}
+			List<String> listeSousServiceTmp = new ArrayList<String>();
+			for(String service : listeService) {
+				Service serv = Service.chercherService(getTransaction(), service);
+				listeSousServiceTmp.addAll(Service.listSousService(getTransaction(), serv.getSigleService()));
+			}
+			// on trie la liste des sous service pour supprimer les doublons
+			ArrayList<String> listeSousService = new ArrayList<String>();
+			for(String sousService : listeSousServiceTmp) {
+				if(!listeSousService.contains(sousService)) {
+					listeSousService.add(sousService);
+				}
+			}
+				
+			List<Agent> listAgent = getAgentDao().listerAgentAvecServicesETMatricules(
+					listeSousService, null, null);
+			for (Agent ag : listAgent) {
+				if (!idAgentService.contains(ag.getIdAgent().toString())) {
+					idAgentService.add(ag.getIdAgent().toString());
+				}
+			}
 		}
 
 		SirhAbsWSConsumer t = new SirhAbsWSConsumer();
@@ -2192,4 +2242,13 @@ public class OeABSVisualisation extends BasicProcess {
 	public void setTypeFiltre(String typeFiltre) {
 		this.typeFiltre = typeFiltre;
 	}
+
+	public ReferentRhDao getReferentRhDao() {
+		return referentRhDao;
+	}
+
+	public void setReferentRhDao(ReferentRhDao referentRhDao) {
+		this.referentRhDao = referentRhDao;
+	}
+	
 }
