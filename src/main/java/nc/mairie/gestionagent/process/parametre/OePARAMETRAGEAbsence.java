@@ -1,11 +1,13 @@
 package nc.mairie.gestionagent.process.parametre;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.ListIterator;
 
 import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.enums.EnumTypeAbsence;
+import nc.mairie.enums.EnumTypeGroupeAbsence;
 import nc.mairie.gestionagent.absence.dto.MotifCompteurDto;
 import nc.mairie.gestionagent.absence.dto.MotifDto;
 import nc.mairie.gestionagent.absence.dto.TypeAbsenceDto;
@@ -108,16 +110,23 @@ public class OePARAMETRAGEAbsence extends BasicProcess {
 		// Si liste Type absence vide alors affectation
 		if (getListeTypeAbsence() == null || getListeTypeAbsence().size() == 0) {
 			SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
-			setListeTypeAbsence((ArrayList<TypeAbsenceDto>) consuAbs.getListeRefTypeAbsenceDto(null));
+			List<TypeAbsenceDto> listeComplete = consuAbs.getListeRefTypeAbsenceDto(null);
+			setListeTypeAbsence(new ArrayList<TypeAbsenceDto>());
 
 			int[] tailles = { 100 };
 			String padding[] = { "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
-			for (ListIterator<TypeAbsenceDto> list = getListeTypeAbsence().listIterator(); list.hasNext();) {
+			for (ListIterator<TypeAbsenceDto> list = listeComplete.listIterator(); list.hasNext();) {
 				TypeAbsenceDto type = (TypeAbsenceDto) list.next();
-				String ligne[] = { type.getLibelle() };
+				if (!getListeTypeAbsence().contains(type)) {
+					if (EnumTypeGroupeAbsence.CONGES_EXCEP.getValue() != type.getGroupeAbsence()
+							.getIdRefGroupeAbsence().intValue()) {
+						String ligne[] = { type.getLibelle() };
 
-				aFormat.ajouteLigne(ligne);
+						aFormat.ajouteLigne(ligne);
+						getListeTypeAbsence().add(type);
+					}
+				}
 			}
 			setLB_TYPE_ABSENCE_COMPTEUR(aFormat.getListeFormatee(false));
 		}
