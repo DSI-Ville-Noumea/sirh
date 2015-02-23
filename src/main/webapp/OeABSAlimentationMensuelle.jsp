@@ -8,7 +8,7 @@
         <LINK href="theme/sigp2.css" rel="stylesheet" type="text/css">
 		<LINK rel="stylesheet" href="theme/calendrier-mairie.css" type="text/css">
         <jsp:useBean class="nc.mairie.gestionagent.process.absence.OeABSAlimentationMensuelle" id="process" scope="session"></jsp:useBean>
-            <TITLE>Alimenation mensuelle des congés annuels</TITLE>		
+            <TITLE>Alimentation mensuelle des congés annuels</TITLE>		
 
 
             <SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT> 

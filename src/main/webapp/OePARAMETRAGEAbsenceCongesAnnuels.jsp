@@ -218,7 +218,7 @@
             	</FIELDSET>  
             <%}else if(process.getVAL_ST_ACTION().equals(process.ACTION_ALIM_MENSUELLE)){ %>
 						<FIELDSET class="sigp2Fieldset" style="text-align: left;">
-					    	<legend class="sigp2Legend">Gestion de l'alimenation mensuelle des congés annuels de la base <%=process.getTypeAbsenceCourant().getCodeBaseHoraireAbsence() %></legend>
+					    	<legend class="sigp2Legend">Gestion de l'alimentation mensuelle des congés annuels de la base <%=process.getTypeAbsenceCourant().getCodeBaseHoraireAbsence() %></legend>
 							<br/>
 							<table cellpadding="0" cellspacing="0" border="0"  class="display" id="refAlim"> 
 			                    <thead>
@@ -270,7 +270,7 @@
 			                </table>
 			                <%if(process.getVAL_ST_ACTION_ALIM_MANUELLE().equals(process.ACTION_MODIF_ALIM_MENSUELLE)){ %>
 								<FIELDSET class="sigp2Fieldset" style="text-align: left;">
-					    			<legend class="sigp2Legend">Modification de l'alimenation mensuelle des congés annuels de la base <%=process.getTypeAbsenceCourant().getCodeBaseHoraireAbsence() %></legend>
+					    			<legend class="sigp2Legend">Modification de l'alimentation mensuelle des congés annuels de la base <%=process.getTypeAbsenceCourant().getCodeBaseHoraireAbsence() %></legend>
 					    			<table>
 										<tr>
 											<td colspan="3">
@@ -427,7 +427,7 @@
 					    		</FIELDSET>
 			                <%}else if(process.getVAL_ST_ACTION_ALIM_MANUELLE().equals(process.ACTION_CREATION_ALIM_MENSUELLE)){ %>
 								<FIELDSET class="sigp2Fieldset" style="text-align: left;">
-					    			<legend class="sigp2Legend">Création de l'alimenation mensuelle des congés annuels de la base <%=process.getTypeAbsenceCourant().getCodeBaseHoraireAbsence() %></legend>
+					    			<legend class="sigp2Legend">Création de l'alimentation mensuelle des congés annuels de la base <%=process.getTypeAbsenceCourant().getCodeBaseHoraireAbsence() %></legend>
 					    			<table>
 										<tr>
 											<td colspan="3">
