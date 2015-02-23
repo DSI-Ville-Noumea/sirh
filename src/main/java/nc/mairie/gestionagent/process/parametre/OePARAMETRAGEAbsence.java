@@ -501,7 +501,9 @@ public class OePARAMETRAGEAbsence extends BasicProcess {
 		if (indice != -1 && indice < getListeMotifCompteur().size()) {
 			MotifCompteurDto motifCompteur = getListeMotifCompteur().get(indice);
 			addZone(getNOM_EF_LIB_MOTIF_COMPTEUR(), motifCompteur.getLibelle());
-			int ligneTypeAbsence = getListeTypeAbsence().indexOf(motifCompteur.getIdRefTypeAbsence());
+			TypeAbsenceDto t = new TypeAbsenceDto();
+			t.setIdRefTypeAbsence(motifCompteur.getIdRefTypeAbsence());
+			int ligneTypeAbsence = getListeTypeAbsence().indexOf(t);
 			addZone(getNOM_LB_TYPE_ABSENCE_COMPTEUR_SELECT(), String.valueOf(ligneTypeAbsence));
 
 			addZone(getNOM_ST_ACTION_MOTIF_COMPTEUR(), ACTION_MODIFICATION);
