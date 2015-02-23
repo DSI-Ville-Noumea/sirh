@@ -686,8 +686,11 @@ public class OeABSVisualisation extends BasicProcess {
 		}
 		
 		//GESTIONNAIRE
-		if (sigleService.equals(Const.CHAINE_VIDE) && null == idAgentDemande) {
-			String idGestionnaire = getVAL_ST_GESTIONNAIRE();
+		String idGestionnaire = getVAL_ST_GESTIONNAIRE();
+		if (sigleService.equals(Const.CHAINE_VIDE) 
+				&& null == idAgentDemande
+				&& !Const.CHAINE_VIDE.equals(idGestionnaire)) {
+			
 			List<ReferentRh> listServiceRH = null;
 			try {
 				Integer idReferentRH = new Integer(idGestionnaire);
