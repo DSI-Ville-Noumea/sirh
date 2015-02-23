@@ -64,7 +64,7 @@
 						<FIELDSET class="sigp2Fieldset"  style="text-align: left; ">
 					    	<legend class="sigp2Legend">Motifs d'alimentation manuelle des compteurs</legend>
 							<span class="sigp2-saisie" >Libellé</span>
-							<span class="sigp2-saisie" style="margin-left: 250px;">Type Absence</span>
+							<span class="sigp2-saisie" style="margin-left: 250px;">Famille d'absence</span>
 							<SELECT name="<%= process.getNOM_LB_MOTIF_COMPTEUR() %>" size="10" style="width:100%;" class="sigp2-liste">
 								<%=process.forComboHTML(process.getVAL_LB_MOTIF_COMPTEUR(), process.getVAL_LB_MOTIF_COMPTEUR_SELECT()) %>
 							</SELECT>
