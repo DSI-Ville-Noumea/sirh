@@ -38,4 +38,9 @@ public class RefGroupeAbsenceDto {
 		this.libelle = libelle;
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		return idRefGroupeAbsence.toString().equals(((RefGroupeAbsenceDto) obj).getIdRefGroupeAbsence().toString());
+	}
+
 }

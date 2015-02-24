@@ -92,7 +92,7 @@ public interface ISirhAbsWSConsumer {
 
 	// demandes
 	List<DemandeDto> getListeDemandesAgent(Integer idAgent, String onglet, String dateDebut, String dateFin,
-			String dateDemande, Integer idRefEtat, Integer idRefType);
+			String dateDemande, Integer idRefEtat, Integer idRefType, Integer idRefGroupeAbsence);
 
 	List<DemandeDto> getListeDemandes(String dateDebut, String dateFin, Integer idRefEtat, Integer idRefType,
 			Integer idAgentRecherche, Integer idRefGroupe, boolean aValider, List<String> idAgentsService);

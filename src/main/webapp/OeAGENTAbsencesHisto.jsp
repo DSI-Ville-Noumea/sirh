@@ -68,7 +68,7 @@
 		<% } %>
 			    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
 				    <legend class="sigp2Legend">Tri des absences à afficher</legend>
-					<span class="sigp2" style="width:100px">Famille d'absence : </span>
+					<span class="sigp2" style="width:100px">Groupe d'absence : </span>
 					<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_TYPE_ABSENCE_NP() %>" style="width=150px;margin-right:20px;">
 						<%=process.forComboHTML(process.getVAL_LB_TYPE_ABSENCE_NP(), process.getVAL_LB_TYPE_ABSENCE_NP_SELECT()) %>
 					</SELECT>

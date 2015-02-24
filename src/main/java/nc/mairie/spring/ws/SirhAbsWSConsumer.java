@@ -249,7 +249,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 
 	@Override
 	public List<DemandeDto> getListeDemandesAgent(Integer idAgent, String onglet, String dateDebut, String dateFin,
-			String dateDemande, Integer idRefEtat, Integer idRefType) {
+			String dateDemande, Integer idRefEtat, Integer idRefType, Integer idRefGroupeAbsence) {
 
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
 		String url = urlWS + sirhAbsDemandesAgent;
@@ -266,6 +266,9 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 			params.put("etat", idRefEtat.toString());
 		if (idRefType != null)
 			params.put("type", idRefType.toString());
+		if (idRefGroupeAbsence != null)
+			params.put("groupe", idRefGroupeAbsence.toString());
+		
 		logger.debug("Call " + url + " with idAgent : " + idAgent + ",ongletDemande : " + onglet + ",from : "
 				+ dateDebut + ",to : " + dateFin + ",dateDemande : " + dateDemande + ",etat : " + idRefEtat
 				+ ",type : " + idRefType);
