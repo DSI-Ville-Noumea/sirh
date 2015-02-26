@@ -237,6 +237,18 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 			} else {
 				addZone(getNOM_ST_DUREE_TT(i), "&nbsp;");
 			}
+			
+			String motif = "";
+			if(null != dto.getMotif()) {
+				motif += " " + dto.getMotif();
+				if(null != dto.getCommentaire()) {
+					motif += " - ";
+				}
+			}
+			if(null != dto.getCommentaire()) {
+				motif += dto.getCommentaire();
+			}
+			addZone(getNOM_ST_MOTIF_TT(i), motif);
 			addZone(getNOM_ST_DATE_DEMANDE_TT(i),
 					dto.getDateDemande() == null ? "&nbsp;" : sdfDate.format(dto.getDateDemande()));
 			addZone(getNOM_ST_ETAT_DEMANDE_TT(i), EnumEtatAbsence.getValueEnumEtatAbsence(dto.getIdRefEtat()));
@@ -301,6 +313,18 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 			} else {
 				addZone(getNOM_ST_DUREE_EC(i), "&nbsp;");
 			}
+			
+			String motif = "";
+			if(null != dto.getMotif()) {
+				motif += " " + dto.getMotif();
+				if(null != dto.getCommentaire()) {
+					motif += " - ";
+				}
+			}
+			if(null != dto.getCommentaire()) {
+				motif += dto.getCommentaire();
+			}
+			addZone(getNOM_ST_MOTIF_EC(i), motif);
 			addZone(getNOM_ST_DATE_DEMANDE_EC(i),
 					dto.getDateDemande() == null ? "&nbsp;" : sdfDate.format(dto.getDateDemande()));
 			addZone(getNOM_ST_ETAT_DEMANDE_EC(i), EnumEtatAbsence.getValueEnumEtatAbsence(dto.getIdRefEtat()));
@@ -366,6 +390,18 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 			} else {
 				addZone(getNOM_ST_DUREE_NP(i), "&nbsp;");
 			}
+			
+			String motif = "";
+			if(null != dto.getMotif()) {
+				motif += " " + dto.getMotif();
+				if(null != dto.getCommentaire()) {
+					motif += " - ";
+				}
+			}
+			if(null != dto.getCommentaire()) {
+				motif += dto.getCommentaire();
+			}
+			addZone(getNOM_ST_MOTIF_NP(i), motif);
 			addZone(getNOM_ST_DATE_DEMANDE_NP(i),
 					dto.getDateDemande() == null ? "&nbsp;" : sdfDate.format(dto.getDateDemande()));
 			addZone(getNOM_ST_ETAT_DEMANDE_NP(i), EnumEtatAbsence.getValueEnumEtatAbsence(dto.getIdRefEtat()));
@@ -555,6 +591,30 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 
 	public String getVAL_ST_DUREE_EC(int i) {
 		return getZone(getNOM_ST_DUREE_EC(i));
+	}
+
+	public String getNOM_ST_MOTIF_NP(int i) {
+		return "NOM_ST_MOTIF_EC" + i;
+	}
+
+	public String getVAL_ST_MOTIF_NP(int i) {
+		return getZone(getNOM_ST_MOTIF_EC(i));
+	}
+
+	public String getNOM_ST_MOTIF_EC(int i) {
+		return "NOM_ST_MOTIF_EC" + i;
+	}
+
+	public String getVAL_ST_MOTIF_EC(int i) {
+		return getZone(getNOM_ST_MOTIF_EC(i));
+	}
+
+	public String getNOM_ST_MOTIF_TT(int i) {
+		return "NOM_ST_MOTIF_EC" + i;
+	}
+
+	public String getVAL_ST_MOTIF_TT(int i) {
+		return getZone(getNOM_ST_MOTIF_EC(i));
 	}
 
 	public String getNOM_ST_DATE_DEMANDE_EC(int i) {

@@ -97,6 +97,7 @@
 								<td width="100px;" align="left">Date début</td>
 								<td width="100px;" align="left">Date fin</td>
 								<td width="90px;" align="center">Durée</td>
+								<td width="300px;" align="center">Motif</td>
 								<td width="90px;" align="center">Date Demande</td>
 								<td>Etat</td>
 							</tr>
@@ -108,6 +109,7 @@
 								<td style="text-align: left;" class="sigp2NewTab-liste"><%=process.getVAL_ST_DATE_DEBUT_NP(i)%></td>
 								<td class="sigp2NewTab-liste" style="text-align: left;"><%=process.getVAL_ST_DATE_FIN_NP(i)%></td>
 								<td style="text-align: center;" class="sigp2NewTab-liste"><%=process.getVAL_ST_DUREE_NP(i)%></td>
+								<td style="text-align: center;" class="sigp2NewTab-liste"><%=process.getVAL_ST_MOTIF_NP(i)%></td>
 								<td style="text-align: center;" class="sigp2NewTab-liste"><%=process.getVAL_ST_DATE_DEMANDE_NP(i)%></td>
 								<td style="text-align: left;" class="sigp2NewTab-liste"><%=process.getVAL_ST_ETAT_DEMANDE_NP(i)%></td>
 							</tr>
@@ -154,6 +156,7 @@
 								<td width="100px;" align="left">Date début</td>
 								<td width="100px;" align="left">Date fin</td>
 								<td width="90px;" align="center">Durée</td>
+								<td width="300px;" align="center">Motif</td>
 								<td width="90px;" align="center">Date Demande</td>
 								<td>Etat</td>
 							</tr>
@@ -165,6 +168,7 @@
 								<td class="sigp2NewTab-liste" style="text-align: left;"><%=process.getVAL_ST_DATE_DEBUT_EC(i)%></td>
 								<td class="sigp2NewTab-liste" style="text-align: left;"><%=process.getVAL_ST_DATE_FIN_EC(i)%></td>
 								<td class="sigp2NewTab-liste" style="text-align: center;"><%=process.getVAL_ST_DUREE_EC(i)%></td>
+								<td style="text-align: center;" class="sigp2NewTab-liste"><%=process.getVAL_ST_MOTIF_EC(i)%></td>
 								<td class="sigp2NewTab-liste" style="text-align: center;"><%=process.getVAL_ST_DATE_DEMANDE_EC(i)%></td>
 								<td class="sigp2NewTab-liste" style="text-align: left;"><%=process.getVAL_ST_ETAT_DEMANDE_EC(i)%></td>
 							</tr>
@@ -211,6 +215,7 @@
 								<td width="100px;" align="left">Date début</td>
 								<td width="100px;" align="left">Date fin</td>
 								<td width="90px;" align="center">Durée</td>
+								<td width="300px;" align="center">Motif</td>
 								<td width="90px;" align="center">Date Demande</td>
 								<td>Etat</td>
 							</tr>
@@ -222,6 +227,7 @@
 								<td class="sigp2NewTab-liste" style="text-align: left;"><%=process.getVAL_ST_DATE_DEBUT_TT(i)%></td>
 								<td class="sigp2NewTab-liste" style="text-align: left;"><%=process.getVAL_ST_DATE_FIN_TT(i)%></td>
 								<td class="sigp2NewTab-liste" style="text-align: center;"><%=process.getVAL_ST_DUREE_TT(i)%></td>
+								<td style="text-align: center;" class="sigp2NewTab-liste"><%=process.getVAL_ST_MOTIF_TT(i)%></td>
 								<td class="sigp2NewTab-liste" style="text-align: center;"><%=process.getVAL_ST_DATE_DEMANDE_TT(i)%></td>
 								<td class="sigp2NewTab-liste" style="text-align: left;"><%=process.getVAL_ST_ETAT_DEMANDE_TT(i)%></td>
 							</tr>
