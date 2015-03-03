@@ -2854,21 +2854,19 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		if (getListePrimePointageAFF() != null && getListePrimePointageAFF().size() != 0) {
 			for (int j = 0; j < getListePrimePointageAFF().size(); j++) {
 				PrimePointageAff prime = (PrimePointageAff) getListePrimePointageAFF().get(j);
-				for (PrimePointageFP fp : getListePrimePointageFP()) {
-					if (prime != null && fp.getNumRubrique() != prime.getNumRubrique()) {
-						try {
-							RefPrimeDto rubr = t.getPrimeDetail(prime.getNumRubrique());
-							if (rubr != null && rubr.getNumRubrique() != null)
-								addZone(getNOM_ST_LST_PRIME_POINTAGE_RUBRIQUE(indicePrime), rubr.getNumRubrique()
-										+ " : " + rubr.getLibelle());
-						} catch (Exception e) {
-							// TODO a supprimer quand les pointages seront en
-							// prod
-							addZone(getNOM_ST_LST_PRIME_POINTAGE_RUBRIQUE(indicePrime),
-									"L'application des pointages n'est pas disponible.");
-						}
-						indicePrime++;
+				if (prime != null) {
+					try {
+						RefPrimeDto rubr = t.getPrimeDetail(prime.getNumRubrique());
+						if (rubr != null && rubr.getNumRubrique() != null)
+							addZone(getNOM_ST_LST_PRIME_POINTAGE_RUBRIQUE(indicePrime), rubr.getNumRubrique()
+									+ " : " + rubr.getLibelle());
+					} catch (Exception e) {
+						// TODO a supprimer quand les pointages seront en
+						// prod
+						addZone(getNOM_ST_LST_PRIME_POINTAGE_RUBRIQUE(indicePrime),
+								"L'application des pointages n'est pas disponible.");
 					}
+					indicePrime++;
 				}
 			}
 		}
