@@ -91,6 +91,7 @@
 				    	</tr>
 				    	<tr>
 				    		<td>
+							<%if(process.isAfficheSoldeAsaA48()){ %>
 					    		 <FIELDSET class="sigp2Fieldset" style="text-align:left;width:450px;">
 							    	<legend class="sigp2Legend">* Réunion des membres du bureau directeur</legend>
 									<table class="sigp2NewTab" style="text-align:left;width:200px;">
@@ -104,8 +105,10 @@
 										</tr>
 									</table>				    
 							    </FIELDSET>	
+							<%}%>
 				    		</td>
 				    		<td>
+							<%if(process.isAfficheSoldeAsaA54()){ %>
 					    		 <FIELDSET class="sigp2Fieldset" style="text-align:left;width:450px;">
 							    	<legend class="sigp2Legend">* Congrès et conseil syndical</legend>
 									<table class="sigp2NewTab" style="text-align:left;width:200px;">
@@ -119,10 +122,12 @@
 										</tr>
 									</table>				    
 							    </FIELDSET>
+							<%}%>
 				    		</td>
 				    	</tr>
 				    	<tr>
 				    		<td>
+							<%if(process.isAfficheSoldeAsaA55()){ %>
 					    		 <FIELDSET class="sigp2Fieldset" style="text-align:left;width:450px;">
 							    	<legend class="sigp2Legend">* Délégation DP</legend>
 									<table class="sigp2NewTab" style="text-align:left;width:400px;">
@@ -142,12 +147,13 @@
 										<% } %>
 									</table>				    
 							    </FIELDSET>
+							<%}%>
 				    		</td>
 				    		<td>
+							<%if(process.isAfficheSoldeAsaA52()){ %>
 					    		<FIELDSET class="sigp2Fieldset" style="text-align:left;width:450px;">
 							    	<legend class="sigp2Legend">* Décharge de service CTP</legend>
 							    	
-								    <%if(process.isAfficheSoldeAsaA52()){ %>
 										<table class="sigp2NewTab" style="text-align:left;width:400px;">
 											<tr bgcolor="#EFEFEF">
 											<%if(process.getOrganisationAgent()!=null){%>
@@ -167,18 +173,16 @@
 												<td style="text-align: center"><INPUT title="historique" type="image" src="images/oeil.gif" height="15px" width="15px" name="<%=process.getNOM_PB_HISTORIQUE(EnumTypeAbsence.ASA_A52.getCode())%>"></td>
 											</tr>
 											<% } %>
-										</table>	
-								    <%}else{ %>	
-								    <span>Agent non concerné</span>
-								    <%} %>		    
+										</table>	    
 							    </FIELDSET>
+							<%} %>	
 				    		</td>
 				    	</tr>
 				    </table>
 				    
+					<%if(process.isAgentReposComp()){ %>
 				    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:450px;">
 				    	<legend class="sigp2Legend">Repos compensateurs</legend>
-					    <%if(process.isAgentReposComp()){ %>
 							<table class="sigp2NewTab" style="text-align:left;width:200px;">
 								<tr bgcolor="#EFEFEF">
 									<td width="100px;" align="center">année prec.</td>
@@ -190,11 +194,9 @@
 									<td style="text-align: center"><%=process.getVAL_ST_SOLDE_REPOS_COMP()%></td>
 									<td style="text-align: center"><INPUT title="historique" type="image" src="images/oeil.gif" height="15px" width="15px" name="<%=process.getNOM_PB_HISTORIQUE(EnumTypeAbsence.REPOS_COMP.getCode())%>"></td>
 								</tr>
-							</table>	
-					    <%}else{ %>
-					    <span>Agent non concerné</span>
-					    <%} %>			    
+							</table>			    
 				    </FIELDSET>
+					<%} %>
 				    <BR/>	
 				    
 				     <FIELDSET class="sigp2Fieldset" style="text-align:left;width:950px;">

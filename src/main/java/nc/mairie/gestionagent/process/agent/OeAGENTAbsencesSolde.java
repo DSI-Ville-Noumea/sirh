@@ -55,6 +55,9 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 	private ArrayList<SoldeMonthDto> listeSoldeA55;
 	private ArrayList<SoldeMonthDto> listeSoldeA52;
 	private boolean afficheSoldeAsaA52;
+	private boolean afficheSoldeAsaA48;
+	private boolean afficheSoldeAsaA54;
+	private boolean afficheSoldeAsaA55;
 	private ArrayList<SoldeSpecifiqueDto> listeSoldeCongesExcep;
 	private OrganisationSyndicaleDto organisationAgent;
 	private boolean agentReposComp;
@@ -207,14 +210,17 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 		addZone(getNOM_ST_SOLDE_REPOS_COMP_PREC(), soldeReposCompPrecHeure + soldeReposCompPrecMinute);
 
 		// Solde ASA A48
+		setAfficheSoldeAsaA48(soldeGlobal.isAfficheSoldeAsaA48());
 		addZone(getNOM_ST_SOLDE_ASA_A48(), soldeGlobal.getSoldeAsaA48() == 0 ? "&nbsp;" : soldeGlobal.getSoldeAsaA48()
 				.toString() + " j");
 
 		// Solde ASA A54
+		setAfficheSoldeAsaA54(soldeGlobal.isAfficheSoldeAsaA54());
 		addZone(getNOM_ST_SOLDE_ASA_A54(), soldeGlobal.getSoldeAsaA54() == 0 ? "&nbsp;" : soldeGlobal.getSoldeAsaA54()
 				.toString() + " j");
 
 		// Solde ASA A55
+		setAfficheSoldeAsaA55(soldeGlobal.isAfficheSoldeAsaA55());
 		setListeSoldeA55((ArrayList<SoldeMonthDto>) soldeGlobal.getListeSoldeAsaA55());
 		for (int i = 0; i < getListeSoldeA55().size(); i++) {
 			SoldeMonthDto monthDto = getListeSoldeA55().get(i);
@@ -689,6 +695,30 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 
 	public void setFocus(String focus) {
 		this.focus = focus;
+	}
+
+	public boolean isAfficheSoldeAsaA48() {
+		return afficheSoldeAsaA48;
+	}
+
+	public void setAfficheSoldeAsaA48(boolean afficheSoldeAsaA48) {
+		this.afficheSoldeAsaA48 = afficheSoldeAsaA48;
+	}
+
+	public boolean isAfficheSoldeAsaA54() {
+		return afficheSoldeAsaA54;
+	}
+
+	public void setAfficheSoldeAsaA54(boolean afficheSoldeAsaA54) {
+		this.afficheSoldeAsaA54 = afficheSoldeAsaA54;
+	}
+
+	public boolean isAfficheSoldeAsaA55() {
+		return afficheSoldeAsaA55;
+	}
+
+	public void setAfficheSoldeAsaA55(boolean afficheSoldeAsaA55) {
+		this.afficheSoldeAsaA55 = afficheSoldeAsaA55;
 	}
 
 }
