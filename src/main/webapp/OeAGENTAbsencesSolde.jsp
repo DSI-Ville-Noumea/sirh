@@ -200,7 +200,7 @@
 				    <BR/>	
 				    
 				     <FIELDSET class="sigp2Fieldset" style="text-align:left;width:950px;">
-				    	<legend class="sigp2Legend">* Congés Exceptionnels</legend>
+				    	<legend class="sigp2Legend">Congés Exceptionnels</legend>
 						<table class="sigp2NewTab" style="text-align:left;width:900px;">
 							<tr bgcolor="#EFEFEF">
 								<td width="750px;">Type</td>
