@@ -104,6 +104,7 @@ public class OeDROITSKiosque extends BasicProcess {
 		}
 		if (isFirst()) {
 			initialiseListeApprobateur();
+			addZone(getNOM_RG_TRI(), getNOM_RB_TRI_AGENT());
 			setFirst(false);
 		}
 
@@ -154,6 +155,15 @@ public class OeDROITSKiosque extends BasicProcess {
 			}
 			getHashApprobateur().put(agDto, issuDe);
 		}
+
+		// on tri la liste
+		Collections.sort(listeComplete, new Comparator<AgentWithServiceDto>() {
+			@Override
+			public int compare(AgentWithServiceDto o1, AgentWithServiceDto o2) {
+				return o1.getNom().compareTo(o2.getNom());
+			}
+
+		});
 		setListeApprobateurs(listeComplete);
 	}
 
