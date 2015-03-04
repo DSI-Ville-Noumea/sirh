@@ -73,7 +73,6 @@ public class OeABSVisualisation extends BasicProcess {
 	private Logger logger = LoggerFactory.getLogger(OeABSVisualisation.class);
 
 	public static final int STATUT_RECHERCHER_AGENT_DEMANDE = 1;
-	public static final int STATUT_RECHERCHER_GESTIONNAIRE = 2;
 	public static final int STATUT_RECHERCHER_AGENT_CREATION = 3;
 
 	private String[] LB_ETAT;
@@ -82,6 +81,7 @@ public class OeABSVisualisation extends BasicProcess {
 	private String[] LB_FAMILLE_CREATION;
 	private String[] LB_HEURE;
 	private String[] LB_OS;
+	private String[] LB_GESTIONNAIRE;
 
 	public Hashtable<String, TreeHierarchy> hTree = null;
 	private ArrayList<Service> listeServices;
@@ -91,6 +91,7 @@ public class OeABSVisualisation extends BasicProcess {
 	private ArrayList<RefGroupeAbsenceDto> listeGroupeAbsence;
 	private ArrayList<OrganisationSyndicaleDto> listeOrganisationSyndicale;
 	private ArrayList<String> listeHeure;
+	private ArrayList<ReferentRh> listeGestionnaire;
 
 	private HashMap<Integer, DemandeDto> listeAbsence;
 	private HashMap<Integer, List<DemandeDto>> history = new HashMap<>();
@@ -162,13 +163,6 @@ public class OeABSVisualisation extends BasicProcess {
 				addZone(getNOM_ST_AGENT_CREATION(), agt.getNomatr().toString());
 			}
 		}
-		if (etatStatut() == STATUT_RECHERCHER_GESTIONNAIRE) {
-			Agent agt = (Agent) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
-			VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
-			if (agt != null) {
-				addZone(getNOM_ST_GESTIONNAIRE(), agt.getNomatr().toString());
-			}
-		}
 	}
 
 	private void initialiseDao() {
@@ -198,6 +192,22 @@ public class OeABSVisualisation extends BasicProcess {
 			}
 			setLB_ETAT(aFormat.getListeFormatee(true));
 			addZone(getNOM_LB_ETAT_SELECT(), Const.ZERO);
+
+		}
+
+		// Si liste gestionnaire vide alors affectation
+		if (getLB_GESTIONNAIRE() == LBVide) {
+			List<ReferentRh> listeRef = getReferentRhDao().listerDistinctReferentRh();
+			setListeGestionnaire((ArrayList<ReferentRh>) listeRef);
+			int[] tailles = { 50 };
+			FormateListe aFormat = new FormateListe(tailles);
+			for (ReferentRh ref : listeRef) {
+				Agent gest = getAgentDao().chercherAgent(ref.getIdAgentReferent());
+				String ligne[] = { gest.getNomAgent() + " " + gest.getPrenomAgent() };
+				aFormat.ajouteLigne(ligne);
+			}
+			setLB_GESTIONNAIRE(aFormat.getListeFormatee(true));
+			addZone(getNOM_LB_GESTIONNAIRE_SELECT(), Const.ZERO);
 
 		}
 
@@ -365,14 +375,6 @@ public class OeABSVisualisation extends BasicProcess {
 			// Si clic sur le bouton PB_SUPPRIMER_RECHERCHER_SERVICE
 			if (testerParametre(request, getNOM_PB_SUPPRIMER_RECHERCHER_SERVICE())) {
 				return performPB_SUPPRIMER_RECHERCHER_SERVICE(request);
-			}
-			// Si clic sur le bouton PB_RECHERCHER_AGENT_ACTION
-			if (testerParametre(request, getNOM_PB_RECHERCHER_GESTIONNAIRE())) {
-				return performPB_RECHERCHER_GESTIONNAIRE(request);
-			}
-			// Si clic sur le bouton PB_SUPPRIMER_RECHERCHER_AGENT_ACTION
-			if (testerParametre(request, getNOM_PB_SUPPRIMER_RECHERCHER_GESTIONNAIRE())) {
-				return performPB_SUPPRIMER_RECHERCHER_GESTIONNAIRE(request);
 			}
 			// Si clic sur le bouton PB_FILTRER
 			if (testerParametre(request, getNOM_PB_FILTRER())) {
@@ -561,35 +563,6 @@ public class OeABSVisualisation extends BasicProcess {
 		return getZone(getNOM_LB_FAMILLE_SELECT());
 	}
 
-	public String getNOM_ST_GESTIONNAIRE() {
-		return "NOM_ST_GESTIONNAIRE";
-	}
-
-	public String getVAL_ST_GESTIONNAIRE() {
-		return getZone(getNOM_ST_GESTIONNAIRE());
-	}
-
-	public String getNOM_PB_RECHERCHER_GESTIONNAIRE() {
-		return "NOM_PB_RECHERCHER_GESTIONNAIRE";
-	}
-
-	public String getNOM_PB_SUPPRIMER_RECHERCHER_GESTIONNAIRE() {
-		return "NOM_PB_SUPPRIMER_RECHERCHER_GESTIONNAIRE";
-	}
-
-	public boolean performPB_RECHERCHER_GESTIONNAIRE(HttpServletRequest request) throws Exception {
-		// On met l'agent courant en var d'activité
-		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new Agent());
-		setStatut(STATUT_RECHERCHER_GESTIONNAIRE, true);
-		return true;
-	}
-
-	public boolean performPB_SUPPRIMER_RECHERCHER_GESTIONNAIRE(HttpServletRequest request) throws Exception {
-		// On enlève l'agent selectionnée
-		addZone(getNOM_ST_GESTIONNAIRE(), Const.CHAINE_VIDE);
-		return true;
-	}
-
 	public String getNOM_ST_DATE_MIN() {
 		return "NOM_ST_DATE_MIN";
 	}
@@ -684,47 +657,48 @@ public class OeABSVisualisation extends BasicProcess {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR501"));
 			return false;
 		}
-		
-		//GESTIONNAIRE
-		String idGestionnaire = getVAL_ST_GESTIONNAIRE();
-		if (sigleService.equals(Const.CHAINE_VIDE) 
-				&& null == idAgentDemande
-				&& !Const.CHAINE_VIDE.equals(idGestionnaire)) {
-			
+
+		// GESTIONNAIRE
+
+		int numGestionnaire = (Services.estNumerique(getZone(getNOM_LB_GESTIONNAIRE_SELECT())) ? Integer
+				.parseInt(getZone(getNOM_LB_GESTIONNAIRE_SELECT())) : -1);
+		ReferentRh gestionnaire = null;
+		if (numGestionnaire != -1 && numGestionnaire != 0) {
+			gestionnaire = (ReferentRh) getListeGestionnaire().get(numGestionnaire - 1);
+		}
+		if (sigleService.equals(Const.CHAINE_VIDE) && null == idAgentDemande && gestionnaire != null) {
+
 			List<ReferentRh> listServiceRH = null;
 			try {
-				Integer idReferentRH = new Integer(idGestionnaire);
-				idReferentRH += 9000000;
-				listServiceRH = getReferentRhDao().listerServiceAvecReferentRh(idReferentRH);
-			} catch(NumberFormatException e) {
+				listServiceRH = getReferentRhDao().listerServiceAvecReferentRh(gestionnaire.getIdAgentReferent());
+			} catch (NumberFormatException e) {
 				getTransaction().declarerErreur("Une erreur de saisie sur le gestionnaire est survenue.");
 				return false;
 			}
-			if(null == listServiceRH || listServiceRH.isEmpty()) {
+			if (null == listServiceRH || listServiceRH.isEmpty()) {
 				getTransaction().declarerErreur("Le gestionnaire saisi n'est pas un référent RH.");
 				return false;
 			}
 			// Récupération des agents
 			// on recupere les sous-service du service selectionne
 			List<String> listeService = new ArrayList<String>();
-			for(ReferentRh service : listServiceRH) {
+			for (ReferentRh service : listServiceRH) {
 				listeService.add(service.getServi());
 			}
 			List<String> listeSousServiceTmp = new ArrayList<String>();
-			for(String service : listeService) {
+			for (String service : listeService) {
 				Service serv = Service.chercherService(getTransaction(), service);
 				listeSousServiceTmp.addAll(Service.listSousService(getTransaction(), serv.getSigleService()));
 			}
 			// on trie la liste des sous service pour supprimer les doublons
 			ArrayList<String> listeSousService = new ArrayList<String>();
-			for(String sousService : listeSousServiceTmp) {
-				if(!listeSousService.contains(sousService)) {
+			for (String sousService : listeSousServiceTmp) {
+				if (!listeSousService.contains(sousService)) {
 					listeSousService.add(sousService);
 				}
 			}
-				
-			List<Agent> listAgent = getAgentDao().listerAgentAvecServicesETMatricules(
-					listeSousService, null, null);
+
+			List<Agent> listAgent = getAgentDao().listerAgentAvecServicesETMatricules(listeSousService, null, null);
 			for (Agent ag : listAgent) {
 				if (!idAgentService.contains(ag.getIdAgent().toString())) {
 					idAgentService.add(ag.getIdAgent().toString());
@@ -812,13 +786,13 @@ public class OeABSVisualisation extends BasicProcess {
 					addZone(getNOM_ST_DUREE(i), "&nbsp;");
 				}
 				String motif = "";
-				if(null != abs.getMotif()) {
+				if (null != abs.getMotif()) {
 					motif += " " + abs.getMotif();
-					if(null != abs.getCommentaire()) {
+					if (null != abs.getCommentaire()) {
 						motif += " - ";
 					}
 				}
-				if(null != abs.getCommentaire()) {
+				if (null != abs.getCommentaire()) {
 					motif += abs.getCommentaire();
 				}
 				addZone(getNOM_ST_MOTIF(i), motif);
@@ -1341,7 +1315,7 @@ public class OeABSVisualisation extends BasicProcess {
 		TypeAbsenceDto t = new TypeAbsenceDto();
 		t.setIdRefTypeAbsence(dem.getIdTypeDemande());
 		TypeAbsenceDto type = getListeFamilleAbsenceCreation().get(getListeFamilleAbsenceCreation().indexOf(t));
-		
+
 		if (type.getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.CONGE.getCode().toString())) {
 			// on cherche la base horaire absence de l'agent
 			Affectation aff = getAffectationDao().chercherAffectationActiveAvecAgent(
@@ -1349,14 +1323,15 @@ public class OeABSVisualisation extends BasicProcess {
 			if (aff == null || aff.getIdBaseHoraireAbsence() == null) {
 				// "ERR805",
 				// "L'agent @ n'a pas de base horaire d'absence. Merci de la renseigner dans l'affectation de l'agent."
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR805", dem.getAgentWithServiceDto().getIdAgent().toString()));
+				getTransaction().declarerErreur(
+						MessageUtils.getMessage("ERR805", dem.getAgentWithServiceDto().getIdAgent().toString()));
 				return false;
 			}
 			SirhAbsWSConsumer consu = new SirhAbsWSConsumer();
 			type = consu.getTypeAbsence(aff.getIdBaseHoraireAbsence());
 		}
 		setTypeCreation(type);
-		
+
 		addZone(getNOM_LB_FAMILLE_CREATION_SELECT(), String.valueOf(getListeFamilleAbsenceCreation().indexOf(type)));
 
 		Agent agt = getAgentDao().chercherAgent(dem.getAgentWithServiceDto().getIdAgent());
@@ -1364,17 +1339,14 @@ public class OeABSVisualisation extends BasicProcess {
 
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		// date de debut
-		if ((null != type.getTypeSaisiDto()
-				&& type.getTypeSaisiDto().isCalendarDateDebut())
-				|| (null != type.getTypeSaisiCongeAnnuelDto()
-						&& type.getTypeSaisiCongeAnnuelDto().isCalendarDateDebut())) {
+		if ((null != type.getTypeSaisiDto() && type.getTypeSaisiDto().isCalendarDateDebut())
+				|| (null != type.getTypeSaisiCongeAnnuelDto() && type.getTypeSaisiCongeAnnuelDto()
+						.isCalendarDateDebut())) {
 			addZone(getNOM_ST_DATE_DEBUT(), sdf.format(dem.getDateDebut()));
 		}
 		// date de fin
-		if ((null != type.getTypeSaisiDto()
-				&& type.getTypeSaisiDto().isCalendarDateFin())
-				|| (null != type.getTypeSaisiCongeAnnuelDto()
-				&& type.getTypeSaisiCongeAnnuelDto().isCalendarDateFin())) {
+		if ((null != type.getTypeSaisiDto() && type.getTypeSaisiDto().isCalendarDateFin())
+				|| (null != type.getTypeSaisiCongeAnnuelDto() && type.getTypeSaisiCongeAnnuelDto().isCalendarDateFin())) {
 			addZone(getNOM_ST_DATE_FIN(), sdf.format(dem.getDateFin()));
 		}
 		// checkbox
@@ -1383,20 +1355,17 @@ public class OeABSVisualisation extends BasicProcess {
 
 		SimpleDateFormat sdfHeure = new SimpleDateFormat("HH:mm");
 		// HEURE DEBUT
-		if (null != type.getTypeSaisiDto()
-				&& type.getTypeSaisiDto().isCalendarHeureDebut()) {
+		if (null != type.getTypeSaisiDto() && type.getTypeSaisiDto().isCalendarHeureDebut()) {
 			Integer resHeure = getListeHeure().indexOf(sdfHeure.format(dem.getDateDebut()));
 			addZone(getNOM_LB_HEURE_DEBUT_SELECT(), resHeure.toString());
 		}
 		// HEURE FIN
-		if (null != type.getTypeSaisiDto()
-				&& type.getTypeSaisiDto().isCalendarHeureFin()) {
+		if (null != type.getTypeSaisiDto() && type.getTypeSaisiDto().isCalendarHeureFin()) {
 			Integer resHeure = getListeHeure().indexOf(sdfHeure.format(dem.getDateFin()));
 			addZone(getNOM_LB_HEURE_FIN_SELECT(), resHeure.toString());
 		}
 		// organisation syndicale
-		if (null != type.getTypeSaisiDto()
-				&& type.getTypeSaisiDto().isCompteurCollectif()) {
+		if (null != type.getTypeSaisiDto() && type.getTypeSaisiDto().isCompteurCollectif()) {
 			// on recup l'organisation syndicale
 			OrganisationSyndicaleDto orga = null;
 			if (dem.getOrganisationSyndicale() != null) {
@@ -1406,18 +1375,16 @@ public class OeABSVisualisation extends BasicProcess {
 					orga == null ? Const.ZERO : String.valueOf(getListeOrganisationSyndicale().indexOf(orga)));
 		}
 		// /////////////// MOTIF ////////////////////
-		if ((null != type.getTypeSaisiDto()
-				&& type.getTypeSaisiDto().isMotif())
+		if ((null != type.getTypeSaisiDto() && type.getTypeSaisiDto().isMotif())
 				|| (null != type.getTypeSaisiCongeAnnuelDto())) {
 			addZone(getNOM_ST_MOTIF_CREATION(), dem.getMotif() == null ? Const.CHAINE_VIDE : dem.getMotif().trim());
 		}
 
 		// /////////////// DUREE ////////////////////
-		if (null != type.getTypeSaisiDto()
-				&& type.getTypeSaisiDto().isDuree()) {
+		if (null != type.getTypeSaisiDto() && type.getTypeSaisiDto().isDuree()) {
 			String duree = (dem.getDuree() / 60) == 0 ? Const.CHAINE_VIDE : dem.getDuree() / 60 + Const.CHAINE_VIDE;
 			addZone(getNOM_ST_DUREE(), duree);
-		}else if(null != type.getTypeSaisiCongeAnnuelDto()) {
+		} else if (null != type.getTypeSaisiCongeAnnuelDto()) {
 			String duree = dem.getDuree() == 0 ? Const.CHAINE_VIDE : dem.getDuree() + Const.CHAINE_VIDE;
 			addZone(getNOM_ST_DUREE(), duree);
 		}
@@ -2253,5 +2220,39 @@ public class OeABSVisualisation extends BasicProcess {
 	public void setReferentRhDao(ReferentRhDao referentRhDao) {
 		this.referentRhDao = referentRhDao;
 	}
-	
+
+	private String[] getLB_GESTIONNAIRE() {
+		if (LB_GESTIONNAIRE == null)
+			LB_GESTIONNAIRE = initialiseLazyLB();
+		return LB_GESTIONNAIRE;
+	}
+
+	private void setLB_GESTIONNAIRE(String[] newLB_GESTIONNAIRE) {
+		LB_GESTIONNAIRE = newLB_GESTIONNAIRE;
+	}
+
+	public String getNOM_LB_GESTIONNAIRE() {
+		return "NOM_LB_GESTIONNAIRE";
+	}
+
+	public String getNOM_LB_GESTIONNAIRE_SELECT() {
+		return "NOM_LB_GESTIONNAIRE_SELECT";
+	}
+
+	public String[] getVAL_LB_GESTIONNAIRE() {
+		return getLB_GESTIONNAIRE();
+	}
+
+	public String getVAL_LB_GESTIONNAIRE_SELECT() {
+		return getZone(getNOM_LB_GESTIONNAIRE_SELECT());
+	}
+
+	public ArrayList<ReferentRh> getListeGestionnaire() {
+		return listeGestionnaire;
+	}
+
+	public void setListeGestionnaire(ArrayList<ReferentRh> listeGestionnaire) {
+		this.listeGestionnaire = listeGestionnaire;
+	}
+
 }

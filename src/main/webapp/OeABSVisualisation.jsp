@@ -228,7 +228,7 @@
 			                <img onkeydown="" onkeypress="" onkeyup="" border="0" src="images/suppression.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_SERVICE()%>');">
 			            	<INPUT type="hidden" id="codeservice" size="4" width="1px" name="<%=process.getNOM_ST_CODE_SERVICE()%>" value="<%=process.getVAL_ST_CODE_SERVICE()%>" class="sigp2-saisie">
                 		</td>
-                		<td width="35px">
+                		<td width="70px">
                 			<span class="sigp2">Etat : </span>
                 		</td>
                 		<td width="80px">
@@ -258,9 +258,9 @@
                 			<span class="sigp2">Gestionnaire :</span>
                 		</td>
                 		<td>
-			                <INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_GESTIONNAIRE()%>" size="4" maxlength="4" type="text" value="<%=process.getVAL_ST_GESTIONNAIRE() %>">
-			                <img border="0" src="images/loupe.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_RECHERCHER_GESTIONNAIRE()%>');">
-			                <img border="0" src="images/suppression.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_GESTIONNAIRE()%>');">
+			                <SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_GESTIONNAIRE()%>" style="width:140px;">
+			                    <%=process.forComboHTML(process.getVAL_LB_GESTIONNAIRE(), process.getVAL_LB_GESTIONNAIRE_SELECT())%>
+			                </SELECT>
                 		</td> 
                 	</tr>
                 	<tr>
@@ -422,8 +422,6 @@
             <INPUT type="submit" style="display:none;" name="<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_SERVICE()%>" value="SUPPRECHERCHERSERVICE">	
 			<INPUT type="submit" style="display:none;" name="<%=process.getNOM_PB_RECHERCHER_AGENT_DEMANDE()%>" value="RECHERCHERAGENTDEMANDE">
             <INPUT type="submit" style="display:none;" name="<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_DEMANDE()%>" value="SUPPRECHERCHERAGENTDEMANDE">
-			<INPUT type="submit" style="display:none;" name="<%=process.getNOM_PB_RECHERCHER_GESTIONNAIRE()%>" value="RECHERCHERAGENTACTION">
-            <INPUT type="submit" style="display:none;" name="<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_GESTIONNAIRE()%>" value="SUPPRECHERCHERAGENTACTION"> 
             <INPUT type="submit" style="display:none;" name="<%=process.getNOM_PB_AJOUTER_ABSENCE()%>" value="AJOUTERABSENCE">        
             <INPUT type="submit" style="display:none;" name="<%=process.getNOM_PB_RECHERCHER_AGENT_CREATION()%>" value="RECHERCHERAGENTCREATION"> 
             <INPUT type="submit" style="display:none;" name="<%=process.getNOM_PB_CALCUL_DUREE()%>" value="CALCULDUREE">

@@ -556,8 +556,6 @@ public class RobotAgent extends Robot {
 		// Classe OeABSVisualisation
 		navigation.put(OeABSVisualisation.class.getName() + OeABSVisualisation.STATUT_RECHERCHER_AGENT_DEMANDE,
 				OeAGENTRecherche.class.getName());
-		navigation.put(OeABSVisualisation.class.getName() + OeABSVisualisation.STATUT_RECHERCHER_GESTIONNAIRE,
-				OeAGENTRecherche.class.getName());
 		navigation.put(OeABSVisualisation.class.getName() + OeABSVisualisation.STATUT_RECHERCHER_AGENT_CREATION,
 				OeAGENTRecherche.class.getName());
 
