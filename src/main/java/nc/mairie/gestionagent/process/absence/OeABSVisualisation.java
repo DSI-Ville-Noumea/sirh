@@ -719,7 +719,9 @@ public class OeABSVisualisation extends BasicProcess {
 		// loadHistory();
 
 		afficheListeAbsence();
-
+		if(299 < listeDemande.size()) {
+			getTransaction().declarerErreur("Attention, les demandes sont limitées à 300 résultats. Utiliser les filtres.");
+		}
 		setTypeFiltre("GLOBAL");
 
 		return true;
