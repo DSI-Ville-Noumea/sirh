@@ -41,15 +41,7 @@
 	<%@ include file="BanniereErreur.jsp" %>
 <%if(process.getAgentCourant() !=null){ %>
 	<FORM name="formu" method="POST" class="sigp2-titre">
-		<INPUT name="JSP" type="hidden" value="<%= process.getJSP() %>">
-			<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
-			<legend class="sigp2Legend">Filtres pour *</legend>
-				<BR/>
-				<SELECT onchange='executeBouton("<%=process.getNOM_PB_ANNEE() %>")'  class="sigp2-saisie" name="<%= process.getNOM_LB_ANNEE() %>">
-					<%=process.forComboHTML(process.getVAL_LB_ANNEE(), process.getVAL_LB_ANNEE_SELECT()) %>
-				</SELECT>
-			</FIELDSET>
-				
+		<INPUT name="JSP" type="hidden" value="<%= process.getJSP() %>">				
 				<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
 				    <legend class="sigp2Legend">Liste des soldes de l'agent</legend>
 				    <table>
@@ -89,6 +81,85 @@
 							    </FIELDSET>
 				    		</td>
 				    	</tr>
+				    </table>
+				    
+					<%if(process.isAgentReposComp()){ %>
+				    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:450px;">
+				    	<legend class="sigp2Legend">Repos compensateurs</legend>
+							<table class="sigp2NewTab" style="text-align:left;width:200px;">
+								<tr bgcolor="#EFEFEF">
+									<td width="100px;" align="center">année prec.</td>
+									<td width="100px;" align="center">année</td>
+									<td>Historique</td>
+								</tr>
+								<tr>
+									<td style="text-align: center"><%=process.getVAL_ST_SOLDE_REPOS_COMP_PREC()%></td>
+									<td style="text-align: center"><%=process.getVAL_ST_SOLDE_REPOS_COMP()%></td>
+									<td style="text-align: center"><INPUT title="historique" type="image" src="images/oeil.gif" height="15px" width="15px" name="<%=process.getNOM_PB_HISTORIQUE(EnumTypeAbsence.REPOS_COMP.getCode())%>"></td>
+								</tr>
+							</table>			    
+				    </FIELDSET>
+					<%} %>
+				    <BR/>	
+				    
+				     <FIELDSET class="sigp2Fieldset" style="text-align:left;width:950px;">
+				    	<legend class="sigp2Legend">Congés Exceptionnels</legend>
+						<table class="sigp2NewTab" style="text-align:left;width:900px;">
+							<tr bgcolor="#EFEFEF">
+								<td width="750px;">Type</td>
+								<td width="150px;" align="center">Congés déjà pris ou en cours</td>
+							</tr>
+							<% for(int i = 0; i< process.getListeSoldeCongesExcep().size();i++){ %>
+							<tr>
+								<td width="750px;"><%=process.getVAL_ST_TYPE_CONGES_EXCEP(i)%></td>
+								<td width="150px;" style="text-align: center"><%=process.getVAL_ST_SOLDE_CONGES_EXCEP(i)%></td>
+							</tr>
+							<% } %>
+						</table>
+				    </FIELDSET>
+				    <BR/>
+				</FIELDSET>
+				<BR/>
+				
+				<%if (! "".equals(process.getVAL_ST_ACTION()) ) {%>
+				<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
+					<legend class="sigp2Legend"><%=process.getVAL_ST_ACTION()%></legend>
+					<div style="overflow: auto;height: 250px;width:1000px;margin-right: 0px;margin-left: 0px;">
+						<table class="sigp2NewTab" style="text-align:left;width:980px;">
+							<tr bgcolor="#EFEFEF">
+								<td align="center" width="90px;">Le <br/> à</td>
+								<td width="180px;">Par</td>
+								<td width="180px;">Motif</td>
+								<td>Opération</td>
+							</tr>
+							<%
+							for (int i = 0;i<process.getListeHistorique().size();i++){
+							%>
+								<tr id="<%=i%>" onmouseover="SelectLigne(<%=i%>,<%=process.getListeHistorique().size()%>)">
+									<td class="sigp2NewTab-liste" style="text-align: center;"><%=process.getVAL_ST_DATE(i)%></td>
+									<td class="sigp2NewTab-liste"><%=process.getVAL_ST_PAR(i)%></td>
+									<td class="sigp2NewTab-liste"><%=process.getVAL_ST_MOTIF(i)%></td>
+									<td class="sigp2NewTab-liste"><%=process.getVAL_ST_OPERATION(i)%></td>
+								</tr>
+							<%}%>
+						</table>	
+						</div>
+						<BR/><BR/>
+						<div style="text-align: center;">
+							<INPUT type="submit" class="sigp2-Bouton-100" value="Fermer" name="<%=process.getNOM_PB_ANNULER()%>">
+						</div>	
+				</FIELDSET>
+				<%} %>
+				
+			
+			<%if(process.isAfficheSoldeAsaA48() || process.isAfficheSoldeAsaA54() || process.isAfficheSoldeAsaA55() || process.isAfficheSoldeAsaA52()){ %>
+			<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
+			<legend class="sigp2Legend">Filtres pour les absences syndicales
+				<SELECT onchange='executeBouton("<%=process.getNOM_PB_ANNEE() %>")'  class="sigp2-saisie" name="<%= process.getNOM_LB_ANNEE() %>">
+					<%=process.forComboHTML(process.getVAL_LB_ANNEE(), process.getVAL_LB_ANNEE_SELECT()) %>
+				</SELECT>
+			</legend>
+				    <table>
 				    	<tr>
 				    		<td>
 							<%if(process.isAfficheSoldeAsaA48()){ %>
@@ -179,74 +250,8 @@
 				    		</td>
 				    	</tr>
 				    </table>
-				    
-					<%if(process.isAgentReposComp()){ %>
-				    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:450px;">
-				    	<legend class="sigp2Legend">Repos compensateurs</legend>
-							<table class="sigp2NewTab" style="text-align:left;width:200px;">
-								<tr bgcolor="#EFEFEF">
-									<td width="100px;" align="center">année prec.</td>
-									<td width="100px;" align="center">année</td>
-									<td>Historique</td>
-								</tr>
-								<tr>
-									<td style="text-align: center"><%=process.getVAL_ST_SOLDE_REPOS_COMP_PREC()%></td>
-									<td style="text-align: center"><%=process.getVAL_ST_SOLDE_REPOS_COMP()%></td>
-									<td style="text-align: center"><INPUT title="historique" type="image" src="images/oeil.gif" height="15px" width="15px" name="<%=process.getNOM_PB_HISTORIQUE(EnumTypeAbsence.REPOS_COMP.getCode())%>"></td>
-								</tr>
-							</table>			    
-				    </FIELDSET>
-					<%} %>
-				    <BR/>	
-				    
-				     <FIELDSET class="sigp2Fieldset" style="text-align:left;width:950px;">
-				    	<legend class="sigp2Legend">Congés Exceptionnels</legend>
-						<table class="sigp2NewTab" style="text-align:left;width:900px;">
-							<tr bgcolor="#EFEFEF">
-								<td width="750px;">Type</td>
-								<td width="150px;" align="center">Congés déjà pris ou en cours</td>
-							</tr>
-							<% for(int i = 0; i< process.getListeSoldeCongesExcep().size();i++){ %>
-							<tr>
-								<td width="750px;"><%=process.getVAL_ST_TYPE_CONGES_EXCEP(i)%></td>
-								<td width="150px;" style="text-align: center"><%=process.getVAL_ST_SOLDE_CONGES_EXCEP(i)%></td>
-							</tr>
-							<% } %>
-						</table>
-				    </FIELDSET>
-				    <BR/>
-				</FIELDSET>
-				<BR/>
-				
-				<%if (! "".equals(process.getVAL_ST_ACTION()) ) {%>
-				<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
-					<legend class="sigp2Legend"><%=process.getVAL_ST_ACTION()%></legend>
-					<div style="overflow: auto;height: 250px;width:1000px;margin-right: 0px;margin-left: 0px;">
-						<table class="sigp2NewTab" style="text-align:left;width:980px;">
-							<tr bgcolor="#EFEFEF">
-								<td align="center" width="90px;">Le <br/> à</td>
-								<td width="180px;">Par</td>
-								<td width="180px;">Motif</td>
-								<td>Opération</td>
-							</tr>
-							<%
-							for (int i = 0;i<process.getListeHistorique().size();i++){
-							%>
-								<tr id="<%=i%>" onmouseover="SelectLigne(<%=i%>,<%=process.getListeHistorique().size()%>)">
-									<td class="sigp2NewTab-liste" style="text-align: center;"><%=process.getVAL_ST_DATE(i)%></td>
-									<td class="sigp2NewTab-liste"><%=process.getVAL_ST_PAR(i)%></td>
-									<td class="sigp2NewTab-liste"><%=process.getVAL_ST_MOTIF(i)%></td>
-									<td class="sigp2NewTab-liste"><%=process.getVAL_ST_OPERATION(i)%></td>
-								</tr>
-							<%}%>
-						</table>	
-						</div>
-						<BR/><BR/>
-						<div style="text-align: center;">
-							<INPUT type="submit" class="sigp2-Bouton-100" value="Fermer" name="<%=process.getNOM_PB_ANNULER()%>">
-						</div>	
-				</FIELDSET>
-				<%} %>
+			</FIELDSET>
+		<%} %>
 		<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_ANNEE()%>" value="x">
 		</FORM>
 <%} %>	
