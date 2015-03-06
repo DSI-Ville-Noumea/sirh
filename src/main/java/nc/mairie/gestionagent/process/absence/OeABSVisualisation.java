@@ -11,7 +11,9 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 import java.util.TimeZone;
+import java.util.TreeMap;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -93,7 +95,7 @@ public class OeABSVisualisation extends BasicProcess {
 	private ArrayList<String> listeHeure;
 	private ArrayList<ReferentRh> listeGestionnaire;
 
-	private HashMap<Integer, DemandeDto> listeAbsence;
+	private TreeMap<Integer, DemandeDto> listeAbsence;
 	private HashMap<Integer, List<DemandeDto>> history = new HashMap<>();
 
 	public String ACTION_CREATION = "Création d'une absence.";
@@ -729,7 +731,8 @@ public class OeABSVisualisation extends BasicProcess {
 
 	private void afficheListeAbsence() throws Exception {
 
-		for (DemandeDto abs : getListeAbsence().values()) {
+		for (Map.Entry<Integer, DemandeDto> absMap : getListeAbsence().entrySet()) {
+			DemandeDto abs = absMap.getValue();
 			Integer i = abs.getIdDemande();
 			try {
 				Agent ag = getAgentDao().chercherAgent(abs.getAgentWithServiceDto().getIdAgent());
@@ -743,7 +746,7 @@ public class OeABSVisualisation extends BasicProcess {
 				t.setIdRefTypeAbsence(abs.getIdTypeDemande());
 				TypeAbsenceDto type = getListeFamilleAbsenceCreation().get(getListeFamilleAbsenceCreation().indexOf(t));
 
-				addZone(getNOM_ST_MATRICULE(i), ag.getNomatr().toString());
+				addZone(getNOM_ST_MATRICULE(i), null != ag ? ag.getNomatr().toString() : "");
 				addZone(getNOM_ST_AGENT(i), ag.getNomAgent() + " " + ag.getPrenomAgent());
 				addZone(getNOM_ST_INFO_AGENT(i), "<br/>" + statut);
 				addZone(getNOM_ST_TYPE(i), type.getLibelle() + "<br/>" + sdf.format(abs.getDateDemande()));
@@ -1134,14 +1137,16 @@ public class OeABSVisualisation extends BasicProcess {
 		this.agentCreation = agentCreation;
 	}
 
-	public HashMap<Integer, DemandeDto> getListeAbsence() {
-		return listeAbsence == null ? new HashMap<Integer, DemandeDto>() : listeAbsence;
+	public TreeMap<Integer, DemandeDto> getListeAbsence() {
+		return listeAbsence == null ? new TreeMap<Integer, DemandeDto>() : listeAbsence;
 	}
 
 	public void setListeAbsence(ArrayList<DemandeDto> listeAbsenceAjout) {
-		listeAbsence = new HashMap<>();
+		listeAbsence = new TreeMap<>();
+		int i = 0;
 		for (DemandeDto dem : listeAbsenceAjout) {
-			listeAbsence.put(dem.getIdDemande(), dem);
+			listeAbsence.put(i, dem);
+			i++;
 		}
 	}
 

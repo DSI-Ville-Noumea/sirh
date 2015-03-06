@@ -9,6 +9,7 @@
 <%@page import="nc.mairie.utils.MairieUtils"%>
 <%@page import="nc.mairie.utils.TreeHierarchy"%>
 <%@page import="nc.mairie.metier.poste.Service"%>
+<%@page import="java.util.Map"%>
 
 <HTML>
     <HEAD>
@@ -27,6 +28,7 @@
 			<SCRIPT type="text/javascript" src="js/GestionCalendrier.js"></SCRIPT> 
             <script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
             <script type="text/javascript" src="js/jquery.dataTables.min.js"></script>
+			<script type="text/javascript" src="js/dataTables.numericComma.js"></script>
             <script type="text/javascript" src="TableTools-2.0.1/media/js/TableTools.min.js"></script>
 
             <SCRIPT type="text/javascript">
@@ -87,8 +89,8 @@
                            {"bSortable": true,"sWidth": "150px"},
                            {"bSortable": true,"sWidth": "40px"},
                            {"bSortable": true,"sWidth": "150px"},
-                           {"bSortable": true,"sWidth": "60px","sClass" : "center"},
-                           {"bSortable": true,"sWidth": "60px","sClass" : "center"},
+                           {"sType": "date-francais", "bSortable": true, "sWidth": "60px","sClass" : "center" },
+                           {"sType": "date-francais", "bSortable": true,"sWidth": "60px","sClass" : "center"},
                            {"bSortable": true,"sWidth": "40px"},
                            {"bSortable": true,"sWidth": "120px"},
                            {"bSortable": true,"sWidth": "60px"},
@@ -97,6 +99,9 @@
                            {"bSearchable": false,"bSortable": false,"sWidth": "20px","sClass" : "center"},
                            {"bSearchable": false,"bSortable": false,"sWidth": "20px","sClass" : "center"}
                         ],
+                        "columnDefs": [
+                                       { "type": "date-eu", targets: 0 }
+                                   ],
                         "sDom": '<"H"flip>t<"F"ripT>',
                         "bStateSave": true,
                         "oLanguage": {
@@ -345,7 +350,8 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <%    for (DemandeDto abs : process.getListeAbsence().values()) {
+                        <% for (Map.Entry<Integer, DemandeDto> absMap : process.getListeAbsence().entrySet()) {
+                			DemandeDto abs = absMap.getValue();
                         	int indiceAbs = abs.getIdDemande();
                         %>
                         <tr id="tr<%=process.getValHistory(indiceAbs)%>">
