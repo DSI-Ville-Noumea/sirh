@@ -62,6 +62,7 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 
 	public String ACTION_MODIFICATION = "Modification d'un compteur -";
 	public String ACTION_CREATION = "Création d'un compteur -";
+	public String ACTION_VISUALISATION = "Consultation d'un compteur -";
 	public String ACTION_VISU_REPRESENTANT = "Visualisation des représentants -";
 	public String ACTION_MODIFICATION_REPRESENTANT = "Modification des représentants -";
 	public String ACTION_CREATION_REPRE = "Création d'un représentant -";
@@ -215,6 +216,13 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 			for (int i = 0; i < getListeCompteur().size(); i++) {
 				if (testerParametre(request, getNOM_PB_MODIFIER(i))) {
 					return performPB_MODIFIER(request, i);
+				}
+			}
+
+			// Si clic sur le bouton PB_VISUALISER
+			for (int i = 0; i < getListeCompteur().size(); i++) {
+				if (testerParametre(request, getNOM_PB_VISUALISATION(i))) {
+					return performPB_VISUALISATION(request, i);
 				}
 			}
 
@@ -383,6 +391,28 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 		String soldeAsaA52Minute = (dto.getDureeAAjouter().intValue() % 60) == 0 ? Const.CHAINE_VIDE : "."
 				+ dto.getDureeAAjouter().intValue() % 60;
 		addZone(getNOM_ST_NB_HEURES(), soldeAsaA52Heure + soldeAsaA52Minute);
+		return true;
+	}
+
+	public String getNOM_PB_VISUALISATION(int i) {
+		return "NOM_PB_VISUALISATION" + i;
+	}
+
+	public boolean performPB_VISUALISATION(HttpServletRequest request, int indiceEltAConsulter) throws Exception {
+		// On nomme l'action
+		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+		videZonesDeSaisie(request);
+
+		CompteurDto compteurCourant = (CompteurDto) getListeCompteur().get(indiceEltAConsulter);
+		setOrganisationCourante(compteurCourant.getOrganisationSyndicaleDto());
+
+		if (!initialiseCompteurCourant(request, compteurCourant))
+			return false;
+
+		// On nomme l'action
+		addZone(getNOM_ST_ACTION(), ACTION_VISUALISATION);
+
+		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
 

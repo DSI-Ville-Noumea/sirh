@@ -70,9 +70,7 @@ function testClickEnrigistrer(){
 							%>
 									<tr id="<%=i%>" onmouseover="SelectLigne(<%=i%>,<%=process.getListeCompteur().size()%>)">
 										<td class="sigp2NewTab-liste" align="center">
-											<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, "") %>" name="<%=process.getNOM_PB_VISUALISATION(i)%>">
-				    						<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_VISUALISATION(i)%>">
-				    						<%if(process.peutModifierCompteur(i)){ %>
+											<%if(process.peutModifierCompteur(i)){ %>
 											<INPUT title="modifier" type="image" src="images/modifier.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_MODIFIER(i)%>">
 											<%} %>				
 										</td>
@@ -154,59 +152,7 @@ function testClickEnrigistrer(){
                         <INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">	
 					</td>
 				</tr>
-			</table>
-			<%}else{ %>
-			
-			<table>
-				<tr>
-					<td width="70px;">
-						<span class="sigp2Mandatory">Agent :</span>
-					</td>
-					<td>
-						<INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_AGENT_CREATE()%>" disabled="disabled" size="10" type="text" value="<%= process.getVAL_ST_AGENT_CREATE()%>">
-                    </td>
-				</tr>
-				<tr>
-					<td>
-						<span class="sigp2Mandatory">Date de début :</span>
-					</td>
-					<td>
-						<INPUT class="sigp2-saisie" disabled="disabled" name="<%= process.getNOM_ST_DATE_DEBUT() %>" size="10" type="text"  value="<%= process.getVAL_ST_DATE_DEBUT()%>">
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<span class="sigp2Mandatory">Date de fin :</span>
-					</td>
-					<td>
-						<INPUT class="sigp2-saisie" disabled="disabled" name="<%= process.getNOM_ST_DATE_FIN() %>" size="10" type="text"  value="<%= process.getVAL_ST_DATE_FIN() %>">
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<span class="sigp2Mandatory">Nb heures :</span>
-					</td>
-					<td>
-						<INPUT class="sigp2-saisie" disabled="disabled" name="<%= process.getNOM_ST_NB_HEURES() %>" size="10" type="text"  value="<%= process.getVAL_ST_NB_HEURES() %>">
-					</td>
-				</tr>
-				
-				<tr>
-					<td>
-						<span class="sigp2Mandatory">Motif :</span>
-					</td>
-					<td>
-						<SELECT disabled="disabled" class="sigp2-saisie" name="<%= process.getNOM_LB_MOTIF() %>">
-							<%=process.forComboHTML(process.getVAL_LB_MOTIF(), process.getVAL_LB_MOTIF_SELECT()) %>
-						</SELECT>
-					</td>
-				</tr>
-				<tr>
-					<td colspan="2">
-                        <INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">	
-					</td>
-				</tr>
-			</table>
+			</table>			
 			<%} %>
 		</FIELDSET>
 		<%} %>
