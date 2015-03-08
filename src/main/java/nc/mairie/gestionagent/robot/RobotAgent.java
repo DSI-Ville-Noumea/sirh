@@ -84,7 +84,6 @@ import nc.mairie.gestionagent.process.pointage.OePTGPayeurConvCol;
 import nc.mairie.gestionagent.process.pointage.OePTGPayeurFonct;
 import nc.mairie.gestionagent.process.pointage.OePTGSaisie;
 import nc.mairie.gestionagent.process.pointage.OePTGSelectionAgent;
-import nc.mairie.gestionagent.process.pointage.OePTGSelectionApprobateur;
 import nc.mairie.gestionagent.process.pointage.OePTGVentilationContractuels;
 import nc.mairie.gestionagent.process.pointage.OePTGVentilationConvCol;
 import nc.mairie.gestionagent.process.pointage.OePTGVentilationFonct;
@@ -593,7 +592,7 @@ public class RobotAgent extends Robot {
 		// ///////////////////
 		// Classe OeDROITSKiosque
 		navigation.put(OeDROITSKiosque.class.getName() + OeDROITSKiosque.STATUT_APPROBATEUR,
-				OePTGSelectionApprobateur.class.getName());
+				OeAGENTRecherche.class.getName());
 
 		// //////////////////////////////////////
 		// pour la recherche d'un agent

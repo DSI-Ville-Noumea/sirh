@@ -169,39 +169,37 @@ public class OeDROITSKiosque extends BasicProcess {
 
 	private void ajouteApprobateurs(HttpServletRequest request) throws Exception {
 
-		@SuppressWarnings("unchecked")
-		ArrayList<Agent> listeEvaluateurSelect = (ArrayList<Agent>) VariablesActivite.recuperer(this, "APPROBATEURS");
-		VariablesActivite.enlever(this, "APPROBATEURS");
-		if (listeEvaluateurSelect != null && listeEvaluateurSelect.size() > 0) {
-			for (Agent ag : listeEvaluateurSelect) {
-				AgentWithServiceDto agentDto = new AgentWithServiceDto();
-				agentDto.setIdAgent(ag.getIdAgent());
+		Agent ag = (Agent) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
+		VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
+		if (ag != null) {
+			AgentWithServiceDto agentDto = new AgentWithServiceDto();
+			agentDto.setIdAgent(ag.getIdAgent());
 
-				if (!getListeApprobateurs().contains(agentDto)) {
-					Affectation affCourante = null;
-					try {
-						affCourante = getAffectationDao().chercherAffectationActiveAvecAgent(ag.getIdAgent());
-					} catch (Exception e) {
-						// "ERR400", //
-						// "L'agent @ n'est affecté à aucun poste. Il ne peut être ajouté en tant qu'approbateur."
-						getTransaction().declarerErreur(MessageUtils.getMessage("ERR400", ag.getIdAgent().toString()));
-						throw new Exception();
-					}
+			if (!getListeApprobateurs().contains(agentDto)) {
+				Affectation affCourante = null;
+				try {
+					affCourante = getAffectationDao().chercherAffectationActiveAvecAgent(ag.getIdAgent());
 					FichePoste fpCourante = getFichePosteDao().chercherFichePoste(affCourante.getIdFichePoste());
 					Service serv = Service.chercherService(getTransaction(), fpCourante.getIdServi());
-
-					agentDto.setNom(ag.getNomAgent());
-					agentDto.setPrenom(ag.getPrenomAgent());
 					agentDto.setCodeService(fpCourante.getIdServi());
 					agentDto.setService(serv.getLibService());
-
-					ArrayList<String> values = new ArrayList<>();
-					values.add("PTG");
-					values.add("ABS");
-					getHashApprobateur().put(agentDto, values);
-					getListeApprobateurs().add(agentDto);
+				} catch (Exception e) {
+					// l'agent n'est pas affecté on ne peut donc pas avoir son
+					// service
+					agentDto.setCodeService("NA");
+					agentDto.setService("non affecté");
 				}
+
+				agentDto.setNom(ag.getNomAgent());
+				agentDto.setPrenom(ag.getPrenomAgent());
+
+				ArrayList<String> values = new ArrayList<>();
+				values.add("PTG");
+				values.add("ABS");
+				getHashApprobateur().put(agentDto, values);
+				getListeApprobateurs().add(agentDto);
 			}
+
 		}
 	}
 
@@ -408,6 +406,7 @@ public class OeDROITSKiosque extends BasicProcess {
 	 * 
 	 */
 	public boolean performPB_AJOUTER(HttpServletRequest request) throws Exception {
+		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new Agent());
 		setStatut(STATUT_APPROBATEUR, true);
 		return true;
 
