@@ -10,6 +10,7 @@ import java.util.Map;
 import nc.mairie.gestionagent.absence.dto.TypeAbsenceDto;
 import nc.mairie.gestionagent.dto.AgentDto;
 import nc.mairie.gestionagent.dto.AgentWithServiceDto;
+import nc.mairie.gestionagent.dto.DelegatorAndOperatorsDto;
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
 import nc.mairie.gestionagent.pointage.dto.CanStartVentilationDto;
 import nc.mairie.gestionagent.pointage.dto.CanStartWorkflowPaieActionDto;
@@ -44,6 +45,10 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 
 	// droits
 	private static final String sirhPtgAgentsApprobateurs = "droits/approbateurs";
+	private static final String sirhDelegataireApprobateurUrl = "droits/delegataireOperateurs";
+	private static final String sirhPtgSauvegardeDelegataire = "droits/delegataire";	
+	
+
 	// Visualisation
 	private static final String sirhPtgVisualisationPointage = "visualisation/pointagesSIRH";
 	private static final String sirhPtgVisualisationHistory = "visualisation/historiqueSIRH";
@@ -707,4 +712,26 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 
 		return message;
 	}
+
+	@Override
+	public DelegatorAndOperatorsDto getDelegataireApprobateur(Integer idAgent) {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS_URL");
+		String url = urlWS + sirhDelegataireApprobateurUrl;
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idAgent", idAgent.toString());
+
+		ClientResponse res = createAndFireRequest(params, url);
+		return readResponse(DelegatorAndOperatorsDto.class, res, url);
+	}
+
+	@Override
+	public ReturnMessageDto setDelegataire(Integer idAgent, String json) {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS_URL");
+		String url = urlWS + sirhPtgSauvegardeDelegataire;
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idAgent", idAgent.toString());
+		ClientResponse res = createAndPostRequest(params, url, json);
+		return readResponseWithReturnMessageDto(ReturnMessageDto.class, res, url);
+	}
+
 }

@@ -16,6 +16,7 @@ import nc.mairie.gestionagent.absence.dto.SoldeDto;
 import nc.mairie.gestionagent.absence.dto.TypeAbsenceDto;
 import nc.mairie.gestionagent.absence.dto.UnitePeriodeQuotaDto;
 import nc.mairie.gestionagent.dto.AgentWithServiceDto;
+import nc.mairie.gestionagent.dto.InputterDto;
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
 
 public interface ISirhAbsWSConsumer {
@@ -23,10 +24,14 @@ public interface ISirhAbsWSConsumer {
 	// Filtres
 	List<UnitePeriodeQuotaDto> getUnitePeriodeQuota();
 
-	// Approbateurs
+	// Approbateurs / Droits
 	List<AgentWithServiceDto> getApprobateurs();
 
 	List<AgentWithServiceDto> setApprobateurs(String json);
+
+	InputterDto getDelegataireApprobateur(Integer idAgent);
+
+	ReturnMessageDto setDelegataire(Integer idAgent, String json);
 
 	// OS
 	List<OrganisationSyndicaleDto> getListeOrganisationSyndicale();

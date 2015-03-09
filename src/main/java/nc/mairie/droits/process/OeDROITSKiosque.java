@@ -9,7 +9,11 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import nc.mairie.gestionagent.dto.AgentDto;
 import nc.mairie.gestionagent.dto.AgentWithServiceDto;
+import nc.mairie.gestionagent.dto.DelegatorAndOperatorsDto;
+import nc.mairie.gestionagent.dto.InputterDto;
+import nc.mairie.gestionagent.dto.ReturnMessageDto;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.Agent;
 import nc.mairie.metier.poste.Affectation;
@@ -42,6 +46,8 @@ public class OeDROITSKiosque extends BasicProcess {
 	private static final long serialVersionUID = 1L;
 
 	public static final int STATUT_APPROBATEUR = 1;
+	public static final int STATUT_DELEGATAIRE_ABS = 2;
+	public static final int STATUT_DELEGATAIRE_PTG = 3;
 	public String ACTION_CREATION = "Création d'un approbateur.";
 	public String ACTION_SUPPRESSION = "Suppression d'un approbateur.";
 
@@ -49,6 +55,7 @@ public class OeDROITSKiosque extends BasicProcess {
 	private Hashtable<AgentWithServiceDto, ArrayList<String>> hashApprobateur;
 	private FichePosteDao fichePosteDao;
 	private AffectationDao affectationDao;
+	private AgentWithServiceDto approbateurCourant;
 
 	public String focus = null;
 	private boolean first = true;
@@ -101,6 +108,14 @@ public class OeDROITSKiosque extends BasicProcess {
 
 		if (etatStatut() == STATUT_APPROBATEUR) {
 			ajouteApprobateurs(request);
+		}
+
+		if (etatStatut() == STATUT_DELEGATAIRE_PTG) {
+			saveDelegatairePtg(request, false);
+		}
+
+		if (etatStatut() == STATUT_DELEGATAIRE_ABS) {
+			saveDelegataireAbs(request, false);
 		}
 		if (isFirst()) {
 			initialiseListeApprobateur();
@@ -212,12 +227,31 @@ public class OeDROITSKiosque extends BasicProcess {
 			addZone(getNOM_ST_AGENT(i), ag.getNom() + " " + ag.getPrenom() + " ("
 					+ ag.getIdAgent().toString().substring(3, ag.getIdAgent().toString().length()) + ")");
 			addZone(getNOM_ST_SERVICE(i), ag.getService() + " (" + ag.getCodeService() + ")");
+			// on cherche si l'agent a un delegataire dans ABS
+			if (t.contains("ABS")) {
+				SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
+				InputterDto delegataire = consuAbs.getDelegataireApprobateur(ag.getIdAgent());
+				addZone(getNOM_ST_DELEGATAIRE_ABS(i),
+						delegataire == null || delegataire.getDelegataire() == null ? Const.CHAINE_VIDE : delegataire
+								.getDelegataire().getNom() + " " + delegataire.getDelegataire().getPrenom());
+			} else {
+				addZone(getNOM_ST_DELEGATAIRE_ABS(i), Const.CHAINE_VIDE);
+			}
+			// on cherche si l'agent a un delegataire dans PTG
+			if (t.contains("PTG")) {
+				SirhPtgWSConsumer consuPtg = new SirhPtgWSConsumer();
+				DelegatorAndOperatorsDto delegataire = consuPtg.getDelegataireApprobateur(ag.getIdAgent());
+				addZone(getNOM_ST_DELEGATAIRE_PTG(i),
+						delegataire == null || delegataire.getDelegataire() == null ? Const.CHAINE_VIDE : delegataire
+								.getDelegataire().getNom() + " " + delegataire.getDelegataire().getPrenom());
+			} else {
+				addZone(getNOM_ST_DELEGATAIRE_PTG(i), Const.CHAINE_VIDE);
+			}
 
 			addZone(getNOM_CK_DROIT_PTG(i), t.contains("PTG") ? getCHECKED_ON() : getCHECKED_OFF());
 
 			addZone(getNOM_CK_DROIT_ABS(i), t.contains("ABS") ? getCHECKED_ON() : getCHECKED_OFF());
 		}
-
 	}
 
 	/**
@@ -255,6 +289,18 @@ public class OeDROITSKiosque extends BasicProcess {
 				int i = getListeApprobateurs().get(indice).getIdAgent();
 				if (testerParametre(request, getNOM_PB_SUPPRIMER(i))) {
 					return performPB_SUPPRIMER(request, i);
+				}
+				if (testerParametre(request, getNOM_PB_SUPPRIMER_DELEGATAIRE_ABS(i))) {
+					return performPB_SUPPRIMER_DELEGATAIRE_ABS(request, i);
+				}
+				if (testerParametre(request, getNOM_PB_SUPPRIMER_DELEGATAIRE_PTG(i))) {
+					return performPB_SUPPRIMER_DELEGATAIRE_PTG(request, i);
+				}
+				if (testerParametre(request, getNOM_PB_MODIFIER_DELEGATAIRE_ABS(i))) {
+					return performPB_MODIFIER_DELEGATAIRE_ABS(request, i);
+				}
+				if (testerParametre(request, getNOM_PB_MODIFIER_DELEGATAIRE_PTG(i))) {
+					return performPB_MODIFIER_DELEGATAIRE_PTG(request, i);
 				}
 			}
 
@@ -408,6 +454,7 @@ public class OeDROITSKiosque extends BasicProcess {
 	public boolean performPB_AJOUTER(HttpServletRequest request) throws Exception {
 		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new Agent());
 		setStatut(STATUT_APPROBATEUR, true);
+		setApprobateurCourant(null);
 		return true;
 
 	}
@@ -442,6 +489,7 @@ public class OeDROITSKiosque extends BasicProcess {
 	 */
 	public boolean performPB_SUPPRIMER(HttpServletRequest request, int indiceEltASuprimer) throws Exception {
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+		setApprobateurCourant(null);
 
 		AgentWithServiceDto agentSelec = new AgentWithServiceDto();
 
@@ -491,6 +539,7 @@ public class OeDROITSKiosque extends BasicProcess {
 	 * 
 	 */
 	public boolean performPB_VALIDER(HttpServletRequest request) throws Exception {
+		setApprobateurCourant(null);
 		SirhPtgWSConsumer ptgConsumer = new SirhPtgWSConsumer();
 		SirhAbsWSConsumer absConsumer = new SirhAbsWSConsumer();
 		List<AgentWithServiceDto> listeApprobateurPTG = new ArrayList<AgentWithServiceDto>();
@@ -558,6 +607,7 @@ public class OeDROITSKiosque extends BasicProcess {
 	public boolean performPB_ANNULER(HttpServletRequest request) throws Exception {
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 		setFirst(true);
+		setApprobateurCourant(null);
 
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
@@ -603,6 +653,7 @@ public class OeDROITSKiosque extends BasicProcess {
 	}
 
 	public boolean performPB_TRI(HttpServletRequest request) throws Exception {
+		setApprobateurCourant(null);
 		if (getVAL_RG_TRI().equals(getNOM_RB_TRI_AGENT())) {
 			// on tri la liste
 			Collections.sort(getListeApprobateurs(), new Comparator<AgentWithServiceDto>() {
@@ -655,5 +706,219 @@ public class OeDROITSKiosque extends BasicProcess {
 
 	public void setAffectationDao(AffectationDao affectationDao) {
 		this.affectationDao = affectationDao;
+	}
+
+	public String getNOM_ST_DELEGATAIRE_PTG(int i) {
+		return "NOM_ST_DELEGATAIRE_PTG" + i;
+	}
+
+	public String getVAL_ST_DELEGATAIRE_PTG(int i) {
+		return getZone(getNOM_ST_DELEGATAIRE_PTG(i));
+	}
+
+	public String getNOM_PB_MODIFIER_DELEGATAIRE_PTG(int i) {
+		return "NOM_PB_MODIFIER_DELEGATAIRE_PTG" + i;
+	}
+
+	public boolean performPB_MODIFIER_DELEGATAIRE_PTG(HttpServletRequest request, int indiceEltASuprimer)
+			throws Exception {
+		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+		// redmine #14134
+		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new Agent());
+		setStatut(STATUT_DELEGATAIRE_PTG, true);
+
+		AgentWithServiceDto agentSelec = new AgentWithServiceDto();
+
+		Enumeration<AgentWithServiceDto> e = getHashApprobateur().keys();
+		while (e.hasMoreElements()) {
+			AgentWithServiceDto ag = e.nextElement();
+			int i = ag.getIdAgent();
+
+			if (i == indiceEltASuprimer) {
+				agentSelec = ag;
+				break;
+			}
+		}
+		setApprobateurCourant(agentSelec);
+		return true;
+	}
+
+	public String getNOM_PB_SUPPRIMER_DELEGATAIRE_PTG(int i) {
+		return "NOM_PB_SUPPRIMER_DELEGATAIRE_PTG" + i;
+	}
+
+	public boolean performPB_SUPPRIMER_DELEGATAIRE_PTG(HttpServletRequest request, int indiceEltASuprimer)
+			throws Exception {
+		// redmine #14134
+		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+
+		AgentWithServiceDto agentSelec = new AgentWithServiceDto();
+
+		Enumeration<AgentWithServiceDto> e = getHashApprobateur().keys();
+		while (e.hasMoreElements()) {
+			AgentWithServiceDto ag = e.nextElement();
+			int i = ag.getIdAgent();
+
+			if (i == indiceEltASuprimer) {
+				agentSelec = ag;
+				break;
+			}
+		}
+
+		setApprobateurCourant(agentSelec);
+		addZone(getNOM_ST_DELEGATAIRE_PTG(agentSelec.getIdAgent()), Const.CHAINE_VIDE);
+		saveDelegatairePtg(request, true);
+
+		setStatut(STATUT_MEME_PROCESS);
+		return true;
+	}
+
+	public String getNOM_ST_DELEGATAIRE_ABS(int i) {
+		return "NOM_ST_DELEGATAIRE_ABS" + i;
+	}
+
+	public String getVAL_ST_DELEGATAIRE_ABS(int i) {
+		return getZone(getNOM_ST_DELEGATAIRE_ABS(i));
+	}
+
+	public String getNOM_PB_MODIFIER_DELEGATAIRE_ABS(int i) {
+		return "NOM_PB_MODIFIER_DELEGATAIRE_ABS" + i;
+	}
+
+	public boolean performPB_MODIFIER_DELEGATAIRE_ABS(HttpServletRequest request, int indiceEltASuprimer)
+			throws Exception {
+		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+		// redmine #14134
+		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new Agent());
+		setStatut(STATUT_DELEGATAIRE_ABS, true);
+
+		AgentWithServiceDto agentSelec = new AgentWithServiceDto();
+
+		Enumeration<AgentWithServiceDto> e = getHashApprobateur().keys();
+		while (e.hasMoreElements()) {
+			AgentWithServiceDto ag = e.nextElement();
+			int i = ag.getIdAgent();
+
+			if (i == indiceEltASuprimer) {
+				agentSelec = ag;
+				break;
+			}
+		}
+		setApprobateurCourant(agentSelec);
+		return true;
+	}
+
+	public String getNOM_PB_SUPPRIMER_DELEGATAIRE_ABS(int i) {
+		return "NOM_PB_SUPPRIMER_DELEGATAIRE_ABS" + i;
+	}
+
+	public boolean performPB_SUPPRIMER_DELEGATAIRE_ABS(HttpServletRequest request, int indiceEltASuprimer)
+			throws Exception {
+		// redmine #14134
+		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+
+		AgentWithServiceDto agentSelec = new AgentWithServiceDto();
+
+		Enumeration<AgentWithServiceDto> e = getHashApprobateur().keys();
+		while (e.hasMoreElements()) {
+			AgentWithServiceDto ag = e.nextElement();
+			int i = ag.getIdAgent();
+
+			if (i == indiceEltASuprimer) {
+				agentSelec = ag;
+				break;
+			}
+		}
+		setApprobateurCourant(agentSelec);
+		addZone(getNOM_ST_DELEGATAIRE_ABS(agentSelec.getIdAgent()), Const.CHAINE_VIDE);
+		saveDelegataireAbs(request, true);
+
+		setStatut(STATUT_MEME_PROCESS);
+		return true;
+	}
+
+	private void saveDelegataireAbs(HttpServletRequest request, boolean suppression) {
+
+		if (!suppression) {
+			Agent ag = (Agent) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
+			VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
+			if (ag != null && getApprobateurCourant() != null) {
+				AgentDto agInputter = new AgentDto();
+				agInputter.setIdAgent(ag.getIdAgent());
+				InputterDto inputter = new InputterDto();
+				inputter.setDelegataire(agInputter);
+				ReturnMessageDto message = new SirhAbsWSConsumer().setDelegataire(getApprobateurCourant().getIdAgent(),
+						new JSONSerializer().exclude("*.class").serialize(inputter));
+
+				if (message.getErrors().size() > 0) {
+					String err = Const.CHAINE_VIDE;
+					for (String erreur : message.getErrors()) {
+						err += " " + erreur;
+					}
+					getTransaction().declarerErreur("ERREUR : " + err);
+				}
+			} else {
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR004"));
+				return;
+			}
+		} else {
+			ReturnMessageDto message = new SirhAbsWSConsumer().setDelegataire(getApprobateurCourant().getIdAgent(),
+					new JSONSerializer().exclude("*.class").serialize(new DelegatorAndOperatorsDto()));
+
+			if (message.getErrors().size() > 0) {
+				String err = Const.CHAINE_VIDE;
+				for (String erreur : message.getErrors()) {
+					err += " " + erreur;
+				}
+				getTransaction().declarerErreur("ERREUR : " + err);
+			}
+		}
+	}
+
+	private void saveDelegatairePtg(HttpServletRequest request, boolean suppression) {
+
+		if (!suppression) {
+			Agent ag = (Agent) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
+			VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
+			if (ag != null && getApprobateurCourant() != null) {
+				AgentDto agInputter = new AgentDto();
+				agInputter.setIdAgent(ag.getIdAgent());
+				DelegatorAndOperatorsDto inputter = new DelegatorAndOperatorsDto();
+				inputter.setDelegataire(agInputter);
+				ReturnMessageDto message = new SirhPtgWSConsumer().setDelegataire(getApprobateurCourant().getIdAgent(),
+						new JSONSerializer().exclude("*.class").serialize(inputter));
+
+				if (message.getErrors().size() > 0) {
+					String err = Const.CHAINE_VIDE;
+					for (String erreur : message.getErrors()) {
+						err += " " + erreur;
+					}
+					getTransaction().declarerErreur("ERREUR : " + err);
+				}
+			} else {
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR004"));
+				return;
+			}
+		} else {
+			ReturnMessageDto message = new SirhPtgWSConsumer().setDelegataire(getApprobateurCourant().getIdAgent(),
+					new JSONSerializer().exclude("*.class").serialize(new DelegatorAndOperatorsDto()));
+
+			if (message.getErrors().size() > 0) {
+				String err = Const.CHAINE_VIDE;
+				for (String erreur : message.getErrors()) {
+					err += " " + erreur;
+				}
+				getTransaction().declarerErreur("ERREUR : " + err);
+			}
+		}
+
+	}
+
+	public AgentWithServiceDto getApprobateurCourant() {
+		return approbateurCourant;
+	}
+
+	public void setApprobateurCourant(AgentWithServiceDto approbateurCourant) {
+		this.approbateurCourant = approbateurCourant;
 	}
 }

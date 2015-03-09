@@ -593,6 +593,10 @@ public class RobotAgent extends Robot {
 		// Classe OeDROITSKiosque
 		navigation.put(OeDROITSKiosque.class.getName() + OeDROITSKiosque.STATUT_APPROBATEUR,
 				OeAGENTRecherche.class.getName());
+		navigation.put(OeDROITSKiosque.class.getName() + OeDROITSKiosque.STATUT_DELEGATAIRE_PTG,
+				OeAGENTRecherche.class.getName());
+		navigation.put(OeDROITSKiosque.class.getName() + OeDROITSKiosque.STATUT_DELEGATAIRE_ABS,
+				OeAGENTRecherche.class.getName());
 
 		// //////////////////////////////////////
 		// pour la recherche d'un agent

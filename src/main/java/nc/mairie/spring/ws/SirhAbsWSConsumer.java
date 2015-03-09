@@ -20,6 +20,7 @@ import nc.mairie.gestionagent.absence.dto.SoldeDto;
 import nc.mairie.gestionagent.absence.dto.TypeAbsenceDto;
 import nc.mairie.gestionagent.absence.dto.UnitePeriodeQuotaDto;
 import nc.mairie.gestionagent.dto.AgentWithServiceDto;
+import nc.mairie.gestionagent.dto.InputterDto;
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
 import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
@@ -46,6 +47,8 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	private static final String sirhAbsAddRepresentantAsaA52 = "asaA52/saveRepresentant";
 
 	private static final String sirhAbsAgentsApprobateurs = "droits/approbateurs";
+	private static final String sirhDelegataireApprobateurUrl = "droits/inputter";
+	private static final String sirhAbsSauvegardeDelegataire = "droits/delegataire";
 
 	private static final String sirhAbsSoldeRecupAgent = "solde/soldeAgent";
 	private static final String sirhAbsHistoCompteurAgent = "solde/historiqueSolde";
@@ -268,7 +271,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 			params.put("type", idRefType.toString());
 		if (idRefGroupeAbsence != null)
 			params.put("groupe", idRefGroupeAbsence.toString());
-		
+
 		logger.debug("Call " + url + " with idAgent : " + idAgent + ",ongletDemande : " + onglet + ",from : "
 				+ dateDebut + ",to : " + dateFin + ",dateDemande : " + dateDemande + ",etat : " + idRefEtat
 				+ ",type : " + idRefType);
@@ -659,20 +662,20 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	public List<RestitutionMassiveDto> getHistoRestitutionMassive(Integer idAgent) {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
 		String url = urlWS + sirhAbsHistoRestitutionMassive;
-		
+
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgent.toString());
-		
+
 		ClientResponse res = createAndFireRequest(params, url);
 		return readResponseAsList(RestitutionMassiveDto.class, res, url);
 	}
 
 	@Override
 	public RestitutionMassiveDto getDetailsHistoRestitutionMassive(Integer idAgent, RestitutionMassiveDto dto) {
-		
+
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
 		String url = urlWS + sirhAbsDetailsHistoRestitutionMassive;
-		
+
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgent.toString());
 
@@ -711,6 +714,27 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	public ReturnMessageDto saveRefAlimMensuelle(Integer idAgent, String json) {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
 		String url = urlWS + sirhAbsRefAlimCongeAnnuelSauvegarde;
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idAgent", idAgent.toString());
+		ClientResponse res = createAndPostRequest(params, url, json);
+		return readResponseWithReturnMessageDto(ReturnMessageDto.class, res, url);
+	}
+
+	@Override
+	public InputterDto getDelegataireApprobateur(Integer idAgent) {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
+		String url = urlWS + sirhDelegataireApprobateurUrl;
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idAgent", idAgent.toString());
+
+		ClientResponse res = createAndFireRequest(params, url);
+		return readResponse(InputterDto.class, res, url);
+	}
+
+	@Override
+	public ReturnMessageDto setDelegataire(Integer idAgent, String json) {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
+		String url = urlWS + sirhAbsSauvegardeDelegataire;
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgent.toString());
 		ClientResponse res = createAndPostRequest(params, url, json);

@@ -6,6 +6,7 @@ import java.util.List;
 
 import nc.mairie.gestionagent.absence.dto.TypeAbsenceDto;
 import nc.mairie.gestionagent.dto.AgentWithServiceDto;
+import nc.mairie.gestionagent.dto.DelegatorAndOperatorsDto;
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
 import nc.mairie.gestionagent.pointage.dto.ConsultPointageDto;
 import nc.mairie.gestionagent.pointage.dto.EtatsPayeurDto;
@@ -25,6 +26,10 @@ public interface ISirhPtgWSConsumer {
 	List<AgentWithServiceDto> getApprobateurs();
 
 	List<AgentWithServiceDto> setApprobateurs(String json);
+
+	DelegatorAndOperatorsDto getDelegataireApprobateur(Integer idAgent);
+	
+	ReturnMessageDto setDelegataire(Integer idAgent, String json);
 
 	// Ventilation
 	<T> List<T> getVentilations(Class<T> targetClass, Integer idDateVentil, Integer idRefTypePointage,
