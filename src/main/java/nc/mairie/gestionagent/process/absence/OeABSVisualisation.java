@@ -751,12 +751,12 @@ public class OeABSVisualisation extends BasicProcess {
 				addZone(getNOM_ST_INFO_AGENT(i), "<br/>" + statut);
 				addZone(getNOM_ST_TYPE(i), type.getLibelle() + "<br/>" + sdf.format(abs.getDateDemande()));
 
-				String debutMAM = abs.isDateDebutAM() ? "M" : abs.isDateDebutPM() ? "AM" : Const.CHAINE_VIDE;
+				String debutMAM = abs.isDateDebutAM() ? "M" : abs.isDateDebutPM() ? "A" : Const.CHAINE_VIDE;
 				addZone(getNOM_ST_DATE_DEB(i),
 						sdf.format(abs.getDateDebut()) + "<br/>"
 								+ (debutMAM.equals(Const.CHAINE_VIDE) ? hrs.format(abs.getDateDebut()) : debutMAM));
 				if (abs.getDateFin() != null) {
-					String finMAM = abs.isDateFinAM() ? "M" : abs.isDateFinPM() ? "AM" : Const.CHAINE_VIDE;
+					String finMAM = abs.isDateFinAM() ? "M" : abs.isDateFinPM() ? "A" : Const.CHAINE_VIDE;
 					addZone(getNOM_ST_DATE_FIN(i),
 							sdf.format(abs.getDateFin()) + "<br/>"
 									+ (finMAM.equals(Const.CHAINE_VIDE) ? hrs.format(abs.getDateFin()) : finMAM));

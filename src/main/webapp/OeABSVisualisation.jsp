@@ -521,7 +521,7 @@
 		            			<% if(typeCreation.getTypeSaisiDto().isChkDateDebut()) { %>
 		            			<td>
 									<INPUT type="radio" <%= process.forRadioHTML(process.getNOM_RG_DEBUT_MAM(), process.getNOM_RB_M()) %> ><span class="sigp2Mandatory">M</span>
-									<INPUT type="radio" <%= process.forRadioHTML(process.getNOM_RG_DEBUT_MAM(), process.getNOM_RB_AM()) %> ><span class="sigp2Mandatory">AM</span>
+									<INPUT type="radio" <%= process.forRadioHTML(process.getNOM_RG_DEBUT_MAM(), process.getNOM_RB_AM()) %> ><span class="sigp2Mandatory">A</span>
 		            			</td>
 		            			<% } %>
 		            		</tr>
@@ -549,7 +549,7 @@
 		            			<% if(typeCreation.getTypeSaisiDto().isChkDateFin()) { %>
 		            			<td>
 									<INPUT type="radio" <%= process.forRadioHTML(process.getNOM_RG_FIN_MAM(), process.getNOM_RB_M()) %> ><span class="sigp2Mandatory">M</span>
-									<INPUT type="radio" <%= process.forRadioHTML(process.getNOM_RG_FIN_MAM(), process.getNOM_RB_AM()) %> ><span class="sigp2Mandatory">AM</span>
+									<INPUT type="radio" <%= process.forRadioHTML(process.getNOM_RG_FIN_MAM(), process.getNOM_RB_AM()) %> ><span class="sigp2Mandatory">A</span>
 		            			</td>
 		            			<% } %>
 		            		</tr>
@@ -601,7 +601,7 @@
 		            			<% if(typeCreation.getTypeSaisiCongeAnnuelDto().isChkDateDebut()) { %>
 		            			<td>
 									<INPUT type="radio" <%= process.forRadioHTML(process.getNOM_RG_DEBUT_MAM(), process.getNOM_RB_M()) %> onclick="executeBouton('<%=process.getNOM_PB_CALCUL_DUREE()%>');" ><span class="sigp2Mandatory">M</span>
-									<INPUT type="radio" <%= process.forRadioHTML(process.getNOM_RG_DEBUT_MAM(), process.getNOM_RB_AM()) %>  onclick="executeBouton('<%=process.getNOM_PB_CALCUL_DUREE()%>');"><span class="sigp2Mandatory">AM</span>
+									<INPUT type="radio" <%= process.forRadioHTML(process.getNOM_RG_DEBUT_MAM(), process.getNOM_RB_AM()) %>  onclick="executeBouton('<%=process.getNOM_PB_CALCUL_DUREE()%>');"><span class="sigp2Mandatory">A</span>
 		            			</td>
 		            			<% } %>
 		            		</tr>
@@ -619,7 +619,7 @@
 		            			<% if(typeCreation.getTypeSaisiCongeAnnuelDto().isChkDateFin()) { %>
 		            			<td>
 									<INPUT type="radio" <%= process.forRadioHTML(process.getNOM_RG_FIN_MAM(), process.getNOM_RB_M()) %> onclick="executeBouton('<%=process.getNOM_PB_CALCUL_DUREE()%>');"><span class="sigp2Mandatory">M</span>
-									<INPUT type="radio" <%= process.forRadioHTML(process.getNOM_RG_FIN_MAM(), process.getNOM_RB_AM()) %>  onclick="executeBouton('<%=process.getNOM_PB_CALCUL_DUREE()%>');"><span class="sigp2Mandatory">AM</span>
+									<INPUT type="radio" <%= process.forRadioHTML(process.getNOM_RG_FIN_MAM(), process.getNOM_RB_AM()) %>  onclick="executeBouton('<%=process.getNOM_PB_CALCUL_DUREE()%>');"><span class="sigp2Mandatory">A</span>
 		            			</td>
 		            			<% } %>
 		            		</tr>

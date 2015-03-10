@@ -206,8 +206,8 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 				dateDebAff += dto.getDateDebut() == null ? "&nbsp;" : " - " + sdfHeure.format(dto.getDateDebut());
 				dateFinAff += dto.getDateFin() == null ? "&nbsp;" : " - " + sdfHeure.format(dto.getDateFin());
 			} else if (dto.getTypeSaisi() != null && "jours".equals(dto.getTypeSaisi().getUniteDecompte())) {
-				dateDebAff += dto.isDateDebutAM() ? " - M" : dto.isDateDebutPM() ? " - AM" : "&nbsp;";
-				dateFinAff += dto.isDateFinAM() ? " - M" : dto.isDateFinPM() ? " - AM" : "&nbsp;";
+				dateDebAff += dto.isDateDebutAM() ? " - M" : dto.isDateDebutPM() ? " - A" : "&nbsp;";
+				dateFinAff += dto.isDateFinAM() ? " - M" : dto.isDateFinPM() ? " - A" : "&nbsp;";
 			}
 
 			addZone(getNOM_ST_DATE_DEBUT_TT(i), dateDebAff);
@@ -282,8 +282,8 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 				dateDebAff += dto.getDateDebut() == null ? "&nbsp;" : " - " + sdfHeure.format(dto.getDateDebut());
 				dateFinAff += dto.getDateFin() == null ? "&nbsp;" : " - " + sdfHeure.format(dto.getDateFin());
 			} else if (dto.getTypeSaisi() != null && "jours".equals(dto.getTypeSaisi().getUniteDecompte())) {
-				dateDebAff += dto.isDateDebutAM() ? " - M" : dto.isDateDebutPM() ? " - AM" : "&nbsp;";
-				dateFinAff += dto.isDateFinAM() ? " - M" : dto.isDateFinPM() ? " - AM" : "&nbsp;";
+				dateDebAff += dto.isDateDebutAM() ? " - M" : dto.isDateDebutPM() ? " - A" : "&nbsp;";
+				dateFinAff += dto.isDateFinAM() ? " - M" : dto.isDateFinPM() ? " - A" : "&nbsp;";
 			}
 			addZone(getNOM_ST_DATE_DEBUT_EC(i), dateDebAff);
 			addZone(getNOM_ST_DATE_FIN_EC(i), dateFinAff);
@@ -359,8 +359,8 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 				dateDebAff += dto.getDateDebut() == null ? "&nbsp;" : " - " + sdfHeure.format(dto.getDateDebut());
 				dateFinAff += dto.getDateFin() == null ? "&nbsp;" : " - " + sdfHeure.format(dto.getDateFin());
 			} else if (dto.getTypeSaisi() != null && "jours".equals(dto.getTypeSaisi().getUniteDecompte())) {
-				dateDebAff += dto.isDateDebutAM() ? " - M" : dto.isDateDebutPM() ? " - AM" : "&nbsp;";
-				dateFinAff += dto.isDateFinAM() ? " - M" : dto.isDateFinPM() ? " - AM" : "&nbsp;";
+				dateDebAff += dto.isDateDebutAM() ? " - M" : dto.isDateDebutPM() ? " - A" : "&nbsp;";
+				dateFinAff += dto.isDateFinAM() ? " - M" : dto.isDateFinPM() ? " - A" : "&nbsp;";
 			}
 			addZone(getNOM_ST_DATE_DEBUT_NP(i), dateDebAff);
 			addZone(getNOM_ST_DATE_FIN_NP(i), dateFinAff);
