@@ -721,8 +721,9 @@ public class OeABSVisualisation extends BasicProcess {
 		// loadHistory();
 
 		afficheListeAbsence();
-		if(299 < listeDemande.size()) {
-			getTransaction().declarerErreur("Attention, les demandes sont limitées à 300 résultats. Utiliser les filtres.");
+		if (299 < listeDemande.size()) {
+			getTransaction().declarerErreur(
+					"Attention, les demandes sont limitées à 300 résultats. Utiliser les filtres.");
 		}
 		setTypeFiltre("GLOBAL");
 
@@ -773,7 +774,12 @@ public class OeABSVisualisation extends BasicProcess {
 						|| abs.getIdTypeDemande() == EnumTypeAbsence.ASA_A53.getCode()
 						|| abs.getIdTypeDemande() == EnumTypeAbsence.ASA_A50.getCode()
 						|| abs.getIdTypeDemande() == EnumTypeAbsence.CONGE.getCode()) {
-					addZone(getNOM_ST_DUREE(i), abs.getDuree() == null ? "&nbsp;" : abs.getDuree().toString() + "j");
+					if (abs.getIdTypeDemande() == EnumTypeAbsence.CONGE.getCode()) {
+						addZone(getNOM_ST_DUREE(i), abs.getDuree() == null ? "&nbsp;" : abs.getDuree().toString() + "j"
+								+ (abs.isSamediOffert() ? " +S" : ""));
+					} else {
+						addZone(getNOM_ST_DUREE(i), abs.getDuree() == null ? "&nbsp;" : abs.getDuree().toString() + "j");
+					}
 				} else if (abs.getGroupeAbsence() != null
 						&& abs.getGroupeAbsence().getIdRefGroupeAbsence() == EnumTypeGroupeAbsence.CONGES_EXCEP
 								.getValue()) {
@@ -1247,7 +1253,11 @@ public class OeABSVisualisation extends BasicProcess {
 					|| p.getIdTypeDemande() == EnumTypeAbsence.ASA_A53.getCode()
 					|| p.getIdTypeDemande() == EnumTypeAbsence.ASA_A50.getCode()
 					|| p.getIdTypeDemande() == EnumTypeAbsence.CONGE.getCode()) {
-				duree = p.getDuree().toString() + "j";
+				if (p.getIdTypeDemande() == EnumTypeAbsence.CONGE.getCode()) {
+					duree = p.getDuree().toString() + "j" + (p.isSamediOffert() ? " +S" : "");
+				} else {
+					duree = p.getDuree().toString() + "j";
+				}
 			} else if (p.getIdTypeDemande() == EnumTypeAbsence.ASA_A55.getCode()
 					|| p.getIdTypeDemande() == EnumTypeAbsence.ASA_A52.getCode()
 					|| p.getIdTypeDemande() == EnumTypeAbsence.ASA_A49.getCode()) {

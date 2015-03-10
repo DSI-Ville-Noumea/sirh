@@ -102,7 +102,7 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 			SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
 			setListeTypeAbsence((ArrayList<TypeAbsenceDto>) consuAbs.getListeRefTypeAbsenceDto(null));
 		}
-			
+
 		// Si liste Type absence vide alors affectation
 		if (getListeGroupeAbsence() == null || getListeGroupeAbsence().size() == 0) {
 			SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
@@ -186,7 +186,8 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 
 		// Recherche des absences non prises de l'agent
 		ArrayList<DemandeDto> a = (ArrayList<DemandeDto>) consuAbs.getListeDemandesAgent(
-				getAgentCourant().getIdAgent(), "TOUTES", dateDebut, dateFin, dateDemande, idRefEtat, null, idRefGroupeAbsence);
+				getAgentCourant().getIdAgent(), "TOUTES", dateDebut, dateFin, dateDemande, idRefEtat, null,
+				idRefGroupeAbsence);
 		setListeToutesDemandes(a);
 
 		SimpleDateFormat sdfDate = new SimpleDateFormat("dd/MM/yyyy");
@@ -194,7 +195,7 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 
 		for (int i = 0; i < getListeToutesDemandes().size(); i++) {
 			DemandeDto dto = getListeToutesDemandes().get(i);
-			
+
 			TypeAbsenceDto t = new TypeAbsenceDto();
 			t.setIdRefTypeAbsence(dto.getIdTypeDemande());
 			addZone(getNOM_ST_TYPE_DEMANDE_TT(i), getListeTypeAbsence().get(getListeTypeAbsence().indexOf(t))
@@ -223,7 +224,11 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 					|| dto.getIdTypeDemande() == EnumTypeAbsence.ASA_A53.getCode()
 					|| dto.getIdTypeDemande() == EnumTypeAbsence.ASA_A50.getCode()
 					|| dto.getIdTypeDemande() == EnumTypeAbsence.CONGE.getCode()) {
-				addZone(getNOM_ST_DUREE_TT(i), dto.getDuree() + "j");
+				if (dto.getIdTypeDemande() == EnumTypeAbsence.CONGE.getCode()) {
+					addZone(getNOM_ST_DUREE_TT(i), dto.getDuree() + "j" + (dto.isSamediOffert() ? " +S" : ""));
+				} else {
+					addZone(getNOM_ST_DUREE_TT(i), dto.getDuree() + "j");
+				}
 			} else if (dto.getGroupeAbsence() != null
 					&& dto.getGroupeAbsence().getIdRefGroupeAbsence() == EnumTypeGroupeAbsence.CONGES_EXCEP.getValue()) {
 
@@ -237,15 +242,15 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 			} else {
 				addZone(getNOM_ST_DUREE_TT(i), "&nbsp;");
 			}
-			
+
 			String motif = "";
-			if(null != dto.getMotif()) {
+			if (null != dto.getMotif()) {
 				motif += " " + dto.getMotif();
-				if(null != dto.getCommentaire()) {
+				if (null != dto.getCommentaire()) {
 					motif += " - ";
 				}
 			}
-			if(null != dto.getCommentaire()) {
+			if (null != dto.getCommentaire()) {
 				motif += dto.getCommentaire();
 			}
 			addZone(getNOM_ST_MOTIF_TT(i), motif);
@@ -261,8 +266,8 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 
 		// Recherche des absences non prises de l'agent
 		ArrayList<DemandeDto> a = (ArrayList<DemandeDto>) consuAbs.getListeDemandesAgent(
-				getAgentCourant().getIdAgent(), "EN_COURS", dateDebut, dateFin, dateDemande, idRefEtat,
-				null, idRefGroupeAbsence);
+				getAgentCourant().getIdAgent(), "EN_COURS", dateDebut, dateFin, dateDemande, idRefEtat, null,
+				idRefGroupeAbsence);
 		setListeDemandeEnCours(a);
 
 		SimpleDateFormat sdfDate = new SimpleDateFormat("dd/MM/yyyy");
@@ -270,7 +275,7 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 
 		for (int i = 0; i < getListeDemandeEnCours().size(); i++) {
 			DemandeDto dto = getListeDemandeEnCours().get(i);
-			
+
 			TypeAbsenceDto t = new TypeAbsenceDto();
 			t.setIdRefTypeAbsence(dto.getIdTypeDemande());
 			addZone(getNOM_ST_TYPE_DEMANDE_EC(i), getListeTypeAbsence().get(getListeTypeAbsence().indexOf(t))
@@ -299,7 +304,11 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 					|| dto.getIdTypeDemande() == EnumTypeAbsence.ASA_A53.getCode()
 					|| dto.getIdTypeDemande() == EnumTypeAbsence.ASA_A50.getCode()
 					|| dto.getIdTypeDemande() == EnumTypeAbsence.CONGE.getCode()) {
-				addZone(getNOM_ST_DUREE_EC(i), dto.getDuree() + "j");
+				if (dto.getIdTypeDemande() == EnumTypeAbsence.CONGE.getCode()) {
+					addZone(getNOM_ST_DUREE_EC(i), dto.getDuree() + "j" + (dto.isSamediOffert() ? " +S" : ""));
+				} else {
+					addZone(getNOM_ST_DUREE_EC(i), dto.getDuree() + "j");
+				}
 			} else if (dto.getGroupeAbsence() != null
 					&& dto.getGroupeAbsence().getIdRefGroupeAbsence() == EnumTypeGroupeAbsence.CONGES_EXCEP.getValue()) {
 
@@ -313,15 +322,15 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 			} else {
 				addZone(getNOM_ST_DUREE_EC(i), "&nbsp;");
 			}
-			
+
 			String motif = "";
-			if(null != dto.getMotif()) {
+			if (null != dto.getMotif()) {
 				motif += " " + dto.getMotif();
-				if(null != dto.getCommentaire()) {
+				if (null != dto.getCommentaire()) {
 					motif += " - ";
 				}
 			}
-			if(null != dto.getCommentaire()) {
+			if (null != dto.getCommentaire()) {
 				motif += dto.getCommentaire();
 			}
 			addZone(getNOM_ST_MOTIF_EC(i), motif);
@@ -338,8 +347,8 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 
 		// Recherche des absences non prises de l'agent
 		ArrayList<DemandeDto> a = (ArrayList<DemandeDto>) consuAbs.getListeDemandesAgent(
-				getAgentCourant().getIdAgent(), "NON_PRISES", dateDebut, dateFin, dateDemande, idRefEtat,
-				null, idRefGroupeAbsence);
+				getAgentCourant().getIdAgent(), "NON_PRISES", dateDebut, dateFin, dateDemande, idRefEtat, null,
+				idRefGroupeAbsence);
 		setListeDemandeNonPrises(a);
 
 		SimpleDateFormat sdfDate = new SimpleDateFormat("dd/MM/yyyy");
@@ -347,7 +356,7 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 
 		for (int i = 0; i < getListeDemandeNonPrises().size(); i++) {
 			DemandeDto dto = getListeDemandeNonPrises().get(i);
-			
+
 			TypeAbsenceDto t = new TypeAbsenceDto();
 			t.setIdRefTypeAbsence(dto.getIdTypeDemande());
 			addZone(getNOM_ST_TYPE_DEMANDE_NP(i), getListeTypeAbsence().get(getListeTypeAbsence().indexOf(t))
@@ -375,8 +384,12 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 					|| dto.getIdTypeDemande() == EnumTypeAbsence.ASA_A54.getCode()
 					|| dto.getIdTypeDemande() == EnumTypeAbsence.ASA_A53.getCode()
 					|| dto.getIdTypeDemande() == EnumTypeAbsence.ASA_A50.getCode()
-					| dto.getIdTypeDemande() == EnumTypeAbsence.CONGE.getCode()) {
-				addZone(getNOM_ST_DUREE_NP(i), dto.getDuree() + "j");
+					|| dto.getIdTypeDemande() == EnumTypeAbsence.CONGE.getCode()) {
+				if (dto.getIdTypeDemande() == EnumTypeAbsence.CONGE.getCode()) {
+					addZone(getNOM_ST_DUREE_NP(i), dto.getDuree() + "j" + (dto.isSamediOffert() ? " +S" : ""));
+				} else {
+					addZone(getNOM_ST_DUREE_NP(i), dto.getDuree() + "j");
+				}
 			} else if (dto.getGroupeAbsence() != null
 					&& dto.getGroupeAbsence().getIdRefGroupeAbsence() == EnumTypeGroupeAbsence.CONGES_EXCEP.getValue()) {
 
@@ -390,15 +403,15 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 			} else {
 				addZone(getNOM_ST_DUREE_NP(i), "&nbsp;");
 			}
-			
+
 			String motif = "";
-			if(null != dto.getMotif()) {
+			if (null != dto.getMotif()) {
 				motif += " " + dto.getMotif();
-				if(null != dto.getCommentaire()) {
+				if (null != dto.getCommentaire()) {
 					motif += " - ";
 				}
 			}
-			if(null != dto.getCommentaire()) {
+			if (null != dto.getCommentaire()) {
 				motif += dto.getCommentaire();
 			}
 			addZone(getNOM_ST_MOTIF_NP(i), motif);
@@ -747,7 +760,7 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 
 		initialiseHistoAgentEnCours(request, dateDebut, dateFin, dateDemande,
 				etatAbsence == null ? null : etatAbsence.getCode(),
-						groupeAbsence == null ? null : groupeAbsence.getIdRefGroupeAbsence());
+				groupeAbsence == null ? null : groupeAbsence.getIdRefGroupeAbsence());
 		return true;
 	}
 
@@ -1099,5 +1112,5 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 	public void setListeTypeAbsence(ArrayList<TypeAbsenceDto> listeTypeAbsence) {
 		this.listeTypeAbsence = listeTypeAbsence;
 	}
-	
+
 }

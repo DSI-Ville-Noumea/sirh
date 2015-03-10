@@ -23,6 +23,7 @@ public class DemandeDto implements IJSONDeserialize<DemandeDto> {
 	private boolean isDateFinPM;
 	private Date dateReprise;
 	private Double duree;
+	private boolean isSamediOffert;
 
 	private Integer idRefEtat;
 	private Date dateSaisie;
@@ -322,6 +323,14 @@ public class DemandeDto implements IJSONDeserialize<DemandeDto> {
 
 	public void setDepassementMultiple(boolean isDepassementMultiple) {
 		this.isDepassementMultiple = isDepassementMultiple;
+	}
+
+	public boolean isSamediOffert() {
+		return isSamediOffert;
+	}
+
+	public void setSamediOffert(boolean isSamediOffert) {
+		this.isSamediOffert = isSamediOffert;
 	}
 
 }
