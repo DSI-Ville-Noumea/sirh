@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.gestionagent.dto.AgentDto;
 import nc.mairie.gestionagent.dto.AgentWithServiceDto;
+import nc.mairie.gestionagent.dto.ApprobateurDto;
 import nc.mairie.gestionagent.dto.DelegatorAndOperatorsDto;
 import nc.mairie.gestionagent.dto.InputterDto;
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
@@ -51,8 +52,10 @@ public class OeDROITSKiosque extends BasicProcess {
 	public String ACTION_CREATION = "Création d'un approbateur.";
 	public String ACTION_SUPPRESSION = "Suppression d'un approbateur.";
 
-	private ArrayList<AgentWithServiceDto> listeApprobateurs = new ArrayList<AgentWithServiceDto>();
-	private Hashtable<AgentWithServiceDto, ArrayList<String>> hashApprobateur;
+	private ArrayList<ApprobateurDto> listeApprobateurs = new ArrayList<ApprobateurDto>();
+	private ArrayList<ApprobateurDto> listeApprobateursPTG = new ArrayList<ApprobateurDto>();
+	private ArrayList<ApprobateurDto> listeApprobateursABS = new ArrayList<ApprobateurDto>();
+	private Hashtable<ApprobateurDto, ArrayList<String>> hashApprobateur;
 	private FichePosteDao fichePosteDao;
 	private AffectationDao affectationDao;
 	private AgentWithServiceDto approbateurCourant;
@@ -147,20 +150,22 @@ public class OeDROITSKiosque extends BasicProcess {
 		// on construit la hashTable des approbateurs
 		getHashApprobateur().clear();
 		// on recupere les approbateurs de PTG
-		ArrayList<AgentWithServiceDto> listeApproPTG = (ArrayList<AgentWithServiceDto>) ptgConsumer.getApprobateurs();
-		ArrayList<AgentWithServiceDto> listeApproABS = (ArrayList<AgentWithServiceDto>) absConsumer.getApprobateurs();
-		ArrayList<AgentWithServiceDto> listeComplete = new ArrayList<AgentWithServiceDto>();
-		for (AgentWithServiceDto agDto : listeApproPTG) {
+		ArrayList<ApprobateurDto> listeApproPTG = (ArrayList<ApprobateurDto>) ptgConsumer.getApprobateurs();
+		setListeApprobateursPTG(listeApproPTG);
+		ArrayList<ApprobateurDto> listeApproABS = (ArrayList<ApprobateurDto>) absConsumer.getApprobateurs();
+		setListeApprobateursABS(listeApproABS);
+		ArrayList<ApprobateurDto> listeComplete = new ArrayList<ApprobateurDto>();
+		for (ApprobateurDto agDto : listeApproPTG) {
 			if (!listeComplete.contains(agDto)) {
 				listeComplete.add(agDto);
 			}
 		}
-		for (AgentWithServiceDto agDto : listeApproABS) {
+		for (ApprobateurDto agDto : listeApproABS) {
 			if (!listeComplete.contains(agDto)) {
 				listeComplete.add(agDto);
 			}
 		}
-		for (AgentWithServiceDto agDto : listeComplete) {
+		for (ApprobateurDto agDto : listeComplete) {
 			ArrayList<String> issuDe = new ArrayList<>();
 			if (listeApproPTG.contains(agDto)) {
 				issuDe.add("PTG");
@@ -172,10 +177,10 @@ public class OeDROITSKiosque extends BasicProcess {
 		}
 
 		// on tri la liste
-		Collections.sort(listeComplete, new Comparator<AgentWithServiceDto>() {
+		Collections.sort(listeComplete, new Comparator<ApprobateurDto>() {
 			@Override
-			public int compare(AgentWithServiceDto o1, AgentWithServiceDto o2) {
-				return o1.getNom().compareTo(o2.getNom());
+			public int compare(ApprobateurDto o1, ApprobateurDto o2) {
+				return o1.getApprobateur().getNom().compareTo(o2.getApprobateur().getNom());
 			}
 
 		});
@@ -187,10 +192,11 @@ public class OeDROITSKiosque extends BasicProcess {
 		Agent ag = (Agent) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
 		VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
 		if (ag != null) {
+			ApprobateurDto approDto = new ApprobateurDto();
 			AgentWithServiceDto agentDto = new AgentWithServiceDto();
 			agentDto.setIdAgent(ag.getIdAgent());
 
-			if (!getListeApprobateurs().contains(agentDto)) {
+			if (!getListeApprobateurs().contains(approDto)) {
 				Affectation affCourante = null;
 				try {
 					affCourante = getAffectationDao().chercherAffectationActiveAvecAgent(ag.getIdAgent());
@@ -207,43 +213,49 @@ public class OeDROITSKiosque extends BasicProcess {
 
 				agentDto.setNom(ag.getNomAgent());
 				agentDto.setPrenom(ag.getPrenomAgent());
+				approDto.setApprobateur(agentDto);
 
 				ArrayList<String> values = new ArrayList<>();
 				values.add("PTG");
 				values.add("ABS");
-				getHashApprobateur().put(agentDto, values);
-				getListeApprobateurs().add(agentDto);
+				getHashApprobateur().put(approDto, values);
+				getListeApprobateurs().add(approDto);
+				getListeApprobateursABS().add(approDto);
+				getListeApprobateursPTG().add(approDto);
 			}
 
 		}
 	}
 
 	private void afficheListeApprobateurs() throws Exception {
-		Enumeration<AgentWithServiceDto> e = getHashApprobateur().keys();
+		Enumeration<ApprobateurDto> e = getHashApprobateur().keys();
 		while (e.hasMoreElements()) {
-			AgentWithServiceDto ag = e.nextElement();
+			ApprobateurDto ag = e.nextElement();
 			ArrayList<String> t = getHashApprobateur().get(ag);
-			int i = ag.getIdAgent();
-			addZone(getNOM_ST_AGENT(i), ag.getNom() + " " + ag.getPrenom() + " ("
-					+ ag.getIdAgent().toString().substring(3, ag.getIdAgent().toString().length()) + ")");
-			addZone(getNOM_ST_SERVICE(i), ag.getService() + " (" + ag.getCodeService() + ")");
+			int i = ag.getApprobateur().getIdAgent();
+			addZone(getNOM_ST_AGENT(i),
+					ag.getApprobateur().getNom()
+							+ " "
+							+ ag.getApprobateur().getPrenom()
+							+ " ("
+							+ ag.getApprobateur().getIdAgent().toString()
+									.substring(3, ag.getApprobateur().getIdAgent().toString().length()) + ")");
+			addZone(getNOM_ST_SERVICE(i), ag.getApprobateur().getService() + " ("
+					+ ag.getApprobateur().getCodeService() + ")");
 			// on cherche si l'agent a un delegataire dans ABS
 			if (t.contains("ABS")) {
-				SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
-				InputterDto delegataire = consuAbs.getDelegataireApprobateur(ag.getIdAgent());
-				addZone(getNOM_ST_DELEGATAIRE_ABS(i),
-						delegataire == null || delegataire.getDelegataire() == null ? Const.CHAINE_VIDE : delegataire
-								.getDelegataire().getNom() + " " + delegataire.getDelegataire().getPrenom());
+				ApprobateurDto approAbs = getListeApprobateursABS().get(getListeApprobateursABS().indexOf(ag));
+				System.out.println("cici " + ag.getApprobateur().getIdAgent());
+				addZone(getNOM_ST_DELEGATAIRE_ABS(i), approAbs.getDelegataire() == null ? Const.CHAINE_VIDE : approAbs
+						.getDelegataire().getNom() + " " + approAbs.getDelegataire().getPrenom());
 			} else {
 				addZone(getNOM_ST_DELEGATAIRE_ABS(i), Const.CHAINE_VIDE);
 			}
 			// on cherche si l'agent a un delegataire dans PTG
 			if (t.contains("PTG")) {
-				SirhPtgWSConsumer consuPtg = new SirhPtgWSConsumer();
-				DelegatorAndOperatorsDto delegataire = consuPtg.getDelegataireApprobateur(ag.getIdAgent());
-				addZone(getNOM_ST_DELEGATAIRE_PTG(i),
-						delegataire == null || delegataire.getDelegataire() == null ? Const.CHAINE_VIDE : delegataire
-								.getDelegataire().getNom() + " " + delegataire.getDelegataire().getPrenom());
+				ApprobateurDto approPtg = getListeApprobateursPTG().get(getListeApprobateursPTG().indexOf(ag));
+				addZone(getNOM_ST_DELEGATAIRE_PTG(i), approPtg.getDelegataire() == null ? Const.CHAINE_VIDE : approPtg
+						.getDelegataire().getNom() + " " + approPtg.getDelegataire().getPrenom());
 			} else {
 				addZone(getNOM_ST_DELEGATAIRE_PTG(i), Const.CHAINE_VIDE);
 			}
@@ -286,7 +298,7 @@ public class OeDROITSKiosque extends BasicProcess {
 
 			// Si clic sur le bouton PB_SUPPRIMER
 			for (int indice = 0; indice < getListeApprobateurs().size(); indice++) {
-				int i = getListeApprobateurs().get(indice).getIdAgent();
+				int i = getListeApprobateurs().get(indice).getApprobateur().getIdAgent();
 				if (testerParametre(request, getNOM_PB_SUPPRIMER(i))) {
 					return performPB_SUPPRIMER(request, i);
 				}
@@ -345,11 +357,11 @@ public class OeDROITSKiosque extends BasicProcess {
 		return "OeDROITSKiosque.jsp";
 	}
 
-	public ArrayList<AgentWithServiceDto> getListeApprobateurs() {
+	public ArrayList<ApprobateurDto> getListeApprobateurs() {
 		return listeApprobateurs;
 	}
 
-	public void setListeApprobateurs(ArrayList<AgentWithServiceDto> listeApprobateurs) {
+	public void setListeApprobateurs(ArrayList<ApprobateurDto> listeApprobateurs) {
 		this.listeApprobateurs = listeApprobateurs;
 	}
 
@@ -491,12 +503,12 @@ public class OeDROITSKiosque extends BasicProcess {
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 		setApprobateurCourant(null);
 
-		AgentWithServiceDto agentSelec = new AgentWithServiceDto();
+		ApprobateurDto agentSelec = new ApprobateurDto();
 
-		Enumeration<AgentWithServiceDto> e = getHashApprobateur().keys();
+		Enumeration<ApprobateurDto> e = getHashApprobateur().keys();
 		while (e.hasMoreElements()) {
-			AgentWithServiceDto ag = e.nextElement();
-			int i = ag.getIdAgent();
+			ApprobateurDto ag = e.nextElement();
+			int i = ag.getApprobateur().getIdAgent();
 
 			if (i == indiceEltASuprimer) {
 				agentSelec = ag;
@@ -506,6 +518,8 @@ public class OeDROITSKiosque extends BasicProcess {
 
 		getHashApprobateur().remove(agentSelec);
 		getListeApprobateurs().remove(agentSelec);
+		getListeApprobateursPTG().remove(agentSelec);
+		getListeApprobateursABS().remove(agentSelec);
 
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION(), ACTION_SUPPRESSION);
@@ -545,16 +559,16 @@ public class OeDROITSKiosque extends BasicProcess {
 		List<AgentWithServiceDto> listeApprobateurPTG = new ArrayList<AgentWithServiceDto>();
 		List<AgentWithServiceDto> listeApprobateurABS = new ArrayList<AgentWithServiceDto>();
 
-		Enumeration<AgentWithServiceDto> e = getHashApprobateur().keys();
+		Enumeration<ApprobateurDto> e = getHashApprobateur().keys();
 		while (e.hasMoreElements()) {
-			AgentWithServiceDto ag = e.nextElement();
-			int i = ag.getIdAgent();
+			ApprobateurDto ag = e.nextElement();
+			int i = ag.getApprobateur().getIdAgent();
 
 			if (getVAL_CK_DROIT_PTG(i).equals(getCHECKED_ON())) {
-				listeApprobateurPTG.add(ag);
+				listeApprobateurPTG.add(ag.getApprobateur());
 			}
 			if (getVAL_CK_DROIT_ABS(i).equals(getCHECKED_ON())) {
-				listeApprobateurABS.add(ag);
+				listeApprobateurABS.add(ag.getApprobateur());
 			}
 		}
 
@@ -629,14 +643,14 @@ public class OeDROITSKiosque extends BasicProcess {
 		return getZone(getNOM_CK_DROIT_ABS(i));
 	}
 
-	public Hashtable<AgentWithServiceDto, ArrayList<String>> getHashApprobateur() {
+	public Hashtable<ApprobateurDto, ArrayList<String>> getHashApprobateur() {
 		if (hashApprobateur == null) {
-			hashApprobateur = new Hashtable<AgentWithServiceDto, ArrayList<String>>();
+			hashApprobateur = new Hashtable<ApprobateurDto, ArrayList<String>>();
 		}
 		return hashApprobateur;
 	}
 
-	public void setHashApprobateur(Hashtable<AgentWithServiceDto, ArrayList<String>> hashApprobateur) {
+	public void setHashApprobateur(Hashtable<ApprobateurDto, ArrayList<String>> hashApprobateur) {
 		this.hashApprobateur = hashApprobateur;
 	}
 
@@ -656,19 +670,19 @@ public class OeDROITSKiosque extends BasicProcess {
 		setApprobateurCourant(null);
 		if (getVAL_RG_TRI().equals(getNOM_RB_TRI_AGENT())) {
 			// on tri la liste
-			Collections.sort(getListeApprobateurs(), new Comparator<AgentWithServiceDto>() {
+			Collections.sort(getListeApprobateurs(), new Comparator<ApprobateurDto>() {
 				@Override
-				public int compare(AgentWithServiceDto o1, AgentWithServiceDto o2) {
-					return o1.getNom().compareTo(o2.getNom());
+				public int compare(ApprobateurDto o1, ApprobateurDto o2) {
+					return o1.getApprobateur().getNom().compareTo(o2.getApprobateur().getNom());
 				}
 
 			});
 		} else if (getVAL_RG_TRI().equals(getNOM_RB_TRI_SERVICE())) {
 			// on tri la liste
-			Collections.sort(getListeApprobateurs(), new Comparator<AgentWithServiceDto>() {
+			Collections.sort(getListeApprobateurs(), new Comparator<ApprobateurDto>() {
 				@Override
-				public int compare(AgentWithServiceDto o1, AgentWithServiceDto o2) {
-					return o1.getService().compareTo(o2.getService());
+				public int compare(ApprobateurDto o1, ApprobateurDto o2) {
+					return o1.getApprobateur().getService().compareTo(o2.getApprobateur().getService());
 				}
 
 			});
@@ -727,19 +741,19 @@ public class OeDROITSKiosque extends BasicProcess {
 		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new Agent());
 		setStatut(STATUT_DELEGATAIRE_PTG, true);
 
-		AgentWithServiceDto agentSelec = new AgentWithServiceDto();
+		ApprobateurDto agentSelec = new ApprobateurDto();
 
-		Enumeration<AgentWithServiceDto> e = getHashApprobateur().keys();
+		Enumeration<ApprobateurDto> e = getHashApprobateur().keys();
 		while (e.hasMoreElements()) {
-			AgentWithServiceDto ag = e.nextElement();
-			int i = ag.getIdAgent();
+			ApprobateurDto ag = e.nextElement();
+			int i = ag.getApprobateur().getIdAgent();
 
 			if (i == indiceEltASuprimer) {
 				agentSelec = ag;
 				break;
 			}
 		}
-		setApprobateurCourant(agentSelec);
+		setApprobateurCourant(agentSelec.getApprobateur());
 		return true;
 	}
 
@@ -752,12 +766,12 @@ public class OeDROITSKiosque extends BasicProcess {
 		// redmine #14134
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 
-		AgentWithServiceDto agentSelec = new AgentWithServiceDto();
+		ApprobateurDto agentSelec = new ApprobateurDto();
 
-		Enumeration<AgentWithServiceDto> e = getHashApprobateur().keys();
+		Enumeration<ApprobateurDto> e = getHashApprobateur().keys();
 		while (e.hasMoreElements()) {
-			AgentWithServiceDto ag = e.nextElement();
-			int i = ag.getIdAgent();
+			ApprobateurDto ag = e.nextElement();
+			int i = ag.getApprobateur().getIdAgent();
 
 			if (i == indiceEltASuprimer) {
 				agentSelec = ag;
@@ -765,8 +779,8 @@ public class OeDROITSKiosque extends BasicProcess {
 			}
 		}
 
-		setApprobateurCourant(agentSelec);
-		addZone(getNOM_ST_DELEGATAIRE_PTG(agentSelec.getIdAgent()), Const.CHAINE_VIDE);
+		setApprobateurCourant(agentSelec.getApprobateur());
+		addZone(getNOM_ST_DELEGATAIRE_PTG(agentSelec.getApprobateur().getIdAgent()), Const.CHAINE_VIDE);
 		saveDelegatairePtg(request, true);
 
 		setStatut(STATUT_MEME_PROCESS);
@@ -792,19 +806,19 @@ public class OeDROITSKiosque extends BasicProcess {
 		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new Agent());
 		setStatut(STATUT_DELEGATAIRE_ABS, true);
 
-		AgentWithServiceDto agentSelec = new AgentWithServiceDto();
+		ApprobateurDto agentSelec = new ApprobateurDto();
 
-		Enumeration<AgentWithServiceDto> e = getHashApprobateur().keys();
+		Enumeration<ApprobateurDto> e = getHashApprobateur().keys();
 		while (e.hasMoreElements()) {
-			AgentWithServiceDto ag = e.nextElement();
-			int i = ag.getIdAgent();
+			ApprobateurDto ag = e.nextElement();
+			int i = ag.getApprobateur().getIdAgent();
 
 			if (i == indiceEltASuprimer) {
 				agentSelec = ag;
 				break;
 			}
 		}
-		setApprobateurCourant(agentSelec);
+		setApprobateurCourant(agentSelec.getApprobateur());
 		return true;
 	}
 
@@ -817,20 +831,20 @@ public class OeDROITSKiosque extends BasicProcess {
 		// redmine #14134
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 
-		AgentWithServiceDto agentSelec = new AgentWithServiceDto();
+		ApprobateurDto agentSelec = new ApprobateurDto();
 
-		Enumeration<AgentWithServiceDto> e = getHashApprobateur().keys();
+		Enumeration<ApprobateurDto> e = getHashApprobateur().keys();
 		while (e.hasMoreElements()) {
-			AgentWithServiceDto ag = e.nextElement();
-			int i = ag.getIdAgent();
+			ApprobateurDto ag = e.nextElement();
+			int i = ag.getApprobateur().getIdAgent();
 
 			if (i == indiceEltASuprimer) {
 				agentSelec = ag;
 				break;
 			}
 		}
-		setApprobateurCourant(agentSelec);
-		addZone(getNOM_ST_DELEGATAIRE_ABS(agentSelec.getIdAgent()), Const.CHAINE_VIDE);
+		setApprobateurCourant(agentSelec.getApprobateur());
+		addZone(getNOM_ST_DELEGATAIRE_ABS(agentSelec.getApprobateur().getIdAgent()), Const.CHAINE_VIDE);
 		saveDelegataireAbs(request, true);
 
 		setStatut(STATUT_MEME_PROCESS);
@@ -920,5 +934,21 @@ public class OeDROITSKiosque extends BasicProcess {
 
 	public void setApprobateurCourant(AgentWithServiceDto approbateurCourant) {
 		this.approbateurCourant = approbateurCourant;
+	}
+
+	public ArrayList<ApprobateurDto> getListeApprobateursPTG() {
+		return listeApprobateursPTG;
+	}
+
+	public void setListeApprobateursPTG(ArrayList<ApprobateurDto> listeApprobateursPTG) {
+		this.listeApprobateursPTG = listeApprobateursPTG;
+	}
+
+	public ArrayList<ApprobateurDto> getListeApprobateursABS() {
+		return listeApprobateursABS;
+	}
+
+	public void setListeApprobateursABS(ArrayList<ApprobateurDto> listeApprobateursABS) {
+		this.listeApprobateursABS = listeApprobateursABS;
 	}
 }

@@ -20,7 +20,7 @@ import nc.mairie.gestionagent.absence.dto.SoldeDto;
 import nc.mairie.gestionagent.absence.dto.TypeAbsenceDto;
 import nc.mairie.gestionagent.absence.dto.UnitePeriodeQuotaDto;
 import nc.mairie.gestionagent.dto.AgentWithServiceDto;
-import nc.mairie.gestionagent.dto.InputterDto;
+import nc.mairie.gestionagent.dto.ApprobateurDto;
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
 import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
@@ -47,7 +47,6 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	private static final String sirhAbsAddRepresentantAsaA52 = "asaA52/saveRepresentant";
 
 	private static final String sirhAbsAgentsApprobateurs = "droits/approbateurs";
-	private static final String sirhDelegataireApprobateurUrl = "droits/inputter";
 	private static final String sirhAbsSauvegardeDelegataire = "droits/delegataire";
 
 	private static final String sirhAbsSoldeRecupAgent = "solde/soldeAgent";
@@ -102,11 +101,11 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	private Logger logger = LoggerFactory.getLogger(SirhAbsWSConsumer.class);
 
 	@Override
-	public List<AgentWithServiceDto> getApprobateurs() {
+	public List<ApprobateurDto> getApprobateurs() {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
 		String url = urlWS + sirhAbsAgentsApprobateurs;
 		ClientResponse res = createAndFireRequest(new HashMap<String, String>(), url);
-		return readResponseAsList(AgentWithServiceDto.class, res, url);
+		return readResponseAsList(ApprobateurDto.class, res, url);
 	}
 
 	@Override
@@ -718,17 +717,6 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 		params.put("idAgent", idAgent.toString());
 		ClientResponse res = createAndPostRequest(params, url, json);
 		return readResponseWithReturnMessageDto(ReturnMessageDto.class, res, url);
-	}
-
-	@Override
-	public InputterDto getDelegataireApprobateur(Integer idAgent) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
-		String url = urlWS + sirhDelegataireApprobateurUrl;
-		HashMap<String, String> params = new HashMap<>();
-		params.put("idAgent", idAgent.toString());
-
-		ClientResponse res = createAndFireRequest(params, url);
-		return readResponse(InputterDto.class, res, url);
 	}
 
 	@Override

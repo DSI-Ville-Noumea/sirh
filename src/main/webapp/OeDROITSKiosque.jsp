@@ -49,7 +49,7 @@ document.formu.elements[nom].focus();
 				</tr>
 				<%
 				for (int indice = 0;indice<process.getListeApprobateurs().size();indice++){
-					int i = process.getListeApprobateurs().get(indice).getIdAgent();
+					int i = process.getListeApprobateurs().get(indice).getApprobateur().getIdAgent();
 				%>
 					<tr>
 						<td class="sigp2NewTab-liste" style="position:relative;width:35px;" align="center">
