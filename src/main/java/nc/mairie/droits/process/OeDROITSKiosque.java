@@ -245,7 +245,6 @@ public class OeDROITSKiosque extends BasicProcess {
 			// on cherche si l'agent a un delegataire dans ABS
 			if (t.contains("ABS")) {
 				ApprobateurDto approAbs = getListeApprobateursABS().get(getListeApprobateursABS().indexOf(ag));
-				System.out.println("cici " + ag.getApprobateur().getIdAgent());
 				addZone(getNOM_ST_DELEGATAIRE_ABS(i), approAbs.getDelegataire() == null ? Const.CHAINE_VIDE : approAbs
 						.getDelegataire().getNom() + " " + approAbs.getDelegataire().getPrenom());
 			} else {
