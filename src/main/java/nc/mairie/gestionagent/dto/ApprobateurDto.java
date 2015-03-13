@@ -30,17 +30,11 @@ public class ApprobateurDto implements IJSONSerialize, IJSONDeserialize<Approbat
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
 		ApprobateurDto other = (ApprobateurDto) obj;
 		if (approbateur == null) {
 			if (other.approbateur != null)
 				return false;
-		} else if (!approbateur.equals(other.approbateur))
+		} else if (!approbateur.getIdAgent().toString().equals(other.approbateur.getIdAgent().toString()))
 			return false;
 		return true;
 	}

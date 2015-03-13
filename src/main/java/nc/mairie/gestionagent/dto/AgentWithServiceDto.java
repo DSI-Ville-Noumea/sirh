@@ -80,12 +80,6 @@ public class AgentWithServiceDto implements IJSONSerialize, IJSONDeserialize<Age
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (!super.equals(obj))
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
 		AgentWithServiceDto other = (AgentWithServiceDto) obj;
 		if (idAgent == null) {
 			if (other.idAgent != null)
