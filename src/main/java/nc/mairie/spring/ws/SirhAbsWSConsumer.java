@@ -101,10 +101,17 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	private Logger logger = LoggerFactory.getLogger(SirhAbsWSConsumer.class);
 
 	@Override
-	public List<ApprobateurDto> getApprobateurs() {
+	public List<ApprobateurDto> getApprobateurs(String codeService,Integer idAgent) {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
 		String url = urlWS + sirhAbsAgentsApprobateurs;
-		ClientResponse res = createAndFireRequest(new HashMap<String, String>(), url);
+		HashMap<String, String> params = new HashMap<>();
+		if(idAgent!=null){
+			params.put("idAgent", idAgent.toString());
+		}
+		if(codeService!=null){
+			params.put("codeService", codeService);
+		}
+		ClientResponse res = createAndFireRequest(params, url);
 		return readResponseAsList(ApprobateurDto.class, res, url);
 	}
 

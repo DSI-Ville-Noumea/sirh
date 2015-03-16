@@ -945,14 +945,6 @@ public class OeAVCTSimulationFonctionnaires extends BasicProcess {
 		return "NOM_PB_SUPPRIMER_RECHERCHER_SERVICE";
 	}
 
-	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (13/07/11 09:49:02)
-	 * 
-	 * 
-	 */
 
 	/**
 	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les

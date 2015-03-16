@@ -19,6 +19,7 @@ import nc.mairie.metier.agent.Agent;
 import nc.mairie.metier.poste.Affectation;
 import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.poste.Service;
+import nc.mairie.spring.dao.metier.agent.AgentDao;
 import nc.mairie.spring.dao.metier.poste.AffectationDao;
 import nc.mairie.spring.dao.metier.poste.FichePosteDao;
 import nc.mairie.spring.dao.utils.SirhDao;
@@ -26,9 +27,11 @@ import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.spring.ws.SirhAbsWSConsumer;
 import nc.mairie.spring.ws.SirhPtgWSConsumer;
 import nc.mairie.technique.BasicProcess;
+import nc.mairie.technique.Services;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
+import nc.mairie.utils.TreeHierarchy;
 import nc.mairie.utils.VariablesActivite;
 
 import org.springframework.context.ApplicationContext;
@@ -48,6 +51,7 @@ public class OeDROITSKiosque extends BasicProcess {
 	public static final int STATUT_APPROBATEUR = 1;
 	public static final int STATUT_DELEGATAIRE_ABS = 2;
 	public static final int STATUT_DELEGATAIRE_PTG = 3;
+	public static final int STATUT_RECHERCHER_AGENT = 4;
 	public String ACTION_CREATION = "Création d'un approbateur.";
 
 	private ArrayList<ApprobateurDto> listeApprobateurs = new ArrayList<ApprobateurDto>();
@@ -56,10 +60,13 @@ public class OeDROITSKiosque extends BasicProcess {
 	private Hashtable<ApprobateurDto, ArrayList<String>> hashApprobateur;
 	private FichePosteDao fichePosteDao;
 	private AffectationDao affectationDao;
+	private AgentDao agentDao;
 	private AgentWithServiceDto approbateurCourant;
 
+	private ArrayList<Service> listeServices;
+	public Hashtable<String, TreeHierarchy> hTree = null;
+
 	public String focus = null;
-	private boolean first = true;
 
 	/**
 	 * @return String Renvoie focus.
@@ -118,15 +125,58 @@ public class OeDROITSKiosque extends BasicProcess {
 		if (etatStatut() == STATUT_DELEGATAIRE_ABS) {
 			saveDelegataireAbs(request, false);
 		}
-		if (isFirst()) {
-			initialiseListeApprobateur();
-			addZone(getNOM_RG_TRI(), getNOM_RB_TRI_AGENT());
-			setFirst(false);
+
+		if (etatStatut() == STATUT_RECHERCHER_AGENT) {
+
+			Agent agt = (Agent) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
+			VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
+			if (agt != null && agt.getIdAgent() != null) {
+				addZone(getNOM_ST_AGENT(), agt.getNomatr().toString());
+				performPB_AFFICHER(request);
+			}
 		}
 
-		// on recupere les approbateurs de ABS
-		afficheListeApprobateurs();
+		initialiseListeService();
 
+	}
+
+	private void initialiseListeService() throws Exception {
+		// Si la liste des services est nulle
+		if (getListeServices() == null || getListeServices().size() == 0) {
+			ArrayList<Service> services = Service.listerServiceActif(getTransaction());
+			setListeServices(services);
+
+			// Tri par codeservice
+			Collections.sort(getListeServices(), new Comparator<Object>() {
+				public int compare(Object o1, Object o2) {
+					Service s1 = (Service) o1;
+					Service s2 = (Service) o2;
+					return (s1.getCodService().compareTo(s2.getCodService()));
+				}
+			});
+
+			// alim de la hTree
+			hTree = new Hashtable<String, TreeHierarchy>();
+			TreeHierarchy parent = null;
+			for (int i = 0; i < getListeServices().size(); i++) {
+				Service serv = (Service) getListeServices().get(i);
+
+				if (Const.CHAINE_VIDE.equals(serv.getCodService()))
+					continue;
+
+				// recherche du supérieur
+				String codeService = serv.getCodService();
+				while (codeService.endsWith("A")) {
+					codeService = codeService.substring(0, codeService.length() - 1);
+				}
+				codeService = codeService.substring(0, codeService.length() - 1);
+				codeService = Services.rpad(codeService, 4, "A");
+				parent = hTree.get(codeService);
+				int indexParent = (parent == null ? 0 : parent.getIndex());
+				hTree.put(serv.getCodService(), new TreeHierarchy(serv, i, indexParent));
+
+			}
+		}
 	}
 
 	private void initialiseDao() {
@@ -139,18 +189,23 @@ public class OeDROITSKiosque extends BasicProcess {
 		if (getAffectationDao() == null) {
 			setAffectationDao(new AffectationDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (getAgentDao() == null) {
+			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
-	private void initialiseListeApprobateur() {
+	private void initialiseListeApprobateur(String codeService, Agent agent) {
 
 		SirhPtgWSConsumer ptgConsumer = new SirhPtgWSConsumer();
 		SirhAbsWSConsumer absConsumer = new SirhAbsWSConsumer();
 		// on construit la hashTable des approbateurs
 		getHashApprobateur().clear();
 		// on recupere les approbateurs de PTG
-		ArrayList<ApprobateurDto> listeApproPTG = (ArrayList<ApprobateurDto>) ptgConsumer.getApprobateurs();
+		ArrayList<ApprobateurDto> listeApproPTG = (ArrayList<ApprobateurDto>) ptgConsumer.getApprobateurs(
+				codeService.equals(Const.CHAINE_VIDE) ? null : codeService, agent == null ? null : agent.getIdAgent());
 		setListeApprobateursPTG(listeApproPTG);
-		ArrayList<ApprobateurDto> listeApproABS = (ArrayList<ApprobateurDto>) absConsumer.getApprobateurs();
+		ArrayList<ApprobateurDto> listeApproABS = (ArrayList<ApprobateurDto>) absConsumer.getApprobateurs(
+				codeService.equals(Const.CHAINE_VIDE) ? null : codeService, agent == null ? null : agent.getIdAgent());
 		setListeApprobateursABS(listeApproABS);
 		ArrayList<ApprobateurDto> listeComplete = new ArrayList<ApprobateurDto>();
 		for (ApprobateurDto agDto : listeApproPTG) {
@@ -238,7 +293,6 @@ public class OeDROITSKiosque extends BasicProcess {
 					getTransaction().declarerErreur("ERREUR : " + err);
 				}
 			}
-			performPB_ANNULER(request);
 		}
 	}
 
@@ -349,7 +403,6 @@ public class OeDROITSKiosque extends BasicProcess {
 						getTransaction().declarerErreur("ERREUR : " + err);
 						return false;
 					}
-					performPB_ANNULER(request);
 				}
 				if (testerParametre(request, getNOM_PB_SET_APPROBATEUR_ABS(i))) {
 					ReturnMessageDto res = saveApprobateurABS(request, agDto);
@@ -363,18 +416,32 @@ public class OeDROITSKiosque extends BasicProcess {
 						getTransaction().declarerErreur("ERREUR : " + err);
 						return false;
 					}
-					performPB_ANNULER(request);
 				}
-			}
-
-			// Si clic sur le bouton PB_ANNULER
-			if (testerParametre(request, getNOM_PB_ANNULER())) {
-				return performPB_ANNULER(request);
 			}
 
 			// Si clic sur le bouton PB_TRI
 			if (testerParametre(request, getNOM_PB_TRI())) {
 				return performPB_TRI(request);
+			}
+
+			// Si clic sur le bouton PB_AFFICHER
+			if (testerParametre(request, getNOM_PB_AFFICHER())) {
+				return performPB_AFFICHER(request);
+			}
+
+			// Si clic sur le bouton PB_RECHERCHER_AGENT
+			if (testerParametre(request, getNOM_PB_RECHERCHER_AGENT())) {
+				return performPB_RECHERCHER_AGENT(request);
+			}
+
+			// Si clic sur le bouton PB_SUPPRIMER_RECHERCHER_AGENT
+			if (testerParametre(request, getNOM_PB_SUPPRIMER_RECHERCHER_AGENT())) {
+				return performPB_SUPPRIMER_RECHERCHER_AGENT(request);
+			}
+
+			// Si clic sur le bouton PB_SUPPRIMER_RECHERCHER_SERVICE
+			if (testerParametre(request, getNOM_PB_SUPPRIMER_RECHERCHER_SERVICE())) {
+				return performPB_SUPPRIMER_RECHERCHER_SERVICE(request);
 			}
 
 		}
@@ -586,8 +653,6 @@ public class OeDROITSKiosque extends BasicProcess {
 			getTransaction().declarerErreur("ERREUR : " + err);
 		}
 
-		performPB_ANNULER(request);
-
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
@@ -598,39 +663,6 @@ public class OeDROITSKiosque extends BasicProcess {
 
 	private ReturnMessageDto deleteApprobateurPTG(HttpServletRequest request, AgentWithServiceDto dto) {
 		return new SirhPtgWSConsumer().deleteApprobateur(new JSONSerializer().exclude("*.class").serialize(dto));
-	}
-
-	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER Date de création :
-	 * (05/09/11 11:31:37)
-	 * 
-	 * @return String
-	 * 
-	 */
-	public String getNOM_PB_ANNULER() {
-		return "NOM_PB_ANNULER";
-	}
-
-	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (05/09/11 11:31:37)
-	 * 
-	 * @param request
-	 *            HttpServletRequest
-	 * @throws Exception
-	 *             Exception
-	 * @return boolean
-	 * 
-	 */
-	public boolean performPB_ANNULER(HttpServletRequest request) throws Exception {
-		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
-		setFirst(true);
-		setApprobateurCourant(null);
-
-		setStatut(STATUT_MEME_PROCESS);
-		return true;
 	}
 
 	public String getNOM_CK_DROIT_PTG(int i) {
@@ -658,14 +690,6 @@ public class OeDROITSKiosque extends BasicProcess {
 
 	public void setHashApprobateur(Hashtable<ApprobateurDto, ArrayList<String>> hashApprobateur) {
 		this.hashApprobateur = hashApprobateur;
-	}
-
-	public boolean isFirst() {
-		return first;
-	}
-
-	public void setFirst(boolean first) {
-		this.first = first;
 	}
 
 	public String getNOM_PB_TRI() {
@@ -972,5 +996,100 @@ public class OeDROITSKiosque extends BasicProcess {
 
 	public String getNOM_PB_SET_APPROBATEUR_ABS(int i) {
 		return "NOM_PB_SET_APPROBATEUR_ABS_" + i;
+	}
+
+	public String getNOM_EF_SERVICE() {
+		return "NOM_EF_SERVICE";
+	}
+
+	public String getVAL_EF_SERVICE() {
+		return getZone(getNOM_EF_SERVICE());
+	}
+
+	public String getNOM_ST_CODE_SERVICE() {
+		return "NOM_ST_CODE_SERVICE";
+	}
+
+	public String getVAL_ST_CODE_SERVICE() {
+		return getZone(getNOM_ST_CODE_SERVICE());
+	}
+
+	public ArrayList<Service> getListeServices() {
+		return listeServices;
+	}
+
+	public void setListeServices(ArrayList<Service> listeServices) {
+		this.listeServices = listeServices;
+	}
+
+	public Hashtable<String, TreeHierarchy> getHTree() {
+		return hTree;
+	}
+
+	public String getNOM_ST_AGENT() {
+		return "NOM_ST_AGENT";
+	}
+
+	public String getVAL_ST_AGENT() {
+		return getZone(getNOM_ST_AGENT());
+	}
+
+	public String getNOM_PB_RECHERCHER_AGENT() {
+		return "NOM_PB_RECHERCHER_AGENT";
+	}
+
+	public boolean performPB_RECHERCHER_AGENT(HttpServletRequest request) throws Exception {
+		// On met l'agent courant en var d'activité
+		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new Agent());
+
+		setStatut(STATUT_RECHERCHER_AGENT, true);
+		return true;
+	}
+
+	public String getNOM_PB_SUPPRIMER_RECHERCHER_AGENT() {
+		return "NOM_PB_SUPPRIMER_RECHERCHER_AGENT";
+	}
+
+	public boolean performPB_SUPPRIMER_RECHERCHER_AGENT(HttpServletRequest request) throws Exception {
+		// On enlève l'agent selectionnée
+		addZone(getNOM_ST_AGENT(), Const.CHAINE_VIDE);
+		return true;
+	}
+
+	public String getNOM_PB_SUPPRIMER_RECHERCHER_SERVICE() {
+		return "NOM_PB_SUPPRIMER_RECHERCHER_SERVICE";
+	}
+
+	public boolean performPB_SUPPRIMER_RECHERCHER_SERVICE(HttpServletRequest request) throws Exception {
+		// On enlève le service selectionnée
+		addZone(getNOM_ST_CODE_SERVICE(), Const.CHAINE_VIDE);
+		addZone(getNOM_EF_SERVICE(), Const.CHAINE_VIDE);
+		return true;
+	}
+
+	public String getNOM_PB_AFFICHER() {
+		return "NOM_PB_AFFICHER";
+	}
+
+	public boolean performPB_AFFICHER(HttpServletRequest request) throws Exception {
+
+		// recuperation agent
+		Agent agent = null;
+		if (getVAL_ST_AGENT().length() != 0) {
+			agent = getAgentDao().chercherAgentParMatricule(Integer.valueOf(getVAL_ST_AGENT()));
+		}
+		initialiseListeApprobateur(getVAL_ST_CODE_SERVICE(), agent);
+		afficheListeApprobateurs();
+
+		setStatut(STATUT_MEME_PROCESS);
+		return true;
+	}
+
+	public AgentDao getAgentDao() {
+		return agentDao;
+	}
+
+	public void setAgentDao(AgentDao agentDao) {
+		this.agentDao = agentDao;
 	}
 }

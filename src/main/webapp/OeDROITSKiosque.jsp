@@ -1,4 +1,6 @@
 <!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@page import="nc.mairie.utils.TreeHierarchy"%>
+<%@page import="nc.mairie.metier.poste.Service"%>
 <%@page import="nc.mairie.enums.EnumTypeDroit"%>
 <%@page import="nc.mairie.utils.MairieUtils"%>
 <HTML>
@@ -34,6 +36,52 @@ document.formu.elements[nom].focus();
 	<FORM name="formu" method="POST" class="sigp2-titre">
 		<INPUT name="JSP" type="hidden" value="<%= process.getJSP() %>">
 		<BR/>
+		<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
+			<legend class="sigp2Legend">Filtres pour l'affichage des approbateurs</legend>
+				<span class="sigp2" style="width:70px;">Service :</span>
+				<INPUT id="service" class="sigp2-saisie" readonly="readonly"
+					name="<%= process.getNOM_EF_SERVICE() %>" style="margin-right:10px;width:100px"
+					type="text" value="<%= process.getVAL_EF_SERVICE() %>">
+				<img border="0" src="images/loupe.gif" width="16" title="Cliquer pour afficher l'arborescence"
+					height="16" style="cursor : pointer;" onclick="agrandirHierarchy();">
+				<img border="0" src="images/suppression.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_SERVICE()%>');">
+          		<INPUT type="hidden" id="codeservice" size="4" name="<%=process.getNOM_ST_CODE_SERVICE() %>" 
+					value="<%=process.getVAL_ST_CODE_SERVICE() %>" class="sigp2-saisie">
+				<div id="treeHierarchy" style="display: none; height: 340; width: 500; overflow:auto; background-color: #f4f4f4; border-width: 1px; border-style: solid;z-index:1;">
+					<script type="text/javascript">
+						d = new dTree('d');
+						d.add(0,-1,"Services");
+						
+						<%
+						String serviceSaisi = process.getVAL_EF_SERVICE().toUpperCase();
+						int theNode = 0;
+						for (int i =1; i <  process.getListeServices().size(); i++) {
+							Service serv = (Service)process.getListeServices().get(i);
+							String code = serv.getCodService();
+							TreeHierarchy tree = (TreeHierarchy)process.getHTree().get(code);
+							if (theNode ==0 && serviceSaisi.equals(tree.getService().getSigleService())) {
+								theNode=tree.getIndex();
+							}
+						%>
+						<%=tree.getJavaScriptLine()%>
+						<%}%>
+						document.write(d);
+				
+						d.closeAll();
+						<% if (theNode !=0) { %>
+							d.openTo(<%=theNode%>,true);
+						<%}%>
+					</script>
+				</div>
+				<span class="sigp2" style="width:60px">Par agent :</span>
+				<INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_AGENT() %>" size="10" readonly="readonly" type="text" value="<%= process.getVAL_ST_AGENT() %>" style="margin-right:10px;">
+				<img border="0" src="images/loupe.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_RECHERCHER_AGENT()%>');">
+          		<img border="0" src="images/suppression.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT()%>');">
+          		<BR/><BR/><BR/>
+				<INPUT type="submit" value="Afficher" class="sigp2-Bouton-100" name="<%=process.getNOM_PB_AFFICHER()%>">
+				<BR><BR>
+		</FIELDSET>
+			
 	    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
 		<legend class="sigp2Legend">Liste des approbateurs des pointages/absences</legend>
 			<div style="overflow: auto;height: 250px;width:1000px;margin-right: 0px;margin-left: 0px;">
@@ -77,12 +125,11 @@ document.formu.elements[nom].focus();
 				<%}%>
 				</table>	
 			</div>	
-			<BR/><BR/>
-			<div style="width:100%; text-align:center;">
-				<INPUT type="submit" class="sigp2-Bouton-100" value="Rafraichir" name="<%=process.getNOM_PB_ANNULER()%>">
-			</div>
         </FIELDSET>
 		<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_TRI()%>" value="TRI">
+		<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_RECHERCHER_AGENT()%>" value="RECHERCHERAGENT">
+		<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT()%>" value="SUPPRECHERCHERAGENT">
+		<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_SERVICE()%>" value="SUPPRECHERCHERSERVICE">
 	</FORM>
 </BODY>
 </HTML>

@@ -89,10 +89,17 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 	private Logger logger = LoggerFactory.getLogger(SirhPtgWSConsumer.class);
 
 	@Override
-	public List<ApprobateurDto> getApprobateurs() {
+	public List<ApprobateurDto> getApprobateurs(String codeService, Integer idAgent) {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS_URL");
 		String url = urlWS + sirhPtgAgentsApprobateurs;
-		ClientResponse res = createAndFireRequest(new HashMap<String, String>(), url);
+		HashMap<String, String> params = new HashMap<>();
+		if (idAgent != null) {
+			params.put("idAgent", idAgent.toString());
+		}
+		if (codeService != null) {
+			params.put("codeService", codeService);
+		}
+		ClientResponse res = createAndFireRequest(params, url);
 		return readResponseAsList(ApprobateurDto.class, res, url);
 	}
 
