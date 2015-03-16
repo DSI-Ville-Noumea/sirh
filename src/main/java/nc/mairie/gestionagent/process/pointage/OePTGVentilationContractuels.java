@@ -466,8 +466,8 @@ public class OePTGVentilationContractuels extends BasicProcess {
 			return false;
 		}
 
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-		Date dateVentilation = sdf.parse(getVAL_EF_DATE_DEBUT());
+		// on transforme la date
+		Date dateVentilation = transformDate(getVAL_EF_DATE_DEBUT());
 
 		// on lance la ventilation
 		SirhPtgWSConsumer t = new SirhPtgWSConsumer();
@@ -479,6 +479,19 @@ public class OePTGVentilationContractuels extends BasicProcess {
 			return false;
 		}
 		return true;
+	}
+	
+	// #14346
+	private Date transformDate(String dateVentilationStr) throws ParseException {
+		Date dateVentilation = null;
+		if (Services.estNumerique(dateVentilationStr)) {
+			SimpleDateFormat sdf = new SimpleDateFormat("ddMMyyyy");
+			dateVentilation = sdf.parse(dateVentilationStr);
+		}else{
+			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+			dateVentilation = sdf.parse(dateVentilationStr);
+		}
+		return dateVentilation;
 	}
 
 	private boolean performControlerDateVentilation() throws ParseException {
@@ -499,8 +512,7 @@ public class OePTGVentilationContractuels extends BasicProcess {
 		}
 
 		// Check that the ventilation date must be a sunday. Otherwise stop here
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-		Date dateVentilation = sdf.parse(getVAL_EF_DATE_DEBUT());
+		Date dateVentilation = transformDate(getVAL_EF_DATE_DEBUT());
 		DateTime givenVentilationDate = new DateTime(dateVentilation);
 		if (givenVentilationDate.dayOfWeek().get() != DateTimeConstants.SUNDAY) {
 			// "ERR600",
