@@ -377,7 +377,7 @@ public class OeDROITSKiosque extends BasicProcess {
 			// Si clic sur le bouton PB_SUPPRIMER
 			for (int indice = 0; indice < getListeApprobateurs().size(); indice++) {
 				int i = getListeApprobateurs().get(indice).getApprobateur().getIdAgent();
-				AgentWithServiceDto agDto = getListeApprobateurs().get(indice).getApprobateur();
+				ApprobateurDto approDto = getListeApprobateurs().get(indice);
 				if (testerParametre(request, getNOM_PB_SUPPRIMER(i))) {
 					return performPB_SUPPRIMER(request, i);
 				}
@@ -398,7 +398,7 @@ public class OeDROITSKiosque extends BasicProcess {
 					if (getVAL_CK_DROIT_PTG(i).equals(getCHECKED_OFF())) {
 						suppression = true;
 					}
-					ReturnMessageDto res = saveApprobateurPTG(request, agDto, suppression);
+					ReturnMessageDto res = saveApprobateurPTG(request, approDto.getApprobateur(), suppression);
 					String err = Const.CHAINE_VIDE;
 					for (String erreur : res.getErrors()) {
 						err += " " + erreur;
@@ -407,6 +407,8 @@ public class OeDROITSKiosque extends BasicProcess {
 					if (!err.equals(Const.CHAINE_VIDE)) {
 						getTransaction().declarerErreur("ERREUR : " + err);
 						return false;
+					} else {
+						getListeApprobateursPTG().remove(approDto);
 					}
 				}
 				if (testerParametre(request, getNOM_PB_SET_APPROBATEUR_ABS(i))) {
@@ -414,7 +416,7 @@ public class OeDROITSKiosque extends BasicProcess {
 					if (getVAL_CK_DROIT_ABS(i).equals(getCHECKED_OFF())) {
 						suppression = true;
 					}
-					ReturnMessageDto res = saveApprobateurABS(request, agDto, suppression);
+					ReturnMessageDto res = saveApprobateurABS(request, approDto.getApprobateur(), suppression);
 					String err = Const.CHAINE_VIDE;
 					for (String erreur : res.getErrors()) {
 						err += " " + erreur;
@@ -423,6 +425,8 @@ public class OeDROITSKiosque extends BasicProcess {
 					if (!err.equals(Const.CHAINE_VIDE)) {
 						getTransaction().declarerErreur("ERREUR : " + err);
 						return false;
+					} else {
+						getListeApprobateursABS().remove(approDto);
 					}
 				}
 			}
