@@ -294,14 +294,14 @@ public class OeDROITSKiosque extends BasicProcess {
 
 	private ReturnMessageDto saveApprobateurABS(HttpServletRequest request, AgentWithServiceDto dto, boolean suppression) {
 		if (suppression)
-			return new SirhAbsWSConsumer().deleteApprobateur(new JSONSerializer().exclude("*.class").serialize(dto));
+			return deleteApprobateurABS(request, dto);
 		else
 			return new SirhAbsWSConsumer().setApprobateur(new JSONSerializer().exclude("*.class").serialize(dto));
 	}
 
 	private ReturnMessageDto saveApprobateurPTG(HttpServletRequest request, AgentWithServiceDto dto, boolean suppression) {
 		if (suppression)
-			return new SirhPtgWSConsumer().deleteApprobateur(new JSONSerializer().exclude("*.class").serialize(dto));
+			return deleteApprobateurPTG(request, dto);
 		else
 			return new SirhPtgWSConsumer().setApprobateur(new JSONSerializer().exclude("*.class").serialize(dto));
 	}
@@ -637,16 +637,19 @@ public class OeDROITSKiosque extends BasicProcess {
 			}
 		}
 
-		ReturnMessageDto messagePtg = deleteApprobateurPTG(request, agentSelec.getApprobateur());
-		ReturnMessageDto messageAbs = deleteApprobateurABS(request, agentSelec.getApprobateur());
-
 		String err = Const.CHAINE_VIDE;
-		for (String erreur : messagePtg.getErrors()) {
-			err += " " + erreur;
+		if (getListeApprobateursPTG().contains(agentSelec)) {
+			ReturnMessageDto messagePtg = deleteApprobateurPTG(request, agentSelec.getApprobateur());
+			for (String erreur : messagePtg.getErrors()) {
+				err += " " + erreur;
+			}
 		}
+		if (getListeApprobateursABS().contains(agentSelec)) {
+			ReturnMessageDto messageAbs = deleteApprobateurABS(request, agentSelec.getApprobateur());
 
-		for (String erreur : messageAbs.getErrors()) {
-			err += " " + erreur;
+			for (String erreur : messageAbs.getErrors()) {
+				err += " " + erreur;
+			}
 		}
 
 		if (!err.equals(Const.CHAINE_VIDE)) {
@@ -916,7 +919,6 @@ public class OeDROITSKiosque extends BasicProcess {
 			}
 			if (!err.equals(Const.CHAINE_VIDE))
 				getTransaction().declarerErreur("ERREUR : " + err);
-
 		}
 	}
 
@@ -954,7 +956,6 @@ public class OeDROITSKiosque extends BasicProcess {
 			}
 			if (!err.equals(Const.CHAINE_VIDE))
 				getTransaction().declarerErreur("ERREUR : " + err);
-
 		}
 
 	}
