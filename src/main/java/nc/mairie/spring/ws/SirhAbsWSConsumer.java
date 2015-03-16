@@ -19,7 +19,6 @@ import nc.mairie.gestionagent.absence.dto.RestitutionMassiveDto;
 import nc.mairie.gestionagent.absence.dto.SoldeDto;
 import nc.mairie.gestionagent.absence.dto.TypeAbsenceDto;
 import nc.mairie.gestionagent.absence.dto.UnitePeriodeQuotaDto;
-import nc.mairie.gestionagent.dto.AgentWithServiceDto;
 import nc.mairie.gestionagent.dto.ApprobateurDto;
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
 import nc.mairie.gestionagent.servlets.ServletAgent;
@@ -47,6 +46,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	private static final String sirhAbsAddRepresentantAsaA52 = "asaA52/saveRepresentant";
 
 	private static final String sirhAbsAgentsApprobateurs = "droits/approbateurs";
+	private static final String sirhAbsDeleteApprobateurs = "droits/deleteApprobateurs";
 	private static final String sirhAbsSauvegardeDelegataire = "droits/delegataire";
 
 	private static final String sirhAbsSoldeRecupAgent = "solde/soldeAgent";
@@ -109,11 +109,19 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	}
 
 	@Override
-	public List<AgentWithServiceDto> setApprobateurs(String json) {
+	public ReturnMessageDto setApprobateur(String json) {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
 		String url = urlWS + sirhAbsAgentsApprobateurs;
 		ClientResponse res = createAndPostRequest(url, json);
-		return readResponseAsList(AgentWithServiceDto.class, res, url);
+		return readResponseWithReturnMessageDto(ReturnMessageDto.class, res, url);
+	}
+
+	@Override
+	public ReturnMessageDto deleteApprobateur(String json) {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
+		String url = urlWS + sirhAbsDeleteApprobateurs;
+		ClientResponse res = createAndPostRequest(url, json);
+		return readResponseWithReturnMessageDto(ReturnMessageDto.class, res, url);
 	}
 
 	/**

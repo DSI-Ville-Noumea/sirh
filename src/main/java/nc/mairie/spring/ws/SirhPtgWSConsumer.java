@@ -9,7 +9,6 @@ import java.util.Map;
 
 import nc.mairie.gestionagent.absence.dto.TypeAbsenceDto;
 import nc.mairie.gestionagent.dto.AgentDto;
-import nc.mairie.gestionagent.dto.AgentWithServiceDto;
 import nc.mairie.gestionagent.dto.ApprobateurDto;
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
 import nc.mairie.gestionagent.pointage.dto.CanStartVentilationDto;
@@ -45,6 +44,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 
 	// droits
 	private static final String sirhPtgAgentsApprobateurs = "droits/approbateurs";
+	private static final String sirhPtgDeleteApprobateurs = "droits/deleteApprobateurs";
 	private static final String sirhPtgSauvegardeDelegataire = "droits/delegataire";
 
 	// Visualisation
@@ -97,12 +97,19 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 	}
 
 	@Override
-	public List<AgentWithServiceDto> setApprobateurs(String json) {
+	public ReturnMessageDto setApprobateur(String json) {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS_URL");
 		String url = urlWS + sirhPtgAgentsApprobateurs;
 		ClientResponse res = createAndPostRequest(url, json);
-		return readResponseAsList(AgentWithServiceDto.class, res, url);
+		return readResponseWithReturnMessageDto(ReturnMessageDto.class, res, url);
+	}
 
+	@Override
+	public ReturnMessageDto deleteApprobateur(String json) {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS_URL");
+		String url = urlWS + sirhPtgDeleteApprobateurs;
+		ClientResponse res = createAndPostRequest(url, json);
+		return readResponseWithReturnMessageDto(ReturnMessageDto.class, res, url);
 	}
 
 	@Override

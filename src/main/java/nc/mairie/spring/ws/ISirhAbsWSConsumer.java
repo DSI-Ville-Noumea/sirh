@@ -15,7 +15,6 @@ import nc.mairie.gestionagent.absence.dto.RestitutionMassiveDto;
 import nc.mairie.gestionagent.absence.dto.SoldeDto;
 import nc.mairie.gestionagent.absence.dto.TypeAbsenceDto;
 import nc.mairie.gestionagent.absence.dto.UnitePeriodeQuotaDto;
-import nc.mairie.gestionagent.dto.AgentWithServiceDto;
 import nc.mairie.gestionagent.dto.ApprobateurDto;
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
 
@@ -27,7 +26,9 @@ public interface ISirhAbsWSConsumer {
 	// Approbateurs / Droits
 	List<ApprobateurDto> getApprobateurs();
 
-	List<AgentWithServiceDto> setApprobateurs(String json);
+	ReturnMessageDto setApprobateur(String json);
+
+	ReturnMessageDto deleteApprobateur(String json);
 
 	ReturnMessageDto setDelegataire(Integer idAgent, String json);
 

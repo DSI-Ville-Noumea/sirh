@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.Hashtable;
-import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -50,7 +49,6 @@ public class OeDROITSKiosque extends BasicProcess {
 	public static final int STATUT_DELEGATAIRE_ABS = 2;
 	public static final int STATUT_DELEGATAIRE_PTG = 3;
 	public String ACTION_CREATION = "Création d'un approbateur.";
-	public String ACTION_SUPPRESSION = "Suppression d'un approbateur.";
 
 	private ArrayList<ApprobateurDto> listeApprobateurs = new ArrayList<ApprobateurDto>();
 	private ArrayList<ApprobateurDto> listeApprobateursPTG = new ArrayList<ApprobateurDto>();
@@ -110,7 +108,7 @@ public class OeDROITSKiosque extends BasicProcess {
 		initialiseDao();
 
 		if (etatStatut() == STATUT_APPROBATEUR) {
-			ajouteApprobateurs(request);
+			saveAjoutApprobateurs(request);
 		}
 
 		if (etatStatut() == STATUT_DELEGATAIRE_PTG) {
@@ -187,7 +185,7 @@ public class OeDROITSKiosque extends BasicProcess {
 		setListeApprobateurs(listeComplete);
 	}
 
-	private void ajouteApprobateurs(HttpServletRequest request) throws Exception {
+	private void saveAjoutApprobateurs(HttpServletRequest request) throws Exception {
 
 		Agent ag = (Agent) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
 		VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
@@ -222,9 +220,34 @@ public class OeDROITSKiosque extends BasicProcess {
 				getListeApprobateurs().add(approDto);
 				getListeApprobateursABS().add(approDto);
 				getListeApprobateursPTG().add(approDto);
-			}
+				ReturnMessageDto messagePtg = saveApprobateurPTG(request, approDto.getApprobateur());
+				ReturnMessageDto messageAbs = saveApprobateurABS(request, approDto.getApprobateur());
 
+				String err = Const.CHAINE_VIDE;
+				if (messagePtg.getErrors().size() > 0) {
+					for (String erreur : messagePtg.getErrors()) {
+						err += " " + erreur;
+					}
+				}
+				if (messageAbs.getErrors().size() > 0) {
+					for (String erreur : messageAbs.getErrors()) {
+						err += " " + erreur;
+					}
+				}
+				if (err != Const.CHAINE_VIDE) {
+					getTransaction().declarerErreur("ERREUR : " + err);
+				}
+			}
+			performPB_ANNULER(request);
 		}
+	}
+
+	private ReturnMessageDto saveApprobateurABS(HttpServletRequest request, AgentWithServiceDto dto) {
+		return new SirhAbsWSConsumer().setApprobateur(new JSONSerializer().exclude("*.class").serialize(dto));
+	}
+
+	private ReturnMessageDto saveApprobateurPTG(HttpServletRequest request, AgentWithServiceDto dto) {
+		return new SirhPtgWSConsumer().setApprobateur(new JSONSerializer().exclude("*.class").serialize(dto));
 	}
 
 	private void afficheListeApprobateurs() throws Exception {
@@ -298,6 +321,7 @@ public class OeDROITSKiosque extends BasicProcess {
 			// Si clic sur le bouton PB_SUPPRIMER
 			for (int indice = 0; indice < getListeApprobateurs().size(); indice++) {
 				int i = getListeApprobateurs().get(indice).getApprobateur().getIdAgent();
+				AgentWithServiceDto agDto = getListeApprobateurs().get(indice).getApprobateur();
 				if (testerParametre(request, getNOM_PB_SUPPRIMER(i))) {
 					return performPB_SUPPRIMER(request, i);
 				}
@@ -313,16 +337,39 @@ public class OeDROITSKiosque extends BasicProcess {
 				if (testerParametre(request, getNOM_PB_MODIFIER_DELEGATAIRE_PTG(i))) {
 					return performPB_MODIFIER_DELEGATAIRE_PTG(request, i);
 				}
+				if (testerParametre(request, getNOM_PB_SET_APPROBATEUR_PTG(i))) {
+					ReturnMessageDto res = saveApprobateurPTG(request, agDto);
+					String err = Const.CHAINE_VIDE;
+					if (res.getErrors().size() > 0) {
+						for (String erreur : res.getErrors()) {
+							err += " " + erreur;
+						}
+					}
+					if (err != Const.CHAINE_VIDE) {
+						getTransaction().declarerErreur("ERREUR : " + err);
+						return false;
+					}
+					performPB_ANNULER(request);
+				}
+				if (testerParametre(request, getNOM_PB_SET_APPROBATEUR_ABS(i))) {
+					ReturnMessageDto res = saveApprobateurABS(request, agDto);
+					String err = Const.CHAINE_VIDE;
+					if (res.getErrors().size() > 0) {
+						for (String erreur : res.getErrors()) {
+							err += " " + erreur;
+						}
+					}
+					if (err != Const.CHAINE_VIDE) {
+						getTransaction().declarerErreur("ERREUR : " + err);
+						return false;
+					}
+					performPB_ANNULER(request);
+				}
 			}
 
 			// Si clic sur le bouton PB_ANNULER
 			if (testerParametre(request, getNOM_PB_ANNULER())) {
 				return performPB_ANNULER(request);
-			}
-
-			// Si clic sur le bouton PB_VALIDER
-			if (testerParametre(request, getNOM_PB_VALIDER())) {
-				return performPB_VALIDER(request);
 			}
 
 			// Si clic sur le bouton PB_TRI
@@ -520,77 +567,37 @@ public class OeDROITSKiosque extends BasicProcess {
 		getListeApprobateursPTG().remove(agentSelec);
 		getListeApprobateursABS().remove(agentSelec);
 
-		// On nomme l'action
-		addZone(getNOM_ST_ACTION(), ACTION_SUPPRESSION);
+		ReturnMessageDto messagePtg = deleteApprobateurPTG(request, agentSelec.getApprobateur());
+		ReturnMessageDto messageAbs = deleteApprobateurABS(request, agentSelec.getApprobateur());
+
+		String err = Const.CHAINE_VIDE;
+		if (messagePtg.getErrors().size() > 0) {
+			for (String erreur : messagePtg.getErrors()) {
+				err += " " + erreur;
+			}
+		}
+		if (messageAbs.getErrors().size() > 0) {
+			for (String erreur : messageAbs.getErrors()) {
+				err += " " + erreur;
+			}
+		}
+		if (err != Const.CHAINE_VIDE) {
+
+			getTransaction().declarerErreur("ERREUR : " + err);
+		}
+
+		performPB_ANNULER(request);
 
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
 
-	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER Date de création :
-	 * (05/09/11 11:31:37)
-	 * 
-	 * @return String
-	 * 
-	 */
-	public String getNOM_PB_VALIDER() {
-		return "NOM_PB_VALIDER";
+	private ReturnMessageDto deleteApprobateurABS(HttpServletRequest request, AgentWithServiceDto dto) {
+		return new SirhAbsWSConsumer().deleteApprobateur(new JSONSerializer().exclude("*.class").serialize(dto));
 	}
 
-	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (05/09/11 11:31:37)
-	 * 
-	 * @param request
-	 *            HttpServletRequest
-	 * @throws Exception
-	 *             Exception
-	 * @return boolean
-	 * 
-	 */
-	public boolean performPB_VALIDER(HttpServletRequest request) throws Exception {
-		setApprobateurCourant(null);
-		SirhPtgWSConsumer ptgConsumer = new SirhPtgWSConsumer();
-		SirhAbsWSConsumer absConsumer = new SirhAbsWSConsumer();
-		List<AgentWithServiceDto> listeApprobateurPTG = new ArrayList<AgentWithServiceDto>();
-		List<AgentWithServiceDto> listeApprobateurABS = new ArrayList<AgentWithServiceDto>();
-
-		Enumeration<ApprobateurDto> e = getHashApprobateur().keys();
-		while (e.hasMoreElements()) {
-			ApprobateurDto ag = e.nextElement();
-			int i = ag.getApprobateur().getIdAgent();
-
-			if (getVAL_CK_DROIT_PTG(i).equals(getCHECKED_ON())) {
-				listeApprobateurPTG.add(ag.getApprobateur());
-			}
-			if (getVAL_CK_DROIT_ABS(i).equals(getCHECKED_ON())) {
-				listeApprobateurABS.add(ag.getApprobateur());
-			}
-		}
-
-		List<AgentWithServiceDto> listeAgentErreurPTG = ptgConsumer.setApprobateurs(new JSONSerializer().exclude(
-				"*.class").serialize(listeApprobateurPTG));
-		List<AgentWithServiceDto> listeAgentErreurABS = absConsumer.setApprobateurs(new JSONSerializer().exclude(
-				"*.class").serialize(listeApprobateurABS));
-		List<AgentWithServiceDto> listeAgentErreur = new ArrayList<AgentWithServiceDto>();
-		listeAgentErreur.addAll(listeAgentErreurPTG);
-		listeAgentErreur.addAll(listeAgentErreurABS);
-
-		if (listeAgentErreur.size() > 0) {
-			String agents = Const.CHAINE_VIDE;
-			for (AgentWithServiceDto agentDtoErreur : listeAgentErreur) {
-				agents += " - " + agentDtoErreur.getNom() + " " + agentDtoErreur.getPrenom();
-			}
-			// "INF600",
-			// "Les agents suivants n'ont pu être ajouté en tant qu'approbateurs car ils sont dejà opérateurs/viseurs : @"
-			getTransaction().declarerErreur(MessageUtils.getMessage("INF600", agents));
-			return false;
-		}
-		setFirst(true);
-		return true;
+	private ReturnMessageDto deleteApprobateurPTG(HttpServletRequest request, AgentWithServiceDto dto) {
+		return new SirhPtgWSConsumer().deleteApprobateur(new JSONSerializer().exclude("*.class").serialize(dto));
 	}
 
 	/**
@@ -949,5 +956,21 @@ public class OeDROITSKiosque extends BasicProcess {
 
 	public void setListeApprobateursABS(ArrayList<ApprobateurDto> listeApprobateursABS) {
 		this.listeApprobateursABS = listeApprobateursABS;
+	}
+
+	public String getVAL_PB_SET_APPROBATEUR_PTG(int i) {
+		return getZone(getNOM_PB_SET_APPROBATEUR_PTG(i));
+	}
+
+	public String getNOM_PB_SET_APPROBATEUR_PTG(int i) {
+		return "NOM_PB_SET_APPROBATEUR_PTG_" + i;
+	}
+
+	public String getVAL_PB_SET_APPROBATEUR_ABS(int i) {
+		return getZone(getNOM_PB_SET_APPROBATEUR_ABS(i));
+	}
+
+	public String getNOM_PB_SET_APPROBATEUR_ABS(int i) {
+		return "NOM_PB_SET_APPROBATEUR_ABS_" + i;
 	}
 }

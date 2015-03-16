@@ -37,7 +37,7 @@ document.formu.elements[nom].focus();
 	    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
 		<legend class="sigp2Legend">Liste des approbateurs des pointages/absences</legend>
 			<div style="overflow: auto;height: 250px;width:1000px;margin-right: 0px;margin-left: 0px;">
-				<table class="sigp2NewTab" style="text-align:left;width:980px;">
+			<table class="sigp2NewTab" style="text-align:left;width:980px;">
 				<tr>
 					<td><INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_AJOUTER()%>"></td>
 					<td><span><INPUT type="radio" onclick='executeBouton("<%=process.getNOM_PB_TRI() %>")'<%= process.forRadioHTML(process.getNOM_RG_TRI(),process.getNOM_RB_TRI_AGENT())%>> Agent</span></td>
@@ -66,10 +66,12 @@ document.formu.elements[nom].focus();
 				    		<INPUT title="supprimer" type="image" src="images/suppression.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_SUPPRIMER_DELEGATAIRE_ABS(i)%>">				    										
 						</td>
 						<td class="sigp2NewTab-liste" style="position:relative;width:50px;text-align: center;">
-							<INPUT type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_DROIT_PTG(i),process.getVAL_CK_DROIT_PTG(i))%>>
+							<INPUT type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_DROIT_PTG(i),process.getVAL_CK_DROIT_PTG(i))%> onClick='executeBouton("<%=process.getNOM_PB_SET_APPROBATEUR_PTG(i)%>")'>
+							<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_SET_APPROBATEUR_PTG(i)%>" value="DATE">
 						</td>
 						<td class="sigp2NewTab-liste" style="position:relative;width:50px;text-align: center;">
-							<INPUT type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_DROIT_ABS(i),process.getVAL_CK_DROIT_ABS(i))%>>
+							<INPUT type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_DROIT_ABS(i),process.getVAL_CK_DROIT_ABS(i))%> onClick='executeBouton("<%=process.getNOM_PB_SET_APPROBATEUR_ABS(i)%>")'>
+							<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_SET_APPROBATEUR_ABS(i)%>" value="DATE">
 						</td>
 					</tr>
 				<%}%>
@@ -77,8 +79,7 @@ document.formu.elements[nom].focus();
 			</div>	
 			<BR/><BR/>
 			<div style="width:100%; text-align:center;">
-				<INPUT type="submit" class="sigp2-Bouton-100" value="Enregistrer" name="<%=process.getNOM_PB_VALIDER()%>">
-				<INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
+				<INPUT type="submit" class="sigp2-Bouton-100" value="Rafraichir" name="<%=process.getNOM_PB_ANNULER()%>">
 			</div>
         </FIELDSET>
 		<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_TRI()%>" value="TRI">
