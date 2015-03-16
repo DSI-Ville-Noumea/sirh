@@ -114,6 +114,10 @@ public class OeDROITSKiosque extends BasicProcess {
 		}
 		initialiseDao();
 
+		if (getVAL_RG_TRI().equals(Const.CHAINE_VIDE)) {
+			addZone(getNOM_RG_TRI(), getNOM_RB_TRI_AGENT());
+		}
+
 		if (etatStatut() == STATUT_APPROBATEUR) {
 			saveAjoutApprobateurs(request);
 		}
@@ -268,40 +272,38 @@ public class OeDROITSKiosque extends BasicProcess {
 				agentDto.setPrenom(ag.getPrenomAgent());
 				approDto.setApprobateur(agentDto);
 
-				ArrayList<String> values = new ArrayList<>();
-				values.add("PTG");
-				values.add("ABS");
-				getHashApprobateur().put(approDto, values);
-				getListeApprobateurs().add(approDto);
-				getListeApprobateursABS().add(approDto);
-				getListeApprobateursPTG().add(approDto);
-				ReturnMessageDto messagePtg = saveApprobateurPTG(request, approDto.getApprobateur());
-				ReturnMessageDto messageAbs = saveApprobateurABS(request, approDto.getApprobateur());
+				ReturnMessageDto messagePtg = saveApprobateurPTG(request, approDto.getApprobateur(), false);
+				ReturnMessageDto messageAbs = saveApprobateurABS(request, approDto.getApprobateur(), false);
 
 				String err = Const.CHAINE_VIDE;
-				if (messagePtg.getErrors().size() > 0) {
-					for (String erreur : messagePtg.getErrors()) {
-						err += " " + erreur;
-					}
+				for (String erreur : messagePtg.getErrors()) {
+					err += " " + erreur;
 				}
-				if (messageAbs.getErrors().size() > 0) {
-					for (String erreur : messageAbs.getErrors()) {
-						err += " " + erreur;
-					}
+
+				for (String erreur : messageAbs.getErrors()) {
+					err += " " + erreur;
 				}
-				if (err != Const.CHAINE_VIDE) {
+
+				if (!err.equals(Const.CHAINE_VIDE)) {
 					getTransaction().declarerErreur("ERREUR : " + err);
 				}
+				performPB_AFFICHER(request);
 			}
 		}
 	}
 
-	private ReturnMessageDto saveApprobateurABS(HttpServletRequest request, AgentWithServiceDto dto) {
-		return new SirhAbsWSConsumer().setApprobateur(new JSONSerializer().exclude("*.class").serialize(dto));
+	private ReturnMessageDto saveApprobateurABS(HttpServletRequest request, AgentWithServiceDto dto, boolean suppression) {
+		if (suppression)
+			return new SirhAbsWSConsumer().deleteApprobateur(new JSONSerializer().exclude("*.class").serialize(dto));
+		else
+			return new SirhAbsWSConsumer().setApprobateur(new JSONSerializer().exclude("*.class").serialize(dto));
 	}
 
-	private ReturnMessageDto saveApprobateurPTG(HttpServletRequest request, AgentWithServiceDto dto) {
-		return new SirhPtgWSConsumer().setApprobateur(new JSONSerializer().exclude("*.class").serialize(dto));
+	private ReturnMessageDto saveApprobateurPTG(HttpServletRequest request, AgentWithServiceDto dto, boolean suppression) {
+		if (suppression)
+			return new SirhPtgWSConsumer().deleteApprobateur(new JSONSerializer().exclude("*.class").serialize(dto));
+		else
+			return new SirhPtgWSConsumer().setApprobateur(new JSONSerializer().exclude("*.class").serialize(dto));
 	}
 
 	private void afficheListeApprobateurs() throws Exception {
@@ -392,27 +394,33 @@ public class OeDROITSKiosque extends BasicProcess {
 					return performPB_MODIFIER_DELEGATAIRE_PTG(request, i);
 				}
 				if (testerParametre(request, getNOM_PB_SET_APPROBATEUR_PTG(i))) {
-					ReturnMessageDto res = saveApprobateurPTG(request, agDto);
-					String err = Const.CHAINE_VIDE;
-					if (res.getErrors().size() > 0) {
-						for (String erreur : res.getErrors()) {
-							err += " " + erreur;
-						}
+					boolean suppression = false;
+					if (getVAL_CK_DROIT_PTG(i).equals(getCHECKED_OFF())) {
+						suppression = true;
 					}
-					if (err != Const.CHAINE_VIDE) {
+					ReturnMessageDto res = saveApprobateurPTG(request, agDto, suppression);
+					String err = Const.CHAINE_VIDE;
+					for (String erreur : res.getErrors()) {
+						err += " " + erreur;
+					}
+
+					if (!err.equals(Const.CHAINE_VIDE)) {
 						getTransaction().declarerErreur("ERREUR : " + err);
 						return false;
 					}
 				}
 				if (testerParametre(request, getNOM_PB_SET_APPROBATEUR_ABS(i))) {
-					ReturnMessageDto res = saveApprobateurABS(request, agDto);
-					String err = Const.CHAINE_VIDE;
-					if (res.getErrors().size() > 0) {
-						for (String erreur : res.getErrors()) {
-							err += " " + erreur;
-						}
+					boolean suppression = false;
+					if (getVAL_CK_DROIT_ABS(i).equals(getCHECKED_OFF())) {
+						suppression = true;
 					}
-					if (err != Const.CHAINE_VIDE) {
+					ReturnMessageDto res = saveApprobateurABS(request, agDto, suppression);
+					String err = Const.CHAINE_VIDE;
+					for (String erreur : res.getErrors()) {
+						err += " " + erreur;
+					}
+
+					if (!err.equals(Const.CHAINE_VIDE)) {
 						getTransaction().declarerErreur("ERREUR : " + err);
 						return false;
 					}
@@ -629,29 +637,22 @@ public class OeDROITSKiosque extends BasicProcess {
 			}
 		}
 
-		getHashApprobateur().remove(agentSelec);
-		getListeApprobateurs().remove(agentSelec);
-		getListeApprobateursPTG().remove(agentSelec);
-		getListeApprobateursABS().remove(agentSelec);
-
 		ReturnMessageDto messagePtg = deleteApprobateurPTG(request, agentSelec.getApprobateur());
 		ReturnMessageDto messageAbs = deleteApprobateurABS(request, agentSelec.getApprobateur());
 
 		String err = Const.CHAINE_VIDE;
-		if (messagePtg.getErrors().size() > 0) {
-			for (String erreur : messagePtg.getErrors()) {
-				err += " " + erreur;
-			}
+		for (String erreur : messagePtg.getErrors()) {
+			err += " " + erreur;
 		}
-		if (messageAbs.getErrors().size() > 0) {
-			for (String erreur : messageAbs.getErrors()) {
-				err += " " + erreur;
-			}
-		}
-		if (err != Const.CHAINE_VIDE) {
 
+		for (String erreur : messageAbs.getErrors()) {
+			err += " " + erreur;
+		}
+
+		if (!err.equals(Const.CHAINE_VIDE)) {
 			getTransaction().declarerErreur("ERREUR : " + err);
 		}
+		performPB_AFFICHER(request);
 
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
@@ -894,13 +895,13 @@ public class OeDROITSKiosque extends BasicProcess {
 				ReturnMessageDto message = new SirhAbsWSConsumer().setDelegataire(getApprobateurCourant().getIdAgent(),
 						new JSONSerializer().exclude("*.class").serialize(inputter));
 
-				if (message.getErrors().size() > 0) {
-					String err = Const.CHAINE_VIDE;
-					for (String erreur : message.getErrors()) {
-						err += " " + erreur;
-					}
-					getTransaction().declarerErreur("ERREUR : " + err);
+				String err = Const.CHAINE_VIDE;
+				for (String erreur : message.getErrors()) {
+					err += " " + erreur;
 				}
+				if (!err.equals(Const.CHAINE_VIDE))
+					getTransaction().declarerErreur("ERREUR : " + err);
+
 			} else {
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR004"));
 				return;
@@ -909,13 +910,13 @@ public class OeDROITSKiosque extends BasicProcess {
 			ReturnMessageDto message = new SirhAbsWSConsumer().setDelegataire(getApprobateurCourant().getIdAgent(),
 					new JSONSerializer().exclude("*.class").serialize(new DelegatorAndOperatorsDto()));
 
-			if (message.getErrors().size() > 0) {
-				String err = Const.CHAINE_VIDE;
-				for (String erreur : message.getErrors()) {
-					err += " " + erreur;
-				}
-				getTransaction().declarerErreur("ERREUR : " + err);
+			String err = Const.CHAINE_VIDE;
+			for (String erreur : message.getErrors()) {
+				err += " " + erreur;
 			}
+			if (!err.equals(Const.CHAINE_VIDE))
+				getTransaction().declarerErreur("ERREUR : " + err);
+
 		}
 	}
 
@@ -932,13 +933,13 @@ public class OeDROITSKiosque extends BasicProcess {
 				ReturnMessageDto message = new SirhPtgWSConsumer().setDelegataire(getApprobateurCourant().getIdAgent(),
 						new JSONSerializer().exclude("*.class").serialize(inputter));
 
-				if (message.getErrors().size() > 0) {
-					String err = Const.CHAINE_VIDE;
-					for (String erreur : message.getErrors()) {
-						err += " " + erreur;
-					}
-					getTransaction().declarerErreur("ERREUR : " + err);
+				String err = Const.CHAINE_VIDE;
+				for (String erreur : message.getErrors()) {
+					err += " " + erreur;
 				}
+				if (!err.equals(Const.CHAINE_VIDE))
+					getTransaction().declarerErreur("ERREUR : " + err);
+
 			} else {
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR004"));
 				return;
@@ -947,13 +948,13 @@ public class OeDROITSKiosque extends BasicProcess {
 			ReturnMessageDto message = new SirhPtgWSConsumer().setDelegataire(getApprobateurCourant().getIdAgent(),
 					new JSONSerializer().exclude("*.class").serialize(new DelegatorAndOperatorsDto()));
 
-			if (message.getErrors().size() > 0) {
-				String err = Const.CHAINE_VIDE;
-				for (String erreur : message.getErrors()) {
-					err += " " + erreur;
-				}
-				getTransaction().declarerErreur("ERREUR : " + err);
+			String err = Const.CHAINE_VIDE;
+			for (String erreur : message.getErrors()) {
+				err += " " + erreur;
 			}
+			if (!err.equals(Const.CHAINE_VIDE))
+				getTransaction().declarerErreur("ERREUR : " + err);
+
 		}
 
 	}
@@ -1072,7 +1073,9 @@ public class OeDROITSKiosque extends BasicProcess {
 	}
 
 	public boolean performPB_AFFICHER(HttpServletRequest request) throws Exception {
-
+		if (!performControlerFiltres()) {
+			return false;
+		}
 		// recuperation agent
 		Agent agent = null;
 		if (getVAL_ST_AGENT().length() != 0) {
@@ -1082,6 +1085,21 @@ public class OeDROITSKiosque extends BasicProcess {
 		afficheListeApprobateurs();
 
 		setStatut(STATUT_MEME_PROCESS);
+		return true;
+	}
+
+	private boolean performControlerFiltres() {
+		if (!getVAL_ST_AGENT().equals(Const.CHAINE_VIDE)) {
+			try {
+				@SuppressWarnings("unused")
+				Agent agent = getAgentDao().chercherAgent(Integer.valueOf("900" + getVAL_ST_AGENT()));
+			} catch (Exception e) {
+				// "ERR503",
+				// "L'agent @ n'existe pas. Merci de saisir un matricule existant."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR503", getVAL_ST_AGENT()));
+				return false;
+			}
+		}
 		return true;
 	}
 

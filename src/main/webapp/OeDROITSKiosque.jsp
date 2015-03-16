@@ -11,6 +11,7 @@
 <TITLE>Gestion des droits du kiosque</TITLE>
 
 <SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT> 
+<SCRIPT language="javascript" src="js/dtree.js"></SCRIPT>
 
 <SCRIPT language="JavaScript">
 //afin de sélectionner un élément dans une liste
@@ -24,6 +25,24 @@ function setfocus(nom)
 {
 if (document.formu.elements[nom] != null)
 document.formu.elements[nom].focus();
+}
+
+// afin d'afficher la hiérarchie des services
+function agrandirHierarchy() {
+
+	hier = 	document.getElementById('treeHierarchy');
+
+	if (hier.style.display!='none') {
+		reduireHierarchy();
+	} else {
+		hier.style.display='block';
+	}
+}
+
+// afin de cacher la hiérarchie des services
+function reduireHierarchy() {
+	hier = 	document.getElementById('treeHierarchy');
+	hier.style.display='none';
 }
 </SCRIPT>
 <META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
@@ -74,7 +93,7 @@ document.formu.elements[nom].focus();
 					</script>
 				</div>
 				<span class="sigp2" style="width:60px">Par agent :</span>
-				<INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_AGENT() %>" size="10" readonly="readonly" type="text" value="<%= process.getVAL_ST_AGENT() %>" style="margin-right:10px;">
+				<INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_AGENT() %>" size="10" type="text" value="<%= process.getVAL_ST_AGENT() %>" style="margin-right:10px;">
 				<img border="0" src="images/loupe.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_RECHERCHER_AGENT()%>');">
           		<img border="0" src="images/suppression.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT()%>');">
           		<BR/><BR/><BR/>
