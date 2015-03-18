@@ -124,10 +124,12 @@ public class OeDROITSKiosque extends BasicProcess {
 
 		if (etatStatut() == STATUT_DELEGATAIRE_PTG) {
 			saveDelegatairePtg(request, false);
+			performPB_AFFICHER(request);
 		}
 
 		if (etatStatut() == STATUT_DELEGATAIRE_ABS) {
 			saveDelegataireAbs(request, false);
+			performPB_AFFICHER(request);
 		}
 
 		if (etatStatut() == STATUT_RECHERCHER_AGENT) {
@@ -818,10 +820,10 @@ public class OeDROITSKiosque extends BasicProcess {
 		}
 
 		setApprobateurCourant(agentSelec.getApprobateur());
-		addZone(getNOM_ST_DELEGATAIRE_PTG(agentSelec.getApprobateur().getIdAgent()), Const.CHAINE_VIDE);
 		saveDelegatairePtg(request, true);
 
 		setStatut(STATUT_MEME_PROCESS);
+		performPB_AFFICHER(request);
 		return true;
 	}
 
@@ -882,10 +884,10 @@ public class OeDROITSKiosque extends BasicProcess {
 			}
 		}
 		setApprobateurCourant(agentSelec.getApprobateur());
-		addZone(getNOM_ST_DELEGATAIRE_ABS(agentSelec.getApprobateur().getIdAgent()), Const.CHAINE_VIDE);
 		saveDelegataireAbs(request, true);
 
 		setStatut(STATUT_MEME_PROCESS);
+		performPB_AFFICHER(request);
 		return true;
 	}
 
@@ -1114,5 +1116,31 @@ public class OeDROITSKiosque extends BasicProcess {
 
 	public void setAgentDao(AgentDao agentDao) {
 		this.agentDao = agentDao;
+	}
+
+	public boolean peutModifierDelegatairePTG(int idAgent) {
+
+		ApprobateurDto agentSelec = new ApprobateurDto();
+		AgentWithServiceDto approbateur = new AgentWithServiceDto();
+		approbateur.setIdAgent(idAgent);
+		agentSelec.setApprobateur(approbateur);
+		if (getListeApprobateursPTG().contains(agentSelec)) {
+			return true;
+		}
+
+		return false;
+	}
+
+	public boolean peutModifierDelegataireABS(int idAgent) {
+
+		ApprobateurDto agentSelec = new ApprobateurDto();
+		AgentWithServiceDto approbateur = new AgentWithServiceDto();
+		approbateur.setIdAgent(idAgent);
+		agentSelec.setApprobateur(approbateur);
+		if (getListeApprobateursABS().contains(agentSelec)) {
+			return true;
+		}
+
+		return false;
 	}
 }
