@@ -22,6 +22,7 @@ import nc.mairie.gestionagent.pointage.dto.ConsultPointageDto;
 import nc.mairie.gestionagent.pointage.dto.RefEtatDto;
 import nc.mairie.gestionagent.pointage.dto.RefTypePointageDto;
 import nc.mairie.gestionagent.pointage.dto.VentilDateDto;
+import nc.mairie.gestionagent.radi.dto.LightUserDto;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.Agent;
 import nc.mairie.metier.poste.Affectation;
@@ -30,10 +31,12 @@ import nc.mairie.spring.dao.metier.agent.AgentDao;
 import nc.mairie.spring.dao.metier.poste.AffectationDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
+import nc.mairie.spring.ws.RadiWSConsumer;
 import nc.mairie.spring.ws.SirhPtgWSConsumer;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
+import nc.mairie.technique.UserAppli;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
@@ -1115,49 +1118,50 @@ public class OePTGVisualisation extends BasicProcess {
 	}
 
 	public boolean performPB_VALID(HttpServletRequest request) throws Exception {
-		changeState(getListePointage().values(), EtatPointageEnum.APPROUVE);
+		changeState(request, getListePointage().values(), EtatPointageEnum.APPROUVE);
 		return true;
 	}
 
 	public boolean performPB_VALID(HttpServletRequest request, int i) throws Exception {
-		changeState(getListePointage().get(i), EtatPointageEnum.APPROUVE);
+		changeState(request, getListePointage().get(i), EtatPointageEnum.APPROUVE);
 		return true;
 	}
 
 	public boolean performPB_DEL(HttpServletRequest request) throws Exception {
-		changeState(getListePointage().values(), EtatPointageEnum.REJETE);
+		changeState(request, getListePointage().values(), EtatPointageEnum.REJETE);
 		return true;
 	}
 
 	public boolean performPB_DEL(HttpServletRequest request, int i) throws Exception {
-		changeState(getListePointage().get(i), EtatPointageEnum.REJETE);
+		changeState(request, getListePointage().get(i), EtatPointageEnum.REJETE);
 		return true;
 	}
 
 	public boolean performPB_DELAY(HttpServletRequest request) throws Exception {
-		changeState(getListePointage().values(), EtatPointageEnum.EN_ATTENTE);
+		changeState(request, getListePointage().values(), EtatPointageEnum.EN_ATTENTE);
 		return true;
 	}
 
 	public boolean performPB_DELAY(HttpServletRequest request, int i) throws Exception {
-		changeState(getListePointage().get(i), EtatPointageEnum.EN_ATTENTE);
+		changeState(request, getListePointage().get(i), EtatPointageEnum.EN_ATTENTE);
 		return true;
 	}
 
-	private void changeState(ConsultPointageDto ptg, EtatPointageEnum state) {
+	private void changeState(HttpServletRequest request, ConsultPointageDto ptg, EtatPointageEnum state) throws Exception {
 		ArrayList<ConsultPointageDto> param = new ArrayList<>();
 		param.add(ptg);
-		changeState(param, state);
+		changeState(request, param, state);
 	}
 
-	private void changeState(Collection<ConsultPointageDto> ptg, EtatPointageEnum state) {
+	private void changeState(HttpServletRequest request, Collection<ConsultPointageDto> ptg, EtatPointageEnum state) throws Exception {
 		ArrayList<Integer> ids = new ArrayList<>();
 		for (ConsultPointageDto pt : ptg) {
 			ids.add(pt.getIdPointage());
 			refreshHistory(pt.getIdPointage());
 		}
 		SirhPtgWSConsumer t = new SirhPtgWSConsumer();
-		if (getLoggedAgent() == null) {
+		
+		if (!verifieDroitAgents(request)) {
 			logger.debug("Agent nul dans jsp visualisation");
 		} else {
 
@@ -1176,6 +1180,33 @@ public class OePTGVisualisation extends BasicProcess {
 				logger.debug("Exception in performPB_FILTRER");
 			}
 		}
+	}
+	
+	private boolean verifieDroitAgents(HttpServletRequest request) throws Exception {
+
+		if(null == loggedAgent) {
+			// on recupere l'agent connecté
+			UserAppli uUser = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
+			// on fait la correspondance entre le login et l'agent via RADI
+			RadiWSConsumer radiConsu = new RadiWSConsumer();
+			LightUserDto user = radiConsu.getAgentCompteADByLogin(uUser.getUserName());
+			if (user == null) {
+				// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
+				return false;
+			}
+			if (user != null && user.getEmployeeNumber() != null && user.getEmployeeNumber() != 0) {
+				loggedAgent = getAgentDao().chercherAgentParMatricule(
+						radiConsu.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
+				if (getTransaction().isErreur()) {
+					getTransaction().traiterErreur();
+					// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
+					return false;
+				}
+			}
+		}
+		return true;
 	}
 
 	/**
