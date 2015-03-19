@@ -22,22 +22,18 @@ import nc.mairie.gestionagent.pointage.dto.ConsultPointageDto;
 import nc.mairie.gestionagent.pointage.dto.RefEtatDto;
 import nc.mairie.gestionagent.pointage.dto.RefTypePointageDto;
 import nc.mairie.gestionagent.pointage.dto.VentilDateDto;
-import nc.mairie.gestionagent.radi.dto.LightUserDto;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.Agent;
-import nc.mairie.metier.carriere.Carriere;
 import nc.mairie.metier.poste.Affectation;
 import nc.mairie.metier.poste.Service;
 import nc.mairie.spring.dao.metier.agent.AgentDao;
 import nc.mairie.spring.dao.metier.poste.AffectationDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
-import nc.mairie.spring.ws.RadiWSConsumer;
 import nc.mairie.spring.ws.SirhPtgWSConsumer;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
-import nc.mairie.technique.UserAppli;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
@@ -879,33 +875,6 @@ public class OePTGVisualisation extends BasicProcess {
 		}
 	}
 
-	private boolean verifieDroitAgents(HttpServletRequest request) throws Exception {
-
-		// on recupere l'agent connecté
-		UserAppli uUser = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
-		// on fait la correspondance entre le login et l'agent via RADI
-		RadiWSConsumer radiConsu = new RadiWSConsumer();
-		LightUserDto user = radiConsu.getAgentCompteADByLogin(uUser.getUserName());
-		if (user == null) {
-			// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
-			return false;
-		}
-		if (user != null && user.getEmployeeNumber() != null && user.getEmployeeNumber() != 0) {
-			loggedAgent = getAgentDao().chercherAgentParMatricule(
-					radiConsu.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
-			if (getTransaction().isErreur()) {
-				getTransaction().traiterErreur();
-				// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
-				return false;
-			}
-		}
-
-		return true;
-
-	}
-
 	private void initialiseInfoVentilation() {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		addZone(getNOM_ST_DATE_VENTIL_CC(), "Aucune");
@@ -1146,50 +1115,31 @@ public class OePTGVisualisation extends BasicProcess {
 	}
 
 	public boolean performPB_VALID(HttpServletRequest request) throws Exception {
-		if (!verifieDroitAgents(request)) {
-			return false;
-		}
 		changeState(getListePointage().values(), EtatPointageEnum.APPROUVE);
 		return true;
 	}
 
 	public boolean performPB_VALID(HttpServletRequest request, int i) throws Exception {
-		if (!verifieDroitAgents(request)) {
-			return false;
-		}
 		changeState(getListePointage().get(i), EtatPointageEnum.APPROUVE);
 		return true;
 	}
 
 	public boolean performPB_DEL(HttpServletRequest request) throws Exception {
-		if (!verifieDroitAgents(request)) {
-			return false;
-		}
-
 		changeState(getListePointage().values(), EtatPointageEnum.REJETE);
 		return true;
 	}
 
 	public boolean performPB_DEL(HttpServletRequest request, int i) throws Exception {
-		if (!verifieDroitAgents(request)) {
-			return false;
-		}
 		changeState(getListePointage().get(i), EtatPointageEnum.REJETE);
 		return true;
 	}
 
 	public boolean performPB_DELAY(HttpServletRequest request) throws Exception {
-		if (!verifieDroitAgents(request)) {
-			return false;
-		}
 		changeState(getListePointage().values(), EtatPointageEnum.EN_ATTENTE);
 		return true;
 	}
 
 	public boolean performPB_DELAY(HttpServletRequest request, int i) throws Exception {
-		if (!verifieDroitAgents(request)) {
-			return false;
-		}
 		changeState(getListePointage().get(i), EtatPointageEnum.EN_ATTENTE);
 		return true;
 	}
@@ -1211,12 +1161,9 @@ public class OePTGVisualisation extends BasicProcess {
 			logger.debug("Agent nul dans jsp visualisation");
 		} else {
 
-			Carriere carr;
 			try {
-				carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), loggedAgent);
 
-				ReturnMessageDto message = t.setPtgState(ids, state.ordinal(), loggedAgent.getIdAgent(),
-						Carriere.getStatutCarriere(carr.getCodeCategorie()));
+				ReturnMessageDto message = t.setPtgState(ids, state.ordinal(), loggedAgent.getIdAgent());
 				if (message.getErrors().size() > 0) {
 					String err = Const.CHAINE_VIDE;
 					for (String erreur : message.getErrors()) {

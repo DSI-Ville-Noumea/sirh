@@ -133,13 +133,11 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 	}
 
 	@Override
-	public ReturnMessageDto setPtgState(ArrayList<Integer> idPtgs, Integer idRefEtat, Integer idAgent,
-			String statutAgent) {
+	public ReturnMessageDto setPtgState(ArrayList<Integer> idPtgs, Integer idRefEtat, Integer idAgent) {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS_URL");
 		String url = urlWS + sirhPtgVisualisationSetState;
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgent.toString());
-		params.put("statutAgent", statutAgent);
 
 		StringBuilder json = new StringBuilder("[");
 		for (Integer id : idPtgs) {

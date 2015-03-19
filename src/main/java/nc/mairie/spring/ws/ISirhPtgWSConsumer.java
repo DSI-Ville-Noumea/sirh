@@ -76,7 +76,7 @@ public interface ISirhPtgWSConsumer {
 
 	ReturnMessageDto setSaisiePointage(Integer idAgent, FichePointageDto toSerialize);
 
-	ReturnMessageDto setPtgState(ArrayList<Integer> idPtg, Integer idRefEtat, Integer idAgent, String statutAgent);
+	ReturnMessageDto setPtgState(ArrayList<Integer> idPtg, Integer idRefEtat, Integer idAgent);
 
 	// Filtres
 	List<RefEtatDto> getEtatsPointage();
