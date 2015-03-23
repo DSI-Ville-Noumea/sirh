@@ -124,17 +124,19 @@ function reduireHierarchy() {
 				    	</td>
 						<td class="sigp2NewTab-liste" style="position:relative;width:200px;text-align: left;"><%=process.getVAL_ST_AGENT(i)%></td>
 						<td class="sigp2NewTab-liste" style="position:relative;text-align: left;"><%=process.getVAL_ST_SERVICE(i)%></td>
-						<td class="sigp2NewTab-liste" style="position:relative;text-align: left;"><%=process.getVAL_ST_DELEGATAIRE_PTG(i)%>
+						<td class="sigp2NewTab-liste" style="position:relative;text-align: left; min-height:15px;"><%=process.getVAL_ST_DELEGATAIRE_PTG(i)%>
 							<%if(process.peutModifierDelegatairePTG(i)){ %>
 							<INPUT title="modifier" type="image" src="images/modifier.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_MODIFIER_DELEGATAIRE_PTG(i)%>">
 				    		<INPUT title="supprimer" type="image" src="images/suppression.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_SUPPRIMER_DELEGATAIRE_PTG(i)%>">
-				    		<%} %>				    										
+				    		<%} %>
+				    		&nbsp;				    										
 						</td>
-						<td class="sigp2NewTab-liste" style="position:relative;text-align: left;"><%=process.getVAL_ST_DELEGATAIRE_ABS(i)%>
+						<td class="sigp2NewTab-liste" style="position:relative;text-align: left; min-height:15px;"><%=process.getVAL_ST_DELEGATAIRE_ABS(i)%>
 							<%if(process.peutModifierDelegataireABS(i)){ %>
 							<INPUT title="modifier" type="image" src="images/modifier.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_MODIFIER_DELEGATAIRE_ABS(i)%>">
 				    		<INPUT title="supprimer" type="image" src="images/suppression.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_SUPPRIMER_DELEGATAIRE_ABS(i)%>">				    										
-							<%} %>				    										
+							<%} %>
+				    		&nbsp;			    										
 						</td>
 						<td class="sigp2NewTab-liste" style="position:relative;width:50px;text-align: center;">
 							<INPUT type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_DROIT_PTG(i),process.getVAL_CK_DROIT_PTG(i))%> onClick='executeBouton("<%=process.getNOM_PB_SET_APPROBATEUR_PTG(i)%>")'>
