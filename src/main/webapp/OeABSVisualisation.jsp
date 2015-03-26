@@ -386,7 +386,8 @@
                             <td width="120px"><%=process.getVAL_ST_MOTIF(indiceAbs)%></td>							
                             <td width="60px"><%=process.getVAL_ST_ETAT(indiceAbs)%></td>	
                             <td width="20px" align="center">
-                            <%if((abs.getIdRefEtat()==EnumEtatAbsence.APPROUVE.getCode() || abs.getIdRefEtat()==EnumEtatAbsence.EN_ATTENTE.getCode()) && (abs.getGroupeAbsence().getIdRefGroupeAbsence()==EnumTypeGroupeAbsence.AS.getValue()||abs.getGroupeAbsence().getIdRefGroupeAbsence()==EnumTypeGroupeAbsence.CONGES_EXCEP.getValue())){ %>
+                            <!-- #14696 ajout de l etat A VALIDER car erreur lors de la reprise de donnees des conges exceptionnels mis  l etat A VALIDER au lieu de SAISI ou APPROUVE -->
+                            <%if((abs.getIdRefEtat()==EnumEtatAbsence.A_VALIDER.getCode() || abs.getIdRefEtat()==EnumEtatAbsence.APPROUVE.getCode() || abs.getIdRefEtat()==EnumEtatAbsence.EN_ATTENTE.getCode()) && (abs.getGroupeAbsence().getIdRefGroupeAbsence()==EnumTypeGroupeAbsence.AS.getValue()||abs.getGroupeAbsence().getIdRefGroupeAbsence()==EnumTypeGroupeAbsence.CONGES_EXCEP.getValue())){ %>
                             	<img onkeydown="" onkeypress="" onkeyup="" title="Valider" type="image" src="images/hand-vert.png"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_VALIDER(indiceAbs)%>" onclick="executeBouton('<%=process.getNOM_PB_VALIDER(indiceAbs)%>');">
 								<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_VALIDER(indiceAbs)%>" value="">
                             <%} %>
@@ -396,7 +397,8 @@
                             <%} %>
 							</td>  
                             <td width="20px" align="center">
-                            <%if((abs.getIdRefEtat()==EnumEtatAbsence.APPROUVE.getCode() || abs.getIdRefEtat()==EnumEtatAbsence.EN_ATTENTE.getCode()) && (abs.getGroupeAbsence().getIdRefGroupeAbsence()==EnumTypeGroupeAbsence.AS.getValue()||abs.getGroupeAbsence().getIdRefGroupeAbsence()==EnumTypeGroupeAbsence.CONGES_EXCEP.getValue())){ %>
+                             <!-- #14696 ajout de l etat A VALIDER car erreur lors de la reprise de donnees des conges exceptionnels mis  l etat A VALIDER au lieu de SAISI ou APPROUVE -->
+                            <%if((abs.getIdRefEtat()==EnumEtatAbsence.A_VALIDER.getCode() || abs.getIdRefEtat()==EnumEtatAbsence.APPROUVE.getCode() || abs.getIdRefEtat()==EnumEtatAbsence.EN_ATTENTE.getCode()) && (abs.getGroupeAbsence().getIdRefGroupeAbsence()==EnumTypeGroupeAbsence.AS.getValue()||abs.getGroupeAbsence().getIdRefGroupeAbsence()==EnumTypeGroupeAbsence.CONGES_EXCEP.getValue())){ %>
                             	<img onkeydown="" onkeypress="" onkeyup="" title="Rejeter" type="image" src="images/hand-rouge.png"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_REJETER(indiceAbs)%>" onclick="executeBouton('<%=process.getNOM_PB_REJETER(indiceAbs)%>');">
 								<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_REJETER(indiceAbs)%>" value="">
                             <%} %>                            
@@ -406,7 +408,8 @@
                             <%} %>
 							</td>  
                             <td width="20px" align="center">
-                            <%if((abs.getIdRefEtat()==EnumEtatAbsence.APPROUVE.getCode()) && (abs.getGroupeAbsence().getIdRefGroupeAbsence()==EnumTypeGroupeAbsence.AS.getValue()||abs.getGroupeAbsence().getIdRefGroupeAbsence()==EnumTypeGroupeAbsence.CONGES_EXCEP.getValue())){ %>
+                             <!-- #14696 ajout de l etat A VALIDER car erreur lors de la reprise de donnees des conges exceptionnels mis  l etat A VALIDER au lieu de SAISI ou APPROUVE -->
+                            <%if((abs.getIdRefEtat()==EnumEtatAbsence.A_VALIDER.getCode() || abs.getIdRefEtat()==EnumEtatAbsence.APPROUVE.getCode()) && (abs.getGroupeAbsence().getIdRefGroupeAbsence()==EnumTypeGroupeAbsence.AS.getValue()||abs.getGroupeAbsence().getIdRefGroupeAbsence()==EnumTypeGroupeAbsence.CONGES_EXCEP.getValue())){ %>
                             	<img onkeydown="" onkeypress="" onkeyup="" title="En attente" type="image" src="images/clock.png"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_EN_ATTENTE(indiceAbs)%>" onclick="executeBouton('<%=process.getNOM_PB_EN_ATTENTE(indiceAbs)%>');">
 								<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_EN_ATTENTE(indiceAbs)%>" value="">
                             <%} %>

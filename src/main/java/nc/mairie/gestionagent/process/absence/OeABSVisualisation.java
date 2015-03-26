@@ -1465,8 +1465,10 @@ public class OeABSVisualisation extends BasicProcess {
 		// Si ASA ou CONGES_EXCEP et etat=validé ou prise,
 		// alors un motif est obligatoire
 		if (((dem.getGroupeAbsence().getIdRefGroupeAbsence() == EnumTypeGroupeAbsence.AS.getValue() || dem
-				.getGroupeAbsence().getIdRefGroupeAbsence() == EnumTypeGroupeAbsence.CONGES_EXCEP.getValue()) && dem
-				.getIdRefEtat() == EnumEtatAbsence.APPROUVE.getCode())
+				.getGroupeAbsence().getIdRefGroupeAbsence() == EnumTypeGroupeAbsence.CONGES_EXCEP.getValue()) && (dem
+				.getIdRefEtat() == EnumEtatAbsence.APPROUVE.getCode() 
+				// #14696 ajout de l etat A VALIDER car erreur lors de la reprise de donnees des conges exceptionnels mis  l etat A VALIDER au lieu de SAISI ou APPROUVE
+				|| dem.getIdRefEtat() == EnumEtatAbsence.A_VALIDER.getCode()))
 				|| (dem.getGroupeAbsence().getIdRefGroupeAbsence() == EnumTypeGroupeAbsence.CONGES_ANNUELS.getValue())
 				&& dem.getIdRefEtat() == EnumEtatAbsence.A_VALIDER.getCode()) {
 			// "ERR803",
