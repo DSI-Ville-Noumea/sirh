@@ -352,7 +352,7 @@
                     <tbody>
                         <% for (Map.Entry<Integer, DemandeDto> absMap : process.getListeAbsence().entrySet()) {
                 			DemandeDto abs = absMap.getValue();
-                        	int indiceAbs = abs.getIdDemande();
+                        	int indiceAbs = absMap.getKey();
                         %>
                         <tr id="tr<%=process.getValHistory(indiceAbs)%>">
                             <td width="20px" align="center">

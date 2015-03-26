@@ -404,8 +404,7 @@ public class OeABSVisualisation extends BasicProcess {
 			}
 
 			// Si clic sur les boutons du tableau
-			for (DemandeDto abs : getListeAbsence().values()) {
-				int indiceAbs = abs.getIdDemande();
+			for (Integer indiceAbs : getListeAbsence().keySet()) {
 				// Si clic sur le bouton PB_DUPLIQUER
 				if (testerParametre(request, getNOM_PB_DUPLIQUER(indiceAbs))) {
 					return performPB_DUPLIQUER(request, indiceAbs);
@@ -734,7 +733,7 @@ public class OeABSVisualisation extends BasicProcess {
 
 		for (Map.Entry<Integer, DemandeDto> absMap : getListeAbsence().entrySet()) {
 			DemandeDto abs = absMap.getValue();
-			Integer i = abs.getIdDemande();
+			Integer i = absMap.getKey();
 			try {
 				Agent ag = getAgentDao().chercherAgent(abs.getAgentWithServiceDto().getIdAgent());
 				Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), ag);
@@ -1308,20 +1307,6 @@ public class OeABSVisualisation extends BasicProcess {
 		}
 	}
 
-	private void loadHistory() {
-		for (Integer i : listeAbsence.keySet()) {
-			loadHistory(i);
-		}
-	}
-
-	private void loadHistory(int absId) {
-		if (!history.containsKey(absId)) {
-			SirhAbsWSConsumer t = new SirhAbsWSConsumer();
-			history.put(absId, t.getVisualisationHistory(absId));
-		}
-
-	}
-
 	public String getNOM_PB_DUPLIQUER(int i) {
 		return "NOM_PB_DUPLIQUER" + i;
 	}
@@ -1494,7 +1479,7 @@ public class OeABSVisualisation extends BasicProcess {
 					+ " de l'agent " + ag.getNomatr() + " du " + sdf.format(dem.getDateDebut()) + ".";
 			addZone(getNOM_ST_INFO_MOTIF_EN_ATTENTE(), info);
 			addZone(getNOM_ST_MOTIF_EN_ATTENTE(), Const.CHAINE_VIDE);
-			addZone(getNOM_ST_ID_DEMANDE_EN_ATTENTE(), dem.getIdDemande().toString());
+			addZone(getNOM_ST_ID_DEMANDE_EN_ATTENTE(), new Integer(idDemande).toString());
 			addZone(getNOM_ST_ACTION(), ACTION_MOTIF_EN_ATTENTE);
 			return false;
 		} else {
@@ -1647,7 +1632,7 @@ public class OeABSVisualisation extends BasicProcess {
 				+ " de l'agent " + ag.getNomatr() + " du " + sdf.format(dem.getDateDebut()) + ".";
 		addZone(getNOM_ST_INFO_MOTIF_ANNULATION(), info);
 		addZone(getNOM_ST_MOTIF_ANNULATION(), Const.CHAINE_VIDE);
-		addZone(getNOM_ST_ID_DEMANDE_ANNULATION(), dem.getIdDemande().toString());
+		addZone(getNOM_ST_ID_DEMANDE_ANNULATION(), new Integer(idDemande).toString());
 		addZone(getNOM_ST_ACTION(), ACTION_MOTIF_ANNULATION);
 		return false;
 	}
