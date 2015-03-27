@@ -98,10 +98,10 @@ public class OeABSVisualisation extends BasicProcess {
 	private TreeMap<Integer, DemandeDto> listeAbsence;
 	private HashMap<Integer, List<DemandeDto>> history = new HashMap<>();
 
-	public String ACTION_CREATION = "Création d'une absence.";
-	public String ACTION_CREATION_DEMANDE = "Création d'une demande";
-	public String ACTION_MOTIF_ANNULATION = "Motif pour l'annulation de la demande.";
-	public String ACTION_MOTIF_EN_ATTENTE = "Motif pour la mise en attente de la demande.";
+	public String ACTION_CREATION = "Creation_absence";
+	public String ACTION_CREATION_DEMANDE = "Creation_demande";
+	public String ACTION_MOTIF_ANNULATION = "Motif_annulation_demande";
+	public String ACTION_MOTIF_EN_ATTENTE = "Motif_mise_en_attente_demande";
 
 	private TypeAbsenceDto typeCreation;
 	private Agent agentCreation;

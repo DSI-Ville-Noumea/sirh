@@ -205,7 +205,7 @@
                 		executeBouton('NOM_PB_FILTRER');
                 	}
                 }
-            </SCRIPT>		
+            </SCRIPT>
             <META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
         </HEAD>
         <BODY bgcolor="#FFFFFF" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="window.parent.frames['refAgent'].location.reload();return setfocus('<%=process.getFocus()%>')">	
@@ -436,7 +436,8 @@
             <INPUT type="submit" style="display:none;" name="<%=process.getNOM_PB_CALCUL_DUREE()%>" value="CALCULDUREE">
         
             <%if(process.getVAL_ST_ACTION().equals(process.ACTION_CREATION)){ %>
-				<FIELDSET class="sigp2Fieldset" style="text-align:left;">
+            
+				<FIELDSET class="sigp2Fieldset" style="text-align:left;" id="<%=process.ACTION_CREATION %>">
 					<legend class="sigp2Legend">Création d'une absence</legend>
            				<INPUT name="JSP" type="hidden" value="<%= process.getJSP()%>">
 	                	<span class="sigp2Mandatory">Famille : </span>
@@ -454,7 +455,7 @@
 	            </FIELDSET>
             <%} %>
             <%if(process.getVAL_ST_ACTION().equals(process.ACTION_MOTIF_ANNULATION)){ %>
-				<FIELDSET class="sigp2Fieldset" style="text-align:left;">
+				<FIELDSET class="sigp2Fieldset" style="text-align:left;" id="<%=process.ACTION_MOTIF_ANNULATION %>">
 	            <legend class="sigp2Legend"><span style="color: red;">Motif pour l'annulation de l'absence</span></legend>
            				<INPUT name="JSP" type="hidden" value="<%= process.getJSP()%>">
 						<span class="sigp2Mandatory">Informations : <%= process.getVAL_ST_INFO_MOTIF_ANNULATION() %></span>
@@ -468,7 +469,7 @@
 	            </FIELDSET>
             <%} %>
             <%if(process.getVAL_ST_ACTION().equals(process.ACTION_MOTIF_EN_ATTENTE)){ %>
-				<FIELDSET class="sigp2Fieldset" style="text-align:left;">
+				<FIELDSET class="sigp2Fieldset" style="text-align:left;" id="<%=process.ACTION_MOTIF_EN_ATTENTE %>">
 	            <legend class="sigp2Legend"><span style="color: red;">Motif pour la mise en attente de l'absence</span></legend>
            				<INPUT name="JSP" type="hidden" value="<%= process.getJSP()%>">
 						<span class="sigp2Mandatory">Informations : <%= process.getVAL_ST_INFO_MOTIF_EN_ATTENTE() %></span>
@@ -486,7 +487,7 @@
 			<%if(process.getVAL_ST_ACTION().equals(process.ACTION_CREATION_DEMANDE)){ 
 					TypeAbsenceDto typeCreation = process.getTypeCreation(); %>
 			
-				<FIELDSET class="sigp2Fieldset" style="text-align:left;">
+				<FIELDSET class="sigp2Fieldset" style="text-align:left;" id="<%=process.ACTION_CREATION_DEMANDE %>">
 	            	<legend class="sigp2Legend">Création d'une demande de type <%=typeCreation.getLibelle() %> pour l'agent <%=process.getAgentCreation().getPrenomUsage() %> <%=process.getAgentCreation().getNomUsage() %> (<%=process.getAgentCreation().getNomatr() %>)</legend>
 	            		<INPUT name="JSP" type="hidden" value="<%= process.getJSP()%>">
 		            	<% if(typeCreation.getTypeSaisiDto()!=null) { %>
@@ -663,6 +664,10 @@
 	                    <INPUT onkeydown="" onkeypress="" onkeyup="" type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER() %>">
 	            </FIELDSET>
 			<% } %>
+			
+			<SCRIPT type="text/javascript">
+            	window.location.hash = '#<%=process.getVAL_ST_ACTION() %>';
+            </SCRIPT>
 			<!-- ------------------------ CREATION D UNE DEMANDE ----------------------------- -->
 			
 			<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_VALIDER_ALL()%>" value="">
