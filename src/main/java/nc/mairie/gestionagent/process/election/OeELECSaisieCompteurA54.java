@@ -2,13 +2,16 @@ package nc.mairie.gestionagent.process.election;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.enums.EnumTypeAbsence;
 import nc.mairie.gestionagent.absence.dto.CompteurDto;
 import nc.mairie.gestionagent.absence.dto.MotifCompteurDto;
+import nc.mairie.gestionagent.absence.vo.VoAgentCompteur;
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
 import nc.mairie.gestionagent.radi.dto.LightUserDto;
 import nc.mairie.metier.Const;
@@ -161,26 +164,36 @@ public class OeELECSaisieCompteurA54 extends BasicProcess {
 		SirhAbsWSConsumer consum = new SirhAbsWSConsumer();
 		ArrayList<CompteurDto> listeCompteur = (ArrayList<CompteurDto>) consum.getListeCompteursA54();
 		logger.debug("Taille liste des compteurs ASA A54 : " + listeCompteur.size());
-		setListeCompteur(listeCompteur);
-
-		int indiceLigne = 0;
-		for (CompteurDto dto : getListeCompteur()) {
+		// #14737 tri par ordre alpha
+		List<VoAgentCompteur> listCompteurAgent = new ArrayList<VoAgentCompteur>();
+		for (CompteurDto dto : listeCompteur) {
 
 			Agent ag = getAgentDao().chercherAgent(dto.getIdAgent());
+			
+			VoAgentCompteur voCompteur = new VoAgentCompteur(dto, ag);
+			listCompteurAgent.add(voCompteur);
+		}
+		Collections.sort(listCompteurAgent);
+
+		ArrayList<CompteurDto> listeCompteurTriee = new ArrayList<CompteurDto>();
+		int indiceLigne = 0;
+		for (VoAgentCompteur vo : listCompteurAgent) {
 
 			Calendar cal = Calendar.getInstance();
-			cal.setTime(dto.getDateDebut());
+			cal.setTime(vo.getCompteur().getDateDebut());
 			Integer annee = cal.get(Calendar.YEAR);
 
-			addZone(getNOM_ST_MATRICULE(indiceLigne), ag.getNomatr().toString());
-			addZone(getNOM_ST_AGENT(indiceLigne), ag.getNomAgent() + " " + ag.getPrenomAgent());
+			addZone(getNOM_ST_MATRICULE(indiceLigne), vo.getAgent().getNomatr().toString());
+			addZone(getNOM_ST_AGENT(indiceLigne), vo.getAgent().getNomAgent() + " " + vo.getAgent().getPrenomAgent());
 			addZone(getNOM_ST_ANNEE(indiceLigne), annee.toString());
-			addZone(getNOM_ST_NB_JOURS(indiceLigne), String.valueOf(dto.getDureeAAjouter().intValue()));
-			addZone(getNOM_ST_MOTIF(indiceLigne), dto.getMotifCompteurDto().getLibelle());
+			addZone(getNOM_ST_NB_JOURS(indiceLigne), String.valueOf(vo.getCompteur().getDureeAAjouter().intValue()));
+			addZone(getNOM_ST_MOTIF(indiceLigne), vo.getCompteur().getMotifCompteurDto().getLibelle());
 
 			indiceLigne++;
-
+			
+			listeCompteurTriee.add(vo.getCompteur());
 		}
+		setListeCompteur(listeCompteurTriee);
 	}
 
 	@Override

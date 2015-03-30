@@ -2,6 +2,7 @@ package nc.mairie.gestionagent.process.election;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -14,6 +15,7 @@ import nc.mairie.gestionagent.absence.dto.CompteurDto;
 import nc.mairie.gestionagent.absence.dto.DemandeDto;
 import nc.mairie.gestionagent.absence.dto.MotifCompteurDto;
 import nc.mairie.gestionagent.absence.dto.OrganisationSyndicaleDto;
+import nc.mairie.gestionagent.absence.vo.VoAgentCompteur;
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
 import nc.mairie.gestionagent.radi.dto.LightUserDto;
 import nc.mairie.metier.Const;
@@ -169,26 +171,36 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 		SirhAbsWSConsumer consum = new SirhAbsWSConsumer();
 		ArrayList<CompteurDto> listeCompteur = (ArrayList<CompteurDto>) consum.getListeCompteursA52();
 		logger.debug("Taille liste des compteurs ASA A52 : " + listeCompteur.size());
-		setListeCompteur(listeCompteur);
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
+		List<VoAgentCompteur> listCompteurAgent = new ArrayList<VoAgentCompteur>();
+		for (CompteurDto dto : listeCompteur) {
+			VoAgentCompteur voCompteur = new VoAgentCompteur(dto, null);
+			voCompteur.setNom(dto.getOrganisationSyndicaleDto().getSigle());
+			listCompteurAgent.add(voCompteur);
+		}
+		Collections.sort(listCompteurAgent);
+		
+		ArrayList<CompteurDto> listeCompteurTriee = new ArrayList<CompteurDto>();
 		int indiceLigne = 0;
-		for (CompteurDto dto : getListeCompteur()) {
+		for (VoAgentCompteur vo : listCompteurAgent) {
 
-			addZone(getNOM_ST_OS(indiceLigne), dto.getOrganisationSyndicaleDto().getSigle() + " - "
-					+ dto.getOrganisationSyndicaleDto().getLibelle());
-			addZone(getNOM_ST_DATE_DEBUT(indiceLigne), sdf.format(dto.getDateDebut()));
-			addZone(getNOM_ST_DATE_FIN(indiceLigne), sdf.format(dto.getDateFin()));
-			String soldeAsaA52Heure = (dto.getDureeAAjouter().intValue() / 60) == 0 ? Const.CHAINE_VIDE : dto
+			addZone(getNOM_ST_OS(indiceLigne), vo.getCompteur().getOrganisationSyndicaleDto().getSigle() + " - "
+					+ vo.getCompteur().getOrganisationSyndicaleDto().getLibelle());
+			addZone(getNOM_ST_DATE_DEBUT(indiceLigne), sdf.format(vo.getCompteur().getDateDebut()));
+			addZone(getNOM_ST_DATE_FIN(indiceLigne), sdf.format(vo.getCompteur().getDateFin()));
+			String soldeAsaA52Heure = (vo.getCompteur().getDureeAAjouter().intValue() / 60) == 0 ? Const.CHAINE_VIDE : vo.getCompteur()
 					.getDureeAAjouter().intValue() / 60 + "h ";
-			String soldeAsaA52Minute = (dto.getDureeAAjouter().intValue() % 60) == 0 ? "&nbsp;" : dto
+			String soldeAsaA52Minute = (vo.getCompteur().getDureeAAjouter().intValue() % 60) == 0 ? "&nbsp;" : vo.getCompteur()
 					.getDureeAAjouter().intValue() % 60 + "m";
 			addZone(getNOM_ST_NB_HEURES(indiceLigne), soldeAsaA52Heure + soldeAsaA52Minute);
-			addZone(getNOM_ST_MOTIF(indiceLigne), dto.getMotifCompteurDto().getLibelle());
+			addZone(getNOM_ST_MOTIF(indiceLigne), vo.getCompteur().getMotifCompteurDto().getLibelle());
 
 			indiceLigne++;
-
+			
+			listeCompteurTriee.add(vo.getCompteur());
 		}
+		setListeCompteur(listeCompteurTriee);
 	}
 
 	@Override
@@ -732,11 +744,21 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 	}
 
 	private boolean affichageRepresentant(HttpServletRequest request) throws Exception {
-		for (AgentOrganisationSyndicaleDto ag : getListeRepresentant()) {
-			Agent agent = getAgentDao().chercherAgent(ag.getIdAgent());
-			addZone(getNOM_ST_AGENT_REPRESENTANT(ag.getIdAgent()), agent.getNomAgent() + " " + agent.getPrenomAgent());
-			addZone(getNOM_ST_AGENT_REPRESENTANT_ACTIF(ag.getIdAgent()), ag.isActif() ? "oui" : "non");
+		// #14737 tri par ordre alpha
+		ArrayList<VoAgentCompteur> listeVoAgentCompteur = new ArrayList<VoAgentCompteur>();
+		for (AgentOrganisationSyndicaleDto dto : getListeRepresentant()) {
+			Agent agent = getAgentDao().chercherAgent(dto.getIdAgent());
+			listeVoAgentCompteur.add(new VoAgentCompteur(dto, agent));
 		}
+		Collections.sort(listeVoAgentCompteur);
+		
+		ArrayList<AgentOrganisationSyndicaleDto> listeRepresentantsTriee = new ArrayList<AgentOrganisationSyndicaleDto>();
+		for (VoAgentCompteur vo : listeVoAgentCompteur) {
+			addZone(getNOM_ST_AGENT_REPRESENTANT(vo.getAgentOS().getIdAgent()), vo.getAgent().getNomAgent() + " " + vo.getAgent().getPrenomAgent());
+			addZone(getNOM_ST_AGENT_REPRESENTANT_ACTIF(vo.getAgentOS().getIdAgent()), vo.getAgentOS().isActif() ? "oui" : "non");
+			listeRepresentantsTriee.add(vo.getAgentOS());
+		}
+		setListeRepresentant(listeRepresentantsTriee);
 		return true;
 	}
 

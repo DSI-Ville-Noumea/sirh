@@ -2,13 +2,16 @@ package nc.mairie.gestionagent.process.election;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.enums.EnumTypeAbsence;
 import nc.mairie.gestionagent.absence.dto.CompteurDto;
 import nc.mairie.gestionagent.absence.dto.MotifCompteurDto;
+import nc.mairie.gestionagent.absence.vo.VoAgentCompteur;
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
 import nc.mairie.gestionagent.radi.dto.LightUserDto;
 import nc.mairie.metier.Const;
@@ -136,28 +139,41 @@ public class OeELECSaisieCompteurA55 extends BasicProcess {
 		SirhAbsWSConsumer consum = new SirhAbsWSConsumer();
 		ArrayList<CompteurDto> listeCompteur = (ArrayList<CompteurDto>) consum.getListeCompteursA55();
 		logger.debug("Taille liste des compteurs ASA A55 : " + listeCompteur.size());
-		setListeCompteur(listeCompteur);
+		// #14737 tri par ordre alpha
+		List<VoAgentCompteur> listCompteurAgent = new ArrayList<VoAgentCompteur>();
+		for (CompteurDto dto : listeCompteur) {
+
+			Agent ag = getAgentDao().chercherAgent(dto.getIdAgent());
+			
+			VoAgentCompteur voCompteur = new VoAgentCompteur(dto, ag);
+			listCompteurAgent.add(voCompteur);
+		}
+		Collections.sort(listCompteurAgent);
+
+		ArrayList<CompteurDto> listeCompteurTriee = new ArrayList<CompteurDto>();
+		
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
 		int indiceLigne = 0;
-		for (CompteurDto dto : getListeCompteur()) {
+		for (VoAgentCompteur vo : listCompteurAgent) {
 
-			Agent ag = getAgentDao().chercherAgent(dto.getIdAgent());
-
-			addZone(getNOM_ST_MATRICULE(indiceLigne), ag.getNomatr().toString());
-			addZone(getNOM_ST_AGENT(indiceLigne), ag.getNomAgent() + " " + ag.getPrenomAgent());
-			addZone(getNOM_ST_DATE_DEBUT(indiceLigne), sdf.format(dto.getDateDebut()));
-			addZone(getNOM_ST_DATE_FIN(indiceLigne), sdf.format(dto.getDateFin()));
-			String soldeAsaA55Heure = (dto.getDureeAAjouter().intValue() / 60) == 0 ? Const.CHAINE_VIDE : dto
+			addZone(getNOM_ST_MATRICULE(indiceLigne), vo.getAgent().getNomatr().toString());
+			addZone(getNOM_ST_AGENT(indiceLigne), vo.getAgent().getNomAgent() + " " + vo.getAgent().getPrenomAgent());
+			addZone(getNOM_ST_DATE_DEBUT(indiceLigne), sdf.format(vo.getCompteur().getDateDebut()));
+			addZone(getNOM_ST_DATE_FIN(indiceLigne), sdf.format(vo.getCompteur().getDateFin()));
+			String soldeAsaA55Heure = (vo.getCompteur().getDureeAAjouter().intValue() / 60) == 0 ? Const.CHAINE_VIDE : vo.getCompteur()
 					.getDureeAAjouter().intValue() / 60 + "h ";
-			String soldeAsaA55Minute = (dto.getDureeAAjouter().intValue() % 60) == 0 ? "&nbsp;" : dto
+			String soldeAsaA55Minute = (vo.getCompteur().getDureeAAjouter().intValue() % 60) == 0 ? "&nbsp;" : vo.getCompteur()
 					.getDureeAAjouter().intValue() % 60 + "m";
 			addZone(getNOM_ST_NB_HEURES(indiceLigne), soldeAsaA55Heure + soldeAsaA55Minute);
-			addZone(getNOM_ST_MOTIF(indiceLigne), dto.getMotifCompteurDto().getLibelle());
+			addZone(getNOM_ST_MOTIF(indiceLigne), vo.getCompteur().getMotifCompteurDto().getLibelle());
 
 			indiceLigne++;
-
+			
+			listeCompteurTriee.add(vo.getCompteur());
 		}
+		
+		setListeCompteur(listeCompteurTriee);
 	}
 
 	@Override
