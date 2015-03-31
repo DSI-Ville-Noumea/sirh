@@ -3098,13 +3098,14 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 								avct.setIdMotifAvct(motif.getIdMotifAvct());
 								EaeEvaluation eval = getEaeEvaluationDao().chercherEaeEvaluation(
 										getEaeCourant().getIdEae());
-								if (typeAvct.equals(motifRevalo.getIdMotifAvct())) {
+								// #14791 bug sur le champ AVIS_SHD de SIRH.AVCT_FONCT
+								if (Integer.valueOf(typeAvct).equals(motifRevalo.getIdMotifAvct())) {
 									avct.setAvisShd(eval.getAvisRevalorisation() == 1 ? "Favorable" : "Défavorable");
-								} else if (typeAvct.equals(motifAD.getIdMotifAvct())) {
+								} else if (Integer.valueOf(typeAvct).equals(motifAD.getIdMotifAvct())) {
 									avct.setAvisShd(eval.getPropositionAvancement());
-								} else if (typeAvct.equals(motifTitu.getIdMotifAvct())) {
+								} else if (Integer.valueOf(typeAvct).equals(motifTitu.getIdMotifAvct())) {
 									avct.setAvisShd("MOY");
-								} else if (typeAvct.equals(motifPromo.getIdMotifAvct())) {
+								} else if (Integer.valueOf(typeAvct).equals(motifPromo.getIdMotifAvct())) {
 									avct.setAvisShd(eval.getAvisChangementClasse() == 1 ? "Favorable" : "Défavorable");
 								} else {
 									avct.setAvisShd(null);
