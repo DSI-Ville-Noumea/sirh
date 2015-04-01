@@ -204,7 +204,7 @@ function reduireHierarchy() {
 									<%} %>
 								</td>
 								<td>
-									<%if(avct.getAvisShd()!=null && avct.getIdMotifAvct()!=null){%>
+									<%if(avct.getAvisShd()!=null && avct.getIdMotifAvct()!=null && null != avct.getIdAvisCap()){%>
 										<%if(avct.getIdMotifAvct()==7 && avct.getIdAvisCap()==1){%>
 										<INPUT disabled="disabled" class="sigp2-saisie" maxlength="2" name="<%= process.getNOM_EF_ORDRE_MERITE(indiceAvct) %>" size="2" type="text" value="<%= process.getVAL_EF_ORDRE_MERITE(indiceAvct) %>">
 										<%}else{%>
@@ -216,11 +216,11 @@ function reduireHierarchy() {
 								</td>								
 								<%}else{%>
 								<td>								
-									<%if( avct.getAvisShd()!=null &&avct.getIdMotifAvct()!=null && avct.getIdMotifAvct()==4){%>										
+									<%if( avct.getAvisShd()!=null && avct.getIdMotifAvct()!=null && avct.getIdMotifAvct()==4){%>										
 										<SELECT name="<%= process.getNOM_LB_AVIS_CAP_CLASSE(indiceAvct) %>" class="sigp2-liste" >
 												<%=process.forComboHTML(process.getVAL_LB_AVIS_CAP_CLASSE(indiceAvct), process.getVAL_LB_AVIS_CAP_CLASSE_SELECT(indiceAvct)) %>
 										</SELECT>
-									<%}else if(avct.getAvisShd()!=null &&avct.getIdMotifAvct()!=null && avct.getIdMotifAvct()==7){ %>
+									<%}else if(avct.getAvisShd()!=null && avct.getIdMotifAvct()!=null && avct.getIdMotifAvct()==7){ %>
 										<SELECT onchange='activeOrdreMerite("<%=indiceAvct %>")' name="<%= process.getNOM_LB_AVIS_CAP_AD(indiceAvct) %>" class="sigp2-liste" >
 										<%=process.forComboHTML(process.getVAL_LB_AVIS_CAP_AD(indiceAvct), process.getVAL_LB_AVIS_CAP_AD_SELECT(indiceAvct)) %>
 										</SELECT>
@@ -232,7 +232,7 @@ function reduireHierarchy() {
 									<%} %>
 								</td>
 								<td>
-									<%if(avct.getAvisShd()!=null && avct.getIdMotifAvct()!=null){%>
+									<%if(avct.getAvisShd()!=null && avct.getIdMotifAvct()!=null && null != avct.getIdAvisCap()){%>
 										<%if(avct.getIdMotifAvct()==7 && avct.getIdAvisCap()==1){%>
 										<INPUT class="sigp2-saisie" maxlength="2" name="<%= process.getNOM_EF_ORDRE_MERITE(indiceAvct) %>" size="2" type="text" value="<%= process.getVAL_EF_ORDRE_MERITE(indiceAvct) %>">
 										<%}else{%>
