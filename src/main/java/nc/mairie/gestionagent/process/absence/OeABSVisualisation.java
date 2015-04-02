@@ -292,7 +292,7 @@ public class OeABSVisualisation extends BasicProcess {
 			int diffFinDeb = 14 * 60; // différence en minute entre le début et
 										// la
 										// fin
-			int interval = 30; // interval en minute
+			int interval = 15; // interval en minute
 
 			SimpleDateFormat formatDate = new SimpleDateFormat("HH:mm"); // format
 																			// de
@@ -319,7 +319,7 @@ public class OeABSVisualisation extends BasicProcess {
 				getListeHeure().add(formatDate.format(deb.getTime()));
 				i++;
 			}
-			String[] a = new String[29];
+			String[] a = new String[58];
 			for (int j = 0; j < getListeHeure().size(); j++) {
 				a[j] = getListeHeure().get(j);
 			}
