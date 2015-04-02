@@ -1031,6 +1031,7 @@ public class OeABSVisualisation extends BasicProcess {
 		addZone(getNOM_ST_MOTIF_EN_ATTENTE(), Const.CHAINE_VIDE);
 		addZone(getNOM_ST_ID_DEMANDE_EN_ATTENTE(), Const.CHAINE_VIDE);
 		addZone(getNOM_ST_DUREE(), Const.CHAINE_VIDE);
+		addZone(getNOM_ST_DUREE_MIN(), Const.CHAINE_VIDE);
 		addZone(getNOM_LB_HEURE(), Const.ZERO);
 		addZone(getNOM_LB_OS_SELECT(), Const.ZERO);
 		setAgentCreation(null);
@@ -1059,6 +1060,14 @@ public class OeABSVisualisation extends BasicProcess {
 
 	public String getVAL_ST_DUREE() {
 		return getZone(getNOM_ST_DUREE());
+	}
+
+	public String getNOM_ST_DUREE_MIN() {
+		return "NOM_ST_DUREE_MIN";
+	}
+
+	public String getVAL_ST_DUREE_MIN() {
+		return getZone(getNOM_ST_DUREE_MIN());
 	}
 
 	public String getNOM_ST_DATE_DEBUT() {
@@ -1383,8 +1392,10 @@ public class OeABSVisualisation extends BasicProcess {
 
 		// /////////////// DUREE ////////////////////
 		if (null != type.getTypeSaisiDto() && type.getTypeSaisiDto().isDuree()) {
-			String duree = (dem.getDuree() / 60) == 0 ? Const.CHAINE_VIDE : dem.getDuree() / 60 + Const.CHAINE_VIDE;
-			addZone(getNOM_ST_DUREE(), duree);
+			String dureeHeures = (dem.getDuree() / 60) == 0 ? Const.CHAINE_VIDE : new Double(dem.getDuree()/ 60).intValue() + Const.CHAINE_VIDE;
+			String dureeMinutes = (dem.getDuree() % 60) == 0 ? Const.CHAINE_VIDE : new Double(dem.getDuree()% 60).intValue() + Const.CHAINE_VIDE;
+			addZone(getNOM_ST_DUREE(), dureeHeures);
+			addZone(getNOM_ST_DUREE_MIN(), dureeMinutes);
 		} else if (null != type.getTypeSaisiCongeAnnuelDto()) {
 			String duree = dem.getDuree() == 0 ? Const.CHAINE_VIDE : dem.getDuree() + Const.CHAINE_VIDE;
 			addZone(getNOM_ST_DUREE(), duree);
@@ -1844,12 +1855,16 @@ public class OeABSVisualisation extends BasicProcess {
 			}
 			// /////////////// DUREE ////////////////////
 			if (type.getTypeSaisiDto().isDuree()) {
-				if (getVAL_ST_DUREE().equals(Const.CHAINE_VIDE)) {
+				if (getVAL_ST_DUREE().equals(Const.CHAINE_VIDE)
+						&& getVAL_ST_DUREE_MIN().equals(Const.CHAINE_VIDE)) {
 					// "ERR002","La zone @ est obligatoire."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "durée"));
 					return false;
 				}
-				dto.setDuree(Double.valueOf(getVAL_ST_DUREE().replace(",", ".")));
+				String dureeHeure = null != getVAL_ST_DUREE() ? getVAL_ST_DUREE() : "0";
+				String dureeMinutes = null != getVAL_ST_DUREE_MIN() ? 1 == getVAL_ST_DUREE_MIN().length() ? "0"+getVAL_ST_DUREE_MIN() : getVAL_ST_DUREE_MIN() : "00";
+				
+				dto.setDuree(Double.valueOf(dureeHeure + "." + dureeMinutes));
 			}
 			// /////////////// DATE FIN ////////////////////
 			if (type.getTypeSaisiDto().isCalendarDateFin()) {

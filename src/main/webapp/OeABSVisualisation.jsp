@@ -518,8 +518,12 @@
 	                        		<span class="sigp2Mandatory">Durée :</span>
 		            			</td>
 		            			<td>
-									<INPUT class="sigp2-saisie" maxlength="6" name="<%= process.getNOM_ST_DUREE() %>" size="6" type="text" value="<%= process.getVAL_ST_DUREE() %>">
+									<INPUT class="sigp2-saisie" maxlength="2" name="<%= process.getNOM_ST_DUREE() %>" size="6" type="text" value="<%= process.getVAL_ST_DUREE() %>">
 									<span class="sigp2Mandatory"> heure(s)</span>
+		            			</td>
+		            			<td>
+									<INPUT class="sigp2-saisie" maxlength="2" name="<%= process.getNOM_ST_DUREE_MIN() %>" size="6" type="text" value="<%= process.getVAL_ST_DUREE_MIN() %>">
+									<span class="sigp2Mandatory"> minute(s)</span>
 		            			</td>
 		            			<% } %>
 		            			<% if(typeCreation.getTypeSaisiDto().isChkDateDebut()) { %>
