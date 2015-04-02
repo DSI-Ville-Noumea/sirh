@@ -660,7 +660,6 @@ public class OeABSVisualisation extends BasicProcess {
 		}
 
 		// GESTIONNAIRE
-
 		int numGestionnaire = (Services.estNumerique(getZone(getNOM_LB_GESTIONNAIRE_SELECT())) ? Integer
 				.parseInt(getZone(getNOM_LB_GESTIONNAIRE_SELECT())) : -1);
 		ReferentRh gestionnaire = null;
@@ -2145,8 +2144,55 @@ public class OeABSVisualisation extends BasicProcess {
 
 	public boolean performPB_FILTRER_DEMANDE_A_VALIDER(HttpServletRequest request) throws Exception {
 
+		// GESTIONNAIRE
+		int numGestionnaire = (Services.estNumerique(getZone(getNOM_LB_GESTIONNAIRE_SELECT())) ? Integer
+				.parseInt(getZone(getNOM_LB_GESTIONNAIRE_SELECT())) : -1);
+		ReferentRh gestionnaire = null;
+		if (numGestionnaire != -1 && numGestionnaire != 0) {
+			gestionnaire = (ReferentRh) getListeGestionnaire().get(numGestionnaire - 1);
+		}
+		List<String> idAgentService = new ArrayList<>();
+		if (gestionnaire != null) {
+			List<ReferentRh> listServiceRH = null;
+			try {
+				listServiceRH = getReferentRhDao().listerServiceAvecReferentRh(gestionnaire.getIdAgentReferent());
+			} catch (NumberFormatException e) {
+				getTransaction().declarerErreur("Une erreur de saisie sur le gestionnaire est survenue.");
+				return false;
+			}
+			if (null == listServiceRH || listServiceRH.isEmpty()) {
+				getTransaction().declarerErreur("Le gestionnaire saisi n'est pas un référent RH.");
+				return false;
+			}
+			// Récupération des agents
+			// on recupere les sous-service du service selectionne
+			List<String> listeService = new ArrayList<String>();
+			for (ReferentRh service : listServiceRH) {
+				listeService.add(service.getServi());
+			}
+			List<String> listeSousServiceTmp = new ArrayList<String>();
+			for (String service : listeService) {
+				Service serv = Service.chercherService(getTransaction(), service);
+				listeSousServiceTmp.addAll(Service.listSousService(getTransaction(), serv.getSigleService()));
+			}
+			// on trie la liste des sous service pour supprimer les doublons
+			ArrayList<String> listeSousService = new ArrayList<String>();
+			for (String sousService : listeSousServiceTmp) {
+				if (!listeSousService.contains(sousService)) {
+					listeSousService.add(sousService);
+				}
+			}
+
+			List<Agent> listAgent = getAgentDao().listerAgentAvecServicesETMatricules(listeSousService, null, null);
+			for (Agent ag : listAgent) {
+				if (!idAgentService.contains(ag.getIdAgent().toString())) {
+					idAgentService.add(ag.getIdAgent().toString());
+				}
+			}
+		}
+		
 		SirhAbsWSConsumer t = new SirhAbsWSConsumer();
-		List<DemandeDto> listeDemande = t.getListeDemandes(null, null, null, null, null, null, true, null);
+		List<DemandeDto> listeDemande = t.getListeDemandes(null, null, null, null, null, null, true, idAgentService);
 		logger.debug("Taille liste absences : " + listeDemande.size());
 
 		setListeAbsence((ArrayList<DemandeDto>) listeDemande);
