@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import nc.mairie.gestionagent.absence.dto.ActeursDto;
 import nc.mairie.gestionagent.absence.dto.CompteurDto;
 import nc.mairie.gestionagent.absence.dto.DemandeDto;
 import nc.mairie.gestionagent.absence.dto.HistoriqueSoldeDto;
@@ -48,6 +49,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	private static final String sirhAbsAgentsApprobateurs = "droits/approbateurs";
 	private static final String sirhAbsDeleteApprobateurs = "droits/deleteApprobateurs";
 	private static final String sirhAbsSauvegardeDelegataire = "droits/delegataire";
+	private static final String sirhAbsListeActeurs = "droits/listeActeurs";
 
 	private static final String sirhAbsSoldeRecupAgent = "solde/soldeAgent";
 	private static final String sirhAbsHistoCompteurAgent = "solde/historiqueSolde";
@@ -742,6 +744,17 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 		params.put("idAgent", idAgent.toString());
 		ClientResponse res = createAndPostRequest(params, url, json);
 		return readResponseWithReturnMessageDto(ReturnMessageDto.class, res, url);
+	}
+
+	@Override
+	public ActeursDto getListeActeurs(Integer idAgent) {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
+		String url = urlWS + sirhAbsListeActeurs;
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idAgent", idAgent.toString());
+		logger.debug("Call " + url + " with idAgent : " + idAgent);
+		ClientResponse res = createAndFireRequest(params, url);
+		return readResponse(ActeursDto.class, res, url);
 	}
 
 }

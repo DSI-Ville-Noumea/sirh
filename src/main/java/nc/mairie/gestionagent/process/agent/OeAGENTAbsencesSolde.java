@@ -9,6 +9,7 @@ import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 
+import nc.mairie.gestionagent.absence.dto.ActeursDto;
 import nc.mairie.gestionagent.absence.dto.FiltreSoldeDto;
 import nc.mairie.gestionagent.absence.dto.HistoriqueSoldeDto;
 import nc.mairie.gestionagent.absence.dto.OrganisationSyndicaleDto;
@@ -61,6 +62,7 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 	private ArrayList<SoldeSpecifiqueDto> listeSoldeCongesExcep;
 	private OrganisationSyndicaleDto organisationAgent;
 	private boolean agentReposComp;
+	private ActeursDto acteursDto;
 
 	private ArrayList<String> listeAnnee;
 	private String[] LB_ANNEE;
@@ -123,6 +125,7 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 				cal.setTime(new Date());
 				Integer annee = cal.get(Calendar.YEAR);
 				initialiseSoldesAgent(request, annee);
+				initialiseActeursAbsenceAgent(request);
 			} else {
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR004"));
 				return;
@@ -268,6 +271,13 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 
 			addZone(getNOM_ST_TYPE_CONGES_EXCEP(i), soldeSpecifiqueDto.getLibelle());
 		}
+	}
+	
+	private void initialiseActeursAbsenceAgent(HttpServletRequest request) {
+		SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
+		ActeursDto acteursDto = consuAbs.getListeActeurs(getAgentCourant().getIdAgent());
+		
+		setActeursDto(acteursDto);
 	}
 
 	public String getNOM_ST_ACTION() {
@@ -719,6 +729,14 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 
 	public void setAfficheSoldeAsaA55(boolean afficheSoldeAsaA55) {
 		this.afficheSoldeAsaA55 = afficheSoldeAsaA55;
+	}
+
+	public ActeursDto getActeursDto() {
+		return acteursDto;
+	}
+
+	public void setActeursDto(ActeursDto acteursDto) {
+		this.acteursDto = acteursDto;
 	}
 
 }

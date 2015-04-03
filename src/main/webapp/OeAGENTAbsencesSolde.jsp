@@ -2,6 +2,9 @@
 <%@page import="nc.mairie.enums.EnumTypeAbsence"%>
 <%@page import="nc.mairie.enums.EnumTypeDroit"%>
 <%@page import="nc.mairie.utils.MairieUtils"%>
+<%@page import="nc.mairie.gestionagent.dto.AgentDto"%>
+<%@page import="nc.mairie.gestionagent.dto.AgentWithServiceDto"%>
+<%@page import="nc.mairie.gestionagent.dto.ApprobateurDto"%>
 <HTML>
 	
 	<jsp:useBean class="nc.mairie.gestionagent.process.agent.OeAGENTAbsencesSolde" id="process" scope="session"></jsp:useBean>
@@ -252,6 +255,78 @@
 				    </table>
 			</FIELDSET>
 		<%} %>
+		
+		<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
+			<legend class="sigp2Legend">Acteurs de l'agent</legend>
+		    <table>
+		    	<tr>
+		    		<td>
+		    		
+					<FIELDSET class="sigp2Fieldset" style="text-align:left;width:300px;">
+				    	<legend class="sigp2Legend">Opérateurs</legend>
+						<table class="sigp2NewTab" style="text-align:left;width:250px;">
+							<% for(int i = 0; i< process.getActeursDto().getListOperateurs().size();i++){ 
+							
+								AgentDto operateur = process.getActeursDto().getListOperateurs().get(i);
+								
+								if(null == operateur)
+									continue;
+							%>
+							<tr>
+								<td style="text-align: center"><%=operateur.getPrenom() + " " + operateur.getNom() + " (" + operateur.getIdAgent().toString().substring(3, operateur.getIdAgent().toString().length()) + ")" %></td>
+							</tr>
+							<% } %>
+						</table>
+					</FIELDSET>
+					
+		    		</td>
+		    		<td>
+		    		
+					<FIELDSET class="sigp2Fieldset" style="text-align:left;width:300px;">
+				    	<legend class="sigp2Legend">Viseurs</legend>
+						<table class="sigp2NewTab" style="text-align:left;width:250px;">
+							<% for(int i = 0; i< process.getActeursDto().getListViseurs().size();i++){ 
+							
+								AgentDto viseur = process.getActeursDto().getListViseurs().get(i);
+								
+								if(null == viseur)
+									continue;
+							%>
+							<tr>
+								<td style="text-align: center"><%=viseur.getPrenom() + " " + viseur.getNom() + " (" + viseur.getIdAgent().toString().substring(3, viseur.getIdAgent().toString().length()) + ")" %></td>
+							</tr>
+							<% } %>
+						</table>
+					</FIELDSET>
+					
+		    		</td>
+		    	</tr>
+		    	<tr>
+		    		<td colspan="2">
+		    		
+					<FIELDSET class="sigp2Fieldset" style="text-align:left;width:600px;">
+				    	<legend class="sigp2Legend">Approbateurs</legend>
+						<table class="sigp2NewTab" style="text-align:left;width:500px;">
+							<% for(int i = 0; i< process.getActeursDto().getListApprobateurs().size();i++){ 
+							
+								ApprobateurDto approbateur = process.getActeursDto().getListApprobateurs().get(i);
+								
+								if(null == approbateur)
+									continue;
+							%>
+							<tr>
+								<td style="text-align: center"><%=approbateur.getApprobateur().getPrenom() + " " + approbateur.getApprobateur().getNom() + " (" + approbateur.getApprobateur().getIdAgent().toString().substring(3, approbateur.getApprobateur().getIdAgent().toString().length()) + ")" %></td>
+								<td style="text-align: center"><% if(null != approbateur.getDelegataire()) { %> (délégataire : <%=approbateur.getDelegataire().getPrenom() + " " + approbateur.getDelegataire().getNom() + " (" + approbateur.getDelegataire().getIdAgent().toString().substring(3, approbateur.getDelegataire().getIdAgent().toString().length()) + ")" %>) <% } %></td>
+							</tr>
+							<% } %>
+						</table>
+					</FIELDSET>
+					
+		    		</td>
+		    	</tr>
+		    </table>
+		</FIELDSET>
+		
 		<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_ANNEE()%>" value="x">
 		</FORM>
 <%} %>	

@@ -2,6 +2,7 @@ package nc.mairie.spring.ws;
 
 import java.util.List;
 
+import nc.mairie.gestionagent.absence.dto.ActeursDto;
 import nc.mairie.gestionagent.absence.dto.CompteurDto;
 import nc.mairie.gestionagent.absence.dto.DemandeDto;
 import nc.mairie.gestionagent.absence.dto.HistoriqueSoldeDto;
@@ -123,5 +124,7 @@ public interface ISirhAbsWSConsumer {
 	RestitutionMassiveDto getDetailsHistoRestitutionMassive(Integer idAgent, RestitutionMassiveDto dto);
 
 	ReturnMessageDto saveRefAlimMensuelle(Integer idAgent, String json);
+	
+	ActeursDto getListeActeurs(Integer idAgent);
 
 }
