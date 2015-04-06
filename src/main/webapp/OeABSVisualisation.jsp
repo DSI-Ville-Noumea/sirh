@@ -127,14 +127,14 @@
                     });
                 });
 
-                function loadAbsenceHistory(absId) {     
+                function loadAbsenceHistory(absId, idDemande) {     
                 	var oTable = $('#VisualisationAbsenceList').dataTable();
                 	var tr = document.getElementById('tr' + absId);   
                 	
                 	if (oTable.fnIsOpen(tr)) {
                         oTable.fnClose(tr);
                     } else {
-	                	var url = "HistoriqueAbsence?idAbsence=" + absId;
+	                	var url = "HistoriqueAbsence?idAbsence=" + absId + "&idDemande=" + idDemande;
 	                	
 	                	$.ajax({
 	                		type: "GET",
@@ -150,6 +150,27 @@
 	                		}
 	        			}); 
                     }
+                    return 0;
+                }
+
+                function loadActeursAgent(nomatr, id) {     
+          			
+                	if(''==document.getElementById('ActeursAgent'+id).title) {
+              		  	var url = "ActeursAgentAbsence?nomatr=" + nomatr;
+	          
+	                	$.ajax({
+	                		type: "GET",
+	                		url: url,
+	                		dataType : "html",
+	                		//affichage de l'erreur en cas de problème
+	                		error:function(msg, string){
+	                				alert( "Error !: " + string );
+	                			},
+	                		success:function(html){
+	                			document.getElementById('ActeursAgent'+id).title = html;
+	                		}
+	        			}); 
+                	}
                     return 0;
                 }
 
@@ -354,7 +375,7 @@
                 			DemandeDto abs = absMap.getValue();
                         	int indiceAbs = absMap.getKey();
                         %>
-                        <tr id="tr<%=process.getValHistory(indiceAbs)%>">
+                        <tr id="tr<%=indiceAbs %>">
                             <td width="20px" align="center">
                             <%if(abs.getIdRefEtat()==EnumEtatAbsence.ANNULEE.getCode() && (abs.getGroupeAbsence().getIdRefGroupeAbsence()==EnumTypeGroupeAbsence.AS.getValue()||abs.getGroupeAbsence().getIdRefGroupeAbsence()==EnumTypeGroupeAbsence.CONGES_EXCEP.getValue()||abs.getGroupeAbsence().getIdRefGroupeAbsence()==EnumTypeGroupeAbsence.CONGES_ANNUELS.getValue())){ %>                            	
                             	<img onkeydown="" onkeypress="" onkeyup="" title="dupliquer" type="image" src="images/dupliquer.gif"  height="15px" width="15px" class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_DUPLIQUER(indiceAbs)%>" onclick="executeBouton('<%=process.getNOM_PB_DUPLIQUER(indiceAbs)%>');">
@@ -366,7 +387,7 @@
                             <%} %>
 							</td>  
                             <td width="30px" align="center">
-                            	<img onkeydown="" onkeypress="" onkeyup="" src="images/loupe.gif" height="16px" width="16px" title="Voir l'historique de l'absence" onClick="loadAbsenceHistory('<%=process.getValHistory(indiceAbs)%>')">
+                            	<img onkeydown="" onkeypress="" onkeyup="" src="images/loupe.gif" height="16px" width="16px" title="Voir l'historique de l'absence" onClick="loadAbsenceHistory('<%=indiceAbs %>', '<%=abs.getIdDemande() %>')">
                             </td>
                             <td width="40px" align="center">
                             <%if(abs.isDepassementCompteur()){ %>
@@ -377,14 +398,16 @@
                             <%} %>
                             </td>                            
                             <td width="30px"><%=process.getVAL_ST_MATRICULE(indiceAbs)%></td> 
-                            <td width="150px"><%=process.getVAL_ST_AGENT(indiceAbs)%></td> 
+                            <td width="150px"><a id="ActeursAgent<%=indiceAbs %>" style="hover:cursor:pointer;" 
+                            	onmouseover="loadActeursAgent('<%=process.getVAL_ST_MATRICULE(indiceAbs)%>','<%=indiceAbs %>')" >
+                            	<%=process.getVAL_ST_AGENT(indiceAbs)%></a></td> 
                             <td width="40px"><%=process.getVAL_ST_INFO_AGENT(indiceAbs)%></td>  
-                            <td width="150px"><%=process.getVAL_ST_TYPE(indiceAbs)%></td>						
-                            <td width="60px"><%=process.getVAL_ST_DATE_DEB(indiceAbs)%></td>							
-                            <td width="60px"><%=process.getVAL_ST_DATE_FIN(indiceAbs)%></td>							
-                            <td width="40px"><%=process.getVAL_ST_DUREE(indiceAbs)%></td>							
-                            <td width="120px"><%=process.getVAL_ST_MOTIF(indiceAbs)%></td>							
-                            <td width="60px"><%=process.getVAL_ST_ETAT(indiceAbs)%></td>	
+                            <td width="150px"><%=process.getVAL_ST_TYPE(indiceAbs)%></td>
+                            <td width="60px"><%=process.getVAL_ST_DATE_DEB(indiceAbs)%></td>
+                            <td width="60px"><%=process.getVAL_ST_DATE_FIN(indiceAbs)%></td>
+                            <td width="40px"><%=process.getVAL_ST_DUREE(indiceAbs)%></td>
+                            <td width="120px"><%=process.getVAL_ST_MOTIF(indiceAbs)%></td>
+                            <td width="60px"><%=process.getVAL_ST_ETAT(indiceAbs)%></td>
                             <td width="20px" align="center">
                             <!-- #14696 ajout de l etat A VALIDER car erreur lors de la reprise de donnees des conges exceptionnels mis  l etat A VALIDER au lieu de SAISI ou APPROUVE -->
                             <%if((abs.getIdRefEtat()==EnumEtatAbsence.A_VALIDER.getCode() || abs.getIdRefEtat()==EnumEtatAbsence.APPROUVE.getCode() || abs.getIdRefEtat()==EnumEtatAbsence.EN_ATTENTE.getCode()) && (abs.getGroupeAbsence().getIdRefGroupeAbsence()==EnumTypeGroupeAbsence.AS.getValue()||abs.getGroupeAbsence().getIdRefGroupeAbsence()==EnumTypeGroupeAbsence.CONGES_EXCEP.getValue())){ %>
@@ -419,14 +442,16 @@
                             <%} %>
 							</td>
                             <td width="20px" >
-<%-- 								<INPUT title="pieces jointes" type="image" src="images/ajout-doc.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_DOCUMENT(indiceAbs)%>"> --%>
+<%-- 								<INPUT title="pieces jointes" type
+            
+            <div id="ActeursAgent" style="display: none;"></div>="image" src="images/ajout-doc.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_DOCUMENT(indiceAbs)%>"> --%>
 							</td>
                         </tr>
                         <%}%>
                     </tbody>
                 </table>
                 <BR/>	
-            </FIELDSET>	
+            </FIELDSET>
             
             <INPUT type="submit" style="display:none;" name="<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_SERVICE()%>" value="SUPPRECHERCHERSERVICE">	
 			<INPUT type="submit" style="display:none;" name="<%=process.getNOM_PB_RECHERCHER_AGENT_DEMANDE()%>" value="RECHERCHERAGENTDEMANDE">

@@ -24,11 +24,10 @@ public class ServletHistoriqueAbsence extends javax.servlet.http.HttpServlet {
 
 		try {
 			String idAbsence = req.getParameter("idAbsence");
-			idAbsence = idAbsence.substring(8);
-
+			String idDemande = req.getParameter("idDemande");
 			resp.setContentType("text/html");
 			resp.setHeader("Cache-Control", "no-cache");
-			resp.getWriter().write(visu.getHistory(new Integer(idAbsence)));
+			resp.getWriter().write(visu.getHistory(new Integer(idAbsence), new Integer(idDemande)));
 			resp.getWriter().close();
 			resp.setStatus(HttpServletResponse.SC_OK);
 

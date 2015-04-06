@@ -1239,9 +1239,10 @@ public class OeABSVisualisation extends BasicProcess {
 		return "History_" + id;
 	}
 
-	public String getHistory(int absId) {
+	public String getHistory(int absId, int idDemande) {
+		
 		SirhAbsWSConsumer t = new SirhAbsWSConsumer();
-		history.put(absId, t.getVisualisationHistory(absId));
+		history.put(absId, t.getVisualisationHistory(idDemande));
 
 		List<DemandeDto> data = history.get(absId);
 		int numParams = 7;

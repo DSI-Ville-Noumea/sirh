@@ -79,6 +79,17 @@
 		<servlet-name>HistoriqueAbsence</servlet-name>
 		<url-pattern>/HistoriqueAbsence</url-pattern>
 	</servlet-mapping>
+	<servlet>
+		<servlet-name>ActeursAgentAbsence</servlet-name>
+		<display-name>ActeursAgentAbsence</display-name>
+		<description></description>
+		<servlet-class>nc.mairie.gestionagent.servlets.ServletActeursAgent</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ActeursAgentAbsence</servlet-name>
+		<url-pattern>/ActeursAgentAbsence</url-pattern>
+	</servlet-mapping>
 	<welcome-file-list>
 		<welcome-file>OeABSVisualisation.jsp</welcome-file>
 	</welcome-file-list> 
