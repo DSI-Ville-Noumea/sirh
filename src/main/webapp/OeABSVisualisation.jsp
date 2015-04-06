@@ -194,7 +194,7 @@
                             		.append($(document.createElement("td")).html("Durée").attr("style", "width: 70px;text-align: center;"))
                             		.append($(document.createElement("td")).html("Motif").attr("style", "width: 150px;text-align: center;"))
                             		.append($(document.createElement("td")).html("Etat").attr("style", "width: 90px;text-align: center;"))
-                            		.append($(document.createElement("td")).html("Date etat").attr("style", "width: 80px;text-align: center;")))
+                            		.append($(document.createElement("td")).html("Date etat").attr("style", "width: 180px;text-align: center;")))
                             );
 
                     // Append the tbody element

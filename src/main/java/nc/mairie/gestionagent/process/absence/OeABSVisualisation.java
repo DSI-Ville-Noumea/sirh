@@ -1283,7 +1283,9 @@ public class OeABSVisualisation extends BasicProcess {
 			ret[index][3] = duree;
 			ret[index][4] = p.getMotif() == null ? "&nbsp;" : p.getMotif();
 			ret[index][5] = EnumEtatAbsence.getValueEnumEtatAbsence(p.getIdRefEtat());
-			ret[index][6] = formatDate(p.getDateSaisie()) + "<br/>" + formatHeure(p.getDateSaisie());
+			ret[index][6] = formatDate(p.getDateSaisie()) + " " + formatHeure(p.getDateSaisie()) 
+					+ "<br/>" + p.getAgentWithServiceDto().getPrenom() + " " + p.getAgentWithServiceDto().getNom() 
+					+ " (" + new Integer(p.getAgentWithServiceDto().getIdAgent()-9000000).toString() + ")";
 			index++;
 		}
 
