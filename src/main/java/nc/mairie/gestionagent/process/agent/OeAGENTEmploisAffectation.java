@@ -3781,6 +3781,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 		// on vide les informations des specificites
 		initialiseSpecificitesVide();
+		initialiseListeAffectation(request);
 		return true;
 	}
 
@@ -4363,16 +4364,34 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 				// Création Affectation
 				FichePoste fichePoste = getFichePosteDao()
 						.chercherFichePoste(getAffectationCourant().getIdFichePoste());
+				
+				// #13805 bug depuis que le schema SIRH en JDBC Template
+				// si une erreur survient, on peut avoir un dephasage entre
+				// SPMTSR et AFFECTATION : comme gerer par 2 transactions disctinctes
+				// si erreur => rollback sur une seule transaction
+				// solution : on cree en 1er SPMTSR, car si doublon, l AS400 retourne une erreur contrairement a AFFECTATION
+				try {
+				if (!Connecteur.creerSPMTSR(getTransaction(), getAffectationCourant(), getAgentCourant(), fichePoste)) {
+					getTransaction().declarerErreur("L'affectation est déjà créée.");
+					return false;
+				}
+				} catch(Exception e) {
+					getTransaction().declarerErreur("L'affectation est déjà créée.");
+					return false;
+				}
+				// dans un 2e temps on verifie qu il n existe pas deja une affeca	tion pour l agent au meme date
+				Affectation affectationExistante = getAffectationDao().chercherAffectationAgentPourDate(
+						getAffectationCourant().getIdAgent(), getAffectationCourant().getDateDebutAff());
+				if(null != affectationExistante
+						&& affectationExistante.getDateDebutAff().equals(getAffectationCourant().getDateDebutAff())) {
+					return false;
+				}
 				// RG_AG_AF_A01
 				Integer idCreer = getAffectationDao().creerAffectation(getAffectationCourant());
 				getAffectationCourant().setIdAffectation(idCreer);
 
 				HistoAffectation histo = new HistoAffectation(getAffectationCourant());
 				getHistoAffectationDao().creerHistoAffectation(histo, user, EnumTypeHisto.CREATION);
-
-				if (!Connecteur.creerSPMTSR(getTransaction(), getAffectationCourant(), getAgentCourant(), fichePoste)) {
-					return false;
-				}
 
 				commitTransaction();
 

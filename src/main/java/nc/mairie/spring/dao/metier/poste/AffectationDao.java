@@ -37,8 +37,14 @@ public class AffectationDao extends SirhDao implements AffectationDaoInterface {
 	public Affectation chercherAffectationAgentPourDate(Integer idAgent, Date dateCreation) throws Exception {
 		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID_AGENT + " = ? and " + CHAMP_DATE_DEBUT_AFF
 				+ "<=? and( " + CHAMP_DATE_FIN_AFF + " is null or " + CHAMP_DATE_FIN_AFF + ">=?)";
-		Affectation aff = (Affectation) jdbcTemplate.queryForObject(sql, new Object[] { idAgent, dateCreation,
+		Affectation aff = null;
+		try {
+			aff = (Affectation) jdbcTemplate.queryForObject(sql, new Object[] { idAgent, dateCreation,
 				dateCreation }, new BeanPropertyRowMapper<Affectation>(Affectation.class));
+		} catch (org.springframework.dao.EmptyResultDataAccessException e) {
+			return null;
+		}
+		
 		return aff;
 	}
 
