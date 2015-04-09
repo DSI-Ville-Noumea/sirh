@@ -1,42 +1,42 @@
  -----
  SIRH
  -----
- Noémie NICOLAS
+ NoÃ©mie NICOLAS
  -----
   26/03/2012
 
-Modèles de documents dans SIRH
+ModÃ¨les de documents dans SIRH
 
- Dans SIRH, il est possible d'imprimer divers documents. Voici comment en ajouter un et quels sont les documents présents dans l'application.
+ Dans SIRH, il est possible d'imprimer divers documents. Voici comment en ajouter un et quels sont les documents prÃ©sents dans l'application.
 
-* Mettre en place un nouveau modèle de document
+* Mettre en place un nouveau modÃ¨le de document
 
- * Avoir un document dans word et l’enregistrer sous le format xml  de word.
+ * Avoir un document dans word et lÂ’enregistrer sous le format xml  de word.
  
- * Remplacer les champs que l’on souhaite remplir via la base de données par $_NOMVARIABLE.
+ * Remplacer les champs que lÂ’on souhaite remplir via la base de donnÃ©es par $_NOMVARIABLE.
  
- * Enregistrer le fichier dans le répertoire partagé de la DRH ysi\datacentre$\drh\SIRH-document \Modeles_Documents (on retrouve le répertoire dans le fichier web.xml de l’application). 
+ * Enregistrer le fichier dans le rÃ©pertoire partagÃ© de la DRH ysi\datacentre$\drh\SIRH-document \Modeles_Documents (on retrouve le rÃ©pertoire dans le fichier web.xml de lÂ’application). 
  
- * Dans l’application : 
+ * Dans lÂ’application : 
  
-	* Ajouter le bouton impression au niveau de l’écran souhaité
+	* Ajouter le bouton impression au niveau de lÂ’Ã©cran souhaitÃ©
 	
-	* Mettre en place le code (regarder le code de OeAGENTEmploisAffectation.java par exemple) pour générer le document
+	* Mettre en place le code (regarder le code de OeAGENTEmploisAffectation.java par exemple) pour gÃ©nÃ©rer le document
 
-* Voir les modèles ainsi que les documents générés
+* Voir les modÃ¨les ainsi que les documents gÃ©nÃ©rÃ©s
 
  ysi\datacentre$\drh\SIRH-document\PROD
  
-* Liste des modèles présent
+* Liste des modÃ¨les prÃ©sent
 
 *--------------------*-----------------*--------------*--------------------*----------------------------------+ 
-| <<Process>>        | <<Actions>>     | <<Dossier>>  | <<Modèle(s)>>      | <<Répertoire documents générés>> |
+| <<Process>>        | <<Actions>>     | <<Dossier>>  | <<ModÃ¨le(s)>>      | <<RÃ©pertoire documents gÃ©nÃ©rÃ©s>> |
 *--------------------*-----------------*--------------*--------------------*----------------------------------+
-| OeAgentContrat     | Imprimer le     | PROD/Modeles | Tous ceux présents | PROD/Document_Associe/C          |
+| OeAgentContrat     | Imprimer le     | PROD/Modeles | Tous ceux prÃ©sents | PROD/Document_Associe/C          |
 |                    | contrat de      | _Documents/  | dans le dossier    |                                  |
 |                    | travail (CDD)   | Contrats     |                    |                                  |
 *--------------------*-----------------*--------------*--------------------*----------------------------------+
-| OeAgentAffectation | Imprimer les    | PROD/Modeles | Tous ceux présents | PROD/Document_Associe/NS         |
+| OeAgentAffectation | Imprimer les    | PROD/Modeles | Tous ceux prÃ©sents | PROD/Document_Associe/NS         |
 |                    | notes de        | _Documents/  | dans le dossier    |                                  |
 |                    | services        | Affectations |                    |                                  |
 *--------------------*-----------------*--------------*--------------------*----------------------------------+
