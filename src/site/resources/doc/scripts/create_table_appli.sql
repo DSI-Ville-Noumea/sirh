@@ -70,8 +70,8 @@ create table SIRH.AGENT
    CODE_ELECTION VARCHAR(1),
    QUARTIER VARCHAR(20),
    RUE_NON_NOUMEA VARCHAR(120),
-   -- champ ajouté car on avait l'info dans MAIRIE
-   -- pour le moment pas utilisé dans l'appli mais peut etre un jour
+   -- champ ajoute car on avait l'info dans MAIRIE
+   -- pour le moment pas utilise dans l'appli mais peut etre un jour
    constraint SIRH.PK_AGENT
    primary key (ID_AGENT),
    constraint SIRH.FK_AGENT_VOIE
@@ -764,7 +764,7 @@ create table SIRH.AFFECTATION
    ID_FICHE_POSTE_SECONDAIRE INTEGER,
    COMMENTAIRE VARCHAR(100),
    -- champ ajouter car on avait l'info dans MAIRIE
-   -- pour le moment pas utilisé dans l'appli mais peut etre un jour
+   -- pour le moment pas utilise dans l'appli mais peut etre un jour
    constraint SIRH.PK_AFFECTATION
    primary key (ID_AFFECTATION),
    constraint SIRH.FK_AFFECT_AGEN

@@ -1,8 +1,8 @@
 ----------------------------------------------------------------
 -- RECETTE
 ----------------------------------------------------------------
-INSERT INTO SIRH2.R_TYPE_JOUR_FERIE (LIB_TYPE_JOUR_FERIE) VALUES ('Férié');
-INSERT INTO SIRH2.R_TYPE_JOUR_FERIE (LIB_TYPE_JOUR_FERIE) VALUES ('Chômé');
+INSERT INTO SIRH2.R_TYPE_JOUR_FERIE (LIB_TYPE_JOUR_FERIE) VALUES ('FÃ©riÃ©');
+INSERT INTO SIRH2.R_TYPE_JOUR_FERIE (LIB_TYPE_JOUR_FERIE) VALUES ('ChÃ´mÃ©');
 insert into SIRH2.p_jour_ferie(ID_TYPE_JOUR_FERIE,date_jour) values (1,'2012-01-01');
 insert into SIRH2.p_jour_ferie(ID_TYPE_JOUR_FERIE,date_jour) values (1,'2012-04-09');
 insert into SIRH2.p_jour_ferie(ID_TYPE_JOUR_FERIE,date_jour) values (2,'2012-04-30');
@@ -45,8 +45,8 @@ insert into SIRH2.p_jour_ferie(ID_TYPE_JOUR_FERIE,date_jour) values (1,'2013-12-
 ----------------------------------------------------------------
 -- PROD
 ----------------------------------------------------------------
-INSERT INTO SIRH.R_TYPE_JOUR_FERIE (LIB_TYPE_JOUR_FERIE) VALUES ('Férié');
-INSERT INTO SIRH.R_TYPE_JOUR_FERIE (LIB_TYPE_JOUR_FERIE) VALUES ('Chômé');
+INSERT INTO SIRH.R_TYPE_JOUR_FERIE (LIB_TYPE_JOUR_FERIE) VALUES ('FÃ©riÃ©');
+INSERT INTO SIRH.R_TYPE_JOUR_FERIE (LIB_TYPE_JOUR_FERIE) VALUES ('ChÃ´mÃ©');
 insert into SIRH.p_jour_ferie(ID_TYPE_JOUR_FERIE,date_jour) values (1,'2012-01-01');
 insert into SIRH.p_jour_ferie(ID_TYPE_JOUR_FERIE,date_jour) values (1,'2012-04-09');
 insert into SIRH.p_jour_ferie(ID_TYPE_JOUR_FERIE,date_jour) values (2,'2012-04-30');
