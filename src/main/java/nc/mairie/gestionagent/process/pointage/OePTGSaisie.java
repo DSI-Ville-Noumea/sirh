@@ -80,14 +80,14 @@ public class OePTGSaisie extends BasicProcess {
 	}
 
 	/**
-	 * Getter du nom de l'écran (pour la gestion des droits)
+	 * Getter du nom de l'Ã©cran (pour la gestion des droits)
 	 */
 	public String getNomEcran() {
 		return "ECR-PTG-SAISIE";
 	}
 
 	/**
-	 * Initialisation des données.
+	 * Initialisation des donnÃ©es.
 	 */
 	private void initialiseDonnees() throws Exception {
 		SirhPtgWSConsumer t = new SirhPtgWSConsumer();
@@ -105,7 +105,7 @@ public class OePTGSaisie extends BasicProcess {
 	public void initialiseZones(HttpServletRequest request) throws Exception {
 		VariableGlobale.ajouter(request, "PROCESS_MEMORISE", this);
 		if (MairieUtils.estInterdit(request, getNomEcran())) {
-			// "ERR190","Opération impossible. Vous ne disposez pas des droits d'accès à cette option."
+			// "ERR190","Operation impossible. Vous ne disposez pas des droits d'acces a cette option."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
@@ -239,7 +239,7 @@ public class OePTGSaisie extends BasicProcess {
 						ptemp.getTypeSaisie());
 				if (primeAajouter != null) {
 					// HEURE INDEMNITE ROULEMENT DPM
-					// vérification date debut > date fin
+					// VÃ©rification date debut > date fin
 					if (primeAajouter.getNumRubrique() == 7715 && primeAajouter.getHeureDebut() != null) {
 						if (primeAajouter.getHeureDebut().getTime() > primeAajouter.getHeureFin().getTime()) {
 							Calendar cal = Calendar.getInstance();
@@ -268,7 +268,7 @@ public class OePTGSaisie extends BasicProcess {
 
 			for (AbsenceDto absDto : jour.getAbsences()) {
 				if (absDto != null) {
-					// vérification motif obligatoire
+					// VÃ©rification motif obligatoire
 					if (absDto.getMotif().equals(Const.CHAINE_VIDE)) {
 						getTransaction().traiterErreur();
 						logger.debug("Tentative de sauvegarde d'une absence sans motif.");
@@ -276,13 +276,13 @@ public class OePTGSaisie extends BasicProcess {
 								"L'absence saisie le " + sdf.format(jour.getDate()) + " n'a pas de motif.");
 						return false;
 					}
-					// vérification type Absence obligatoire
+					// VÃ©rification type Absence obligatoire
 					if (absDto.getIdRefTypeAbsence() == 0) {
 						getTransaction().traiterErreur();
 						logger.debug("Tentative de sauvegarde d'une absence sans type.");
 						getTransaction().declarerErreur(
 								"L'absence saisie le " + sdf.format(jour.getDate())
-										+ " n'a pas de type (concertée, non concertée, immédiate).");
+										+ " n'a pas de type (concertÃ©e, non concertÃ©e, immÃ©diate).");
 						return false;
 					}
 				}
@@ -290,13 +290,13 @@ public class OePTGSaisie extends BasicProcess {
 
 			for (HeureSupDto hsdto : jour.getHeuresSup()) {
 				if (hsdto != null) {
-					// vérification motif obligatoire
+					// VÃ©rification motif obligatoire
 					if (hsdto.getIdMotifHsup() == null) {
 						getTransaction().traiterErreur();
-						logger.debug("Tentative de sauvegarde d'une heure supplémentaire sans motif");
+						logger.debug("Tentative de sauvegarde d'une heure supplÃ©mentaire sans motif");
 						getTransaction()
 								.declarerErreur(
-										"L'heure supplémentaire saisie le " + sdf.format(jour.getDate())
+										"L'heure supplÃ©mentaire saisie le " + sdf.format(jour.getDate())
 												+ " n'a pas de motif.");
 						return false;
 					}
@@ -306,13 +306,13 @@ public class OePTGSaisie extends BasicProcess {
 			for (PrimeDto primeDto : jour.getPrimes()) {
 				if (primeDto != null && null != primeDto.getMotif() && null != primeDto.getQuantite()) {
 					// verification si prime 7704 que le nombre ne soit pas
-					// supérieur à 2
+					// supÃ©rieur a 2
 					if (primeDto.getNumRubrique() == 7704 && primeDto.getQuantite() > 2) {
 						getTransaction().traiterErreur();
-						logger.debug("Tentative de sauvegarde de la prime 7704 avec une quantité supérieure à 2");
+						logger.debug("Tentative de sauvegarde de la prime 7704 avec une quantitÃ© supÃ©rieure a 2");
 						getTransaction().declarerErreur(
 								"La prime " + primeDto.getTitre() + " saisie le " + sdf.format(jour.getDate())
-										+ " ne peut pas excéder 2 en quantité.");
+										+ " ne peut pas excÃ©der 2 en quantitÃ©.");
 						return false;
 					}
 				}
@@ -468,7 +468,7 @@ public class OePTGSaisie extends BasicProcess {
 				return true;
 			}
 		}
-		setStatut(STATUT_MEME_PROCESS);// Si TAG INPUT non géré par le process
+		setStatut(STATUT_MEME_PROCESS);// Si TAG INPUT non gÃ©rÃ© par le process
 		return true;
 	}
 

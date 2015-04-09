@@ -1,4 +1,5 @@
-<!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@ page contentType="text/html; charset=UTF-8" %> 
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <HTML>
 	
 	<jsp:useBean class="nc.mairie.gestionagent.process.agent.OeAGENTAbsencesCompteur" id="process" scope="session"></jsp:useBean>
@@ -10,13 +11,13 @@
 		<SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT>
 		
 		<SCRIPT language="JavaScript">
-		//afin de sélectionner un élément dans une liste
+		//afin de sÃ©lectionner un Ã©lÃ©ment dans une liste
 		function executeBouton(nom)
 		{
 			document.formu.elements[nom].click();
 		}
 
-		// afin de mettre le focus sur une zone précise
+		// afin de mettre le focus sur une zone prÃ©cise
 		function setfocus(nom)
 		{
 			if (document.formu.elements[nom] != null)
@@ -24,7 +25,7 @@
 		}
 		
 		</SCRIPT>	
-		<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	</HEAD>
 	<BODY bgcolor="#FFFFFF" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="window.parent.frames['refAgent'].location.reload();">
 	<%@ include file="BanniereErreur.jsp" %>
@@ -58,7 +59,7 @@
 					<table>
 						<tr>
 							<td width="110px;">
-		            			<span class="sigp2Mandatory">Durée à ajouter :</span>
+		            			<span class="sigp2Mandatory">DurÃ©e Ã  ajouter :</span>
 							</td>
 							<td>
 								<INPUT class="sigp2-saisie" maxlength="4" size="3"  name="<%= process.getNOM_ST_DUREE_HEURE_AJOUT() %>" type="text" value="<%= process.getVAL_ST_DUREE_HEURE_AJOUT() %>"><span class="sigp2-saisie">heures</span>
@@ -67,7 +68,7 @@
 						</tr>
 						<tr>
 							<td>
-		            			<span class="sigp2Mandatory">Durée à retrancher :</span>
+		            			<span class="sigp2Mandatory">DurÃ©e Ã  retrancher :</span>
 							</td>
 							<td>
 								<INPUT class="sigp2-saisie" maxlength="3" size="3"  name="<%= process.getNOM_ST_DUREE_HEURE_RETRAIT() %>" type="text" value="<%= process.getVAL_ST_DUREE_HEURE_RETRAIT() %>"><span class="sigp2-saisie">heures</span>
@@ -100,10 +101,10 @@
 					<table border="1" cellpadding="5">
 						<tr>
 							<td>
-								<span class="sigp2" style="margin-left:20px;position:relative;width:110px;">Solde année :</span>
+								<span class="sigp2" style="margin-left:20px;position:relative;width:110px;">Solde annÃ©e :</span>
 								<INPUT class="sigp2-saisie" disabled="disabled" size="10"  name="<%= process.getNOM_ST_SOLDE() %>" type="text" value="<%= process.getVAL_ST_SOLDE() %>">
 								
-								<span class="sigp2" style="margin-left:20px;position:relative;width:110px;">Solde année précédente:</span>
+								<span class="sigp2" style="margin-left:20px;position:relative;width:110px;">Solde annÃ©e prÃ©cÃ©dente:</span>
 								<INPUT class="sigp2-saisie" disabled="disabled" size="10"  name="<%= process.getNOM_ST_SOLDE_PREC() %>" type="text" value="<%= process.getVAL_ST_SOLDE_PREC() %>">
 							</td>
 						</tr>
@@ -111,7 +112,7 @@
 					<table>
 						<tr>
 							<td width="110px;">
-		            			<span class="sigp2Mandatory">Durée à ajouter :</span>
+		            			<span class="sigp2Mandatory">DurÃ©e Ã  ajouter :</span>
 							</td>
 							<td>
 								<INPUT class="sigp2-saisie" maxlength="3" size="3"  name="<%= process.getNOM_ST_DUREE_HEURE_AJOUT() %>" type="text" value="<%= process.getVAL_ST_DUREE_HEURE_AJOUT() %>"><span class="sigp2-saisie">heures</span>
@@ -120,7 +121,7 @@
 						</tr>
 						<tr>
 							<td>
-		           				<span class="sigp2Mandatory">Durée à retrancher :</span>
+		           				<span class="sigp2Mandatory">DurÃ©e Ã  retrancher :</span>
 							</td>
 							<td>
 								<INPUT class="sigp2-saisie" maxlength="3" size="3"  name="<%= process.getNOM_ST_DUREE_HEURE_RETRAIT() %>" type="text" value="<%= process.getVAL_ST_DUREE_HEURE_RETRAIT() %>"><span class="sigp2-saisie">heures</span>
@@ -132,8 +133,8 @@
 								<span class="sigp2Mandatory">Compteur :</span> 
 							</td>
 							<td>
-								<input type="radio" <%= process.forRadioHTML(process.getNOM_RG_COMPTEUR(), process.getNOM_RB_COMPTEUR_ANNEE()) %> > <span class="sigp2-saisie">Année</span> 
-								<input type="radio" <%= process.forRadioHTML(process.getNOM_RG_COMPTEUR(), process.getNOM_RB_COMPTEUR_ANNEE_PREC()) %> > <span class="sigp2-saisie">Année précédente</span> 
+								<input type="radio" <%= process.forRadioHTML(process.getNOM_RG_COMPTEUR(), process.getNOM_RB_COMPTEUR_ANNEE()) %> > <span class="sigp2-saisie">AnnÃ©e</span> 
+								<input type="radio" <%= process.forRadioHTML(process.getNOM_RG_COMPTEUR(), process.getNOM_RB_COMPTEUR_ANNEE_PREC()) %> > <span class="sigp2-saisie">AnnÃ©e prÃ©cÃ©dente</span> 
 							</td>
 						</tr>
 						<tr>
@@ -162,10 +163,10 @@
 					<table border="1" cellpadding="5">
 						<tr>
 							<td>
-								<span class="sigp2" style="margin-left:20px;position:relative;width:110px;">Solde année :</span>
+								<span class="sigp2" style="margin-left:20px;position:relative;width:110px;">Solde annÃ©e :</span>
 								<INPUT class="sigp2-saisie" disabled="disabled" size="10"  name="<%= process.getNOM_ST_SOLDE() %>" type="text" value="<%= process.getVAL_ST_SOLDE() %>">
 								
-								<span class="sigp2" style="margin-left:20px;position:relative;width:110px;">Solde année précédente:</span>
+								<span class="sigp2" style="margin-left:20px;position:relative;width:110px;">Solde annÃ©e prÃ©cÃ©dente:</span>
 								<INPUT class="sigp2-saisie" disabled="disabled" size="10"  name="<%= process.getNOM_ST_SOLDE_PREC() %>" type="text" value="<%= process.getVAL_ST_SOLDE_PREC() %>">
 							</td>
 						</tr>
@@ -173,7 +174,7 @@
 					<table>
 						<tr>
 							<td width="110px;">
-		            			<span class="sigp2Mandatory">Durée à ajouter :</span>
+		            			<span class="sigp2Mandatory">DurÃ©e Ã  ajouter :</span>
 							</td>
 							<td>
 								<INPUT class="sigp2-saisie" maxlength="4" size="3"  name="<%= process.getNOM_ST_DUREE_JOUR_AJOUT() %>" type="text" value="<%= process.getVAL_ST_DUREE_JOUR_AJOUT() %>"><span class="sigp2-saisie">jours</span>
@@ -181,7 +182,7 @@
 						</tr>
 						<tr>
 							<td>
-		           				<span class="sigp2Mandatory">Durée à retrancher :</span>
+		           				<span class="sigp2Mandatory">DurÃ©e Ã  retrancher :</span>
 							</td>
 							<td>
 								<INPUT class="sigp2-saisie" maxlength="4" size="3"  name="<%= process.getNOM_ST_DUREE_JOUR_RETRAIT() %>" type="text" value="<%= process.getVAL_ST_DUREE_JOUR_RETRAIT() %>"><span class="sigp2-saisie">jours</span>
@@ -192,8 +193,8 @@
 								<span class="sigp2Mandatory">Compteur :</span> 
 							</td>
 							<td>
-								<input type="radio" <%= process.forRadioHTML(process.getNOM_RG_COMPTEUR(), process.getNOM_RB_COMPTEUR_ANNEE()) %> > <span class="sigp2-saisie">Année</span> 
-								<input type="radio" <%= process.forRadioHTML(process.getNOM_RG_COMPTEUR(), process.getNOM_RB_COMPTEUR_ANNEE_PREC()) %> > <span class="sigp2-saisie">Année précédente</span> 
+								<input type="radio" <%= process.forRadioHTML(process.getNOM_RG_COMPTEUR(), process.getNOM_RB_COMPTEUR_ANNEE()) %> > <span class="sigp2-saisie">AnnÃ©e</span> 
+								<input type="radio" <%= process.forRadioHTML(process.getNOM_RG_COMPTEUR(), process.getNOM_RB_COMPTEUR_ANNEE_PREC()) %> > <span class="sigp2-saisie">AnnÃ©e prÃ©cÃ©dente</span> 
 							</td>
 						</tr>
 						<tr>

@@ -50,7 +50,7 @@ public class EaeEAEDao extends EaeDao implements EaeEAEDaoInterface {
 					new BeanPropertyRowMapper<EAE>(EAE.class));
 			return eae;
 		} catch (Exception e) {
-			logger.debug("Aucun EAE trouvé pour l'agent " + idAgent.toString() + " pour la campagne id="
+			logger.debug("Aucun EAE trouvÃ© pour l'agent " + idAgent.toString() + " pour la campagne id="
 					+ idCampagneEAE.toString());
 			return null;
 		}

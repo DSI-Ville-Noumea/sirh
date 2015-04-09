@@ -38,7 +38,7 @@ import org.springframework.context.ApplicationContext;
 import flexjson.JSONSerializer;
 
 /**
- * Process OeAGENTAbsences Date de création : (05/09/11 11:31:37)
+ * Process OeAGENTAbsences Date de crÃ©ation : (05/09/11 11:31:37)
  * 
  */
 public class OeAGENTAbsencesSolde extends BasicProcess {
@@ -73,7 +73,7 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 	public String focus = null;
 
 	/**
-	 * Constructeur du process OeAGENTAbsences. Date de création : (05/09/11
+	 * Constructeur du process OeAGENTAbsences. Date de crÃ©ation : (05/09/11
 	 * 11:39:24)
 	 * 
 	 */
@@ -90,10 +90,10 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 	}
 
 	/**
-	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones Ã  afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
-	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
-	 * addZone(getNOMxxx, String); Date de création : (05/09/11 11:39:24)
+	 * doivent avoir les Fields PUBLIC Utilisation de la mÃ©thode
+	 * addZone(getNOMxxx, String); Date de crÃ©ation : (05/09/11 11:39:24)
 	 * 
 	 */
 	public void initialiseZones(HttpServletRequest request) throws Exception {
@@ -104,10 +104,10 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 			addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 		}
 
-		// Vérification des droits d'accès.
+		// VÃ©rification des droits d'acces.
 		if (MairieUtils.estInterdit(request, getNomEcran())) {
 			// "ERR190",
-			// "Opération impossible. Vous ne disposez pas des droits d'accès à cette option."
+			// "Operation impossible. Vous ne disposez pas des droits d'acces a cette option."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
@@ -137,7 +137,7 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 		Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), getAgentCourant());
 		if (getTransaction().isErreur()) {
 			getTransaction().traiterErreur();
-			// "ERR136", "Cet agent n'a aucune carrière active."
+			// "ERR136", "Cet agent n'a aucune carriere active."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR136"));
 			return;
 		}
@@ -187,7 +187,7 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 		SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
 		SoldeDto soldeGlobal = consuAbs.getSoldeAgent(getAgentCourant().getIdAgent(), json);
 
-		// solde congés
+		// solde congÃ©s
 		addZone(getNOM_ST_SOLDE_CONGE(), soldeGlobal.getSoldeCongeAnnee() == 0 ? "&nbsp;" : soldeGlobal
 				.getSoldeCongeAnnee().toString() + " j");
 		addZone(getNOM_ST_SOLDE_CONGE_PREC(), soldeGlobal.getSoldeCongeAnneePrec() == 0 ? "&nbsp;" : soldeGlobal
@@ -289,8 +289,8 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 	}
 
 	/**
-	 * Méthode appelée par la servlet qui aiguille le traitement : en fonction
-	 * du bouton de la JSP Date de création : (05/09/11 11:31:37)
+	 * mÃ©thode appelee par la servlet qui aiguille le traitement : en fonction
+	 * du bouton de la JSP Date de crÃ©ation : (05/09/11 11:31:37)
 	 * 
 	 */
 	public boolean recupererStatut(HttpServletRequest request) throws Exception {
@@ -316,14 +316,14 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 			}
 
 		}
-		// Si TAG INPUT non géré par le process
+		// Si TAG INPUT non gÃ©rÃ© par le process
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
 
 	/**
-	 * Retourne le nom de la JSP du process Zone à utiliser dans un champ caché
-	 * dans chaque formulaire de la JSP. Date de création : (29/09/11 10:03:37)
+	 * Retourne le nom de la JSP du process Zone a utiliser dans un champ cache
+	 * dans chaque formulaire de la JSP. Date de crÃ©ation : (29/09/11 10:03:37)
 	 * 
 	 */
 	public String getJSP() {

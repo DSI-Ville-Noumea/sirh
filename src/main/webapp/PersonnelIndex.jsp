@@ -1,3 +1,4 @@
+<%@ page contentType="text/html; charset=UTF-8" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <%@page import="nc.mairie.technique.VariableGlobale"%>
 <%@page import="nc.mairie.technique.UserAppli"%>
@@ -58,14 +59,14 @@ var Module_posteEtEmploi = new Dossier("Module_posteEtEmploi", "Postes & emplois
 //*               Le module Agent
 //***************************************************************
 var Module_agent = new Dossier("Module_agent", "Agent","AGENT");
-	Module_agent.ajouterFils(new Lien("donneesPerso", "AgentEtatCivil", "Données personnelles", "Gestion des données personnelles d'un agent", true));
+	Module_agent.ajouterFils(new Lien("donneesPerso", "AgentEtatCivil", "DonnÃ©es personnelles", "Gestion des donnÃ©es personnelles d'un agent", true));
 	<% 
 	String affHSCT =  (String) ServletAgent.getMesParametres().get("AFFICHAGE_HSCT");
 	if (affHSCT.equals("TRUE")){ %>
-		Module_agent.ajouterFils(new Lien("hsct", "VisiteMedicaleGestion", "HSCT", "Gestion des données HSCT", true));
+		Module_agent.ajouterFils(new Lien("hsct", "VisiteMedicaleGestion", "HSCT", "Gestion des donnÃ©es HSCT", true));
 	<%}%>
 	Module_agent.ajouterFils(new Lien("emplois", "AgtEmploisAffectations", "Emplois", "Gestion des emplois d'un agent", true));
-	Module_agent.ajouterFils(new Lien("eltsSalaires", "PAGestion", "Eléments de salaire", "Gestion des éléments de salaire d'un agent", true));
+	Module_agent.ajouterFils(new Lien("eltsSalaires", "PAGestion", "ElÃ©ments de salaire", "Gestion des Ã©lÃ©ments de salaire d'un agent", true));
 	Module_agent.ajouterFils(new Lien("absences", "AgtAbsencesSolde", "Absences", "Gestion des absences d'un agent", true));
 	<% 
 	String affEAEAgent =  (String) ServletAgent.getMesParametres().get("AFFICHAGE_EAE_AGENT");
@@ -83,7 +84,7 @@ var Module_avct = new Dossier("Module_avct", "Gestion des avancements","GESTION 
 		Module_avct.ajouterFils(new Lien("simulationFonctionnaires", "AVCTSimulationFontionnaires", "Avancement Fonctionnaires", "Gestion des avancements des fontionnaires", true));
 		Module_avct.ajouterFils(new Lien("simulationContractuels", "AVCTSimulationContractuels", "Avancement Contractuels", "Gestion des avancements des contractuels", true));
 		Module_avct.ajouterFils(new Lien("simulationConvCol", "AVCTSimulationConvCol", "Avancement Conventions", "Gestion des avancements des conventions collectives", true));
-		Module_avct.ajouterFils(new Lien("simulationDetaches", "AVCTSimulationDetaches", "Avancement Détachés", "Gestion des avancements des détachés", true));
+		Module_avct.ajouterFils(new Lien("simulationDetaches", "AVCTSimulationDetaches", "Avancement DÃ©tachÃ©s", "Gestion des avancements des dÃ©tachÃ©s", true));
 	<%}%>
 	<% 
 	String affCampagneEAE =  (String) ServletAgent.getMesParametres().get("AFFICHAGE_CAMPAGNE_EAE");
@@ -105,7 +106,7 @@ var Module_avct = new Dossier("Module_avct", "Gestion des avancements","GESTION 
 String affSuiviMed =  (String) ServletAgent.getMesParametres().get("AFFICHAGE_SUIVI_MEDICAL");
 if (affSuiviMed.equals("TRUE")){ %>
 var Module_suiviMed = new Dossier("Module_suiviMed", "Gestion du suivi medical","SUIVI MEDICAL");
-	Module_suiviMed.ajouterFils(new Lien("suiviMed", "SMConvocation", "Suivi médical", "Gestion du suivi médical", true));
+	Module_suiviMed.ajouterFils(new Lien("suiviMed", "SMConvocation", "Suivi mÃ©dical", "Gestion du suivi mÃ©dical", true));
 <%}%>
 
 
@@ -130,38 +131,38 @@ String affAbsence =  (String) ServletAgent.getMesParametres().get("AFFICHAGE_ABS
 if (affAbsence.equals("TRUE")){ %>
 	var Module_absence = new Dossier("Module_absence", "Gestion des absences","GESTION DES ABSENCES");
 	Module_absence.ajouterFils(new Lien("visualisationAbsence", "ABSVisualisation", "Visualisation et validation", "Gestion des absences", true));
-	Module_absence.ajouterFils(new Lien("restitutionAbsence", "ABSRestitution", "Restitution massive", "Resitution massive des congés", true));
-	Module_absence.ajouterFils(new Lien("alimenationMensuelleAbsence", "ABSAlimentationMensuelle", "Alimentation mensuelle", "Alimentation mensuelle des congés", true));
+	Module_absence.ajouterFils(new Lien("restitutionAbsence", "ABSRestitution", "Restitution massive", "Resitution massive des congÃ©s", true));
+	Module_absence.ajouterFils(new Lien("alimenationMensuelleAbsence", "ABSAlimentationMensuelle", "Alimentation mensuelle", "Alimentation mensuelle des congÃ©s", true));
 <%}%>
 
 //***************************************************************
-//*               Le module Gestion des élections
+//*               Le module Gestion des Ã©lections
 //***************************************************************
 	<% 
 	String affElection =  (String) ServletAgent.getMesParametres().get("AFFICHAGE_ELECTION");
 	if (affElection.equals("TRUE")){ %>
-		var Module_election = new Dossier("Module_election", "Gestion des élections","GESTION ELECTIONS");
+		var Module_election = new Dossier("Module_election", "Gestion des Ã©lections","GESTION ELECTIONS");
 		Module_election.ajouterFils(new Lien("saisieCompteur", "ELECSaisieCompteurA48", "Saisie des compteurs", "Saisie des compteurs", true));
 	<%}%>
 	
 		
 //***************************************************************
-//*               Le module Paramètres
+//*               Le module ParamÃ¨tres
 //***************************************************************
-var Module_parametres = new Dossier("Module_parametres", "Paramètres","PARAMETRES");
+var Module_parametres = new Dossier("Module_parametres", "ParamÃ¨tres","PARAMETRES");
 	Module_parametres.ajouterFils(new Lien("posteEtEmploi", "ParamFicheEmploi", "Postes & emplois", "Gestion des parametres du module postes et emplois", true));
 	Module_parametres.ajouterFils(new Lien("agent", "ParamDonneesPerso", "Agent", "Gestion des parametres du module agents", true));
-	Module_parametres.ajouterFils(new Lien("grade", "ParamGradeRef", "Grade", "Gestion des paramètres des grades", true));
-	Module_parametres.ajouterFils(new Lien("avancement", "ParamAvancement", "Avancement", "Gestion des paramètres des avancements", true));
+	Module_parametres.ajouterFils(new Lien("grade", "ParamGradeRef", "Grade", "Gestion des paramÃ¨tres des grades", true));
+	Module_parametres.ajouterFils(new Lien("avancement", "ParamAvancement", "Avancement", "Gestion des paramÃ¨tres des avancements", true));
 <% 
 String affParamElementSalaire =  (String) ServletAgent.getMesParametres().get("AFFICHAGE_PARAM_ELEM_SALAIRE");
 if (affParamElementSalaire.equals("TRUE")){ %>
-Module_parametres.ajouterFils(new Lien("elemSal", "ParamElemSalaire", "Eléments salaire", "Gestion des paramètres des éléments de salaire", true));
+Module_parametres.ajouterFils(new Lien("elemSal", "ParamElemSalaire", "ElÃ©ments salaire", "Gestion des paramÃ¨tres des Ã©lÃ©ments de salaire", true));
 <%}%>
-Module_parametres.ajouterFils(new Lien("absence", "ParamAbsMotif", "Absence", "Gestion des paramètres des absences", true));
-Module_parametres.ajouterFils(new Lien("election", "ParamElec", "Election", "Gestion des paramètres des élections", true));
-Module_parametres.ajouterFils(new Lien("kiosque", "ParamKiosque", "Kiosque", "Gestion des paramètres du kiosque", true));
-Module_parametres.ajouterFils(new Lien("pointage", "ParamPointage", "Pointage", "Gestion des paramètres des pointages", true));
+Module_parametres.ajouterFils(new Lien("absence", "ParamAbsMotif", "Absence", "Gestion des paramÃ¨tres des absences", true));
+Module_parametres.ajouterFils(new Lien("election", "ParamElec", "Election", "Gestion des paramÃ¨tres des Ã©lections", true));
+Module_parametres.ajouterFils(new Lien("kiosque", "ParamKiosque", "Kiosque", "Gestion des paramÃ¨tres du kiosque", true));
+Module_parametres.ajouterFils(new Lien("pointage", "ParamPointage", "Pointage", "Gestion des paramÃ¨tres des pointages", true));
 //***************************************************************
 //*               Le module Gestion des droits
 //***************************************************************

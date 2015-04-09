@@ -22,7 +22,7 @@ import nc.mairie.utils.VariablesActivite;
 import org.springframework.context.ApplicationContext;
 
 /**
- * Process OeAGENTEnfantHomonyme Date de création : (03/10/11 14:00:29)
+ * Process OeAGENTEnfantHomonyme Date de crÃ©ation : (03/10/11 14:00:29)
  * 
  */
 public class OeAGENTEnfantHomonyme extends BasicProcess {
@@ -42,10 +42,10 @@ public class OeAGENTEnfantHomonyme extends BasicProcess {
 	private AgentDao agentDao;
 
 	/**
-	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones Ã  afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
-	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
-	 * addZone(getNOMxxx, String); Date de création : (03/10/11 14:00:29)
+	 * doivent avoir les Fields PUBLIC Utilisation de la mÃ©thode
+	 * addZone(getNOMxxx, String); Date de crÃ©ation : (03/10/11 14:00:29)
 	 * 
 	 */
 	@SuppressWarnings("unchecked")
@@ -68,7 +68,7 @@ public class OeAGENTEnfantHomonyme extends BasicProcess {
 			if (aEnfant != null) {
 				setEnfantCourant(aEnfant);
 			} else {
-				// "ERR005", "Aucun @ trouvé."
+				// "ERR005", "Aucun @ trouvÃ©."
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR005", "enfant"));
 				return;
 			}
@@ -110,7 +110,7 @@ public class OeAGENTEnfantHomonyme extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_CREER Date de création :
+	 * Retourne le nom d'un bouton pour la JSP : PB_CREER Date de crÃ©ation :
 	 * (03/10/11 14:00:29)
 	 * 
 	 */
@@ -119,10 +119,10 @@ public class OeAGENTEnfantHomonyme extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (03/10/11 14:00:29)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (03/10/11 14:00:29)
 	 * 
 	 */
 	public boolean performPB_CREER(HttpServletRequest request) throws Exception {
@@ -148,7 +148,7 @@ public class OeAGENTEnfantHomonyme extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_SELECTIONNER Date de
-	 * création : (03/10/11 14:00:29)
+	 * crÃ©ation : (03/10/11 14:00:29)
 	 * 
 	 */
 	public String getNOM_PB_SELECTIONNER() {
@@ -156,14 +156,14 @@ public class OeAGENTEnfantHomonyme extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (03/10/11 14:00:29)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (03/10/11 14:00:29)
 	 * 
 	 */
 	public boolean performPB_SELECTIONNER(HttpServletRequest request) throws Exception {
-		// Test si ligne sélectionnée
+		// Test si ligne sÃ©lectionnÃ©e
 		int numligne = (Services.estNumerique(getZone(getNOM_LB_ENFANT_HOMONYME_SELECT())) ? Integer
 				.parseInt(getZone(getNOM_LB_ENFANT_HOMONYME_SELECT())) : -1);
 		if (numligne == -1 || getListeEnfantHomonyme().size() == 0 || numligne > getListeEnfantHomonyme().size() - 1) {
@@ -171,7 +171,7 @@ public class OeAGENTEnfantHomonyme extends BasicProcess {
 			return false;
 		}
 
-		// Recuperation Enfant homonyme sélectionné
+		// Recuperation Enfant homonyme sÃ©lectionnÃ©
 		setEnfantCourant((Enfant) getListeEnfantHomonyme().get(numligne));
 
 		// Creation du lien
@@ -187,7 +187,7 @@ public class OeAGENTEnfantHomonyme extends BasicProcess {
 
 	/**
 	 * Getter de la liste avec un lazy initialize : LB_ENFANT_HOMONYME Date de
-	 * création : (03/10/11 14:00:29)
+	 * crÃ©ation : (03/10/11 14:00:29)
 	 * 
 	 */
 	private String[] getLB_ENFANT_HOMONYME() {
@@ -197,7 +197,7 @@ public class OeAGENTEnfantHomonyme extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_ENFANT_HOMONYME Date de création : (03/10/11
+	 * Setter de la liste: LB_ENFANT_HOMONYME Date de crÃ©ation : (03/10/11
 	 * 14:00:29)
 	 * 
 	 */
@@ -207,7 +207,7 @@ public class OeAGENTEnfantHomonyme extends BasicProcess {
 
 	/**
 	 * Retourne le nom de la zone pour la JSP : NOM_LB_ENFANT_HOMONYME Date de
-	 * création : (03/10/11 14:00:29)
+	 * crÃ©ation : (03/10/11 14:00:29)
 	 * 
 	 */
 	public String getNOM_LB_ENFANT_HOMONYME() {
@@ -215,8 +215,8 @@ public class OeAGENTEnfantHomonyme extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_ENFANT_HOMONYME_SELECT Date de création : (03/10/11 14:00:29)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_ENFANT_HOMONYME_SELECT Date de crÃ©ation : (03/10/11 14:00:29)
 	 * 
 	 */
 	public String getNOM_LB_ENFANT_HOMONYME_SELECT() {
@@ -224,8 +224,8 @@ public class OeAGENTEnfantHomonyme extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_ENFANT_HOMONYME Date de création : (03/10/11 14:00:29)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_ENFANT_HOMONYME Date de crÃ©ation : (03/10/11 14:00:29)
 	 * 
 	 */
 	public String[] getVAL_LB_ENFANT_HOMONYME() {
@@ -233,8 +233,8 @@ public class OeAGENTEnfantHomonyme extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_ENFANT_HOMONYME Date de création : (03/10/11 14:00:29)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_ENFANT_HOMONYME Date de crÃ©ation : (03/10/11 14:00:29)
 	 * 
 	 */
 	public String getVAL_LB_ENFANT_HOMONYME_SELECT() {
@@ -278,8 +278,8 @@ public class OeAGENTEnfantHomonyme extends BasicProcess {
 	}
 
 	/**
-	 * Méthode appelée par la servlet qui aiguille le traitement : en fonction
-	 * du bouton de la JSP Date de création : (03/10/11 14:00:29)
+	 * mÃ©thode appelee par la servlet qui aiguille le traitement : en fonction
+	 * du bouton de la JSP Date de crÃ©ation : (03/10/11 14:00:29)
 	 * 
 	 */
 	public boolean recupererStatut(HttpServletRequest request) throws Exception {
@@ -303,13 +303,13 @@ public class OeAGENTEnfantHomonyme extends BasicProcess {
 			}
 
 		}
-		// Si TAG INPUT non géré par le process
+		// Si TAG INPUT non gÃ©rÃ© par le process
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
 
 	/**
-	 * Constructeur du process OeAGENTEnfantHomonyme. Date de création :
+	 * Constructeur du process OeAGENTEnfantHomonyme. Date de crÃ©ation :
 	 * (06/10/11 14:27:55)
 	 * 
 	 */
@@ -318,8 +318,8 @@ public class OeAGENTEnfantHomonyme extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la JSP du process Zone à utiliser dans un champ caché
-	 * dans chaque formulaire de la JSP. Date de création : (06/10/11 14:27:55)
+	 * Retourne le nom de la JSP du process Zone a utiliser dans un champ cache
+	 * dans chaque formulaire de la JSP. Date de crÃ©ation : (06/10/11 14:27:55)
 	 * 
 	 */
 	public String getJSP() {
@@ -327,7 +327,7 @@ public class OeAGENTEnfantHomonyme extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER Date de création :
+	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER Date de crÃ©ation :
 	 * (06/10/11 14:27:55)
 	 * 
 	 */
@@ -336,10 +336,10 @@ public class OeAGENTEnfantHomonyme extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (06/10/11 14:27:55)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (06/10/11 14:27:55)
 	 * 
 	 */
 	public boolean performPB_ANNULER(HttpServletRequest request) throws Exception {

@@ -5,8 +5,8 @@ import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.VariableGlobale;
 
 /**
- * Insérez la description du type ici.
- * Date de création : (10/01/2003 09:39:40)
+ * InsÃ©rez la description du type ici.
+ * Date de crÃ©ation : (10/01/2003 09:39:40)
  */
 public class PersonnelMain extends BasicProcess {
 	/**
@@ -23,14 +23,14 @@ public class PersonnelMain extends BasicProcess {
 
 	/**
 	 Retourne le nom de la JSP du process
-	 Zone à utiliser dans un champ caché dans chaque formulaire de la JSP.
+	 Zone a utiliser dans un champ cache dans chaque formulaire de la JSP.
 	 */
 	public String getJSP() {
 		return "PersonnelMain.jsp";
 	}
 
 	/**
-	 Initialisation des zones à afficher dans le JSP
+	 Initialisation des zones Ã  afficher dans le JSP
 	 */
 	public void initialiseZones(javax.servlet.http.HttpServletRequest request) throws Exception {
 		//POUR RESTER SUR LA MEME PAGE LORS DE LA RECHERCHE D'UN AGENT

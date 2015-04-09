@@ -29,7 +29,7 @@ import nc.mairie.utils.MessageUtils;
 import org.springframework.context.ApplicationContext;
 
 /**
- * Process OeDROITSUtilisateurs Date de création : (12/10/11 11:52:50)
+ * Process OeDROITSUtilisateurs Date de crÃ©ation : (12/10/11 11:52:50)
  * 
  */
 public class OeDROITSUtilisateurs extends BasicProcess {
@@ -48,7 +48,7 @@ public class OeDROITSUtilisateurs extends BasicProcess {
 
 	public String ACTION_SUPPRESSION = "Suppression d'un utilisateur.";
 	private String ACTION_MODIFICATION = "Modification d'un utilisateur.";
-	private String ACTION_CREATION = "Création d'un utilisateur.";
+	private String ACTION_CREATION = "CrÃ©ation d'un utilisateur.";
 
 	public String ACTION_SUPPRESSION_CONSULT = "Suppression d'un utilisateur de SIRH Consultation.";
 
@@ -65,10 +65,10 @@ public class OeDROITSUtilisateurs extends BasicProcess {
 		// POUR RESTER SUR LA MEME PAGE LORS DE LA RECHERCHE D'UN AGENT
 		VariableGlobale.ajouter(request, "PROCESS_MEMORISE", this);
 
-		// Vérification des droits d'accès.
+		// VÃ©rification des droits d'acces.
 		if (MairieUtils.estInterdit(request, getNomEcran())) {
 			// "ERR190",
-			// "Opération impossible. Vous ne disposez pas des droits d'accès à cette option."
+			// "Operation impossible. Vous ne disposez pas des droits d'acces a cette option."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
@@ -218,7 +218,7 @@ public class OeDROITSUtilisateurs extends BasicProcess {
 	}
 
 	public boolean performPB_AJOUTER_GROUPE(HttpServletRequest request) throws Exception {
-		// Recup du groupe sélectionné
+		// Recup du groupe sÃ©lectionnÃ©
 		int numLigne = (Services.estNumerique(getZone(getNOM_LB_GROUPES_AUTRES_SELECT())) ? Integer
 				.parseInt(getZone(getNOM_LB_GROUPES_AUTRES_SELECT())) : -1);
 		if (numLigne == -1 || getListeGroupesAutres().size() == 0 || numLigne > getListeGroupesAutres().size()) {
@@ -294,7 +294,7 @@ public class OeDROITSUtilisateurs extends BasicProcess {
 		addZone(getNOM_ST_ACTION(), ACTION_MODIFICATION);
 		setStatut(STATUT_MEME_PROCESS);
 
-		// Recup de l'utilisateur sélectionné
+		// Recup de l'utilisateur sÃ©lectionnÃ©
 		Utilisateur aUtilisateur = (Utilisateur) getListeUtilisateur().get(indiceEltAModifier);
 		setUtilisateurCourant(aUtilisateur);
 
@@ -306,7 +306,7 @@ public class OeDROITSUtilisateurs extends BasicProcess {
 	}
 
 	public boolean performPB_RETIRER_GROUPE(HttpServletRequest request) throws Exception {
-		// Recup du groupe sélectionné
+		// Recup du groupe sÃ©lectionnÃ©
 		int numLigne = (Services.estNumerique(getZone(getNOM_LB_GROUPES_UTILISATEUR_SELECT())) ? Integer
 				.parseInt(getZone(getNOM_LB_GROUPES_UTILISATEUR_SELECT())) : -1);
 		if (numLigne == -1 || getListeGroupesUtilisateur().size() == 0
@@ -367,7 +367,7 @@ public class OeDROITSUtilisateurs extends BasicProcess {
 		addZone(getNOM_ST_ACTION(), ACTION_SUPPRESSION);
 		setStatut(STATUT_MEME_PROCESS);
 
-		// Recup de l'utilisateur sélectionné
+		// Recup de l'utilisateur sÃ©lectionnÃ©
 		Utilisateur aUtilisateur = (Utilisateur) getListeUtilisateur().get(indiceEltASuprimer);
 		setUtilisateurCourant(aUtilisateur);
 
@@ -375,7 +375,7 @@ public class OeDROITSUtilisateurs extends BasicProcess {
 	}
 
 	/**
-	 * Initialise le formulaire avec les infos de l'agent sélectionné.
+	 * Initialise le formulaire avec les infos de l'agent sÃ©lectionnÃ©.
 	 * 
 	 * @throws Exception
 	 *             Exception
@@ -407,7 +407,7 @@ public class OeDROITSUtilisateurs extends BasicProcess {
 			}
 			getUtilisateurDao().supprimerUtilisateur(getUtilisateurCourant().getIdUtilisateur());
 		} else {
-			// Contrôle des champs
+			// Controle des champs
 			if (!performControlerSaisie())
 				return false;
 
@@ -444,7 +444,7 @@ public class OeDROITSUtilisateurs extends BasicProcess {
 	}
 
 	/**
-	 * Contrôle les zones saisies
+	 * Controle les zones saisies
 	 * 
 	 * @throws Exception
 	 *             Exception
@@ -539,7 +539,7 @@ public class OeDROITSUtilisateurs extends BasicProcess {
 
 	/**
 	 * @param focus
-	 *            focus à définir.
+	 *            focus Ã  dÃ©finir.
 	 */
 	public void setFocus(String focus) {
 		this.focus = focus;
@@ -600,7 +600,7 @@ public class OeDROITSUtilisateurs extends BasicProcess {
 			}
 
 		}
-		// Si TAG INPUT non géré par le process
+		// Si TAG INPUT non gÃ©rÃ© par le process
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}

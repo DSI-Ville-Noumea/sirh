@@ -31,7 +31,7 @@ import nc.mairie.utils.MessageUtils;
 import org.springframework.context.ApplicationContext;
 
 /**
- * Process OeAGENTAccidentTravail Date de création : (30/06/11 13:56:32)
+ * Process OeAGENTAccidentTravail Date de crÃ©ation : (30/06/11 13:56:32)
  * 
  */
 public class OeSMHistorique extends BasicProcess {
@@ -60,18 +60,18 @@ public class OeSMHistorique extends BasicProcess {
 		VariableGlobale.ajouter(request, "PROCESS_MEMORISE", this);
 
 		// ----------------------------------//
-		// Vérification des droits d'accès. //
+		// VÃ©rification des droits d'acces. //
 		// ----------------------------------//
 		if (MairieUtils.estInterdit(request, getNomEcran())) {
 			// "ERR190",
-			// "Opération impossible. Vous ne disposez pas des droits d'accès à cette option."
+			// "Operation impossible. Vous ne disposez pas des droits d'acces a cette option."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
 
 		initialiseDao();
 
-		// Initialisation des listes déroulantes
+		// Initialisation des listes deroulantes
 		initialiseListeDeroulante();
 
 		// Initialisation de la liste de suivi medicaux
@@ -136,7 +136,7 @@ public class OeSMHistorique extends BasicProcess {
 
 			addZone(getNOM_ST_MOTIF(i), getMotifVisiteMedDao().chercherMotif(sm.getIdMotifVm()).getLibMotifVm());
 			// RG-SVM-15
-			// si SM effectué alors on prend les infos de la VM
+			// si SM effectue alors on prend les infos de la VM
 			if (sm.getEtat().equals(EnumEtatSuiviMed.EFFECTUE.getCode())) {
 				VisiteMedicale vm = getVisiteMedicaleDao().chercherVisiteMedicaleLieeSM(sm.getIdSuiviMed(),
 						sm.getIdAgent());
@@ -198,8 +198,8 @@ public class OeSMHistorique extends BasicProcess {
 	}
 
 	/**
-	 * Initialisation des liste déroulantes de l'écran convocation du suivi
-	 * médical.
+	 * Initialisation des liste deroulantes de l'Ã©cran convocation du suivi
+	 * mÃ©dical.
 	 */
 	private void initialiseListeDeroulante() throws Exception {
 		// Si liste annee vide alors affectation
@@ -246,7 +246,7 @@ public class OeSMHistorique extends BasicProcess {
 				return performPB_RECHERCHER(request);
 			}
 		}
-		// Si TAG INPUT non géré par le process
+		// Si TAG INPUT non gÃ©rÃ© par le process
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
@@ -257,14 +257,14 @@ public class OeSMHistorique extends BasicProcess {
 	}
 
 	/**
-	 * Getter du nom de l'écran (pour la gestion des droits)
+	 * Getter du nom de l'Ã©cran (pour la gestion des droits)
 	 */
 	public String getNomEcran() {
 		return "ECR-SM-HISTORIQUE";
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_RECHERCHER Date de création
+	 * Retourne le nom d'un bouton pour la JSP : PB_RECHERCHER Date de crÃ©ation
 	 * : (28/11/11)
 	 * 
 	 */
@@ -273,21 +273,21 @@ public class OeSMHistorique extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (28/11/11)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (28/11/11)
 	 * 
 	 */
 	public boolean performPB_RECHERCHER(HttpServletRequest request) throws Exception {
-		// Mise à jour de l'action menée
+		// Mise Ã  jour de l'action menee
 		addZone(getNOM_ST_ACTION(), ACTION_RECHERCHE);
 
 		int indiceAnnee = (Services.estNumerique(getVAL_LB_ANNEE_SELECT()) ? Integer.parseInt(getVAL_LB_ANNEE_SELECT())
 				: -1);
 		if (indiceAnnee == -1) {
 			// "ERR002","La zone @ est obligatoire."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "année"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "annÃ©e"));
 			return false;
 		}
 
@@ -298,7 +298,7 @@ public class OeSMHistorique extends BasicProcess {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "mois"));
 			return false;
 		}
-		// on remet la liste à null afin qu'elle soit initialiser dans la
+		// on remet la liste a null afin qu'elle soit initialiser dans la
 		// methode initializeZone
 		setListeHistoSuiviMed(null);
 
@@ -307,7 +307,7 @@ public class OeSMHistorique extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_ACTION Date de
-	 * création : (12/09/11 11:49:01)
+	 * crÃ©ation : (12/09/11 11:49:01)
 	 * 
 	 */
 	public String getNOM_ST_ACTION() {
@@ -315,8 +315,8 @@ public class OeSMHistorique extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACTION Date de
-	 * création : (12/09/11 11:49:01)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_ACTION Date de
+	 * crÃ©ation : (12/09/11 11:49:01)
 	 * 
 	 */
 	public String getVAL_ST_ACTION() {
@@ -324,7 +324,7 @@ public class OeSMHistorique extends BasicProcess {
 	}
 
 	/**
-	 * Getter de la liste avec un lazy initialize : LB_ANNEE Date de création :
+	 * Getter de la liste avec un lazy initialize : LB_ANNEE Date de crÃ©ation :
 	 * (28/11/11)
 	 * 
 	 */
@@ -335,7 +335,7 @@ public class OeSMHistorique extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_ANNEE Date de création : (28/11/11)
+	 * Setter de la liste: LB_ANNEE Date de crÃ©ation : (28/11/11)
 	 * 
 	 */
 	private void setLB_ANNEE(String[] listeAnnees) {
@@ -343,7 +343,7 @@ public class OeSMHistorique extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_ANNEE Date de création :
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_ANNEE Date de crÃ©ation :
 	 * (28/11/11)
 	 * 
 	 */
@@ -352,8 +352,8 @@ public class OeSMHistorique extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_MOIS_SELECT Date de création : (28/11/11)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_MOIS_SELECT Date de crÃ©ation : (28/11/11)
 	 * 
 	 */
 	public String getNOM_LB_ANNEE_SELECT() {
@@ -361,8 +361,8 @@ public class OeSMHistorique extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_ANNEE Date de création : (28/11/11 09:55:36)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_ANNEE Date de crÃ©ation : (28/11/11 09:55:36)
 	 * 
 	 */
 	public String[] getVAL_LB_ANNEE() {
@@ -370,8 +370,8 @@ public class OeSMHistorique extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_ANNEE Date de création : (28/11/11)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_ANNEE Date de crÃ©ation : (28/11/11)
 	 * 
 	 */
 	public String getVAL_LB_ANNEE_SELECT() {
@@ -379,16 +379,16 @@ public class OeSMHistorique extends BasicProcess {
 	}
 
 	/**
-	 * Getter de la liste des années possibles.
+	 * Getter de la liste des annÃ©es possibles.
 	 * 
-	 * @return listeAnnées
+	 * @return listeAnnÃ©es
 	 */
 	private String[] getListeAnnee() {
 		return listeAnnee;
 	}
 
 	/**
-	 * Setter de la liste des années possibles.
+	 * Setter de la liste des annÃ©es possibles.
 	 * 
 	 * @param strings
 	 */
@@ -397,7 +397,7 @@ public class OeSMHistorique extends BasicProcess {
 	}
 
 	/**
-	 * Getter de la liste avec un lazy initialize : LB_MOIS Date de création :
+	 * Getter de la liste avec un lazy initialize : LB_MOIS Date de crÃ©ation :
 	 * (28/11/11)
 	 * 
 	 */
@@ -408,7 +408,7 @@ public class OeSMHistorique extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_MOIS Date de création : (28/11/11)
+	 * Setter de la liste: LB_MOIS Date de crÃ©ation : (28/11/11)
 	 * 
 	 */
 	private void setLB_MOIS(String[] listeMOISs) {
@@ -416,7 +416,7 @@ public class OeSMHistorique extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_MOIS Date de création :
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_MOIS Date de crÃ©ation :
 	 * (28/11/11)
 	 * 
 	 */
@@ -425,8 +425,8 @@ public class OeSMHistorique extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_MOIS_SELECT Date de création : (28/11/11)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_MOIS_SELECT Date de crÃ©ation : (28/11/11)
 	 * 
 	 */
 	public String getNOM_LB_MOIS_SELECT() {
@@ -434,8 +434,8 @@ public class OeSMHistorique extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_MOIS Date de création : (28/11/11 09:55:36)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_MOIS Date de crÃ©ation : (28/11/11 09:55:36)
 	 * 
 	 */
 	public String[] getVAL_LB_MOIS() {
@@ -443,8 +443,8 @@ public class OeSMHistorique extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_MOIS Date de création : (28/11/11)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_MOIS Date de crÃ©ation : (28/11/11)
 	 * 
 	 */
 	public String getVAL_LB_MOIS_SELECT() {
@@ -452,7 +452,7 @@ public class OeSMHistorique extends BasicProcess {
 	}
 
 	/**
-	 * Getter de la liste des années possibles.
+	 * Getter de la liste des annÃ©es possibles.
 	 * 
 	 * @return listeMois
 	 */
@@ -481,7 +481,7 @@ public class OeSMHistorique extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_NUM_SM Date de
-	 * création : (21/11/11 09:55:36)
+	 * crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_ST_NUM_SM(int i) {
@@ -489,8 +489,8 @@ public class OeSMHistorique extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_NUM_SM Date de
-	 * création : (21/11/11 09:55:36)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_NUM_SM Date de
+	 * crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_ST_NUM_SM(int i) {
@@ -499,7 +499,7 @@ public class OeSMHistorique extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_MATR Date de
-	 * création : (21/11/11 09:55:36)
+	 * crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_ST_MATR(int i) {
@@ -507,8 +507,8 @@ public class OeSMHistorique extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_MATR Date de
-	 * création : (21/11/11 09:55:36)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_MATR Date de
+	 * crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_ST_MATR(int i) {
@@ -517,7 +517,7 @@ public class OeSMHistorique extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_AGENT Date de
-	 * création : (21/11/11 09:55:36)
+	 * crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_ST_AGENT(int i) {
@@ -525,8 +525,8 @@ public class OeSMHistorique extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_AGENT Date de
-	 * création : (21/11/11 09:55:36)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_AGENT Date de
+	 * crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_ST_AGENT(int i) {
@@ -535,7 +535,7 @@ public class OeSMHistorique extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_NUM_CAFAT Date de
-	 * création : (21/11/11 09:55:36)
+	 * crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_ST_NUM_CAFAT(int i) {
@@ -543,8 +543,8 @@ public class OeSMHistorique extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_NUM_CAFAT Date
-	 * de création : (21/11/11 09:55:36)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_NUM_CAFAT Date
+	 * de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_ST_NUM_CAFAT(int i) {
@@ -553,7 +553,7 @@ public class OeSMHistorique extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_STATUT Date de
-	 * création : (21/11/11 09:55:36)
+	 * crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_ST_STATUT(int i) {
@@ -561,8 +561,8 @@ public class OeSMHistorique extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_STATUT Date de
-	 * création : (21/11/11 09:55:36)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_STATUT Date de
+	 * crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_ST_STATUT(int i) {
@@ -571,7 +571,7 @@ public class OeSMHistorique extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_SERVICE Date de
-	 * création : (21/11/11 09:55:36)
+	 * crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_ST_SERVICE(int i) {
@@ -579,8 +579,8 @@ public class OeSMHistorique extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_SERVICE Date
-	 * de création : (21/11/11 09:55:36)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_SERVICE Date
+	 * de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_ST_SERVICE(int i) {
@@ -589,7 +589,7 @@ public class OeSMHistorique extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_MOTIF Date de
-	 * création : (21/11/11 09:55:36)
+	 * crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_ST_MOTIF(int i) {
@@ -597,8 +597,8 @@ public class OeSMHistorique extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_MOTIF Date de
-	 * création : (21/11/11 09:55:36)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_MOTIF Date de
+	 * crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_ST_MOTIF(int i) {
@@ -607,7 +607,7 @@ public class OeSMHistorique extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_MEDECIN Date de
-	 * création : (21/11/11 09:55:36)
+	 * crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_ST_MEDECIN(int i) {
@@ -615,8 +615,8 @@ public class OeSMHistorique extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_MEDECIN Date
-	 * de création : (21/11/11 09:55:36)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_MEDECIN Date
+	 * de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_ST_MEDECIN(int i) {
@@ -625,7 +625,7 @@ public class OeSMHistorique extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_DATE_RDV Date de
-	 * création : (21/11/11 09:55:36)
+	 * crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_ST_DATE_RDV(int i) {
@@ -633,8 +633,8 @@ public class OeSMHistorique extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE_RDV Date
-	 * de création : (21/11/11 09:55:36)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_DATE_RDV Date
+	 * de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_ST_DATE_RDV(int i) {
@@ -643,7 +643,7 @@ public class OeSMHistorique extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_HEURE_RDV Date de
-	 * création : (21/11/11 09:55:36)
+	 * crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_ST_HEURE_RDV(int i) {
@@ -651,8 +651,8 @@ public class OeSMHistorique extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_HEURE_RDV Date
-	 * de création : (21/11/11 09:55:36)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_HEURE_RDV Date
+	 * de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_ST_HEURE_RDV(int i) {
@@ -661,7 +661,7 @@ public class OeSMHistorique extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_AVIS Date de
-	 * création : (21/11/11 09:55:36)
+	 * crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_ST_AVIS(int i) {
@@ -669,8 +669,8 @@ public class OeSMHistorique extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_AVIS Date de
-	 * création : (21/11/11 09:55:36)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_AVIS Date de
+	 * crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_ST_AVIS(int i) {
@@ -679,7 +679,7 @@ public class OeSMHistorique extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_EFFECTUE Date de
-	 * création : (21/11/11 09:55:36)
+	 * crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_ST_EFFECTUE(int i) {
@@ -687,8 +687,8 @@ public class OeSMHistorique extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_EFFECTUE Date
-	 * de création : (21/11/11 09:55:36)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_EFFECTUE Date
+	 * de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_ST_EFFECTUE(int i) {

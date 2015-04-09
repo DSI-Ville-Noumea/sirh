@@ -1,4 +1,4 @@
-<!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@ page contentType="text/html; charset=UTF-8" %> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <%@page import="nc.mairie.metier.carriere.GradeGenerique"%>
 <%@page import="nc.mairie.metier.parametrage.EmployeurCap"%>
 <%@page import="nc.mairie.metier.parametrage.Representant"%>
@@ -11,16 +11,16 @@
 		<META name="GENERATOR" content="IBM WebSphere Page Designer V3.5.3 for Windows">
 		<META http-equiv="Content-Style-Type" content="text/css">
 		<LINK href="theme/sigp2.css" rel="stylesheet" type="text/css">
-		<TITLE>Gestion des paramètres des avancements</TITLE>
+		<TITLE>Gestion des paramÃ¨tres des avancements</TITLE>
 		
 		<SCRIPT language="JavaScript">
-		//afin de sélectionner un élément dans une liste
+		//afin de sÃ©lectionner un Ã©lÃ©ment dans une liste
 		function executeBouton(nom)
 		{
 			document.formu.elements[nom].click();
 		}
 
-		// afin de mettre le focus sur une zone précise
+		// afin de mettre le focus sur une zone prÃ©cise
 		function setfocus(nom)
 		{
 		if (document.formu.elements[nom] != null)
@@ -29,7 +29,7 @@
 		
 		</SCRIPT>
 		
-		<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	</HEAD>
 	<jsp:useBean class="nc.mairie.gestionagent.process.parametre.OePARAMETRAGEAvancement" id="process" scope="session"></jsp:useBean>
 	<BODY bgcolor="#FFFFFF" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" class="sigp2-BODY" onload="window.parent.frames['refAgent'].location.reload();return setfocus('<%= process.getFocus() %>')" >
@@ -40,10 +40,10 @@
 			<table width="1030px">
 				<tr>
 					<td width="500px;"><FIELDSET class="sigp2Fieldset"  style="text-align: left;">
-					    	<legend class="sigp2Legend">Délibérations</legend>
+					    	<legend class="sigp2Legend">DÃ©libÃ©rations</legend>
 							<span class="sigp2-saisie" style="margin-left: 5px;">Code</span>
 							<span class="sigp2-saisie" style="margin-left: 45px;">Type</span>
-							<span class="sigp2-saisie" style="margin-left: 115px;">Libellé</span>
+							<span class="sigp2-saisie" style="margin-left: 115px;">LibellÃ©</span>
 							<SELECT name="<%= process.getNOM_LB_DELIBERATION() %>" size="10" style="width:100%;" class="sigp2-liste">
 								<%=process.forComboHTML(process.getVAL_LB_DELIBERATION(), process.getVAL_LB_DELIBERATION_SELECT()) %>
 							</SELECT>
@@ -73,7 +73,7 @@
 								</tr>
 								<tr>
 									<td>
-										<label class="sigp2Mandatory">Libellé :</label>
+										<label class="sigp2Mandatory">LibellÃ© :</label>
 									</td>
 									<td>
 										<INPUT class="sigp2-saisie" maxlength="255" name="<%= process.getNOM_EF_LIB_DELIBERATION() %>" size="80" type="text" value="<%= process.getVAL_EF_LIB_DELIBERATION() %>">
@@ -120,7 +120,7 @@
 								</tr>
 								<tr>
 									<td>
-										<label class="sigp2Mandatory">Libellé :</label>
+										<label class="sigp2Mandatory">LibellÃ© :</label>
 									</td>
 									<td>
 										<INPUT class="sigp2-saisie" maxlength="255" disabled="disabled" name="<%= process.getNOM_EF_LIB_DELIBERATION() %>" size="80" type="text" value="<%= process.getVAL_EF_LIB_DELIBERATION() %>">
@@ -157,9 +157,9 @@
 					</td>
 					<td>
 						<FIELDSET class="sigp2Fieldset"  style="text-align: left;">
-					    	<legend class="sigp2Legend">Représentants du personnel</legend>
+					    	<legend class="sigp2Legend">ReprÃ©sentants du personnel</legend>
 							<span class="sigp2-saisie" style="margin-left: 5px;">Nom</span>
-							<span class="sigp2-saisie" style="margin-left: 110px;">Prénom</span>
+							<span class="sigp2-saisie" style="margin-left: 110px;">PrÃ©nom</span>
 							<span class="sigp2-saisie" style="margin-left: 105px;">Type</span>
 							<SELECT name="<%= process.getNOM_LB_REPRESENTANT() %>" size="10" style="width:100%;" class="sigp2-liste">
 								<%=process.forComboHTML(process.getVAL_LB_REPRESENTANT(), process.getVAL_LB_REPRESENTANT_SELECT()) %>
@@ -195,7 +195,7 @@
 								</tr>
 								<tr>
 									<td>
-										<label class="sigp2Mandatory">Prénom:</label>
+										<label class="sigp2Mandatory">PrÃ©nom:</label>
 									</td>
 									<td>
 										<INPUT class="sigp2-saisiemajuscule" maxlength="50" name="<%= process.getNOM_EF_PRENOM_REPRESENTANT() %>" size="35" type="text" value="<%= process.getVAL_EF_PRENOM_REPRESENTANT() %>">
@@ -232,7 +232,7 @@
 								</tr>
 								<tr>
 									<td>
-										<label class="sigp2Mandatory">Prénom:</label>
+										<label class="sigp2Mandatory">PrÃ©nom:</label>
 									</td>
 									<td>
 										<INPUT class="sigp2-saisiemajuscule" maxlength="50" disabled="disabled" name="<%= process.getNOM_EF_PRENOM_REPRESENTANT() %>" size="35" type="text" value="<%= process.getVAL_EF_PRENOM_REPRESENTANT() %>">
@@ -254,7 +254,7 @@
 					<td colspan="2">
 						<FIELDSET class="sigp2Fieldset"  style="text-align: left;">
 					    	<legend class="sigp2Legend">Employeurs</legend>
-							<span class="sigp2-saisie" style="margin-left: 5px;">Libellé</span>
+							<span class="sigp2-saisie" style="margin-left: 5px;">LibellÃ©</span>
 							<span class="sigp2-saisie" style="margin-left: 315px;">Raison</span>
 							<SELECT name="<%= process.getNOM_LB_EMPLOYEUR() %>" size="10" style="width:100%;" class="sigp2-liste">
 								<%=process.forComboHTML(process.getVAL_LB_EMPLOYEUR(), process.getVAL_LB_EMPLOYEUR_SELECT()) %>
@@ -273,7 +273,7 @@
 							<table>
 								<tr>
 									<td width="50px;">
-										<label class="sigp2Mandatory">Libellé:</label>
+										<label class="sigp2Mandatory">LibellÃ©:</label>
 									</td>
 									<td>
 										<INPUT class="sigp2-saisie" maxlength="100" name="<%= process.getNOM_EF_EMPLOYEUR() %>" size="70" type="text" value="<%= process.getVAL_EF_EMPLOYEUR() %>">
@@ -300,7 +300,7 @@
 							<table>
 								<tr>
 									<td width="50px;">
-										<label class="sigp2Mandatory">Libellé:</label>
+										<label class="sigp2Mandatory">LibellÃ©:</label>
 									</td>
 									<td>
 										<INPUT class="sigp2-saisie" maxlength="100" disabled="disabled" name="<%= process.getNOM_EF_EMPLOYEUR() %>" size="70" type="text" value="<%= process.getVAL_EF_EMPLOYEUR() %>">
@@ -332,7 +332,7 @@
 					    	<legend class="sigp2Legend">CAP</legend>
 							<span class="sigp2-saisie" style="margin-left: 5px;">Code</span>
 							<span class="sigp2-saisie" style="margin-left: 55px;">Type</span>
-							<span class="sigp2-saisie" style="margin-left: 55px;">Reférence</span>
+							<span class="sigp2-saisie" style="margin-left: 55px;">RefÃ©rence</span>
 							<span class="sigp2-saisie" style="margin-left: 35px;">VDN</span>
 							<SELECT name="<%= process.getNOM_LB_CAP() %>" size="10" style="width:100%;" class="sigp2-liste">
 								<%=process.forComboHTML(process.getVAL_LB_CAP(), process.getVAL_LB_CAP_SELECT()) %>
@@ -359,7 +359,7 @@
 								</tr>
 								<tr>
 									<td>
-										<label class="sigp2Mandatory">Référence CAP :</label>
+										<label class="sigp2Mandatory">RÃ©fÃ©rence CAP :</label>
 									</td>
 									<td>
 										<INPUT class="sigp2-saisiemajuscule" maxlength="10" name="<%= process.getNOM_EF_REF_CAP() %>" size="10" type="text" value="<%= process.getVAL_EF_REF_CAP() %>">
@@ -441,7 +441,7 @@
 								</tr>
 								<tr>
 									<td>
-										<span class="sigp2Mandatory"> Représentants : </span>
+										<span class="sigp2Mandatory"> ReprÃ©sentants : </span>
 									</td>
 									<td>
 										<INPUT type="image" src="images/suppression.gif" height="16px" width="16px" name="<%=process.getNOM_PB_SUPPRIMER_REPRESENTANT_CAP()%>">
@@ -482,7 +482,7 @@
 								</tr>
 								<tr>
 									<td>
-										<label class="sigp2Mandatory">Référence CAP :</label>
+										<label class="sigp2Mandatory">RÃ©fÃ©rence CAP :</label>
 									</td>
 									<td>
 										<INPUT class="sigp2-saisiemajuscule" maxlength="10" disabled="disabled" name="<%= process.getNOM_EF_REF_CAP() %>" size="10" type="text" value="<%= process.getVAL_EF_REF_CAP() %>">
@@ -558,7 +558,7 @@
 								</tr>
 								<tr>
 									<td>
-										<span class="sigp2Mandatory"> Représentants : </span>
+										<span class="sigp2Mandatory"> ReprÃ©sentants : </span>
 									</td>
 									<td>
 										<table class="sigp2NewTab" style="text-align:left;width:90%;">

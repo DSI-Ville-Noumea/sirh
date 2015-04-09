@@ -1,4 +1,4 @@
-<!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@ page contentType="text/html; charset=UTF-8" %> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <%@page import="java.util.ArrayList"%>
 <%@page import="nc.mairie.enums.EnumTypeDroit"%>
 <%@page import="nc.mairie.utils.MairieUtils"%>
@@ -11,7 +11,7 @@
 		<META name="GENERATOR" content="IBM WebSphere Page Designer V3.5.3 for Windows">
 		<META http-equiv="Content-Style-Type" content="text/css">
 		<LINK href="theme/sigp2.css" rel="stylesheet" type="text/css">
-		<TITLE>Gestion des carrières</TITLE>
+		<TITLE>Gestion des carriÃ¨res</TITLE>
 		<LINK rel="stylesheet" href="theme/calendrier-mairie.css" type="text/css">
 		<SCRIPT type="text/javascript" src="js/GestionCalendrier.js"></SCRIPT> 
 		<SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT>
@@ -24,13 +24,13 @@
 		<script type="text/javascript" src="development-bundle/ui/jquery.ui.autocomplete.js"></script>
 		
 		<SCRIPT language="JavaScript">
-		//afin de sélectionner un élément dans une liste
+		//afin de sÃ©lectionner un Ã©lÃ©ment dans une liste
 		function executeBouton(nom)
 		{
 			document.formu.elements[nom].click();
 		}
 
-		// afin de mettre le focus sur une zone précise
+		// afin de mettre le focus sur une zone prÃ©cise
 		function setfocus(nom)
 		{
 			if (document.formu.elements[nom] != null)
@@ -79,7 +79,7 @@
    			executeBouton('NOM_PB_SELECT_GRADE');
 			}	
 		</SCRIPT>
-		<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	</HEAD>
 	<BODY bgcolor="#FFFFFF" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="window.parent.frames['refAgent'].location.reload();">
 	<%@ include file="BanniereErreur.jsp" %>
@@ -88,7 +88,7 @@
 		<INPUT name="JSP" type="hidden" value="<%= process.getJSP() %>">
 				
 				<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
-				    <legend class="sigp2Legend">Liste des carrières de l'agent</legend>
+				    <legend class="sigp2Legend">Liste des carriÃ¨res de l'agent</legend>
 				<div style="overflow: auto;height: 250px;width:1000px;margin-right: 0px;margin-left: 0px;">
 						<table class="sigp2NewTab" style="text-align:left;width:980px;">
 							<tr bgcolor="#EFEFEF">
@@ -103,9 +103,9 @@
 								<td align="center" width="65px;">IBA</td>
 								<td align="center" width="45px;">INA</td>
 								<td align="center" width="45px;">INM</td>
-								<td align="center" width="85px;">Début</td>
+								<td align="center" width="85px;">DÃ©but</td>
 								<td align="center" width="85px;">Fin</td>
-								<td align="center" width="75px;">Ref. arrêté</td>
+								<td align="center" width="75px;">Ref. arrÃªtÃ©</td>
 								<td>Statut</td>
 							</tr>
 							<%
@@ -178,7 +178,7 @@
 				</tr>
 				<tr>
 					<td>
-						<span class="sigp2">Filière :</span>
+						<span class="sigp2">FiliÃ¨re :</span>
 					</td>
 					<td>
 						<INPUT class="sigp2-saisie" maxlength="50" name="<%= process.getNOM_ST_FILIERE() %>" size="70" type="text"  readonly="readonly" value="<%= process.getVAL_ST_FILIERE() %>">
@@ -210,7 +210,7 @@
 				</tr>
 				<tr>
 					<td>
-						<span class="sigp2Mandatory">Date de début :</span>
+						<span class="sigp2Mandatory">Date de dÃ©but :</span>
 					</td>
 					<td>
 						<%if(process.getCarriereCourante()!=null && !process.getCarriereCourante().isActive()&& !process.getCarriereCourante().getCodeCategorie().equals("8")){ %>
@@ -242,7 +242,7 @@
 				</tr>
 				<tr>
 					<td>
-						<span class="sigp2Mandatory">Régime :</span>
+						<span class="sigp2Mandatory">RÃ©gime :</span>
 					</td>
 					<td>
 						<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_REGIMES() %>">
@@ -272,7 +272,7 @@
 				</tr>
 				<tr>
 					<td>
-						<span class="sigp2Mandatory">Base règlement :</span>
+						<span class="sigp2Mandatory">Base rÃ¨glement :</span>
 					</td>
 					<td>
 						<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_BASE_REGLEMENT() %>">
@@ -302,7 +302,7 @@
 				</tr>
 				<tr>
 					<td>
-						<span class="sigp2">Ref. arrêté :</span>
+						<span class="sigp2">Ref. arrÃªtÃ© :</span>
 					</td>
 					<td>
 						<INPUT class="sigp2-saisie" maxlength="6" name="<%= process.getNOM_EF_REF_ARR() %>" size="6" type="text" value="<%= process.getVAL_EF_REF_ARR() %>">
@@ -310,7 +310,7 @@
 				</tr>
 				<tr>
 					<td>
-						<span class="sigp2">Date arrêté :</span>
+						<span class="sigp2">Date arrÃªtÃ© :</span>
 					</td>
 					<td>
 						<input id="<%=process.getNOM_EF_DATE_ARR()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DATE_ARR() %>" size="10" type="text"	value="<%= process.getVAL_EF_DATE_ARR() %>">
@@ -355,7 +355,7 @@
 		    		</tr>
 		    		<tr>
 		    			<td>
-							<span class="sigp2">Filière: </span>
+							<span class="sigp2">FiliÃ¨re: </span>
 		    			</td>
 		    			<td>
 							<span class="sigp2-saisie"><%=process.getVAL_ST_FILIERE()%></span>
@@ -387,7 +387,7 @@
 		    		</tr>
 		    		<tr>
 		    			<td>
-							<span class="sigp2">Date de début: </span>
+							<span class="sigp2">Date de dÃ©but: </span>
 		    			</td>
 		    			<td>
 							<span class="sigp2-saisie"><%=process.getVAL_EF_DATE_DEBUT()%></span>
@@ -435,7 +435,7 @@
 		    		</tr>
 		    		<tr>
 		    			<td>
-							<span class="sigp2">Base règlement: </span>
+							<span class="sigp2">Base rÃ¨glement: </span>
 		    			</td>
 		    			<td>
 							<span class="sigp2-saisie"><%=process.getVAL_ST_REGLEMENT()%></span>
@@ -463,7 +463,7 @@
 		    		</tr>
 		    		<tr>
 		    			<td>
-							<span class="sigp2">Ref. arrêté: </span>
+							<span class="sigp2">Ref. arrÃªtÃ©: </span>
 		    			</td>
 		    			<td>
 							<span class="sigp2-saisie"><%=process.getVAL_EF_REF_ARR()%></span>
@@ -471,7 +471,7 @@
 		    		</tr>
 		    		<tr>
 		    			<td>
-							<span class="sigp2">Date arrêté: </span>
+							<span class="sigp2">Date arrÃªtÃ©: </span>
 		    			</td>
 		    			<td>
 							<span class="sigp2-saisie"><%=process.getVAL_EF_DATE_ARR()%></span>
@@ -488,7 +488,7 @@
 		    	</table>
 		</div>
 		<%} else if(process.getVAL_ST_ACTION().equals(process.ACTION_REOUVERTURE)) { %>
-			<FONT color="red"> Réouverture de la carrière précédente ?</FONT>
+			<FONT color="red"> RÃ©ouverture de la carriÃ¨re prÃ©cÃ©dente ?</FONT>
 		<% }else if(process.getVAL_ST_ACTION().equals(process.ACTION_AVCT_PREV)){ %>
 			<div>
 				<FONT color='red' style=" margin-left:20px;position:relative;"><%=process.getVAL_ST_INFO_AVCT_PREV()%></FONT>
@@ -496,7 +496,7 @@
 				<span class="sigp2" style="margin-left:20px;position:relative;width:150px;">Grade: </span>
 				<span class="sigp2-saisie"><%=process.getVAL_ST_GRADE()%></span>
 				<BR/><BR/>
-				<span class="sigp2" style="margin-left:20px;position:relative;width:150px;">Filière: </span>
+				<span class="sigp2" style="margin-left:20px;position:relative;width:150px;">FiliÃ¨re: </span>
 				<span class="sigp2-saisie"><%=process.getVAL_ST_FILIERE()%></span>
 				<BR/><BR/>
 				<span class="sigp2" style="margin-left:20px;position:relative;width:150px;">Nouv. IBA: </span>

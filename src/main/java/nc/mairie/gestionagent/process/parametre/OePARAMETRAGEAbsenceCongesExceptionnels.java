@@ -34,7 +34,7 @@ import org.springframework.context.ApplicationContext;
 import flexjson.JSONSerializer;
 
 /**
- * Process OePARAMETRAGERecrutement Date de création : (14/09/11 13:52:54)
+ * Process OePARAMETRAGERecrutement Date de crÃ©ation : (14/09/11 13:52:54)
  * 
  */
 public class OePARAMETRAGEAbsenceCongesExceptionnels extends BasicProcess {
@@ -51,18 +51,18 @@ public class OePARAMETRAGEAbsenceCongesExceptionnels extends BasicProcess {
 	private String[] LB_UNITE_DECOMPTE;
 	private String[] LB_TYPE_QUOTA;
 
-	public String ACTION_CREATION = "Création d'un congé exceptionnel.";
-	public String ACTION_MODIFICATION = "Modification d'un congé exceptionnel :";
-	public String ACTION_VISUALISATION = "Visualisation d'un congé exceptionnel :";
-	public String ACTION_SUPPRESSION = "Suppression d'un congé exceptionnel :";
+	public String ACTION_CREATION = "CrÃ©ation d'un congÃ© exceptionnel.";
+	public String ACTION_MODIFICATION = "Modification d'un congÃ© exceptionnel :";
+	public String ACTION_VISUALISATION = "Visualisation d'un congÃ© exceptionnel :";
+	public String ACTION_SUPPRESSION = "Suppression d'un congÃ© exceptionnel :";
 
 	private AgentDao agentDao;
 
 	/**
-	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones Ã  afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
-	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
-	 * addZone(getNOMxxx, String); Date de création : (14/09/11 13:52:54)
+	 * doivent avoir les Fields PUBLIC Utilisation de la mÃ©thode
+	 * addZone(getNOMxxx, String); Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public void initialiseZones(HttpServletRequest request) throws Exception {
@@ -70,11 +70,11 @@ public class OePARAMETRAGEAbsenceCongesExceptionnels extends BasicProcess {
 		VariableGlobale.ajouter(request, "PROCESS_MEMORISE", this);
 
 		// ----------------------------------//
-		// Vérification des droits d'accès. //
+		// VÃ©rification des droits d'acces. //
 		// ----------------------------------//
 		if (MairieUtils.estInterdit(request, getNomEcran())) {
 			// "ERR190",
-			// "Opération impossible. Vous ne disposez pas des droits d'accès à cette option."
+			// "Operation impossible. Vous ne disposez pas des droits d'acces a cette option."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
@@ -96,7 +96,7 @@ public class OePARAMETRAGEAbsenceCongesExceptionnels extends BasicProcess {
 	}
 
 	private void initialiseListeDeroulante() {
-		// Si liste unité décompte vide alors affectation
+		// Si liste unitÃ© dÃ©compte vide alors affectation
 		if (getLB_UNITE_DECOMPTE() == LBVide) {
 			ArrayList<String> sf = new ArrayList<String>();
 			sf.add("minutes");
@@ -156,7 +156,7 @@ public class OePARAMETRAGEAbsenceCongesExceptionnels extends BasicProcess {
 	}
 
 	/**
-	 * Constructeur du process OePARAMETRAGEAbsence. Date de création :
+	 * Constructeur du process OePARAMETRAGEAbsence. Date de crÃ©ation :
 	 * (14/09/11 13:52:54)
 	 * 
 	 */
@@ -165,8 +165,8 @@ public class OePARAMETRAGEAbsenceCongesExceptionnels extends BasicProcess {
 	}
 
 	/**
-	 * Méthode appelée par la servlet qui aiguille le traitement : en fonction
-	 * du bouton de la JSP Date de création : (14/09/11 13:52:54)
+	 * mÃ©thode appelee par la servlet qui aiguille le traitement : en fonction
+	 * du bouton de la JSP Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public boolean recupererStatut(HttpServletRequest request) throws Exception {
@@ -221,14 +221,14 @@ public class OePARAMETRAGEAbsenceCongesExceptionnels extends BasicProcess {
 				}
 			}
 		}
-		// Si TAG INPUT non géré par le process
+		// Si TAG INPUT non gÃ©rÃ© par le process
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
 
 	/**
-	 * Retourne le nom de la JSP du process Zone à utiliser dans un champ caché
-	 * dans chaque formulaire de la JSP. Date de création : (14/09/11 15:20:21)
+	 * Retourne le nom de la JSP du process Zone a utiliser dans un champ cache
+	 * dans chaque formulaire de la JSP. Date de crÃ©ation : (14/09/11 15:20:21)
 	 * 
 	 */
 	public String getJSP() {
@@ -236,8 +236,8 @@ public class OePARAMETRAGEAbsenceCongesExceptionnels extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de l'écran (notamment pour déterminer les droits
-	 * associés).
+	 * Retourne le nom de l'Ã©cran (notamment pour dÃ©terminer les droits
+	 * associÃ©s).
 	 */
 	public String getNomEcran() {
 		return "ECR-PARAM-ABS-CONG";
@@ -259,7 +259,7 @@ public class OePARAMETRAGEAbsenceCongesExceptionnels extends BasicProcess {
 
 	/**
 	 * @param focus
-	 *            focus à définir.
+	 *            focus Ã  dÃ©finir.
 	 */
 	public void setFocus(String focus) {
 		this.focus = focus;
@@ -456,10 +456,10 @@ public class OePARAMETRAGEAbsenceCongesExceptionnels extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (29/09/11 10:03:38)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (29/09/11 10:03:38)
 	 * 
 	 */
 	public boolean performPB_VISUALISATION(HttpServletRequest request, int indiceEltAConsulter) throws Exception {
@@ -846,7 +846,7 @@ public class OePARAMETRAGEAbsenceCongesExceptionnels extends BasicProcess {
 			}
 		} else {
 
-			// vérification de la validité du formulaire
+			// VÃ©rification de la validitÃ© du formulaire
 			if (!performControlerChamps(request))
 				return false;
 
@@ -915,7 +915,7 @@ public class OePARAMETRAGEAbsenceCongesExceptionnels extends BasicProcess {
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 		viderZoneSaisie(request);
-		// on vide la liste afin qu'elle soit re-affichée
+		// on vide la liste afin qu'elle soit re-affichÃ©e
 		getListeTypeAbsence().clear();
 		return true;
 	}
@@ -926,7 +926,7 @@ public class OePARAMETRAGEAbsenceCongesExceptionnels extends BasicProcess {
 			// libelle obligatoire
 			if ((Const.CHAINE_VIDE).equals(getVAL_ST_LIBELLE())) {
 				// "ERR002", "La zone @ est obligatoire."
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "libellé"));
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "libellÃ©"));
 				return false;
 			}
 		}
@@ -947,7 +947,7 @@ public class OePARAMETRAGEAbsenceCongesExceptionnels extends BasicProcess {
 
 		// format QUOTA
 		if (!(Const.CHAINE_VIDE).equals(getVAL_ST_QUOTA()) && !Services.estNumerique(getVAL_ST_QUOTA())) {
-			// "ERR992", "La zone @ doit être numérique."
+			// "ERR992", "La zone @ doit Ãªtre numÃ©rique."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "quota"));
 			return false;
 		}
@@ -1047,7 +1047,7 @@ public class OePARAMETRAGEAbsenceCongesExceptionnels extends BasicProcess {
 	}
 
 	public boolean performPB_MOTIF(HttpServletRequest request) throws Exception {
-		// motif / info complémentaires
+		// motif / info complÃ©mentaires
 		if (getVAL_RG_MOTIF().equals(getNOM_RB_MOTIF_OUI())) {
 			getTypeCreation().getTypeSaisiDto().setMotif(true);
 		} else {

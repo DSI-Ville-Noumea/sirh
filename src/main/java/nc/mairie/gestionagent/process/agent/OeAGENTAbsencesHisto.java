@@ -24,7 +24,7 @@ import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
 
 /**
- * Process OeAGENTAbsences Date de création : (05/09/11 11:31:37)
+ * Process OeAGENTAbsences Date de crÃ©ation : (05/09/11 11:31:37)
  * 
  */
 public class OeAGENTAbsencesHisto extends BasicProcess {
@@ -56,10 +56,10 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 	}
 
 	/**
-	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones Ã  afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
-	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
-	 * addZone(getNOMxxx, String); Date de création : (05/09/11 11:39:24)
+	 * doivent avoir les Fields PUBLIC Utilisation de la mÃ©thode
+	 * addZone(getNOMxxx, String); Date de crÃ©ation : (05/09/11 11:39:24)
 	 * 
 	 */
 	public void initialiseZones(HttpServletRequest request) throws Exception {
@@ -70,15 +70,15 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 			addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 		}
 
-		// Vérification des droits d'accès.
+		// VÃ©rification des droits d'acces.
 		if (MairieUtils.estInterdit(request, getNomEcran())) {
 			// "ERR190",
-			// "Opération impossible. Vous ne disposez pas des droits d'accès à cette option."
+			// "Operation impossible. Vous ne disposez pas des droits d'acces a cette option."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
 
-		// Initialisation des listes déroulantes
+		// Initialisation des listes deroulantes
 		initialiseListeDeroulante();
 
 		// Si agentCourant vide
@@ -453,8 +453,8 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 	}
 
 	/**
-	 * Méthode appelée par la servlet qui aiguille le traitement : en fonction
-	 * du bouton de la JSP Date de création : (05/09/11 11:31:37)
+	 * mÃ©thode appelee par la servlet qui aiguille le traitement : en fonction
+	 * du bouton de la JSP Date de crÃ©ation : (05/09/11 11:31:37)
 	 * 
 	 */
 	public boolean recupererStatut(HttpServletRequest request) throws Exception {
@@ -481,14 +481,14 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 				return performPB_RESET(request);
 			}
 		}
-		// Si TAG INPUT non géré par le process
+		// Si TAG INPUT non gÃ©rÃ© par le process
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
 
 	/**
-	 * Retourne le nom de la JSP du process Zone à utiliser dans un champ caché
-	 * dans chaque formulaire de la JSP. Date de création : (29/09/11 10:03:37)
+	 * Retourne le nom de la JSP du process Zone a utiliser dans un champ cache
+	 * dans chaque formulaire de la JSP. Date de crÃ©ation : (29/09/11 10:03:37)
 	 * 
 	 */
 	public String getJSP() {

@@ -1,4 +1,4 @@
-<!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@ page contentType="text/html; charset=UTF-8" %> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <%@page import="nc.mairie.technique.VariableGlobale"%>
 <%@page import="nc.mairie.technique.UserAppli"%>
 <%@page import="nc.mairie.metier.droits.Groupe"%>
@@ -18,13 +18,13 @@
 <SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT> 
 
 <SCRIPT language="JavaScript">
-//afin de sélectionner un élément dans une liste
+//afin de sÃ©lectionner un Ã©lÃ©ment dans une liste
 function executeBouton(nom)
 {
 document.formu.elements[nom].click();
 }
 
-// afin de mettre le focus sur une zone précise
+// afin de mettre le focus sur une zone prÃ©cise
 function setfocus(nom)
 {
 if (document.formu.elements[nom] != null)
@@ -37,7 +37,7 @@ document.getElementById("first_col").style.top=(25-mondiv.scrollTop)+"px"
 document.getElementById("entete").style.left=(200-mondiv.scrollLeft)+"px"
 }
 </SCRIPT>
-<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 </HEAD>
 <jsp:useBean
  class="nc.mairie.droits.process.OeDROITSGestion"
@@ -126,24 +126,24 @@ document.getElementById("entete").style.left=(200-mondiv.scrollLeft)+"px"
 		    <FIELDSET class="sigp2Fieldset" style="text-align:left;margin:10px;width:1030px;">
 			    <legend class="sigp2Legend"><%=process.getVAL_ST_ACTION() %></legend>
 				<% if (process.ACTION_CREATION_ELEMENT.equals(process.getVAL_ST_ACTION())) {%>
-					<label class="sigp2Mandatory" Style="width:70px">Libellé:</label>
+					<label class="sigp2Mandatory" Style="width:70px">LibellÃ©:</label>
 					<INPUT class="sigp2-saisie" maxlength="50" name="<%= process.getNOM_EF_NOM_ELEMENT() %>" size="120"
 						type="text" value="<%= process.getVAL_EF_NOM_ELEMENT() %>">
 					<span class="sigp2"><INPUT type="submit" class="sigp2-Bouton-100" value="Ajouter" name="<%=process.getNOM_PB_VALIDER_AJOUT()%>"></span>
 				<%}else if (process.ACTION_CREATION_GROUPE.equals(process.getVAL_ST_ACTION())) {%>
-					<label class="sigp2Mandatory" Style="width:70px">Libellé:</label>
+					<label class="sigp2Mandatory" Style="width:70px">LibellÃ©:</label>
 					<INPUT class="sigp2-saisie" maxlength="50" name="<%= process.getNOM_EF_NOM_GROUPE() %>" size="120"
 						type="text" value="<%= process.getVAL_EF_NOM_GROUPE() %>">
 					<span class="sigp2"><INPUT type="submit" class="sigp2-Bouton-100" value="Ajouter" name="<%=process.getNOM_PB_VALIDER_AJOUT()%>"></span>
 				<%}else if (process.ACTION_MODIFICATION_GROUPE.equals(process.getVAL_ST_ACTION())) {%>
-					<label class="sigp2Mandatory" Style="width:70px">Libellé:</label>
+					<label class="sigp2Mandatory" Style="width:70px">LibellÃ©:</label>
 					<INPUT class="sigp2-saisie" maxlength="50" name="<%= process.getNOM_EF_NOM_GROUPE() %>" size="120"
 						type="text" value="<%= process.getVAL_EF_NOM_GROUPE() %>">
 					<span class="sigp2"><INPUT type="submit" class="sigp2-Bouton-100" value="Modifier" name="<%=process.getNOM_PB_VALIDER_MODIFICATION_GRPE()%>"></span>
 				<%}else if (process.ACTION_SUPPRESSION_GROUPE.equals(process.getVAL_ST_ACTION())) {%>
 					<FONT color='red'>Veuillez valider votre choix.</FONT>
 		    		<BR/><BR/>
-					<label class="sigp2Mandatory" Style="width:70px">Libellé:</label>
+					<label class="sigp2Mandatory" Style="width:70px">LibellÃ©:</label>
 					<INPUT class="sigp2-saisie" maxlength="50" name="<%= process.getNOM_EF_NOM_GROUPE() %>" size="120"
 						type="text" value="<%= process.getVAL_EF_NOM_GROUPE() %>" disabled="disabled">
 					<span class="sigp2"><INPUT type="submit" class="sigp2-Bouton-100" value="Supprimer" name="<%=process.getNOM_PB_VALIDER_SUPPRESSION_GRPE()%>"></span>

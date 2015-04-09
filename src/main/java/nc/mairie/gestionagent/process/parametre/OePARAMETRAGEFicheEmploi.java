@@ -32,7 +32,7 @@ import nc.mairie.utils.MessageUtils;
 import org.springframework.context.ApplicationContext;
 
 /**
- * Process OePARAMETRAGEFicheEmploi Date de création : (09/09/11 11:54:33)
+ * Process OePARAMETRAGEFicheEmploi Date de crÃ©ation : (09/09/11 11:54:33)
  * 
  */
 public class OePARAMETRAGEFicheEmploi extends BasicProcess {
@@ -73,10 +73,10 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	private FicheEmploiDao ficheEmploiDao;
 
 	/**
-	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones Ã  afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
-	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
-	 * addZone(getNOMxxx, String); Date de création : (09/09/11 11:54:33)
+	 * doivent avoir les Fields PUBLIC Utilisation de la mÃ©thode
+	 * addZone(getNOMxxx, String); Date de crÃ©ation : (09/09/11 11:54:33)
 	 * 
 	 */
 	public void initialiseZones(HttpServletRequest request) throws Exception {
@@ -84,11 +84,11 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 		VariableGlobale.ajouter(request, "PROCESS_MEMORISE", this);
 
 		// ----------------------------------//
-		// Vérification des droits d'accès. //
+		// VÃ©rification des droits d'acces. //
 		// ----------------------------------//
 		if (MairieUtils.estInterdit(request, getNomEcran())) {
 			// "ERR190",
-			// "Opération impossible. Vous ne disposez pas des droits d'accès à cette option."
+			// "Operation impossible. Vous ne disposez pas des droits d'acces a cette option."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
@@ -100,21 +100,21 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 		// ---------------------------//
 
 		if (getListeDomaine() == null) {
-			// Recherche des domaines d'activité
+			// Recherche des domaines d'activitÃ©
 			ArrayList<DomaineEmploi> liste = getDomaineEmploiDao().listerDomaineEmploi();
 			setListeDomaine(liste);
 			initialiseListeDomaine(request);
 		}
 
 		if (getListeFamille() == null) {
-			// Recherche des domaines d'activité
+			// Recherche des domaines d'activitÃ©
 			ArrayList<FamilleEmploi> liste = getFamilleEmploiDao().listerFamilleEmploi();
 			setListeFamille(liste);
 			initialiseListeFamille(request);
 		}
 
 		if (getListeDiplome() == null) {
-			// Recherche des domaines d'activité
+			// Recherche des domaines d'activitÃ©
 			ArrayList<DiplomeGenerique> liste = getDiplomeGeneriqueDao().listerDiplomeGenerique();
 			setListeDiplome(liste);
 			initialiseListeDiplome(request);
@@ -189,7 +189,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Initialisation de la liste des domaines emploi Date de création :
+	 * Initialisation de la liste des domaines emploi Date de crÃ©ation :
 	 * (09/09/11)
 	 * 
 	 */
@@ -212,7 +212,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Initialisation de la liste des domaine d'activité Date de création :
+	 * Initialisation de la liste des domaine d'activitÃ© Date de crÃ©ation :
 	 * (09/09/11)
 	 * 
 	 */
@@ -235,7 +235,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Initialisation de la liste des domaine d'activité Date de création :
+	 * Initialisation de la liste des domaine d'activitÃ© Date de crÃ©ation :
 	 * (09/09/11)
 	 * 
 	 */
@@ -258,7 +258,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Initialisation de la liste des categories emploi Date de création :
+	 * Initialisation de la liste des categories emploi Date de crÃ©ation :
 	 * (09/09/11)
 	 */
 	private void initialiseListeCategorie(HttpServletRequest request) throws Exception {
@@ -280,7 +280,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Constructeur du process OePARAMETRAGEFicheEmploi. Date de création :
+	 * Constructeur du process OePARAMETRAGEFicheEmploi. Date de crÃ©ation :
 	 * (09/09/11 11:54:33)
 	 * 
 	 */
@@ -290,7 +290,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER_DOMAINE Date de
-	 * création : (09/09/11 11:54:33)
+	 * crÃ©ation : (09/09/11 11:54:33)
 	 * 
 	 */
 	public String getNOM_PB_ANNULER_DOMAINE() {
@@ -298,10 +298,10 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (09/09/11 11:54:33)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (09/09/11 11:54:33)
 	 * 
 	 */
 	public boolean performPB_ANNULER_DOMAINE(HttpServletRequest request) throws Exception {
@@ -312,7 +312,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_CREER_DOMAINE Date de
-	 * création : (09/09/11 11:54:33)
+	 * crÃ©ation : (09/09/11 11:54:33)
 	 * 
 	 */
 	public String getNOM_PB_CREER_DOMAINE() {
@@ -320,10 +320,10 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (09/09/11 11:54:33)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (09/09/11 11:54:33)
 	 * 
 	 */
 	public boolean performPB_CREER_DOMAINE(HttpServletRequest request) throws Exception {
@@ -339,7 +339,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMER_DOMAINE Date de
-	 * création : (09/09/11 11:54:33)
+	 * crÃ©ation : (09/09/11 11:54:33)
 	 * 
 	 */
 	public String getNOM_PB_SUPPRIMER_DOMAINE() {
@@ -347,10 +347,10 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (09/09/11 11:54:33)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (09/09/11 11:54:33)
 	 * 
 	 */
 	public boolean performPB_SUPPRIMER_DOMAINE(HttpServletRequest request) throws Exception {
@@ -365,7 +365,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 			addZone(getNOM_EF_CODE_DOMAINE(), de.getCodeDomaineFe());
 			addZone(getNOM_ST_ACTION_DOMAINE(), ACTION_SUPPRESSION);
 		} else {
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "domaines d'activité"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "domaines d'activitÃ©"));
 		}
 
 		return true;
@@ -373,7 +373,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER_DOMAINE Date de
-	 * création : (09/09/11 11:54:33)
+	 * crÃ©ation : (09/09/11 11:54:33)
 	 * 
 	 */
 	public String getNOM_PB_VALIDER_DOMAINE() {
@@ -381,10 +381,10 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (09/09/11 11:54:33)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (09/09/11 11:54:33)
 	 * 
 	 */
 	public boolean performPB_VALIDER_DOMAINE(HttpServletRequest request) throws Exception {
@@ -422,14 +422,14 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Contrôle les zones saisies d'un domaine Date de création : (09/09/11)
+	 * Controle les zones saisies d'un domaine Date de crÃ©ation : (09/09/11)
 	 */
 	private boolean performControlerSaisieDomaine(HttpServletRequest request) throws Exception {
 
 		// Verification lib domaine d'activite not null
 		if (getZone(getNOM_EF_LIB_DOMAINE()).length() == 0) {
 			// "ERR002","La zone @ est obligatoire."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "libellé"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "libellÃ©"));
 			return false;
 		}
 
@@ -444,36 +444,36 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Contrôle les règles de gestion d'un domaine emploi Date de création :
+	 * Controle les regles de gestion d'un domaine emploi Date de crÃ©ation :
 	 * (09/09/11 11:04:00)
 	 */
 	private boolean performControlerRegleGestionDomaine(HttpServletRequest request) throws Exception {
 
-		// Verification si suppression d'un domaine utilisé sur une fiche emploi
+		// Verification si suppression d'un domaine utilise sur une fiche emploi
 		if (getVAL_ST_ACTION_DOMAINE().equals(ACTION_SUPPRESSION)
 				&& getFicheEmploiDao().listerFicheEmploiAvecDomaineEmploi(getDomaineEmploiCourant().getIdDomaineFe())
 						.size() > 0) {
 
 			// "ERR989",
-			// "Suppression impossible. Il existe au moins @ rattaché à @."
+			// "Suppression impossible. Il existe au moins @ rattachÃ© a @."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR989", "une fiche emploi", "ce domaine"));
 			return false;
 		}
 
-		// Vérification des contraintes d'unicité du domaine d'activité
+		// VÃ©rification des contraintes d'unicitÃ© du domaine d'activitÃ©
 		if (getVAL_ST_ACTION_DOMAINE().equals(ACTION_CREATION)) {
 
 			for (DomaineEmploi domaine : getListeDomaine()) {
 				if (domaine.getCodeDomaineFe().equals(getVAL_EF_CODE_DOMAINE().toUpperCase())) {
 					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
+					// "Attention, il existe dÃ©jÃ  @ avec @. Veuillez contrÃ´ler."
 					getTransaction().declarerErreur(
-							MessageUtils.getMessage("ERR974", "un domaine d'activité", "ce code"));
+							MessageUtils.getMessage("ERR974", "un domaine d'activitÃ©", "ce code"));
 					return false;
 				}
 				if (domaine.getLibDomaineFe().equals(getVAL_EF_LIB_DOMAINE().toUpperCase())) {
 					getTransaction().declarerErreur(
-							MessageUtils.getMessage("ERR974", "un domaine d'activité", "ce libellé"));
+							MessageUtils.getMessage("ERR974", "un domaine d'activitÃ©", "ce libellÃ©"));
 					return false;
 				}
 			}
@@ -484,7 +484,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_ACTION_DOMAINE Date
-	 * de création : (09/09/11 11:54:33)
+	 * de crÃ©ation : (09/09/11 11:54:33)
 	 * 
 	 */
 	public String getNOM_ST_ACTION_DOMAINE() {
@@ -492,8 +492,8 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACTION_DOMAINE
-	 * Date de création : (09/09/11 11:54:33)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_ACTION_DOMAINE
+	 * Date de crÃ©ation : (09/09/11 11:54:33)
 	 * 
 	 */
 	public String getVAL_ST_ACTION_DOMAINE() {
@@ -502,7 +502,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_LIB_DOMAINE Date de
-	 * création : (09/09/11 11:54:33)
+	 * crÃ©ation : (09/09/11 11:54:33)
 	 * 
 	 */
 	public String getNOM_EF_LIB_DOMAINE() {
@@ -510,8 +510,8 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_LIB_DOMAINE Date de création : (09/09/11 11:54:33)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_LIB_DOMAINE Date de crÃ©ation : (09/09/11 11:54:33)
 	 * 
 	 */
 	public String getVAL_EF_LIB_DOMAINE() {
@@ -519,7 +519,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Getter de la liste avec un lazy initialize : LB_DOMAINE Date de création
+	 * Getter de la liste avec un lazy initialize : LB_DOMAINE Date de crÃ©ation
 	 * : (09/09/11 11:54:33)
 	 * 
 	 */
@@ -530,7 +530,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_DOMAINE Date de création : (09/09/11 11:54:33)
+	 * Setter de la liste: LB_DOMAINE Date de crÃ©ation : (09/09/11 11:54:33)
 	 * 
 	 */
 	private void setLB_DOMAINE(String[] newLB_DOMAINE) {
@@ -538,7 +538,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_DOMAINE Date de création
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_DOMAINE Date de crÃ©ation
 	 * : (09/09/11 11:54:33)
 	 * 
 	 */
@@ -547,8 +547,8 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_DOMAINE_SELECT Date de création : (09/09/11 11:54:33)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_DOMAINE_SELECT Date de crÃ©ation : (09/09/11 11:54:33)
 	 * 
 	 */
 	public String getNOM_LB_DOMAINE_SELECT() {
@@ -556,8 +556,8 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_DOMAINE Date de création : (09/09/11 11:54:33)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_DOMAINE Date de crÃ©ation : (09/09/11 11:54:33)
 	 * 
 	 */
 	public String[] getVAL_LB_DOMAINE() {
@@ -565,8 +565,8 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_DOMAINE Date de création : (09/09/11 11:54:33)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_DOMAINE Date de crÃ©ation : (09/09/11 11:54:33)
 	 * 
 	 */
 	public String getVAL_LB_DOMAINE_SELECT() {
@@ -577,7 +577,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER_FAMILLE Date de
-	 * création : (09/09/11 13:30:20)
+	 * crÃ©ation : (09/09/11 13:30:20)
 	 * 
 	 */
 	public String getNOM_PB_ANNULER_FAMILLE() {
@@ -585,10 +585,10 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (09/09/11 13:30:20)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (09/09/11 13:30:20)
 	 * 
 	 */
 	public boolean performPB_ANNULER_FAMILLE(HttpServletRequest request) throws Exception {
@@ -599,7 +599,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_CREER_FAMILLE Date de
-	 * création : (09/09/11 13:30:20)
+	 * crÃ©ation : (09/09/11 13:30:20)
 	 * 
 	 */
 	public String getNOM_PB_CREER_FAMILLE() {
@@ -607,10 +607,10 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (09/09/11 13:30:20)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (09/09/11 13:30:20)
 	 * 
 	 */
 	public boolean performPB_CREER_FAMILLE(HttpServletRequest request) throws Exception {
@@ -625,7 +625,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMER_FAMILLE Date de
-	 * création : (09/09/11 13:30:20)
+	 * crÃ©ation : (09/09/11 13:30:20)
 	 * 
 	 */
 	public String getNOM_PB_SUPPRIMER_FAMILLE() {
@@ -633,10 +633,10 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (09/09/11 13:30:20)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (09/09/11 13:30:20)
 	 * 
 	 */
 	public boolean performPB_SUPPRIMER_FAMILLE(HttpServletRequest request) throws Exception {
@@ -659,7 +659,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER_FAMILLE Date de
-	 * création : (09/09/11 13:30:20)
+	 * crÃ©ation : (09/09/11 13:30:20)
 	 * 
 	 */
 	public String getNOM_PB_VALIDER_FAMILLE() {
@@ -667,10 +667,10 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (09/09/11 13:30:20)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (09/09/11 13:30:20)
 	 * 
 	 */
 	public boolean performPB_VALIDER_FAMILLE(HttpServletRequest request) throws Exception {
@@ -708,15 +708,15 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Contrôle les zones saisies d'une famille d'emploi Date de création :
+	 * Controle les zones saisies d'une famille d'emploi Date de crÃ©ation :
 	 * (12/09/11)
 	 */
 	private boolean performControlerSaisieFamille(HttpServletRequest request) throws Exception {
 
-		// Verification libellé famille not null
+		// Verification libellÃ© famille not null
 		if (getZone(getNOM_EF_FAMILLE()).length() == 0) {
 			// "ERR002","La zone @ est obligatoire."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "libellé"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "libellÃ©"));
 			return false;
 		}
 
@@ -731,38 +731,38 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Contrôle les règles de gestion d'une famille d'emploi Date de création :
+	 * Controle les regles de gestion d'une famille d'emploi Date de crÃ©ation :
 	 * (12/09/11 11:04:00)
 	 */
 	private boolean performControlerRegleGestionFamille(HttpServletRequest request) throws Exception {
 
-		// Verification si suppression d'une famille d'emploi utilisée sur une
+		// Verification si suppression d'une famille d'emploi utilisee sur une
 		// fiche emploi
 		if (getVAL_ST_ACTION_FAMILLE().equals(ACTION_SUPPRESSION)
 				&& getFicheEmploiDao().listerFicheEmploiAvecFamilleEmploi(getFamilleCourante().getIdFamilleEmploi())
 						.size() > 0) {
 
 			// "ERR989",
-			// "Suppression impossible. Il existe au moins @ rattaché à @."
+			// "Suppression impossible. Il existe au moins @ rattachÃ© a @."
 			getTransaction().declarerErreur(
 					MessageUtils.getMessage("ERR989", "une fiche emploi", "cette famille d'emploi"));
 			return false;
 		}
 
-		// Vérification des contraintes d'unicité de la famille d'emploi
+		// VÃ©rification des contraintes d'unicitÃ© de la famille d'emploi
 		if (getVAL_ST_ACTION_FAMILLE().equals(ACTION_CREATION)) {
 
 			for (FamilleEmploi famille : getListeFamille()) {
 				if (famille.getCodeFamilleEmploi().equals(getVAL_EF_CODE_FAMILLE().toUpperCase())) {
 					// "ERR974",
-					// "Attention, il existe déjà @ avec @ – Veuillez contrôler."
+					// "Attention, il existe dÃ©jÃ  @ avec @ a Veuillez contrÃ´ler."
 					getTransaction().declarerErreur(
 							MessageUtils.getMessage("ERR974", "une famille d'emploi", "ce code"));
 					return false;
 				}
 				if (famille.getLibFamilleEmploi().equals(getVAL_EF_FAMILLE().toUpperCase())) {
 					getTransaction().declarerErreur(
-							MessageUtils.getMessage("ERR974", "une famille d'emploi", "ce libellé"));
+							MessageUtils.getMessage("ERR974", "une famille d'emploi", "ce libellÃ©"));
 					return false;
 				}
 			}
@@ -773,7 +773,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_ACTION_FAMILLE Date
-	 * de création : (09/09/11 13:30:20)
+	 * de crÃ©ation : (09/09/11 13:30:20)
 	 * 
 	 */
 	public String getNOM_ST_ACTION_FAMILLE() {
@@ -781,8 +781,8 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACTION_FAMILLE
-	 * Date de création : (09/09/11 13:30:20)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_ACTION_FAMILLE
+	 * Date de crÃ©ation : (09/09/11 13:30:20)
 	 * 
 	 */
 	public String getVAL_ST_ACTION_FAMILLE() {
@@ -791,7 +791,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_FAMILLE Date de
-	 * création : (09/09/11 13:30:20)
+	 * crÃ©ation : (09/09/11 13:30:20)
 	 * 
 	 */
 	public String getNOM_EF_FAMILLE() {
@@ -799,8 +799,8 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_FAMILLE Date de création : (09/09/11 13:30:20)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_FAMILLE Date de crÃ©ation : (09/09/11 13:30:20)
 	 * 
 	 */
 	public String getVAL_EF_FAMILLE() {
@@ -808,7 +808,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Getter de la liste avec un lazy initialize : LB_FAMILLE Date de création
+	 * Getter de la liste avec un lazy initialize : LB_FAMILLE Date de crÃ©ation
 	 * : (09/09/11 13:30:20)
 	 * 
 	 */
@@ -819,7 +819,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_FAMILLE Date de création : (09/09/11 13:30:20)
+	 * Setter de la liste: LB_FAMILLE Date de crÃ©ation : (09/09/11 13:30:20)
 	 * 
 	 */
 	private void setLB_FAMILLE(String[] newLB_FAMILLE) {
@@ -827,7 +827,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_FAMILLE Date de création
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_FAMILLE Date de crÃ©ation
 	 * : (09/09/11 13:30:20)
 	 * 
 	 */
@@ -836,8 +836,8 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_FAMILLE_SELECT Date de création : (09/09/11 13:30:20)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_FAMILLE_SELECT Date de crÃ©ation : (09/09/11 13:30:20)
 	 * 
 	 */
 	public String getNOM_LB_FAMILLE_SELECT() {
@@ -845,8 +845,8 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_FAMILLE Date de création : (09/09/11 13:30:20)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_FAMILLE Date de crÃ©ation : (09/09/11 13:30:20)
 	 * 
 	 */
 	public String[] getVAL_LB_FAMILLE() {
@@ -854,8 +854,8 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_FAMILLE Date de création : (09/09/11 13:30:20)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_FAMILLE Date de crÃ©ation : (09/09/11 13:30:20)
 	 * 
 	 */
 	public String getVAL_LB_FAMILLE_SELECT() {
@@ -864,7 +864,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER_DIPLOME Date de
-	 * création : (09/09/11 13:37:43)
+	 * crÃ©ation : (09/09/11 13:37:43)
 	 * 
 	 */
 	public String getNOM_PB_ANNULER_DIPLOME() {
@@ -872,10 +872,10 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (09/09/11 13:37:43)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (09/09/11 13:37:43)
 	 * 
 	 */
 	public boolean performPB_ANNULER_DIPLOME(HttpServletRequest request) throws Exception {
@@ -886,7 +886,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_CREER_DIPLOME Date de
-	 * création : (09/09/11 13:37:43)
+	 * crÃ©ation : (09/09/11 13:37:43)
 	 * 
 	 */
 	public String getNOM_PB_CREER_DIPLOME() {
@@ -894,10 +894,10 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (09/09/11 13:37:43)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (09/09/11 13:37:43)
 	 * 
 	 */
 	public boolean performPB_CREER_DIPLOME(HttpServletRequest request) throws Exception {
@@ -911,7 +911,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMER_DIPLOME Date de
-	 * création : (09/09/11 13:37:43)
+	 * crÃ©ation : (09/09/11 13:37:43)
 	 * 
 	 */
 	public String getNOM_PB_SUPPRIMER_DIPLOME() {
@@ -919,10 +919,10 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (09/09/11 13:37:43)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (09/09/11 13:37:43)
 	 * 
 	 */
 	public boolean performPB_SUPPRIMER_DIPLOME(HttpServletRequest request) throws Exception {
@@ -936,7 +936,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 			addZone(getNOM_EF_DIPLOME(), d.getLibDiplomeGenerique());
 			addZone(getNOM_EF_ACTION_DIPLOME(), ACTION_SUPPRESSION);
 		} else {
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "diplômes générique"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "diplÃ´mes gÃ©nÃ©rique"));
 		}
 
 		return true;
@@ -945,7 +945,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER_DIPLOME Date de
-	 * création : (09/09/11 13:37:43)
+	 * crÃ©ation : (09/09/11 13:37:43)
 	 * 
 	 */
 	public String getNOM_PB_VALIDER_DIPLOME() {
@@ -953,10 +953,10 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (09/09/11 13:37:43)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (09/09/11 13:37:43)
 	 * 
 	 */
 	public boolean performPB_VALIDER_DIPLOME(HttpServletRequest request) throws Exception {
@@ -992,7 +992,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Contrôle les zones saisies d'un diplome Date de création : (12/09/11)
+	 * Controle les zones saisies d'un diplome Date de crÃ©ation : (12/09/11)
 	 */
 	private boolean performControlerSaisieDiplome(HttpServletRequest request) throws Exception {
 
@@ -1001,7 +1001,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 		// ************************************
 		if (getZone(getNOM_EF_DIPLOME()).length() == 0) {
 			// "ERR002","La zone @ est obligatoire."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "libellé"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "libellÃ©"));
 			return false;
 		}
 
@@ -1009,12 +1009,12 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Contrôle les règles de gestion d'un diplome Date de création : (12/09/11
+	 * Controle les regles de gestion d'un diplome Date de crÃ©ation : (12/09/11
 	 * 11:04:00)
 	 */
 	private boolean performControlerRegleGestionDiplome(HttpServletRequest request) throws Exception {
 
-		// Verification si suppression d'un diplome utilisée sur une fiche
+		// Verification si suppression d'un diplome utilisee sur une fiche
 		// emploi
 
 		// Recherche de tous les liens FicheEmploi / Diplome
@@ -1025,16 +1025,16 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 				&& getFicheEmploiDao().listerFicheEmploiAvecDiplome(liens).size() > 0) {
 
 			// "ERR989",
-			// "Suppression impossible. Il existe au moins @ rattaché à @."
+			// "Suppression impossible. Il existe au moins @ rattachÃ© a @."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR989", "une fiche emploi", "ce diplome"));
 			return false;
 		}
 
-		// Vérification des contraintes d'unicité du diplome
+		// VÃ©rification des contraintes d'unicitÃ© du diplome
 		if (getVAL_EF_ACTION_DIPLOME().equals(ACTION_CREATION)) {
 			for (DiplomeGenerique diplome : getListeDiplome()) {
 				if (diplome.getLibDiplomeGenerique().equals(getVAL_EF_DIPLOME().toUpperCase())) {
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "un diplome", "ce libellé"));
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "un diplome", "ce libellÃ©"));
 					return false;
 				}
 			}
@@ -1045,7 +1045,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_ACTION_DIPLOME Date
-	 * de création : (09/09/11 13:37:43)
+	 * de crÃ©ation : (09/09/11 13:37:43)
 	 * 
 	 */
 	public String getNOM_EF_ACTION_DIPLOME() {
@@ -1053,8 +1053,8 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_ACTION_DIPLOME Date de création : (09/09/11 13:37:43)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_ACTION_DIPLOME Date de crÃ©ation : (09/09/11 13:37:43)
 	 * 
 	 */
 	public String getVAL_EF_ACTION_DIPLOME() {
@@ -1063,7 +1063,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_DIPLOME Date de
-	 * création : (09/09/11 13:37:43)
+	 * crÃ©ation : (09/09/11 13:37:43)
 	 * 
 	 */
 	public String getNOM_EF_DIPLOME() {
@@ -1071,8 +1071,8 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_DIPLOME Date de création : (09/09/11 13:37:43)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_DIPLOME Date de crÃ©ation : (09/09/11 13:37:43)
 	 * 
 	 */
 	public String getVAL_EF_DIPLOME() {
@@ -1080,7 +1080,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Getter de la liste avec un lazy initialize : LB_DIPLOME Date de création
+	 * Getter de la liste avec un lazy initialize : LB_DIPLOME Date de crÃ©ation
 	 * : (09/09/11 13:37:43)
 	 * 
 	 */
@@ -1091,7 +1091,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_DIPLOME Date de création : (09/09/11 13:37:43)
+	 * Setter de la liste: LB_DIPLOME Date de crÃ©ation : (09/09/11 13:37:43)
 	 * 
 	 */
 	private void setLB_DIPLOME(String[] newLB_DIPLOME) {
@@ -1099,7 +1099,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_DIPLOME Date de création
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_DIPLOME Date de crÃ©ation
 	 * : (09/09/11 13:37:43)
 	 * 
 	 */
@@ -1108,8 +1108,8 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_DIPLOME_SELECT Date de création : (09/09/11 13:37:43)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_DIPLOME_SELECT Date de crÃ©ation : (09/09/11 13:37:43)
 	 * 
 	 */
 	public String getNOM_LB_DIPLOME_SELECT() {
@@ -1117,8 +1117,8 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_DIPLOME Date de création : (09/09/11 13:37:43)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_DIPLOME Date de crÃ©ation : (09/09/11 13:37:43)
 	 * 
 	 */
 	public String[] getVAL_LB_DIPLOME() {
@@ -1126,8 +1126,8 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_DIPLOME Date de création : (09/09/11 13:37:43)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_DIPLOME Date de crÃ©ation : (09/09/11 13:37:43)
 	 * 
 	 */
 	public String getVAL_LB_DIPLOME_SELECT() {
@@ -1136,7 +1136,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER_CATEGORIE Date de
-	 * création : (09/09/11 11:54:33)
+	 * crÃ©ation : (09/09/11 11:54:33)
 	 * 
 	 */
 	public String getNOM_PB_ANNULER_CATEGORIE() {
@@ -1144,10 +1144,10 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (09/09/11 11:54:33)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (09/09/11 11:54:33)
 	 * 
 	 */
 	public boolean performPB_ANNULER_CATEGORIE(HttpServletRequest request) throws Exception {
@@ -1158,7 +1158,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_CREER_CATEGORIE Date de
-	 * création : (09/09/11 11:54:33)
+	 * crÃ©ation : (09/09/11 11:54:33)
 	 * 
 	 */
 	public String getNOM_PB_CREER_CATEGORIE() {
@@ -1166,10 +1166,10 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (09/09/11 11:54:33)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (09/09/11 11:54:33)
 	 * 
 	 */
 	public boolean performPB_CREER_CATEGORIE(HttpServletRequest request) throws Exception {
@@ -1184,7 +1184,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMER_CATEGORIE Date de
-	 * création : (09/09/11 11:54:33)
+	 * crÃ©ation : (09/09/11 11:54:33)
 	 * 
 	 */
 	public String getNOM_PB_SUPPRIMER_CATEGORIE() {
@@ -1192,10 +1192,10 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (09/09/11 11:54:33)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (09/09/11 11:54:33)
 	 * 
 	 */
 	public boolean performPB_SUPPRIMER_CATEGORIE(HttpServletRequest request) throws Exception {
@@ -1209,7 +1209,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 			addZone(getNOM_EF_LIB_CATEGORIE(), cat.getLibCategorieStatut());
 			addZone(getNOM_ST_ACTION_CATEGORIE(), ACTION_SUPPRESSION);
 		} else {
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "catégorie"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "catÃ©gorie"));
 		}
 
 		return true;
@@ -1217,7 +1217,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER_CATEGORIE Date de
-	 * création : (09/09/11 11:54:33)
+	 * crÃ©ation : (09/09/11 11:54:33)
 	 * 
 	 */
 	public String getNOM_PB_VALIDER_CATEGORIE() {
@@ -1225,10 +1225,10 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (09/09/11 11:54:33)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (09/09/11 11:54:33)
 	 * 
 	 */
 	public boolean performPB_VALIDER_CATEGORIE(HttpServletRequest request) throws Exception {
@@ -1264,14 +1264,14 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Contrôle les zones saisies d'un domaine Date de création : (09/09/11)
+	 * Controle les zones saisies d'un domaine Date de crÃ©ation : (09/09/11)
 	 */
 	private boolean performControlerSaisieCategorie(HttpServletRequest request) throws Exception {
 
 		// Verification lib domaine d'activite not null
 		if (getZone(getNOM_EF_LIB_CATEGORIE()).length() == 0) {
 			// "ERR002","La zone @ est obligatoire."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "libellé"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "libellÃ©"));
 			return false;
 		}
 
@@ -1279,27 +1279,27 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Contrôle les règles de gestion d'une categorie emploi Date de création :
+	 * Controle les regles de gestion d'une categorie emploi Date de crÃ©ation :
 	 * (09/09/11 11:04:00)
 	 */
 	private boolean performControlerRegleGestionCategorie(HttpServletRequest request) throws Exception {
 
-		// Verification si suppression d'une categorie utilisée sur une fiche
+		// Verification si suppression d'une categorie utilisee sur une fiche
 		// emploi
 		if (getVAL_ST_ACTION_CATEGORIE().equals(ACTION_SUPPRESSION)
 				&& getCategorieFEDao().listerCategorieFEAvecCategorie(getCategorieCourante().getIdCategorieStatut())
 						.size() > 0) {
 			// "ERR989",
-			// "Suppression impossible. Il existe au moins @ rattaché à @."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR989", "une fiche emploi", "cette catégorie"));
+			// "Suppression impossible. Il existe au moins @ rattachÃ© a @."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR989", "une fiche emploi", "cette catÃ©gorie"));
 			return false;
 		}
 
-		// Vérification des contraintes d'unicité de la categorie d'emploi
+		// VÃ©rification des contraintes d'unicitÃ© de la categorie d'emploi
 		if (getVAL_ST_ACTION_CATEGORIE().equals(ACTION_CREATION)) {
 			for (Categorie categorie : getListeCategorie()) {
 				if (categorie.getLibCategorieStatut().equals(getVAL_EF_LIB_CATEGORIE().toUpperCase())) {
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "une catégorie", "ce libellé"));
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "une catÃ©gorie", "ce libellÃ©"));
 					return false;
 				}
 			}
@@ -1310,7 +1310,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_ACTION_CATEGORIE
-	 * Date de création : (09/09/11 11:54:33)
+	 * Date de crÃ©ation : (09/09/11 11:54:33)
 	 * 
 	 */
 	public String getNOM_ST_ACTION_CATEGORIE() {
@@ -1318,8 +1318,8 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
-	 * ST_ACTION_CATEGORIE Date de création : (09/09/11 11:54:33)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone :
+	 * ST_ACTION_CATEGORIE Date de crÃ©ation : (09/09/11 11:54:33)
 	 * 
 	 */
 	public String getVAL_ST_ACTION_CATEGORIE() {
@@ -1328,7 +1328,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_LIB_CATEGORIE Date
-	 * de création : (09/09/11 11:54:33)
+	 * de crÃ©ation : (09/09/11 11:54:33)
 	 * 
 	 */
 	public String getNOM_EF_LIB_CATEGORIE() {
@@ -1336,8 +1336,8 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_LIB_CATEGORIE Date de création : (09/09/11 11:54:33)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_LIB_CATEGORIE Date de crÃ©ation : (09/09/11 11:54:33)
 	 * 
 	 */
 	public String getVAL_EF_LIB_CATEGORIE() {
@@ -1346,7 +1346,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 
 	/**
 	 * Getter de la liste avec un lazy initialize : LB_CATEGORIE Date de
-	 * création : (09/09/11 11:54:33)
+	 * crÃ©ation : (09/09/11 11:54:33)
 	 * 
 	 */
 	private String[] getLB_CATEGORIE() {
@@ -1356,7 +1356,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_CATEGORIE Date de création : (09/09/11 11:54:33)
+	 * Setter de la liste: LB_CATEGORIE Date de crÃ©ation : (09/09/11 11:54:33)
 	 * 
 	 */
 	private void setLB_CATEGORIE(String[] newLB_CATEGORIE) {
@@ -1365,7 +1365,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 
 	/**
 	 * Retourne le nom de la zone pour la JSP : NOM_LB_CATEGORIE Date de
-	 * création : (09/09/11 11:54:33)
+	 * crÃ©ation : (09/09/11 11:54:33)
 	 * 
 	 */
 	public String getNOM_LB_CATEGORIE() {
@@ -1373,8 +1373,8 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_CATEGORIE_SELECT Date de création : (09/09/11 11:54:33)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_CATEGORIE_SELECT Date de crÃ©ation : (09/09/11 11:54:33)
 	 * 
 	 */
 	public String getNOM_LB_CATEGORIE_SELECT() {
@@ -1382,8 +1382,8 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_CATEGORIE Date de création : (09/09/11 11:54:33)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_CATEGORIE Date de crÃ©ation : (09/09/11 11:54:33)
 	 * 
 	 */
 	public String[] getVAL_LB_CATEGORIE() {
@@ -1391,8 +1391,8 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_CATEGORIE Date de création : (09/09/11 11:54:33)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_CATEGORIE Date de crÃ©ation : (09/09/11 11:54:33)
 	 * 
 	 */
 	public String getVAL_LB_CATEGORIE_SELECT() {
@@ -1473,7 +1473,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_CODE_DOMAINE Date
-	 * de création : (12/09/11 16:28:59)
+	 * de crÃ©ation : (12/09/11 16:28:59)
 	 * 
 	 */
 	public String getNOM_EF_CODE_DOMAINE() {
@@ -1481,8 +1481,8 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_CODE_DOMAINE Date de création : (12/09/11 16:28:59)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_CODE_DOMAINE Date de crÃ©ation : (12/09/11 16:28:59)
 	 * 
 	 */
 	public String getVAL_EF_CODE_DOMAINE() {
@@ -1490,8 +1490,8 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Méthode appelée par la servlet qui aiguille le traitement : en fonction
-	 * du bouton de la JSP Date de création : (09/09/11 11:54:33)
+	 * mÃ©thode appelee par la servlet qui aiguille le traitement : en fonction
+	 * du bouton de la JSP Date de crÃ©ation : (09/09/11 11:54:33)
 	 * 
 	 */
 	public boolean recupererStatut(HttpServletRequest request) throws Exception {
@@ -1600,14 +1600,14 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 			}
 
 		}
-		// Si TAG INPUT non géré par le process
+		// Si TAG INPUT non gÃ©rÃ© par le process
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
 
 	/**
-	 * Retourne le nom de la JSP du process Zone à utiliser dans un champ caché
-	 * dans chaque formulaire de la JSP. Date de création : (12/09/11 16:36:11)
+	 * Retourne le nom de la JSP du process Zone a utiliser dans un champ cache
+	 * dans chaque formulaire de la JSP. Date de crÃ©ation : (12/09/11 16:36:11)
 	 * 
 	 */
 	public String getJSP() {
@@ -1615,8 +1615,8 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de l'écran (notamment pour déterminer les droits
-	 * associés).
+	 * Retourne le nom de l'Ã©cran (notamment pour dÃ©terminer les droits
+	 * associÃ©s).
 	 */
 	public String getNomEcran() {
 		return "ECR-PARAM-PE-FICHEEMPLOI";
@@ -1624,7 +1624,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_CODE_FAMILLE Date
-	 * de création : (12/09/11 16:36:11)
+	 * de crÃ©ation : (12/09/11 16:36:11)
 	 * 
 	 */
 	public String getNOM_EF_CODE_FAMILLE() {
@@ -1632,8 +1632,8 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_CODE_FAMILLE Date de création : (12/09/11 16:36:11)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_CODE_FAMILLE Date de crÃ©ation : (12/09/11 16:36:11)
 	 * 
 	 */
 	public String getVAL_EF_CODE_FAMILLE() {
@@ -1650,7 +1650,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER_CODE_ROME Date de
-	 * création : (09/09/11 13:36:47)
+	 * crÃ©ation : (09/09/11 13:36:47)
 	 * 
 	 */
 	public String getNOM_PB_ANNULER_CODE_ROME() {
@@ -1658,10 +1658,10 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (09/09/11 13:36:47)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (09/09/11 13:36:47)
 	 * 
 	 */
 	public boolean performPB_ANNULER_CODE_ROME(HttpServletRequest request) throws Exception {
@@ -1672,7 +1672,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_CREER_CODE_ROME Date de
-	 * création : (09/09/11 13:36:47)
+	 * crÃ©ation : (09/09/11 13:36:47)
 	 * 
 	 */
 	public String getNOM_PB_CREER_CODE_ROME() {
@@ -1680,10 +1680,10 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (09/09/11 13:36:47)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (09/09/11 13:36:47)
 	 * 
 	 */
 	public boolean performPB_CREER_CODE_ROME(HttpServletRequest request) throws Exception {
@@ -1698,7 +1698,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMER_CODE_ROME Date de
-	 * création : (09/09/11 13:36:47)
+	 * crÃ©ation : (09/09/11 13:36:47)
 	 * 
 	 */
 	public String getNOM_PB_SUPPRIMER_CODE_ROME() {
@@ -1706,10 +1706,10 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (09/09/11 13:36:47)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (09/09/11 13:36:47)
 	 * 
 	 */
 	public boolean performPB_SUPPRIMER_CODE_ROME(HttpServletRequest request) throws Exception {
@@ -1732,7 +1732,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER_CODE_ROME Date de
-	 * création : (09/09/11 13:36:47)
+	 * crÃ©ation : (09/09/11 13:36:47)
 	 * 
 	 */
 	public String getNOM_PB_VALIDER_CODE_ROME() {
@@ -1740,10 +1740,10 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (09/09/11 13:36:47)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (09/09/11 13:36:47)
 	 * 
 	 */
 	public boolean performPB_VALIDER_CODE_ROME(HttpServletRequest request) throws Exception {
@@ -1781,7 +1781,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Contrôle les zones saisies d'un code rome Date de création : (12/09/11)
+	 * Controle les zones saisies d'un code rome Date de crÃ©ation : (12/09/11)
 	 */
 	private boolean performControlerSaisieCodeRome(HttpServletRequest request) throws Exception {
 
@@ -1790,7 +1790,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 		// ************************************
 		if (getZone(getNOM_EF_CODE_ROME()).length() == 0) {
 			// "ERR002","La zone @ est obligatoire."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "libellé"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "libellÃ©"));
 			return false;
 		}
 		// ************************************
@@ -1806,29 +1806,29 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Contrôle les règles de gestion d'un code rome Date de création :
+	 * Controle les regles de gestion d'un code rome Date de crÃ©ation :
 	 * (12/09/11 11:04:00)
 	 */
 	private boolean performControlerRegleGestionCodeRome(HttpServletRequest request) throws Exception {
 
 		// **********************************************************************
-		// Verification si suppression d'un code rome utilisé sur une fiche
+		// Verification si suppression d'un code rome utilise sur une fiche
 		// emploi
 		// **********************************************************************
 		if (getVAL_EF_ACTION_CODE_ROME().equals(ACTION_SUPPRESSION)
 				&& getFicheEmploiDao().listerFicheEmploiAvecCodeRome(getCodeRomeCourant().getIdCodeRome()).size() > 0) {
 
 			// "ERR989",
-			// "Suppression impossible. Il existe au moins @ rattaché à @."
+			// "Suppression impossible. Il existe au moins @ rattachÃ© a @."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR989", "une fiche emploi", "ce code rome"));
 			return false;
 		}
 
-		// Vérification des contraintes d'unicité du code rome
+		// VÃ©rification des contraintes d'unicitÃ© du code rome
 		if (getVAL_EF_ACTION_CODE_ROME().equals(ACTION_CREATION)) {
 			for (CodeRome codeRome : getListeCodeRome()) {
 				if (codeRome.getLibCodeRome().equals(getVAL_EF_CODE_ROME().toUpperCase())) {
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "un code rome", "ce libellé"));
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "un code rome", "ce libellÃ©"));
 					return false;
 				}
 			}
@@ -1839,7 +1839,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_ACTION_CODE_ROME
-	 * Date de création : (09/09/11 13:36:47)
+	 * Date de crÃ©ation : (09/09/11 13:36:47)
 	 * 
 	 */
 	public String getNOM_EF_ACTION_CODE_ROME() {
@@ -1847,8 +1847,8 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_ACTION_CODE_ROME Date de création : (09/09/11 13:36:47)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_ACTION_CODE_ROME Date de crÃ©ation : (09/09/11 13:36:47)
 	 * 
 	 */
 	public String getVAL_EF_ACTION_CODE_ROME() {
@@ -1857,7 +1857,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_CODE_ROME Date de
-	 * création : (09/09/11 13:36:47)
+	 * crÃ©ation : (09/09/11 13:36:47)
 	 * 
 	 */
 	public String getNOM_EF_CODE_ROME() {
@@ -1865,8 +1865,8 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_CODE_ROME Date de création : (09/09/11 13:36:47)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_CODE_ROME Date de crÃ©ation : (09/09/11 13:36:47)
 	 * 
 	 */
 	public String getVAL_EF_CODE_ROME() {
@@ -1875,7 +1875,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_DESC_CODE_ROME Date
-	 * de création : (09/09/11 13:36:47)
+	 * de crÃ©ation : (09/09/11 13:36:47)
 	 * 
 	 */
 	public String getNOM_EF_DESC_CODE_ROME() {
@@ -1883,8 +1883,8 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_DESC_CODE_ROME Date de création : (09/09/11 13:36:47)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_DESC_CODE_ROME Date de crÃ©ation : (09/09/11 13:36:47)
 	 * 
 	 */
 	public String getVAL_EF_DESC_CODE_ROME() {
@@ -1893,7 +1893,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 
 	/**
 	 * Getter de la liste avec un lazy initialize : LB_CODE_ROME Date de
-	 * création : (09/09/11 13:36:47)
+	 * crÃ©ation : (09/09/11 13:36:47)
 	 * 
 	 */
 	private String[] getLB_CODE_ROME() {
@@ -1903,7 +1903,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_CODE_ROME Date de création : (09/09/11 13:36:47)
+	 * Setter de la liste: LB_CODE_ROME Date de crÃ©ation : (09/09/11 13:36:47)
 	 * 
 	 */
 	private void setLB_CODE_ROME(String[] newLB_CODE_ROME) {
@@ -1912,7 +1912,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 
 	/**
 	 * Retourne le nom de la zone pour la JSP : NOM_LB_CODE_ROME Date de
-	 * création : (09/09/11 13:36:47)
+	 * crÃ©ation : (09/09/11 13:36:47)
 	 * 
 	 */
 	public String getNOM_LB_CODE_ROME() {
@@ -1920,8 +1920,8 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_CODE_ROME_SELECT Date de création : (09/09/11 13:36:47)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_CODE_ROME_SELECT Date de crÃ©ation : (09/09/11 13:36:47)
 	 * 
 	 */
 	public String getNOM_LB_CODE_ROME_SELECT() {
@@ -1929,8 +1929,8 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_CODE_ROME Date de création : (09/09/11 13:36:47)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_CODE_ROME Date de crÃ©ation : (09/09/11 13:36:47)
 	 * 
 	 */
 	public String[] getVAL_LB_CODE_ROME() {
@@ -1938,8 +1938,8 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_CODE_ROME Date de création : (09/09/11 13:36:47)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_CODE_ROME Date de crÃ©ation : (09/09/11 13:36:47)
 	 * 
 	 */
 	public String getVAL_LB_CODE_ROME_SELECT() {

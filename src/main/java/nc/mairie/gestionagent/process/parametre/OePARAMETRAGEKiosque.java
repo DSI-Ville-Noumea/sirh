@@ -30,7 +30,7 @@ import nc.mairie.utils.VariablesActivite;
 import org.springframework.context.ApplicationContext;
 
 /**
- * Process OePARAMETRAGEElection Date de création : (14/09/11 13:52:54)
+ * Process OePARAMETRAGEElection Date de crÃ©ation : (14/09/11 13:52:54)
  * 
  */
 public class OePARAMETRAGEKiosque extends BasicProcess {
@@ -67,10 +67,10 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 	private ArrayList<AccueilKiosque> listeAccueilKiosque;
 
 	/**
-	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones Ã  afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
-	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
-	 * addZone(getNOMxxx, String); Date de création : (14/09/11 13:52:54)
+	 * doivent avoir les Fields PUBLIC Utilisation de la mÃ©thode
+	 * addZone(getNOMxxx, String); Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public void initialiseZones(HttpServletRequest request) throws Exception {
@@ -78,11 +78,11 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 		VariableGlobale.ajouter(request, "PROCESS_MEMORISE", this);
 
 		// ----------------------------------//
-		// Vérification des droits d'accès. //
+		// VÃ©rification des droits d'acces. //
 		// ----------------------------------//
 		if (MairieUtils.estInterdit(request, getNomEcran())) {
 			// "ERR190",
-			// "Opération impossible. Vous ne disposez pas des droits d'accès à cette option."
+			// "Operation impossible. Vous ne disposez pas des droits d'acces a cette option."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
@@ -141,7 +141,7 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 					continue;
 				}
 
-				// recherche du supérieur
+				// recherche du supÃ©rieur
 				String codeService = serv.getCodService();
 				while (codeService.endsWith("A")) {
 					codeService = codeService.substring(0, codeService.length() - 1);
@@ -186,7 +186,7 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 			addZone(getNOM_EF_ID_REFERENT_RH_GLOBAL(), ag.getNomatr().toString());
 			addZone(getNOM_EF_NUMERO_TELEPHONE_GLOBAL(), getReferentRhGlobalCourant().getNumeroTelephone().toString());
 		} catch (Exception e) {
-			// aucun referent trouvé
+			// aucun referent trouvÃ©
 			setReferentRhGlobalCourant(new ReferentRh());
 			addZone(getNOM_EF_ID_REFERENT_RH_GLOBAL(), Const.CHAINE_VIDE);
 			addZone(getNOM_EF_NUMERO_TELEPHONE_GLOBAL(), Const.CHAINE_VIDE);
@@ -268,7 +268,7 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 				// on verifie que l'agent existe
 				try {
 					Agent ag = getAgentDao().chercherAgentParMatricule(Integer.valueOf(getVAL_EF_ID_REFERENT_RH()));
-					// on crée les entrées
+					// on crÃ©e les entrÃ©es
 					for (Service serv : getListeServiceUtilisateur()) {
 						getReferentRhCourant().setIdAgentReferent(ag.getIdAgent());
 						getReferentRhCourant().setNumeroTelephone(Integer.valueOf(getVAL_EF_NUMERO_TELEPHONE()));
@@ -284,18 +284,18 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 					return false;
 				}
 			} else if (getVAL_ST_ACTION_REFERENT_RH().equals(ACTION_SUPPRESSION)) {
-				// on supprime toutes les entrées
+				// on supprime toutes les entrÃ©es
 				for (ReferentRh ref : getReferentRhDao().listerServiceAvecReferentRh(
 						getReferentRhCourant().getIdAgentReferent())) {
 					getReferentRhDao().supprimerReferentRh(ref.getIdReferentRh());
 				}
 			} else if (getVAL_ST_ACTION_REFERENT_RH().equals(ACTION_MODIFICATION)) {
-				// on supprime toutes les entrées
+				// on supprime toutes les entrÃ©es
 				for (ReferentRh ref : getReferentRhDao().listerServiceAvecReferentRh(
 						getReferentRhCourant().getIdAgentReferent())) {
 					getReferentRhDao().supprimerReferentRh(ref.getIdReferentRh());
 				}
-				// on crée les entrées
+				// on crÃ©e les entrÃ©es
 				for (Service serv : getListeServiceUtilisateur()) {
 					setReferentRhCourant(new ReferentRh());
 					getReferentRhCourant().setIdAgentReferent(Integer.valueOf("900" + getVAL_EF_ID_REFERENT_RH()));
@@ -316,14 +316,14 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 
 	private boolean performControlerRegleGestionReferentRh(HttpServletRequest request) {
 
-		// Vérification des contraintes d'unicité du référent
+		// VÃ©rification des contraintes d'unicitÃ© du rÃ©fÃ©rent
 		if (getVAL_ST_ACTION_REFERENT_RH().equals(ACTION_CREATION)) {
 
 			for (ReferentRh repre : getListeReferentRh()) {
 				if (repre.getIdAgentReferent().toString().equals("900" + getVAL_EF_ID_REFERENT_RH().trim())) {
 					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "un référent", "ce matricule"));
+					// "Attention, il existe dÃ©jÃ  @ avec @. Veuillez contrÃ´ler."
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "un rÃ©fÃ©rent", "ce matricule"));
 					return false;
 				}
 			}
@@ -342,21 +342,21 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 
 		// format agent
 		if (!Services.estNumerique(getVAL_EF_ID_REFERENT_RH())) {
-			// "ERR992", "La zone @ doit être numérique.";
+			// "ERR992", "La zone @ doit Ãªtre numÃ©rique.";
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "agent"));
 			return false;
 		}
-		// Verification numero téléphone not null
+		// Verification numero tÃ©lÃ©phone not null
 		if (getZone(getNOM_EF_NUMERO_TELEPHONE()).length() == 0) {
 			// "ERR002","La zone @ est obligatoire."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "téléphone"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "tÃ©lÃ©phone"));
 			return false;
 		}
 
-		// format numero téléphone
+		// format numero tÃ©lÃ©phone
 		if (!Services.estNumerique(getVAL_EF_NUMERO_TELEPHONE())) {
-			// "ERR992", "La zone @ doit être numérique.";
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "téléphone"));
+			// "ERR992", "La zone @ doit Ãªtre numÃ©rique.";
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "tÃ©lÃ©phone"));
 			return false;
 		}
 		return true;
@@ -395,7 +395,7 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 			initialiserAgentSelectionne();
 			addZone(getNOM_ST_ACTION_REFERENT_RH(), ACTION_MODIFICATION);
 		} else {
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "référents"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "rÃ©fÃ©rents"));
 		}
 
 		setFocus(getNOM_PB_ANNULER_REFERENT_RH());
@@ -415,7 +415,7 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 			initialiserAgentSelectionne();
 			addZone(getNOM_ST_ACTION_REFERENT_RH(), ACTION_SUPPRESSION);
 		} else {
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "référents"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "rÃ©fÃ©rents"));
 		}
 
 		setFocus(getNOM_PB_ANNULER_REFERENT_RH());
@@ -563,14 +563,14 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 				return performPB_SUPPRIMER_RECHERCHER_AGENT_GLOBAL(request);
 			}
 		}
-		// Si TAG INPUT non géré par le process
+		// Si TAG INPUT non gÃ©rÃ© par le process
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
 
 	/**
-	 * Retourne le nom de la JSP du process Zone à utiliser dans un champ caché
-	 * dans chaque formulaire de la JSP. Date de création : (14/09/11 15:20:21)
+	 * Retourne le nom de la JSP du process Zone a utiliser dans un champ cache
+	 * dans chaque formulaire de la JSP. Date de crÃ©ation : (14/09/11 15:20:21)
 	 * 
 	 */
 	public String getJSP() {
@@ -578,8 +578,8 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de l'écran (notamment pour déterminer les droits
-	 * associés).
+	 * Retourne le nom de l'Ã©cran (notamment pour dÃ©terminer les droits
+	 * associÃ©s).
 	 */
 	public String getNomEcran() {
 		return "ECR-PARAM-KIOSQUE";
@@ -601,7 +601,7 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 
 	/**
 	 * @param focus
-	 *            focus à définir.
+	 *            focus Ã  dÃ©finir.
 	 */
 	public void setFocus(String focus) {
 		this.focus = focus;
@@ -698,7 +698,7 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 	}
 
 	public boolean performPB_AJOUTER_SERVICE(HttpServletRequest request) throws Exception {
-		// Recup du service sélectionné
+		// Recup du service sÃ©lectionnÃ©
 		String codServ = getVAL_EF_CODESERVICE();
 
 		if (codServ.equals(Const.CHAINE_VIDE)) {
@@ -716,7 +716,7 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 	}
 
 	public boolean performPB_AJOUTER_TOUT(HttpServletRequest request) throws Exception {
-		// Recup du service sélectionné
+		// Recup du service sÃ©lectionnÃ©
 		String codServ = getVAL_EF_CODESERVICE();
 
 		if (codServ.equals(Const.CHAINE_VIDE)) {
@@ -742,7 +742,7 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 	}
 
 	public boolean performPB_RETIRER_SERVICE(HttpServletRequest request) throws Exception {
-		// Recup du groupe sélectionné
+		// Recup du groupe sÃ©lectionnÃ©
 		int numLigne = (Services.estNumerique(getZone(getNOM_LB_SERVICE_UTILISATEUR_SELECT())) ? Integer
 				.parseInt(getZone(getNOM_LB_SERVICE_UTILISATEUR_SELECT())) : -1);
 		if (numLigne == -1 || getListeServiceUtilisateur().size() == 0
@@ -806,7 +806,7 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 	}
 
 	public boolean performPB_RECHERCHER_AGENT(HttpServletRequest request) throws Exception {
-		// On met l'agent courant en var d'activité
+		// On met l'agent courant en var d'activitÃ©
 		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new Agent());
 		setStatut(STATUT_RECHERCHER_AGENT_CREATE, true);
 		return true;
@@ -817,7 +817,7 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 	}
 
 	public boolean performPB_SUPPRIMER_RECHERCHER_AGENT(HttpServletRequest request) throws Exception {
-		// On enlève l'agent selectionnée
+		// On enleve l'agent selectionnÃ©e
 		addZone(getNOM_EF_ID_REFERENT_RH(), Const.CHAINE_VIDE);
 		return true;
 	}
@@ -1000,7 +1000,7 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 	}
 
 	public boolean performPB_RECHERCHER_AGENT_GLOBAL(HttpServletRequest request) throws Exception {
-		// On met l'agent courant en var d'activité
+		// On met l'agent courant en var d'activitÃ©
 		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new Agent());
 		setStatut(STATUT_RECHERCHER_AGENT_GLOBAL, true);
 		return true;
@@ -1011,7 +1011,7 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 	}
 
 	public boolean performPB_SUPPRIMER_RECHERCHER_AGENT_GLOBAL(HttpServletRequest request) throws Exception {
-		// On enlève l'agent selectionnée
+		// On enleve l'agent selectionnÃ©e
 		addZone(getNOM_EF_ID_REFERENT_RH_GLOBAL(), Const.CHAINE_VIDE);
 		return true;
 	}
@@ -1066,21 +1066,21 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 
 		// format agent
 		if (!Services.estNumerique(getVAL_EF_ID_REFERENT_RH_GLOBAL())) {
-			// "ERR992", "La zone @ doit être numérique.";
+			// "ERR992", "La zone @ doit Ãªtre numÃ©rique.";
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "agent"));
 			return false;
 		}
-		// Verification numero téléphone not null
+		// Verification numero tÃ©lÃ©phone not null
 		if (getZone(getNOM_EF_NUMERO_TELEPHONE_GLOBAL()).length() == 0) {
 			// "ERR002","La zone @ est obligatoire."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "téléphone"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "tÃ©lÃ©phone"));
 			return false;
 		}
 
-		// format numero téléphone
+		// format numero tÃ©lÃ©phone
 		if (!Services.estNumerique(getVAL_EF_NUMERO_TELEPHONE_GLOBAL())) {
-			// "ERR992", "La zone @ doit être numérique.";
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "téléphone"));
+			// "ERR992", "La zone @ doit Ãªtre numÃ©rique.";
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "tÃ©lÃ©phone"));
 			return false;
 		}
 		return true;

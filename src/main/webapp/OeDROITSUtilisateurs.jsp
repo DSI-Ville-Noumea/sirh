@@ -1,4 +1,4 @@
-<!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@ page contentType="text/html; charset=UTF-8" %> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <%@page import="nc.mairie.enums.EnumTypeDroit"%>
 <%@page import="nc.mairie.utils.MairieUtils"%>
 <%@page import="nc.mairie.metier.poste.Service"%>
@@ -14,13 +14,13 @@
 <SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT> 
 
 <SCRIPT language="JavaScript">
-//afin de sélectionner un élément dans une liste
+//afin de sÃ©lectionner un Ã©lÃ©ment dans une liste
 function executeBouton(nom)
 {
 document.formu.elements[nom].click();
 }
 
-// afin de mettre le focus sur une zone précise
+// afin de mettre le focus sur une zone prÃ©cise
 function setfocus(nom)
 {
 if (document.formu.elements[nom] != null)
@@ -36,7 +36,7 @@ document.formu.elements[nom].focus();
 		}
 
 </SCRIPT>
-<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 </HEAD>
 <jsp:useBean
  class="nc.mairie.droits.process.OeDROITSUtilisateurs"
@@ -91,7 +91,7 @@ document.formu.elements[nom].focus();
 			<tr>
 				<td width="960px;">
 					<FIELDSET class="sigp2Fieldset" style="text-align:left;">
-					    <legend class="sigp2Legend">Groupes associés</legend>
+					    <legend class="sigp2Legend">Groupes associÃ©s</legend>
 					    <table class="sigp2Mandatory">
 					    	<tr>
 					    		<td width="400px;">
@@ -132,7 +132,7 @@ document.formu.elements[nom].focus();
 			</span>
 			<BR/>
 		    <FIELDSET class="sigp2Fieldset" style="text-align: left; margin: 10px;">
-			    <legend class="sigp2Legend">Groupes associés</legend>
+			    <legend class="sigp2Legend">Groupes associÃ©s</legend>
     			<div align="left" style="float:left;display:block;width:40%;">
 			    	<span style="margin-left:5px;position:relative;width:250px;">Groupes de l'utilisateur</span>
 			    	<BR/>

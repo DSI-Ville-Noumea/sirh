@@ -1,4 +1,4 @@
-<!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@ page contentType="text/html; charset=UTF-8" %> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <%@page import="nc.mairie.metier.poste.Service"%>
 <%@page import="nc.mairie.utils.TreeHierarchy"%>
 <HTML>
@@ -8,7 +8,7 @@
 		<META http-equiv="Content-Style-Type" content="text/css">
 		<LINK href="theme/sigp2.css" rel="stylesheet" type="text/css">
 		<lINK rel="stylesheet" href="css/custom-theme/jquery-ui-1.8.16.custom.css" type="text/css">
-		<TITLE>Sélection d'un agent</TITLE>
+		<TITLE>SÃ©lection d'un agent</TITLE>
 		
 		<SCRIPT type="text/javascript" src="js/jquery-1.6.2.min.js"></SCRIPT>
 		<SCRIPT type="text/javascript" src="development-bundle/ui/jquery.ui.core.js"></SCRIPT>
@@ -19,20 +19,20 @@
 		<SCRIPT language="javascript" src="js/dtree.js"></SCRIPT>
 		
 		<SCRIPT language="JavaScript">
-			//afin de sélectionner un élément dans une liste
+			//afin de sÃ©lectionner un Ã©lÃ©ment dans une liste
 			function executeBouton(nom)
 			{
 			document.formu.elements[nom].click();
 			}
 			
-			// afin de mettre le focus sur une zone précise
+			// afin de mettre le focus sur une zone prÃ©cise
 			function setfocus(nom)
 			{
 			if (document.formu.elements[nom] != null)
 			document.formu.elements[nom].focus();
 			}
 			
-			// afin d'afficher la hiérarchie des services
+			// afin d'afficher la hiÃ©rarchie des services
 			function agrandirHierarchy() {
 			
 				hier = 	document.getElementById('treeHierarchy');
@@ -44,7 +44,7 @@
 				}
 			}
 			
-			// afin de cacher la hiérarchie des services
+			// afin de cacher la hiÃ©rarchie des services
 			function reduireHierarchy() {
 				hier = 	document.getElementById('treeHierarchy');
 				hier.style.display="none";
@@ -58,7 +58,7 @@
 			 document.getElementById(id).className="selectLigne";
 			}
 		</SCRIPT>
-		<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	</HEAD>
 	<BODY bgcolor="#FFFFFF" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="return setfocus('<%= process.getFocus() %>')">
 		<%@ include file="BanniereErreur.jsp"%>
@@ -107,17 +107,17 @@
 						<TR>
 							<TD class="sigp2" valign="top">
 								<INPUT type="radio" align="bottom" <%= process.forRadioHTML(process.getNOM_RG_RECHERCHE(),process.getNOM_RB_RECH_NOM())%>>
-							Matricule ou début du nom de l'agent</TD>
+							Matricule ou dÃ©but du nom de l'agent</TD>
 						</TR>
 						<TR>
 							<TD class="sigp2">
 								<INPUT type="radio" <%= process.forRadioHTML(process.getNOM_RG_RECHERCHE(),process.getNOM_RB_RECH_PRENOM())%>>
-								Début du prénom de l'agent</TD>
+								DÃ©but du prÃ©nom de l'agent</TD>
 						</TR>
 						<TR>
 							<TD class="sigp2">
 								<INPUT type="radio" <%= process.forRadioHTML(process.getNOM_RG_RECHERCHE(),process.getNOM_RB_RECH_CAFAT())%>>
-								Numéro de CAFAT ou RUAMM</TD>
+								NumÃ©ro de CAFAT ou RUAMM</TD>
 						</TR>
 						<tr><td><BR/></td></tr>
 						<TR>
@@ -132,8 +132,8 @@
 	            </TABLE>
 	            <BR/><BR/>
 			</FIELDSET>
-			<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;" title="Sélection d'un agent">
-				<LEGEND class="sigp2Legend">Sélection d'un agent</LEGEND>
+			<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;" title="SÃ©lection d'un agent">
+				<LEGEND class="sigp2Legend">SÃ©lection d'un agent</LEGEND>
                	<%if(process.getListeAgent()!= null && process.getListeAgent().size()>0){ %>
 		    
 				    <div class="sigp2-RadioBouton">

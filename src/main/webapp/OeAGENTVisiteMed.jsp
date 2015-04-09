@@ -1,4 +1,4 @@
-<!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@ page contentType="text/html; charset=UTF-8" %> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <%@page import="nc.mairie.metier.hsct.VisiteMedicale"%>
 <%@page import="nc.mairie.metier.Const"%>
 <%@page import="nc.mairie.utils.MairieUtils"%>
@@ -9,19 +9,19 @@
 		<META name="GENERATOR" content="IBM WebSphere Page Designer V3.5.3 for Windows">
 		<META http-equiv="Content-Style-Type" content="text/css">
 		<LINK href="theme/sigp2.css" rel="stylesheet" type="text/css">
-		<TITLE>Gestion des visites médicales</TITLE>
+		<TITLE>Gestion des visites mÃ©dicales</TITLE>
 		<LINK rel="stylesheet" href="theme/calendrier-mairie.css" type="text/css">
 		<SCRIPT type="text/javascript" src="js/GestionCalendrier.js"></SCRIPT> 
 		<SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT>
 		
 		<SCRIPT language="JavaScript">
-		//afin de sélectionner un élément dans une liste
+		//afin de sÃ©lectionner un Ã©lÃ©ment dans une liste
 		function executeBouton(nom)
 		{
 			document.formu.elements[nom].click();
 		}
 
-		// afin de mettre le focus sur une zone précise
+		// afin de mettre le focus sur une zone prÃ©cise
 		function setfocus(nom)
 		{
 		if (document.formu.elements[nom] != null)
@@ -55,7 +55,7 @@
 		
 		</SCRIPT>
 		
-		<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	</HEAD>
 	<jsp:useBean class="nc.mairie.gestionagent.process.agent.OeAGENTVisiteMed" id="process" scope="session"></jsp:useBean>
 	<BODY bgcolor="#FFFFFF" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="window.parent.frames['refAgent'].location.reload();" >
@@ -64,15 +64,15 @@
 	<FORM name="formu" <%=process.isImporting ? "ENCTYPE=\"multipart/form-data\"" : ""%> method="POST" class="sigp2-titre">
 		<INPUT name="JSP" type="hidden" value="<%= process.getJSP() %>">
 				<FIELDSET class="sigp2Fieldset" style="width:1030px;">
-				    <legend class="sigp2Legend">Liste des visites médicales de l'agent</legend>
+				    <legend class="sigp2Legend">Liste des visites mÃ©dicales de l'agent</legend>
 					    		<div style="overflow: auto;height: 250px;width:980px;">
 									<table class="sigp2NewTab" style="text-align:left;width:960px;">
 								    	<tr bgcolor="#EFEFEF" valign="bottom">
 								    		<td align="left">
 								    			<INPUT style="margin-left: 5px;" title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_CREER()%>">
 								    		</td>
-								    		<td align="center">Date dernière visite</td>
-								    		<td align="center">Durée de validité (mois)</td>
+								    		<td align="center">Date derniÃ¨re visite</td>
+								    		<td align="center">DurÃ©e de validitÃ© (mois)</td>
 								    		<td align="left">Nom du medecin</td>
 								    		<td align="left">Motif</td>
 								    		<td align="center">Avis</td>
@@ -141,7 +141,7 @@
 				</tr>
 				<tr>
 					<td>
-						<span class="sigp2Mandatory">Durée de validité (mois) :</span>
+						<span class="sigp2Mandatory">DurÃ©e de validitÃ© (mois) :</span>
 					</td>
 					<td>
 						<INPUT <%= process.elementModifibale ? "" : "disabled='disabled'" %> class="sigp2-saisie" maxlength="5" name="<%= process.getNOM_EF_DUREE() %>" size="5" type="text" value="<%= process.getVAL_EF_DUREE() %>">
@@ -325,7 +325,7 @@
 				</tr>
 				<tr>
 					<td>
-					<span class="sigp2">Durée de validité : </span>
+					<span class="sigp2">DurÃ©e de validitÃ© : </span>
 					</td>
 					<td>
 					<span class="sigp2-saisie"><%=process.getVAL_ST_DUREE_VALIDITE()%></span>
@@ -392,8 +392,8 @@
 				    <span style="position:relative;width:9px;"></span>
 				    <span style="position:relative;width:65px;"><INPUT type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_CREER_INAPTITUDE()%>"></span>
 				    <span style="position:relative;width:300px;text-align: left;">Type</span>
-					<span style="position:relative;width:90px;text-align: center;">Début</span>
-					<span style="position:relative;width:43px;text-align: left;">années</span>
+					<span style="position:relative;width:90px;text-align: center;">DÃ©but</span>
+					<span style="position:relative;width:43px;text-align: left;">annÃ©es</span>
 					<span style="position:relative;width:43px;text-align: left;">mois</span>
 					<span style="position:relative;text-align: left;">jours</span>
 					<br/>
@@ -441,23 +441,23 @@
 
 				<BR/><BR/>
 
-				<span class="sigp2Mandatory"  style="margin-left:20px;position:relative;width:150px;">Date de début :</span>
+				<span class="sigp2Mandatory"  style="margin-left:20px;position:relative;width:150px;">Date de dÃ©but :</span>
 				<input id="<%=process.getNOM_EF_DEBUT_INAPTITUDE()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DEBUT_INAPTITUDE() %>" size="10" type="text"	value="<%= process.getVAL_EF_DEBUT_INAPTITUDE() %>">
 				<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_EF_DEBUT_INAPTITUDE()%>', 'dd/mm/y');">
 
 				<BR/><BR/>
 				
-				<span class="sigp2" style="margin-left:20px;position:relative;width:150px;">Durée de validité (année) :</span>
+				<span class="sigp2" style="margin-left:20px;position:relative;width:150px;">DurÃ©e de validitÃ© (annÃ©e) :</span>
 				<INPUT class="sigp2-saisie" maxlength="5" name="<%= process.getNOM_EF_DUREE_ANNEES() %>" size="5" type="text" value="<%= process.getVAL_EF_DUREE_ANNEES() %>">
 
 				<BR/><BR/>
 				
-				<span class="sigp2" style="margin-left:20px;position:relative;width:150px;">Durée de validité (mois) :</span>
+				<span class="sigp2" style="margin-left:20px;position:relative;width:150px;">DurÃ©e de validitÃ© (mois) :</span>
 				<INPUT class="sigp2-saisie" maxlength="5" name="<%= process.getNOM_EF_DUREE_MOIS() %>" size="5" type="text" value="<%= process.getVAL_EF_DUREE_MOIS() %>">
 				
 				<BR/><BR/>
 				
-				<span class="sigp2" style="margin-left:20px;position:relative;width:150px;">Durée de validité (jours) :</span>
+				<span class="sigp2" style="margin-left:20px;position:relative;width:150px;">DurÃ©e de validitÃ© (jours) :</span>
 				<INPUT class="sigp2-saisie" maxlength="5" name="<%= process.getNOM_EF_DUREE_JOURS() %>" size="5" type="text" value="<%= process.getVAL_EF_DUREE_JOURS() %>">
 			</div>
 			
@@ -473,16 +473,16 @@
 		    	<span class="sigp2" style="width:150px">Type : </span>
 				<span class="sigp2-saisie"><%=process.getVAL_ST_TYPE()%></span>
 				<BR/>
-				<span class="sigp2" style="width:150px">Début : </span>
+				<span class="sigp2" style="width:150px">DÃ©but : </span>
 				<span class="sigp2-saisie"><%=process.getVAL_ST_DEBUT_INAPTITUDE()%></span>
 				<BR/>
-				<span class="sigp2" style="width:150px">Durée (années)</span>
+				<span class="sigp2" style="width:150px">DurÃ©e (annÃ©es)</span>
 				<span class="sigp2-saisie"><%=process.getVAL_ST_DUREE_ANNEES()%></span>
 				<BR/>
-				<span class="sigp2" style="width:150px">Durée (mois)</span>
+				<span class="sigp2" style="width:150px">DurÃ©e (mois)</span>
 				<span class="sigp2-saisie"><%=process.getVAL_ST_DUREE_MOIS()%></span>
 				<BR/>
-				<span class="sigp2" style="width:150px">Durée (jours)</span>
+				<span class="sigp2" style="width:150px">DurÃ©e (jours)</span>
 				<span class="sigp2-saisie"><%=process.getVAL_ST_DUREE_JOURS()%></span>
 				</div>
 			<%} %>

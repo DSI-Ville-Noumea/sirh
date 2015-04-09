@@ -1,4 +1,4 @@
-<!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@ page contentType="text/html; charset=UTF-8" %> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <%@page import="nc.mairie.metier.agent.Agent"%>
 <HTML>
 <HEAD>
@@ -6,20 +6,20 @@
 <META http-equiv="Content-Style-Type" content="text/css">
 <LINK href="theme/sigp2.css" rel="stylesheet" type="text/css">
 <LINK href="theme/dataTables.css" rel="stylesheet" type="text/css">
-<TITLE>Sélection des évaluateurs des EAE</TITLE>
+<TITLE>SÃ©lection des Ã©valuateurs des EAE</TITLE>
 
 <SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT> 
 <script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
 <script type="text/javascript" src="js/jquery.dataTables.js"></script>
 
 <SCRIPT language="JavaScript">
-//afin de sélectionner un élément dans une liste
+//afin de sÃ©lectionner un Ã©lÃ©ment dans une liste
 function executeBouton(nom)
 {
 document.formu.elements[nom].click();
 }
 
-// afin de mettre le focus sur une zone précise
+// afin de mettre le focus sur une zone prÃ©cise
 function setfocus(nom)
 {
 if (document.formu.elements[nom] != null)
@@ -35,7 +35,7 @@ function SelectLigne(id,tailleTableau)
 }
 
 </SCRIPT>
-<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 </HEAD>
 <jsp:useBean class="nc.mairie.gestionagent.process.avancement.OeAVCTSelectionEvaluateur" id="process" scope="session"></jsp:useBean>
 <BODY bgcolor="#FFFFFF" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" class="sigp2-BODY" onload="return setfocus('<%=process.getFocus()%>')">
@@ -48,12 +48,12 @@ function SelectLigne(id,tailleTableau)
 						<TR>
 							<TD class="sigp2" valign="top">
 								<INPUT type="radio" align="bottom" <%=process.forRadioHTML(process.getNOM_RG_RECHERCHE(),process.getNOM_RB_RECH_NOM())%>>
-							Matricule ou début du nom de l'agent</TD>
+							Matricule ou dÃ©but du nom de l'agent</TD>
 						</TR>
 						<TR>
 							<TD class="sigp2">
 								<INPUT type="radio" <%=process.forRadioHTML(process.getNOM_RG_RECHERCHE(),process.getNOM_RB_RECH_PRENOM())%>>
-								Début du prénom de l'agent</TD>
+								DÃ©but du prÃ©nom de l'agent</TD>
 						</TR>
 						<tr><td><BR/></td></tr>
 						<TR>
@@ -93,16 +93,16 @@ function SelectLigne(id,tailleTableau)
 				%>
 			</FIELDSET>
 		<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
-		    <legend class="sigp2Legend">Sélection d'un evaluateur</legend>
+		    <legend class="sigp2Legend">SÃ©lection d'un evaluateur</legend>
 		    <BR/>
-		    <FONT color='red'> Attention vous n'avez le droit qu'à 2 agents évaluateurs maximum.</FONT>
+		    <FONT color='red'> Attention vous n'avez le droit qu'Ã  2 agents Ã©valuateurs maximum.</FONT>
 			<BR/><BR/>
 			<table class="display" id="tabActiSelect">
 				<thead>
 					<tr>
 						<th>idAgent</th>
 						<th width="50" >Selection</th>
-						<th>Libellé</th>
+						<th>LibellÃ©</th>
 					</tr>
 				</thead>
 				<tbody>

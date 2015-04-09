@@ -1,4 +1,4 @@
-<!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@ page contentType="text/html; charset=UTF-8" %> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <%@page import="nc.mairie.utils.TreeHierarchy"%>
 <%@page import="nc.mairie.metier.Const"%>
 <%@page import="nc.mairie.metier.poste.Service"%>
@@ -10,16 +10,16 @@
 		<META name="GENERATOR" content="IBM WebSphere Page Designer V3.5.3 for Windows">
 		<META http-equiv="Content-Style-Type" content="text/css">
 		<LINK href="theme/sigp2.css" rel="stylesheet" type="text/css">
-		<TITLE>Gestion des paramètres du kiosque</TITLE>
+		<TITLE>Gestion des paramÃ¨tres du kiosque</TITLE>
 		
 		<SCRIPT language="JavaScript">
-		//afin de sélectionner un élément dans une liste
+		//afin de sÃ©lectionner un Ã©lÃ©ment dans une liste
 		function executeBouton(nom)
 		{
 			document.formu.elements[nom].click();
 		}
 
-		// afin de mettre le focus sur une zone précise
+		// afin de mettre le focus sur une zone prÃ©cise
 		function setfocus(nom)
 		{
 		if (document.formu.elements[nom] != null)
@@ -34,7 +34,7 @@
 		</SCRIPT>
         <SCRIPT language="javascript" src="js/dtreeSelection.js"></SCRIPT>
 		
-		<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	</HEAD>
 	<jsp:useBean class="nc.mairie.gestionagent.process.parametre.OePARAMETRAGEKiosque" id="process" scope="session"></jsp:useBean>
 	<BODY bgcolor="#FFFFFF" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" class="sigp2-BODY" onload="window.parent.frames['refAgent'].location.reload();return setfocus('<%= process.getFocus() %>')" >
@@ -61,14 +61,14 @@
 				<tr>
 					<td>
 						<FIELDSET class="sigp2Fieldset"  style="text-align: left;">
-					    	<legend class="sigp2Legend">Référent RH global</legend>
-							<span class="sigp2Mandatory">Ici, il faut saisir le référent RH qui'il faut contacter si il n'y a pas de referent RH associé au service de l'agent.</span>
+					    	<legend class="sigp2Legend">RÃ©fÃ©rent RH global</legend>
+							<span class="sigp2Mandatory">Ici, il faut saisir le rÃ©fÃ©rent RH qui'il faut contacter si il n'y a pas de referent RH associÃ© au service de l'agent.</span>
 							<br/><br/>
 							<span class="sigp2Mandatory">Agent : </span>
 					    	<INPUT class="sigp2-saisie" maxlength="4" name="<%= process.getNOM_EF_ID_REFERENT_RH_GLOBAL() %>" size="4" type="text" value="<%= process.getVAL_EF_ID_REFERENT_RH_GLOBAL() %>">
 							<img border="0" src="images/loupe.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_RECHERCHER_AGENT_GLOBAL()%>');">
 				            <img border="0" src="images/suppression.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_GLOBAL()%>');">
-                			<span class="sigp2Mandatory">Téléphone : </span>
+                			<span class="sigp2Mandatory">TÃ©lÃ©phone : </span>
 							<INPUT class="sigp2-saisie" maxlength="4" name="<%= process.getNOM_EF_NUMERO_TELEPHONE_GLOBAL() %>" size="4" type="text" value="<%= process.getVAL_EF_NUMERO_TELEPHONE_GLOBAL() %>">
 							<INPUT type="submit" class="sigp2-Bouton-100" value="Valider" name="<%=process.getNOM_PB_VALIDER_REFERENT_RH_GLOBAL()%>">
 						</FIELDSET>
@@ -77,8 +77,8 @@
 				<tr>
 					<td>
 						<FIELDSET class="sigp2Fieldset"  style="text-align: left;">
-					    	<legend class="sigp2Legend">Référents RH</legend>
-							<span class="sigp2-saisie" style="margin-left: 5px;">Référent</span>
+					    	<legend class="sigp2Legend">RÃ©fÃ©rents RH</legend>
+							<span class="sigp2-saisie" style="margin-left: 5px;">RÃ©fÃ©rent</span>
 							<SELECT name="<%= process.getNOM_LB_REFERENT_RH() %>" size="10" style="width:100%;" class="sigp2-liste">
 								<%=process.forComboHTML(process.getVAL_LB_REFERENT_RH(), process.getVAL_LB_REFERENT_RH_SELECT()) %>
 							</SELECT>
@@ -95,7 +95,7 @@
 								<tr>
 									<td>								
 										<FIELDSET class="sigp2Fieldset" style="text-align:left;">
-										    <legend class="sigp2Legend">Services associés</legend>
+										    <legend class="sigp2Legend">Services associÃ©s</legend>
 										    <table class="sigp2Mandatory">
 												<tr>
 													<td width="45%">
@@ -110,7 +110,7 @@
 													</td>
 													<td width="10%">&nbsp;</td>
 													<td width="45%">
-														<span class="sigp2Mandatory">Téléphone : </span>
+														<span class="sigp2Mandatory">TÃ©lÃ©phone : </span>
 														<INPUT class="sigp2-saisie" maxlength="4" name="<%= process.getNOM_EF_NUMERO_TELEPHONE() %>" size="4" type="text" value="<%= process.getVAL_EF_NUMERO_TELEPHONE() %>">
 													</td>
 												</tr>
@@ -189,7 +189,7 @@
 								</tr>
 								<tr>
 									<td>
-										<label class="sigp2Mandatory">Téléphone :</label>
+										<label class="sigp2Mandatory">TÃ©lÃ©phone :</label>
 									</td>
 									<td>
 										<label class="sigp2-saisie" ><%= process.getVAL_EF_NUMERO_TELEPHONE() %></label>

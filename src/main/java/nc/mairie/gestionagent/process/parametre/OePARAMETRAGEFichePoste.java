@@ -39,7 +39,7 @@ import nc.mairie.utils.MessageUtils;
 import org.springframework.context.ApplicationContext;
 
 /**
- * Process OePARAMETRAGEFichePoste Date de création : (13/09/11 15:49:10)
+ * Process OePARAMETRAGEFichePoste Date de crÃ©ation : (13/09/11 15:49:10)
  * 
  */
 public class OePARAMETRAGEFichePoste extends BasicProcess {
@@ -108,10 +108,10 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	private BaseHorairePointageDao baseHorairePointageDao;
 
 	/**
-	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones Ã  afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
-	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
-	 * addZone(getNOMxxx, String); Date de création : (13/09/11 15:49:10)
+	 * doivent avoir les Fields PUBLIC Utilisation de la mÃ©thode
+	 * addZone(getNOMxxx, String); Date de crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public void initialiseZones(HttpServletRequest request) throws Exception {
@@ -119,11 +119,11 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 		VariableGlobale.ajouter(request, "PROCESS_MEMORISE", this);
 
 		// ----------------------------------//
-		// Vérification des droits d'accès. //
+		// VÃ©rification des droits d'acces. //
 		// ----------------------------------//
 		if (MairieUtils.estInterdit(request, getNomEcran())) {
 			// "ERR190",
-			// "Opération impossible. Vous ne disposez pas des droits d'accès à cette option."
+			// "Operation impossible. Vous ne disposez pas des droits d'acces a cette option."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
@@ -134,7 +134,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 		// ---------------------------//
 		initialiseListes(request);
 
-		// Si hashtable des écoles vide
+		// Si hashtable des Ã©coles vide
 		if (getHashEntiteEcole().size() == 0) {
 			ArrayList<Ecole> a = Ecole.listerEcole(getTransaction());
 			setListeEntiteEcole(a);
@@ -187,7 +187,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne les ecoles dans une table de hashage Date de création :
+	 * Retourne les ecoles dans une table de hashage Date de crÃ©ation :
 	 * (11/06/2003 15:37:08)
 	 * 
 	 * @return Hashtable
@@ -200,7 +200,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Initialisation de la listes des entités géographiques Date de création :
+	 * Initialisation de la listes des entitÃ©s gÃ©ographiques Date de crÃ©ation :
 	 * (14/09/11)
 	 * 
 	 */
@@ -223,8 +223,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Initialisation de la listes des ecoles pour les entités géographiques
-	 * Date de création : (14/09/11)
+	 * Initialisation de la listes des ecoles pour les entitÃ©s gÃ©ographiques
+	 * Date de crÃ©ation : (14/09/11)
 	 */
 	private void initialiseListeEntiteGeoEcole(HttpServletRequest request) throws Exception {
 		if (getListeEntiteEcole().size() != 0) {
@@ -244,7 +244,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Initialisation dede la liste des titres de poste Date de création :
+	 * Initialisation dede la liste des titres de poste Date de crÃ©ation :
 	 * (14/09/11)
 	 * 
 	 */
@@ -268,7 +268,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 	/**
 	 * Initialisation dede la liste des types d'avantage en nature Date de
-	 * création : (14/09/11)
+	 * crÃ©ation : (14/09/11)
 	 * 
 	 */
 	private void initialiseListeTypeAvantage(HttpServletRequest request) throws Exception {
@@ -291,7 +291,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 	/**
 	 * Initialisation dede la liste des natures d'avantage en nature Date de
-	 * création : (14/09/11)
+	 * crÃ©ation : (14/09/11)
 	 * 
 	 */
 	private void initialiseListeNatureAvantage(HttpServletRequest request) throws Exception {
@@ -313,7 +313,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Initialisation dede la liste des types de délégation Date de création :
+	 * Initialisation dede la liste des types de dÃ©lÃ©gation Date de crÃ©ation :
 	 * (14/09/11)
 	 * 
 	 */
@@ -336,8 +336,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Initialisation dede la liste des types de régime indemnitaire Date de
-	 * création : (14/09/11)
+	 * Initialisation dede la liste des types de rÃ©gime indemnitaire Date de
+	 * crÃ©ation : (14/09/11)
 	 * 
 	 */
 	private void initialiseListeTypeRegime(HttpServletRequest request) throws Exception {
@@ -359,7 +359,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Initialisation dede la liste des NFAs Date de création : (04/11/11)
+	 * Initialisation dede la liste des NFAs Date de crÃ©ation : (04/11/11)
 	 * 
 	 */
 	private void initialiseListeNFA(HttpServletRequest request) throws Exception {
@@ -381,7 +381,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Initialisation dede la liste des ecoles Date de création : (04/11/11)
+	 * Initialisation dede la liste des ecoles Date de crÃ©ation : (04/11/11)
 	 */
 	private void initialiseListeEcole(HttpServletRequest request) throws Exception {
 		setListeEcole(Ecole.listerEcole(getTransaction()));
@@ -402,13 +402,13 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Initialisation des listes de paramètres Date de création : (13/09/11)
+	 * Initialisation des listes de parametres Date de crÃ©ation : (13/09/11)
 	 * 
 	 */
 	private void initialiseListes(HttpServletRequest request) throws Exception {
 
 		if (getListeEntite() == null) {
-			// Recherche des entités géographiques
+			// Recherche des entitÃ©s gÃ©ographiques
 			setListeEntite(EntiteGeo.listerEntiteGeo(getTransaction()));
 			initialiseListeEntiteGeo(request);
 		}
@@ -432,13 +432,13 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 		}
 
 		if (getListeTypeDelegation() == null) {
-			// Recherche des types de délégation
+			// Recherche des types de dÃ©lÃ©gation
 			setListeTypeDelegation(getTypeDelegationDao().listerTypeDelegation());
 			initialiseListeTypeDelegation(request);
 		}
 
 		if (getListeTypeRegime() == null) {
-			// Recherche des types de régime indemnitaires
+			// Recherche des types de rÃ©gime indemnitaires
 			setListeTypeRegime(getTypeRegIndemnDao().listerTypeRegIndemn());
 			initialiseListeTypeRegime(request);
 		}
@@ -483,7 +483,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Constructeur du process OePARAMETRAGEFichePoste. Date de création :
+	 * Constructeur du process OePARAMETRAGEFichePoste. Date de crÃ©ation :
 	 * (13/09/11 15:49:10)
 	 * 
 	 */
@@ -492,8 +492,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de l'écran (notamment pour déterminer les droits
-	 * associés).
+	 * Retourne le nom de l'Ã©cran (notamment pour dÃ©terminer les droits
+	 * associÃ©s).
 	 */
 	public String getNomEcran() {
 		return "ECR-PARAM-PE-FICHEPOSTE";
@@ -501,7 +501,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER_ENTITE_GEO Date de
-	 * création : (13/09/11 15:49:10)
+	 * crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public String getNOM_PB_ANNULER_ENTITE_GEO() {
@@ -509,10 +509,10 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (13/09/11 15:49:10)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public boolean performPB_ANNULER_ENTITE_GEO(HttpServletRequest request) throws Exception {
@@ -523,7 +523,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER_NATURE_AVANTAGE Date
-	 * de création : (13/09/11 15:49:10)
+	 * de crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public String getNOM_PB_ANNULER_NATURE_AVANTAGE() {
@@ -531,10 +531,10 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (13/09/11 15:49:10)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public boolean performPB_ANNULER_NATURE_AVANTAGE(HttpServletRequest request) throws Exception {
@@ -545,7 +545,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER_TITRE Date de
-	 * création : (13/09/11 15:49:10)
+	 * crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public String getNOM_PB_ANNULER_TITRE() {
@@ -553,10 +553,10 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (13/09/11 15:49:10)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public boolean performPB_ANNULER_TITRE(HttpServletRequest request) throws Exception {
@@ -567,7 +567,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER_TYPE_AVANTAGE Date
-	 * de création : (13/09/11 15:49:10)
+	 * de crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public String getNOM_PB_ANNULER_TYPE_AVANTAGE() {
@@ -575,10 +575,10 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (13/09/11 15:49:10)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public boolean performPB_ANNULER_TYPE_AVANTAGE(HttpServletRequest request) throws Exception {
@@ -589,7 +589,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER_TYPE_DELEGATION Date
-	 * de création : (13/09/11 15:49:10)
+	 * de crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public String getNOM_PB_ANNULER_TYPE_DELEGATION() {
@@ -597,10 +597,10 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (13/09/11 15:49:10)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public boolean performPB_ANNULER_TYPE_DELEGATION(HttpServletRequest request) throws Exception {
@@ -611,7 +611,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER_TYPE_REGIME Date de
-	 * création : (13/09/11 15:49:10)
+	 * crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public String getNOM_PB_ANNULER_TYPE_REGIME() {
@@ -619,10 +619,10 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (13/09/11 15:49:10)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public boolean performPB_ANNULER_TYPE_REGIME(HttpServletRequest request) throws Exception {
@@ -633,7 +633,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_CREER_ENTITE_GEO Date de
-	 * création : (13/09/11 15:49:10)
+	 * crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public String getNOM_PB_CREER_ENTITE_GEO() {
@@ -641,10 +641,10 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (13/09/11 15:49:10)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public boolean performPB_CREER_ENTITE_GEO(HttpServletRequest request) throws Exception {
@@ -661,7 +661,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_MODIFIER_ENTITE_GEO Date de
-	 * création : (13/09/11 15:49:10)
+	 * crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public String getNOM_PB_MODIFIER_ENTITE_GEO() {
@@ -669,10 +669,10 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (14/09/11 15:57:59)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (14/09/11 15:57:59)
 	 * 
 	 */
 	public boolean performPB_MODIFIER_ENTITE_GEO(HttpServletRequest request) throws Exception {
@@ -690,7 +690,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 			addZone(getNOM_EF_ENTITE_GEO(), entiteGeo.getLibEntiteGeo());
 			addZone(getNOM_ST_ACTION_ENTITE_GEO(), ACTION_MODIFICATION);
 		} else {
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "entités géographiques"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "entitÃ©s gÃ©ographiques"));
 		}
 
 		setStatut(STATUT_MEME_PROCESS);
@@ -699,7 +699,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_CREER_NATURE_AVANTAGE Date
-	 * de création : (13/09/11 15:49:10)
+	 * de crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public String getNOM_PB_CREER_NATURE_AVANTAGE() {
@@ -707,10 +707,10 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (13/09/11 15:49:10)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public boolean performPB_CREER_NATURE_AVANTAGE(HttpServletRequest request) throws Exception {
@@ -725,7 +725,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_CREER_TITRE Date de création
+	 * Retourne le nom d'un bouton pour la JSP : PB_CREER_TITRE Date de crÃ©ation
 	 * : (13/09/11 15:49:10)
 	 * 
 	 */
@@ -734,10 +734,10 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (13/09/11 15:49:10)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public boolean performPB_CREER_TITRE(HttpServletRequest request) throws Exception {
@@ -751,7 +751,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_CREER_TYPE_AVANTAGE Date de
-	 * création : (13/09/11 15:49:10)
+	 * crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public String getNOM_PB_CREER_TYPE_AVANTAGE() {
@@ -759,10 +759,10 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (13/09/11 15:49:10)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public boolean performPB_CREER_TYPE_AVANTAGE(HttpServletRequest request) throws Exception {
@@ -776,7 +776,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_CREER_TYPE_DELEGATION Date
-	 * de création : (13/09/11 15:49:10)
+	 * de crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public String getNOM_PB_CREER_TYPE_DELEGATION() {
@@ -784,10 +784,10 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (13/09/11 15:49:10)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public boolean performPB_CREER_TYPE_DELEGATION(HttpServletRequest request) throws Exception {
@@ -801,7 +801,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_CREER_TYPE_REGIME Date de
-	 * création : (13/09/11 15:49:10)
+	 * crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public String getNOM_PB_CREER_TYPE_REGIME() {
@@ -809,10 +809,10 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (13/09/11 15:49:10)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public boolean performPB_CREER_TYPE_REGIME(HttpServletRequest request) throws Exception {
@@ -826,7 +826,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMER_ENTITE_GEO Date de
-	 * création : (13/09/11 15:49:10)
+	 * crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public String getNOM_PB_SUPPRIMER_ENTITE_GEO() {
@@ -834,10 +834,10 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (13/09/11 15:49:10)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public boolean performPB_SUPPRIMER_ENTITE_GEO(HttpServletRequest request) throws Exception {
@@ -856,7 +856,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 			addZone(getNOM_EF_ENTITE_GEO(), eg.getLibEntiteGeo());
 			addZone(getNOM_ST_ACTION_ENTITE_GEO(), ACTION_SUPPRESSION);
 		} else {
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "entités géographiques"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "entitÃ©s gÃ©ographiques"));
 		}
 
 		return true;
@@ -864,7 +864,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMER_NATURE_AVANTAGE
-	 * Date de création : (13/09/11 15:49:10)
+	 * Date de crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public String getNOM_PB_SUPPRIMER_NATURE_AVANTAGE() {
@@ -872,10 +872,10 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (13/09/11 15:49:10)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public boolean performPB_SUPPRIMER_NATURE_AVANTAGE(HttpServletRequest request) throws Exception {
@@ -897,7 +897,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMER_TITRE Date de
-	 * création : (13/09/11 15:49:10)
+	 * crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public String getNOM_PB_SUPPRIMER_TITRE() {
@@ -905,10 +905,10 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (13/09/11 15:49:10)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public boolean performPB_SUPPRIMER_TITRE(HttpServletRequest request) throws Exception {
@@ -929,7 +929,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMER_TYPE_AVANTAGE Date
-	 * de création : (13/09/11 15:49:10)
+	 * de crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public String getNOM_PB_SUPPRIMER_TYPE_AVANTAGE() {
@@ -937,10 +937,10 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (13/09/11 15:49:10)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public boolean performPB_SUPPRIMER_TYPE_AVANTAGE(HttpServletRequest request) throws Exception {
@@ -962,7 +962,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMER_TYPE_DELEGATION
-	 * Date de création : (13/09/11 15:49:10)
+	 * Date de crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public String getNOM_PB_SUPPRIMER_TYPE_DELEGATION() {
@@ -970,10 +970,10 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (13/09/11 15:49:10)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public boolean performPB_SUPPRIMER_TYPE_DELEGATION(HttpServletRequest request) throws Exception {
@@ -987,7 +987,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 			addZone(getNOM_EF_TYPE_DELEGATION(), tg.getLibTypeDelegation());
 			addZone(getNOM_ST_ACTION_TYPE_DELEGATION(), ACTION_SUPPRESSION);
 		} else {
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "types de délégation"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "types de dÃ©lÃ©gation"));
 		}
 
 		return true;
@@ -995,7 +995,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMER_TYPE_REGIME Date
-	 * de création : (13/09/11 15:49:10)
+	 * de crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public String getNOM_PB_SUPPRIMER_TYPE_REGIME() {
@@ -1003,10 +1003,10 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (13/09/11 15:49:10)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public boolean performPB_SUPPRIMER_TYPE_REGIME(HttpServletRequest request) throws Exception {
@@ -1020,7 +1020,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 			addZone(getNOM_EF_TYPE_REGIME(), tr.getLibTypeRegIndemn());
 			addZone(getNOM_ST_ACTION_TYPE_REGIME(), ACTION_SUPPRESSION);
 		} else {
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "types de régime"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "types de rÃ©gime"));
 		}
 
 		return true;
@@ -1028,7 +1028,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER_ENTITE_GEO Date de
-	 * création : (13/09/11 15:49:10)
+	 * crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public String getNOM_PB_VALIDER_ENTITE_GEO() {
@@ -1036,10 +1036,10 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (13/09/11 15:49:10)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public boolean performPB_VALIDER_ENTITE_GEO(HttpServletRequest request) throws Exception {
@@ -1051,7 +1051,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 		if (getVAL_ST_ACTION_ENTITE_GEO() != null && getVAL_ST_ACTION_ENTITE_GEO() != Const.CHAINE_VIDE) {
 			if (getVAL_ST_ACTION_ENTITE_GEO().equals(ACTION_CREATION)) {
-				// on recupere l'école (si elle est saisie !)
+				// on recupere l'Ã©cole (si elle est saisie !)
 				setEntiteGeoCourante(new EntiteGeo());
 				int indice = (Services.estNumerique(getVAL_LB_ENTITE_GEO_ECOLE_SELECT()) ? Integer
 						.parseInt(getVAL_LB_ENTITE_GEO_ECOLE_SELECT()) : -1);
@@ -1074,7 +1074,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 					getListeEntite().remove(getEntiteGeoCourante());
 				setEntiteGeoCourante(null);
 			} else if (getVAL_ST_ACTION_ENTITE_GEO().equals(ACTION_MODIFICATION)) {
-				// on recupere l'école (si elle est saisie !)
+				// on recupere l'Ã©cole (si elle est saisie !)
 				int indice = (Services.estNumerique(getVAL_LB_ENTITE_GEO_ECOLE_SELECT()) ? Integer
 						.parseInt(getVAL_LB_ENTITE_GEO_ECOLE_SELECT()) : -1);
 				if (indice != 0) {
@@ -1102,7 +1102,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Contrôle les zones saisies d'une entité géographique Date de création :
+	 * Controle les zones saisies d'une entitÃ© gÃ©ographique Date de crÃ©ation :
 	 * (14/09/11)
 	 */
 	private boolean performControlerSaisieEntiteGeo(HttpServletRequest request) throws Exception {
@@ -1110,7 +1110,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 		// Verification lib domaine d'activite not null
 		if (getZone(getNOM_EF_ENTITE_GEO()).length() == 0) {
 			// "ERR002","La zone @ est obligatoire."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "libellé"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "libellÃ©"));
 			return false;
 		}
 
@@ -1118,33 +1118,33 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Contrôle les règles de gestion d'une entité géographique Date de création
+	 * Controle les regles de gestion d'une entitÃ© gÃ©ographique Date de crÃ©ation
 	 * : (09/09/11)
 	 */
 	private boolean performControlerRegleGestionEntiteGeo(HttpServletRequest request) throws Exception {
 
-		// Verification si suppression d'une entité géographique utilisée sur
+		// Verification si suppression d'une entitÃ© gÃ©ographique utilisee sur
 		// une fiche de poste
 		if (getVAL_ST_ACTION_ENTITE_GEO().equals(ACTION_SUPPRESSION)
 				&& getFichePosteDao().listerFichePosteAvecEntiteGeo(
 						Integer.valueOf(getEntiteGeoCourante().getIdEntiteGeo())).size() > 0) {
 
 			// "ERR989",
-			// "Suppression impossible. Il existe au moins @ rattaché à @."
+			// "Suppression impossible. Il existe au moins @ rattachÃ© a @."
 			getTransaction().declarerErreur(
-					MessageUtils.getMessage("ERR989", "une fiche de poste", "cette entité géographique"));
+					MessageUtils.getMessage("ERR989", "une fiche de poste", "cette entitÃ© gÃ©ographique"));
 			return false;
 		}
 
-		// Vérification des contraintes d'unicité de l'entité géographique
+		// VÃ©rification des contraintes d'unicitÃ© de l'entitÃ© gÃ©ographique
 		if (getVAL_ST_ACTION_ENTITE_GEO().equals(ACTION_CREATION)) {
 
 			for (EntiteGeo entite : getListeEntite()) {
 				if (entite.getLibEntiteGeo().equals(getVAL_EF_ENTITE_GEO().toUpperCase())) {
 					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
+					// "Attention, il existe dÃ©jÃ  @ avec @. Veuillez contrÃ´ler."
 					getTransaction().declarerErreur(
-							MessageUtils.getMessage("ERR974", "une entité géographique", "ce libellé"));
+							MessageUtils.getMessage("ERR974", "une entitÃ© gÃ©ographique", "ce libellÃ©"));
 					return false;
 				}
 			}
@@ -1155,7 +1155,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER_NATURE_AVANTAGE Date
-	 * de création : (13/09/11 15:49:10)
+	 * de crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public String getNOM_PB_VALIDER_NATURE_AVANTAGE() {
@@ -1163,10 +1163,10 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (13/09/11 15:49:10)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public boolean performPB_VALIDER_NATURE_AVANTAGE(HttpServletRequest request) throws Exception {
@@ -1202,15 +1202,15 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Contrôle les zones saisies d'une nature d'avantage en nature Date de
-	 * création : (14/09/11)
+	 * Controle les zones saisies d'une nature d'avantage en nature Date de
+	 * crÃ©ation : (14/09/11)
 	 */
 	private boolean performControlerSaisieNatureAvantage(HttpServletRequest request) throws Exception {
 
 		// Verification lib nature avantage not null
 		if (getZone(getNOM_EF_NATURE_AVANTAGE()).length() == 0) {
 			// "ERR002","La zone @ est obligatoire."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "libellé"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "libellÃ©"));
 			return false;
 		}
 
@@ -1218,33 +1218,33 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Contrôle les règles de gestion d'une nature d'avantage en nature Date de
-	 * création : (14/09/11)
+	 * Controle les regles de gestion d'une nature d'avantage en nature Date de
+	 * crÃ©ation : (14/09/11)
 	 */
 	private boolean performControlerRegleGestionNatureAvantage(HttpServletRequest request) throws Exception {
 
 		// Verification si suppression d'une nature d'avantage en nature
-		// utilisée sur un avantage en nature
+		// utilisee sur un avantage en nature
 		if (getVAL_ST_ACTION_NATURE_AVANTAGE().equals(ACTION_SUPPRESSION)
 				&& getAvantageNatureDao().listerAvantageNatureAvecNatureAvantage(
 						getNatureAvantageCourant().getIdNatureAvantage()).size() > 0) {
 
 			// "ERR989",
-			// "Suppression impossible. Il existe au moins @ rattaché à @."
+			// "Suppression impossible. Il existe au moins @ rattachÃ© a @."
 			getTransaction().declarerErreur(
 					MessageUtils.getMessage("ERR989", "un avantage en nature", "cette nature d'avantage en nature"));
 			return false;
 		}
 
-		// Vérification des contraintes d'unicité de l'entité géographique
+		// VÃ©rification des contraintes d'unicitÃ© de l'entitÃ© gÃ©ographique
 		if (getVAL_ST_ACTION_NATURE_AVANTAGE().equals(ACTION_CREATION)) {
 
 			for (NatureAvantage nature : getListeNatureAvantage()) {
 				if (nature.getLibNatureAvantage().equals(getVAL_EF_NATURE_AVANTAGE().toUpperCase())) {
 					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
+					// "Attention, il existe dÃ©jÃ  @ avec @. Veuillez contrÃ´ler."
 					getTransaction().declarerErreur(
-							MessageUtils.getMessage("ERR974", "une nature d'avantage en nature", "ce libellé"));
+							MessageUtils.getMessage("ERR974", "une nature d'avantage en nature", "ce libellÃ©"));
 					return false;
 				}
 			}
@@ -1255,7 +1255,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER_TITRE Date de
-	 * création : (13/09/11 15:49:10)
+	 * crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public String getNOM_PB_VALIDER_TITRE() {
@@ -1263,10 +1263,10 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (13/09/11 15:49:10)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public boolean performPB_VALIDER_TITRE(HttpServletRequest request) throws Exception {
@@ -1302,15 +1302,15 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Contrôle les zones saisies d'un titre de poste Date de création :
+	 * Controle les zones saisies d'un titre de poste Date de crÃ©ation :
 	 * (14/09/11)
 	 */
 	private boolean performControlerSaisieTitre(HttpServletRequest request) throws Exception {
 
-		// Verification libellé titre de poste not null
+		// Verification libellÃ© titre de poste not null
 		if (getZone(getNOM_EF_TITRE()).length() == 0) {
 			// "ERR002","La zone @ est obligatoire."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "libellé"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "libellÃ©"));
 			return false;
 		}
 
@@ -1318,32 +1318,32 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Contrôle les règles de gestion d'un titre de poste Date de création :
+	 * Controle les regles de gestion d'un titre de poste Date de crÃ©ation :
 	 * (14/09/11)
 	 */
 	private boolean performControlerRegleGestionTitre(HttpServletRequest request) throws Exception {
 
-		// Verification si suppression d'un titre de poste utilisé sur une fiche
+		// Verification si suppression d'un titre de poste utilise sur une fiche
 		// de poste
 		if (getVAL_ST_ACTION_TITRE().equals(ACTION_SUPPRESSION)
 				&& getFichePosteDao().listerFichePosteAvecTitrePoste(getTitrePosteCourante().getIdTitrePoste()).size() > 0) {
 
 			// "ERR989",
-			// "Suppression impossible. Il existe au moins @ rattaché à @."
+			// "Suppression impossible. Il existe au moins @ rattachÃ© a @."
 			getTransaction().declarerErreur(
 					MessageUtils.getMessage("ERR989", "une fiche de poste", "ce titre de poste"));
 			return false;
 		}
 
-		// Vérification des contraintes d'unicité du titre de poste
+		// VÃ©rification des contraintes d'unicitÃ© du titre de poste
 		if (getVAL_ST_ACTION_TITRE().equals(ACTION_CREATION)) {
 
 			for (TitrePoste titre : getListeTitrePoste()) {
 				if (titre.getLibTitrePoste().equals(getVAL_EF_TITRE().toUpperCase())) {
 					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
+					// "Attention, il existe dÃ©jÃ  @ avec @. Veuillez contrÃ´ler."
 					getTransaction().declarerErreur(
-							MessageUtils.getMessage("ERR974", "un titre de poste", "ce libellé"));
+							MessageUtils.getMessage("ERR974", "un titre de poste", "ce libellÃ©"));
 					return false;
 				}
 			}
@@ -1354,7 +1354,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER_TYPE_AVANTAGE Date
-	 * de création : (13/09/11 15:49:10)
+	 * de crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public String getNOM_PB_VALIDER_TYPE_AVANTAGE() {
@@ -1362,10 +1362,10 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (13/09/11 15:49:10)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public boolean performPB_VALIDER_TYPE_AVANTAGE(HttpServletRequest request) throws Exception {
@@ -1401,15 +1401,15 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Contrôle les zones saisies d'un type d'avantage en nature Date de
-	 * création : (14/09/11)
+	 * Controle les zones saisies d'un type d'avantage en nature Date de
+	 * crÃ©ation : (14/09/11)
 	 */
 	private boolean performControlerSaisieTypeAvantage(HttpServletRequest request) throws Exception {
 
-		// Verification libellé type d'avantage not null
+		// Verification libellÃ© type d'avantage not null
 		if (getZone(getNOM_EF_TYPE_AVANTAGE()).length() == 0) {
 			// "ERR002","La zone @ est obligatoire."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "libellé"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "libellÃ©"));
 			return false;
 		}
 
@@ -1417,33 +1417,33 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Contrôle les règles de gestion d'un type d'avantage en nature Date de
-	 * création : (09/09/11)
+	 * Controle les regles de gestion d'un type d'avantage en nature Date de
+	 * crÃ©ation : (09/09/11)
 	 */
 	private boolean performControlerRegleGestionTypeAvantage(HttpServletRequest request) throws Exception {
 
-		// Verification si suppression d'un type d'avantage utilisé sur un
+		// Verification si suppression d'un type d'avantage utilise sur un
 		// avantage en nature
 		if (getVAL_ST_ACTION_TYPE_AVANTAGE().equals(ACTION_SUPPRESSION)
 				&& getAvantageNatureDao().listerAvantageNatureAvecTypeAvantage(
 						getTypeAvantageCourant().getIdTypeAvantage()).size() > 0) {
 
 			// "ERR989",
-			// "Suppression impossible. Il existe au moins @ rattaché à @."
+			// "Suppression impossible. Il existe au moins @ rattachÃ© a @."
 			getTransaction().declarerErreur(
 					MessageUtils.getMessage("ERR989", "un avantage en nature", "ce type d'avantage en nature"));
 			return false;
 		}
 
-		// Vérification des contraintes d'unicité du type d'avantage en nature
+		// VÃ©rification des contraintes d'unicitÃ© du type d'avantage en nature
 		if (getVAL_ST_ACTION_TYPE_AVANTAGE().equals(ACTION_CREATION)) {
 
 			for (TypeAvantage type : getListeTypeAvantage()) {
 				if (type.getLibTypeAvantage().equals(getVAL_EF_TYPE_AVANTAGE().toUpperCase())) {
 					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
+					// "Attention, il existe dÃ©jÃ  @ avec @. Veuillez contrÃ´ler."
 					getTransaction().declarerErreur(
-							MessageUtils.getMessage("ERR974", "un type d'avantage en nature", "ce libellé"));
+							MessageUtils.getMessage("ERR974", "un type d'avantage en nature", "ce libellÃ©"));
 					return false;
 				}
 			}
@@ -1454,7 +1454,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER_TYPE_DELEGATION Date
-	 * de création : (13/09/11 15:49:10)
+	 * de crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public String getNOM_PB_VALIDER_TYPE_DELEGATION() {
@@ -1462,10 +1462,10 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (13/09/11 15:49:10)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public boolean performPB_VALIDER_TYPE_DELEGATION(HttpServletRequest request) throws Exception {
@@ -1501,7 +1501,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Contrôle les zones saisies d'un type de délégation Date de création :
+	 * Controle les zones saisies d'un type de dÃ©lÃ©gation Date de crÃ©ation :
 	 * (14/09/11)
 	 */
 	private boolean performControlerSaisieTypeDelegation(HttpServletRequest request) throws Exception {
@@ -1509,7 +1509,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 		// Verification lib domaine d'activite not null
 		if (getZone(getNOM_EF_TYPE_DELEGATION()).length() == 0) {
 			// "ERR002","La zone @ est obligatoire."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "libellé"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "libellÃ©"));
 			return false;
 		}
 
@@ -1517,33 +1517,33 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Contrôle les règles de gestion d'un type de delegation Date de création :
+	 * Controle les regles de gestion d'un type de delegation Date de crÃ©ation :
 	 * (14/09/11)
 	 */
 	private boolean performControlerRegleGestionTypeDelegation(HttpServletRequest request) throws Exception {
 
-		// Verification si suppression d'un type de délégation sur une
-		// délégation
+		// Verification si suppression d'un type de dÃ©lÃ©gation sur une
+		// dÃ©lÃ©gation
 		if (getVAL_ST_ACTION_TYPE_DELEGATION().equals(ACTION_SUPPRESSION)
 				&& getDelegationDao().listerDelegationAvecTypeDelegation(
 						getTypeDelegationCourant().getIdTypeDelegation()).size() > 0) {
 
 			// "ERR989",
-			// "Suppression impossible. Il existe au moins @ rattaché à @."
+			// "Suppression impossible. Il existe au moins @ rattachÃ© a @."
 			getTransaction().declarerErreur(
-					MessageUtils.getMessage("ERR989", "une délégation", "ce type de délégation"));
+					MessageUtils.getMessage("ERR989", "une dÃ©lÃ©gation", "ce type de dÃ©lÃ©gation"));
 			return false;
 		}
 
-		// Vérification des contraintes d'unicité de l'entité géographique
+		// VÃ©rification des contraintes d'unicitÃ© de l'entitÃ© gÃ©ographique
 		if (getVAL_ST_ACTION_TYPE_DELEGATION().equals(ACTION_CREATION)) {
 
 			for (TypeDelegation type : getListeTypeDelegation()) {
 				if (type.getLibTypeDelegation().equals(getVAL_EF_TYPE_DELEGATION().toUpperCase())) {
 					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
+					// "Attention, il existe dÃ©jÃ  @ avec @. Veuillez contrÃ´ler."
 					getTransaction().declarerErreur(
-							MessageUtils.getMessage("ERR974", "un type de délégation", "ce libellé"));
+							MessageUtils.getMessage("ERR974", "un type de dÃ©lÃ©gation", "ce libellÃ©"));
 					return false;
 				}
 			}
@@ -1554,7 +1554,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER_TYPE_REGIME Date de
-	 * création : (13/09/11 15:49:10)
+	 * crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public String getNOM_PB_VALIDER_TYPE_REGIME() {
@@ -1562,10 +1562,10 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (13/09/11 15:49:10)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public boolean performPB_VALIDER_TYPE_REGIME(HttpServletRequest request) throws Exception {
@@ -1601,15 +1601,15 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Contrôle les zones saisies d'un type de regime indemnitaire Date de
-	 * création : (14/09/11)
+	 * Controle les zones saisies d'un type de regime indemnitaire Date de
+	 * crÃ©ation : (14/09/11)
 	 */
 	private boolean performControlerSaisieTypeRegime(HttpServletRequest request) throws Exception {
 
 		// Verification lib domaine d'activite not null
 		if (getZone(getNOM_EF_TYPE_REGIME()).length() == 0) {
 			// "ERR002","La zone @ est obligatoire."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "libellé"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "libellÃ©"));
 			return false;
 		}
 
@@ -1617,33 +1617,33 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Contrôle les règles de gestion d'un type de régime idemnitaire Date de
-	 * création : (14/09/11)
+	 * Controle les regles de gestion d'un type de rÃ©gime idemnitaire Date de
+	 * crÃ©ation : (14/09/11)
 	 */
 	private boolean performControlerRegleGestionTypeRegime(HttpServletRequest request) throws Exception {
 
-		// Verification si suppression d'un type de régime idemnitaire utilisée
-		// sur un régime idemnitaire
+		// Verification si suppression d'un type de rÃ©gime idemnitaire utilisee
+		// sur un rÃ©gime idemnitaire
 		if (getVAL_ST_ACTION_TYPE_REGIME().equals(ACTION_SUPPRESSION)
 				&& getRegIndemnDao()
 						.listerRegimeIndemnitaireAvecTypeRegime(getTypeRegimeCourant().getIdTypeRegIndemn()).size() > 0) {
 
 			// "ERR989",
-			// "Suppression impossible. Il existe au moins @ rattaché à @."
+			// "Suppression impossible. Il existe au moins @ rattachÃ© a @."
 			getTransaction().declarerErreur(
-					MessageUtils.getMessage("ERR989", "un régime indemnitaire", "ce type de régime idemnitaire"));
+					MessageUtils.getMessage("ERR989", "un rÃ©gime indemnitaire", "ce type de rÃ©gime idemnitaire"));
 			return false;
 		}
 
-		// Vérification des contraintes d'unicité du type de régime idemnitaire
+		// VÃ©rification des contraintes d'unicitÃ© du type de rÃ©gime idemnitaire
 		if (getVAL_ST_ACTION_TYPE_REGIME().equals(ACTION_CREATION)) {
 
 			for (TypeRegIndemn type : getListeTypeRegime()) {
 				if (type.getLibTypeRegIndemn().equals(getVAL_EF_TYPE_REGIME().toUpperCase())) {
 					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
+					// "Attention, il existe dÃ©jÃ  @ avec @. Veuillez contrÃ´ler."
 					getTransaction().declarerErreur(
-							MessageUtils.getMessage("ERR974", "un type de régime idemnitaire", "ce libellé"));
+							MessageUtils.getMessage("ERR974", "un type de rÃ©gime idemnitaire", "ce libellÃ©"));
 					return false;
 				}
 			}
@@ -1654,7 +1654,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_ACTION_ENTITE_GEO
-	 * Date de création : (13/09/11 15:49:10)
+	 * Date de crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public String getNOM_ST_ACTION_ENTITE_GEO() {
@@ -1662,8 +1662,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
-	 * ST_ACTION_ENTITE_GEO Date de création : (13/09/11 15:49:10)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone :
+	 * ST_ACTION_ENTITE_GEO Date de crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public String getVAL_ST_ACTION_ENTITE_GEO() {
@@ -1672,7 +1672,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique :
-	 * ST_ACTION_NATURE_AVANTAGE Date de création : (13/09/11 15:49:10)
+	 * ST_ACTION_NATURE_AVANTAGE Date de crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public String getNOM_ST_ACTION_NATURE_AVANTAGE() {
@@ -1680,8 +1680,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
-	 * ST_ACTION_NATURE_AVANTAGE Date de création : (13/09/11 15:49:10)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone :
+	 * ST_ACTION_NATURE_AVANTAGE Date de crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public String getVAL_ST_ACTION_NATURE_AVANTAGE() {
@@ -1690,7 +1690,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_ACTION_TITRE Date de
-	 * création : (13/09/11 15:49:10)
+	 * crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public String getNOM_ST_ACTION_TITRE() {
@@ -1698,8 +1698,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACTION_TITRE
-	 * Date de création : (13/09/11 15:49:10)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_ACTION_TITRE
+	 * Date de crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public String getVAL_ST_ACTION_TITRE() {
@@ -1708,7 +1708,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_ACTION_TYPE_AVANTAGE
-	 * Date de création : (13/09/11 15:49:10)
+	 * Date de crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public String getNOM_ST_ACTION_TYPE_AVANTAGE() {
@@ -1716,8 +1716,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
-	 * ST_ACTION_TYPE_AVANTAGE Date de création : (13/09/11 15:49:10)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone :
+	 * ST_ACTION_TYPE_AVANTAGE Date de crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public String getVAL_ST_ACTION_TYPE_AVANTAGE() {
@@ -1726,7 +1726,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique :
-	 * ST_ACTION_TYPE_DELEGATION Date de création : (13/09/11 15:49:10)
+	 * ST_ACTION_TYPE_DELEGATION Date de crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public String getNOM_ST_ACTION_TYPE_DELEGATION() {
@@ -1734,8 +1734,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
-	 * ST_ACTION_TYPE_DELEGATION Date de création : (13/09/11 15:49:10)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone :
+	 * ST_ACTION_TYPE_DELEGATION Date de crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public String getVAL_ST_ACTION_TYPE_DELEGATION() {
@@ -1744,7 +1744,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_ACTION_TYPE_REGIME
-	 * Date de création : (13/09/11 15:49:10)
+	 * Date de crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public String getNOM_ST_ACTION_TYPE_REGIME() {
@@ -1752,8 +1752,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
-	 * ST_ACTION_TYPE_REGIME Date de création : (13/09/11 15:49:10)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone :
+	 * ST_ACTION_TYPE_REGIME Date de crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public String getVAL_ST_ACTION_TYPE_REGIME() {
@@ -1762,7 +1762,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_ENTITE_GEO Date de
-	 * création : (13/09/11 15:49:10)
+	 * crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public String getNOM_EF_ENTITE_GEO() {
@@ -1770,8 +1770,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_ENTITE_GEO Date de création : (13/09/11 15:49:10)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_ENTITE_GEO Date de crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public String getVAL_EF_ENTITE_GEO() {
@@ -1780,7 +1780,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_NATURE_AVANTAGE
-	 * Date de création : (13/09/11 15:49:10)
+	 * Date de crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public String getNOM_EF_NATURE_AVANTAGE() {
@@ -1788,8 +1788,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_NATURE_AVANTAGE Date de création : (13/09/11 15:49:10)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_NATURE_AVANTAGE Date de crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public String getVAL_EF_NATURE_AVANTAGE() {
@@ -1798,7 +1798,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_TITRE Date de
-	 * création : (13/09/11 15:49:10)
+	 * crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public String getNOM_EF_TITRE() {
@@ -1806,8 +1806,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_TITRE Date de création : (13/09/11 15:49:10)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_TITRE Date de crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public String getVAL_EF_TITRE() {
@@ -1816,7 +1816,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_TYPE_AVANTAGE Date
-	 * de création : (13/09/11 15:49:10)
+	 * de crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public String getNOM_EF_TYPE_AVANTAGE() {
@@ -1824,8 +1824,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_TYPE_AVANTAGE Date de création : (13/09/11 15:49:10)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_TYPE_AVANTAGE Date de crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public String getVAL_EF_TYPE_AVANTAGE() {
@@ -1834,7 +1834,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_TYPE_DELEGATION
-	 * Date de création : (13/09/11 15:49:10)
+	 * Date de crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public String getNOM_EF_TYPE_DELEGATION() {
@@ -1842,8 +1842,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_TYPE_DELEGATION Date de création : (13/09/11 15:49:10)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_TYPE_DELEGATION Date de crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public String getVAL_EF_TYPE_DELEGATION() {
@@ -1852,7 +1852,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_TYPE_REGIME Date de
-	 * création : (13/09/11 15:49:10)
+	 * crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public String getNOM_EF_TYPE_REGIME() {
@@ -1860,8 +1860,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_TYPE_REGIME Date de création : (13/09/11 15:49:10)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_TYPE_REGIME Date de crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public String getVAL_EF_TYPE_REGIME() {
@@ -1870,7 +1870,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 	/**
 	 * Getter de la liste avec un lazy initialize : LB_ENTITE_GEO Date de
-	 * création : (13/09/11 15:49:10)
+	 * crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	private String[] getLB_ENTITE_GEO() {
@@ -1880,7 +1880,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_ENTITE_GEO Date de création : (13/09/11 15:49:10)
+	 * Setter de la liste: LB_ENTITE_GEO Date de crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	private void setLB_ENTITE_GEO(String[] newLB_ENTITE_GEO) {
@@ -1889,7 +1889,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 	/**
 	 * Retourne le nom de la zone pour la JSP : NOM_LB_ENTITE_GEO Date de
-	 * création : (13/09/11 15:49:10)
+	 * crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public String getNOM_LB_ENTITE_GEO() {
@@ -1897,8 +1897,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_ENTITE_GEO_SELECT Date de création : (13/09/11 15:49:10)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_ENTITE_GEO_SELECT Date de crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public String getNOM_LB_ENTITE_GEO_SELECT() {
@@ -1906,8 +1906,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_ENTITE_GEO Date de création : (13/09/11 15:49:10)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_ENTITE_GEO Date de crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public String[] getVAL_LB_ENTITE_GEO() {
@@ -1915,8 +1915,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_ENTITE_GEO Date de création : (13/09/11 15:49:10)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_ENTITE_GEO Date de crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public String getVAL_LB_ENTITE_GEO_SELECT() {
@@ -1925,7 +1925,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 	/**
 	 * Getter de la liste avec un lazy initialize : LB_ENTITE_ECOLE Date de
-	 * création : (13/09/11 15:49:10)
+	 * crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	private String[] getLB_ENTITE_ECOLE() {
@@ -1935,7 +1935,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_ENTITE_ECOLE Date de création : (13/09/11
+	 * Setter de la liste: LB_ENTITE_ECOLE Date de crÃ©ation : (13/09/11
 	 * 15:49:10)
 	 * 
 	 */
@@ -1945,7 +1945,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 	/**
 	 * Retourne le nom de la zone pour la JSP : NOM_LB_ENTITE_GEO_ECOLE Date de
-	 * création : (13/09/11 15:49:10)
+	 * crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public String getNOM_LB_ENTITE_GEO_ECOLE() {
@@ -1953,8 +1953,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_ENTITE_GEO_ECOLE_SELECT Date de création : (13/09/11 15:49:10)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_ENTITE_GEO_ECOLE_SELECT Date de crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public String getNOM_LB_ENTITE_GEO_ECOLE_SELECT() {
@@ -1962,8 +1962,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_ENTITE_GEO_ECOLE Date de création : (13/09/11 15:49:10)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_ENTITE_GEO_ECOLE Date de crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public String[] getVAL_LB_ENTITE_GEO_ECOLE() {
@@ -1971,8 +1971,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_ENTITE_GEO_ECOLE Date de création : (13/09/11 15:49:10)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_ENTITE_GEO_ECOLE Date de crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public String getVAL_LB_ENTITE_GEO_ECOLE_SELECT() {
@@ -1981,7 +1981,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 	/**
 	 * Getter de la liste avec un lazy initialize : LB_NATURE_AVANTAGE Date de
-	 * création : (13/09/11 15:49:10)
+	 * crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	private String[] getLB_NATURE_AVANTAGE() {
@@ -1991,7 +1991,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_NATURE_AVANTAGE Date de création : (13/09/11
+	 * Setter de la liste: LB_NATURE_AVANTAGE Date de crÃ©ation : (13/09/11
 	 * 15:49:10)
 	 * 
 	 */
@@ -2001,7 +2001,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 	/**
 	 * Retourne le nom de la zone pour la JSP : NOM_LB_NATURE_AVANTAGE Date de
-	 * création : (13/09/11 15:49:10)
+	 * crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public String getNOM_LB_NATURE_AVANTAGE() {
@@ -2009,8 +2009,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_NATURE_AVANTAGE_SELECT Date de création : (13/09/11 15:49:10)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_NATURE_AVANTAGE_SELECT Date de crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public String getNOM_LB_NATURE_AVANTAGE_SELECT() {
@@ -2018,8 +2018,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_NATURE_AVANTAGE Date de création : (13/09/11 15:49:10)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_NATURE_AVANTAGE Date de crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public String[] getVAL_LB_NATURE_AVANTAGE() {
@@ -2027,8 +2027,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_NATURE_AVANTAGE Date de création : (13/09/11 15:49:10)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_NATURE_AVANTAGE Date de crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public String getVAL_LB_NATURE_AVANTAGE_SELECT() {
@@ -2036,7 +2036,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Getter de la liste avec un lazy initialize : LB_TITRE Date de création :
+	 * Getter de la liste avec un lazy initialize : LB_TITRE Date de crÃ©ation :
 	 * (13/09/11 15:49:10)
 	 * 
 	 */
@@ -2047,7 +2047,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_TITRE Date de création : (13/09/11 15:49:10)
+	 * Setter de la liste: LB_TITRE Date de crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	private void setLB_TITRE(String[] newLB_TITRE) {
@@ -2055,7 +2055,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_TITRE Date de création :
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_TITRE Date de crÃ©ation :
 	 * (13/09/11 15:49:10)
 	 * 
 	 */
@@ -2064,8 +2064,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_TITRE_SELECT Date de création : (13/09/11 15:49:10)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_TITRE_SELECT Date de crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public String getNOM_LB_TITRE_SELECT() {
@@ -2073,8 +2073,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_TITRE Date de création : (13/09/11 15:49:10)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_TITRE Date de crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public String[] getVAL_LB_TITRE() {
@@ -2082,8 +2082,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_TITRE Date de création : (13/09/11 15:49:10)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_TITRE Date de crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public String getVAL_LB_TITRE_SELECT() {
@@ -2092,7 +2092,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 	/**
 	 * Getter de la liste avec un lazy initialize : LB_TYPE_AVANTAGE Date de
-	 * création : (13/09/11 15:49:10)
+	 * crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	private String[] getLB_TYPE_AVANTAGE() {
@@ -2102,7 +2102,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_TYPE_AVANTAGE Date de création : (13/09/11
+	 * Setter de la liste: LB_TYPE_AVANTAGE Date de crÃ©ation : (13/09/11
 	 * 15:49:10)
 	 * 
 	 */
@@ -2112,7 +2112,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 	/**
 	 * Retourne le nom de la zone pour la JSP : NOM_LB_TYPE_AVANTAGE Date de
-	 * création : (13/09/11 15:49:10)
+	 * crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public String getNOM_LB_TYPE_AVANTAGE() {
@@ -2120,8 +2120,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_TYPE_AVANTAGE_SELECT Date de création : (13/09/11 15:49:10)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_TYPE_AVANTAGE_SELECT Date de crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public String getNOM_LB_TYPE_AVANTAGE_SELECT() {
@@ -2129,8 +2129,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_TYPE_AVANTAGE Date de création : (13/09/11 15:49:10)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_TYPE_AVANTAGE Date de crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public String[] getVAL_LB_TYPE_AVANTAGE() {
@@ -2138,8 +2138,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_TYPE_AVANTAGE Date de création : (13/09/11 15:49:10)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_TYPE_AVANTAGE Date de crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public String getVAL_LB_TYPE_AVANTAGE_SELECT() {
@@ -2148,7 +2148,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 	/**
 	 * Getter de la liste avec un lazy initialize : LB_TYPE_DELEGATION Date de
-	 * création : (13/09/11 15:49:10)
+	 * crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	private String[] getLB_TYPE_DELEGATION() {
@@ -2158,7 +2158,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_TYPE_DELEGATION Date de création : (13/09/11
+	 * Setter de la liste: LB_TYPE_DELEGATION Date de crÃ©ation : (13/09/11
 	 * 15:49:10)
 	 * 
 	 */
@@ -2168,7 +2168,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 	/**
 	 * Retourne le nom de la zone pour la JSP : NOM_LB_TYPE_DELEGATION Date de
-	 * création : (13/09/11 15:49:10)
+	 * crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public String getNOM_LB_TYPE_DELEGATION() {
@@ -2176,8 +2176,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_TYPE_DELEGATION_SELECT Date de création : (13/09/11 15:49:10)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_TYPE_DELEGATION_SELECT Date de crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public String getNOM_LB_TYPE_DELEGATION_SELECT() {
@@ -2185,8 +2185,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_TYPE_DELEGATION Date de création : (13/09/11 15:49:10)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_TYPE_DELEGATION Date de crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public String[] getVAL_LB_TYPE_DELEGATION() {
@@ -2194,8 +2194,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_TYPE_DELEGATION Date de création : (13/09/11 15:49:10)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_TYPE_DELEGATION Date de crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public String getVAL_LB_TYPE_DELEGATION_SELECT() {
@@ -2204,7 +2204,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 	/**
 	 * Getter de la liste avec un lazy initialize : LB_TYPE_REGIME Date de
-	 * création : (13/09/11 15:49:10)
+	 * crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	private String[] getLB_TYPE_REGIME() {
@@ -2214,7 +2214,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_TYPE_REGIME Date de création : (13/09/11 15:49:10)
+	 * Setter de la liste: LB_TYPE_REGIME Date de crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	private void setLB_TYPE_REGIME(String[] newLB_TYPE_REGIME) {
@@ -2223,7 +2223,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 	/**
 	 * Retourne le nom de la zone pour la JSP : NOM_LB_TYPE_REGIME Date de
-	 * création : (13/09/11 15:49:10)
+	 * crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public String getNOM_LB_TYPE_REGIME() {
@@ -2231,8 +2231,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_TYPE_REGIME_SELECT Date de création : (13/09/11 15:49:10)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_TYPE_REGIME_SELECT Date de crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public String getNOM_LB_TYPE_REGIME_SELECT() {
@@ -2240,8 +2240,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_TYPE_REGIME Date de création : (13/09/11 15:49:10)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_TYPE_REGIME Date de crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public String[] getVAL_LB_TYPE_REGIME() {
@@ -2249,8 +2249,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_TYPE_REGIME Date de création : (13/09/11 15:49:10)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_TYPE_REGIME Date de crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public String getVAL_LB_TYPE_REGIME_SELECT() {
@@ -2362,8 +2362,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Méthode appelée par la servlet qui aiguille le traitement : en fonction
-	 * du bouton de la JSP Date de création : (13/09/11 15:49:10)
+	 * mÃ©thode appelee par la servlet qui aiguille le traitement : en fonction
+	 * du bouton de la JSP Date de crÃ©ation : (13/09/11 15:49:10)
 	 * 
 	 */
 	public boolean recupererStatut(HttpServletRequest request) throws Exception {
@@ -2562,14 +2562,14 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 			}
 
 		}
-		// Si TAG INPUT non géré par le process
+		// Si TAG INPUT non gÃ©rÃ© par le process
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
 
 	/**
-	 * Retourne le nom de la JSP du process Zone à utiliser dans un champ caché
-	 * dans chaque formulaire de la JSP. Date de création : (04/11/11 11:33:54)
+	 * Retourne le nom de la JSP du process Zone a utiliser dans un champ cache
+	 * dans chaque formulaire de la JSP. Date de crÃ©ation : (04/11/11 11:33:54)
 	 * 
 	 */
 	public String getJSP() {
@@ -2578,7 +2578,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER_ECOLE Date de
-	 * création : (04/11/11 11:33:55)
+	 * crÃ©ation : (04/11/11 11:33:55)
 	 * 
 	 */
 	public String getNOM_PB_ANNULER_ECOLE() {
@@ -2586,10 +2586,10 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (04/11/11 11:33:55)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (04/11/11 11:33:55)
 	 * 
 	 */
 	public boolean performPB_ANNULER_ECOLE(HttpServletRequest request) throws Exception {
@@ -2599,7 +2599,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_CREER_ECOLE Date de création
+	 * Retourne le nom d'un bouton pour la JSP : PB_CREER_ECOLE Date de crÃ©ation
 	 * : (04/11/11 11:33:55)
 	 * 
 	 */
@@ -2608,10 +2608,10 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (04/11/11 11:33:55)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (04/11/11 11:33:55)
 	 * 
 	 */
 	public boolean performPB_CREER_ECOLE(HttpServletRequest request) throws Exception {
@@ -2626,7 +2626,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_MODIFIER_ECOLE Date de
-	 * création : (14/09/11 15:57:59)
+	 * crÃ©ation : (14/09/11 15:57:59)
 	 * 
 	 */
 	public String getNOM_PB_MODIFIER_ECOLE() {
@@ -2634,10 +2634,10 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (14/09/11 15:57:59)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (14/09/11 15:57:59)
 	 * 
 	 */
 	public boolean performPB_MODIFIER_ECOLE(HttpServletRequest request) throws Exception {
@@ -2650,7 +2650,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 			addZone(getNOM_EF_ECOLE(), ecole.getLiecol());
 			addZone(getNOM_ST_ACTION_ECOLE(), ACTION_MODIFICATION);
 		} else {
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "écoles"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "Ã©coles"));
 		}
 
 		setStatut(STATUT_MEME_PROCESS);
@@ -2659,7 +2659,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMER_ECOLE Date de
-	 * création : (04/11/11 11:33:55)
+	 * crÃ©ation : (04/11/11 11:33:55)
 	 * 
 	 */
 	public String getNOM_PB_SUPPRIMER_ECOLE() {
@@ -2667,10 +2667,10 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (04/11/11 11:33:55)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (04/11/11 11:33:55)
 	 * 
 	 */
 	public boolean performPB_SUPPRIMER_ECOLE(HttpServletRequest request) throws Exception {
@@ -2691,7 +2691,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER_ECOLE Date de
-	 * création : (04/11/11 11:33:55)
+	 * crÃ©ation : (04/11/11 11:33:55)
 	 * 
 	 */
 	public String getNOM_PB_VALIDER_ECOLE() {
@@ -2699,10 +2699,10 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (04/11/11 11:33:55)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (04/11/11 11:33:55)
 	 * 
 	 */
 	public boolean performPB_VALIDER_ECOLE(HttpServletRequest request) throws Exception {
@@ -2745,20 +2745,20 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Contrôle les zones saisies d'un type de regime indemnitaire Date de
-	 * création : (14/09/11)
+	 * Controle les zones saisies d'un type de regime indemnitaire Date de
+	 * crÃ©ation : (14/09/11)
 	 */
 	private boolean performControlerSaisieEcole(HttpServletRequest request) throws Exception {
 		// Verification code ecole numerique
 		if (!Services.estNumerique(getVAL_EF_ECOLE_CODE_ECOLE())) {
-			// "ERR992", "La zone @ doit être numérique."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "code école"));
+			// "ERR992", "La zone @ doit Ãªtre numÃ©rique."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "code Ã©cole"));
 			return false;
 		}
 		// Verification code ecole not null
 		if (getZone(getNOM_EF_ECOLE_CODE_ECOLE()).length() == 0) {
 			// "ERR002","La zone @ est obligatoire."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "libellée"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "libellÃ©e"));
 			return false;
 		}
 		// Verification lib ecole not null
@@ -2772,28 +2772,28 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Contrôle les règles de gestion d'un type de régime idemnitaire Date de
-	 * création : (14/09/11)
+	 * Controle les regles de gestion d'un type de rÃ©gime idemnitaire Date de
+	 * crÃ©ation : (14/09/11)
 	 */
 	private boolean performControlerRegleGestionEcole(HttpServletRequest request) throws Exception {
-		// Vérification des contraintes d'unicité du code ecole
+		// VÃ©rification des contraintes d'unicitÃ© du code ecole
 		if (getVAL_ST_ACTION_ECOLE().equals(ACTION_CREATION)) {
 			for (Ecole ecole : getListeEcole()) {
 				if (ecole.getCdecol().equals(getVAL_EF_ECOLE_CODE_ECOLE().toUpperCase())) {
 					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "une école", "ce code école"));
+					// "Attention, il existe dÃ©jÃ  @ avec @. Veuillez contrÃ´ler."
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "une Ã©cole", "ce code Ã©cole"));
 					return false;
 				}
 			}
 		}
-		// Vérification des contraintes d'unicité du libellé ecole
+		// VÃ©rification des contraintes d'unicitÃ© du libellÃ© ecole
 		if (getVAL_ST_ACTION_ECOLE().equals(ACTION_CREATION)) {
 			for (Ecole ecole : getListeEcole()) {
 				if (ecole.getLiecol().equals(getVAL_EF_ECOLE().toUpperCase())) {
 					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "une école", "ce libellé"));
+					// "Attention, il existe dÃ©jÃ  @ avec @. Veuillez contrÃ´ler."
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "une Ã©cole", "ce libellÃ©"));
 					return false;
 				}
 			}
@@ -2803,7 +2803,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_ACTION_ECOLE Date de
-	 * création : (04/11/11 11:33:55)
+	 * crÃ©ation : (04/11/11 11:33:55)
 	 * 
 	 */
 	public String getNOM_ST_ACTION_ECOLE() {
@@ -2811,8 +2811,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACTION_ECOLE
-	 * Date de création : (04/11/11 11:33:55)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_ACTION_ECOLE
+	 * Date de crÃ©ation : (04/11/11 11:33:55)
 	 * 
 	 */
 	public String getVAL_ST_ACTION_ECOLE() {
@@ -2821,7 +2821,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_ECOLE Date de
-	 * création : (04/11/11 11:33:55)
+	 * crÃ©ation : (04/11/11 11:33:55)
 	 * 
 	 */
 	public String getNOM_EF_ECOLE() {
@@ -2830,7 +2830,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_ECOLE_CODE_ECOLE
-	 * Date de création : (04/11/11 11:33:55)
+	 * Date de crÃ©ation : (04/11/11 11:33:55)
 	 * 
 	 */
 	public String getNOM_EF_ECOLE_CODE_ECOLE() {
@@ -2838,8 +2838,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_ECOLE_CODE_ECOLE Date de création : (04/11/11 11:33:55)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_ECOLE_CODE_ECOLE Date de crÃ©ation : (04/11/11 11:33:55)
 	 * 
 	 */
 	public String getVAL_EF_ECOLE_CODE_ECOLE() {
@@ -2847,8 +2847,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_ECOLE Date de création : (04/11/11 11:33:55)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_ECOLE Date de crÃ©ation : (04/11/11 11:33:55)
 	 * 
 	 */
 	public String getVAL_EF_ECOLE() {
@@ -2856,7 +2856,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER_NFA Date de création
+	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER_NFA Date de crÃ©ation
 	 * : (04/11/11 11:33:55)
 	 * 
 	 */
@@ -2865,10 +2865,10 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (04/11/11 11:33:55)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (04/11/11 11:33:55)
 	 * 
 	 */
 	public boolean performPB_ANNULER_NFA(HttpServletRequest request) throws Exception {
@@ -2878,7 +2878,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_CREER_NFA Date de création :
+	 * Retourne le nom d'un bouton pour la JSP : PB_CREER_NFA Date de crÃ©ation :
 	 * (04/11/11 11:33:55)
 	 * 
 	 */
@@ -2887,10 +2887,10 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (04/11/11 11:33:55)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (04/11/11 11:33:55)
 	 * 
 	 */
 	public boolean performPB_CREER_NFA(HttpServletRequest request) throws Exception {
@@ -2905,7 +2905,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMER_NFA Date de
-	 * création : (04/11/11 11:33:55)
+	 * crÃ©ation : (04/11/11 11:33:55)
 	 * 
 	 */
 	public String getNOM_PB_SUPPRIMER_NFA() {
@@ -2913,10 +2913,10 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (04/11/11 11:33:55)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (04/11/11 11:33:55)
 	 * 
 	 */
 	public boolean performPB_SUPPRIMER_NFA(HttpServletRequest request) throws Exception {
@@ -2936,7 +2936,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER_NFA Date de création
+	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER_NFA Date de crÃ©ation
 	 * : (04/11/11 11:33:55)
 	 * 
 	 */
@@ -2945,10 +2945,10 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (04/11/11 11:33:55)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (04/11/11 11:33:55)
 	 * 
 	 */
 	public boolean performPB_VALIDER_NFA(HttpServletRequest request) throws Exception {
@@ -2986,8 +2986,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Contrôle les zones saisies d'un type de regime indemnitaire Date de
-	 * création : (14/09/11)
+	 * Controle les zones saisies d'un type de regime indemnitaire Date de
+	 * crÃ©ation : (14/09/11)
 	 */
 	private boolean performControlerSaisieNFA(HttpServletRequest request) throws Exception {
 
@@ -3009,18 +3009,18 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Contrôle les règles de gestion d'un type de régime idemnitaire Date de
-	 * création : (14/09/11)
+	 * Controle les regles de gestion d'un type de rÃ©gime idemnitaire Date de
+	 * crÃ©ation : (14/09/11)
 	 */
 	private boolean performControlerRegleGestionNFA(HttpServletRequest request) throws Exception {
 
-		// Vérification des contraintes d'unicité du NFA
+		// VÃ©rification des contraintes d'unicitÃ© du NFA
 		if (getVAL_ST_ACTION_NFA().equals(ACTION_CREATION)) {
 
 			for (NFA nfa : getListeNFA()) {
 				if (nfa.getCodeService().equals(getVAL_EF_NFA_CODE_SERVICE().toUpperCase())) {
 					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
+					// "Attention, il existe dÃ©jÃ  @ avec @. Veuillez contrÃ´ler."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "un NFA", "ce code service"));
 					return false;
 				}
@@ -3032,7 +3032,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_ACTION_NFA Date de
-	 * création : (04/11/11 11:33:55)
+	 * crÃ©ation : (04/11/11 11:33:55)
 	 * 
 	 */
 	public String getNOM_ST_ACTION_NFA() {
@@ -3040,8 +3040,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACTION_NFA
-	 * Date de création : (04/11/11 11:33:55)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_ACTION_NFA
+	 * Date de crÃ©ation : (04/11/11 11:33:55)
 	 * 
 	 */
 	public String getVAL_ST_ACTION_NFA() {
@@ -3050,7 +3050,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_NFA Date de
-	 * création : (04/11/11 11:33:55)
+	 * crÃ©ation : (04/11/11 11:33:55)
 	 * 
 	 */
 	public String getNOM_EF_NFA() {
@@ -3058,8 +3058,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie : EF_NFA
-	 * Date de création : (04/11/11 11:33:55)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie : EF_NFA
+	 * Date de crÃ©ation : (04/11/11 11:33:55)
 	 * 
 	 */
 	public String getVAL_EF_NFA() {
@@ -3068,7 +3068,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_NFA_CODE_SERVICE
-	 * Date de création : (04/11/11 11:33:55)
+	 * Date de crÃ©ation : (04/11/11 11:33:55)
 	 * 
 	 */
 	public String getNOM_EF_NFA_CODE_SERVICE() {
@@ -3076,8 +3076,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_NFA_CODE_SERVICE Date de création : (04/11/11 11:33:55)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_NFA_CODE_SERVICE Date de crÃ©ation : (04/11/11 11:33:55)
 	 * 
 	 */
 	public String getVAL_EF_NFA_CODE_SERVICE() {
@@ -3085,7 +3085,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Getter de la liste avec un lazy initialize : LB_NFA Date de création :
+	 * Getter de la liste avec un lazy initialize : LB_NFA Date de crÃ©ation :
 	 * (04/11/11 11:33:55)
 	 * 
 	 */
@@ -3096,7 +3096,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_NFA Date de création : (04/11/11 11:33:55)
+	 * Setter de la liste: LB_NFA Date de crÃ©ation : (04/11/11 11:33:55)
 	 * 
 	 */
 	private void setLB_NFA(String[] newLB_NFA) {
@@ -3104,7 +3104,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_NFA Date de création :
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_NFA Date de crÃ©ation :
 	 * (04/11/11 11:33:55)
 	 * 
 	 */
@@ -3113,8 +3113,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_NFA_SELECT Date de création : (04/11/11 11:33:55)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_NFA_SELECT Date de crÃ©ation : (04/11/11 11:33:55)
 	 * 
 	 */
 	public String getNOM_LB_NFA_SELECT() {
@@ -3122,8 +3122,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_NFA Date de création : (04/11/11 11:33:55)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_NFA Date de crÃ©ation : (04/11/11 11:33:55)
 	 * 
 	 */
 	public String[] getVAL_LB_NFA() {
@@ -3131,8 +3131,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_NFA Date de création : (04/11/11 11:33:55)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_NFA Date de crÃ©ation : (04/11/11 11:33:55)
 	 * 
 	 */
 	public String getVAL_LB_NFA_SELECT() {
@@ -3156,7 +3156,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Getter de la liste avec un lazy initialize : LB_ECOLE Date de création :
+	 * Getter de la liste avec un lazy initialize : LB_ECOLE Date de crÃ©ation :
 	 * (04/11/11 11:33:55)
 	 * 
 	 */
@@ -3167,7 +3167,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_ECOLE Date de création : (04/11/11 11:33:55)
+	 * Setter de la liste: LB_ECOLE Date de crÃ©ation : (04/11/11 11:33:55)
 	 * 
 	 */
 	private void setLB_ECOLE(String[] newLB_ECOLE) {
@@ -3175,7 +3175,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_ECOLE Date de création :
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_ECOLE Date de crÃ©ation :
 	 * (04/11/11 11:33:55)
 	 * 
 	 */
@@ -3184,8 +3184,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_ECOLE_SELECT Date de création : (04/11/11 11:33:55)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_ECOLE_SELECT Date de crÃ©ation : (04/11/11 11:33:55)
 	 * 
 	 */
 	public String getNOM_LB_ECOLE_SELECT() {
@@ -3193,8 +3193,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_ECOLE Date de création : (04/11/11 11:33:55)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_ECOLE Date de crÃ©ation : (04/11/11 11:33:55)
 	 * 
 	 */
 	public String[] getVAL_LB_ECOLE() {
@@ -3202,8 +3202,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_ECOLE Date de création : (04/11/11 11:33:55)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_ECOLE Date de crÃ©ation : (04/11/11 11:33:55)
 	 * 
 	 */
 	public String getVAL_LB_ECOLE_SELECT() {
@@ -3589,22 +3589,22 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	private boolean performControlerRegleGestionBaseHorairePointage(HttpServletRequest request) {
-		// Vérification des contraintes d'unicité de la base horaire de pointage
+		// VÃ©rification des contraintes d'unicitÃ© de la base horaire de pointage
 		if (getVAL_ST_ACTION_BASE_HORAIRE_POINTAGE().equals(ACTION_CREATION)) {
 
 			for (BaseHorairePointage base : getListeBaseHorairePointage()) {
 				if (base.getLibelleBaseHorairePointage().trim()
 						.equals(getVAL_EF_LIB_BASE_HORAIRE_POINTAGE().toUpperCase().trim())) {
 					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
+					// "Attention, il existe dÃ©jÃ  @ avec @. Veuillez contrÃ´ler."
 					getTransaction().declarerErreur(
-							MessageUtils.getMessage("ERR974", "une base horaire de pointage", "ce libellé"));
+							MessageUtils.getMessage("ERR974", "une base horaire de pointage", "ce libellÃ©"));
 					return false;
 				}
 				if (base.getCodeBaseHorairePointage().trim()
 						.equals(getVAL_EF_CODE_BASE_HORAIRE_POINTAGE().toUpperCase().trim())) {
 					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
+					// "Attention, il existe dÃ©jÃ  @ avec @. Veuillez contrÃ´ler."
 					getTransaction().declarerErreur(
 							MessageUtils.getMessage("ERR974", "une base horaire de pointage", "ce code"));
 					return false;
@@ -3615,10 +3615,10 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	private boolean performControlerSaisieBaseHorairePointage(HttpServletRequest request) {
-		// Verification libellé not null
+		// Verification libellÃ© not null
 		if (getZone(getNOM_EF_LIB_BASE_HORAIRE_POINTAGE()).length() == 0) {
 			// "ERR002","La zone @ est obligatoire."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "libellé"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "libellÃ©"));
 			return false;
 		}
 		// Verification code not null
@@ -3630,21 +3630,21 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 		// Verification nb heure legale not null
 		if (getZone(getNOM_EF_BASE_HEBDO_LEG_H()).length() == 0 && getZone(getNOM_EF_BASE_HEBDO_LEG_M()).length() == 0) {
 			// "ERR002","La zone @ est obligatoire."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "base légale hebdomadaire"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "base lÃ©gale hebdomadaire"));
 			return false;
 		}
 		// Verification nb heure legale numerique
 		if (getZone(getNOM_EF_BASE_HEBDO_LEG_H()).length() != 0
 				&& !Services.estNumerique(getZone(getNOM_EF_BASE_HEBDO_LEG_H()))) {
-			// "ERR992", "La zone @ doit être numérique.";
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "heures légale"));
+			// "ERR992", "La zone @ doit Ãªtre numÃ©rique.";
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "heures lÃ©gale"));
 			return false;
 		}
 		// Verification nb heure legale numerique
 		if (getZone(getNOM_EF_BASE_HEBDO_LEG_M()).length() != 0
 				&& !Services.estNumerique(getZone(getNOM_EF_BASE_HEBDO_LEG_M()))) {
-			// "ERR992", "La zone @ doit être numérique.";
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "minutes légale"));
+			// "ERR992", "La zone @ doit Ãªtre numÃ©rique.";
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "minutes lÃ©gale"));
 			return false;
 		}
 

@@ -12,7 +12,7 @@ import nc.mairie.technique.VariableActivite;
 import nc.mairie.utils.MessageUtils;
 
 /**
- * Process OeVOIESelection Date de création : (27/01/03 15:03:41)
+ * Process OeVOIESelection Date de crÃ©ation : (27/01/03 15:03:41)
  */
 public class OeVOIESelection extends BasicProcess {
 	/**
@@ -23,7 +23,7 @@ public class OeVOIESelection extends BasicProcess {
 	public String focus = null;
 
 	/**
-	 * Constructeur du process OeVOIESelection. Date de création : (27/01/03
+	 * Constructeur du process OeVOIESelection. Date de crÃ©ation : (27/01/03
 	 * 15:03:41)
 	 */
 	public OeVOIESelection() {
@@ -31,15 +31,15 @@ public class OeVOIESelection extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la JSP du process Zone à utiliser dans un champ caché
-	 * dans chaque formulaire de la JSP. Date de création : (27/01/03 15:03:41)
+	 * Retourne le nom de la JSP du process Zone a utiliser dans un champ cache
+	 * dans chaque formulaire de la JSP. Date de crÃ©ation : (27/01/03 15:03:41)
 	 */
 	public String getJSP() {
 		return "OeVOIESelection.jsp";
 	}
 
 	/**
-	 * Insérez la description de la méthode ici. Date de création : (27/01/2003
+	 * InsÃ©rez la description de la mÃ©thode ici. Date de crÃ©ation : (27/01/2003
 	 * 15:31:18)
 	 * 
 	 * @return ArrayList
@@ -53,14 +53,14 @@ public class OeVOIESelection extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_VOIE Date de
-	 * création : (27/01/03 15:03:41)
+	 * crÃ©ation : (27/01/03 15:03:41)
 	 */
 	public String getNOM_EF_VOIE() {
 		return "NOM_EF_VOIE";
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER Date de création :
+	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER Date de crÃ©ation :
 	 * (27/01/03 15:03:41)
 	 */
 	public String getNOM_PB_ANNULER() {
@@ -68,7 +68,7 @@ public class OeVOIESelection extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_OK Date de création :
+	 * Retourne le nom d'un bouton pour la JSP : PB_OK Date de crÃ©ation :
 	 * (27/01/03 15:03:41)
 	 */
 	public String getNOM_PB_RECHERCHER() {
@@ -76,28 +76,28 @@ public class OeVOIESelection extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie : EF_VOIE
-	 * Date de création : (27/01/03 15:03:41)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie : EF_VOIE
+	 * Date de crÃ©ation : (27/01/03 15:03:41)
 	 */
 	public String getVAL_EF_VOIE() {
 		return getZone(getNOM_EF_VOIE());
 	}
 
 	/**
-	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones Ã  afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
-	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
-	 * addZone(getNOMxxx, String); Date de création : (27/01/03 15:03:41)
+	 * doivent avoir les Fields PUBLIC Utilisation de la mÃ©thode
+	 * addZone(getNOMxxx, String); Date de crÃ©ation : (27/01/03 15:03:41)
 	 */
 	public void initialiseZones(HttpServletRequest request) throws Exception {
 		// aucune initialisation
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (27/01/03 15:03:41)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (27/01/03 15:03:41)
 	 */
 	public boolean performPB_ANNULER(HttpServletRequest request) throws Exception {
 		setStatut(STATUT_PROCESS_APPELANT);
@@ -105,10 +105,10 @@ public class OeVOIESelection extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (27/01/03 15:03:41)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (27/01/03 15:03:41)
 	 */
 	public boolean performPB_RECHERCHER(HttpServletRequest request) throws Exception {
 
@@ -148,8 +148,8 @@ public class OeVOIESelection extends BasicProcess {
 	}
 
 	/**
-	 * Méthode appelée par la servlet qui aiguille le traitement : en fonction
-	 * du bouton de la JSP Date de création : (27/01/03 15:03:41)
+	 * mÃ©thode appelee par la servlet qui aiguille le traitement : en fonction
+	 * du bouton de la JSP Date de crÃ©ation : (27/01/03 15:03:41)
 	 */
 	public boolean recupererStatut(HttpServletRequest request) throws Exception {
 
@@ -174,13 +174,13 @@ public class OeVOIESelection extends BasicProcess {
 			}
 
 		}
-		// Si TAG INPUT non géré par le process
+		// Si TAG INPUT non gÃ©rÃ© par le process
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
 
 	/**
-	 * Insérez la description de la méthode ici. Date de création : (27/01/2003
+	 * InsÃ©rez la description de la mÃ©thode ici. Date de crÃ©ation : (27/01/2003
 	 * 15:31:18)
 	 * 
 	 * @param newListeVoie
@@ -206,7 +206,7 @@ public class OeVOIESelection extends BasicProcess {
 
 	/**
 	 * @param focus
-	 *            focus à définir.
+	 *            focus Ã  dÃ©finir.
 	 */
 	public void setFocus(String focus) {
 		this.focus = focus;
@@ -214,22 +214,22 @@ public class OeVOIESelection extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_CODE Date de
-	 * création : (18/08/11 10:21:15)
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 */
 	public String getNOM_ST_CODE(int i) {
 		return "NOM_ST_CODE" + i;
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_CODE Date de
-	 * création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_CODE Date de
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 */
 	public String getVAL_ST_CODE(int i) {
 		return getZone(getNOM_ST_CODE(i));
 	}
 
 	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_LIB Date de création
+	 * Retourne pour la JSP le nom de la zone statique : ST_LIB Date de crÃ©ation
 	 * : (18/08/11 10:21:15)
 	 */
 	public String getNOM_ST_LIB(int i) {
@@ -237,8 +237,8 @@ public class OeVOIESelection extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_LIB Date de
-	 * création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_LIB Date de
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 */
 	public String getVAL_ST_LIB(int i) {
 		return getZone(getNOM_ST_LIB(i));
@@ -246,22 +246,22 @@ public class OeVOIESelection extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_QUARTIER Date de
-	 * création : (18/08/11 10:21:15)
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 */
 	public String getNOM_ST_QUARTIER(int i) {
 		return "NOM_ST_QUARTIER" + i;
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_QUARTIER Date
-	 * de création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_QUARTIER Date
+	 * de crÃ©ation : (18/08/11 10:21:15)
 	 */
 	public String getVAL_ST_QUARTIER(int i) {
 		return getZone(getNOM_ST_QUARTIER(i));
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_OK Date de création :
+	 * Retourne le nom d'un bouton pour la JSP : PB_OK Date de crÃ©ation :
 	 * (27/01/03 15:03:41)
 	 * 
 	 */
@@ -270,14 +270,14 @@ public class OeVOIESelection extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (27/01/03 15:03:41)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (27/01/03 15:03:41)
 	 * 
 	 */
 	public boolean performPB_OK(HttpServletRequest request, int elemSelection) throws Exception {
-		// Récup de la voie sélectionnée
+		// RÃ©cup de la voie sÃ©lectionnÃ©e
 		VoieQuartier aVoieQuartier = (VoieQuartier) getListeVoie().get(elemSelection);
 		if (getTransaction().isErreur()) {
 			return false;

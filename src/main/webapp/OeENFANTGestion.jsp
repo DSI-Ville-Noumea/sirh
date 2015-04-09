@@ -1,4 +1,4 @@
-<!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@ page contentType="text/html; charset=UTF-8" %> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <%@page import="nc.mairie.utils.MairieUtils"%>
 <%@page import="nc.mairie.enums.EnumTypeDroit"%>
 <HTML>
@@ -11,13 +11,13 @@
 <SCRIPT type="text/javascript" src="js/GestionCalendrier.js"></SCRIPT> 
 <SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT> 
 <SCRIPT language="JavaScript">
-		//afin de sélectionner un élément dans une liste
+		//afin de sÃ©lectionner un Ã©lÃ©ment dans une liste
 		function executeBouton(nom)
 		{
 		document.formu.elements[nom].click();
 		}
 		
-		// afin de mettre le focus sur une zone précise
+		// afin de mettre le focus sur une zone prÃ©cise
 		function setfocus(nom)
 		{
 		if (document.formu.elements[nom] != null)
@@ -33,7 +33,7 @@
 		}
 
 </SCRIPT>
-<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 </HEAD>
 <jsp:useBean class="nc.mairie.gestionagent.process.OeENFANTGestion" id="process" scope="session"></jsp:useBean>
 <BODY bgcolor="#FFFFFF" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="window.parent.frames['refAgent'].location.reload();return setfocus('<%= process.getFocus() %>')">
@@ -46,9 +46,9 @@
 				    <br/>
 				    <span style="margin-left: 5px;"><INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_CREER()%>"></span>
 				    <span style="margin-left:50px;">Nom</span>
-					<span style="margin-left:65px;">Prénom</span>
+					<span style="margin-left:65px;">PrÃ©nom</span>
 					<span style="margin-left:50px;">Sexe</span>
-					<span style="margin-left:20px;">Né(e) le</span>
+					<span style="margin-left:20px;">NÃ©(e) le</span>
 					<span style="margin-left:30px;">Lieu de naissance</span>
 					<br/>
 				<div style="overflow: auto;height: 250px;width:1000px;margin-right: 0px;margin-left: 0px;">
@@ -97,7 +97,7 @@
 							<%} %>
 			    		</td>
 			    		<td width="120px;">
-						    <span class="sigp2Mandatory"> Prénom : </span>
+						    <span class="sigp2Mandatory"> PrÃ©nom : </span>
 						</td>
 						<td>
 				    		<%if(process.getVAL_ST_ACTION().equals(process.ACTION_CREATION)){ %>
@@ -113,10 +113,10 @@
 						</td>
 						<td>
 							<INPUT type="radio" <%= process.forRadioHTML(process.getNOM_RG_SEXE(),process.getNOM_RB_SEXE_M())%> ><span class="sigp2Mandatory">Masculin</span>
-							<INPUT type="radio" <%= process.forRadioHTML(process.getNOM_RG_SEXE(),process.getNOM_RB_SEXE_F())%> ><span class="sigp2Mandatory">Féminin</span>
+							<INPUT type="radio" <%= process.forRadioHTML(process.getNOM_RG_SEXE(),process.getNOM_RB_SEXE_F())%> ><span class="sigp2Mandatory">FÃ©minin</span>
 			    		</td>
 			    		<td>				
-							<span class="sigp2Mandatory"> Nationalité :</span>
+							<span class="sigp2Mandatory"> NationalitÃ© :</span>
 						</td>
 						<td>
 							<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_NATIONALITE() %>">
@@ -148,7 +148,7 @@
 			    	</tr>
 			    	<tr>
 			    		<td>	
-							<span class="sigp2Mandatory"> Enfant à charge :</span>
+							<span class="sigp2Mandatory"> Enfant Ã  charge :</span>
 						</td>
 						<td>
 							<INPUT style="margin-left: 10px;" type="radio" <%= process.forRadioHTML(process.getNOM_RG_CHARGE(),process.getNOM_RB_CHARGE_O())%> ><span class="sigp2Mandatory">Oui</span>
@@ -165,7 +165,7 @@
 			    	</tr>
 			    	<tr>
 			    		<td>	
-							<span class="sigp2"> Date de décès :</span>
+							<span class="sigp2"> Date de dÃ©cÃ¨s :</span>
 						</td>
 						<td colspan="2">
 							<INPUT id="<%=process.getNOM_EF_DATE_DECES()%>" class="sigp2-saisie" maxlength="10" style="width: 90px;" name="<%= process.getNOM_EF_DATE_DECES() %>" type="text" value="<%= process.getVAL_EF_DATE_DECES() %>">
@@ -183,13 +183,13 @@
 			    </table>
 			    <br/>				
 				<FIELDSET>
-					<legend>Scolarité</legend>
+					<legend>ScolaritÃ©</legend>
 					<br/>
-					<span class="sigp2" style="width: 120px;" > Date début scolarité :</span>
+					<span class="sigp2" style="width: 120px;" > Date dÃ©but scolaritÃ© :</span>
 					<INPUT id="<%=process.getNOM_EF_DATE_DEBUT_SCOLARITE()%>" class="sigp2-saisie" maxlength="10" style="width: 90px;" name="<%= process.getNOM_EF_DATE_DEBUT_SCOLARITE() %>" type="text" value="<%= process.getVAL_EF_DATE_DEBUT_SCOLARITE() %>">
 					<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_EF_DATE_DEBUT_SCOLARITE()%>', 'dd/mm/y');">
 					
-					<span class="sigp2" style="width: 120px;margin-left: 10px;" > Date fin scolarité :</span>
+					<span class="sigp2" style="width: 120px;margin-left: 10px;" > Date fin scolaritÃ© :</span>
 					<INPUT id="<%=process.getNOM_EF_DATE_FIN_SCOLARITE()%>" class="sigp2-saisie" maxlength="10" style="width: 90px;" name="<%= process.getNOM_EF_DATE_FIN_SCOLARITE() %>" type="text" value="<%= process.getVAL_EF_DATE_FIN_SCOLARITE() %>">
 					<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_EF_DATE_FIN_SCOLARITE()%>', 'dd/mm/y');">
 					
@@ -231,7 +231,7 @@
 							<span class="sigp2-saisie" style="margin-left: 10px;"><%=process.getVAL_ST_NOM() %></span>
 						</td>
 				    	<td>
-							<span class="sigp2">Prénom : </span>
+							<span class="sigp2">PrÃ©nom : </span>
 							<span class="sigp2-saisie" style="margin-left: 10px;"><%=process.getVAL_ST_PRENOM() %></span>
 						</td>
 				    </tr>	
@@ -241,7 +241,7 @@
 							<span class="sigp2-saisie" style="margin-left: 10px;"><%=process.getVAL_ST_SEXE() %></span>
 						</td>
 				    	<td>
-							<span class="sigp2">Nationalité : </span>
+							<span class="sigp2">NationalitÃ© : </span>
 							<span class="sigp2-saisie" style="margin-left: 10px;"><%=process.getVAL_ST_NATIONALITE() %></span>
 						</td>
 				    </tr>	
@@ -259,7 +259,7 @@
 				    </tr>	
 				    <tr>
 				    	<td width="300px;">
-							<span class="sigp2">Enfant à charge : </span>
+							<span class="sigp2">Enfant Ã  charge : </span>
 							<span class="sigp2-saisie" style="margin-left: 10px;"><%=process.getVAL_ST_ACHARGE() %></span>  
 						</td>
 				    	<td>				                               
@@ -269,7 +269,7 @@
 				    </tr>
 				    <tr>
 				    	<td colspan="2" width="300px;">
-							<span class="sigp2">Date de décès : </span>
+							<span class="sigp2">Date de dÃ©cÃ¨s : </span>
 							<span class="sigp2-saisie" style="margin-left: 10px;"><%=process.getVAL_ST_DATEDECES() %></span>
 						</td>
 				    </tr>
@@ -281,7 +281,7 @@
 				    </tr>
 			    </table>
 				<br/>
-				<span class="sigp2">Scolarités : </span>
+				<span class="sigp2">ScolaritÃ©s : </span>
 					<br/>
 				    <div style="overflow: auto;height: 50px;width:300px;">
 						<table class="sigp2NewTab" width="280px" style="text-align:left;">

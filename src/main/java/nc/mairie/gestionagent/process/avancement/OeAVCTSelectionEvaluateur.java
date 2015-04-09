@@ -18,7 +18,7 @@ import nc.mairie.utils.VariablesActivite;
 import org.springframework.context.ApplicationContext;
 
 /**
- * Process OePOSTEFEActiviteSelection Date de création : (03/02/09 14:56:59)
+ * Process OePOSTEFEActiviteSelection Date de crÃ©ation : (03/02/09 14:56:59)
  * 
  */
 public class OeAVCTSelectionEvaluateur extends BasicProcess {
@@ -38,10 +38,10 @@ public class OeAVCTSelectionEvaluateur extends BasicProcess {
 	private AgentDao agentDao;
 
 	/**
-	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones Ã  afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
-	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
-	 * addZone(getNOMxxx, String); Date de création : (03/02/09 14:56:59)
+	 * doivent avoir les Fields PUBLIC Utilisation de la mÃ©thode
+	 * addZone(getNOMxxx, String); Date de crÃ©ation : (03/02/09 14:56:59)
 	 * 
 	 */
 	@SuppressWarnings("unchecked")
@@ -104,7 +104,7 @@ public class OeAVCTSelectionEvaluateur extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER Date de création :
+	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER Date de crÃ©ation :
 	 * (03/02/09 14:56:59)
 	 * 
 	 */
@@ -113,10 +113,10 @@ public class OeAVCTSelectionEvaluateur extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (03/02/09 14:56:59)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (03/02/09 14:56:59)
 	 * 
 	 */
 	public boolean performPB_ANNULER(HttpServletRequest request) throws Exception {
@@ -128,14 +128,14 @@ public class OeAVCTSelectionEvaluateur extends BasicProcess {
 
 	/**
 	 * @param focus
-	 *            focus à définir.
+	 *            focus Ã  dÃ©finir.
 	 */
 	public void setFocus(String focus) {
 		this.focus = focus;
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER Date de création :
+	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER Date de crÃ©ation :
 	 * (19/07/11 16:22:13)
 	 * 
 	 */
@@ -144,20 +144,20 @@ public class OeAVCTSelectionEvaluateur extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (19/07/11 16:22:13)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (19/07/11 16:22:13)
 	 * 
 	 */
 	public boolean performPB_VALIDER(HttpServletRequest request) throws Exception {
 
 		ArrayList<Agent> listAgentSelect = new ArrayList<Agent>();
 		for (int j = 0; j < getListeEvaluateurs().size(); j++) {
-			// on recupère la ligne concernée
+			// on recupere la ligne concernÃ©e
 			Agent ag = (Agent) getListeEvaluateurs().get(j);
 			Integer i = ag.getIdAgent();
-			// si la colonne selection est cochée
+			// si la colonne selection est cochÃ©e
 			if (getVAL_CK_SELECT_LIGNE(i).equals(getCHECKED_ON())) {
 				listAgentSelect.add(ag);
 			}
@@ -165,7 +165,7 @@ public class OeAVCTSelectionEvaluateur extends BasicProcess {
 		// on verifie que la liste ne depasse pas 2 personnes
 		if (listAgentSelect.size() > 2) {
 			// "ERR211",
-			// "Vous ne pouvez pas sélectionner plus de 2 évaluateurs."
+			// "Vous ne pouvez pas sÃ©lectionner plus de 2 evaluateurs."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR211"));
 			return false;
 		}
@@ -177,8 +177,8 @@ public class OeAVCTSelectionEvaluateur extends BasicProcess {
 	}
 
 	/**
-	 * Méthode appelée par la servlet qui aiguille le traitement : en fonction
-	 * du bouton de la JSP Date de création : (03/02/09 14:56:59)
+	 * mÃ©thode appelee par la servlet qui aiguille le traitement : en fonction
+	 * du bouton de la JSP Date de crÃ©ation : (03/02/09 14:56:59)
 	 * 
 	 */
 	public boolean recupererStatut(HttpServletRequest request) throws Exception {
@@ -209,13 +209,13 @@ public class OeAVCTSelectionEvaluateur extends BasicProcess {
 				}
 			}
 		}
-		// Si TAG INPUT non géré par le process
+		// Si TAG INPUT non gÃ©rÃ© par le process
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
 
 	/**
-	 * Constructeur du process OePOSTEFEActiviteSelection. Date de création :
+	 * Constructeur du process OePOSTEFEActiviteSelection. Date de crÃ©ation :
 	 * (24/08/11 09:15:05)
 	 * 
 	 */
@@ -224,8 +224,8 @@ public class OeAVCTSelectionEvaluateur extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la JSP du process Zone à utiliser dans un champ caché
-	 * dans chaque formulaire de la JSP. Date de création : (24/08/11 09:15:05)
+	 * Retourne le nom de la JSP du process Zone a utiliser dans un champ cache
+	 * dans chaque formulaire de la JSP. Date de crÃ©ation : (24/08/11 09:15:05)
 	 * 
 	 */
 	public String getJSP() {
@@ -234,7 +234,7 @@ public class OeAVCTSelectionEvaluateur extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_ID_AGENT Date de
-	 * création : (21/11/11 09:55:36)
+	 * crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_ST_ID_AGENT(int i) {
@@ -242,8 +242,8 @@ public class OeAVCTSelectionEvaluateur extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ID_AGENT Date
-	 * de création : (21/11/11 09:55:36)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_ID_AGENT Date
+	 * de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_ST_ID_AGENT(int i) {
@@ -252,7 +252,7 @@ public class OeAVCTSelectionEvaluateur extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_LIB_AGENT Date de
-	 * création : (21/11/11 09:55:36)
+	 * crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_ST_LIB_AGENT(int i) {
@@ -260,8 +260,8 @@ public class OeAVCTSelectionEvaluateur extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_LIB_AGENT Date
-	 * de création : (21/11/11 09:55:36)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_LIB_AGENT Date
+	 * de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_ST_LIB_AGENT(int i) {
@@ -269,8 +269,8 @@ public class OeAVCTSelectionEvaluateur extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la case à cocher sélectionnée pour la JSP :
-	 * CK_SELECT_LIGNE Date de création : (21/11/11 09:55:36)
+	 * Retourne le nom de la case Ã  cocher sÃ©lectionnÃ©e pour la JSP :
+	 * CK_SELECT_LIGNE Date de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_CK_SELECT_LIGNE(int i) {
@@ -278,8 +278,8 @@ public class OeAVCTSelectionEvaluateur extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur de la case à cocher à afficher par la JSP pour la case
-	 * à cocher : CK_SELECT_LIGNE Date de création : (21/11/11 09:55:36)
+	 * Retourne la valeur de la case Ã  cocher Ã  afficher par la JSP pour la case
+	 * a cocher : CK_SELECT_LIGNE Date de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_CK_SELECT_LIGNE(int i) {
@@ -287,8 +287,8 @@ public class OeAVCTSelectionEvaluateur extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom du groupe de radio boutons coché pour la JSP :
-	 * RG_RECHERCHE Date de création : (15/09/11 10:51:20)
+	 * Retourne le nom du groupe de radio boutons cochÃ© pour la JSP :
+	 * RG_RECHERCHE Date de crÃ©ation : (15/09/11 10:51:20)
 	 * 
 	 */
 	public String getNOM_RG_RECHERCHE() {
@@ -296,8 +296,8 @@ public class OeAVCTSelectionEvaluateur extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur du radio bouton (RB_) coché dans la JSP : RG_RECHERCHE
-	 * Date de création : (15/09/11 10:51:20)
+	 * Retourne la valeur du radio bouton (RB_) cochÃ© dans la JSP : RG_RECHERCHE
+	 * Date de crÃ©ation : (15/09/11 10:51:20)
 	 * 
 	 */
 	public String getVAL_RG_RECHERCHE() {
@@ -306,7 +306,7 @@ public class OeAVCTSelectionEvaluateur extends BasicProcess {
 
 	/**
 	 * Retourne le nom du radio bouton pour la JSP : RB_RECH_NOM Date de
-	 * création : (08/10/08 13:07:23)
+	 * crÃ©ation : (08/10/08 13:07:23)
 	 * 
 	 */
 	public String getNOM_RB_RECH_NOM() {
@@ -315,7 +315,7 @@ public class OeAVCTSelectionEvaluateur extends BasicProcess {
 
 	/**
 	 * Retourne le nom du radio bouton pour la JSP : RB_RECH_PRENOM Date de
-	 * création : (08/10/08 13:07:23)
+	 * crÃ©ation : (08/10/08 13:07:23)
 	 * 
 	 */
 	public String getNOM_RB_RECH_PRENOM() {
@@ -324,7 +324,7 @@ public class OeAVCTSelectionEvaluateur extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_ZONE Date de
-	 * création : (01/01/03 09:35:10)
+	 * crÃ©ation : (01/01/03 09:35:10)
 	 * 
 	 */
 	public String getNOM_EF_ZONE() {
@@ -332,8 +332,8 @@ public class OeAVCTSelectionEvaluateur extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie : EF_ZONE
-	 * Date de création : (01/01/03 09:35:10)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie : EF_ZONE
+	 * Date de crÃ©ation : (01/01/03 09:35:10)
 	 * 
 	 */
 	public String getVAL_EF_ZONE() {
@@ -341,7 +341,7 @@ public class OeAVCTSelectionEvaluateur extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_RECHERCHER Date de création
+	 * Retourne le nom d'un bouton pour la JSP : PB_RECHERCHER Date de crÃ©ation
 	 * : (01/01/03 09:35:10)
 	 * 
 	 */
@@ -350,10 +350,10 @@ public class OeAVCTSelectionEvaluateur extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (01/01/03 09:35:10)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (01/01/03 09:35:10)
 	 * 
 	 */
 	public boolean performPB_RECHERCHER(HttpServletRequest request) throws Exception {
@@ -373,7 +373,7 @@ public class OeAVCTSelectionEvaluateur extends BasicProcess {
 				liste = liste.substring(0, liste.length() - 1);
 			}
 			aListe = getAgentDao().listerAgentWithListNomatr(liste);
-			// Sinon, si numérique on cherche l'agent
+			// Sinon, si numÃ©rique on cherche l'agent
 		} else if (Services.estNumerique(zone)) {
 			PositionAdmAgent paAgent = PositionAdmAgent.chercherPositionAdmAgentActive(getTransaction(),
 					Integer.valueOf(zone));
@@ -405,9 +405,9 @@ public class OeAVCTSelectionEvaluateur extends BasicProcess {
 				}
 			}
 			aListe = listeAgentEnActivite;
-			// sinon les agents dont le prénom commence par
+			// sinon les agents dont le prenom commence par
 		} else if (getVAL_RG_RECHERCHE().equals(getNOM_RB_RECH_PRENOM())) {
-			// on recupere une liste d'agent avec le prénom commencant par...
+			// on recupere une liste d'agent avec le prenom commencant par...
 			ArrayList<Agent> listeAgentWithPrenom = getAgentDao().listerAgentAvecPrenomCommencant(zone);
 			ArrayList<Agent> listeAgentEnActivite = new ArrayList<Agent>();
 			// on parcours cette liste pour ne mettre que les agents en activite
@@ -495,7 +495,7 @@ public class OeAVCTSelectionEvaluateur extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_ID_AGENT_POSSIBLE
-	 * Date de création : (21/11/11 09:55:36)
+	 * Date de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_ST_ID_AGENT_POSSIBLE(int i) {
@@ -503,8 +503,8 @@ public class OeAVCTSelectionEvaluateur extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
-	 * ST_ID_AGENT_POSSIBLE Date de création : (21/11/11 09:55:36)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone :
+	 * ST_ID_AGENT_POSSIBLE Date de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_ST_ID_AGENT_POSSIBLE(int i) {
@@ -513,7 +513,7 @@ public class OeAVCTSelectionEvaluateur extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_LIB_AGENT_POSSIBLE
-	 * Date de création : (21/11/11 09:55:36)
+	 * Date de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_ST_LIB_AGENT_POSSIBLE(int i) {
@@ -521,8 +521,8 @@ public class OeAVCTSelectionEvaluateur extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
-	 * ST_LIB_AGENT_POSSIBLE Date de création : (21/11/11 09:55:36)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone :
+	 * ST_LIB_AGENT_POSSIBLE Date de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_ST_LIB_AGENT_POSSIBLE(int i) {
@@ -530,8 +530,8 @@ public class OeAVCTSelectionEvaluateur extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la case à cocher sélectionnée pour la JSP :
-	 * CK_SELECT_LIGNE_POSSIBLE Date de création : (21/11/11 09:55:36)
+	 * Retourne le nom de la case Ã  cocher sÃ©lectionnÃ©e pour la JSP :
+	 * CK_SELECT_LIGNE_POSSIBLE Date de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_CK_SELECT_LIGNE_POSSIBLE(int i) {
@@ -539,8 +539,8 @@ public class OeAVCTSelectionEvaluateur extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur de la case à cocher à afficher par la JSP pour la case
-	 * à cocher : CK_SELECT_LIGNE Date de création : (21/11/11 09:55:36)
+	 * Retourne la valeur de la case Ã  cocher Ã  afficher par la JSP pour la case
+	 * a cocher : CK_SELECT_LIGNE Date de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_CK_SELECT_LIGNE_POSSIBLE(int i) {
@@ -548,7 +548,7 @@ public class OeAVCTSelectionEvaluateur extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_OK Date de création :
+	 * Retourne le nom d'un bouton pour la JSP : PB_OK Date de crÃ©ation :
 	 * (01/01/03 09:35:10)
 	 * 
 	 */
@@ -557,10 +557,10 @@ public class OeAVCTSelectionEvaluateur extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (01/01/03 09:35:10)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (01/01/03 09:35:10)
 	 * 
 	 */
 	public boolean performPB_OK(HttpServletRequest request, Integer idAgent) throws Exception {

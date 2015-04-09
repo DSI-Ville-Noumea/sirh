@@ -58,7 +58,7 @@ public class OeELECSaisieCompteurA54 extends BasicProcess {
 	private ArrayList<MotifCompteurDto> listeMotifCompteur;
 
 	public String ACTION_MODIFICATION = "Modification d'un compteur.";
-	public String ACTION_CREATION = "Création d'un compteur.";
+	public String ACTION_CREATION = "CrÃ©ation d'un compteur.";
 	public String ACTION_VISUALISATION = "Consultation d'un compteur.";
 
 	private AgentDao agentDao;
@@ -69,7 +69,7 @@ public class OeELECSaisieCompteurA54 extends BasicProcess {
 	}
 
 	/**
-	 * Getter du nom de l'écran (pour la gestion des droits)
+	 * Getter du nom de l'Ã©cran (pour la gestion des droits)
 	 */
 	public String getNomEcran() {
 		return "ECR-ELEC-COMPTEUR";
@@ -89,11 +89,11 @@ public class OeELECSaisieCompteurA54 extends BasicProcess {
 		VariableGlobale.ajouter(request, "PROCESS_MEMORISE", this);
 
 		// ----------------------------------//
-		// Vérification des droits d'accès. //
+		// VÃ©rification des droits d'acces. //
 		// ----------------------------------//
 		if (MairieUtils.estInterdit(request, getNomEcran())) {
 			// "ERR190",
-			// "Opération impossible. Vous ne disposez pas des droits d'accès à cette option."
+			// "Operation impossible. Vous ne disposez pas des droits d'acces a cette option."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
@@ -106,7 +106,7 @@ public class OeELECSaisieCompteurA54 extends BasicProcess {
 			}
 		}
 
-		// Initialisation des listes déroulantes
+		// Initialisation des listes deroulantes
 		initialiseListeDeroulante();
 
 		initialiseListeCompteur(request);
@@ -235,7 +235,7 @@ public class OeELECSaisieCompteurA54 extends BasicProcess {
 				return performPB_RECHERCHER_AGENT_CREATE(request);
 			}
 		}
-		// Si TAG INPUT non géré par le process
+		// Si TAG INPUT non gÃ©rÃ© par le process
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
@@ -398,7 +398,7 @@ public class OeELECSaisieCompteurA54 extends BasicProcess {
 
 	public boolean performPB_RECHERCHER_AGENT_CREATE(HttpServletRequest request) throws Exception {
 
-		// On met l'agent courant en var d'activité
+		// On met l'agent courant en var d'activitÃ©
 		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new Agent());
 		setStatut(STATUT_RECHERCHER_AGENT_CREATE, true);
 		return true;
@@ -412,14 +412,14 @@ public class OeELECSaisieCompteurA54 extends BasicProcess {
 
 		// nbjours numerique
 		if (!Services.estNumerique(getZone(getNOM_ST_NB_JOURS()))) {
-			// "ERR992", "La zone @ doit être numérique.");
+			// "ERR992", "La zone @ doit Ãªtre numÃ©rique.");
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "nb jours"));
 			return false;
 		}
 
 		// idAgent numerique
 		if (!Services.estNumerique(getZone(getNOM_ST_AGENT_CREATE()))) {
-			// "ERR992", "La zone @ doit être numérique.");
+			// "ERR992", "La zone @ doit Ãªtre numÃ©rique.");
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "agent"));
 			return false;
 		}
@@ -439,13 +439,13 @@ public class OeELECSaisieCompteurA54 extends BasicProcess {
 					.parseInt(getVAL_LB_ANNEE_SELECT()) : -1);
 			if (indiceAnnee < 0) {
 				// "ERR002", "La zone @ est obligatoire."
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "année"));
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "annÃ©e"));
 				return false;
 			}
 		} else if (getZone(getNOM_ST_ACTION()).equals(ACTION_MODIFICATION)) {
 			if (getVAL_ST_ANNEE().equals(Const.CHAINE_VIDE)) {
 				// "ERR002", "La zone @ est obligatoire."
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "année"));
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "annÃ©e"));
 				return false;
 			}
 
@@ -470,11 +470,11 @@ public class OeELECSaisieCompteurA54 extends BasicProcess {
 
 	public boolean performPB_VALIDER(HttpServletRequest request) throws Exception {
 
-		// vérification de la validité du formulaire
+		// VÃ©rification de la validitÃ© du formulaire
 		if (!performControlerChamps(request))
 			return false;
 
-		// on recupere l'agent connecté
+		// on recupere l'agent connecte
 		Agent agentConnecte = getAgentConnecte(request);
 		if (agentConnecte == null) {
 			// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
@@ -482,7 +482,7 @@ public class OeELECSaisieCompteurA54 extends BasicProcess {
 			return false;
 		}
 
-		// on sauvegarde les données
+		// on sauvegarde les donnÃ©es
 		SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
 		ReturnMessageDto message = new ReturnMessageDto();
 
@@ -530,7 +530,7 @@ public class OeELECSaisieCompteurA54 extends BasicProcess {
 			}
 			getTransaction().declarerErreur("ERREUR : " + err);
 		} else {
-			// "INF010", "Le compteur @ a bien été mis à jour."
+			// "INF010", "Le compteur @ a bien Ã©tÃ© mis a jour."
 			setStatut(STATUT_MEME_PROCESS, false, MessageUtils.getMessage("INF010", EnumTypeAbsence.ASA_A54.getValue()));
 		}
 

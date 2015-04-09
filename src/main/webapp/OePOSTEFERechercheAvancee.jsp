@@ -1,4 +1,4 @@
-<!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@ page contentType="text/html; charset=UTF-8" %> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <%@page import="java.util.ArrayList"%>
 <%@page import="nc.mairie.metier.parametrage.CodeRome"%>
 <%@page import="nc.mairie.metier.poste.FicheEmploi"%>
@@ -10,7 +10,7 @@
 		<META http-equiv="Content-Style-Type" content="text/css">
 		<LINK href="theme/sigp2.css" rel="stylesheet" type="text/css">
 		<link rel="stylesheet" href="css/custom-theme/jquery-ui-1.8.16.custom.css" type="text/css">
-		<TITLE>Sélection d'une fiche de poste</TITLE>
+		<TITLE>SÃ©lection d'une fiche de poste</TITLE>
 		<SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT>
 		<script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
 		<script type="text/javascript" src="development-bundle/ui/jquery.ui.core.js"></script>
@@ -19,13 +19,13 @@
 		<script type="text/javascript" src="development-bundle/ui/jquery.ui.autocomplete.js"></script>
 		
 		<SCRIPT language="JavaScript">
-		//afin de sélectionner un élément dans une liste
+		//afin de sÃ©lectionner un Ã©lÃ©ment dans une liste
 		function executeBouton(nom)
 		{
 		document.formu.elements[nom].click();
 		}
 		
-		// afin de mettre le focus sur une zone précise
+		// afin de mettre le focus sur une zone prÃ©cise
 		function setfocus(nom)
 		{
 		if (document.formu.elements[nom] != null)
@@ -83,13 +83,13 @@
 				});
 			});
 		</SCRIPT>
-		<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	</HEAD>
 	<BODY bgcolor="#FFFFFF" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="return setfocus('<%= process.getFocus() %>')">
 		<%@ include file="BanniereErreur.jsp"%>
 		<FORM name="formu" method="POST" class="sigp2-titre">
-			<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;" title="Recherche avancée d'une fiche emploi">
-				<LEGEND class="sigp2Legend">Recherche avancée d'une fiche emploi</LEGEND>
+			<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;" title="Recherche avancÃ©e d'une fiche emploi">
+				<LEGEND class="sigp2Legend">Recherche avancÃ©e d'une fiche emploi</LEGEND>
 				<BR/>
 				<table>
 					<tr>
@@ -122,7 +122,7 @@
 					</tr>
 					<tr>
 						<td>
-							<span class="sigp2">Nom du métier / emploi : </span>
+							<span class="sigp2">Nom du mÃ©tier / emploi : </span>
 						</td>
 						<td>
 							<INPUT id="listeNomEmploi" class="sigp2-saisie" name="<%= process.getNOM_EF_NOM_EMPLOI() %>" style="margin-right:10px;width:328px"  type="text" value="<%= process.getVAL_EF_NOM_EMPLOI() %>">
@@ -142,8 +142,8 @@
 				<BR>
 			</FIELDSET>
 			
-			<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;" title="Sélection d'une fiche emploi %>">
-				<LEGEND class="sigp2Legend">Sélection d'une fiche emploi</LEGEND>
+			<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;" title="SÃ©lection d'une fiche emploi %>">
+				<LEGEND class="sigp2Legend">SÃ©lection d'une fiche emploi</LEGEND>
             	<%if(process.getListeFE()!= null && process.getListeFE().size()>0){ %>
 				<BR>
 	            

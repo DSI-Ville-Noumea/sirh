@@ -1,4 +1,4 @@
-<!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@ page contentType="text/html; charset=UTF-8" %> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <%@page import="java.text.SimpleDateFormat"%>
 <%@page import="nc.mairie.utils.MairieUtils"%>
 <%@page import="nc.mairie.enums.EnumTypeDroit"%>
@@ -16,13 +16,13 @@
 <SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT>  
 
 <SCRIPT language="JavaScript">
-		//afin de sélectionner un élément dans une liste
+		//afin de sÃ©lectionner un Ã©lÃ©ment dans une liste
 		function executeBouton(nom)
 		{
 		document.formu.elements[nom].click();
 		}
 		
-		// afin de mettre le focus sur une zone précise
+		// afin de mettre le focus sur une zone prÃ©cise
 		function setfocus(nom)
 		{
 		if (document.formu.elements[nom] != null)
@@ -37,7 +37,7 @@
 		 document.getElementById(id).className="selectLigne";
 		}
 </SCRIPT>
-<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 </HEAD>
 <jsp:useBean class="nc.mairie.gestionagent.process.agent.OeAGENTContrat" id="process" scope="session"></jsp:useBean>
 <BODY bgcolor="#FFFFFF" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="window.parent.frames['refAgent'].location.reload();return setfocus('<%= process.getFocus() %>')">
@@ -51,11 +51,11 @@
 				    <span style="margin-left: 5px;">
 				    <INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_CREER()%>">
 				    </span>
-				    <span style="margin-left: 65px;">Numéro</span>
+				    <span style="margin-left: 65px;">NumÃ©ro</span>
 					<span style="margin-left: 40px;">Type</span>
 					<span style="margin-left: 5px;">Avenant</span>
-					<span style="margin-left: 5px;">Date de début</span>
-					<span style="margin-left: 5px;">Fin période essai</span>
+					<span style="margin-left: 5px;">Date de dÃ©but</span>
+					<span style="margin-left: 5px;">Fin pÃ©riode essai</span>
 					<span style="margin-left: 15px;">Date de fin</span>
 					<span style="margin-left: 15px;">Motif</span>
 					<span style="margin-left: 175px;">Justification</span>
@@ -116,7 +116,7 @@
 					<INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
 				</div>
 			<%}else if(process.getVAL_ST_ACTION().equals(process.ACTION_CREATION) && process.getVAL_ST_CHOIX_CONTRAT().equals(process.CHOIX_CONTRAT_O)){ %>
-				<div title="Création contrat">
+				<div title="CrÃ©ation contrat">
 					<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:70px;">Avenant : </span>
 					<INPUT class="sigp2" type="radio" name="<%=process.getNOM_RG_AVENANT()%>" onclick='executeBouton("<%=process.getNOM_PB_AVENANT()%>")' <%= process.forRadioHTML(process.getNOM_RG_AVENANT(),process.getNOM_RB_AVENANT_O())%>> Oui
 					<INPUT class="sigp2" type="radio" name="<%=process.getNOM_RG_AVENANT()%>" onclick='executeBouton("<%=process.getNOM_PB_AVENANT()%>")' <%= process.forRadioHTML(process.getNOM_RG_AVENANT(),process.getNOM_RB_AVENANT_N())%>> Non
@@ -127,7 +127,7 @@
 							<%=process.forComboHTML(process.getVAL_LB_TYPE_CONTRAT(), process.getVAL_LB_TYPE_CONTRAT_SELECT()) %>
 						</SELECT>
 						<span style="width:20px"></span>
-						<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:130px;">Contrat de référence : </span>
+						<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:130px;">Contrat de rÃ©fÃ©rence : </span>
 						<span class="sigp2-saisie" style="width:60px"><%=process.getVAL_ST_NUM_CONTRAT_REF()%></span>
 					<% } else { %>
 						<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_TYPE_CONTRAT() %>" style="width:120px">
@@ -153,11 +153,11 @@
 					</SELECT>
 					<%if(process.getVAL_RG_AVENANT().equals(process.getNOM_RB_AVENANT_O())){ %>
 						<span style="width:20px"></span>
-						<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:130px;">Contrat de référence : </span>
+						<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:130px;">Contrat de rÃ©fÃ©rence : </span>
 						<span class="sigp2-saisie"><%=process.getVAL_ST_NUM_CONTRAT_REF()%></span>
 					<% } %>
 					<BR/><HR/><BR/>
-					<span class="sigp2Mandatory" style="margin-left:10px;position:relative;width:130px;">Date de début : </span>
+					<span class="sigp2Mandatory" style="margin-left:10px;position:relative;width:130px;">Date de dÃ©but : </span>
 					
 					<%if(process.getVAL_RG_AVENANT().equals(process.getNOM_RB_AVENANT_O())){ %>
 						<%if(process.getVAL_LB_TYPE_CONTRAT_SELECT().equals("0")){ %>
@@ -188,10 +188,10 @@
 					<%if(!process.getVAL_RG_AVENANT().equals(process.getNOM_RB_AVENANT_O())){ %>					
 						<%if(process.getVAL_LB_TYPE_CONTRAT_SELECT().equals("0")){ %>
 							<BR/><BR/>
-							<span class="sigp2Mandatory" style="margin-left:10px;position:relative;width:180px;">Date de fin de période d'essai : </span>
+							<span class="sigp2Mandatory" style="margin-left:10px;position:relative;width:180px;">Date de fin de pÃ©riode d'essai : </span>
 						<%}else{ %>
 							<BR/><BR/>
-							<span class="sigp2Mandatory" style="margin-left:10px;position:relative;width:180px;">Date de fin de période d'essai : </span>
+							<span class="sigp2Mandatory" style="margin-left:10px;position:relative;width:180px;">Date de fin de pÃ©riode d'essai : </span>
 						<%} %>
 						<span style="width:120px">
 							<INPUT id="<%=process.getNOM_EF_DATE_FIN_PERIODE_ESSAI()%>" class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_DATE_FIN_PERIODE_ESSAI() %>" size="10" type="text" value="<%= process.getVAL_EF_DATE_FIN_PERIODE_ESSAI() %>">
@@ -236,7 +236,7 @@
 				<table>
 					<tr>
 						<td width="100px">
-							<span class="sigp2">Numéro de contrat : </span>
+							<span class="sigp2">NumÃ©ro de contrat : </span>
 						</td>
 						<td width="100px">
 							<span class="sigp2-saisie"><%=process.getVAL_ST_NUM_CONTRAT()%></span>
@@ -259,7 +259,7 @@
 							</span>
 						</td>
 						<td>
-							<span class="sigp2">Contrat de référence : </span>
+							<span class="sigp2">Contrat de rÃ©fÃ©rence : </span>
 						</td>
 						<td colspan="2">
 							<span class="sigp2-saisie"><%=process.getVAL_ST_NUM_CONTRAT_REF()%></span>
@@ -267,13 +267,13 @@
 					</tr>
 					<tr>
 						<td>
-							<span class="sigp2" >Date de début : </span>
+							<span class="sigp2" >Date de dÃ©but : </span>
 						</td>
 						<td>			
 							<span class="sigp2-saisie"><%=process.getVAL_EF_DATE_DEB()%></span>
 						</td>
 						<td>
-							<span class="sigp2">Date de fin de période d'essai : </span>
+							<span class="sigp2">Date de fin de pÃ©riode d'essai : </span>
 						</td>
 						<td >
 							<span class="sigp2-saisie"><%=process.getVAL_EF_DATE_FIN_PERIODE_ESSAI()%></span>
@@ -309,7 +309,7 @@
 			</div>
 			<%} %>
 		</FIELDSET>
-		<!-- Boutons cachés -->
+		<!-- Boutons cachÃ©s -->
 		<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_INIT_FIN_PERIODE_ESSAI()%>" value="x">
 		<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_AVENANT()%>" value="y">
 <%} %>

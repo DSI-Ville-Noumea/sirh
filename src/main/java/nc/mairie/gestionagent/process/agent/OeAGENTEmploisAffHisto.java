@@ -18,7 +18,7 @@ import nc.mairie.utils.MessageUtils;
 import org.springframework.context.ApplicationContext;
 
 /**
- * Process OeAGENTEmploisAffHisto Date de création : (16/08/11 10:08:01)
+ * Process OeAGENTEmploisAffHisto Date de crÃ©ation : (16/08/11 10:08:01)
  * 
  */
 public class OeAGENTEmploisAffHisto extends BasicProcess {
@@ -32,10 +32,10 @@ public class OeAGENTEmploisAffHisto extends BasicProcess {
 	private FichePosteDao fichePosteDao;
 
 	/**
-	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones Ã  afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
-	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
-	 * addZone(getNOMxxx, String); Date de création : (16/08/11 10:08:01)
+	 * doivent avoir les Fields PUBLIC Utilisation de la mÃ©thode
+	 * addZone(getNOMxxx, String); Date de crÃ©ation : (16/08/11 10:08:01)
 	 * 
 	 */
 	public void initialiseZones(HttpServletRequest request) throws Exception {
@@ -92,8 +92,8 @@ public class OeAGENTEmploisAffHisto extends BasicProcess {
 	}
 
 	/**
-	 * Méthode appelée par la servlet qui aiguille le traitement : en fonction
-	 * du bouton de la JSP Date de création : (16/08/11 10:08:01)
+	 * mÃ©thode appelee par la servlet qui aiguille le traitement : en fonction
+	 * du bouton de la JSP Date de crÃ©ation : (16/08/11 10:08:01)
 	 * 
 	 */
 	public boolean recupererStatut(HttpServletRequest request) throws Exception {
@@ -107,13 +107,13 @@ public class OeAGENTEmploisAffHisto extends BasicProcess {
 			}
 
 		}
-		// Si TAG INPUT non géré par le process
+		// Si TAG INPUT non gÃ©rÃ© par le process
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
 
 	/**
-	 * Constructeur du process OeAGENTEmploisAffHisto. Date de création :
+	 * Constructeur du process OeAGENTEmploisAffHisto. Date de crÃ©ation :
 	 * (16/08/11 10:08:01)
 	 * 
 	 */
@@ -122,8 +122,8 @@ public class OeAGENTEmploisAffHisto extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la JSP du process Zone à utiliser dans un champ caché
-	 * dans chaque formulaire de la JSP. Date de création : (16/08/11 10:08:01)
+	 * Retourne le nom de la JSP du process Zone a utiliser dans un champ cache
+	 * dans chaque formulaire de la JSP. Date de crÃ©ation : (16/08/11 10:08:01)
 	 * 
 	 */
 	public String getJSP() {
@@ -131,7 +131,7 @@ public class OeAGENTEmploisAffHisto extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_OK Date de création :
+	 * Retourne le nom d'un bouton pour la JSP : PB_OK Date de crÃ©ation :
 	 * (16/08/11 10:08:01)
 	 * 
 	 */
@@ -140,10 +140,10 @@ public class OeAGENTEmploisAffHisto extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (16/08/11 10:08:01)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (16/08/11 10:08:01)
 	 * 
 	 */
 	public boolean performPB_OK(HttpServletRequest request) throws Exception {
@@ -161,7 +161,7 @@ public class OeAGENTEmploisAffHisto extends BasicProcess {
 	}
 
 	/**
-	 * Met à jour l'agent courant.
+	 * Met a jour l'agent courant.
 	 * 
 	 * @param agentCourant
 	 */
@@ -179,7 +179,7 @@ public class OeAGENTEmploisAffHisto extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_MATR Date de
-	 * création : (18/08/11 10:21:15)
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_MATR(int i) {
@@ -187,8 +187,8 @@ public class OeAGENTEmploisAffHisto extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_MATR Date de
-	 * création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_MATR Date de
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_MATR(int i) {
@@ -197,7 +197,7 @@ public class OeAGENTEmploisAffHisto extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_SERV Date de
-	 * création : (18/08/11 10:21:15)
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_SERV(int i) {
@@ -205,8 +205,8 @@ public class OeAGENTEmploisAffHisto extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_SERV Date de
-	 * création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_SERV Date de
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_SERV(int i) {
@@ -215,7 +215,7 @@ public class OeAGENTEmploisAffHisto extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_REF_ARR Date de
-	 * création : (18/08/11 10:21:15)
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_REF_ARR(int i) {
@@ -223,8 +223,8 @@ public class OeAGENTEmploisAffHisto extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_REF_ARR Date
-	 * de création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_REF_ARR Date
+	 * de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_REF_ARR(int i) {
@@ -233,7 +233,7 @@ public class OeAGENTEmploisAffHisto extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_DATE_DEBUT Date de
-	 * création : (18/08/11 10:21:15)
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_DATE_DEBUT(int i) {
@@ -241,8 +241,8 @@ public class OeAGENTEmploisAffHisto extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE_DEBUT
-	 * Date de création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_DATE_DEBUT
+	 * Date de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_DATE_DEBUT(int i) {
@@ -251,7 +251,7 @@ public class OeAGENTEmploisAffHisto extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_DATE_FIN Date de
-	 * création : (18/08/11 10:21:15)
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_DATE_FIN(int i) {
@@ -259,8 +259,8 @@ public class OeAGENTEmploisAffHisto extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE_FIN Date
-	 * de création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_DATE_FIN Date
+	 * de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_DATE_FIN(int i) {
@@ -269,7 +269,7 @@ public class OeAGENTEmploisAffHisto extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_CODE_ECOLE Date de
-	 * création : (18/08/11 10:21:15)
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_CODE_ECOLE(int i) {
@@ -277,8 +277,8 @@ public class OeAGENTEmploisAffHisto extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_CODE_ECOLE
-	 * Date de création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_CODE_ECOLE
+	 * Date de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_CODE_ECOLE(int i) {

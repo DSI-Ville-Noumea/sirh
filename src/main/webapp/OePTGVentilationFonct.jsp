@@ -1,4 +1,4 @@
-<!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@ page contentType="text/html; charset=UTF-8" %> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <%@page import="nc.mairie.enums.EnumTypeDroit"%>
 <%@page import="nc.mairie.utils.MairieUtils"%>
 <HTML>
@@ -33,13 +33,13 @@
                         "sNext": "",
                         "sPrevious": ""
                     },
-                    "sZeroRecords": "Aucune information de ventilation à afficher",
-                    "sInfo": "Affichage de _START_ à _END_ des _TOTAL_ ventilation(s) au total",
-                    "sInfoEmpty": "Aucune information de ventilation à afficher",
-                    "sEmptyTable": "Veuillez sélectionner au moins un agent pour afficher les informations de ventilation",
+                    "sZeroRecords": "Aucune information de ventilation Ã  afficher",
+                    "sInfo": "Affichage de _START_ Ã  _END_ des _TOTAL_ ventilation(s) au total",
+                    "sInfoEmpty": "Aucune information de ventilation Ã  afficher",
+                    "sEmptyTable": "Veuillez sÃ©lectionner au moins un agent pour afficher les informations de ventilation",
                     "sInfoFiltered": "(filtrage sur _MAX_ ventilation au total)",
                     "sLengthMenu": "Affichage de _MENU_ ventilation par page",
-                    "sSearch": "Recherche instantanée"
+                    "sSearch": "Recherche instantanÃ©e"
                 },
                 "oTableTools": {
                     "aButtons": [{"sExtends": "xls", "sButtonText": "Export Excel", "mColumns": "visible", "sTitle": "ventilFonct", "sFileName": "*.xls"}], //OU : "mColumns":[0,1,2,3,4]
@@ -59,13 +59,13 @@
                         "sNext": "",
                         "sPrevious": ""
                     },
-                    "sZeroRecords": "Aucune information de ventilation à afficher",
-                    "sInfo": "Affichage de _START_ à _END_ des _TOTAL_ ventilation(s) au total",
-                    "sInfoEmpty": "Aucune information de ventilation à afficher",
-                    "sEmptyTable": "Veuillez sélectionner au moins un agent pour afficher les informations de ventilation",
+                    "sZeroRecords": "Aucune information de ventilation Ã  afficher",
+                    "sInfo": "Affichage de _START_ Ã  _END_ des _TOTAL_ ventilation(s) au total",
+                    "sInfoEmpty": "Aucune information de ventilation Ã  afficher",
+                    "sEmptyTable": "Veuillez sÃ©lectionner au moins un agent pour afficher les informations de ventilation",
                     "sInfoFiltered": "(filtrage sur _MAX_ ventilation au total)",
                     "sLengthMenu": "Affichage de _MENU_ ventilation par page",
-                    "sSearch": "Recherche instantanée"
+                    "sSearch": "Recherche instantanÃ©e"
                 },
                 "oTableTools": {
                     "aButtons": [{"sExtends": "xls", "sButtonText": "Export Excel", "mColumns": "visible", "sTitle": "ventilFonct", "sFileName": "*.xls"}], //OU : "mColumns":[0,1,2,3,4]
@@ -156,13 +156,13 @@
                         "sNext": "",
                         "sPrevious": ""
                     },
-                    "sZeroRecords": "Aucune information de ventilation à afficher",
-                    "sInfo": "Affichage de _START_ à _END_ des _TOTAL_ ventilation(s) au total",
-                    "sInfoEmpty": "Aucune information de ventilation à afficher",
-                    "sEmptyTable": "Veuillez sélectionner au moins un agent pour afficher les informations de ventilation",
+                    "sZeroRecords": "Aucune information de ventilation Ã  afficher",
+                    "sInfo": "Affichage de _START_ Ã  _END_ des _TOTAL_ ventilation(s) au total",
+                    "sInfoEmpty": "Aucune information de ventilation Ã  afficher",
+                    "sEmptyTable": "Veuillez sÃ©lectionner au moins un agent pour afficher les informations de ventilation",
                     "sInfoFiltered": "(filtrage sur _MAX_ ventilation au total)",
                     "sLengthMenu": "Affichage de _MENU_ ventilation par page",
-                    "sSearch": "Recherche instantanée"
+                    "sSearch": "Recherche instantanÃ©e"
                 },
                 "oTableTools": {
                     "aButtons": [{"sExtends": "xls", "sButtonText": "Export Excel", "mColumns": "visible", "sTitle": "ventilFonct", "sFileName": "*.xls"}], //OU : "mColumns":[0,1,2,3,4]
@@ -231,13 +231,13 @@
             return detailContainer;
         }
 
-            //afin de sélectionner un élément dans une liste
+            //afin de sÃ©lectionner un Ã©lÃ©ment dans une liste
 			function executeBouton(nom)
 			{
 			document.formu.elements[nom].click();
 			}
 
-            // afin de mettre le focus sur une zone précise
+            // afin de mettre le focus sur une zone prÃ©cise
             function setfocus(nom)
             {
                 if (document.formu.elements[nom] != null)
@@ -253,7 +253,7 @@
 				//on format les minutes et les secondes
 				var minutes = Math.floor(duree/60) +"m";
 				var secondes = Math.floor(duree%60)+"s";
-				o.innerHTML = "Début de la ventilation dans "+ minutes +secondes;
+				o.innerHTML = "DÃ©but de la ventilation dans "+ minutes +secondes;
 				setTimeout("startCompteur("+duree+"-1)", 1000);
 			} else {
 				o.innerHTML ="Ventilation en cours.";					
@@ -268,7 +268,7 @@
 				//on format les minutes et les secondes
 				var minutes = Math.floor(duree/60) +"m";
 				var secondes = Math.floor(duree%60)+"s";
-				o.innerHTML = "Début de la validation dans "+ minutes +secondes;
+				o.innerHTML = "DÃ©but de la validation dans "+ minutes +secondes;
 				setTimeout("startCompteurDeversement("+duree+"-1)", 1000);
 			} else {
 				o.innerHTML ="Validation en cours.";					
@@ -276,7 +276,7 @@
 			<%}%>
 		}
 		</script>
-        <META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
     </HEAD>
         <BODY bgcolor="#FFFFFF" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="window.parent.frames['refAgent'].location.reload();startCompteur('120');startCompteurDeversement('300');" >
         <%@ include file="BanniereErreur.jsp" %>
@@ -297,11 +297,11 @@
                 <%
                 	if (process.onglet.equals("ONGLET2")) {
                 %>
-                <span id="titreOngletHS" class="OngletActif" onclick="afficheOnglet('ONGLET2');">&nbsp;Heures supplémentaires&nbsp;</span>&nbsp;&nbsp;
+                <span id="titreOngletHS" class="OngletActif" onclick="afficheOnglet('ONGLET2');">&nbsp;Heures supplÃ©mentaires&nbsp;</span>&nbsp;&nbsp;
                 <%
                 	} else {
                 %>
-                <span id="titreOngletHS" class="OngletInactif" onclick="afficheOnglet('ONGLET2');">&nbsp;Heures supplémentaires&nbsp;</span>&nbsp;&nbsp;
+                <span id="titreOngletHS" class="OngletInactif" onclick="afficheOnglet('ONGLET2');">&nbsp;Heures supplÃ©mentaires&nbsp;</span>&nbsp;&nbsp;
                 <%
                 	}
                 %>
@@ -368,7 +368,7 @@
 							}
 						%>
                 		<span class="sigp2Mandatory" style="width:50px;margin-left:50px;">Type :</span>
-                        <INPUT type="radio" <%=MairieUtils.getDisabled(request, process.getNomEcran())%> <%=process.forRadioHTML(process.getNOM_RG_TYPE(),process.getNOM_RB_TYPE_HS())%>>Heures supplémentaires
+                        <INPUT type="radio" <%=MairieUtils.getDisabled(request, process.getNomEcran())%> <%=process.forRadioHTML(process.getNOM_RG_TYPE(),process.getNOM_RB_TYPE_HS())%>>Heures supplÃ©mentaires
 						<INPUT type="radio" <%=MairieUtils.getDisabled(request, process.getNomEcran())%> <%=process.forRadioHTML(process.getNOM_RG_TYPE(),process.getNOM_RB_TYPE_PRIME())%>>Primes
 						<INPUT type="radio" <%=MairieUtils.getDisabled(request, process.getNomEcran())%> <%=process.forRadioHTML(process.getNOM_RG_TYPE(),process.getNOM_RB_TYPE_ABS())%>>Absences
 						<INPUT type="radio" <%=MairieUtils.getDisabled(request, process.getNomEcran())%> <%=process.forRadioHTML(process.getNOM_RG_TYPE(),process.getNOM_RB_TYPE_TOUT())%>>Tout
@@ -416,7 +416,7 @@
 							<%
 								}else if(OePTGVentilationUtils.isVentilationEnCours("F")){
 							%>
-								<INPUT type="submit" class="sigp2-Bouton-200" value="En cours, rafraichîr" name="<%=process.getNOM_PB_RAFRAICHIR()%>">
+								<INPUT type="submit" class="sigp2-Bouton-200" value="En cours, rafraichÃ®r" name="<%=process.getNOM_PB_RAFRAICHIR()%>">
 		             			<span style="color: red;" id="box"></span>
 	             			<%
 	             				}
@@ -436,9 +436,9 @@
                 <%
                 	if (process.onglet.equals("ONGLET2")) {
                 %>
-                <div id="corpsOngletHS" title="Heures supplémentaires" class="OngletCorps" style="display:block;margin-right:10px;width:1500px;">
+                <div id="corpsOngletHS" title="Heures supplÃ©mentaires" class="OngletCorps" style="display:block;margin-right:10px;width:1500px;">
                 	<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1000px;">	
-                            <legend class="sigp2Legend">Filtres des heures supplémentaires</legend>		
+                            <legend class="sigp2Legend">Filtres des heures supplÃ©mentaires</legend>		
 			                <span class="sigp2" style="width:100px">Agent min :</span>
 			                <INPUT class="sigp2-saisie" name="<%=process.getNOM_ST_AGENT_MIN()%>" size="10" maxlength="4" type="text" value="<%=process.getVAL_ST_AGENT_MIN()%>" style="margin-right:10px;">
 			                <img border="0" src="images/loupe.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_RECHERCHER_AGENT_MIN()%>');">
@@ -451,13 +451,13 @@
                  			<INPUT type="submit" class="sigp2-Bouton-100" value="Afficher tout" name="<%=process.getNOM_PB_AFFICHER_TOUT_VENTIL(2)%>">
                  	</FIELDSET>
                     <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1300px;">	
-	                	<legend class="sigp2Legend">Visualisation de la ventilation des heures supplémentaires des <span style="color: red;">FONCTIONNAIRES</span></legend>	
+	                	<legend class="sigp2Legend">Visualisation de la ventilation des heures supplÃ©mentaires des <span style="color: red;">FONCTIONNAIRES</span></legend>	
 	                	<%@ include file="TabVentilationHsupTitulaire.jsp" %>
 	                </FIELDSET>
                 <%
                 	} else {
                 %>
-                <div id="corpsOngletHS" title="Heures supplémentaires" class="OngletCorps" style="display:none;margin-right:10px;">
+                <div id="corpsOngletHS" title="Heures supplÃ©mentaires" class="OngletCorps" style="display:none;margin-right:10px;">
                 <%
                 	}
                 %>
@@ -537,7 +537,7 @@
 		              	<%}else if(OePTGVentilationUtils.canProcessDeversementPaie("F")){ %>
 		              		<INPUT type="submit" class="sigp2-Bouton-200" value="Deverser dans la paie" name="<%=process.getNOM_PB_DEVERSER()%>">
 		              	<% }else if(OePTGVentilationUtils.isDeversementEnCours("F")){%>
-								<INPUT type="submit" class="sigp2-Bouton-200" value="En cours, rafraichîr" name="<%=process.getNOM_PB_RAFRAICHIR()%>">
+								<INPUT type="submit" class="sigp2-Bouton-200" value="En cours, rafraichÃ®r" name="<%=process.getNOM_PB_RAFRAICHIR()%>">
 		             			<span style="color: red;" id="boxDeversement"></span>
 		              	<% } %>
 	                </FIELDSET>

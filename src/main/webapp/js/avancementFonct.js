@@ -1,4 +1,4 @@
-// active/Désactive la saisie des champs suivant la validation DRH
+// active/DÃ©sactive la saisie des champs suivant la validation DRH
 function validDRH(indice)
 {
   var box = document.formu.elements['NOM_CK_VALID_DRH_'+indice];
@@ -20,7 +20,7 @@ function validDRH(indice)
   }
 }
 
-// active/Désactive la saisie des champs suivant le projet d'arrete
+// active/DÃ©sactive la saisie des champs suivant le projet d'arrete
 function validProjet(indice)
 {
 	  var box = document.formu.elements['NOM_CK_PROJET_ARRETE_'+indice];
@@ -48,7 +48,7 @@ function validProjet(indice)
 	  }
 }
 
-// active/Désactive la saisie des champs suivant affecter
+// active/DÃ©sactive la saisie des champs suivant affecter
 function validAffecter(indice)
 {
 	  var box = document.formu.elements['NOM_CK_AFFECTER_'+indice];

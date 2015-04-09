@@ -1,3 +1,4 @@
+<%@ page contentType="text/html; charset=UTF-8" %> 
 <!-- Sample JSP file -->
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <%@page import="nc.mairie.utils.MairieUtils"%>
@@ -16,13 +17,13 @@
 <SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT>
 
 <SCRIPT language="JavaScript">
-		//afin de sélectionner un élément dans une liste
+		//afin de sÃ©lectionner un Ã©lÃ©ment dans une liste
 		function executeBouton(nom)
 		{
 		document.formu.elements[nom].click();
 		}
 		
-		// afin de mettre le focus sur une zone précise
+		// afin de mettre le focus sur une zone prÃ©cise
 		function setfocus(nom)
 		{
 		if (document.formu.elements[nom] != null)
@@ -37,7 +38,7 @@
 		 document.getElementById(id).className="selectLigne";
 		}
 </SCRIPT>
-<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 </HEAD>
 	<jsp:useBean class="nc.mairie.gestionagent.process.agent.OeAGENTActesDonneesPerso" id="process" scope="session"></jsp:useBean>
 <BODY bgcolor="#FFFFFF" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="window.parent.frames['refAgent'].location.reload();return setfocus('<%= process.getFocus() %>')">

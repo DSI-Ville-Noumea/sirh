@@ -1,9 +1,10 @@
+<%@ page contentType="text/html; charset=UTF-8" %> 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <html>
 <head>
 <title>SIGP2 - Gestion des fiches individuelles</title>
 <SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <META name="GENERATOR" content="IBM WebSphere Page Designer V3.5.3 for Windows">
 <META http-equiv="Content-Style-Type" content="text/css">
 

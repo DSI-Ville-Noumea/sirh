@@ -49,7 +49,7 @@ public class HistoFichePosteDao extends SirhDao implements HistoFichePosteDaoInt
 
 	@Override
 	public void creerHistoFichePoste(HistoFichePoste histoFP, UserAppli user, EnumTypeHisto typeHisto) throws Exception {
-		// avant de creer une histo, on met une date de fin à la precedente
+		// avant de creer une histo, on met une date de fin Ã  la precedente
 		ArrayList<HistoFichePoste> ancienHisto = listerHistoFichePosteById(histoFP.getIdFichePoste());
 		if (ancienHisto != null && ancienHisto.size() > 0) {
 			HistoFichePoste histoAModifier = (HistoFichePoste) ancienHisto.get(0);

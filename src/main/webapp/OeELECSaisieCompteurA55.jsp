@@ -1,4 +1,4 @@
-<!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@ page contentType="text/html; charset=UTF-8" %> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <%@page import="nc.mairie.enums.EnumTypeDroit"%>
 <%@page import="nc.mairie.utils.MairieUtils"%>
 <HTML>
@@ -12,13 +12,13 @@
 <SCRIPT type="text/javascript" src="js/GestionCalendrier.js"></SCRIPT> 
 
 <SCRIPT language="JavaScript">
-//afin de sélectionner un élément dans une liste
+//afin de sÃ©lectionner un Ã©lÃ©ment dans une liste
 function executeBouton(nom)
 {
 document.formu.elements[nom].click();
 }
 
-// afin de mettre le focus sur une zone précise
+// afin de mettre le focus sur une zone prÃ©cise
 function setfocus(nom)
 {
 if (document.formu.elements[nom] != null)
@@ -39,7 +39,7 @@ function testClickEnrigistrer(){
 	}
 }
 </SCRIPT>
-<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 </HEAD>
 <jsp:useBean
  class="nc.mairie.gestionagent.process.election.OeELECSaisieCompteurA55" id="process" scope="session"></jsp:useBean>
@@ -50,7 +50,7 @@ function testClickEnrigistrer(){
 		<BR/>
 		
 	    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
-			<legend class="sigp2Legend">Délégation DP</legend>			
+			<legend class="sigp2Legend">DÃ©lÃ©gation DP</legend>			
 				<div style="overflow: auto;height: 250px;width:1000px;">
 						<table class="sigp2NewTab" style="text-align:left;width:980px;">
 							<tr bgcolor="#EFEFEF">
@@ -59,7 +59,7 @@ function testClickEnrigistrer(){
 								</td>
 								<td align="center" width="60px;">Matricule</td>
 								<td width="300px;">Agent</td>
-								<td align="center" width="90px;">Début</td>
+								<td align="center" width="90px;">DÃ©but</td>
 								<td align="center" width="90px;">Fin</td>
 								<td align="center" width="90px;">Nb heures</td>
 								<td align="center">Motif</td>
@@ -108,7 +108,7 @@ function testClickEnrigistrer(){
 				</tr>
 				<tr>
 					<td>
-						<span class="sigp2Mandatory">Date de début :</span>
+						<span class="sigp2Mandatory">Date de dÃ©but :</span>
 					</td>
 					<td>
 						<input id="<%=process.getNOM_ST_DATE_DEBUT()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_DEBUT() %>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_DEBUT() %>">

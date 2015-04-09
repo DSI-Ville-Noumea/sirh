@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 
 /**
- * Process OeAGENTAccidentTravail Date de création : (30/06/11 13:56:32)
+ * Process OeAGENTAccidentTravail Date de crÃ©ation : (30/06/11 13:56:32)
  * 
  */
 public class OePTGPayeurContractuels extends BasicProcess {
@@ -70,11 +70,11 @@ public class OePTGPayeurContractuels extends BasicProcess {
 		VariableGlobale.ajouter(request, "PROCESS_MEMORISE", this);
 
 		// ----------------------------------//
-		// Vérification des droits d'accès. //
+		// VÃ©rification des droits d'acces. //
 		// ----------------------------------//
 		if (MairieUtils.estInterdit(request, getNomEcran())) {
 			// "ERR190",
-			// "Opération impossible. Vous ne disposez pas des droits d'accès à cette option."
+			// "Operation impossible. Vous ne disposez pas des droits d'acces a cette option."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
@@ -112,14 +112,14 @@ public class OePTGPayeurContractuels extends BasicProcess {
 				}
 			}
 		}
-		// Si TAG INPUT non géré par le process
+		// Si TAG INPUT non gÃ©rÃ© par le process
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
 
 	/**
-	 * Initialisation des liste déroulantes de l'écran convocation du suivi
-	 * médical.
+	 * Initialisation des liste deroulantes de l'Ã©cran convocation du suivi
+	 * mÃ©dical.
 	 */
 	private void initialiseHistoriqueEditions() throws Exception {
 
@@ -142,16 +142,16 @@ public class OePTGPayeurContractuels extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (29/09/11 10:03:38)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (29/09/11 10:03:38)
 	 * 
 	 */
 	public boolean performPB_LANCER_EDITIONS(HttpServletRequest request) throws Exception {
 
 		try {
-			// on recupere l'agent connecté
+			// on recupere l'agent connecte
 			UserAppli u = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
 			Agent agentConnecte = null;
 			// on fait la correspondance entre le login et l'agent via RADI
@@ -194,7 +194,7 @@ public class OePTGPayeurContractuels extends BasicProcess {
 	}
 
 	/**
-	 * Getter du nom de l'écran (pour la gestion des droits)
+	 * Getter du nom de l'Ã©cran (pour la gestion des droits)
 	 */
 	public String getNomEcran() {
 		return "ECR-PTG-PAY-NON-TITU";
@@ -206,7 +206,7 @@ public class OePTGPayeurContractuels extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_VISUALISATION Date de
-	 * création : (29/09/11 10:03:38)
+	 * crÃ©ation : (29/09/11 10:03:38)
 	 * 
 	 */
 	public String getNOM_PB_LANCER_EDITIONS() {
@@ -234,10 +234,10 @@ public class OePTGPayeurContractuels extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (16/08/11 15:48:02)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	public boolean performPB_VISUALISER_DOC(HttpServletRequest request, int indiceEltAVisualiser) throws Exception {
@@ -246,7 +246,7 @@ public class OePTGPayeurContractuels extends BasicProcess {
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 		String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_LECTURE");
 
-		// Récup de l'Etat
+		// RÃ©cup de l'Etat
 		EtatsPayeurDto etat = getListEtatsPayeurDto().get(indiceEltAVisualiser);
 		// on affiche le document
 		setURLFichier(getScriptOuverture(repertoireStockage + "Pointages/" + etat.getFichier()));

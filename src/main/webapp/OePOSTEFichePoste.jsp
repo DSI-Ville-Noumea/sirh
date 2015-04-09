@@ -1,8 +1,9 @@
+<%@ page contentType="text/html; charset=UTF-8" %> 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <%@page import="nc.mairie.enums.EnumStatutFichePoste"%>
 <%@page import="java.util.ArrayList"%>
-<%@page language="java" contentType="text/html; charset=ISO-8859-1"
-	pageEncoding="ISO-8859-1"%>
+<%@page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
 <%@page import="nc.mairie.metier.poste.TitrePoste"%>
 <%@page import="nc.mairie.metier.poste.Service"%>
 <%@page import="nc.mairie.utils.TreeHierarchy"%>
@@ -30,20 +31,20 @@
 		<script type="text/javascript" src="js/jquery.dataTables.js"></script>
 		<script type="text/javascript" src="js/competence.js"></script>
 		<SCRIPT language="JavaScript">
-			//afin de sélectionner un élément dans une liste
+			//afin de sÃ©lectionner un Ã©lÃ©ment dans une liste
 			function executeBouton(nom)
 			{
 			document.formu.elements[nom].click();
 			}
 			
-			// afin de mettre le focus sur une zone précise
+			// afin de mettre le focus sur une zone prÃ©cise
 			function setfocus(nom)
 			{
 			if (document.formu.elements[nom] != null)
 			document.formu.elements[nom].focus();
 			}
 			
-			// afin d'afficher la hiérarchie des services
+			// afin d'afficher la hiÃ©rarchie des services
 			function agrandirHierarchy() {
 			
 				hier = 	document.getElementById('treeHierarchy');
@@ -55,7 +56,7 @@
 				}
 			}
 			
-			// afin de cacher la hiérarchie des services
+			// afin de cacher la hiÃ©rarchie des services
 			function reduireHierarchy() {
 				hier = 	document.getElementById('treeHierarchy');
 				hier.style.display='none';
@@ -83,7 +84,7 @@
 				});
 			});
 		</SCRIPT>
-		<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	</HEAD>
 
 	<BODY bgcolor="#FFFFFF" background="images/fond.jpg" onload="window.parent.frames['refAgent'].location.reload();return setfocus('<%= process.getFocus() %>')">
@@ -99,8 +100,8 @@
 				<INPUT class="sigp2-saisie" maxlength="8" name="<%= process.getNOM_EF_RECHERCHE_BY_AGENT() %>" size="10"	type="text" value="<%= process.getVAL_EF_RECHERCHE_BY_AGENT() %>" style="margin-right:10px;">
 				
           		<INPUT title="Recherche" type="image" src="images/loupe.gif" height="16px" width="16px" name="<%=process.getNOM_PB_RECHERCHER()%>">
-       			<INPUT title="Recherche avancée" type="image" src="images/rechercheAvancee.gif" height="16px" width="16px" name="<%=process.getNOM_PB_RECHERCHE_AVANCEE()%>" >
-          		<INPUT title="Créer une FDP" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="16px" width="16px" name="<%=process.getNOM_PB_AJOUTER_FP()%>">
+       			<INPUT title="Recherche avancÃ©e" type="image" src="images/rechercheAvancee.gif" height="16px" width="16px" name="<%=process.getNOM_PB_RECHERCHE_AVANCEE()%>" >
+          		<INPUT title="CrÃ©er une FDP" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="16px" width="16px" name="<%=process.getNOM_PB_AJOUTER_FP()%>">
           		<INPUT title="Dupliquer une FDP" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/dupliquer.gif" height="16px" width="16px" name="<%=process.getNOM_PB_DUPLIQUER_FP()%>">
        		</fieldset>
 
@@ -114,13 +115,13 @@
 							<INPUT class="sigp2-saisie" maxlength="5" size="6"	type="text" style="margin-right:10px;" readonly="readonly" value="<%=process.getVAL_ST_EMPLOI_PRIMAIRE()%>" >
 							<INPUT type="image" src="images/loupe.gif" height="16px" width="16px" editable="false" name="<%=process.getNOM_PB_RECHERCHE_EMPLOI_PRIMAIRE()%>">
 						<%}else if(process.getEmploiPrimaire() == null){ %>
-							<span class="sigp2Mandatory"> Il n'y a pas de fiche emploi associé à cette fiche de poste (<%=process.getVAL_ST_NUMERO()%>). Merci d'en choisir une.</span>
+							<span class="sigp2Mandatory"> Il n'y a pas de fiche emploi associÃ© Ã  cette fiche de poste (<%=process.getVAL_ST_NUMERO()%>). Merci d'en choisir une.</span>
 							<BR/><BR/>
 							<span class="sigp2Mandatory" style="width:150px;"> Fiche emploi primaire : </span>
 							<INPUT class="sigp2-saisie" maxlength="5" size="6"	type="text" style="margin-right:10px;" readonly="readonly" value="<%=process.getVAL_ST_EMPLOI_PRIMAIRE()%>" >
 							<INPUT type="image" src="images/loupe.gif" height="16px" width="16px" editable="false" name="<%=process.getNOM_PB_RECHERCHE_EMPLOI_PRIMAIRE()%>">
 						<%} else {%>
-							<span class="sigp2Mandatory" style="width:70px"> Numéro : </span>
+							<span class="sigp2Mandatory" style="width:70px"> NumÃ©ro : </span>
 							<span class="sigp2-saisie" style="width:150px"><%=process.getVAL_ST_NUMERO()%></span>
 							
 							<span class="sigp2Mandatory" style="margin-left: 100px;"> Statut : </span>
@@ -211,7 +212,7 @@
 							<table>
 								<tr>
 									<td width="100px">
-										<span class="sigp2Mandatory"> Niveau d'étude : </span>
+										<span class="sigp2Mandatory"> Niveau d'Ã©tude : </span>
 									</td>
 									<td align="left">
 										<span class="<%=process.estFDPInactive ? MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, ""): MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>">
@@ -260,7 +261,7 @@
 					</div>
 					<div style="width:400px;float:right;">
 						<fieldset class="sigp2Fieldset" style="width:400px;">
-							<legend class="sigp2Legend">Information budgétaire</legend>
+							<legend class="sigp2Legend">Information budgÃ©taire</legend>
 						<% if ((process.ACTION_CREATION.equals(process.getVAL_ST_ACTION()) || process.ACTION_DUPLICATION.equals(process.getVAL_ST_ACTION())) && process.getEmploiPrimaire() == null){ %>
 						<%} else {%>
 							<table>
@@ -291,7 +292,7 @@
 								</tr>
 								<tr>
 									<td>
-										<span class="sigp2Mandatory"> Année : </span>
+										<span class="sigp2Mandatory"> AnnÃ©e : </span>
 									</td>
 									<td>							
 										<% if (!process.estFpCouranteAffectee()){ %>
@@ -322,7 +323,7 @@
 								</tr>
 								<tr>
 									<td>
-										<span class="sigp2"> Numéro délibération : </span>
+										<span class="sigp2"> NumÃ©ro dÃ©libÃ©ration : </span>
 									</td>
 									<td>
 										<INPUT <%= process.estFDPInactive ?  "disabled='disabled'" : "" %> class="sigp2-saisie" maxlength="50" name="<%= process.getNOM_EF_NUM_DELIBERATION() %>" size="10" type="text" value="<%= process.getVAL_EF_NUM_DELIBERATION() %>" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>>
@@ -330,7 +331,7 @@
 								</tr>
 								<tr>
 									<td>
-										<span class="sigp2"> Date de début de validité : </span>
+										<span class="sigp2"> Date de dÃ©but de validitÃ© : </span>
 									</td>
 									<td>
 										<INPUT id="<%=process.getNOM_EF_DATE_DEBUT_VALIDITE()%>" <%= process.estFDPInactive ?  "disabled='disabled'" : "" %> class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DATE_DEBUT_VALIDITE() %>" size="10" type="text" value="<%= process.getVAL_EF_DATE_DEBUT_VALIDITE() %>" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>>
@@ -339,7 +340,7 @@
 								</tr>
 								<tr>
 									<td>
-										<span class="sigp2"> Date de fin de validité : </span>
+										<span class="sigp2"> Date de fin de validitÃ© : </span>
 									</td>
 									<td>
 										<INPUT id="<%=process.getNOM_EF_DATE_FIN_VALIDITE()%>" <%= process.estFDPInactive ?  "disabled='disabled'" : "" %> class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DATE_FIN_VALIDITE() %>" size="10" type="text" value="<%= process.getVAL_EF_DATE_FIN_VALIDITE() %>" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>>
@@ -371,7 +372,7 @@
 							<table>
 								<tr>
 									<td width="100px;">
-										<span class="sigp2Mandatory"> Réglementaire : </span>
+										<span class="sigp2Mandatory"> RÃ©glementaire : </span>
 									</td>
 									<td width="120px">&nbsp;</td>
 									<td>					
@@ -382,7 +383,7 @@
 								</tr>
 								<tr>
 									<td>
-										<span class="sigp2Mandatory"> Budgété : </span>
+										<span class="sigp2Mandatory"> BudgÃ©tÃ© : </span>
 									</td>
 									<td>
 										<SELECT <%= process.estFDPInactive ?  "disabled='disabled'" : "" %> class="sigp2-saisie" name="<%= process.getNOM_LB_NATURE_CREDIT() %>" style="width:120px" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>>
@@ -407,7 +408,7 @@
 								</tr>
 								<tr>
 									<td>
-										<span class="sigp2Mandatory"> Base congé : </span>
+										<span class="sigp2Mandatory"> Base congÃ© : </span>
 									</td>
 									<td colspan="2">
 										<SELECT <%= process.estFDPInactive ?  "disabled='disabled'" : "" %> class="sigp2-saisie" name="<%= process.getNOM_LB_BASE_HORAIRE_ABSENCE() %>" style="width:120px" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>>
@@ -436,7 +437,7 @@
 							</tr>
 							<tr>
 								<td>
-									<span class="<%= process.responsableObligatoire ? "sigp2Mandatory" : "sigp2" %> ">Responsable hiér. :</span>
+									<span class="<%= process.responsableObligatoire ? "sigp2Mandatory" : "sigp2" %> ">Responsable hiÃ©r. :</span>
 								</td>
 								<td>
 									<% if(null != process.getVAL_ST_RESPONSABLE() && !"".equals(process.getVAL_ST_RESPONSABLE().trim())) { %>
@@ -449,7 +450,7 @@
 							</tr>
 							<tr>
 								<td>
-									<span class="sigp2">Fiche de poste remplacée :</span>
+									<span class="sigp2">Fiche de poste remplacÃ©e :</span>
 								</td>
 								<td>
 									<% if(null != process.getVAL_ST_REMPLACEMENT() && !"".equals(process.getVAL_ST_REMPLACEMENT().trim())) { %>
@@ -480,8 +481,8 @@
 					</fieldset>					
 					
 					<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
-					    <legend class="sigp2Legend">Activités</legend>
-					    <span class="sigp2Mandatory" style="width:150px"> Ajouter une activité : </span>
+					    <legend class="sigp2Legend">ActivitÃ©s</legend>
+					    <span class="sigp2Mandatory" style="width:150px"> Ajouter une activitÃ© : </span>
 							<span class="<%=process.estFDPInactive ? MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, ""): MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>">
 					            <INPUT type="image" src="images/ajout.gif" height="16px" width="16px" name="<%=process.getNOM_PB_AJOUTER_ACTIVITE()%>" style="margin-bottom:5px;">
 
@@ -492,7 +493,7 @@
 								<tr>
 									<th>idActi</th>
 									<th width="50" >Selection <INPUT class="<%=process.estFDPInactive ? MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, ""): MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" type="checkbox" name="CHECK_ALL_ACTI" onClick='activeACTI("<%=process.getListeToutesActi().size() %>")'></th>
-									<th>Libellé</th>
+									<th>LibellÃ©</th>
 									<th>Provenance</th>
 								</tr>
 							</thead>
@@ -528,7 +529,7 @@
 					</FIELDSET>
 					
 					<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
-					    <legend class="sigp2Legend">Compétences</legend>
+					    <legend class="sigp2Legend">CompÃ©tences</legend>
 					    <div align="left" style="width:980px">
 					    	<span class="sigp2Mandatory" style="width:80px"> Ajouter : </span>
 					    	<span class="sigp2Mandatory" style="width:50px">Savoir </span>
@@ -553,7 +554,7 @@
 								<tr>
 									<th>idComp</th>
 									<th width="50" >Selection<INPUT class="<%=process.estFDPInactive ? MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, ""): MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" type="checkbox" name="CHECK_ALL_COMP" onClick='activeCOMP("<%=process.getListeToutesComp().size() %>")'></th>
-									<th width="700">Libellé</th>
+									<th width="700">LibellÃ©</th>
 									<th>Type</th>
 									<th>Provenance</th>
 								</tr>
@@ -590,7 +591,7 @@
 						</script>
 					</FIELDSET>
 					<fieldset class="sigp2Fieldset" style="width:1030px">
-						<legend class="sigp2Legend">Spécificités</legend>
+						<legend class="sigp2Legend">SpÃ©cificitÃ©s</legend>
 						<BR/>
 						<div align="left" style="float:left;">
 							<span class="sigp2" style="text-align:left;width:900;"><u>Avantage(s) en nature</u></span>
@@ -622,7 +623,7 @@
 							<BR/><BR/>
 						</div>
 						<div align="left" style="float:left;width:980px">
-							<span class="sigp2" style="text-align:left;width:900;"><u>Délégation(s)</u></span>
+							<span class="sigp2" style="text-align:left;width:900;"><u>DÃ©lÃ©gation(s)</u></span>
 							<%if(process.getListeDelegation()!= null && process.getListeDelegation().size()>0){ %>
 							<br/><br/>
 							<span style="margin-left:5px;position:relative;width:250px;">Type</span>
@@ -649,7 +650,7 @@
 							<BR/><BR/>
 						</div>
 						<div align="left" style="float:left;width:980px">
-							<span class="sigp2" style="text-align:left;width:900;"><u>Régime(s) indemnitaire(s)</u></span>
+							<span class="sigp2" style="text-align:left;width:900;"><u>RÃ©gime(s) indemnitaire(s)</u></span>
 							<%if(process.getListeRegime()!= null && process.getListeRegime().size()>0){ %>
 							<br/><br/>
 							<span style="margin-left:5px;position:relative;width:100px;text-align: left;">Type</span>
@@ -704,14 +705,14 @@
 						</div>
 						<BR/>
 						<% if (!process.estFDPInactive && process.isAfficherModifSpecificites()){ %>
-							<INPUT type="submit" value="Modifier Spécificités" name="<%=process.getNOM_PB_MODIFIER_SPECIFICITES()%>" class="sigp2-Bouton-200">
+							<INPUT type="submit" value="Modifier SpÃ©cificitÃ©s" name="<%=process.getNOM_PB_MODIFIER_SPECIFICITES()%>" class="sigp2-Bouton-200">
 						<%}%>
 					</fieldset>
 				<% } %>
 				<% if (process.getEmploiPrimaire() != null){ %>
 					<FIELDSET style="text-align: center; margin: 10px; width:1020px;" class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "sigp2Fieldset") %>">
 					<% if (process.ACTION_CREATION.equals(process.getVAL_ST_ACTION()) ){ %>
-						<INPUT type="submit" value="Créer" name="<%=process.getNOM_PB_CREER()%>" class="sigp2-Bouton-100">
+						<INPUT type="submit" value="CrÃ©er" name="<%=process.getNOM_PB_CREER()%>" class="sigp2-Bouton-100">
 					<%} else if (process.ACTION_DUPLICATION.equals(process.getVAL_ST_ACTION())) {%>
 						<INPUT type="submit" value="Dupliquer" name="<%=process.getNOM_PB_CREER()%>" class="sigp2-Bouton-100">
 					<%} else {%>

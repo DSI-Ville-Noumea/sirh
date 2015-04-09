@@ -24,7 +24,7 @@ import nc.mairie.utils.MessageUtils;
 import org.springframework.context.ApplicationContext;
 
 /**
- * Process OePARAMETRAGERecrutement Date de crÈation : (14/09/11 13:52:54)
+ * Process OePARAMETRAGERecrutement Date de cr√©ation : (14/09/11 13:52:54)
  * 
  */
 public class OePARAMETRAGECarriere extends BasicProcess {
@@ -51,10 +51,10 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 	public String focus = null;
 
 	/**
-	 * Initialisation des zones ‡ afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones √† afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
-	 * doivent avoir les Fields PUBLIC Utilisation de la mÈthode
-	 * addZone(getNOMxxx, String); Date de crÈation : (14/09/11 13:52:54)
+	 * doivent avoir les Fields PUBLIC Utilisation de la m√©thode
+	 * addZone(getNOMxxx, String); Date de cr√©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public void initialiseZones(HttpServletRequest request) throws Exception {
@@ -62,11 +62,11 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 		VariableGlobale.ajouter(request, "PROCESS_MEMORISE", this);
 
 		// ----------------------------------//
-		// VÈrification des droits d'accËs. //
+		// V√©rification des droits d'acces. //
 		// ----------------------------------//
 		if (MairieUtils.estInterdit(request, getNomEcran())) {
 			// "ERR190",
-			// "OpÈration impossible. Vous ne disposez pas des droits d'accËs ‡ cette option."
+			// "Operation impossible. Vous ne disposez pas des droits d'acces a cette option."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
@@ -81,7 +81,7 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 	}
 
 	/**
-	 * Initialisation de la listes des motifs de carriere Date de crÈation :
+	 * Initialisation de la listes des motifs de carriere Date de cr√©ation :
 	 * (14/09/11)
 	 * 
 	 */
@@ -138,7 +138,7 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 	}
 
 	/**
-	 * Constructeur du process OePARAMETRAGEAvancement. Date de crÈation :
+	 * Constructeur du process OePARAMETRAGEAvancement. Date de cr√©ation :
 	 * (14/09/11 13:52:54)
 	 * 
 	 */
@@ -147,8 +147,8 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 	}
 
 	/**
-	 * MÈthode appelÈe par la servlet qui aiguille le traitement : en fonction
-	 * du bouton de la JSP Date de crÈation : (14/09/11 13:52:54)
+	 * m√©thode appelee par la servlet qui aiguille le traitement : en fonction
+	 * du bouton de la JSP Date de cr√©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public boolean recupererStatut(HttpServletRequest request) throws Exception {
@@ -194,14 +194,14 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 			}
 
 		}
-		// Si TAG INPUT non gÈrÈ par le process
+		// Si TAG INPUT non g√©r√© par le process
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
 
 	/**
-	 * Retourne le nom de la JSP du process Zone ‡ utiliser dans un champ cachÈ
-	 * dans chaque formulaire de la JSP. Date de crÈation : (14/09/11 15:20:21)
+	 * Retourne le nom de la JSP du process Zone a utiliser dans un champ cache
+	 * dans chaque formulaire de la JSP. Date de cr√©ation : (14/09/11 15:20:21)
 	 * 
 	 */
 	public String getJSP() {
@@ -209,8 +209,8 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de l'Ècran (notamment pour dÈterminer les droits
-	 * associÈs).
+	 * Retourne le nom de l'√©cran (notamment pour d√©terminer les droits
+	 * associ√©s).
 	 */
 	public String getNomEcran() {
 		return "ECR-PARAM-CARRIERE";
@@ -232,7 +232,7 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 
 	/**
 	 * @param focus
-	 *            focus ‡ dÈfinir.
+	 *            focus √† d√©finir.
 	 */
 	public void setFocus(String focus) {
 		this.focus = focus;
@@ -255,7 +255,7 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 	}
 
 	/**
-	 * Getter de la liste avec un lazy initialize : LB_SPBASE Date de crÈation :
+	 * Getter de la liste avec un lazy initialize : LB_SPBASE Date de cr√©ation :
 	 * (14/09/11 13:52:54)
 	 * 
 	 */
@@ -266,7 +266,7 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_SPBASE Date de crÈation : (14/09/11 13:52:54)
+	 * Setter de la liste: LB_SPBASE Date de cr√©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	private void setLB_SPBASE(String[] newLB_SPBASE) {
@@ -274,7 +274,7 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_SPBASE Date de crÈation :
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_SPBASE Date de cr√©ation :
 	 * (14/09/11 13:52:54)
 	 * 
 	 */
@@ -283,8 +283,8 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sÈlectionnÈe pour la JSP :
-	 * NOM_LB_SPBASE_SELECT Date de crÈation : (14/09/11 13:52:54)
+	 * Retourne le nom de la zone de la ligne s√©lectionn√©e pour la JSP :
+	 * NOM_LB_SPBASE_SELECT Date de cr√©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getNOM_LB_SPBASE_SELECT() {
@@ -292,8 +292,8 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 	}
 
 	/**
-	 * MÈthode ‡ personnaliser Retourne la valeur ‡ afficher pour la zone de la
-	 * JSP : LB_SPBASE Date de crÈation : (14/09/11 13:52:54)
+	 * M√©thode √† personnaliser Retourne la valeur √† afficher pour la zone de la
+	 * JSP : LB_SPBASE Date de cr√©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String[] getVAL_LB_SPBASE() {
@@ -301,8 +301,8 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 	}
 
 	/**
-	 * MÈthode ‡ personnaliser Retourne l'indice ‡ sÈlectionner pour la zone de
-	 * la JSP : LB_SPBASE Date de crÈation : (14/09/11 13:52:54)
+	 * M√©thode √† personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_SPBASE Date de cr√©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getVAL_LB_SPBASE_SELECT() {
@@ -311,7 +311,7 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_CREER_SPBASE Date de
-	 * crÈation : (14/09/11 13:52:54)
+	 * cr√©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getNOM_PB_CREER_SPBASE() {
@@ -319,10 +319,10 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - ImplÈmente les
-	 * rËgles de gestion du process - Positionne un statut en fonction de ces
-	 * rËgles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de crÈation : (14/09/11 13:52:54)
+	 * - Traite et affecte les zones saisies dans la JSP. - Impl√©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de cr√©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public boolean performPB_CREER_SPBASE(HttpServletRequest request) throws Exception {
@@ -349,7 +349,7 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_MODIFIER_SPBASE Date de
-	 * crÈation : (14/09/11 13:52:54)
+	 * cr√©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getNOM_PB_MODIFIER_SPBASE() {
@@ -357,10 +357,10 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - ImplÈmente les
-	 * rËgles de gestion du process - Positionne un statut en fonction de ces
-	 * rËgles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de crÈation : (14/09/11 13:52:54)
+	 * - Traite et affecte les zones saisies dans la JSP. - Impl√©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de cr√©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public boolean performPB_MODIFIER_SPBASE(HttpServletRequest request) throws Exception {
@@ -420,7 +420,7 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_ACTION_SPBASE Date
-	 * de crÈation : (14/09/11 13:52:54)
+	 * de cr√©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getNOM_ST_ACTION_SPBASE() {
@@ -428,8 +428,8 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur ‡ afficher par la JSP pour la zone : ST_ACTION_SPBASE
-	 * Date de crÈation : (14/09/11 13:52:54)
+	 * Retourne la valeur √† afficher par la JSP pour la zone : ST_ACTION_SPBASE
+	 * Date de cr√©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getVAL_ST_ACTION_SPBASE() {
@@ -438,7 +438,7 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER_SPBASE Date de
-	 * crÈation : (14/09/11 13:52:54)
+	 * cr√©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getNOM_PB_ANNULER_SPBASE() {
@@ -446,10 +446,10 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - ImplÈmente les
-	 * rËgles de gestion du process - Positionne un statut en fonction de ces
-	 * rËgles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de crÈation : (14/09/11 13:52:54)
+	 * - Traite et affecte les zones saisies dans la JSP. - Impl√©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de cr√©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public boolean performPB_ANNULER_SPBASE(HttpServletRequest request) throws Exception {
@@ -462,7 +462,7 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER_SPBASE Date de
-	 * crÈation : (14/09/11 13:52:54)
+	 * cr√©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getNOM_PB_VALIDER_SPBASE() {
@@ -470,10 +470,10 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - ImplÈmente les
-	 * rËgles de gestion du process - Positionne un statut en fonction de ces
-	 * rËgles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de crÈation : (14/09/11 13:52:54)
+	 * - Traite et affecte les zones saisies dans la JSP. - Impl√©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de cr√©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public boolean performPB_VALIDER_SPBASE(HttpServletRequest request) throws Exception {
@@ -595,20 +595,20 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 	}
 
 	private boolean performControlerRegleGestionSPBASE(HttpServletRequest request) {
-		// VÈrification des contraintes d'unicitÈ de la base horaire
+		// V√©rification des contraintes d'unicit√© de la base horaire
 		if (getVAL_ST_ACTION_SPBASE().equals(ACTION_CREATION)) {
 
 			for (SPBASE motif : getListeSpbase()) {
 				if (motif.getLiBase().trim().equals(getVAL_EF_LIB_SPBASE().toUpperCase().trim())) {
 					// "ERR974",
-					// "Attention, il existe dÈj‡ @ avec @. Veuillez contrÙler."
+					// "Attention, il existe d√©j√† @ avec @. Veuillez contr√¥ler."
 					getTransaction()
-							.declarerErreur(MessageUtils.getMessage("ERR974", "une base horaire", "ce libellÈ"));
+							.declarerErreur(MessageUtils.getMessage("ERR974", "une base horaire", "ce libell√©"));
 					return false;
 				}
 				if (motif.getCdBase().trim().equals(getVAL_EF_CODE_SPBASE().toUpperCase().trim())) {
 					// "ERR974",
-					// "Attention, il existe dÈj‡ @ avec @. Veuillez contrÙler."
+					// "Attention, il existe d√©j√† @ avec @. Veuillez contr√¥ler."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "une base horaire", "ce code"));
 					return false;
 				}
@@ -618,10 +618,10 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 	}
 
 	private boolean performControlerSaisieSPBASE(HttpServletRequest request) {
-		// Verification libellÈ not null
+		// Verification libell√© not null
 		if (getZone(getNOM_EF_LIB_SPBASE()).length() == 0) {
 			// "ERR002","La zone @ est obligatoire."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "libellÈ"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "libell√©"));
 			return false;
 		}
 		// Verification code not null
@@ -634,21 +634,21 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 		if (getZone(getNOM_EF_BASE_HEBDO_LEG_H_SPBASE()).length() == 0
 				&& getZone(getNOM_EF_BASE_HEBDO_LEG_M_SPBASE()).length() == 0) {
 			// "ERR002","La zone @ est obligatoire."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "base lÈgale hebdomadaire"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "base l√©gale hebdomadaire"));
 			return false;
 		}
 		// Verification nb heure legale numerique
 		if (getZone(getNOM_EF_BASE_HEBDO_LEG_H_SPBASE()).length() != 0
 				&& !Services.estNumerique(getZone(getNOM_EF_BASE_HEBDO_LEG_H_SPBASE()))) {
-			// "ERR992", "La zone @ doit Ítre numÈrique.";
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "heures lÈgale"));
+			// "ERR992", "La zone @ doit √™tre num√©rique.";
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "heures l√©gale"));
 			return false;
 		}
 		// Verification nb heure legale numerique
 		if (getZone(getNOM_EF_BASE_HEBDO_LEG_M_SPBASE()).length() != 0
 				&& !Services.estNumerique(getZone(getNOM_EF_BASE_HEBDO_LEG_M_SPBASE()))) {
-			// "ERR992", "La zone @ doit Ítre numÈrique.";
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "minutes lÈgale"));
+			// "ERR992", "La zone @ doit √™tre num√©rique.";
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "minutes l√©gale"));
 			return false;
 		}
 
@@ -657,7 +657,7 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_LIB_SPBASE Date de
-	 * crÈation : (14/09/11 13:52:54)
+	 * cr√©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getNOM_EF_LIB_SPBASE() {
@@ -665,8 +665,8 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur ‡ afficher par la JSP pour la zone de saisie :
-	 * EF_LIB_SPBASE Date de crÈation : (14/09/11 13:52:54)
+	 * Retourne la valeur √† afficher par la JSP pour la zone de saisie :
+	 * EF_LIB_SPBASE Date de cr√©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getVAL_EF_LIB_SPBASE() {
@@ -675,7 +675,7 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_CODE_SPBASE Date de
-	 * crÈation : (14/09/11 13:52:54)
+	 * cr√©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getNOM_EF_CODE_SPBASE() {
@@ -683,8 +683,8 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur ‡ afficher par la JSP pour la zone de saisie :
-	 * EF_CODE_SPBASE Date de crÈation : (14/09/11 13:52:54)
+	 * Retourne la valeur √† afficher par la JSP pour la zone de saisie :
+	 * EF_CODE_SPBASE Date de cr√©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getVAL_EF_CODE_SPBASE() {
@@ -701,7 +701,7 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP :
-	 * EF_BASE_HEBDO_LEG_H_SPBASE Date de crÈation : (14/09/11 13:52:54)
+	 * EF_BASE_HEBDO_LEG_H_SPBASE Date de cr√©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getNOM_EF_BASE_HEBDO_LEG_H_SPBASE() {
@@ -709,8 +709,8 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur ‡ afficher par la JSP pour la zone de saisie :
-	 * EF_BASE_HEBDO_LEG_H_SPBASE Date de crÈation : (14/09/11 13:52:54)
+	 * Retourne la valeur √† afficher par la JSP pour la zone de saisie :
+	 * EF_BASE_HEBDO_LEG_H_SPBASE Date de cr√©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getVAL_EF_BASE_HEBDO_LEG_H_SPBASE() {
@@ -719,7 +719,7 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP :
-	 * EF_BASE_HEBDO_LEG_M_SPBASE Date de crÈation : (14/09/11 13:52:54)
+	 * EF_BASE_HEBDO_LEG_M_SPBASE Date de cr√©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getNOM_EF_BASE_HEBDO_LEG_M_SPBASE() {
@@ -727,8 +727,8 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur ‡ afficher par la JSP pour la zone de saisie :
-	 * EF_BASE_HEBDO_LEG_M_SPBASE Date de crÈation : (14/09/11 13:52:54)
+	 * Retourne la valeur √† afficher par la JSP pour la zone de saisie :
+	 * EF_BASE_HEBDO_LEG_M_SPBASE Date de cr√©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getVAL_EF_BASE_HEBDO_LEG_M_SPBASE() {
@@ -737,7 +737,7 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_BASE_HEBDO_H_SPBASE
-	 * Date de crÈation : (14/09/11 13:52:54)
+	 * Date de cr√©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getNOM_EF_BASE_HEBDO_H_SPBASE() {
@@ -745,8 +745,8 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur ‡ afficher par la JSP pour la zone de saisie :
-	 * EF_BASE_HEBDO_H_SPBASE Date de crÈation : (14/09/11 13:52:54)
+	 * Retourne la valeur √† afficher par la JSP pour la zone de saisie :
+	 * EF_BASE_HEBDO_H_SPBASE Date de cr√©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getVAL_EF_BASE_HEBDO_H_SPBASE() {
@@ -755,7 +755,7 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_BASE_HEBDO_M_SPBASE
-	 * Date de crÈation : (14/09/11 13:52:54)
+	 * Date de cr√©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getNOM_EF_BASE_HEBDO_M_SPBASE() {
@@ -763,8 +763,8 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur ‡ afficher par la JSP pour la zone de saisie :
-	 * EF_BASE_HEBDO_M_SPBASE Date de crÈation : (14/09/11 13:52:54)
+	 * Retourne la valeur √† afficher par la JSP pour la zone de saisie :
+	 * EF_BASE_HEBDO_M_SPBASE Date de cr√©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getVAL_EF_BASE_HEBDO_M_SPBASE() {
@@ -773,7 +773,7 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_ACTION_MOTIF Date de
-	 * crÈation : (14/09/11 13:52:54)
+	 * cr√©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getNOM_ST_ACTION_MOTIF() {
@@ -781,8 +781,8 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur ‡ afficher par la JSP pour la zone : ST_ACTION_MOTIF
-	 * Date de crÈation : (14/09/11 13:52:54)
+	 * Retourne la valeur √† afficher par la JSP pour la zone : ST_ACTION_MOTIF
+	 * Date de cr√©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getVAL_ST_ACTION_MOTIF() {
@@ -791,7 +791,7 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_LIB_MOTIF Date de
-	 * crÈation : (14/09/11 13:52:54)
+	 * cr√©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getNOM_EF_LIB_MOTIF() {
@@ -799,8 +799,8 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur ‡ afficher par la JSP pour la zone de saisie :
-	 * EF_LIB_MOTIF Date de crÈation : (14/09/11 13:52:54)
+	 * Retourne la valeur √† afficher par la JSP pour la zone de saisie :
+	 * EF_LIB_MOTIF Date de cr√©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getVAL_EF_LIB_MOTIF() {
@@ -808,7 +808,7 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 	}
 
 	/**
-	 * Getter de la liste avec un lazy initialize : LB_MOTIF Date de crÈation :
+	 * Getter de la liste avec un lazy initialize : LB_MOTIF Date de cr√©ation :
 	 * (14/09/11 13:52:54)
 	 * 
 	 */
@@ -819,7 +819,7 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_MOTIF Date de crÈation : (14/09/11 13:52:54)
+	 * Setter de la liste: LB_MOTIF Date de cr√©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	private void setLB_MOTIF(String[] newLB_MOTIF) {
@@ -827,7 +827,7 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_MOTIF Date de crÈation :
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_MOTIF Date de cr√©ation :
 	 * (14/09/11 13:52:54)
 	 * 
 	 */
@@ -836,8 +836,8 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sÈlectionnÈe pour la JSP :
-	 * NOM_LB_MOTIF_SELECT Date de crÈation : (14/09/11 13:52:54)
+	 * Retourne le nom de la zone de la ligne s√©lectionn√©e pour la JSP :
+	 * NOM_LB_MOTIF_SELECT Date de cr√©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getNOM_LB_MOTIF_SELECT() {
@@ -845,8 +845,8 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 	}
 
 	/**
-	 * MÈthode ‡ personnaliser Retourne la valeur ‡ afficher pour la zone de la
-	 * JSP : LB_MOTIF Date de crÈation : (14/09/11 13:52:54)
+	 * M√©thode √† personnaliser Retourne la valeur √† afficher pour la zone de la
+	 * JSP : LB_MOTIF Date de cr√©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String[] getVAL_LB_MOTIF() {
@@ -854,8 +854,8 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 	}
 
 	/**
-	 * MÈthode ‡ personnaliser Retourne l'indice ‡ sÈlectionner pour la zone de
-	 * la JSP : LB_MOTIF Date de crÈation : (14/09/11 13:52:54)
+	 * M√©thode √† personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_MOTIF Date de cr√©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getVAL_LB_MOTIF_SELECT() {
@@ -882,7 +882,7 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER_MOTIF Date de
-	 * crÈation : (14/09/11 13:52:54)
+	 * cr√©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getNOM_PB_ANNULER_MOTIF() {
@@ -890,10 +890,10 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - ImplÈmente les
-	 * rËgles de gestion du process - Positionne un statut en fonction de ces
-	 * rËgles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de crÈation : (14/09/11 13:52:54)
+	 * - Traite et affecte les zones saisies dans la JSP. - Impl√©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de cr√©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public boolean performPB_ANNULER_MOTIF(HttpServletRequest request) throws Exception {
@@ -905,7 +905,7 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_CREER_MOTIF Date de crÈation
+	 * Retourne le nom d'un bouton pour la JSP : PB_CREER_MOTIF Date de cr√©ation
 	 * : (14/09/11 13:52:54)
 	 * 
 	 */
@@ -914,10 +914,10 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - ImplÈmente les
-	 * rËgles de gestion du process - Positionne un statut en fonction de ces
-	 * rËgles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de crÈation : (14/09/11 13:52:54)
+	 * - Traite et affecte les zones saisies dans la JSP. - Impl√©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de cr√©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public boolean performPB_CREER_MOTIF(HttpServletRequest request) throws Exception {
@@ -933,7 +933,7 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMER_MOTIF Date de
-	 * crÈation : (14/09/11 13:52:54)
+	 * cr√©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getNOM_PB_SUPPRIMER_MOTIF() {
@@ -941,10 +941,10 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - ImplÈmente les
-	 * rËgles de gestion du process - Positionne un statut en fonction de ces
-	 * rËgles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de crÈation : (14/09/11 13:52:54)
+	 * - Traite et affecte les zones saisies dans la JSP. - Impl√©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de cr√©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public boolean performPB_SUPPRIMER_MOTIF(HttpServletRequest request) throws Exception {
@@ -955,7 +955,7 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 			addZone(getNOM_EF_LIB_MOTIF(), ma.getLibMotifCarriere());
 			addZone(getNOM_ST_ACTION_MOTIF(), ACTION_SUPPRESSION);
 		} else {
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "motifs de carriËre"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "motifs de carri√®re"));
 		}
 
 		setFocus(getNOM_PB_ANNULER_MOTIF());
@@ -964,7 +964,7 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER_MOTIF Date de
-	 * crÈation : (14/09/11 13:52:54)
+	 * cr√©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getNOM_PB_VALIDER_MOTIF() {
@@ -972,10 +972,10 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - ImplÈmente les
-	 * rËgles de gestion du process - Positionne un statut en fonction de ces
-	 * rËgles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de crÈation : (14/09/11 13:52:54)
+	 * - Traite et affecte les zones saisies dans la JSP. - Impl√©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de cr√©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public boolean performPB_VALIDER_MOTIF(HttpServletRequest request) throws Exception {
@@ -1012,35 +1012,35 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 	}
 
 	private boolean performControlerSaisieMotif(HttpServletRequest request) throws Exception {
-		// Verification libellÈ motif not null
+		// Verification libell√© motif not null
 		if (getZone(getNOM_EF_LIB_MOTIF()).length() == 0) {
 			// "ERR002","La zone @ est obligatoire."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "libellÈ"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "libell√©"));
 			return false;
 		}
 		return true;
 	}
 
 	private boolean performControlerRegleGestionMotif(HttpServletRequest request) throws Exception {
-		// Verification si suppression d'un motif de carriere utilisÈe sur une
+		// Verification si suppression d'un motif de carriere utilisee sur une
 		// carriere
 		if (getVAL_ST_ACTION_MOTIF().equals(ACTION_SUPPRESSION)
 				&& Carriere.listerCarriereAvecMotif(getTransaction(), getMotifCourant()).size() > 0) {
 			// "ERR989",
-			// "Suppression impossible. Il existe au moins @ rattachÈ ‡ @."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR989", "une carriËre", "ce motif de carriËre"));
+			// "Suppression impossible. Il existe au moins @ rattach√© a @."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR989", "une carri√®re", "ce motif de carri√®re"));
 			return false;
 		}
 
-		// VÈrification des contraintes d'unicitÈ du motif de carriere
+		// V√©rification des contraintes d'unicit√© du motif de carriere
 		if (getVAL_ST_ACTION_MOTIF().equals(ACTION_CREATION)) {
 
 			for (MotifCarriere motif : getListeMotif()) {
 				if (motif.getLibMotifCarriere().toUpperCase().equals(getVAL_EF_LIB_MOTIF().toUpperCase())) {
 					// "ERR974",
-					// "Attention, il existe dÈj‡ @ avec @. Veuillez contrÙler."
+					// "Attention, il existe d√©j√† @ avec @. Veuillez contr√¥ler."
 					getTransaction().declarerErreur(
-							MessageUtils.getMessage("ERR974", "un motif de carriËre", "ce libellÈ"));
+							MessageUtils.getMessage("ERR974", "un motif de carri√®re", "ce libell√©"));
 					return false;
 				}
 			}

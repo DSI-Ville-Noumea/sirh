@@ -66,7 +66,7 @@ import org.springframework.context.ApplicationContext;
 import com.oreilly.servlet.MultipartRequest;
 
 /**
- * Process OeAGENTVisiteMed Date de création : (20/06/11 15:25:51)
+ * Process OeAGENTVisiteMed Date de crÃ©ation : (20/06/11 15:25:51)
  * 
  */
 public class OeAGENTVisiteMed extends BasicProcess {
@@ -98,19 +98,19 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	private Hashtable<Integer, Recommandation> hashRecommandation;
 	private Hashtable<Integer, TypeInaptitude> hashTypeInaptitude;
 
-	public String ACTION_SUPPRESSION = "Suppression d'une fiche visite médicale.";
-	public String ACTION_CONSULTATION = "Consultation d'une fiche visite médicale.";
-	private String ACTION_MODIFICATION = "Modification d'une fiche visite médicale.";
-	private String ACTION_CREATION = "Création d'une fiche visite médicale.";
+	public String ACTION_SUPPRESSION = "Suppression d'une fiche visite mÃ©dicale.";
+	public String ACTION_CONSULTATION = "Consultation d'une fiche visite mÃ©dicale.";
+	private String ACTION_MODIFICATION = "Modification d'une fiche visite mÃ©dicale.";
+	private String ACTION_CREATION = "CrÃ©ation d'une fiche visite mÃ©dicale.";
 
 	public String ACTION_INAPTITUDE_SUPPRESSION = "Suppression d'une fiche inpatitude.";
 	public String ACTION_INAPTITUDE_CONSULTATION = "Consultation d'une fiche inpatitude.";
 	private String ACTION_INAPTITUDE_MODIFICATION = "Modification d'une fiche inpatitude.";
-	private String ACTION_INAPTITUDE_CREATION = "Création d'une fiche inpatitude.";
+	private String ACTION_INAPTITUDE_CREATION = "CrÃ©ation d'une fiche inpatitude.";
 
-	public String ACTION_DOCUMENT = "Documents d'une fiche visite médicale.";
-	public String ACTION_DOCUMENT_SUPPRESSION = "Suppression d'un document d'une fiche visite médicale.";
-	public String ACTION_DOCUMENT_CREATION = "Création d'un document d'une fiche visite médicale.";
+	public String ACTION_DOCUMENT = "Documents d'une fiche visite mÃ©dicale.";
+	public String ACTION_DOCUMENT_SUPPRESSION = "Suppression d'un document d'une fiche visite mÃ©dicale.";
+	public String ACTION_DOCUMENT_CREATION = "CrÃ©ation d'un document d'une fiche visite mÃ©dicale.";
 	private ArrayList<Document> listeDocuments;
 	private Document documentCourant;
 	private DocumentAgent lienDocumentAgentCourant;
@@ -138,10 +138,10 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
 	/**
-	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones Ã  afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
-	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
-	 * addZone(getNOMxxx, String); Date de création : (21/06/11 09:36:41)
+	 * doivent avoir les Fields PUBLIC Utilisation de la mÃ©thode
+	 * addZone(getNOMxxx, String); Date de crÃ©ation : (21/06/11 09:36:41)
 	 * 
 	 */
 	public void initialiseZones(HttpServletRequest request) throws Exception {
@@ -155,10 +155,10 @@ public class OeAGENTVisiteMed extends BasicProcess {
 			isImporting = false;
 		}
 
-		// Vérification des droits d'accès.
+		// VÃ©rification des droits d'acces.
 		if (MairieUtils.estInterdit(request, getNomEcran())) {
 			// "ERR190",
-			// "Opération impossible. Vous ne disposez pas des droits d'accès à cette option."
+			// "Operation impossible. Vous ne disposez pas des droits d'acces a cette option."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
@@ -217,8 +217,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Initialisation des liste déroulantes de l'écran convocation du suivi
-	 * médical.
+	 * Initialisation des liste deroulantes de l'Ã©cran convocation du suivi
+	 * mÃ©dical.
 	 */
 	private void initialiseListeDeroulante() throws Exception {
 		// Si hashtable des medecins vide
@@ -309,7 +309,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Constructeur du process OeAGENTVisiteMed. Date de création : (21/06/11
+	 * Constructeur du process OeAGENTVisiteMed. Date de crÃ©ation : (21/06/11
 	 * 09:36:44)
 	 * 
 	 */
@@ -318,17 +318,17 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Initialisation de la liste des visites médicale de l'agent courant
+	 * Initialisation de la liste des visites mÃ©dicale de l'agent courant
 	 * 
 	 */
 	private void initialiseListeVisiteMed(HttpServletRequest request) throws Exception {
 		final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-		// Recherche des visites médicales de l'agent
+		// Recherche des visites mÃ©dicales de l'agent
 		ArrayList<VisiteMedicale> listeVisiteMed = getVisiteMedicaleDao().listerVisiteMedicaleAgent(
 				getAgentCourant().getIdAgent());
 
-		// Recherche des suivi médicaux de l'agent en statut planifié ou
-		// convoqué
+		// Recherche des suivi mÃ©dicaux de l'agent en statut planifiÃ© ou
+		// convoque
 		ArrayList<SuiviMedical> listeSuiviMed = getSuiviMedDao().listerSuiviMedicalEtatAgent(
 				getAgentCourant().getIdAgent(), EnumEtatSuiviMed.CONVOQUE.getCode(),
 				EnumEtatSuiviMed.PLANIFIE.getCode(), EnumEtatSuiviMed.ACCOMP.getCode());
@@ -408,12 +408,12 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Initialisation la liste des inaptitudes pour la visite médicale
-	 * sélectionnée
+	 * Initialisation la liste des inaptitudes pour la visite mÃ©dicale
+	 * sÃ©lectionnÃ©e
 	 * 
 	 */
 	private void initialiseListeInpatitude(HttpServletRequest request) throws Exception {
-		// Recherche des visites médicales de l'agent
+		// Recherche des visites mÃ©dicales de l'agent
 		ArrayList<Inaptitude> listeInaptitudes = getInaptitudeDao().listerInaptitudeVisite(
 				getVisiteCourante().getIdVisite());
 		setListeInaptitude(listeInaptitudes);
@@ -439,7 +439,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_CREER Date de création :
+	 * Retourne le nom d'un bouton pour la JSP : PB_CREER Date de crÃ©ation :
 	 * (21/06/11 09:36:45)
 	 * 
 	 */
@@ -448,10 +448,10 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (21/06/11 09:36:45)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (21/06/11 09:36:45)
 	 * 
 	 */
 	public boolean performPB_CREER(HttpServletRequest request) throws Exception {
@@ -469,8 +469,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Réinitilise les champs du formulaire de création/modification d'une
-	 * visite médicales
+	 * RÃ©initilise les champs du formulaire de crÃ©ation/modification d'une
+	 * visite mÃ©dicales
 	 * 
 	 */
 	private void videZonesDeSaisie(HttpServletRequest request) throws Exception {
@@ -485,7 +485,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Réinitilise les champs du formulaire de création/modification d'une
+	 * RÃ©initilise les champs du formulaire de crÃ©ation/modification d'une
 	 * inaptitude
 	 * 
 	 */
@@ -502,12 +502,12 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 	/**
 	 * Initilise les zones de saisie du formulaire de modification d'une visite
-	 * médicale Date de création : 11/06/27
+	 * mÃ©dicale Date de crÃ©ation : 11/06/27
 	 * 
 	 */
 	private boolean initialiseVisiteCourante() throws Exception {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-		// Récup de la visite médicale courante
+		// RÃ©cup de la visite mÃ©dicale courante
 		Medecin medecin = (Medecin) getHashMedecin().get(getVisiteCourante().getIdMedecin());
 		Recommandation recommandation = null;
 		if (getVisiteCourante().getIdRecommandation() != null) {
@@ -547,12 +547,12 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 	/**
 	 * Initilise les zones de saisie du formulaire de modification d'une
-	 * inaptitude Date de création : 11/06/27
+	 * inaptitude Date de crÃ©ation : 11/06/27
 	 * 
 	 */
 	private boolean initialiseInaptitudeCourante(HttpServletRequest request) throws Exception {
 
-		// Récup de la visite médicale courante
+		// RÃ©cup de la visite mÃ©dicale courante
 		Inaptitude inaptitude = getInaptitudeCourante();
 		setInaptitudeCourante(inaptitude);
 		TypeInaptitude type = (TypeInaptitude) getHashTypeInaptitude().get(inaptitude.getIdTypeInaptitude());
@@ -570,10 +570,10 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Initialisation de la suppression d'une visite médicale
+	 * Initialisation de la suppression d'une visite mÃ©dicale
 	 * 
 	 * @param request
-	 * @return true si la suppression peut être effectuée
+	 * @return true si la suppression peut Ãªtre effectuee
 	 * @throws Exception
 	 */
 	private boolean initialiseVisiteSuppression(HttpServletRequest request) throws Exception {
@@ -608,12 +608,12 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	 * Initialisation de la suppression d'une inaptitude
 	 * 
 	 * @param request
-	 * @return true si la suppression peut être effectuée
+	 * @return true si la suppression peut Ãªtre effectuee
 	 * @throws Exception
 	 */
 	private boolean initialiseInaptitudeSuppression(HttpServletRequest request) throws Exception {
 
-		// Récup de la visite médicale courante
+		// RÃ©cup de la visite mÃ©dicale courante
 		Inaptitude inaptitude = getInaptitudeCourante();
 		TypeInaptitude type = (TypeInaptitude) getHashTypeInaptitude().get(inaptitude.getIdTypeInaptitude());
 
@@ -639,7 +639,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_DATE_VISITE Date de
-	 * création : (21/06/11 15:04:18)
+	 * crÃ©ation : (21/06/11 15:04:18)
 	 * 
 	 */
 	public String getNOM_EF_DATE_VISITE() {
@@ -647,8 +647,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_DATE_VISITE Date de création : (21/06/11 15:04:18)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_DATE_VISITE Date de crÃ©ation : (21/06/11 15:04:18)
 	 * 
 	 */
 	public String getVAL_EF_DATE_VISITE() {
@@ -657,7 +657,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_DUREE Date de
-	 * création : (21/06/11 15:04:18)
+	 * crÃ©ation : (21/06/11 15:04:18)
 	 * 
 	 */
 	public String getNOM_EF_DUREE() {
@@ -665,8 +665,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_DUREE Date de création : (21/06/11 15:04:18)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_DUREE Date de crÃ©ation : (21/06/11 15:04:18)
 	 * 
 	 */
 	public String getVAL_EF_DUREE() {
@@ -674,7 +674,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Getter de la liste avec un lazy initialize : LB_MEDECIN Date de création
+	 * Getter de la liste avec un lazy initialize : LB_MEDECIN Date de crÃ©ation
 	 * : (21/06/11 15:04:18)
 	 * 
 	 */
@@ -685,7 +685,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_MEDECIN Date de création : (21/06/11 15:04:18)
+	 * Setter de la liste: LB_MEDECIN Date de crÃ©ation : (21/06/11 15:04:18)
 	 * 
 	 */
 	private void setLB_MEDECIN(String[] newLB_MEDECIN) {
@@ -693,7 +693,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_MEDECIN Date de création
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_MEDECIN Date de crÃ©ation
 	 * : (21/06/11 15:04:18)
 	 * 
 	 */
@@ -702,8 +702,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_MEDECIN_SELECT Date de création : (21/06/11 15:04:18)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_MEDECIN_SELECT Date de crÃ©ation : (21/06/11 15:04:18)
 	 * 
 	 */
 	public String getNOM_LB_MEDECIN_SELECT() {
@@ -711,8 +711,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_MEDECIN Date de création : (21/06/11 15:04:18)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_MEDECIN Date de crÃ©ation : (21/06/11 15:04:18)
 	 * 
 	 */
 	public String[] getVAL_LB_MEDECIN() {
@@ -720,8 +720,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_MEDECIN Date de création : (21/06/11 15:04:18)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_MEDECIN Date de crÃ©ation : (21/06/11 15:04:18)
 	 * 
 	 */
 	public String getVAL_LB_MEDECIN_SELECT() {
@@ -729,7 +729,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Getter de la liste avec un lazy initialize : LB_MOTIF Date de création :
+	 * Getter de la liste avec un lazy initialize : LB_MOTIF Date de crÃ©ation :
 	 * (21/06/11 15:04:18)
 	 * 
 	 */
@@ -740,7 +740,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_MOTIF Date de création : (21/06/11 15:04:18)
+	 * Setter de la liste: LB_MOTIF Date de crÃ©ation : (21/06/11 15:04:18)
 	 * 
 	 */
 	private void setLB_MOTIF(String[] newLB_MOTIF) {
@@ -748,7 +748,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_MOTIF Date de création :
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_MOTIF Date de crÃ©ation :
 	 * (21/06/11 15:04:18)
 	 * 
 	 */
@@ -757,8 +757,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_MOTIF_SELECT Date de création : (21/06/11 15:04:18)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_MOTIF_SELECT Date de crÃ©ation : (21/06/11 15:04:18)
 	 * 
 	 */
 	public String getNOM_LB_MOTIF_SELECT() {
@@ -766,8 +766,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_MOTIF Date de création : (21/06/11 15:04:18)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_MOTIF Date de crÃ©ation : (21/06/11 15:04:18)
 	 * 
 	 */
 	public String[] getVAL_LB_MOTIF() {
@@ -775,8 +775,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_MOTIF Date de création : (21/06/11 15:04:18)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_MOTIF Date de crÃ©ation : (21/06/11 15:04:18)
 	 * 
 	 */
 	public String getVAL_LB_MOTIF_SELECT() {
@@ -785,7 +785,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 	/**
 	 * Getter de la liste avec un lazy initialize : LB_RECOMMANDATION Date de
-	 * création : (21/06/11 15:04:18)
+	 * crÃ©ation : (21/06/11 15:04:18)
 	 * 
 	 */
 	private String[] getLB_RECOMMANDATION() {
@@ -795,7 +795,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_RECOMMANDATION Date de création : (21/06/11
+	 * Setter de la liste: LB_RECOMMANDATION Date de crÃ©ation : (21/06/11
 	 * 15:04:18)
 	 * 
 	 */
@@ -805,7 +805,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 	/**
 	 * Retourne le nom de la zone pour la JSP : NOM_LB_RECOMMANDATION Date de
-	 * création : (21/06/11 15:04:18)
+	 * crÃ©ation : (21/06/11 15:04:18)
 	 * 
 	 */
 	public String getNOM_LB_RECOMMANDATION() {
@@ -813,8 +813,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_RECOMMANDATION_SELECT Date de création : (21/06/11 15:04:18)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_RECOMMANDATION_SELECT Date de crÃ©ation : (21/06/11 15:04:18)
 	 * 
 	 */
 	public String getNOM_LB_RECOMMANDATION_SELECT() {
@@ -822,8 +822,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_RECOMMANDATION Date de création : (21/06/11 15:04:18)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_RECOMMANDATION Date de crÃ©ation : (21/06/11 15:04:18)
 	 * 
 	 */
 	public String[] getVAL_LB_RECOMMANDATION() {
@@ -831,8 +831,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_RECOMMANDATION Date de création : (21/06/11 15:04:18)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_RECOMMANDATION Date de crÃ©ation : (21/06/11 15:04:18)
 	 * 
 	 */
 	public String getVAL_LB_RECOMMANDATION_SELECT() {
@@ -876,7 +876,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_ACTION Date de
-	 * création : (21/06/11 16:31:57)
+	 * crÃ©ation : (21/06/11 16:31:57)
 	 * 
 	 */
 	public String getNOM_ST_ACTION() {
@@ -884,8 +884,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACTION Date de
-	 * création : (21/06/11 16:31:57)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_ACTION Date de
+	 * crÃ©ation : (21/06/11 16:31:57)
 	 * 
 	 */
 	public String getVAL_ST_ACTION() {
@@ -893,7 +893,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER Date de création :
+	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER Date de crÃ©ation :
 	 * (22/06/11 10:20:56)
 	 * 
 	 */
@@ -902,10 +902,10 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (22/06/11 10:20:56)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (22/06/11 10:20:56)
 	 * 
 	 */
 	public boolean performPB_ANNULER(HttpServletRequest request) throws Exception {
@@ -926,7 +926,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER Date de création :
+	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER Date de crÃ©ation :
 	 * (22/06/11 10:20:56)
 	 * 
 	 */
@@ -935,10 +935,10 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (22/06/11 10:20:56)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (22/06/11 10:20:56)
 	 * 
 	 * RG_AG_VM_C01 RG_AG_VM_A01 RG-SVM-20 RG-SVM-19
 	 */
@@ -956,7 +956,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 			// Si Action Suppression
 			if (getZone(getNOM_ST_ACTION()).equals(ACTION_SUPPRESSION)) {
 				try {
-					// si la visite est liée à une convocation alors on supprime
+					// si la visite est liee a une convocation alors on supprime
 					// aussi la convocation
 					// RG-SVM-19
 					if (getVisiteCourante().getIdSuiviMed() != null) {
@@ -976,13 +976,13 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 			} else {
 				if (elementModifibale) {
-					// vérification de la validité du formulaire
+					// VÃ©rification de la validitÃ© du formulaire
 					if (!performControlerChamps(request)) {
 						return false;
 					}
 				}
-				// RG_AG_VM_C01 - Vérification si la PA de l'agent donne le
-				// droit à visite médicale à la date donnée
+				// RG_AG_VM_C01 - VÃ©rification si la PA de l'agent donne le
+				// droit a visite mÃ©dicale Ã  la date donnÃ©e
 				PositionAdmAgent posAgent = PositionAdmAgent.chercherPositionAdmAgentDateComprise(getTransaction(),
 						getAgentCourant().getNomatr(), Services.convertitDate(
 								Services.formateDate(getZone(getNOM_EF_DATE_VISITE())), "dd/MM/yyyy", "yyyyMMdd"));
@@ -992,11 +992,11 @@ public class OeAGENTVisiteMed extends BasicProcess {
 					return false;
 				} else {
 					if (!posAgent.permetVM()) {
-						messageInf = MessageUtils.getMessage("INF009", "visites médicales");
+						messageInf = MessageUtils.getMessage("INF009", "visites mÃ©dicales");
 					}
 				}
 
-				// récupération des informations remplies dans les zones de
+				// rÃ©cupÃ©ration des informations remplies dans les zones de
 				// saisie
 				String dateVisite = Services.formateDate(getZone(getNOM_EF_DATE_VISITE()));
 				String duree = getZone(getNOM_EF_DUREE());
@@ -1015,7 +1015,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 				if (numLigneMedecin == -1 || getListeMedecin().size() == 0
 						|| numLigneMedecin > getListeMedecin().size()) {
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "Médecins"));
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "mÃ©decins"));
 					return false;
 				}
 
@@ -1044,8 +1044,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 					recommandation = (Recommandation) getListeRecommandation().get(numLigneRecommandation - 1);
 				}
 
-				// RG_AG_VM_C01 - Vérification si la PA de l'agent donne le
-				// droit à visite médicale.
+				// RG_AG_VM_C01 - VÃ©rification si la PA de l'agent donne le
+				// droit a visite mÃ©dicale.
 				ArrayList<PositionAdmAgent> listePA = PositionAdmAgent.listerPositionAdmAgentAvecAgent(
 						getTransaction(), getAgentCourant());
 				if (getTransaction().isErreur()) {
@@ -1056,13 +1056,13 @@ public class OeAGENTVisiteMed extends BasicProcess {
 							&& (pa.getDatfin() == null || pa.getDatfin().equals(Const.DATE_NULL) || Services
 									.compareDates(pa.getDatfin(), dateVisite) >= 0)) {
 						if (!pa.permetVM()) {
-							messageInf = MessageUtils.getMessage("INF009", "visites médicales");
+							messageInf = MessageUtils.getMessage("INF009", "visites mÃ©dicales");
 						}
 						break;
 					}
 				}
 
-				// Création de l'objet VisiteMedicale à créer/modifier
+				// CrÃ©ation de l'objet VisiteMedicale a crÃ©er/modifier
 				SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 				Agent agentCourant = getAgentCourant();
 				getVisiteCourante().setIdAgent(agentCourant.getIdAgent());
@@ -1088,7 +1088,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 							for (int i = 0; i < listeSmAModif.size(); i++) {
 								SuiviMedical smModif = listeSmAModif.get(i);
 								smModif.setEtat(EnumEtatSuiviMed.EFFECTUE.getCode());
-								// on passe toutes ces lignes à l'état effectué
+								// on passe toutes ces lignes a l'etat effectue
 								getSuiviMedDao().modifierSuiviMedicalTravail(smModif.getIdSuiviMed(), smModif);
 							}
 						} catch (Exception e) {
@@ -1107,8 +1107,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 									getVisiteCourante().getIdMotifVm());
 							getVisiteMedicaleDao().supprimerVisiteMedicale(vmASupp.getIdVisite());
 						}
-						// si tout s'est bien passé
-						// Création de la visite medicale
+						// si tout s'est bien passÃ©
+						// CrÃ©ation de la visite medicale
 						getVisiteMedicaleDao().creerVisiteMedicale(getVisiteCourante().getIdAgent(),
 								getVisiteCourante().getIdMedecin(), getVisiteCourante().getIdRecommandation(),
 								getVisiteCourante().getDateDerniereVisite(), getVisiteCourante().getDureeValidite(),
@@ -1123,7 +1123,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 								getVisiteCourante().getIdMotifVm(), getVisiteCourante().getIdSuiviMed());
 					}
 				} else if (getZone(getNOM_ST_ACTION()).equals(ACTION_CREATION)) {
-					// Création
+					// CrÃ©ation
 					getVisiteMedicaleDao().creerVisiteMedicale(getVisiteCourante().getIdAgent(),
 							getVisiteCourante().getIdMedecin(), getVisiteCourante().getIdRecommandation(),
 							getVisiteCourante().getDateDerniereVisite(), getVisiteCourante().getDureeValidite(),
@@ -1137,7 +1137,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 			// On a fini l'action
 			addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 
-			// Tout s'est bien passé
+			// Tout s'est bien passÃ©
 			commitTransaction();
 			initialiseListeVisiteMed(request);
 
@@ -1159,12 +1159,12 @@ public class OeAGENTVisiteMed extends BasicProcess {
 				setStatut(STATUT_MEME_PROCESS);
 			} else {
 
-				// vérification de la validité du formulaire
+				// VÃ©rification de la validitÃ© du formulaire
 				if (!performControlerChampsInaptitude(request)) {
 					return false;
 				}
 
-				// récupération des informations remplies dans les zones de
+				// rÃ©cupÃ©ration des informations remplies dans les zones de
 				// saisie
 				String debutInaptitude = getZone(getNOM_EF_DEBUT_INAPTITUDE());
 				String dureeAnnees = getZone(getNOM_EF_DUREE_ANNEES());
@@ -1205,7 +1205,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 					}
 				}
 
-				// Création de l'objet VisiteMedicale à créer/modifier
+				// CrÃ©ation de l'objet VisiteMedicale a crÃ©er/modifier
 				VisiteMedicale visiteCourante = getVisiteCourante();
 				getInaptitudeCourante().setIdVisite(visiteCourante.getIdVisite());
 
@@ -1226,7 +1226,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 							getInaptitudeCourante().getDateDebutInaptitude(), getInaptitudeCourante().getDureeAnnee(),
 							getInaptitudeCourante().getDureeMois(), getInaptitudeCourante().getDureeJour());
 				} else if (getZone(getNOM_ST_ACTION_INAPTITUDE()).equals(ACTION_INAPTITUDE_CREATION)) {
-					// Création
+					// CrÃ©ation
 					getInaptitudeDao().creerInaptitude(getInaptitudeCourante().getIdVisite(),
 							getInaptitudeCourante().getIdTypeInaptitude(),
 							getInaptitudeCourante().getDateDebutInaptitude(), getInaptitudeCourante().getDureeAnnee(),
@@ -1239,7 +1239,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 			// On a fini l'action
 			addZone(getNOM_ST_ACTION_INAPTITUDE(), Const.CHAINE_VIDE);
 
-			// Tout s'est bien passé
+			// Tout s'est bien passÃ©
 			commitTransaction();
 			initialiseListeInpatitude(request);
 		}
@@ -1265,7 +1265,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		int compareTestDebut = Services.compareDates(dateTest, dateDebut);
 		int compareTestFin = Services.compareDates(dateTest, dateFin);
 
-		// Test si la date a tester est entre la date début( == 0 -> inclue) et
+		// Test si la date a tester est entre la date dÃ©but( == 0 -> inclue) et
 		// la date fin (exclue)
 		if (compareTestDebut == 0 || (compareTestDebut == 1 && compareTestFin == -1))
 			return false;
@@ -1273,11 +1273,11 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Vérifie les règles de gestion de saisie (champs obligatoires, ...) du
-	 * formulaire de visite médicale
+	 * VÃ©rifie les regles de gestion de saisie (champs obligatoires, ...) du
+	 * formulaire de visite mÃ©dicale
 	 * 
 	 * @param request
-	 * @return true si les règles de gestion sont respectées. false sinon.
+	 * @return true si les regles de gestion sont respectÃ©es. false sinon.
 	 * @throws Exception
 	 * 
 	 */
@@ -1304,11 +1304,11 @@ public class OeAGENTVisiteMed extends BasicProcess {
 			return false;
 		}
 
-		// médecin obligatoire
+		// mÃ©decin obligatoire
 		int indiceMedecin = (Services.estNumerique(getVAL_LB_MEDECIN_SELECT()) ? Integer
 				.parseInt(getVAL_LB_MEDECIN_SELECT()) : -1);
 		if (indiceMedecin < 1) {
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "médecin"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "mÃ©decin"));
 			setFocus(getNOM_LB_MEDECIN());
 			return false;
 		}
@@ -1335,11 +1335,11 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Vérifie les règles de gestion de saisie (champs obligatoires, ...) du
+	 * VÃ©rifie les regles de gestion de saisie (champs obligatoires, ...) du
 	 * formulaire d'inaptitude
 	 * 
 	 * @param request
-	 * @return true si les règles de gestion sont respectées. false sinon.
+	 * @return true si les regles de gestion sont respectÃ©es. false sinon.
 	 * @throws Exception
 	 * 
 	 */
@@ -1354,9 +1354,9 @@ public class OeAGENTVisiteMed extends BasicProcess {
 			return false;
 		}
 
-		// date de début obligatoire
+		// date de dÃ©but obligatoire
 		if ((Const.CHAINE_VIDE).equals(getZone(getNOM_EF_DEBUT_INAPTITUDE()))) {
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "date de début"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "date de dÃ©but"));
 			setFocus(getNOM_EF_DEBUT_INAPTITUDE());
 			return false;
 		}
@@ -1365,7 +1365,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		if ((Const.CHAINE_VIDE).equals(getZone(getNOM_EF_DUREE_ANNEES()))
 				&& (Const.CHAINE_VIDE).equals(getZone(getNOM_EF_DUREE_MOIS()))
 				&& (Const.CHAINE_VIDE).equals(getZone(getNOM_EF_DUREE_JOURS()))) {
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "durée (année ou mois ou jours)"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "durÃ©e (annÃ©e ou mois ou jours)"));
 			setFocus(getNOM_EF_DUREE_ANNEES());
 			return false;
 		}
@@ -1374,8 +1374,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom du groupe de radio boutons coché pour la JSP : RG_AVIS
-	 * Date de création : (22/06/11 11:10:15)
+	 * Retourne le nom du groupe de radio boutons cochÃ© pour la JSP : RG_AVIS
+	 * Date de crÃ©ation : (22/06/11 11:10:15)
 	 * 
 	 */
 	public String getNOM_RG_AVIS() {
@@ -1383,8 +1383,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur du radio bouton (RB_) coché dans la JSP : RG_AVIS Date
-	 * de création : (22/06/11 11:10:15)
+	 * Retourne la valeur du radio bouton (RB_) cochÃ© dans la JSP : RG_AVIS Date
+	 * de crÃ©ation : (22/06/11 11:10:15)
 	 * 
 	 */
 	public String getVAL_RG_AVIS() {
@@ -1392,7 +1392,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom du radio bouton pour la JSP : RB_APTE Date de création :
+	 * Retourne le nom du radio bouton pour la JSP : RB_APTE Date de crÃ©ation :
 	 * (22/06/11 11:10:15)
 	 * 
 	 */
@@ -1401,7 +1401,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom du radio bouton pour la JSP : RB_INAPTE Date de création
+	 * Retourne le nom du radio bouton pour la JSP : RB_INAPTE Date de crÃ©ation
 	 * : (22/06/11 11:10:15)
 	 * 
 	 */
@@ -1440,7 +1440,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_AVIS Date de
-	 * création : (27/06/11 09:10:43)
+	 * crÃ©ation : (27/06/11 09:10:43)
 	 * 
 	 */
 	public String getNOM_ST_AVIS() {
@@ -1448,8 +1448,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_AVIS Date de
-	 * création : (27/06/11 09:10:43)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_AVIS Date de
+	 * crÃ©ation : (27/06/11 09:10:43)
 	 * 
 	 */
 	public String getVAL_ST_AVIS() {
@@ -1458,7 +1458,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_DATE_VISITE Date de
-	 * création : (27/06/11 09:10:43)
+	 * crÃ©ation : (27/06/11 09:10:43)
 	 * 
 	 */
 	public String getNOM_ST_DATE_VISITE() {
@@ -1466,8 +1466,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE_VISITE
-	 * Date de création : (27/06/11 09:10:43)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_DATE_VISITE
+	 * Date de crÃ©ation : (27/06/11 09:10:43)
 	 * 
 	 */
 	public String getVAL_ST_DATE_VISITE() {
@@ -1476,7 +1476,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_DUREE_VALIDITE Date
-	 * de création : (27/06/11 09:10:43)
+	 * de crÃ©ation : (27/06/11 09:10:43)
 	 * 
 	 */
 	public String getNOM_ST_DUREE_VALIDITE() {
@@ -1484,8 +1484,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DUREE_VALIDITE
-	 * Date de création : (27/06/11 09:10:43)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_DUREE_VALIDITE
+	 * Date de crÃ©ation : (27/06/11 09:10:43)
 	 * 
 	 */
 	public String getVAL_ST_DUREE_VALIDITE() {
@@ -1494,7 +1494,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_NOM_MEDECIN Date de
-	 * création : (27/06/11 09:10:43)
+	 * crÃ©ation : (27/06/11 09:10:43)
 	 * 
 	 */
 	public String getNOM_ST_NOM_MEDECIN() {
@@ -1502,8 +1502,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_NOM_MEDECIN
-	 * Date de création : (27/06/11 09:10:43)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_NOM_MEDECIN
+	 * Date de crÃ©ation : (27/06/11 09:10:43)
 	 * 
 	 */
 	public String getVAL_ST_NOM_MEDECIN() {
@@ -1512,7 +1512,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_MOTIF Date de
-	 * création : (27/06/11 09:10:43)
+	 * crÃ©ation : (27/06/11 09:10:43)
 	 * 
 	 */
 	public String getNOM_ST_MOTIF() {
@@ -1520,8 +1520,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_MOTIF Date de
-	 * création : (27/06/11 09:10:43)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_MOTIF Date de
+	 * crÃ©ation : (27/06/11 09:10:43)
 	 * 
 	 */
 	public String getVAL_ST_MOTIF() {
@@ -1530,7 +1530,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_RECOMMANDATION Date
-	 * de création : (27/06/11 09:10:43)
+	 * de crÃ©ation : (27/06/11 09:10:43)
 	 * 
 	 */
 	public String getNOM_ST_RECOMMANDATION() {
@@ -1538,8 +1538,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_RECOMMANDATION
-	 * Date de création : (27/06/11 09:10:43)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_RECOMMANDATION
+	 * Date de crÃ©ation : (27/06/11 09:10:43)
 	 * 
 	 */
 	public String getVAL_ST_RECOMMANDATION() {
@@ -1556,7 +1556,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_ACTION_INAPTITUDE
-	 * Date de création : (27/06/11 14:32:47)
+	 * Date de crÃ©ation : (27/06/11 14:32:47)
 	 * 
 	 */
 	public String getNOM_ST_ACTION_INAPTITUDE() {
@@ -1564,8 +1564,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
-	 * ST_ACTION_INAPTITUDE Date de création : (27/06/11 14:32:47)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone :
+	 * ST_ACTION_INAPTITUDE Date de crÃ©ation : (27/06/11 14:32:47)
 	 * 
 	 */
 	public String getVAL_ST_ACTION_INAPTITUDE() {
@@ -1574,7 +1574,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_DEBUT_INAPTITUDE
-	 * Date de création : (27/06/11 15:30:43)
+	 * Date de crÃ©ation : (27/06/11 15:30:43)
 	 * 
 	 */
 	public String getNOM_ST_DEBUT_INAPTITUDE() {
@@ -1582,8 +1582,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
-	 * ST_DEBUT_INAPTITUDE Date de création : (27/06/11 15:30:43)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone :
+	 * ST_DEBUT_INAPTITUDE Date de crÃ©ation : (27/06/11 15:30:43)
 	 * 
 	 */
 	public String getVAL_ST_DEBUT_INAPTITUDE() {
@@ -1592,7 +1592,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_DUREE_ANNEES Date de
-	 * création : (27/06/11 15:30:43)
+	 * crÃ©ation : (27/06/11 15:30:43)
 	 * 
 	 */
 	public String getNOM_ST_DUREE_ANNEES() {
@@ -1600,8 +1600,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DUREE_ANNEES
-	 * Date de création : (27/06/11 15:30:43)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_DUREE_ANNEES
+	 * Date de crÃ©ation : (27/06/11 15:30:43)
 	 * 
 	 */
 	public String getVAL_ST_DUREE_ANNEES() {
@@ -1610,7 +1610,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_DUREE_JOURS Date de
-	 * création : (27/06/11 15:30:43)
+	 * crÃ©ation : (27/06/11 15:30:43)
 	 * 
 	 */
 	public String getNOM_ST_DUREE_JOURS() {
@@ -1618,8 +1618,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DUREE_JOURS
-	 * Date de création : (27/06/11 15:30:43)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_DUREE_JOURS
+	 * Date de crÃ©ation : (27/06/11 15:30:43)
 	 * 
 	 */
 	public String getVAL_ST_DUREE_JOURS() {
@@ -1628,7 +1628,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_DUREE_MOIS Date de
-	 * création : (27/06/11 15:30:43)
+	 * crÃ©ation : (27/06/11 15:30:43)
 	 * 
 	 */
 	public String getNOM_ST_DUREE_MOIS() {
@@ -1636,8 +1636,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DUREE_MOIS
-	 * Date de création : (27/06/11 15:30:43)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_DUREE_MOIS
+	 * Date de crÃ©ation : (27/06/11 15:30:43)
 	 * 
 	 */
 	public String getVAL_ST_DUREE_MOIS() {
@@ -1646,7 +1646,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_TYPE Date de
-	 * création : (27/06/11 15:30:43)
+	 * crÃ©ation : (27/06/11 15:30:43)
 	 * 
 	 */
 	public String getNOM_ST_TYPE() {
@@ -1654,8 +1654,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_TYPE Date de
-	 * création : (27/06/11 15:30:43)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_TYPE Date de
+	 * crÃ©ation : (27/06/11 15:30:43)
 	 * 
 	 */
 	public String getVAL_ST_TYPE() {
@@ -1664,7 +1664,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_DEBUT_INAPTITUDE
-	 * Date de création : (27/06/11 15:30:43)
+	 * Date de crÃ©ation : (27/06/11 15:30:43)
 	 * 
 	 */
 	public String getNOM_EF_DEBUT_INAPTITUDE() {
@@ -1672,8 +1672,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_DEBUT_INAPTITUDE Date de création : (27/06/11 15:30:43)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_DEBUT_INAPTITUDE Date de crÃ©ation : (27/06/11 15:30:43)
 	 * 
 	 */
 	public String getVAL_EF_DEBUT_INAPTITUDE() {
@@ -1682,7 +1682,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_DUREE_ANNEES Date
-	 * de création : (27/06/11 15:30:43)
+	 * de crÃ©ation : (27/06/11 15:30:43)
 	 * 
 	 */
 	public String getNOM_EF_DUREE_ANNEES() {
@@ -1690,8 +1690,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_DUREE_ANNEES Date de création : (27/06/11 15:30:43)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_DUREE_ANNEES Date de crÃ©ation : (27/06/11 15:30:43)
 	 * 
 	 */
 	public String getVAL_EF_DUREE_ANNEES() {
@@ -1700,7 +1700,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_DUREE_JOURS Date de
-	 * création : (27/06/11 15:30:43)
+	 * crÃ©ation : (27/06/11 15:30:43)
 	 * 
 	 */
 	public String getNOM_EF_DUREE_JOURS() {
@@ -1708,8 +1708,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_DUREE_JOURS Date de création : (27/06/11 15:30:43)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_DUREE_JOURS Date de crÃ©ation : (27/06/11 15:30:43)
 	 * 
 	 */
 	public String getVAL_EF_DUREE_JOURS() {
@@ -1718,7 +1718,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_DUREE_MOIS Date de
-	 * création : (27/06/11 15:30:43)
+	 * crÃ©ation : (27/06/11 15:30:43)
 	 * 
 	 */
 	public String getNOM_EF_DUREE_MOIS() {
@@ -1726,8 +1726,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_DUREE_MOIS Date de création : (27/06/11 15:30:43)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_DUREE_MOIS Date de crÃ©ation : (27/06/11 15:30:43)
 	 * 
 	 */
 	public String getVAL_EF_DUREE_MOIS() {
@@ -1735,7 +1735,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Getter de la liste avec un lazy initialize : LB_TYPE Date de création :
+	 * Getter de la liste avec un lazy initialize : LB_TYPE Date de crÃ©ation :
 	 * (27/06/11 15:30:43)
 	 * 
 	 */
@@ -1746,7 +1746,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_TYPE Date de création : (27/06/11 15:30:43)
+	 * Setter de la liste: LB_TYPE Date de crÃ©ation : (27/06/11 15:30:43)
 	 * 
 	 */
 	private void setLB_TYPE(String[] newLB_TYPE) {
@@ -1754,7 +1754,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_TYPE Date de création :
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_TYPE Date de crÃ©ation :
 	 * (27/06/11 15:30:43)
 	 * 
 	 */
@@ -1763,8 +1763,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_TYPE_SELECT Date de création : (27/06/11 15:30:43)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_TYPE_SELECT Date de crÃ©ation : (27/06/11 15:30:43)
 	 * 
 	 */
 	public String getNOM_LB_TYPE_SELECT() {
@@ -1772,8 +1772,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_TYPE Date de création : (27/06/11 15:30:43)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_TYPE Date de crÃ©ation : (27/06/11 15:30:43)
 	 * 
 	 */
 	public String[] getVAL_LB_TYPE() {
@@ -1781,8 +1781,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_TYPE Date de création : (27/06/11 15:30:43)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_TYPE Date de crÃ©ation : (27/06/11 15:30:43)
 	 * 
 	 */
 	public String getVAL_LB_TYPE_SELECT() {
@@ -1826,7 +1826,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_AMENAGEMENT Date de
-	 * création : (04/07/11 16:01:48)
+	 * crÃ©ation : (04/07/11 16:01:48)
 	 * 
 	 */
 	public String getNOM_ST_AMENAGEMENT() {
@@ -1834,8 +1834,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_AMENAGEMENT
-	 * Date de création : (04/07/11 16:01:48)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_AMENAGEMENT
+	 * Date de crÃ©ation : (04/07/11 16:01:48)
 	 * 
 	 */
 	public String getVAL_ST_AMENAGEMENT() {
@@ -1844,7 +1844,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_RECO_CRDHNC Date de
-	 * création : (04/07/11 16:01:48)
+	 * crÃ©ation : (04/07/11 16:01:48)
 	 * 
 	 */
 	public String getNOM_ST_RECO_CRDHNC() {
@@ -1852,8 +1852,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_RECO_CRDHNC
-	 * Date de création : (04/07/11 16:01:48)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_RECO_CRDHNC
+	 * Date de crÃ©ation : (04/07/11 16:01:48)
 	 * 
 	 */
 	public String getVAL_ST_RECO_CRDHNC() {
@@ -1862,7 +1862,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_RECO_MP Date de
-	 * création : (04/07/11 16:01:48)
+	 * crÃ©ation : (04/07/11 16:01:48)
 	 * 
 	 */
 	public String getNOM_ST_RECO_MP() {
@@ -1870,8 +1870,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_RECO_MP Date
-	 * de création : (04/07/11 16:01:48)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_RECO_MP Date
+	 * de crÃ©ation : (04/07/11 16:01:48)
 	 * 
 	 */
 	public String getVAL_ST_RECO_MP() {
@@ -1883,8 +1883,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Méthode appelée par la servlet qui aiguille le traitement : en fonction
-	 * du bouton de la JSP Date de création : (20/06/11 15:25:51)
+	 * mÃ©thode appelee par la servlet qui aiguille le traitement : en fonction
+	 * du bouton de la JSP Date de crÃ©ation : (20/06/11 15:25:51)
 	 * 
 	 */
 	public boolean recupererStatut(HttpServletRequest request) throws Exception {
@@ -2019,14 +2019,14 @@ public class OeAGENTVisiteMed extends BasicProcess {
 			}
 
 		}
-		// Si TAG INPUT non géré par le process
+		// Si TAG INPUT non gÃ©rÃ© par le process
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
 
 	/**
-	 * Retourne le nom de la JSP du process Zone à utiliser dans un champ caché
-	 * dans chaque formulaire de la JSP. Date de création : (17/10/11 15:48:16)
+	 * Retourne le nom de la JSP du process Zone a utiliser dans un champ cache
+	 * dans chaque formulaire de la JSP. Date de crÃ©ation : (17/10/11 15:48:16)
 	 * 
 	 */
 	public String getJSP() {
@@ -2035,7 +2035,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_DATE_VISITE Date de
-	 * création : (18/08/11 10:21:15)
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_DATE_VISITE(int i) {
@@ -2043,8 +2043,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE_VISITE
-	 * Date de création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_DATE_VISITE
+	 * Date de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_DATE_VISITE(int i) {
@@ -2053,7 +2053,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_DUREE Date de
-	 * création : (18/08/11 10:21:15)
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_DUREE(int i) {
@@ -2061,8 +2061,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DUREE Date de
-	 * création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_DUREE Date de
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_DUREE(int i) {
@@ -2071,7 +2071,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_NOM_MEDECIN Date de
-	 * création : (18/08/11 10:21:15)
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_NOM_MEDECIN(int i) {
@@ -2079,8 +2079,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_NOM_MEDECIN
-	 * Date de création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_NOM_MEDECIN
+	 * Date de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_NOM_MEDECIN(int i) {
@@ -2089,7 +2089,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_MOTIF Date de
-	 * création : (18/08/11 10:21:15)
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_MOTIF(int i) {
@@ -2097,8 +2097,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_MOTIF Date de
-	 * création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_MOTIF Date de
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_MOTIF(int i) {
@@ -2107,7 +2107,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_AVIS Date de
-	 * création : (18/08/11 10:21:15)
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_AVIS(int i) {
@@ -2115,8 +2115,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_AVIS Date de
-	 * création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_AVIS Date de
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_AVIS(int i) {
@@ -2125,7 +2125,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_RECOMMANDATION Date
-	 * de création : (18/08/11 10:21:15)
+	 * de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_RECOMMANDATION(int i) {
@@ -2133,8 +2133,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_RECOMMANDATION
-	 * Date de création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_RECOMMANDATION
+	 * Date de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_RECOMMANDATION(int i) {
@@ -2143,7 +2143,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_NB_DOC Date de
-	 * création : (18/08/11 10:21:15)
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_NB_DOC(int i) {
@@ -2151,8 +2151,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_NB_DOC Date de
-	 * création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_NB_DOC Date de
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_NB_DOC(int i) {
@@ -2164,17 +2164,17 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (16/08/11 15:48:02)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	public boolean performPB_MODIFIER(HttpServletRequest request, int indiceEltAModifier) throws Exception {
 
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 
-		// Récup de la visite médicale courante
+		// RÃ©cup de la visite mÃ©dicale courante
 		VisiteMedicale visiteCourante = (VisiteMedicale) getListeVisites().get(indiceEltAModifier);
 		setVisiteCourante(visiteCourante);
 
@@ -2211,7 +2211,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_VISUALISATION Date de
-	 * création : (29/09/11 10:03:38)
+	 * crÃ©ation : (29/09/11 10:03:38)
 	 * 
 	 */
 	public String getNOM_PB_CONSULTER(int i) {
@@ -2219,17 +2219,17 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (29/09/11 10:03:38)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (29/09/11 10:03:38)
 	 * 
 	 */
 	public boolean performPB_CONSULTER(HttpServletRequest request, int indiceEltAConsulter) throws Exception {
 
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 
-		// Récup de la visite médicale courante
+		// RÃ©cup de la visite mÃ©dicale courante
 		VisiteMedicale visiteCourante = (VisiteMedicale) getListeVisites().get(indiceEltAConsulter);
 		setVisiteCourante(visiteCourante);
 
@@ -2246,7 +2246,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMMER Date de création
+	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMMER Date de crÃ©ation
 	 * : (05/09/11 11:31:37)
 	 * 
 	 */
@@ -2255,17 +2255,17 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (05/09/11 11:31:37)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (05/09/11 11:31:37)
 	 * 
 	 */
 	public boolean performPB_SUPPRIMER(HttpServletRequest request, int indiceEltASuprimer) throws Exception {
 
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 
-		// Récup de la visite médicale courante
+		// RÃ©cup de la visite mÃ©dicale courante
 		VisiteMedicale visiteCourante = (VisiteMedicale) getListeVisites().get(indiceEltASuprimer);
 		setVisiteCourante(visiteCourante);
 
@@ -2282,7 +2282,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_INIT_INAPT Date de création
+	 * Retourne le nom d'un bouton pour la JSP : PB_INIT_INAPT Date de crÃ©ation
 	 * : (28/06/11 11:58:09)
 	 * 
 	 */
@@ -2291,10 +2291,10 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (28/06/11 11:58:09)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (28/06/11 11:58:09)
 	 * 
 	 */
 	public boolean performPB_INIT_INAPT(HttpServletRequest request, int indiceEltSelectionne) throws Exception {
@@ -2309,7 +2309,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 		addZone(getNOM_ST_ACTION_INAPTITUDE(), Const.CHAINE_VIDE);
 
-		// Récup de la visite médicale courante
+		// RÃ©cup de la visite mÃ©dicale courante
 		VisiteMedicale visiteCourante = (VisiteMedicale) getListeVisites().get(indiceEltSelectionne);
 		setVisiteCourante(visiteCourante);
 		if (visiteCourante.getApte() != null)
@@ -2321,7 +2321,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_TYPE_INAPT Date de
-	 * création : (18/08/11 10:21:15)
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_TYPE_INAPT(int i) {
@@ -2329,8 +2329,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_TYPE_INAPT
-	 * Date de création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_TYPE_INAPT
+	 * Date de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_TYPE_INAPT(int i) {
@@ -2339,7 +2339,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_DEBUT_INAPT Date de
-	 * création : (18/08/11 10:21:15)
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_DEBUT_INAPT(int i) {
@@ -2347,8 +2347,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DEBUT_INAPT
-	 * Date de création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_DEBUT_INAPT
+	 * Date de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_DEBUT_INAPT(int i) {
@@ -2357,7 +2357,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_ANNEES_INAPT Date de
-	 * création : (18/08/11 10:21:15)
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_ANNEES_INAPT(int i) {
@@ -2365,8 +2365,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ANNEES_INAPT
-	 * Date de création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_ANNEES_INAPT
+	 * Date de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_ANNEES_INAPT(int i) {
@@ -2375,7 +2375,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_MOIS_INAPT Date de
-	 * création : (18/08/11 10:21:15)
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_MOIS_INAPT(int i) {
@@ -2383,8 +2383,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_MOIS_INAPT
-	 * Date de création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_MOIS_INAPT
+	 * Date de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_MOIS_INAPT(int i) {
@@ -2393,7 +2393,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_JOURS_INAPT Date de
-	 * création : (18/08/11 10:21:15)
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_JOURS_INAPT(int i) {
@@ -2401,8 +2401,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_JOURS_INAPT
-	 * Date de création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_JOURS_INAPT
+	 * Date de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_JOURS_INAPT(int i) {
@@ -2411,7 +2411,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_SELECT_INAPTITUDE Date de
-	 * création : (29/06/11 09:16:38)
+	 * crÃ©ation : (29/06/11 09:16:38)
 	 * 
 	 */
 	public String getNOM_PB_SELECT_INAPTITUDE(int i) {
@@ -2419,10 +2419,10 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (29/06/11 09:16:38)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (29/06/11 09:16:38)
 	 * 
 	 */
 	public boolean performPB_SELECT_INAPTITUDE(HttpServletRequest request, int indiceEltSelectionne) throws Exception {
@@ -2433,7 +2433,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_CREER_INAPTITUDE Date de
-	 * création : (27/06/11 14:51:36)
+	 * crÃ©ation : (27/06/11 14:51:36)
 	 * 
 	 */
 	public String getNOM_PB_CREER_INAPTITUDE() {
@@ -2441,10 +2441,10 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (27/06/11 14:51:36)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (27/06/11 14:51:36)
 	 * 
 	 * RG_AG_VM_A02
 	 */
@@ -2458,7 +2458,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		}
 
 		if (getVisiteCourante() == null) {
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "visites médicales"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "visites mÃ©dicales"));
 			return false;
 		}
 
@@ -2483,7 +2483,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_MODIFIER_INAPTITUDE Date de
-	 * création : (27/06/11 14:51:36)
+	 * crÃ©ation : (27/06/11 14:51:36)
 	 * 
 	 */
 	public String getNOM_PB_MODIFIER_INAPTITUDE(int i) {
@@ -2491,10 +2491,10 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (27/06/11 14:51:36)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (27/06/11 14:51:36)
 	 * 
 	 */
 	public boolean performPB_MODIFIER_INAPTITUDE(HttpServletRequest request, int indiceEltAModifier) throws Exception {
@@ -2502,11 +2502,11 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		addZone(getNOM_ST_ACTION_INAPTITUDE(), Const.CHAINE_VIDE);
 
 		if (getVisiteCourante() == null) {
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "visites médicales"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "visites mÃ©dicales"));
 			return false;
 		}
 
-		// Récup de la visite médicale courante
+		// RÃ©cup de la visite mÃ©dicale courante
 		setInaptitudeCourante((Inaptitude) getListeInaptitude().get(indiceEltAModifier));
 
 		// On nomme l'action
@@ -2521,7 +2521,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMER_INAPTITUDE Date de
-	 * création : (27/06/11 14:51:36)
+	 * crÃ©ation : (27/06/11 14:51:36)
 	 * 
 	 */
 	public String getNOM_PB_SUPPRIMER_INAPTITUDE(int i) {
@@ -2529,10 +2529,10 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (27/06/11 14:51:36)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (27/06/11 14:51:36)
 	 * 
 	 */
 	public boolean performPB_SUPPRIMER_INAPTITUDE(HttpServletRequest request, int indiceEltASupprimer) throws Exception {
@@ -2540,11 +2540,11 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		addZone(getNOM_ST_ACTION_INAPTITUDE(), Const.CHAINE_VIDE);
 
 		if (getVisiteCourante() == null) {
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "visites médicales"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "visites mÃ©dicales"));
 			return false;
 		}
 
-		// Récup de la visite médicale courante
+		// RÃ©cup de la visite mÃ©dicale courante
 		setInaptitudeCourante((Inaptitude) getListeInaptitude().get(indiceEltASupprimer));
 
 		// init du diplome courant
@@ -2560,7 +2560,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_CONSULTER_INAPTITUDE Date de
-	 * création : (17/10/11 15:48:16)
+	 * crÃ©ation : (17/10/11 15:48:16)
 	 * 
 	 */
 	public String getNOM_PB_CONSULTER_INAPTITUDE(int i) {
@@ -2568,10 +2568,10 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (17/10/11 15:48:16)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (17/10/11 15:48:16)
 	 * 
 	 */
 	public boolean performPB_CONSULTER_INAPTITUDE(HttpServletRequest request, int indiceEltAConsulter) throws Exception {
@@ -2583,11 +2583,11 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		}
 
 		if (getVisiteCourante() == null) {
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "visites médicales"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "visites mÃ©dicales"));
 			return false;
 		}
 
-		// Récup de la visite médicale courante
+		// RÃ©cup de la visite mÃ©dicale courante
 		setInaptitudeCourante((Inaptitude) getListeInaptitude().get(indiceEltAConsulter));
 
 		// init du diplome courant
@@ -2602,7 +2602,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_DOCUMENT Date de création :
+	 * Retourne le nom d'un bouton pour la JSP : PB_DOCUMENT Date de crÃ©ation :
 	 * (05/09/11 11:31:37)
 	 * 
 	 */
@@ -2611,17 +2611,17 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (05/09/11 11:31:37)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (05/09/11 11:31:37)
 	 * 
 	 */
 	public boolean performPB_DOCUMENT(HttpServletRequest request, int indiceEltDocument) throws Exception {
 
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 
-		// Récup de la visite médicale courante
+		// RÃ©cup de la visite mÃ©dicale courante
 		VisiteMedicale visiteCourante = (VisiteMedicale) getListeVisites().get(indiceEltDocument);
 		setVisiteCourante(visiteCourante);
 
@@ -2641,7 +2641,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Insérez la description de la méthode ici. Date de création : (27/03/2003
+	 * InsÃ©rez la description de la mÃ©thode ici. Date de crÃ©ation : (27/03/2003
 	 * 10:55:12)
 	 * 
 	 * @param newListeDocuments
@@ -2693,7 +2693,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_NOM_DOC Date de
-	 * création : (18/08/11 10:21:15)
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_NOM_DOC(int i) {
@@ -2701,8 +2701,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_NOM_DOC Date
-	 * de création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_NOM_DOC Date
+	 * de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_NOM_DOC(int i) {
@@ -2711,7 +2711,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_TYPE_DOC Date de
-	 * création : (18/08/11 10:21:15)
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_TYPE_DOC(int i) {
@@ -2719,8 +2719,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_TYPE_DOC Date
-	 * de création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_TYPE_DOC Date
+	 * de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_TYPE_DOC(int i) {
@@ -2729,7 +2729,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_DATE_DOC Date de
-	 * création : (18/08/11 10:21:15)
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_DATE_DOC(int i) {
@@ -2737,8 +2737,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE_DOC Date
-	 * de création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_DATE_DOC Date
+	 * de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_DATE_DOC(int i) {
@@ -2747,7 +2747,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_COMMENTAIRE Date de
-	 * création : (18/08/11 10:21:15)
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_COMMENTAIRE(int i) {
@@ -2755,8 +2755,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_COMMENTAIRE
-	 * Date de création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_COMMENTAIRE
+	 * Date de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_COMMENTAIRE(int i) {
@@ -2764,7 +2764,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_CREER_DOC Date de création :
+	 * Retourne le nom d'un bouton pour la JSP : PB_CREER_DOC Date de crÃ©ation :
 	 * (17/10/11 13:46:25)
 	 * 
 	 */
@@ -2773,10 +2773,10 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (17/10/11 13:46:25)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (17/10/11 13:46:25)
 	 * 
 	 */
 	public boolean performPB_CREER_DOC(HttpServletRequest request) throws Exception {
@@ -2796,7 +2796,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_CONSULTER_DOC Date de
-	 * création : (29/09/11 10:03:38)
+	 * crÃ©ation : (29/09/11 10:03:38)
 	 * 
 	 */
 	public String getNOM_PB_CONSULTER_DOC(int i) {
@@ -2804,10 +2804,10 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (29/09/11 10:03:38)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (29/09/11 10:03:38)
 	 * 
 	 */
 	public boolean performPB_CONSULTER_DOC(HttpServletRequest request, int indiceEltAConsulter) throws Exception {
@@ -2827,7 +2827,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 		String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_LECTURE");
 
-		// Récup du document courant
+		// RÃ©cup du document courant
 		Document d = (Document) getListeDocuments().get(indiceEltAConsulter);
 		// on affiche le document
 		setURLFichier(getScriptOuverture(repertoireStockage + d.getLienDocument()));
@@ -2860,7 +2860,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMMER_DOC Date de
-	 * création : (05/09/11 11:31:37)
+	 * crÃ©ation : (05/09/11 11:31:37)
 	 * 
 	 */
 	public String getNOM_PB_SUPPRIMER_DOC(int i) {
@@ -2868,10 +2868,10 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (05/09/11 11:31:37)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (05/09/11 11:31:37)
 	 * 
 	 */
 	public boolean performPB_SUPPRIMER_DOC(HttpServletRequest request, int indiceEltASuprimer) throws Exception {
@@ -2879,7 +2879,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 
-		// Récup du Diplome courant
+		// RÃ©cup du Diplome courant
 		Document d = (Document) getListeDocuments().get(indiceEltASuprimer);
 		setDocumentCourant(d);
 
@@ -2897,7 +2897,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 	private boolean initialiseDocumentSuppression(HttpServletRequest request) throws Exception {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-		// Récup du Diplome courant
+		// RÃ©cup du Diplome courant
 		Document d = getDocumentCourant();
 
 		DocumentAgent lda = getLienDocumentAgentDao().chercherDocumentAgent(getAgentCourant().getIdAgent(),
@@ -2926,7 +2926,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Met à jour le doc en cours.
+	 * Met a jour le doc en cours.
 	 * 
 	 * @param documentCourant
 	 *            Nouvelle document en cours
@@ -2940,7 +2940,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Met à jour le doc en cours.
+	 * Met a jour le doc en cours.
 	 * 
 	 * @param documentCourant
 	 *            Nouvelle document en cours
@@ -3003,7 +3003,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 			logger.error("Erreur suppression physique du fichier : " + e.toString());
 		}
 
-		// tout s'est bien passé
+		// tout s'est bien passÃ©
 		commitTransaction();
 		// Alim zones
 		addZone(getNOM_ST_NOM_DOC(), Const.CHAINE_VIDE);
@@ -3028,7 +3028,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_LIENDOCUMENT Date
-	 * de création : (11/10/11 08:38:48)
+	 * de crÃ©ation : (11/10/11 08:38:48)
 	 * 
 	 */
 	public String getNOM_EF_LIENDOCUMENT() {
@@ -3036,8 +3036,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_LIENDOCUMENT Date de création : (11/10/11 08:38:48)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_LIENDOCUMENT Date de crÃ©ation : (11/10/11 08:38:48)
 	 * 
 	 */
 	public String getVAL_EF_LIENDOCUMENT() {
@@ -3049,10 +3049,10 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (11/10/11 08:38:48)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (11/10/11 08:38:48)
 	 * 
 	 */
 	public boolean performPB_VALIDER_DOCUMENT_CREATION(HttpServletRequest request) throws Exception {
@@ -3060,7 +3060,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		if (multi.getFile(getNOM_EF_LIENDOCUMENT()) != null) {
 			fichierUpload = multi.getFile(getNOM_EF_LIENDOCUMENT());
 		}
-		// Contrôle des champs
+		// Controle des champs
 		if (!performControlerSaisieDocument(request))
 			return false;
 
@@ -3069,12 +3069,12 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		if (getZone(getNOM_ST_WARNING()).equals(Const.CHAINE_VIDE)) {
 			String dateJour = new SimpleDateFormat("ddMMyyyy-hhmm").format(new Date()).toString();
 
-			// on controle si il y a dejà un fichier pour cette VM
+			// on controle si il y a deja un fichier pour cette VM
 			if (!performControlerFichier(request, "VM_" + vm.getIdVisite() + "_" + dateJour)) {
 				// alors on affiche un message pour prevenir que l'on va ecraser
 				// le fichier precedent
 				addZone(getNOM_ST_WARNING(),
-						"Attention un fichier du même type existe déjà pour cette visite médicale. Etes-vous sûr de vouloir écraser la version précédente ?");
+						"Attention un fichier du mÃªme type existe dÃ©jÃ  pour cette visite mÃ©dicale. Etes-vous sÃ»r de vouloir Ã©craser la version prÃ©cÃ©dente ?");
 				return true;
 			}
 
@@ -3083,7 +3083,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 			}
 
 		} else {
-			// on supprime le document existant dans la base de données
+			// on supprime le document existant dans la base de donnÃ©es
 			Document d = getDocumentDao().chercherDocumentByContainsNom("VM_" + vm.getIdVisite());
 			DocumentAgent l = getLienDocumentAgentDao().chercherDocumentAgent(getAgentCourant().getIdAgent(),
 					d.getIdDocument());
@@ -3104,7 +3104,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		initialiseListeDocuments(request);
 		addZone(getNOM_ST_ACTION(), ACTION_DOCUMENT);
 
-		// on met à jour le tableau des VM pour avoir le nombre de documents
+		// on met a jour le tableau des VM pour avoir le nombre de documents
 		initialiseListeVisiteMed(request);
 
 		return true;
@@ -3140,7 +3140,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	private boolean creeDocument(HttpServletRequest request, VisiteMedicale vm) throws Exception {
-		// on crée l'entrée dans la table
+		// on crÃ©e l'entrÃ©e dans la table
 		setDocumentCourant(new Document());
 		// on recupere le fichier mis dans le repertoire temporaire
 		if (fichierUpload == null) {
@@ -3148,7 +3148,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 			return false;
 		}
 
-		// on recupère le type de document
+		// on recupere le type de document
 		String codTypeDoc = "VM";
 		TypeDocument td = getTypeDocumentDao().chercherTypeDocumentByCod(codTypeDoc);
 		String extension = fichierUpload.getName().substring(fichierUpload.getName().indexOf('.'),
@@ -3166,7 +3166,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		if (!upload)
 			return false;
 
-		// on crée le document en base de données
+		// on crÃ©e le document en base de donnÃ©es
 		getDocumentCourant().setLienDocument(codTypeDoc + "/" + nom);
 		getDocumentCourant().setIdTypeDocument(td.getIdTypeDocument());
 		getDocumentCourant().setNomOriginal(fichierUpload.getName());
@@ -3187,7 +3187,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		if (getTransaction().isErreur())
 			return false;
 
-		// Tout s'est bien passé
+		// Tout s'est bien passÃ©
 		commitTransaction();
 		addZone(getNOM_EF_COMMENTAIRE(), Const.CHAINE_VIDE);
 
@@ -3245,7 +3245,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	private void verifieRepertoire(String codTypeDoc) {
-		// on verifie déjà que le repertoire source existe
+		// on verifie dÃ©jÃ  que le repertoire source existe
 		String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ACTES");
 		File dossierParent = new File(repPartage);
 		if (!dossierParent.exists()) {
@@ -3273,7 +3273,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 	private boolean performControlerFichier(HttpServletRequest request, String nomFichier) {
 		boolean result = true;
-		// on regarde dans la liste des document si il y a une entrée avec ce
+		// on regarde dans la liste des document si il y a une entrÃ©e avec ce
 		// nom de contrat
 		for (Iterator<Document> iter = getListeDocuments().iterator(); iter.hasNext();) {
 			Document doc = (Document) iter.next();
@@ -3291,8 +3291,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_WARNING Date de création : (16/05/11 09:36:20)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_WARNING Date de crÃ©ation : (16/05/11 09:36:20)
 	 * 
 	 */
 	public String getVAL_ST_WARNING() {
@@ -3300,7 +3300,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Méthode qui teste si un paramètre se trouve dans le formulaire
+	 * mÃ©thode qui teste si un parametre se trouve dans le formulaire
 	 */
 	public boolean testerParametre(HttpServletRequest request, String param) {
 		return (request.getParameter(param) != null || request.getParameter(param + ".x") != null || (multi != null && multi
@@ -3332,7 +3332,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_SELECT_MOTIF Date de
-	 * création : (26/09/11 09:04:08)
+	 * crÃ©ation : (26/09/11 09:04:08)
 	 * 
 	 */
 	public String getNOM_PB_SELECT_MOTIF() {
@@ -3340,10 +3340,10 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un MOTIF en fonction de ces
-	 * règles : setMOTIF(MOTIF, boolean veutRetour) ou setMOTIF(MOTIF,Message
-	 * d'erreur) Date de création : (26/09/11 09:04:08)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un MOTIF en fonction de ces
+	 * regles : setMOTIF(MOTIF, boolean veutRetour) ou setMOTIF(MOTIF,Message
+	 * d'erreur) Date de crÃ©ation : (26/09/11 09:04:08)
 	 * 
 	 */
 	public boolean performPB_SELECT_MOTIF(HttpServletRequest request) throws Exception {
@@ -3368,19 +3368,19 @@ public class OeAGENTVisiteMed extends BasicProcess {
 				addZone(getNOM_RG_AVIS(), Const.CHAINE_VIDE);
 			} else {
 				// si autre motif alors on cherche la derniere convocation
-				// si elle est de type 'non-effectuée' alors on en peut pas
-				// créer de VM
+				// si elle est de type 'non-effectuee' alors on en peut pas
+				// crÃ©er de VM
 				try {
 					SuiviMedical smInterdit = getSuiviMedDao().chercherDernierSuiviMedicalAgent(
 							getAgentCourant().getIdAgent());
 					if (!smInterdit.getEtat().equals(EnumEtatSuiviMed.EFFECTUE.getCode())) {
 						// "ERR091",
-						// "Une convocation est en attente, vous ne pouvez pas créer de visite médicale avec ce motif.");
+						// "Une convocation est en attente, vous ne pouvez pas crÃ©er de visite mÃ©dicale avec ce motif.");
 						getTransaction().declarerErreur(MessageUtils.getMessage("ERR091"));
 						return false;
 					}
 				} catch (Exception e) {
-					// on laisse la création
+					// on laisse la crÃ©ation
 					logger.error("Erreur : " + e.getMessage());
 				}
 			}

@@ -44,8 +44,8 @@ public class OePTGVentilationUtils {
 			case PRIME: {
 				sb.append("<thead><tr>");
 				sb.append("<th>Matricule Agent</th>");
-				sb.append("<th>Nom prénom</th>");
-				sb.append("<th>Mois-année</th>");
+				sb.append("<th>Nom prÃ©nom</th>");
+				sb.append("<th>Mois-annÃ©e</th>");
 				sb.append("<th>Primes</th>");
 				sb.append("<th>Nombre</th>");
 				sb.append("</tr></thead>");

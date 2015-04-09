@@ -73,11 +73,11 @@ public class OeABSRestitution extends BasicProcess {
 		VariableGlobale.ajouter(request, "PROCESS_MEMORISE", this);
 
 		// ----------------------------------//
-		// Vérification des droits d'accès. //
+		// VÃ©rification des droits d'acces. //
 		// ----------------------------------//
 		if (MairieUtils.estInterdit(request, getNomEcran())) {
 			// "ERR190",
-			// "Opération impossible. Vous ne disposez pas des droits d'accès à cette option."
+			// "Operation impossible. Vous ne disposez pas des droits d'acces a cette option."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
@@ -120,7 +120,7 @@ public class OeABSRestitution extends BasicProcess {
 				}
 			}
 		}
-		// Si TAG INPUT non géré par le process
+		// Si TAG INPUT non gÃ©rÃ© par le process
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
@@ -182,7 +182,7 @@ public class OeABSRestitution extends BasicProcess {
 	}
 
 	public boolean performPB_LANCER_RESTITUTION(HttpServletRequest request) throws Exception {
-		// vérification de la validité du formulaire
+		// VÃ©rification de la validitÃ© du formulaire
 		if (!performControlerChamps(request)) {
 			return false;
 		}
@@ -259,7 +259,7 @@ public class OeABSRestitution extends BasicProcess {
 	}
 
 	private boolean performControlerChamps(HttpServletRequest request) {
-		// type matin,am, journée
+		// type matin,am, journÃ©e
 		if (getZone(getNOM_RG_TYPE_RESTITUTION()).equals(Const.CHAINE_VIDE)) {
 			// "ERR002", "La zone @ est obligatoire."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "type de restitution"));
@@ -272,7 +272,7 @@ public class OeABSRestitution extends BasicProcess {
 			return false;
 		} else if (!Services.estUneDate(getZone(getNOM_ST_DATE_RESTITUTION()))) {
 			// "ERR007",
-			// "La date @ est incorrecte. Elle doit être au format date."
+			// "La date @ est incorrecte. Elle doit Ãªtre au format date."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR007", "de restitution"));
 			return false;
 		}

@@ -15,7 +15,7 @@ import nc.mairie.utils.VariablesActivite;
 import org.springframework.context.ApplicationContext;
 
 /**
- * Process OePOSTEFEActiviteSelection Date de création : (03/02/09 14:56:59)
+ * Process OePOSTEFEActiviteSelection Date de crÃ©ation : (03/02/09 14:56:59)
  * 
  */
 public class OePOSTEFECompetenceSelection extends BasicProcess {
@@ -51,10 +51,10 @@ public class OePOSTEFECompetenceSelection extends BasicProcess {
 	}
 
 	/**
-	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones Ã  afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
-	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
-	 * addZone(getNOMxxx, String); Date de création : (03/02/09 14:56:59)
+	 * doivent avoir les Fields PUBLIC Utilisation de la mÃ©thode
+	 * addZone(getNOMxxx, String); Date de crÃ©ation : (03/02/09 14:56:59)
 	 * 
 	 */
 	@SuppressWarnings("unchecked")
@@ -95,7 +95,7 @@ public class OePOSTEFECompetenceSelection extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER Date de création :
+	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER Date de crÃ©ation :
 	 * (03/02/09 14:56:59)
 	 * 
 	 */
@@ -104,10 +104,10 @@ public class OePOSTEFECompetenceSelection extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (03/02/09 14:56:59)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (03/02/09 14:56:59)
 	 * 
 	 */
 	public boolean performPB_ANNULER(HttpServletRequest request) throws Exception {
@@ -117,7 +117,7 @@ public class OePOSTEFECompetenceSelection extends BasicProcess {
 
 	/**
 	 * @param focus
-	 *            focus à définir.
+	 *            focus Ã  dÃ©finir.
 	 */
 	public void setFocus(String focus) {
 		this.focus = focus;
@@ -127,7 +127,7 @@ public class OePOSTEFECompetenceSelection extends BasicProcess {
 	 * 
 	 * @param l1
 	 * @param l2
-	 * @return ArrayListe ayant éléminé de la liste l1 les éléments en communs
+	 * @return ArrayListe ayant elemine de la liste l1 les Ã©lÃ©ments en communs
 	 *         avec l2 fonctionne uniquement avec une liste l1 n'ayant pas 2
 	 *         elements identiques
 	 */
@@ -148,7 +148,7 @@ public class OePOSTEFECompetenceSelection extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER Date de création :
+	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER Date de crÃ©ation :
 	 * (19/07/11 16:22:13)
 	 * 
 	 */
@@ -157,19 +157,19 @@ public class OePOSTEFECompetenceSelection extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (19/07/11 16:22:13)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (19/07/11 16:22:13)
 	 * 
 	 */
 	public boolean performPB_VALIDER(HttpServletRequest request) throws Exception {
 		ArrayList<Competence> listCompSelect = new ArrayList<Competence>();
 		for (int j = 0; j < getListeCompetences().size(); j++) {
-			// on recupère la ligne concernée
+			// on recupere la ligne concernÃ©e
 			Competence comp = (Competence) getListeCompetences().get(j);
 			Integer i = comp.getIdCompetence();
-			// si la colonne selection est cochée
+			// si la colonne selection est cochÃ©e
 			if (getVAL_CK_SELECT_LIGNE(i).equals(getCHECKED_ON())) {
 				listCompSelect.add(comp);
 			}
@@ -181,8 +181,8 @@ public class OePOSTEFECompetenceSelection extends BasicProcess {
 	}
 
 	/**
-	 * Méthode appelée par la servlet qui aiguille le traitement : en fonction
-	 * du bouton de la JSP Date de création : (03/02/09 14:56:59)
+	 * mÃ©thode appelee par la servlet qui aiguille le traitement : en fonction
+	 * du bouton de la JSP Date de crÃ©ation : (03/02/09 14:56:59)
 	 * 
 	 */
 	public boolean recupererStatut(HttpServletRequest request) throws Exception {
@@ -200,13 +200,13 @@ public class OePOSTEFECompetenceSelection extends BasicProcess {
 				return performPB_ANNULER(request);
 			}
 		}
-		// Si TAG INPUT non géré par le process
+		// Si TAG INPUT non gÃ©rÃ© par le process
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
 
 	/**
-	 * Constructeur du process OePOSTEFEActiviteSelection. Date de création :
+	 * Constructeur du process OePOSTEFEActiviteSelection. Date de crÃ©ation :
 	 * (24/08/11 09:15:05)
 	 * 
 	 */
@@ -215,8 +215,8 @@ public class OePOSTEFECompetenceSelection extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la JSP du process Zone à utiliser dans un champ caché
-	 * dans chaque formulaire de la JSP. Date de création : (24/08/11 09:15:05)
+	 * Retourne le nom de la JSP du process Zone a utiliser dans un champ cache
+	 * dans chaque formulaire de la JSP. Date de crÃ©ation : (24/08/11 09:15:05)
 	 * 
 	 */
 	public String getJSP() {
@@ -225,7 +225,7 @@ public class OePOSTEFECompetenceSelection extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_ID_COMP Date de
-	 * création : (21/11/11 09:55:36)
+	 * crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_ST_ID_COMP(int i) {
@@ -233,8 +233,8 @@ public class OePOSTEFECompetenceSelection extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ID_COMP Date
-	 * de création : (21/11/11 09:55:36)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_ID_COMP Date
+	 * de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_ST_ID_COMP(int i) {
@@ -243,7 +243,7 @@ public class OePOSTEFECompetenceSelection extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_LIB_COMP Date de
-	 * création : (21/11/11 09:55:36)
+	 * crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_ST_LIB_COMP(int i) {
@@ -251,8 +251,8 @@ public class OePOSTEFECompetenceSelection extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_LIB_COMP Date
-	 * de création : (21/11/11 09:55:36)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_LIB_COMP Date
+	 * de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_ST_LIB_COMP(int i) {
@@ -260,8 +260,8 @@ public class OePOSTEFECompetenceSelection extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la case à cocher sélectionnée pour la JSP :
-	 * CK_SELECT_LIGNE Date de création : (21/11/11 09:55:36)
+	 * Retourne le nom de la case Ã  cocher sÃ©lectionnÃ©e pour la JSP :
+	 * CK_SELECT_LIGNE Date de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_CK_SELECT_LIGNE(int i) {
@@ -269,8 +269,8 @@ public class OePOSTEFECompetenceSelection extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur de la case à cocher à afficher par la JSP pour la case
-	 * à cocher : CK_SELECT_LIGNE Date de création : (21/11/11 09:55:36)
+	 * Retourne la valeur de la case Ã  cocher Ã  afficher par la JSP pour la case
+	 * a cocher : CK_SELECT_LIGNE Date de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_CK_SELECT_LIGNE(int i) {

@@ -98,7 +98,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 
 /**
- * Process OeAGENTEmploisAffectation Date de création : (04/08/11 15:20:56)
+ * Process OeAGENTEmploisAffectation Date de crÃ©ation : (04/08/11 15:20:56)
  * 
  */
 public class OeAGENTEmploisAffectation extends BasicProcess {
@@ -115,9 +115,9 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	private final String ACTION_AJOUTER_SPEC = "Ajouter";
 	public String ACTION_CONSULTATION = "Consultation d'une affectation";
-	public String ACTION_CREATION = "Création d'une affectation";
+	public String ACTION_CREATION = "CrÃ©ation d'une affectation";
 
-	public String ACTION_IMPRESSION = "Impression des documents liés à une affectation";
+	public String ACTION_IMPRESSION = "Impression des documents liÃ©s a une affectation";
 	public String ACTION_MODIFICATION = "Modification d'une affectation";
 	public String ACTION_SUPPRESSION = "Suppression d'une affectation";
 
@@ -177,10 +177,10 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	private PrimePointageFPDao primePointageFPDao;
 	public final String SPEC_AVANTAGE_NATURE_SPEC = "avantage en nature";
 
-	public final String SPEC_DELEGATION_SPEC = "délégation";
+	public final String SPEC_DELEGATION_SPEC = "dÃ©lÃ©gation";
 	public final String SPEC_PRIME_POINTAGE_SPEC = "prime pointage";
 
-	public final String SPEC_REG_INDEMN_SPEC = "régime indemnitaire";
+	public final String SPEC_REG_INDEMN_SPEC = "rÃ©gime indemnitaire";
 	private String urlFichier;
 
 	private MotifAffectationDao motifAffectationDao;
@@ -208,7 +208,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
 	/**
-	 * Constructeur du process OeAGENTEmploisAffectation. Date de création :
+	 * Constructeur du process OeAGENTEmploisAffectation. Date de crÃ©ation :
 	 * (11/08/11 16:10:24)
 	 * 
 	 */
@@ -267,8 +267,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la JSP du process Zone à utiliser dans un champ caché
-	 * dans chaque formulaire de la JSP. Date de création : (17/10/11 16:45:31)
+	 * Retourne le nom de la JSP du process Zone a utiliser dans un champ cache
+	 * dans chaque formulaire de la JSP. Date de crÃ©ation : (17/10/11 16:45:31)
 	 * 
 	 */
 	public String getJSP() {
@@ -277,7 +277,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	/**
 	 * Getter de la liste avec un lazy initialize : LB_LISTE_IMPRESSION Date de
-	 * création : (04/08/11 15:20:56)
+	 * crÃ©ation : (04/08/11 15:20:56)
 	 * 
 	 */
 	private String[] getLB_LISTE_IMPRESSION() {
@@ -288,7 +288,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	/**
 	 * Getter de la liste avec un lazy initialize : LB_MOTIF_AFFECTATION Date de
-	 * création : (04/08/11 15:20:56)
+	 * crÃ©ation : (04/08/11 15:20:56)
 	 * 
 	 */
 	private String[] getLB_MOTIF_AFFECTATION() {
@@ -299,7 +299,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	/**
 	 * Getter de la liste avec un lazy initialize : LB_NATURE_AVANTAGE Date de
-	 * création : (16/08/11 15:48:02)
+	 * crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	private String[] getLB_NATURE_AVANTAGE() {
@@ -310,7 +310,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	/**
 	 * Getter de la liste avec un lazy initialize : LB_RUBRIQUE_AVANTAGE Date de
-	 * création : (16/08/11 15:48:02)
+	 * crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	private String[] getLB_RUBRIQUE_AVANTAGE() {
@@ -321,7 +321,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	/**
 	 * Getter de la liste avec un lazy initialize : LB_TYPE_PRIME_POINTAGE Date
-	 * de création : (16/08/11 15:48:02)
+	 * de crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	private String[] getLB_RUBRIQUE_PRIME_POINTAGE() {
@@ -332,7 +332,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	/**
 	 * Getter de la liste avec un lazy initialize : LB_RUBRIQUE_REGIME Date de
-	 * création : (16/08/11 15:48:02)
+	 * crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	private String[] getLB_RUBRIQUE_REGIME() {
@@ -343,7 +343,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	/**
 	 * Getter de la liste avec un lazy initialize : LB_TEMPS_TRAVAIL Date de
-	 * création : (04/08/11 15:20:56)
+	 * crÃ©ation : (04/08/11 15:20:56)
 	 * 
 	 */
 	private String[] getLB_TEMPS_TRAVAIL() {
@@ -354,7 +354,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	/**
 	 * Getter de la liste avec un lazy initialize : LB_TYPE_AVANTAGE Date de
-	 * création : (16/08/11 15:48:02)
+	 * crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	private String[] getLB_TYPE_AVANTAGE() {
@@ -365,7 +365,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	/**
 	 * Getter de la liste avec un lazy initialize : LB_TYPE_DELEGATION Date de
-	 * création : (16/08/11 15:48:02)
+	 * crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	private String[] getLB_TYPE_DELEGATION() {
@@ -376,7 +376,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	/**
 	 * Getter de la liste avec un lazy initialize : LB_TYPE_REGIME Date de
-	 * création : (16/08/11 15:48:02)
+	 * crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	private String[] getLB_TYPE_REGIME() {
@@ -395,7 +395,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la liste des avantages en nature à ajouter.
+	 * Retourne la liste des avantages en nature a ajouter.
 	 * 
 	 * @return listeAvantageAAjouter
 	 */
@@ -415,7 +415,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la liste des avantages en nature à supprimer.
+	 * Retourne la liste des avantages en nature a supprimer.
 	 * 
 	 * @return listeAvantageASupprimer
 	 */
@@ -435,7 +435,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la liste des délégations à ajouter.
+	 * Retourne la liste des dÃ©lÃ©gations a ajouter.
 	 * 
 	 * @return listeDelegationAAjouter
 	 */
@@ -455,7 +455,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la liste des délégations à supprimer.
+	 * Retourne la liste des dÃ©lÃ©gations a supprimer.
 	 * 
 	 * @return listeDelegationASupprimer
 	 */
@@ -502,7 +502,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la liste des régimes indemnitaires à ajouter.
+	 * Retourne la liste des rÃ©gimes indemnitaires a ajouter.
 	 * 
 	 * @return listePrimePointageAAjouter
 	 */
@@ -513,7 +513,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la liste des régimes indemnitaires à supprimer.
+	 * Retourne la liste des rÃ©gimes indemnitaires a supprimer.
 	 * 
 	 * @return listePrimePointageASupprimer
 	 */
@@ -542,7 +542,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la liste des régimes indemnitaires à ajouter.
+	 * Retourne la liste des rÃ©gimes indemnitaires a ajouter.
 	 * 
 	 * @return listeRegimeAAjouter
 	 */
@@ -562,7 +562,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la liste des régimes indemnitaires à supprimer.
+	 * Retourne la liste des rÃ©gimes indemnitaires a supprimer.
 	 * 
 	 * @return listeRegimeASupprimer
 	 */
@@ -608,7 +608,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la liste des temps de travail (exprimés en pourcentage).
+	 * Retourne la liste des temps de travail (exprimÃ©s en pourcentage).
 	 * 
 	 * @return listeTempsTravail
 	 */
@@ -645,7 +645,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_COMMENT_DELEGATION
-	 * Date de création : (16/08/11 15:48:02)
+	 * Date de crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	public String getNOM_EF_COMMENT_DELEGATION() {
@@ -654,7 +654,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_COMMENTAIRE Date de
-	 * création : (04/08/11 15:20:56)
+	 * crÃ©ation : (04/08/11 15:20:56)
 	 * 
 	 */
 	public String getNOM_EF_COMMENTAIRE() {
@@ -663,7 +663,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_DATE_ARRETE Date de
-	 * création : (04/08/11 15:20:56)
+	 * crÃ©ation : (04/08/11 15:20:56)
 	 * 
 	 */
 	public String getNOM_EF_DATE_ARRETE() {
@@ -672,7 +672,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_DATE_DEBUT Date de
-	 * création : (04/08/11 15:20:56)
+	 * crÃ©ation : (04/08/11 15:20:56)
 	 * 
 	 */
 	public String getNOM_EF_DATE_DEBUT() {
@@ -681,7 +681,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_DATE_FIN Date de
-	 * création : (04/08/11 15:20:56)
+	 * crÃ©ation : (04/08/11 15:20:56)
 	 * 
 	 */
 	public String getNOM_EF_DATE_FIN() {
@@ -690,7 +690,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_FORFAIT_REGIME Date
-	 * de création : (16/08/11 15:48:02)
+	 * de crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	public String getNOM_EF_FORFAIT_REGIME() {
@@ -699,7 +699,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_MONTANT_AVANTAGE
-	 * Date de création : (16/08/11 15:48:02)
+	 * Date de crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	public String getNOM_EF_MONTANT_AVANTAGE() {
@@ -708,7 +708,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_NB_POINTS_REGIME
-	 * Date de création : (16/08/11 15:48:02)
+	 * Date de crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	public String getNOM_EF_NB_POINTS_REGIME() {
@@ -717,7 +717,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_REF_ARRETE Date de
-	 * création : (04/08/11 15:20:56)
+	 * crÃ©ation : (04/08/11 15:20:56)
 	 * 
 	 */
 	public String getNOM_EF_REF_ARRETE() {
@@ -726,7 +726,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	/**
 	 * Retourne le nom de la zone pour la JSP : NOM_LB_LISTE_IMPRESSION Date de
-	 * création : (04/08/11 15:20:56)
+	 * crÃ©ation : (04/08/11 15:20:56)
 	 * 
 	 */
 	public String getNOM_LB_LISTE_IMPRESSION() {
@@ -734,8 +734,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_LISTE_IMPRESSION_SELECT Date de création : (04/08/11 15:20:56)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_LISTE_IMPRESSION_SELECT Date de crÃ©ation : (04/08/11 15:20:56)
 	 * 
 	 */
 	public String getNOM_LB_LISTE_IMPRESSION_SELECT() {
@@ -744,7 +744,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	/**
 	 * Retourne le nom de la zone pour la JSP : NOM_LB_MOTIF_AFFECTATION Date de
-	 * création : (04/08/11 15:20:56)
+	 * crÃ©ation : (04/08/11 15:20:56)
 	 * 
 	 */
 	public String getNOM_LB_MOTIF_AFFECTATION() {
@@ -752,8 +752,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_MOTIF_AFFECTATION_SELECT Date de création : (04/08/11 15:20:56)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_MOTIF_AFFECTATION_SELECT Date de crÃ©ation : (04/08/11 15:20:56)
 	 * 
 	 */
 	public String getNOM_LB_MOTIF_AFFECTATION_SELECT() {
@@ -761,8 +761,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_NATURE_AVANTAGE_SELECT Date de création : (16/08/11 15:48:02)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_NATURE_AVANTAGE_SELECT Date de crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	public String getNOM_LB_NATURE_AVANTAGE_SELECT() {
@@ -771,7 +771,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	/**
 	 * Retourne le nom de la zone pour la JSP : NOM_LB_NATURE_AVANTAGE Date de
-	 * création : (16/08/11 15:48:02)
+	 * crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	public String getNOM_LB_NATURE_AVANTAGE() {
@@ -780,7 +780,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	/**
 	 * Retourne le nom de la zone pour la JSP : NOM_LB_RUBRIQUE_AVANTAGE Date de
-	 * création : (16/08/11 15:48:02)
+	 * crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	public String getNOM_LB_RUBRIQUE_AVANTAGE() {
@@ -788,8 +788,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_RUBRIQUE_AVANTAGE_SELECT Date de création : (16/08/11 15:48:02)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_RUBRIQUE_AVANTAGE_SELECT Date de crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	public String getNOM_LB_RUBRIQUE_AVANTAGE_SELECT() {
@@ -797,8 +797,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_RUBRIQUE_PRIME_POINTAGE_SELECT Date de création : (16/08/11
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_RUBRIQUE_PRIME_POINTAGE_SELECT Date de crÃ©ation : (16/08/11
 	 * 15:48:02)
 	 * 
 	 */
@@ -808,7 +808,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	/**
 	 * Retourne le nom de la zone pour la JSP : NOM_LB_RUBRIQUE_PRIME_POINTAGE
-	 * Date de création : (16/08/11 15:48:02)
+	 * Date de crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	public String getNOM_LB_RUBRIQUE_PRIME_POINTAGE() {
@@ -817,7 +817,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	/**
 	 * Retourne le nom de la zone pour la JSP : NOM_LB_RUBRIQUE_REGIME Date de
-	 * création : (16/08/11 15:48:02)
+	 * crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	public String getNOM_LB_RUBRIQUE_REGIME() {
@@ -825,8 +825,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_RUBRIQUE_REGIME_SELECT Date de création : (16/08/11 15:48:02)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_RUBRIQUE_REGIME_SELECT Date de crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	public String getNOM_LB_RUBRIQUE_REGIME_SELECT() {
@@ -835,7 +835,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	/**
 	 * Retourne le nom de la zone pour la JSP : NOM_LB_TEMPS_TRAVAIL Date de
-	 * création : (04/08/11 15:20:56)
+	 * crÃ©ation : (04/08/11 15:20:56)
 	 * 
 	 */
 	public String getNOM_LB_TEMPS_TRAVAIL() {
@@ -843,8 +843,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_TEMPS_TRAVAIL_SELECT Date de création : (04/08/11 15:20:56)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_TEMPS_TRAVAIL_SELECT Date de crÃ©ation : (04/08/11 15:20:56)
 	 * 
 	 */
 	public String getNOM_LB_TEMPS_TRAVAIL_SELECT() {
@@ -852,8 +852,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_TYPE_AVANTAGE_SELECT Date de création : (16/08/11 15:48:02)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_TYPE_AVANTAGE_SELECT Date de crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	public String getNOM_LB_TYPE_AVANTAGE_SELECT() {
@@ -862,7 +862,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	/**
 	 * Retourne le nom de la zone pour la JSP : NOM_LB_TYPE_AVANTAGE Date de
-	 * création : (16/08/11 15:48:02)
+	 * crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	public String getNOM_LB_TYPE_AVANTAGE() {
@@ -870,8 +870,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_TYPE_DELEGATION_SELECT Date de création : (16/08/11 15:48:02)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_TYPE_DELEGATION_SELECT Date de crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	public String getNOM_LB_TYPE_DELEGATION_SELECT() {
@@ -880,7 +880,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	/**
 	 * Retourne le nom de la zone pour la JSP : NOM_LB_TYPE_DELEGATION Date de
-	 * création : (16/08/11 15:48:02)
+	 * crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	public String getNOM_LB_TYPE_DELEGATION() {
@@ -888,8 +888,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_TYPE_REGIME_SELECT Date de création : (16/08/11 15:48:02)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_TYPE_REGIME_SELECT Date de crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	public String getNOM_LB_TYPE_REGIME_SELECT() {
@@ -898,7 +898,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	/**
 	 * Retourne le nom de la zone pour la JSP : NOM_LB_TYPE_REGIME Date de
-	 * création : (16/08/11 15:48:02)
+	 * crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	public String getNOM_LB_TYPE_REGIME() {
@@ -906,7 +906,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_AJOUTER Date de création :
+	 * Retourne le nom d'un bouton pour la JSP : PB_AJOUTER Date de crÃ©ation :
 	 * (04/08/11 15:20:56)
 	 * 
 	 */
@@ -916,7 +916,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_AJOUTER_AVANTAGE Date de
-	 * création : (16/08/11 15:48:02)
+	 * crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	public String getNOM_PB_AJOUTER_AVANTAGE() {
@@ -925,7 +925,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_AJOUTER_DELEGATION Date de
-	 * création : (16/08/11 15:48:02)
+	 * crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	public String getNOM_PB_AJOUTER_DELEGATION() {
@@ -934,7 +934,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_AJOUTER_PRIME_POINTAGE Date
-	 * de création : (16/08/11 15:48:02)
+	 * de crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	public String getNOM_PB_AJOUTER_PRIME_POINTAGE() {
@@ -943,7 +943,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_AJOUTER_REGIME Date de
-	 * création : (16/08/11 15:48:02)
+	 * crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	public String getNOM_PB_AJOUTER_REGIME() {
@@ -951,7 +951,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER Date de création :
+	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER Date de crÃ©ation :
 	 * (04/08/11 15:20:56)
 	 * 
 	 */
@@ -961,7 +961,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_CHANGER_SPECIFICITE Date de
-	 * création : (16/08/11 15:48:02)
+	 * crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	public String getNOM_PB_CHANGER_SPECIFICITE() {
@@ -970,7 +970,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_VISUALISATION Date de
-	 * création : (29/09/11 10:03:38)
+	 * crÃ©ation : (29/09/11 10:03:38)
 	 * 
 	 */
 	public String getNOM_PB_CONSULTER(int i) {
@@ -978,7 +978,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_HISTORIQUE Date de création
+	 * Retourne le nom d'un bouton pour la JSP : PB_HISTORIQUE Date de crÃ©ation
 	 * : (04/08/11 15:20:56)
 	 * 
 	 */
@@ -999,7 +999,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_RECHERCHER_FP Date de
-	 * création : (05/08/11 13:35:40)
+	 * crÃ©ation : (05/08/11 13:35:40)
 	 * 
 	 */
 	public String getNOM_PB_RECHERCHER_FP() {
@@ -1008,7 +1008,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_RECHERCHER_FP_SECONDAIRE
-	 * Date de création : (05/08/11 13:35:40)
+	 * Date de crÃ©ation : (05/08/11 13:35:40)
 	 * 
 	 */
 	public String getNOM_PB_RECHERCHER_FP_SECONDAIRE() {
@@ -1016,7 +1016,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMMER Date de création
+	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMMER Date de crÃ©ation
 	 * : (05/09/11 11:31:37)
 	 * 
 	 */
@@ -1026,7 +1026,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMER_AVANTAGE Date de
-	 * création : (16/08/11 15:48:02)
+	 * crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	public String getNOM_PB_SUPPRIMER_AVANTAGE(int i) {
@@ -1035,7 +1035,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMER_DELEGATION Date de
-	 * création : (16/08/11 15:48:02)
+	 * crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	public String getNOM_PB_SUPPRIMER_DELEGATION(int i) {
@@ -1044,7 +1044,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMER_PRIME_POINTAGE
-	 * Date de création : (16/08/11 15:48:02)
+	 * Date de crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	public String getNOM_PB_SUPPRIMER_PRIME_POINTAGE(int i) {
@@ -1053,7 +1053,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMER_REGIME Date de
-	 * création : (16/08/11 15:48:02)
+	 * crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	public String getNOM_PB_SUPPRIMER_REGIME(int i) {
@@ -1061,7 +1061,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER Date de création :
+	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER Date de crÃ©ation :
 	 * (04/08/11 15:20:56)
 	 * 
 	 */
@@ -1071,7 +1071,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER_AJOUT Date de
-	 * création : (16/08/11 15:48:02)
+	 * crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	public String getNOM_PB_VALIDER_AJOUT() {
@@ -1080,7 +1080,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	/**
 	 * Retourne le nom du radio bouton pour la JSP : RB_SPECIFICITE_AN Date de
-	 * création : (16/08/11 15:48:02)
+	 * crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	public String getNOM_RB_SPECIFICITE_AN() {
@@ -1089,7 +1089,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	/**
 	 * Retourne le nom du radio bouton pour la JSP : RB_SPECIFICITE_D Date de
-	 * création : (16/08/11 15:48:02)
+	 * crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	public String getNOM_RB_SPECIFICITE_D() {
@@ -1098,7 +1098,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	/**
 	 * Retourne le nom du radio bouton pour la JSP : RB_SPECIFICITE_PP Date de
-	 * création : (16/08/11 15:48:02)
+	 * crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	public String getNOM_RB_SPECIFICITE_PP() {
@@ -1107,7 +1107,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	/**
 	 * Retourne le nom du radio bouton pour la JSP : RB_SPECIFICITE_RI Date de
-	 * création : (16/08/11 15:48:02)
+	 * crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	public String getNOM_RB_SPECIFICITE_RI() {
@@ -1115,8 +1115,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom du groupe de radio boutons coché pour la JSP :
-	 * RG_SPECIFICITE Date de création : (16/08/11 15:48:02)
+	 * Retourne le nom du groupe de radio boutons cochÃ© pour la JSP :
+	 * RG_SPECIFICITE Date de crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	public String getNOM_RG_SPECIFICITE() {
@@ -1125,7 +1125,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_ACTION Date de
-	 * création : (04/08/11 15:42:46)
+	 * crÃ©ation : (04/08/11 15:42:46)
 	 * 
 	 */
 	public String getNOM_ST_ACTION() {
@@ -1134,7 +1134,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_ACTION Date de
-	 * création : (16/08/11 15:48:02)
+	 * crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	public String getNOM_ST_ACTION_spec() {
@@ -1143,7 +1143,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_DATE_DEBUT Date de
-	 * création : (18/08/11 10:21:15)
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_DATE_DEBUT(int i) {
@@ -1152,7 +1152,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_DATE_FIN Date de
-	 * création : (18/08/11 10:21:15)
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_DATE_FIN(int i) {
@@ -1160,7 +1160,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_DIR Date de création
+	 * Retourne pour la JSP le nom de la zone statique : ST_DIR Date de crÃ©ation
 	 * : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -1170,7 +1170,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_DIRECTION Date de
-	 * création : (04/08/11 15:20:56)
+	 * crÃ©ation : (04/08/11 15:20:56)
 	 * 
 	 */
 	public String getNOM_ST_DIRECTION() {
@@ -1179,7 +1179,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_DIRECTION_SECONDAIRE
-	 * Date de création : (04/08/11 15:20:56)
+	 * Date de crÃ©ation : (04/08/11 15:20:56)
 	 * 
 	 */
 	public String getNOM_ST_DIRECTION_SECONDAIRE() {
@@ -1188,7 +1188,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_LIEU_FP Date de
-	 * création : (04/08/11 15:20:56)
+	 * crÃ©ation : (04/08/11 15:20:56)
 	 * 
 	 */
 	public String getNOM_ST_LIEU_FP() {
@@ -1197,7 +1197,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_LIEU_FP_SECONDAIRE
-	 * Date de création : (04/08/11 15:20:56)
+	 * Date de crÃ©ation : (04/08/11 15:20:56)
 	 * 
 	 */
 	public String getNOM_ST_LIEU_FP_SECONDAIRE() {
@@ -1206,7 +1206,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_LST_AVANTAGE_MONTANT
-	 * Date de création : (18/08/11 10:21:15)
+	 * Date de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_LST_AVANTAGE_MONTANT(int i) {
@@ -1215,7 +1215,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_LST_AVANTAGE_NATURE
-	 * Date de création : (18/08/11 10:21:15)
+	 * Date de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_LST_AVANTAGE_NATURE(int i) {
@@ -1224,7 +1224,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique :
-	 * ST_LST_AVANTAGE_RUBRIQUE Date de création : (18/08/11 10:21:15)
+	 * ST_LST_AVANTAGE_RUBRIQUE Date de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_LST_AVANTAGE_RUBRIQUE(int i) {
@@ -1233,7 +1233,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_LST_AVANTAGE_TYPE
-	 * Date de création : (18/08/11 10:21:15)
+	 * Date de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_LST_AVANTAGE_TYPE(int i) {
@@ -1242,7 +1242,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique :
-	 * ST_LST_DELEGATION_COMMENT Date de création : (18/08/11 10:21:15)
+	 * ST_LST_DELEGATION_COMMENT Date de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_LST_DELEGATION_COMMENT(int i) {
@@ -1251,7 +1251,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_LST_DELEGATION_TYPE
-	 * Date de création : (18/08/11 10:21:15)
+	 * Date de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_LST_DELEGATION_TYPE(int i) {
@@ -1260,7 +1260,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique :
-	 * ST_LST_PRIME_POINTAGE_RUBRIQUE Date de création : (18/08/11 10:21:15)
+	 * ST_LST_PRIME_POINTAGE_RUBRIQUE Date de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_LST_PRIME_POINTAGE_RUBRIQUE(int i) {
@@ -1269,7 +1269,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique :
-	 * ST_LST_REGINDEMN_FORFAIT Date de création : (18/08/11 10:21:15)
+	 * ST_LST_REGINDEMN_FORFAIT Date de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_LST_REGINDEMN_FORFAIT(int i) {
@@ -1278,7 +1278,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique :
-	 * ST_LST_REGINDEMN_NB_POINTS Date de création : (18/08/11 10:21:15)
+	 * ST_LST_REGINDEMN_NB_POINTS Date de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_LST_REGINDEMN_NB_POINTS(int i) {
@@ -1287,7 +1287,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique :
-	 * ST_LST_REGINDEMN_RUBRIQUE Date de création : (18/08/11 10:21:15)
+	 * ST_LST_REGINDEMN_RUBRIQUE Date de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_LST_REGINDEMN_RUBRIQUE(int i) {
@@ -1296,7 +1296,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_LST_REGINDEMN_TYPE
-	 * Date de création : (18/08/11 10:21:15)
+	 * Date de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_LST_REGINDEMN_TYPE(int i) {
@@ -1305,7 +1305,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_NUM_FICHE_POSTE Date
-	 * de création : (04/08/11 15:20:56)
+	 * de crÃ©ation : (04/08/11 15:20:56)
 	 * 
 	 */
 	public String getNOM_ST_NUM_FICHE_POSTE() {
@@ -1314,7 +1314,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_NUM_FICHE_POSTE Date
-	 * de création : (04/08/11 15:20:56)
+	 * de crÃ©ation : (04/08/11 15:20:56)
 	 * 
 	 */
 	public String getNOM_ST_NUM_FICHE_POSTE_SECONDAIRE() {
@@ -1323,7 +1323,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_NUM_FP Date de
-	 * création : (18/08/11 10:21:15)
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_NUM_FP(int i) {
@@ -1332,7 +1332,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_SERV Date de
-	 * création : (18/08/11 10:21:15)
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_SERV(int i) {
@@ -1341,7 +1341,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_SERVICE Date de
-	 * création : (04/08/11 15:20:56)
+	 * crÃ©ation : (04/08/11 15:20:56)
 	 * 
 	 */
 	public String getNOM_ST_SERVICE() {
@@ -1350,7 +1350,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_SERVICE_SECONDAIRE
-	 * Date de création : (04/08/11 15:20:56)
+	 * Date de crÃ©ation : (04/08/11 15:20:56)
 	 * 
 	 */
 	public String getNOM_ST_SERVICE_SECONDAIRE() {
@@ -1359,7 +1359,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_SPECIFICITE Date de
-	 * création : (16/08/11 15:48:02)
+	 * crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	public String getNOM_ST_SPECIFICITE() {
@@ -1368,7 +1368,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_SUBDIVISION Date de
-	 * création : (04/08/11 15:20:56)
+	 * crÃ©ation : (04/08/11 15:20:56)
 	 * 
 	 */
 	public String getNOM_ST_SUBDIVISION() {
@@ -1377,7 +1377,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique :
-	 * ST_SUBDIVISION_SECONDAIRE Date de création : (04/08/11 15:20:56)
+	 * ST_SUBDIVISION_SECONDAIRE Date de crÃ©ation : (04/08/11 15:20:56)
 	 * 
 	 */
 	public String getNOM_ST_SUBDIVISION_SECONDAIRE() {
@@ -1386,7 +1386,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_TITRE Date de
-	 * création : (18/08/11 10:21:15)
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_TITRE(int i) {
@@ -1395,7 +1395,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_TITRE_FP Date de
-	 * création : (04/08/11 15:20:56)
+	 * crÃ©ation : (04/08/11 15:20:56)
 	 * 
 	 */
 	public String getNOM_ST_TITRE_FP() {
@@ -1404,7 +1404,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_TITRE_FP_SECONDAIRE
-	 * Date de création : (04/08/11 15:20:56)
+	 * Date de crÃ©ation : (04/08/11 15:20:56)
 	 * 
 	 */
 	public String getNOM_ST_TITRE_FP_SECONDAIRE() {
@@ -1413,7 +1413,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_TPS_REG Date de
-	 * création : (04/08/11 15:20:56)
+	 * crÃ©ation : (04/08/11 15:20:56)
 	 * 
 	 */
 	public String getNOM_ST_TPS_REG() {
@@ -1422,7 +1422,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_TPS_REG_SECONDAIRE
-	 * Date de création : (04/08/11 15:20:56)
+	 * Date de crÃ©ation : (04/08/11 15:20:56)
 	 * 
 	 */
 	public String getNOM_ST_TPS_REG_SECONDAIRE() {
@@ -1431,7 +1431,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_WARNING Date de
-	 * création : (16/05/11 09:36:20)
+	 * crÃ©ation : (16/05/11 09:36:20)
 	 * 
 	 */
 	public String getNOM_ST_WARNING() {
@@ -1485,8 +1485,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_COMMENT_DELEGATION Date de création : (16/08/11 15:48:02)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_COMMENT_DELEGATION Date de crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	public String getVAL_EF_COMMENT_DELEGATION() {
@@ -1494,8 +1494,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_COMMENTAIRE Date de création : (04/08/11 15:20:56)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_COMMENTAIRE Date de crÃ©ation : (04/08/11 15:20:56)
 	 * 
 	 */
 	public String getVAL_EF_COMMENTAIRE() {
@@ -1503,8 +1503,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_DATE_ARRETE Date de création : (04/08/11 15:20:56)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_DATE_ARRETE Date de crÃ©ation : (04/08/11 15:20:56)
 	 * 
 	 */
 	public String getVAL_EF_DATE_ARRETE() {
@@ -1512,8 +1512,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_DATE_DEBUT Date de création : (04/08/11 15:20:56)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_DATE_DEBUT Date de crÃ©ation : (04/08/11 15:20:56)
 	 * 
 	 */
 	public String getVAL_EF_DATE_DEBUT() {
@@ -1521,8 +1521,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_DATE_FIN Date de création : (04/08/11 15:20:56)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_DATE_FIN Date de crÃ©ation : (04/08/11 15:20:56)
 	 * 
 	 */
 	public String getVAL_EF_DATE_FIN() {
@@ -1530,8 +1530,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_FORFAIT_REGIME Date de création : (16/08/11 15:48:02)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_FORFAIT_REGIME Date de crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	public String getVAL_EF_FORFAIT_REGIME() {
@@ -1539,8 +1539,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_MONTANT_AVANTAGE Date de création : (16/08/11 15:48:02)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_MONTANT_AVANTAGE Date de crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	public String getVAL_EF_MONTANT_AVANTAGE() {
@@ -1548,8 +1548,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_NB_POINTS_REGIME Date de création : (16/08/11 15:48:02)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_NB_POINTS_REGIME Date de crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	public String getVAL_EF_NB_POINTS_REGIME() {
@@ -1557,8 +1557,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_REF_ARRETE Date de création : (04/08/11 15:20:56)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_REF_ARRETE Date de crÃ©ation : (04/08/11 15:20:56)
 	 * 
 	 */
 	public String getVAL_EF_REF_ARRETE() {
@@ -1566,8 +1566,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_LISTE_IMPRESSION Date de création : (04/08/11 15:20:56)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_LISTE_IMPRESSION Date de crÃ©ation : (04/08/11 15:20:56)
 	 * 
 	 */
 	public String[] getVAL_LB_LISTE_IMPRESSION() {
@@ -1575,8 +1575,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_LISTE_IMPRESSION Date de création : (04/08/11 15:20:56)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_LISTE_IMPRESSION Date de crÃ©ation : (04/08/11 15:20:56)
 	 * 
 	 */
 	public String getVAL_LB_LISTE_IMPRESSION_SELECT() {
@@ -1584,8 +1584,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_MOTIF_AFFECTATION Date de création : (04/08/11 15:20:56)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_MOTIF_AFFECTATION Date de crÃ©ation : (04/08/11 15:20:56)
 	 * 
 	 */
 	public String[] getVAL_LB_MOTIF_AFFECTATION() {
@@ -1593,8 +1593,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_MOTIF_AFFECTATION Date de création : (04/08/11 15:20:56)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_MOTIF_AFFECTATION Date de crÃ©ation : (04/08/11 15:20:56)
 	 * 
 	 */
 	public String getVAL_LB_MOTIF_AFFECTATION_SELECT() {
@@ -1602,8 +1602,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_NATURE_AVANTAGE Date de création : (16/08/11 15:48:02)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_NATURE_AVANTAGE Date de crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	public String getVAL_LB_NATURE_AVANTAGE_SELECT() {
@@ -1611,8 +1611,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_NATURE_AVANTAGE Date de création : (16/08/11 15:48:02)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_NATURE_AVANTAGE Date de crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	public String[] getVAL_LB_NATURE_AVANTAGE() {
@@ -1620,8 +1620,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_RUBRIQUE_AVANTAGE Date de création : (16/08/11 15:48:02)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_RUBRIQUE_AVANTAGE Date de crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	public String[] getVAL_LB_RUBRIQUE_AVANTAGE() {
@@ -1629,8 +1629,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_RUBRIQUE_AVANTAGE Date de création : (16/08/11 15:48:02)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_RUBRIQUE_AVANTAGE Date de crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	public String getVAL_LB_RUBRIQUE_AVANTAGE_SELECT() {
@@ -1638,8 +1638,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_RUBRIQUE_PRIME_POINTAGE Date de création : (16/08/11
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_RUBRIQUE_PRIME_POINTAGE Date de crÃ©ation : (16/08/11
 	 * 15:48:02)
 	 * 
 	 */
@@ -1648,8 +1648,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_RUBRIQUE_PRIME_POINTAGE Date de création : (16/08/11 15:48:02)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_RUBRIQUE_PRIME_POINTAGE Date de crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	public String[] getVAL_LB_RUBRIQUE_PRIME_POINTAGE() {
@@ -1657,8 +1657,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_RUBRIQUE_REGIME Date de création : (16/08/11 15:48:02)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_RUBRIQUE_REGIME Date de crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	public String[] getVAL_LB_RUBRIQUE_REGIME() {
@@ -1666,8 +1666,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_RUBRIQUE_REGIME Date de création : (16/08/11 15:48:02)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_RUBRIQUE_REGIME Date de crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	public String getVAL_LB_RUBRIQUE_REGIME_SELECT() {
@@ -1675,8 +1675,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_TEMPS_TRAVAIL Date de création : (04/08/11 15:20:56)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_TEMPS_TRAVAIL Date de crÃ©ation : (04/08/11 15:20:56)
 	 * 
 	 */
 	public String[] getVAL_LB_TEMPS_TRAVAIL() {
@@ -1684,8 +1684,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_TEMPS_TRAVAIL Date de création : (04/08/11 15:20:56)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_TEMPS_TRAVAIL Date de crÃ©ation : (04/08/11 15:20:56)
 	 * 
 	 */
 	public String getVAL_LB_TEMPS_TRAVAIL_SELECT() {
@@ -1693,8 +1693,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_TYPE_AVANTAGE Date de création : (16/08/11 15:48:02)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_TYPE_AVANTAGE Date de crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	public String getVAL_LB_TYPE_AVANTAGE_SELECT() {
@@ -1702,8 +1702,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_TYPE_AVANTAGE Date de création : (16/08/11 15:48:02)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_TYPE_AVANTAGE Date de crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	public String[] getVAL_LB_TYPE_AVANTAGE() {
@@ -1711,8 +1711,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_TYPE_DELEGATION Date de création : (16/08/11 15:48:02)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_TYPE_DELEGATION Date de crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	public String getVAL_LB_TYPE_DELEGATION_SELECT() {
@@ -1720,8 +1720,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_TYPE_DELEGATION Date de création : (16/08/11 15:48:02)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_TYPE_DELEGATION Date de crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	public String[] getVAL_LB_TYPE_DELEGATION() {
@@ -1729,8 +1729,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_TYPE_REGIME Date de création : (16/08/11 15:48:02)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_TYPE_REGIME Date de crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	public String getVAL_LB_TYPE_REGIME_SELECT() {
@@ -1738,8 +1738,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_TYPE_REGIME Date de création : (16/08/11 15:48:02)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_TYPE_REGIME Date de crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	public String[] getVAL_LB_TYPE_REGIME() {
@@ -1747,8 +1747,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur du radio bouton (RB_) coché dans la JSP :
-	 * RG_SPECIFICITE Date de création : (16/08/11 15:48:02)
+	 * Retourne la valeur du radio bouton (RB_) cochÃ© dans la JSP :
+	 * RG_SPECIFICITE Date de crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	public String getVAL_RG_SPECIFICITE() {
@@ -1756,8 +1756,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACTION Date de
-	 * création : (04/08/11 15:42:46)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_ACTION Date de
+	 * crÃ©ation : (04/08/11 15:42:46)
 	 * 
 	 */
 	public String getVAL_ST_ACTION() {
@@ -1765,8 +1765,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACTION Date de
-	 * création : (16/08/11 15:48:02)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_ACTION Date de
+	 * crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	public String getVAL_ST_ACTION_spec() {
@@ -1774,8 +1774,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE_DEBUT
-	 * Date de création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_DATE_DEBUT
+	 * Date de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_DATE_DEBUT(int i) {
@@ -1783,8 +1783,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE_FIN Date
-	 * de création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_DATE_FIN Date
+	 * de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_DATE_FIN(int i) {
@@ -1792,8 +1792,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DIR Date de
-	 * création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_DIR Date de
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_DIR(int i) {
@@ -1801,8 +1801,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DIRECTION Date
-	 * de création : (04/08/11 15:20:56)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_DIRECTION Date
+	 * de crÃ©ation : (04/08/11 15:20:56)
 	 * 
 	 */
 	public String getVAL_ST_DIRECTION() {
@@ -1810,8 +1810,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
-	 * ST_DIRECTION_SECONDAIRE Date de création : (04/08/11 15:20:56)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone :
+	 * ST_DIRECTION_SECONDAIRE Date de crÃ©ation : (04/08/11 15:20:56)
 	 * 
 	 */
 	public String getVAL_ST_DIRECTION_SECONDAIRE() {
@@ -1819,8 +1819,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_LIEU_FP Date
-	 * de création : (04/08/11 15:20:56)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_LIEU_FP Date
+	 * de crÃ©ation : (04/08/11 15:20:56)
 	 * 
 	 */
 	public String getVAL_ST_LIEU_FP() {
@@ -1828,8 +1828,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
-	 * ST_LIEU_FP_SECONDAIRE Date de création : (04/08/11 15:20:56)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone :
+	 * ST_LIEU_FP_SECONDAIRE Date de crÃ©ation : (04/08/11 15:20:56)
 	 * 
 	 */
 	public String getVAL_ST_LIEU_FP_SECONDAIRE() {
@@ -1837,8 +1837,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
-	 * ST_LST_AVANTAGE_MONTANT Date de création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone :
+	 * ST_LST_AVANTAGE_MONTANT Date de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_LST_AVANTAGE_MONTANT(int i) {
@@ -1846,8 +1846,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
-	 * ST_LST_AVANTAGE_NATURE Date de création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone :
+	 * ST_LST_AVANTAGE_NATURE Date de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_LST_AVANTAGE_NATURE(int i) {
@@ -1855,8 +1855,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
-	 * ST_LST_AVANTAGE_RUBRIQUE Date de création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone :
+	 * ST_LST_AVANTAGE_RUBRIQUE Date de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_LST_AVANTAGE_RUBRIQUE(int i) {
@@ -1864,8 +1864,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
-	 * ST_LST_AVANTAGE_TYPE Date de création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone :
+	 * ST_LST_AVANTAGE_TYPE Date de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_LST_AVANTAGE_TYPE(int i) {
@@ -1873,8 +1873,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
-	 * ST_LST_DELEGATION_COMMENT Date de création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone :
+	 * ST_LST_DELEGATION_COMMENT Date de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_LST_DELEGATION_COMMENT(int i) {
@@ -1882,8 +1882,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
-	 * ST_LST_DELEGATION_TYPE Date de création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone :
+	 * ST_LST_DELEGATION_TYPE Date de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_LST_DELEGATION_TYPE(int i) {
@@ -1891,8 +1891,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
-	 * ST_LST_PRIME_POINTAGE_RUBRIQUE Date de création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone :
+	 * ST_LST_PRIME_POINTAGE_RUBRIQUE Date de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_LST_PRIME_POINTAGE_RUBRIQUE(int i) {
@@ -1900,8 +1900,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
-	 * ST_LST_REGINDEMN_FORFAIT Date de création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone :
+	 * ST_LST_REGINDEMN_FORFAIT Date de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_LST_REGINDEMN_FORFAIT(int i) {
@@ -1909,8 +1909,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
-	 * ST_LST_REGINDEMN_NB_POINTS Date de création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone :
+	 * ST_LST_REGINDEMN_NB_POINTS Date de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_LST_REGINDEMN_NB_POINTS(int i) {
@@ -1918,8 +1918,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
-	 * ST_LST_REGINDEMN_RUBRIQUE Date de création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone :
+	 * ST_LST_REGINDEMN_RUBRIQUE Date de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_LST_REGINDEMN_RUBRIQUE(int i) {
@@ -1927,8 +1927,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
-	 * ST_LST_REGINDEMN_TYPE Date de création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone :
+	 * ST_LST_REGINDEMN_TYPE Date de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_LST_REGINDEMN_TYPE(int i) {
@@ -1936,8 +1936,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
-	 * ST_NUM_FICHE_POSTE Date de création : (04/08/11 15:20:56)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone :
+	 * ST_NUM_FICHE_POSTE Date de crÃ©ation : (04/08/11 15:20:56)
 	 * 
 	 */
 	public String getVAL_ST_NUM_FICHE_POSTE() {
@@ -1945,8 +1945,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
-	 * ST_NUM_FICHE_POSTE_SECONDAIRE Date de création : (04/08/11 15:20:56)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone :
+	 * ST_NUM_FICHE_POSTE_SECONDAIRE Date de crÃ©ation : (04/08/11 15:20:56)
 	 * 
 	 */
 	public String getVAL_ST_NUM_FICHE_POSTE_SECONDAIRE() {
@@ -1954,8 +1954,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_NUM_FP Date de
-	 * création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_NUM_FP Date de
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_NUM_FP(int i) {
@@ -1963,8 +1963,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_SERV Date de
-	 * création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_SERV Date de
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_SERV(int i) {
@@ -1972,8 +1972,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_SERVICE Date
-	 * de création : (04/08/11 15:20:56)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_SERVICE Date
+	 * de crÃ©ation : (04/08/11 15:20:56)
 	 * 
 	 */
 	public String getVAL_ST_SERVICE() {
@@ -1981,8 +1981,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
-	 * ST_SERVICE_SECONDAIRE Date de création : (04/08/11 15:20:56)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone :
+	 * ST_SERVICE_SECONDAIRE Date de crÃ©ation : (04/08/11 15:20:56)
 	 * 
 	 */
 	public String getVAL_ST_SERVICE_SECONDAIRE() {
@@ -1990,8 +1990,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_SPECIFICITE
-	 * Date de création : (16/08/11 15:48:02)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_SPECIFICITE
+	 * Date de crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	public String getVAL_ST_SPECIFICITE() {
@@ -1999,8 +1999,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_SUBDIVISION
-	 * Date de création : (04/08/11 15:20:56)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_SUBDIVISION
+	 * Date de crÃ©ation : (04/08/11 15:20:56)
 	 * 
 	 */
 	public String getVAL_ST_SUBDIVISION() {
@@ -2008,8 +2008,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
-	 * ST_SUBDIVISION_SECONDAIRE Date de création : (04/08/11 15:20:56)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone :
+	 * ST_SUBDIVISION_SECONDAIRE Date de crÃ©ation : (04/08/11 15:20:56)
 	 * 
 	 */
 	public String getVAL_ST_SUBDIVISION_SECONDAIRE() {
@@ -2017,8 +2017,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_TITRE Date de
-	 * création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_TITRE Date de
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_TITRE(int i) {
@@ -2026,8 +2026,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_TITRE_FP Date
-	 * de création : (04/08/11 15:20:56)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_TITRE_FP Date
+	 * de crÃ©ation : (04/08/11 15:20:56)
 	 * 
 	 */
 	public String getVAL_ST_TITRE_FP() {
@@ -2035,8 +2035,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
-	 * ST_TITRE_FP_SECONDAIRE Date de création : (04/08/11 15:20:56)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone :
+	 * ST_TITRE_FP_SECONDAIRE Date de crÃ©ation : (04/08/11 15:20:56)
 	 * 
 	 */
 	public String getVAL_ST_TITRE_FP_SECONDAIRE() {
@@ -2044,8 +2044,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_TPS_REG Date
-	 * de création : (04/08/11 15:20:56)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_TPS_REG Date
+	 * de crÃ©ation : (04/08/11 15:20:56)
 	 * 
 	 */
 	public String getVAL_ST_TPS_REG() {
@@ -2053,8 +2053,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
-	 * ST_TPS_REG_SECONDAIRE Date de création : (04/08/11 15:20:56)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone :
+	 * ST_TPS_REG_SECONDAIRE Date de crÃ©ation : (04/08/11 15:20:56)
 	 * 
 	 */
 	public String getVAL_ST_TPS_REG_SECONDAIRE() {
@@ -2062,8 +2062,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_WARNING Date de création : (16/05/11 09:36:20)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_WARNING Date de crÃ©ation : (16/05/11 09:36:20)
 	 * 
 	 */
 	public String getVAL_ST_WARNING() {
@@ -2078,7 +2078,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ACTES");
 		String destination = "NS/NS_" + aff.getIdAffectation() + "_" + typeDocument + ".doc";
 
-		// si le fichier existe alors on supprime l'entrée où il y a le fichier
+		// si le fichier existe alors on supprime l'entrÃ©e ou il y a le fichier
 		if (verifieExistFichier(aff.getIdAffectation(), typeDocument)) {
 			Document d = getDocumentDao().chercherDocumentByContainsNom(
 					"NS_" + aff.getIdAffectation() + "_" + typeDocument);
@@ -2105,19 +2105,19 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 			if (!saveFileToRemoteFileSystem(fileAsBytes, repPartage, destination)) {
 				// "ERR185",
-				// "Une erreur est survenue dans la génération des documents. Merci de contacter le responsable du projet."
+				// "Une erreur est survenue dans la gÃ©nÃ©ration des documents. Merci de contacter le responsable du projet."
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR185"));
 				return false;
 			}
 
-			// Tout s'est bien passé
-			// on crée le document en base de données
+			// Tout s'est bien passÃ©
+			// on crÃ©e le document en base de donnÃ©es
 			Document d = new Document();
 			d.setIdTypeDocument(3);
 			d.setLienDocument(destination);
 			d.setNomDocument("NS_" + aff.getIdAffectation() + "_" + typeDocument + ".doc");
 			d.setDateDocument(new Date());
-			d.setCommentaire("Document généré par l'application");
+			d.setCommentaire("Document gÃ©nÃ©rÃ© par l'application");
 			Integer id = getDocumentDao().creerDocument(d.getClasseDocument(), d.getNomDocument(), d.getLienDocument(),
 					d.getDateDocument(), d.getCommentaire(), d.getIdTypeDocument(), d.getNomOriginal());
 
@@ -2137,7 +2137,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 		} catch (Exception e) {
 			// "ERR185",
-			// "Une erreur est survenue dans la génération des documents. Merci de contacter le responsable du projet."
+			// "Une erreur est survenue dans la gÃ©nÃ©ration des documents. Merci de contacter le responsable du projet."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR185"));
 			return false;
 		}
@@ -2233,7 +2233,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		}
 
 		if (getAffectationCourant() != null) {
-			// Récup du motif d'affectation et temps de travail
+			// RÃ©cup du motif d'affectation et temps de travail
 			if (getAffectationCourant().getIdMotifAffectation() != null) {
 				MotifAffectation ma = getMotifAffectationDao().chercherMotifAffectation(
 						getAffectationCourant().getIdMotifAffectation());
@@ -2245,7 +2245,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 				}
 			}
 
-			// Récup base horaire pointage
+			// RÃ©cup base horaire pointage
 			if (getAffectationCourant().getIdBaseHorairePointage() != null) {
 				BaseHorairePointage ma = getBaseHorairePointageDao().chercherBaseHorairePointage(
 						getAffectationCourant().getIdBaseHorairePointage());
@@ -2260,10 +2260,10 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 						getFichePosteCourant().getIdBaseHorairePointage());
 				addZone(getNOM_EF_INFO_POINTAGE_FDP(), "FDP : " + ma.getCodeBaseHorairePointage());
 			} else {
-				addZone(getNOM_EF_INFO_POINTAGE_FDP(), "FDP : non renseigné");
+				addZone(getNOM_EF_INFO_POINTAGE_FDP(), "FDP : non renseignÃ©");
 			}
 
-			// Récup base horaire absence
+			// RÃ©cup base horaire absence
 			if (getAffectationCourant().getIdBaseHoraireAbsence() != null) {
 				RefTypeSaisiCongeAnnuelDto dto = new RefTypeSaisiCongeAnnuelDto();
 				dto.setIdRefTypeSaisiCongeAnnuel(getAffectationCourant().getIdBaseHoraireAbsence());
@@ -2280,7 +2280,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 						getListeBaseHoraireAbsence().indexOf(dto));
 				addZone(getNOM_EF_INFO_ABSENCE_FDP(), "FDP : " + base.getCodeBaseHoraireAbsence());
 			} else {
-				addZone(getNOM_EF_INFO_ABSENCE_FDP(), "FDP : non renseigné");
+				addZone(getNOM_EF_INFO_ABSENCE_FDP(), "FDP : non renseignÃ©");
 			}
 
 		}
@@ -2288,7 +2288,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Initialise à vide les zones de l'affectation.
+	 * Initialise a vide les zones de l'affectation.
 	 */
 	private void initialiseAffectationVide() {
 		addZone(getNOM_ST_DIRECTION(), Const.CHAINE_VIDE);
@@ -2405,7 +2405,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	private void initialiseDelegation_spec() throws Exception {
-		// Délégations
+		// dÃ©lÃ©gations
 		if (getListeDelegationFP() == null && getFichePosteCourant() != null
 				&& getFichePosteCourant().getIdFichePoste() != null) {
 			setListeDelegationFP(getDelegationDao().listerDelegationAvecFP(getFichePosteCourant().getIdFichePoste()));
@@ -2559,7 +2559,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Initialise les listes déroulantes de l'écran.
+	 * Initialise les listes deroulantes de l'Ã©cran.
 	 * 
 	 * @throws Exception
 	 *             RG_AG_AF_C06 RG_AG_AF_C02
@@ -2644,7 +2644,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Initialise les listes déroulantes de l'écran. Date de création :
+	 * Initialise les listes deroulantes de l'Ã©cran. Date de crÃ©ation :
 	 * (28/07/11)
 	 * 
 	 * @throws Exception
@@ -2725,7 +2725,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			}
 		}
 
-		// Si liste type délégation vide alors affectation
+		// Si liste type dÃ©lÃ©gation vide alors affectation
 		if (getLB_TYPE_DELEGATION() == LBVide) {
 			ArrayList<TypeDelegation> typeDelegation = getTypeDelegationDao().listerTypeDelegation();
 			setListeTypeDelegation(typeDelegation);
@@ -2744,7 +2744,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			}
 		}
 
-		// Si liste type régime vide alors affectation
+		// Si liste type rÃ©gime vide alors affectation
 		if (getLB_TYPE_REGIME() == LBVide) {
 			ArrayList<TypeRegIndemn> typeRegime = getTypeRegIndemnDao().listerTypeRegIndemn();
 			setListeTypeRegIndemn(typeRegime);
@@ -2765,7 +2765,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * CLV #3264 Initialisation de la liste déroulantes des primes.
+	 * CLV #3264 Initialisation de la liste deroulantes des primes.
 	 * 
 	 * @throws Exception
 	 */
@@ -2784,7 +2784,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Initialise la liste déroulantes des impressions.
+	 * Initialise la liste deroulantes des impressions.
 	 * 
 	 * @throws Exception
 	 */
@@ -2797,7 +2797,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Initialise les listes de spécificités. Date de création : (28/07/11)
+	 * Initialise les listes de spÃ©cificitÃ©s. Date de crÃ©ation : (28/07/11)
 	 * 
 	 * @throws Exception
 	 */
@@ -2890,7 +2890,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	private void initialiseRegime_spec() throws Exception {
-		// Régimes indemnitaires
+		// RÃ©gimes indemnitaires
 		if (getListeRegimeFP() == null && getFichePosteCourant() != null
 				&& getFichePosteCourant().getIdFichePoste() != null) {
 			setListeRegimeFP(getRegIndemnDao().listerRegimeIndemnitaireAvecFP(getFichePosteCourant().getIdFichePoste()));
@@ -2958,7 +2958,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Initialise les champs de la fiche de poste courante liée à l'affectation.
+	 * Initialise les champs de la fiche de poste courante liee a l'affectation.
 	 * 
 	 * @throws Exception
 	 */
@@ -3003,7 +3003,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Initialise les champs de la fiche de poste secondaire courante liée à
+	 * Initialise les champs de la fiche de poste secondaire courante liee a
 	 * l'affectation.
 	 * 
 	 * @throws Exception
@@ -3047,10 +3047,10 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones Ã  afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
-	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
-	 * addZone(getNOMxxx, String); Date de création : (04/08/11 15:42:45)
+	 * doivent avoir les Fields PUBLIC Utilisation de la mÃ©thode
+	 * addZone(getNOMxxx, String); Date de crÃ©ation : (04/08/11 15:42:45)
 	 * 
 	 */
 	public void initialiseZones(HttpServletRequest request) throws Exception {
@@ -3061,10 +3061,10 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			addZone(getNOM_ST_ACTION_spec(), Const.CHAINE_VIDE);
 		}
 
-		// Vérification des droits d'accès.
+		// VÃ©rification des droits d'acces.
 		if (MairieUtils.estInterdit(request, getNomEcran())) {
 			// "ERR190",
-			// "Opération impossible. Vous ne disposez pas des droits d'accès à cette option."
+			// "Operation impossible. Vous ne disposez pas des droits d'acces a cette option."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
@@ -3100,7 +3100,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 						getAgentCourant().getIdAgent());
 				if (affActives.size() == 1) {
 					setAffectationCourant((Affectation) affActives.get(0));
-					// Recherche des informations à afficher
+					// Recherche des informations Ã  afficher
 					setFichePosteCourant(getFichePosteDao().chercherFichePoste(
 							getAffectationCourant().getIdFichePoste()));
 					if (getAffectationCourant().getIdFichePosteSecondaire() != null) {
@@ -3201,15 +3201,15 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Vérifie les règles de gestion métier
+	 * VÃ©rifie les regles de gestion metier
 	 * 
 	 * @return boolean
 	 * @throws Exception
 	 */
 	public boolean performControlerChoixImpression() throws Exception {
-		// Si pas de document sélectionné alors erreur
+		// Si pas de document sÃ©lectionnÃ© alors erreur
 		if (Integer.parseInt(getZone(getNOM_LB_LISTE_IMPRESSION_SELECT())) == 0) {
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "documents à imprimer"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "documents a imprimer"));
 			setFocus(getNOM_PB_AJOUTER());
 			return false;
 		}
@@ -3218,7 +3218,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Vérifie les règles de gestion métier
+	 * VÃ©rifie les regles de gestion metier
 	 * 
 	 * @return boolean
 	 * @throws Exception
@@ -3226,7 +3226,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	 */
 	public boolean performControlerRG() throws Exception {
 
-		// Vérification du non-chevauchement des dates des affectations
+		// VÃ©rification du non-chevauchement des dates des affectations
 		for (ListIterator<Affectation> list = getListeAffectation().listIterator(); list.hasNext();) {
 			Affectation aAff = (Affectation) list.next();
 			if (getAffectationCourant() == null || getAffectationCourant().getIdAffectation() == null) {
@@ -3241,19 +3241,19 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 				}
 			}
 		}
-		// verification pas 2 fois la même fiche de poste mise
+		// verification pas 2 fois la mÃªme fiche de poste mise
 		if (getFichePosteSecondaireCourant() != null) {
 			if (getFichePosteCourant().getIdFichePoste().toString()
 					.equals(getFichePosteSecondaireCourant().getIdFichePoste().toString())) {
 				// "ERR117",
-				// "La fiche de poste @ doit être différente de la fiche courante."
+				// "La fiche de poste @ doit Ãªtre differente de la fiche courante."
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR117", "secondaire"));
 				setFocus(getNOM_PB_AJOUTER());
 				return false;
 			}
 		}
 
-		// Vérification de la non-affectation de la Fiche de poste choisie dans
+		// VÃ©rification de la non-affectation de la Fiche de poste choisie dans
 		// les dates choisies
 		ArrayList<Affectation> listeAffFP = getAffectationDao().listerAffectationAvecFP(
 				getFichePosteCourant().getIdFichePoste());
@@ -3272,7 +3272,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			}
 		}
 
-		// Vérification de la non-affectation de la Fiche de poste secondaire
+		// VÃ©rification de la non-affectation de la Fiche de poste secondaire
 		// choisie dans les dates choisies
 		if (getFichePosteSecondaireCourant() != null) {
 			ArrayList<Affectation> listeAffFPSecondaire = getAffectationDao().listerAffectationAvecFP(
@@ -3305,7 +3305,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			Float res = Float.valueOf(horFDP1.getCdTaux()) + Float.valueOf(horFDP2.getCdTaux());
 			if (res > 1) {
 				// "ERR104",
-				// "Le temps de travail réglementaire des deux fiche de poste dépasse 100%."
+				// "Le temps de travail rÃ©glementaire des deux fiche de poste dÃ©passe 100%."
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR080"));
 				setFocus(getNOM_PB_AJOUTER());
 				return false;
@@ -3319,7 +3319,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			if (Const.CHAINE_VIDE.equals(getVAL_EF_DATE_FIN())) {
 				if (Services.compareDates(getVAL_EF_DATE_DEBUT(), sdf.format(aff.getDateFinAff())) <= 0) {
 					// "ERR085",
-					// "Cette Fiche de poste est déjà affectée à un autre agent aux dates données."
+					// "Cette Fiche de poste est dÃ©jÃ  affectÃ©e a un autre agent aux dates donnÃ©es."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR085"));
 					setFocus(getNOM_PB_AJOUTER());
 					return false;
@@ -3328,7 +3328,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 				if (Services.compareDates(getVAL_EF_DATE_FIN(), sdf.format(aff.getDateDebutAff())) >= 0
 						&& Services.compareDates(getVAL_EF_DATE_DEBUT(), sdf.format(aff.getDateFinAff())) <= 0) {
 					// "ERR085",
-					// "Cette Fiche de poste est déjà affectée à un autre agent aux dates données."
+					// "Cette Fiche de poste est dÃ©jÃ  affectÃ©e a un autre agent aux dates donnÃ©es."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR085"));
 					setFocus(getNOM_PB_AJOUTER());
 					return false;
@@ -3337,14 +3337,14 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		} else {
 			if (Const.CHAINE_VIDE.equals(getVAL_EF_DATE_FIN())) {
 				// "ERR085",
-				// "Cette Fiche de poste est déjà affectée à un autre agent aux dates données."
+				// "Cette Fiche de poste est dÃ©jÃ  affectÃ©e a un autre agent aux dates donnÃ©es."
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR085"));
 				setFocus(getNOM_PB_AJOUTER());
 				return false;
 			} else {
 				if (Services.compareDates(getVAL_EF_DATE_FIN(), sdf.format(aff.getDateDebutAff())) >= 0) {
 					// "ERR085",
-					// "Cette Fiche de poste est déjà affectée à un autre agent aux dates données."
+					// "Cette Fiche de poste est dÃ©jÃ  affectÃ©e a un autre agent aux dates donnÃ©es."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR085"));
 					setFocus(getNOM_PB_AJOUTER());
 					return false;
@@ -3359,7 +3359,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			if (Const.CHAINE_VIDE.equals(getVAL_EF_DATE_FIN())) {
 				if (Services.compareDates(getVAL_EF_DATE_DEBUT(), sdf.format(aff.getDateFinAff())) <= 0) {
 					// "ERR085",
-					// "Cette Fiche de poste est déjà affectée à un autre agent aux dates données."
+					// "Cette Fiche de poste est dÃ©jÃ  affectÃ©e a un autre agent aux dates donnÃ©es."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR085"));
 					setFocus(getNOM_PB_AJOUTER());
 					return false;
@@ -3368,7 +3368,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 				if (Services.compareDates(getVAL_EF_DATE_FIN(), sdf.format(aff.getDateDebutAff())) >= 0
 						&& Services.compareDates(getVAL_EF_DATE_DEBUT(), sdf.format(aff.getDateFinAff())) <= 0) {
 					// "ERR085",
-					// "Cette Fiche de poste est déjà affectée à un autre agent aux dates données."
+					// "Cette Fiche de poste est dÃ©jÃ  affectÃ©e a un autre agent aux dates donnÃ©es."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR085"));
 					setFocus(getNOM_PB_AJOUTER());
 					return false;
@@ -3377,14 +3377,14 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		} else {
 			if (Const.CHAINE_VIDE.equals(getVAL_EF_DATE_FIN())) {
 				// "ERR085",
-				// "Cette Fiche de poste est déjà affectée à un autre agent aux dates données."
+				// "Cette Fiche de poste est dÃ©jÃ  affectÃ©e a un autre agent aux dates donnÃ©es."
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR085"));
 				setFocus(getNOM_PB_AJOUTER());
 				return false;
 			} else {
 				if (Services.compareDates(getVAL_EF_DATE_FIN(), sdf.format(aff.getDateDebutAff())) >= 0) {
 					// "ERR085",
-					// "Cette Fiche de poste est déjà affectée à un autre agent aux dates données."
+					// "Cette Fiche de poste est dÃ©jÃ  affectÃ©e a un autre agent aux dates donnÃ©es."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR085"));
 					setFocus(getNOM_PB_AJOUTER());
 					return false;
@@ -3399,7 +3399,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			if (Const.CHAINE_VIDE.equals(getVAL_EF_DATE_FIN())) {
 				if (Services.compareDates(getVAL_EF_DATE_DEBUT(), sdf.format(aAff.getDateFinAff())) <= 0) {
 					// "ERR201",
-					// "Opération impossible. La période saisie ne doit pas chevaucher les périodes précédentes."
+					// "Operation impossible. La pÃ©riode saisie ne doit pas chevaucher les pÃ©riodes prÃ©cÃ©dentes."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR201"));
 					setFocus(getNOM_PB_AJOUTER());
 					return false;
@@ -3408,7 +3408,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 				if (Services.compareDates(getVAL_EF_DATE_FIN(), sdf.format(aAff.getDateDebutAff())) >= 0
 						&& Services.compareDates(getVAL_EF_DATE_DEBUT(), sdf.format(aAff.getDateFinAff())) <= 0) {
 					// "ERR201",
-					// "Opération impossible. La période saisie ne doit pas chevaucher les périodes précédentes."
+					// "Operation impossible. La pÃ©riode saisie ne doit pas chevaucher les pÃ©riodes prÃ©cÃ©dentes."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR201"));
 					setFocus(getNOM_PB_AJOUTER());
 					return false;
@@ -3417,14 +3417,14 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		} else {
 			if (Const.CHAINE_VIDE.equals(getVAL_EF_DATE_FIN())) {
 				// "ERR201",
-				// "Opération impossible. La période saisie ne doit pas chevaucher les périodes précédentes."
+				// "Operation impossible. La pÃ©riode saisie ne doit pas chevaucher les pÃ©riodes prÃ©cÃ©dentes."
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR201"));
 				setFocus(getNOM_PB_AJOUTER());
 				return false;
 			} else {
 				if (Services.compareDates(getVAL_EF_DATE_FIN(), sdf.format(aAff.getDateDebutAff())) >= 0) {
 					// "ERR201",
-					// "Opération impossible. La période saisie ne doit pas chevaucher les périodes précédentes."
+					// "Operation impossible. La pÃ©riode saisie ne doit pas chevaucher les pÃ©riodes prÃ©cÃ©dentes."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR201"));
 					setFocus(getNOM_PB_AJOUTER());
 					return false;
@@ -3435,10 +3435,10 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Vérifie les règles de gestion de saisie (champs obligatoires, dates bien
-	 * formatées, ...)
+	 * VÃ©rifie les regles de gestion de saisie (champs obligatoires, dates bien
+	 * formatÃ©es, ...)
 	 * 
-	 * @return true si les règles de gestion sont respectées. false sinon.
+	 * @return true si les regles de gestion sont respectÃ©es. false sinon.
 	 * @throws Exception
 	 *             RG_AG_AF_A06
 	 */
@@ -3446,48 +3446,48 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		// RG_AG_AF_A06
 
 		// **********************************************************
-		// RG_AG_AFF_C01 : Vérification des champs obligatoires
+		// RG_AG_AFF_C01 : VÃ©rification des champs obligatoires
 		// **********************************************************
 		if ((Const.CHAINE_VIDE).equals(getVAL_EF_DATE_ARRETE())) {
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "Date arrêté"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "Date arrÃªtÃ©"));
 			setFocus(getNOM_PB_AJOUTER());
 			return false;
 		}
 
 		if (!Services.estUneDate(getVAL_EF_DATE_ARRETE())) {
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR007", "arrêté"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR007", "arrÃªtÃ©"));
 			setFocus(getNOM_PB_AJOUTER());
 			return false;
 		}
 
-		// Vérification Date début et date fin (non null et dans le bon ordre.
+		// VÃ©rification Date dÃ©but et date fin (non null et dans le bon ordre.
 		if (!Const.CHAINE_VIDE.equals(getZone(getNOM_EF_DATE_DEBUT()))) {
 			// format de date
 			if (!Services.estUneDate(getZone(getNOM_EF_DATE_DEBUT()))) {
-				// ERR007 : La date @ est incorrecte. Elle doit être au format
+				// ERR007 : La date @ est incorrecte. Elle doit Ãªtre au format
 				// date.
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR007", "début"));
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR007", "dÃ©but"));
 				setFocus(getNOM_PB_AJOUTER());
 				return false;
 			}
 			if (!Const.CHAINE_VIDE.equals(getZone(getNOM_EF_DATE_FIN()))) {
 				if (!Services.estUneDate(getZone(getNOM_EF_DATE_FIN()))) {
-					// ERR007 : La date @ est incorrecte. Elle doit être au
+					// ERR007 : La date @ est incorrecte. Elle doit Ãªtre au
 					// format date.
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR007", "fin"));
 					setFocus(getNOM_PB_AJOUTER());
 					return false;
 				} else if (Services.compareDates(getZone(getNOM_EF_DATE_DEBUT()), getZone(getNOM_EF_DATE_FIN())) > 0) {
-					// ERR200 : La date @ doit être supérieure ou égale à la
+					// ERR200 : La date @ doit Ãªtre supÃ©rieure ou egale Ã  la
 					// date @.
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR200", "fin", "début"));
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR200", "fin", "dÃ©but"));
 					setFocus(getNOM_PB_AJOUTER());
 					return false;
 				}
 			}
 		} else {
 			// ERR002 : La zone @ est obligatoire.
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "Date début"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "Date dÃ©but"));
 			setFocus(getNOM_PB_AJOUTER());
 			return false;
 		}
@@ -3499,11 +3499,11 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		}
 
 		// **********************************************************
-		// Vérification Formats
+		// VÃ©rification Formats
 		// **********************************************************
-		// "ERR992", "La zone @ doit être numérique."
+		// "ERR992", "La zone @ doit Ãªtre numÃ©rique."
 		if (!Const.CHAINE_VIDE.equals(getVAL_EF_REF_ARRETE()) && !Services.estNumerique(getVAL_EF_REF_ARRETE())) {
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "Réf. arrêté"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "RÃ©f. arrÃªtÃ©"));
 			setFocus(getNOM_PB_AJOUTER());
 			return false;
 		}
@@ -3528,7 +3528,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 		if (numLigneBaseHoraireAbsence == 0 || getListeBaseHoraireAbsence().isEmpty()
 				|| numLigneBaseHoraireAbsence > getListeBaseHoraireAbsence().size()) {
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "base de congé"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "base de congÃ©"));
 			return false;
 		}
 
@@ -3536,7 +3536,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Contrôle les zones saisies d'un avantage en nature. Date de création :
+	 * Controle les zones saisies d'un avantage en nature. Date de crÃ©ation :
 	 * (28/07/11)
 	 */
 	private boolean performControlerSaisieAvNat_spec(HttpServletRequest request) throws Exception {
@@ -3552,12 +3552,12 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		}
 
 		// ****************************************
-		// Verification Montant OU Nature renseigné
+		// Verification Montant OU Nature renseignÃ©
 		// ****************************************
 		if (getVAL_EF_MONTANT_AVANTAGE().length() == 0
 				&& ((NatureAvantage) getListeNatureAvantage().get(Integer.parseInt(getVAL_LB_NATURE_AVANTAGE_SELECT())))
 						.getIdNatureAvantage() == null) {
-			// "ERR979","Au moins une des 2 zones suivantes doit être renseignée : @ ou @."
+			// "ERR979","Au moins une des 2 zones suivantes doit Ãªtre renseignÃ©e : @ ou @."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR979", "Nature avantage", "Montant"));
 
 			setFocus(getNOM_PB_AJOUTER());
@@ -3568,7 +3568,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		// Verification Montant
 		// ********************
 		if (getVAL_EF_MONTANT_AVANTAGE().length() != 0 && !Services.estNumerique(getVAL_EF_MONTANT_AVANTAGE())) {
-			// "ERR992","La zone @ doit être numérique."
+			// "ERR992","La zone @ doit Ãªtre numÃ©rique."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "Montant"));
 			setFocus(getNOM_PB_AJOUTER());
 			return false;
@@ -3578,7 +3578,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Contrôle les zones saisies d'une délégation. Date de création :
+	 * Controle les zones saisies d'une dÃ©lÃ©gation. Date de crÃ©ation :
 	 * (29/07/11)
 	 */
 	private boolean performControlerSaisieDel_spec(HttpServletRequest request) throws Exception {
@@ -3595,7 +3595,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Contrôle les zones saisies d'un régime indemnitaire. Date de création :
+	 * Controle les zones saisies d'un rÃ©gime indemnitaire. Date de crÃ©ation :
 	 * (29/07/11)
 	 */
 	private boolean performControlerSaisiePrimePointage_spec(HttpServletRequest request) throws Exception {
@@ -3614,7 +3614,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Contrôle les zones saisies d'un régime indemnitaire. Date de création :
+	 * Controle les zones saisies d'un rÃ©gime indemnitaire. Date de crÃ©ation :
 	 * (29/07/11)
 	 */
 	private boolean performControlerSaisieRegIndemn_spec(HttpServletRequest request) throws Exception {
@@ -3629,10 +3629,10 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		}
 
 		// *******************************************
-		// Verification Forfait OU Nb points renseigné
+		// Verification Forfait OU Nb points renseignÃ©
 		// *******************************************
 		if (getVAL_EF_FORFAIT_REGIME().length() == 0 && getVAL_EF_NB_POINTS_REGIME().length() == 0) {
-			// "ERR979","Au moins une des 2 zones suivantes doit être renseignée : @ ou @."
+			// "ERR979","Au moins une des 2 zones suivantes doit Ãªtre renseignÃ©e : @ ou @."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR979", "Forfait", "Nb points"));
 			setFocus(getNOM_PB_AJOUTER());
 			return false;
@@ -3642,7 +3642,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		// Verification Forfait
 		// ********************
 		if (getVAL_EF_FORFAIT_REGIME().length() != 0 && !Services.estNumerique(getVAL_EF_FORFAIT_REGIME())) {
-			// "ERR992","La zone @ doit être numérique."
+			// "ERR992","La zone @ doit Ãªtre numÃ©rique."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "Forfait"));
 			setFocus(getNOM_PB_AJOUTER());
 			return false;
@@ -3652,7 +3652,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		// Verification Nb points
 		// **********************
 		if (getVAL_EF_NB_POINTS_REGIME().length() != 0 && !Services.estNumerique(getVAL_EF_NB_POINTS_REGIME())) {
-			// "ERR992","La zone @ doit être numérique."
+			// "ERR992","La zone @ doit Ãªtre numÃ©rique."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "Nb points"));
 			setFocus(getNOM_PB_AJOUTER());
 			return false;
@@ -3661,10 +3661,10 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (04/08/11 15:20:56)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (04/08/11 15:20:56)
 	 * 
 	 */
 	public boolean performPB_AJOUTER(HttpServletRequest request) throws Exception {
@@ -3709,10 +3709,10 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (16/08/11 15:48:02)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	public boolean performPB_AJOUTER_AVANTAGE_spec(HttpServletRequest request) throws Exception {
@@ -3723,10 +3723,10 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (16/08/11 15:48:02)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	public boolean performPB_AJOUTER_DELEGATION_spec(HttpServletRequest request) throws Exception {
@@ -3738,10 +3738,10 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (16/08/11 15:48:02)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	public boolean performPB_AJOUTER_PRIME_POINTAGE_spec(HttpServletRequest request) throws Exception {
@@ -3753,10 +3753,10 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (16/08/11 15:48:02)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	public boolean performPB_AJOUTER_REGIME_spec(HttpServletRequest request) throws Exception {
@@ -3768,10 +3768,10 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (04/08/11 15:20:56)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (04/08/11 15:20:56)
 	 * 
 	 */
 	public boolean performPB_ANNULER(HttpServletRequest request) throws Exception {
@@ -3786,10 +3786,10 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (16/08/11 15:48:02)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	public boolean performPB_CHANGER_SPECIFICITE_spec(HttpServletRequest request) throws Exception {
@@ -3807,10 +3807,10 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (29/09/11 10:03:38)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (29/09/11 10:03:38)
 	 * 
 	 */
 	public boolean performPB_CONSULTER(HttpServletRequest request, int indiceEltAConsulter) throws Exception {
@@ -3831,7 +3831,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 		addZone(getNOM_ST_ACTION_spec(), Const.CHAINE_VIDE);
 
-		// Récup du contrat courant
+		// RÃ©cup du contrat courant
 		Affectation aff = (Affectation) getListeAffectation().get(indiceEltAConsulter);
 		setAffectationCourant(aff);
 
@@ -3858,10 +3858,10 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (04/08/11 15:20:56)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (04/08/11 15:20:56)
 	 * 
 	 */
 	public boolean performPB_HISTORIQUE(HttpServletRequest request) throws Exception {
@@ -3879,7 +3879,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			return false;
 		}
 
-		// Récup du contrat courant
+		// RÃ©cup du contrat courant
 		Affectation aff = (Affectation) getListeAffectation().get(indiceEltAImprimer);
 		setAffectationCourant(aff);
 
@@ -3897,7 +3897,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			}
 		} else {
 			// "ERR081",
-			// "Cette affectation est inactive, elle ne peut être ni supprimée,ni imprimée.")
+			// "Cette affectation est inactive, elle ne peut Ãªtre ni supprimÃ©e,ni imprimee.")
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR081"));
 			setFocus(getNOM_PB_AJOUTER());
 			return false;
@@ -3906,10 +3906,10 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du processs - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (16/08/11 15:48:02)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du processs - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	public boolean performPB_MODIFIER(HttpServletRequest request, int indiceEltAModifier) throws Exception {
@@ -3930,7 +3930,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 		addZone(getNOM_ST_ACTION_spec(), Const.CHAINE_VIDE);
 
-		// Récup du contrat courant
+		// RÃ©cup du contrat courant
 		Affectation aff = (Affectation) getListeAffectation().get(indiceEltAModifier);
 		setAffectationCourant(aff);
 
@@ -3958,10 +3958,10 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (05/08/11 13:35:40)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (05/08/11 13:35:40)
 	 * 
 	 * RG_AG_AF_C05 RG_AG_AF_C07
 	 */
@@ -3974,10 +3974,10 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (05/08/11 13:35:40)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (05/08/11 13:35:40)
 	 * 
 	 * RG_AG_AF_C05 RG_AG_AF_C07
 	 */
@@ -3990,10 +3990,10 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (05/09/11 11:31:37)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (05/09/11 11:31:37)
 	 * 
 	 * RG_AG_AF_A02
 	 */
@@ -4007,7 +4007,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			return false;
 		}
 
-		// Récup du contrat courant
+		// RÃ©cup du contrat courant
 		Affectation aff = (Affectation) getListeAffectation().get(indiceEltASuprimer);
 		setAffectationCourant(aff);
 
@@ -4036,7 +4036,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		} else {
 			// RG_AG_AF_A02
 			// "ERR081",
-			// "Cette affectation est inactive, elle ne peut être ni supprimée,ni imprimée.")
+			// "Cette affectation est inactive, elle ne peut Ãªtre ni supprimÃ©e,ni imprimee.")
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR081"));
 			setFocus(getNOM_PB_AJOUTER());
 			addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
@@ -4048,22 +4048,22 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (16/08/11 15:48:02)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	public boolean performPB_SUPPRIMER_AVANTAGE_spec(HttpServletRequest request, int indiceEltASupprimer)
 			throws Exception {
-		// Calcul du nombre d'Avantages en nature sélectionnés par l'utilisateur
+		// Calcul du nombre d'Avantages en nature sÃ©lectionnÃ©s par l'utilisateur
 		// parmi ceux issus de la fiche de poste
 		int nbAvNatFPSelected = 0;
 		for (int i = 0; i < getListeAvantageAFF().size(); i++) {
 			if (getListeAvantageFP().contains(getListeAvantageAFF().get(i)))
 				nbAvNatFPSelected++;
 		}
-		// Si la spécificité à supprimer est déjà en base
+		// Si la spÃ©cificitÃ© a supprimer est dÃ©jÃ  en base
 		if (indiceEltASupprimer - getListeAvantageFP().size() + nbAvNatFPSelected < getListeAvantageAFF().size()) {
 			AvantageNature avNatASupprimer = (AvantageNature) getListeAvantageAFF().get(
 					indiceEltASupprimer - getListeAvantageFP().size() + nbAvNatFPSelected);
@@ -4073,8 +4073,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			}
 
 		}
-		// Si la spécificité à supprimer n'est pas encore en base mais vient
-		// d'être ajoutée par l'utilisateur
+		// Si la spÃ©cificitÃ© a supprimer n'est pas encore en base mais vient
+		// d'Ãªtre ajoutÃ©e par l'utilisateur
 		else {
 			AvantageNature avNatASupprimer = (AvantageNature) getListeAvantageAAjouter().get(
 					indiceEltASupprimer - getListeAvantageFP().size() - getListeAvantageAFF().size()
@@ -4087,22 +4087,22 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (16/08/11 15:48:02)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	public boolean performPB_SUPPRIMER_DELEGATION_spec(HttpServletRequest request, int indiceEltASupprimer)
 			throws Exception {
-		// Calcul du nombre de Delegation sélectionnées par l'utilisateur parmi
+		// Calcul du nombre de Delegation sÃ©lectionnÃ©es par l'utilisateur parmi
 		// ceux issus de la fiche de poste
 		int nbDelFPSelected = 0;
 		for (int i = 0; i < getListeDelegationAFF().size(); i++) {
 			if (getListeDelegationFP().contains(getListeDelegationAFF().get(i)))
 				nbDelFPSelected++;
 		}
-		// Si la spécificité à supprimer est déjà en base
+		// Si la spÃ©cificitÃ© a supprimer est dÃ©jÃ  en base
 		if (indiceEltASupprimer - getListeDelegationFP().size() + nbDelFPSelected < getListeDelegationAFF().size()) {
 			Delegation delASupprimer = (Delegation) getListeDelegationAFF().get(
 					indiceEltASupprimer - getListeDelegationFP().size() + nbDelFPSelected);
@@ -4112,8 +4112,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			}
 
 		}
-		// Si la spécificité à supprimer n'est pas encore en base mais vient
-		// d'être ajoutée par l'utilisateur
+		// Si la spÃ©cificitÃ© a supprimer n'est pas encore en base mais vient
+		// d'Ãªtre ajoutÃ©e par l'utilisateur
 		else {
 			Delegation delASupprimer = (Delegation) getListeDelegationAAjouter().get(
 					indiceEltASupprimer - getListeDelegationFP().size() - getListeDelegationAFF().size()
@@ -4126,22 +4126,22 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (16/08/11 15:48:02)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	public boolean performPB_SUPPRIMER_PRIME_POINTAGE_spec(HttpServletRequest request, int indiceEltASupprimer)
 			throws Exception {
-		// Calcul du nombre de Prime Pointage sélectionnés par l'utilisateur
+		// Calcul du nombre de Prime Pointage sÃ©lectionnÃ©s par l'utilisateur
 		// parmi ceux issus de la fiche de poste
 
 		int ppAffSize = 0;
 		if (getListePrimePointageAFF() != null) {
 			ppAffSize = getListePrimePointageAFF().size();
 		}
-		// Si la spécificité à supprimer est déjà en base
+		// Si la spÃ©cificitÃ© a supprimer est dÃ©jÃ  en base
 		if (indiceEltASupprimer - getListePrimePointageFP().size() < ppAffSize) {
 			PrimePointageAff primePointageASupprimer = (PrimePointageAff) getListePrimePointageAFF().get(
 					indiceEltASupprimer - getListePrimePointageFP().size());
@@ -4151,8 +4151,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			}
 
 		}
-		// Si la spécificité à supprimer n'est pas encore en base mais vient
-		// d'être ajoutée par l'utilisateur
+		// Si la spÃ©cificitÃ© a supprimer n'est pas encore en base mais vient
+		// d'Ãªtre ajoutÃ©e par l'utilisateur
 		else {
 			PrimePointageAff primePointageASupprimer = (PrimePointageAff) getListePrimePointageAffAAjouter().get(
 					indiceEltASupprimer - getListePrimePointageFP().size() - ppAffSize);
@@ -4164,22 +4164,22 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (16/08/11 15:48:02)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	public boolean performPB_SUPPRIMER_REGIME_spec(HttpServletRequest request, int indiceEltASupprimer)
 			throws Exception {
-		// Calcul du nombre de RegimeIndemnitaire sélectionnés par l'utilisateur
+		// Calcul du nombre de RegimeIndemnitaire sÃ©lectionnÃ©s par l'utilisateur
 		// parmi ceux issus de la fiche de poste
 		int nbRegIndemnFPSelected = 0;
 		for (int i = 0; i < getListeRegimeAFF().size(); i++) {
 			if (getListeRegimeFP().contains(getListeRegimeAFF().get(i)))
 				nbRegIndemnFPSelected++;
 		}
-		// Si la spécificité à supprimer est déjà en base
+		// Si la spÃ©cificitÃ© a supprimer est dÃ©jÃ  en base
 		if (indiceEltASupprimer - getListeRegimeFP().size() + nbRegIndemnFPSelected < getListeRegimeAFF().size()) {
 			RegimeIndemnitaire regIndemnASupprimer = (RegimeIndemnitaire) getListeRegimeAFF().get(
 					indiceEltASupprimer - getListeRegimeFP().size() + nbRegIndemnFPSelected);
@@ -4189,8 +4189,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			}
 
 		}
-		// Si la spécificité à supprimer n'est pas encore en base mais vient
-		// d'être ajoutée par l'utilisateur
+		// Si la spÃ©cificitÃ© a supprimer n'est pas encore en base mais vient
+		// d'Ãªtre ajoutÃ©e par l'utilisateur
 		else {
 			RegimeIndemnitaire regIndemnASupprimer = (RegimeIndemnitaire) getListeRegimeAAjouter().get(
 					indiceEltASupprimer - getListeRegimeFP().size() - getListeRegimeAFF().size()
@@ -4203,10 +4203,10 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (04/08/11 15:20:56)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (04/08/11 15:20:56)
 	 * 
 	 * RG_AG_AF_A10 RG_AG_AF_A07
 	 */
@@ -4238,19 +4238,19 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			setFocus(getNOM_PB_AJOUTER());
 		} else if (getVAL_ST_ACTION().equals(ACTION_IMPRESSION)) {
 			if (performControlerChoixImpression()) {
-				// recup du document à imprimer
+				// recup du document a imprimer
 				String typeDocument = EnumImpressionAffectation.getCodeImpressionAffectation(Integer
 						.parseInt(getZone(getNOM_LB_LISTE_IMPRESSION_SELECT())));
-				// Récup affectation courante
+				// RÃ©cup affectation courante
 				Affectation aff = getAffectationCourant();
 				if (getVAL_ST_WARNING().equals(Const.CHAINE_VIDE)) {
-					// on verifie si il existe dejà un fichier pour cette
+					// on verifie si il existe deja un fichier pour cette
 					// affectation dans la BD
 					if (verifieExistFichier(aff.getIdAffectation(), typeDocument)) {
 						// alors on affiche un message
-						// :"Attention un fichier du même type existe déjà pour cette affectation. Etes-vous sûr de vouloir écraser la version précédente ?"
+						// :"Attention un fichier du mÃªme type existe dÃ©jÃ  pour cette affectation. Etes-vous sÃ»r de vouloir Ã©craser la version prÃ©cÃ©dente ?"
 						addZone(getNOM_ST_WARNING(),
-								"Attention un fichier du même type existe déjà pour cette affectation. Etes-vous sûr de vouloir écraser la version précédente ?");
+								"Attention un fichier du mÃªme type existe dÃ©jÃ  pour cette affectation. Etes-vous sÃ»r de vouloir Ã©craser la version prÃ©cÃ©dente ?");
 					} else {
 						imprimeModele(request, typeDocument);
 						addZone(getNOM_ST_WARNING(), Const.CHAINE_VIDE);
@@ -4273,7 +4273,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 				return false;
 			}
 
-			// Récup des zones saisies
+			// RÃ©cup des zones saisies
 			String newIndMotifAffectation = getZone(getNOM_LB_MOTIF_AFFECTATION_SELECT());
 			MotifAffectation newMotifAffectation = (MotifAffectation) getListeMotifAffectation().get(
 					Integer.parseInt(newIndMotifAffectation));
@@ -4306,13 +4306,13 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			getAffectationCourant().setCommentaire(
 					getVAL_EF_COMMENTAIRE().equals(Const.CHAINE_VIDE) ? null : getVAL_EF_COMMENTAIRE());
 
-			// Base horaire de congé
+			// Base horaire de congÃ©
 			int numLigneBaseHoraireAbsence = (Services.estNumerique(getZone(getNOM_LB_BASE_HORAIRE_ABSENCE_SELECT())) ? Integer
 					.parseInt(getZone(getNOM_LB_BASE_HORAIRE_ABSENCE_SELECT())) : -1);
 
 			if (numLigneBaseHoraireAbsence == 0 || getListeBaseHoraireAbsence().isEmpty()
 					|| numLigneBaseHoraireAbsence > getListeBaseHoraireAbsence().size()) {
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "base de congé"));
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "base de congÃ©"));
 				return false;
 			}
 
@@ -4347,7 +4347,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 					return false;
 				getAffectationDao().modifierAffectation(getAffectationCourant());
 
-				// mise à jour du champ primaire de sppost
+				// mise Ã  jour du champ primaire de sppost
 				Connecteur.modifierSPPOST_Primaire(getTransaction(), getFichePosteCourant().getNumFp(), true);
 				if (getFichePosteSecondaireCourant() != null) {
 					Connecteur.modifierSPPOST_Primaire(getTransaction(), getFichePosteSecondaireCourant().getNumFp(),
@@ -4355,13 +4355,13 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 				}
 
 			} else if (getZone(getNOM_ST_ACTION()).equals(ACTION_CREATION)) {
-				// mise à jour du champ primaire de sppost
+				// mise Ã  jour du champ primaire de sppost
 				Connecteur.modifierSPPOST_Primaire(getTransaction(), getFichePosteCourant().getNumFp(), true);
 				if (getFichePosteSecondaireCourant() != null) {
 					Connecteur.modifierSPPOST_Primaire(getTransaction(), getFichePosteSecondaireCourant().getNumFp(),
 							false);
 				}
-				// Création Affectation
+				// CrÃ©ation Affectation
 				FichePoste fichePoste = getFichePosteDao()
 						.chercherFichePoste(getAffectationCourant().getIdFichePoste());
 				
@@ -4372,11 +4372,11 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 				// solution : on cree en 1er SPMTSR, car si doublon, l AS400 retourne une erreur contrairement a AFFECTATION
 				try {
 				if (!Connecteur.creerSPMTSR(getTransaction(), getAffectationCourant(), getAgentCourant(), fichePoste)) {
-					getTransaction().declarerErreur("L'affectation est déjà créée.");
+					getTransaction().declarerErreur("L'affectation est dÃ©jÃ  crÃ©Ã©e.");
 					return false;
 				}
 				} catch(Exception e) {
-					getTransaction().declarerErreur("L'affectation est déjà créée.");
+					getTransaction().declarerErreur("L'affectation est dÃ©jÃ  crÃ©Ã©e.");
 					return false;
 				}
 				// dans un 2e temps on verifie qu il n existe pas deja une affeca	tion pour l agent au meme date
@@ -4395,7 +4395,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 				commitTransaction();
 
-				// on initialise le compteur de congé
+				// on initialise le compteur de congÃ©
 				SirhAbsWSConsumer t = new SirhAbsWSConsumer();
 				@SuppressWarnings("unused")
 				ReturnMessageDto erreurDto = t.initialiseCompteurConge(getAgentConnecte(request).getIdAgent(),
@@ -4433,7 +4433,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			getAvantageNatureAffDao().creerAvantageNatureAff(avNatAFF.getIdAvantage(), avNatAFF.getIdAffectation());
 			if (getTransaction().isErreur()) {
 				getTransaction().declarerErreur(
-						getTransaction().traiterErreur() + " Au moins un avantage en nature n'a pu être créé.");
+						getTransaction().traiterErreur() + " Au moins un avantage en nature n'a pu Ãªtre crÃ©Ã©.");
 				setFocus(getNOM_PB_AJOUTER());
 				return false;
 			}
@@ -4448,7 +4448,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 				getAvantageNatureDao().supprimerAvantageNature(avNat.getIdAvantage());
 			} catch (Exception e) {
 				getTransaction().declarerErreur(
-						getTransaction().traiterErreur() + " Au moins un avantage en nature n'a pu être supprimé.");
+						getTransaction().traiterErreur() + " Au moins un avantage en nature n'a pu Ãªtre supprimÃ©.");
 				setFocus(getNOM_PB_AJOUTER());
 				return false;
 			}
@@ -4462,7 +4462,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			getDelegationAffDao().creerDelegationAFF(delAFF.getIdDelegation(), delAFF.getIdAffectation());
 			if (getTransaction().isErreur()) {
 				getTransaction().declarerErreur(
-						getTransaction().traiterErreur() + " Au moins une Delegation n'a pu être créée.");
+						getTransaction().traiterErreur() + " Au moins une Delegation n'a pu Ãªtre crÃ©Ã©e.");
 				setFocus(getNOM_PB_AJOUTER());
 				return false;
 			}
@@ -4476,7 +4476,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 				getDelegationDao().supprimerDelegation(deleg.getIdDelegation());
 			} catch (Exception e) {
 				getTransaction().declarerErreur(
-						getTransaction().traiterErreur() + " Au moins une Delegation n'a pu être supprimée.");
+						getTransaction().traiterErreur() + " Au moins une Delegation n'a pu Ãªtre supprimÃ©e.");
 				setFocus(getNOM_PB_AJOUTER());
 				return false;
 			}
@@ -4491,7 +4491,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			getRegIndemnAffDao().creerRegIndemnAFF(riAFF.getIdRegime(), riAFF.getIdAffectation());
 			if (getTransaction().isErreur()) {
 				getTransaction().declarerErreur(
-						getTransaction().traiterErreur() + " Au moins un RegimeIndemnitaire n'a pu être créé.");
+						getTransaction().traiterErreur() + " Au moins un RegimeIndemnitaire n'a pu Ãªtre crÃ©Ã©.");
 				setFocus(getNOM_PB_AJOUTER());
 				return false;
 			}
@@ -4505,7 +4505,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 				getRegIndemnDao().supprimerRegimeIndemnitaire(regIndemn.getIdRegIndemn());
 			} catch (Exception e) {
 				getTransaction().declarerErreur(
-						getTransaction().traiterErreur() + " Au moins un RegimeIndemnitaire n'a pu être supprimé.");
+						getTransaction().traiterErreur() + " Au moins un RegimeIndemnitaire n'a pu Ãªtre supprimÃ©.");
 				setFocus(getNOM_PB_AJOUTER());
 				return false;
 			}
@@ -4518,7 +4518,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 			} catch (Exception e) {
 				getTransaction().declarerErreur(
-						getTransaction().traiterErreur() + " Au moins une prime de pointage n'a pu être créée.");
+						getTransaction().traiterErreur() + " Au moins une prime de pointage n'a pu Ãªtre crÃ©Ã©e.");
 				setFocus(getNOM_PB_AJOUTER());
 				return false;
 			}
@@ -4529,7 +4529,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 						prime.getNumRubrique());
 			} catch (Exception e) {
 				getTransaction().declarerErreur(
-						getTransaction().traiterErreur() + " Au moins une prime de pointage n'a pu être supprimée.");
+						getTransaction().traiterErreur() + " Au moins une prime de pointage n'a pu Ãªtre supprimÃ©e.");
 				setFocus(getNOM_PB_AJOUTER());
 				return false;
 			}
@@ -4545,10 +4545,10 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		getListePrimePointageAffASupprimer().clear();
 
 		if (!getVAL_ST_ACTION().equals(ACTION_IMPRESSION)) {
-			// Tout s'est bien passé
+			// Tout s'est bien passÃ©
 			commitTransaction();
 
-			// Réinitialisation
+			// RÃ©initialisation
 			initialiseListeAffectation(request);
 			// init de l'affectation courante
 			setAffectationCourant(null);
@@ -4565,16 +4565,16 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (16/08/11 15:48:02)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	public boolean performPB_VALIDER_AJOUT_spec(HttpServletRequest request) throws Exception {
 
 		if (getVAL_ST_SPECIFICITE().equals(SPEC_AVANTAGE_NATURE_SPEC)) {
-			// Contrôle des champs
+			// Controle des champs
 			if (!performControlerSaisieAvNat_spec(request))
 				return false;
 
@@ -4607,10 +4607,10 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 					getListeAvantageAAjouter().add(avNat);
 				}
 			}
-			// Réinitialisation des champs de saisie
+			// RÃ©initialisation des champs de saisie
 			viderAvantageNature_spec();
 		} else if (getVAL_ST_SPECIFICITE().equals(SPEC_DELEGATION_SPEC)) {
-			// Contrôle des champs
+			// Controle des champs
 			if (!performControlerSaisieDel_spec(request))
 				return false;
 
@@ -4636,10 +4636,10 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 					getListeDelegationAAjouter().add(deleg);
 				}
 			}
-			// Réinitialisation des champs de saisie
+			// RÃ©initialisation des champs de saisie
 			viderDelegation_spec();
 		} else if (getVAL_ST_SPECIFICITE().equals(SPEC_REG_INDEMN_SPEC)) {
-			// Contrôle des champs
+			// Controle des champs
 			if (!performControlerSaisieRegIndemn_spec(request))
 				return false;
 
@@ -4671,10 +4671,10 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 				}
 			}
 
-			// Réinitialisation des champs de saisie
+			// RÃ©initialisation des champs de saisie
 			viderRegIndemn_spec();
 		} else if (getVAL_ST_SPECIFICITE().equals(SPEC_PRIME_POINTAGE_SPEC)) {
-			// Contrôle des champs
+			// Controle des champs
 			if (!performControlerSaisiePrimePointage_spec(request))
 				return false;
 
@@ -4700,7 +4700,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 				setFocus(getNOM_PB_AJOUTER());
 			}
 
-			// Réinitialisation des champs de saisie
+			// RÃ©initialisation des champs de saisie
 			viderPrimePointage();
 		}
 
@@ -4709,8 +4709,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Méthode appelée par la servlet qui aiguille le traitement : en fonction
-	 * du bouton de la JSP Date de création : (04/08/11 15:20:56)
+	 * mÃ©thode appelee par la servlet qui aiguille le traitement : en fonction
+	 * du bouton de la JSP Date de crÃ©ation : (04/08/11 15:20:56)
 	 * 
 	 */
 	public boolean recupererStatut(HttpServletRequest request) throws Exception {
@@ -4854,7 +4854,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			}
 
 		}
-		// Si TAG INPUT non géré par le process
+		// Si TAG INPUT non gÃ©rÃ© par le process
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
@@ -4872,19 +4872,19 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 			if (!saveFileToRemoteFileSystem(fileAsBytes, repPartage, destinationFDP)) {
 				// "ERR185",
-				// "Une erreur est survenue dans la génération des documents. Merci de contacter le responsable du projet."
+				// "Une erreur est survenue dans la gÃ©nÃ©ration des documents. Merci de contacter le responsable du projet."
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR185"));
 				return false;
 			}
 
-			// Tout s'est bien passé
-			// on crée le document en base de données
+			// Tout s'est bien passÃ©
+			// on crÃ©e le document en base de donnÃ©es
 			Document d = new Document();
 			d.setIdTypeDocument(1);
 			d.setLienDocument(destinationFDP);
 			d.setNomDocument("SauvFP_" + idFichePoste + "_" + dateJour + ".doc");
 			d.setDateDocument(new Date());
-			d.setCommentaire("Sauvegarde automatique lors création affectation.");
+			d.setCommentaire("Sauvegarde automatique lors crÃ©ation affectation.");
 			Integer id = getDocumentDao().creerDocument(d.getClasseDocument(), d.getNomDocument(), d.getLienDocument(),
 					d.getDateDocument(), d.getCommentaire(), d.getIdTypeDocument(), d.getNomOriginal());
 
@@ -4900,7 +4900,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 		} catch (Exception e) {
 			// "ERR185",
-			// "Une erreur est survenue dans la génération des documents. Merci de contacter le responsable du projet."
+			// "Une erreur est survenue dans la gÃ©nÃ©ration des documents. Merci de contacter le responsable du projet."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR185"));
 			return false;
 		}
@@ -4909,7 +4909,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Met à jour l'affectation en cours.
+	 * Met a jour l'affectation en cours.
 	 * 
 	 * @param affectationCourant
 	 *            Nouvelle affectation en cours
@@ -4919,7 +4919,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Met à jour l'agent courant
+	 * Met a jour l'agent courant
 	 * 
 	 * @param agentCourant
 	 */
@@ -4928,7 +4928,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Met à jour la fiche de poste courante.
+	 * Met a jour la fiche de poste courante.
 	 * 
 	 * @param fichePosteCourant
 	 */
@@ -4937,7 +4937,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Met à jour la fiche de poste secondaire courante.
+	 * Met a jour la fiche de poste secondaire courante.
 	 * 
 	 * @param fichePosteSecondaireCourant
 	 */
@@ -4947,14 +4947,14 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	/**
 	 * @param focus
-	 *            focus à définir.
+	 *            focus Ã  dÃ©finir.
 	 */
 	public void setFocus(String focus) {
 		this.focus = focus;
 	}
 
 	/**
-	 * Setter de la liste: LB_LISTE_IMPRESSION Date de création : (04/08/11
+	 * Setter de la liste: LB_LISTE_IMPRESSION Date de crÃ©ation : (04/08/11
 	 * 15:20:56)
 	 * 
 	 */
@@ -4963,7 +4963,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_MOTIF_AFFECTATION Date de création : (04/08/11
+	 * Setter de la liste: LB_MOTIF_AFFECTATION Date de crÃ©ation : (04/08/11
 	 * 15:20:56)
 	 * 
 	 */
@@ -4972,7 +4972,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_NATURE_AVANTAGE Date de création : (16/08/11
+	 * Setter de la liste: LB_NATURE_AVANTAGE Date de crÃ©ation : (16/08/11
 	 * 15:48:02)
 	 * 
 	 */
@@ -4981,7 +4981,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_RUBRIQUE_AVANTAGE Date de création : (16/08/11
+	 * Setter de la liste: LB_RUBRIQUE_AVANTAGE Date de crÃ©ation : (16/08/11
 	 * 15:48:02)
 	 * 
 	 */
@@ -4990,7 +4990,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_RUBRIQUE_PRIME_POINTAGE Date de création :
+	 * Setter de la liste: LB_RUBRIQUE_PRIME_POINTAGE Date de crÃ©ation :
 	 * (16/08/11 15:48:02)
 	 * 
 	 */
@@ -4999,7 +4999,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_RUBRIQUE_REGIME Date de création : (16/08/11
+	 * Setter de la liste: LB_RUBRIQUE_REGIME Date de crÃ©ation : (16/08/11
 	 * 15:48:02)
 	 * 
 	 */
@@ -5008,7 +5008,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_TEMPS_TRAVAIL Date de création : (04/08/11
+	 * Setter de la liste: LB_TEMPS_TRAVAIL Date de crÃ©ation : (04/08/11
 	 * 15:20:56)
 	 * 
 	 */
@@ -5017,7 +5017,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_TYPE_AVANTAGE Date de création : (16/08/11
+	 * Setter de la liste: LB_TYPE_AVANTAGE Date de crÃ©ation : (16/08/11
 	 * 15:48:02)
 	 * 
 	 */
@@ -5026,7 +5026,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_TYPE_DELEGATION Date de création : (16/08/11
+	 * Setter de la liste: LB_TYPE_DELEGATION Date de crÃ©ation : (16/08/11
 	 * 15:48:02)
 	 * 
 	 */
@@ -5035,7 +5035,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_TYPE_REGIME Date de création : (16/08/11 15:48:02)
+	 * Setter de la liste: LB_TYPE_REGIME Date de crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	private void setLB_TYPE_REGIME(String[] newLB_TYPE_REGIME) {
@@ -5044,14 +5044,14 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	/**
 	 * @param listeAffectation
-	 *            listeAffectation à définir
+	 *            listeAffectation Ã  dÃ©finir
 	 */
 	private void setListeAffectation(ArrayList<Affectation> listeAffectation) {
 		this.listeAffectation = listeAffectation;
 	}
 
 	/**
-	 * Met à jour la liste des AvantageNature de l'affectation.
+	 * Met a jour la liste des AvantageNature de l'affectation.
 	 * 
 	 * @param listeAvantageAFF
 	 */
@@ -5060,17 +5060,17 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Met à jour la liste des AvantageNature de la fiche de poste.
+	 * Met a jour la liste des AvantageNature de la fiche de poste.
 	 * 
 	 * @param listeAvantageFP
-	 *            listeAvantageFP à définir
+	 *            listeAvantageFP Ã  dÃ©finir
 	 */
 	private void setListeAvantageFP(ArrayList<AvantageNature> listeAvantageFP) {
 		this.listeAvantageFP = listeAvantageFP;
 	}
 
 	/**
-	 * Met à jour la liste des Delegation de l'affectation.
+	 * Met a jour la liste des Delegation de l'affectation.
 	 * 
 	 * @param listeDelegationAFF
 	 */
@@ -5079,17 +5079,17 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Met à jour la liste des Delegation de la fiche de poste.
+	 * Met a jour la liste des Delegation de la fiche de poste.
 	 * 
 	 * @param listeDelegationFP
-	 *            listeDelegationFP à définir
+	 *            listeDelegationFP Ã  dÃ©finir
 	 */
 	private void setListeDelegationFP(ArrayList<Delegation> listeDelegationFP) {
 		this.listeDelegationFP = listeDelegationFP;
 	}
 
 	/**
-	 * Met à jour la liste des motifs d'affectation.
+	 * Met a jour la liste des motifs d'affectation.
 	 * 
 	 * @param listeMotifAffectation
 	 *            Nouvelle liste des motifs d'affectations
@@ -5099,7 +5099,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Met à jour la liste des natures d'avantage en nature.
+	 * Met a jour la liste des natures d'avantage en nature.
 	 * 
 	 * @param listeNatureAvantage
 	 */
@@ -5108,7 +5108,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Met à jour la liste des PrimePointageIndemnitaire de l'affectation.
+	 * Met a jour la liste des PrimePointageIndemnitaire de l'affectation.
 	 * 
 	 * @param listePrimePointageAFF
 	 */
@@ -5117,7 +5117,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Met à jour la liste des PrimePointage de la fiche de poste.
+	 * Met a jour la liste des PrimePointage de la fiche de poste.
 	 * 
 	 * @param listePrimePointageFP
 	 */
@@ -5126,7 +5126,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Met à jour la liste des primes.
+	 * Met a jour la liste des primes.
 	 * 
 	 * @param listeRubrique
 	 */
@@ -5135,7 +5135,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Met à jour la liste des RegimeIndemnitaire de l'affectation.
+	 * Met a jour la liste des RegimeIndemnitaire de l'affectation.
 	 * 
 	 * @param listeRegimeAFF
 	 */
@@ -5144,17 +5144,17 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Met à jour la liste des RegimeIndemnitaire de la fiche de poste.
+	 * Met a jour la liste des RegimeIndemnitaire de la fiche de poste.
 	 * 
 	 * @param listeRegimeFP
-	 *            listeRegimeFP à définir
+	 *            listeRegimeFP Ã  dÃ©finir
 	 */
 	private void setListeRegimeFP(ArrayList<RegimeIndemnitaire> listeRegimeFP) {
 		this.listeRegimeFP = listeRegimeFP;
 	}
 
 	/**
-	 * Met à jour la liste des rubriques.
+	 * Met a jour la liste des rubriques.
 	 * 
 	 * @param listeRubrique
 	 */
@@ -5163,7 +5163,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Met à jour la liste des temps de travail.
+	 * Met a jour la liste des temps de travail.
 	 * 
 	 * @param listeTempsTravail
 	 *            Liste des temps de travail
@@ -5173,7 +5173,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Met à jour la liste des types d'avantage en nature.
+	 * Met a jour la liste des types d'avantage en nature.
 	 * 
 	 * @param listeTypeAvantage
 	 */
@@ -5182,7 +5182,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Met à jour la liste des TypeDelegation.
+	 * Met a jour la liste des TypeDelegation.
 	 * 
 	 * @param listeTypeDelegation
 	 */
@@ -5191,7 +5191,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	/**
-	 * Met à jour la liste des RegimeIndemnitaire.
+	 * Met a jour la liste des RegimeIndemnitaire.
 	 * 
 	 * @param listeTypeRegIndemn
 	 */
@@ -5259,7 +5259,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	private void verifieRepertoire(String codTypeDoc) {
-		// on verifie déjà que le repertoire source existe
+		// on verifie dÃ©jÃ  que le repertoire source existe
 		String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ACTES");
 
 		File dossierParent = new File(repPartage);
@@ -5332,13 +5332,13 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		SirhPtgWSConsumer t = new SirhPtgWSConsumer();
 
 		PrimePointageAff primePointage = null;
-		// Si la spécificité à supprimer est déjà en base
+		// Si la spÃ©cificitÃ© a supprimer est dÃ©jÃ  en base
 		if (indiceEltASupprimer - getListePrimePointageFP().size() < getListePrimePointageAFF().size()) {
 			primePointage = (PrimePointageAff) getListePrimePointageAFF().get(
 					indiceEltASupprimer - getListePrimePointageFP().size());
 		}
-		// Si la spécificité à supprimer n'est pas encore en base mais vient
-		// d'être ajoutée par l'utilisateur
+		// Si la spÃ©cificitÃ© a supprimer n'est pas encore en base mais vient
+		// d'Ãªtre ajoutÃ©e par l'utilisateur
 		else {
 			primePointage = (PrimePointageAff) getListePrimePointageAffAAjouter().get(
 					indiceEltASupprimer - getListePrimePointageFP().size() - getListePrimePointageAFF().size());
@@ -5346,8 +5346,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		if (primePointage == null) {
 			return false;
 		}
-		// on interroge le WS pour savoir si la prime est utilisée sur un
-		// pointage donné.
+		// on interroge le WS pour savoir si la prime est utilisee sur un
+		// pointage donnÃ©.
 		try {
 			return t.isPrimeUtilPointage(primePointage.getNumRubrique(), getAgentCourant().getIdAgent());
 		} catch (Exception e) {

@@ -105,7 +105,7 @@ import nc.mairie.robot.Testeur;
 import nc.mairie.technique.BasicProcess;
 
 /**
- * Insérez la description du type à cet endroit. Date de création : (28/10/02
+ * InsÃ©rez la description du type a cet endroit. Date de crÃ©ation : (28/10/02
  * 10:14:36)
  * 
  * 
@@ -125,7 +125,7 @@ public class RobotAgent extends Robot {
 	}
 
 	/**
-	 * Insérez la description de la méthode à cet endroit. Date de création :
+	 * InsÃ©rez la description de la MÃ©thode Ã  cet endroit. Date de crÃ©ation :
 	 * (28/10/02 10:16:34)
 	 */
 	public BasicProcess getDefaultProcess() {
@@ -133,7 +133,7 @@ public class RobotAgent extends Robot {
 	}
 
 	/**
-	 * Insérez la description de la méthode à cet endroit. Date de création :
+	 * InsÃ©rez la description de la MÃ©thode Ã  cet endroit. Date de crÃ©ation :
 	 * (28/10/02 10:16:34)
 	 */
 	public BasicProcess getFirstProcess(String activite) throws Exception {
@@ -337,12 +337,12 @@ public class RobotAgent extends Robot {
 		}
 
 		// throw new
-		// Exception("Activite "+activite+" non déclarée dans le robot de navigation");
+		// Exception("Activite "+activite+" non dÃ©clarÃ©e dans le robot de navigation");
 
 	}
 
 	/**
-	 * Insérez la description de la méthode ici. Date de création : (28/10/2002
+	 * InsÃ©rez la description de la mÃ©thode ici. Date de crÃ©ation : (28/10/2002
 	 * 11:59:52)
 	 * 
 	 * @return Hashtable
@@ -602,7 +602,7 @@ public class RobotAgent extends Robot {
 
 		// //////////////////////////////////////
 		// pour la recherche d'un agent
-		// données perso
+		// donnÃ©es perso
 		navigation.put(OeAGENTEtatCivil.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
 				OeAGENTRecherche.class.getName());
 		navigation.put(OeENFANTGestion.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,

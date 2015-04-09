@@ -60,11 +60,11 @@ public class OeABSAlimentationMensuelle extends BasicProcess {
 		VariableGlobale.ajouter(request, "PROCESS_MEMORISE", this);
 
 		// ----------------------------------//
-		// Vérification des droits d'accès. //
+		// VÃ©rification des droits d'acces. //
 		// ----------------------------------//
 		if (MairieUtils.estInterdit(request, getNomEcran())) {
 			// "ERR190",
-			// "Opération impossible. Vous ne disposez pas des droits d'accès à cette option."
+			// "Operation impossible. Vous ne disposez pas des droits d'acces a cette option."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
@@ -80,7 +80,7 @@ public class OeABSAlimentationMensuelle extends BasicProcess {
 			// on recupere la liste des mois disponible en BD dans SIRH-ABS-WS
 			SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
 			setListeMois(consuAbs.getListeMoisALimAUtoCongeAnnuel());
-			logger.debug("Récupération des mois de la table abs_ca_alim_auto_histo : " + getListeMois().size()
+			logger.debug("RÃ©cupÃ©ration des mois de la table abs_ca_alim_auto_histo : " + getListeMois().size()
 					+ " enregistrements.");
 
 			SimpleDateFormat sdf = new SimpleDateFormat("MM/yyyy");
@@ -111,7 +111,7 @@ public class OeABSAlimentationMensuelle extends BasicProcess {
 			}
 
 		}
-		// Si TAG INPUT non géré par le process
+		// Si TAG INPUT non gÃ©rÃ© par le process
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}

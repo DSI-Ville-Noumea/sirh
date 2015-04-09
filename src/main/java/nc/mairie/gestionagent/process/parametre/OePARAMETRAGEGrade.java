@@ -31,7 +31,7 @@ import com.ibm.as400.access.CharacterDataArea;
 import com.ibm.as400.access.QSYSObjectPathName;
 
 /**
- * Process OePARAMETRAGEGrade Date de création : (04/10/11 09:04:41)
+ * Process OePARAMETRAGEGrade Date de crÃ©ation : (04/10/11 09:04:41)
  * 
  */
 public class OePARAMETRAGEGrade extends BasicProcess {
@@ -64,8 +64,8 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	public String ACTION_CONSULTATION_GRILLE = "Consultation d'une grille";
 	public String ACTION_CONSULTATION_GRADE = "Consultation d'un grade";
 	public String ACTION_MODIFICATION_GRILLE = "Modification d'une grille";
-	public String ACTION_CREATION_GRILLE = "Création d'une grille.";
-	public String ACTION_CREATION_GRADE = "Création d'un grade.";
+	public String ACTION_CREATION_GRILLE = "CrÃ©ation d'une grille.";
+	public String ACTION_CREATION_GRADE = "CrÃ©ation d'un grade.";
 	public String ACTION_MODIFICATION_GRADE = "Modification d'un grade.";
 
 	private static QSYSObjectPathName CALC_PATH = new QSYSObjectPathName((String) ServletAgent.getMesParametres().get(
@@ -79,7 +79,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_GRADE Date de
-	 * création : (04/10/11 09:04:41)
+	 * crÃ©ation : (04/10/11 09:04:41)
 	 * 
 	 */
 	public String getNOM_EF_GRADE() {
@@ -87,8 +87,8 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_GRADE Date de création : (04/10/11 09:04:41)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_GRADE Date de crÃ©ation : (04/10/11 09:04:41)
 	 * 
 	 */
 	public String getVAL_EF_GRADE() {
@@ -96,7 +96,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * Getter de la liste avec un lazy initialize : LB_CLASSE Date de création :
+	 * Getter de la liste avec un lazy initialize : LB_CLASSE Date de crÃ©ation :
 	 * (04/10/11 09:04:41)
 	 * 
 	 */
@@ -107,7 +107,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_CLASSE Date de création : (04/10/11 09:04:41)
+	 * Setter de la liste: LB_CLASSE Date de crÃ©ation : (04/10/11 09:04:41)
 	 * 
 	 */
 	private void setLB_CLASSE(String[] newLB_CLASSE) {
@@ -115,7 +115,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_CLASSE Date de création :
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_CLASSE Date de crÃ©ation :
 	 * (04/10/11 09:04:41)
 	 * 
 	 */
@@ -124,8 +124,8 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_CLASSE_SELECT Date de création : (04/10/11 09:04:41)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_CLASSE_SELECT Date de crÃ©ation : (04/10/11 09:04:41)
 	 * 
 	 */
 	public String getNOM_LB_CLASSE_SELECT() {
@@ -133,8 +133,8 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_CLASSE Date de création : (04/10/11 09:04:41)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_CLASSE Date de crÃ©ation : (04/10/11 09:04:41)
 	 * 
 	 */
 	public String[] getVAL_LB_CLASSE() {
@@ -142,8 +142,8 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_CLASSE Date de création : (04/10/11 09:04:41)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_CLASSE Date de crÃ©ation : (04/10/11 09:04:41)
 	 * 
 	 */
 	public String getVAL_LB_CLASSE_SELECT() {
@@ -151,7 +151,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * Getter de la liste avec un lazy initialize : LB_ECHELON Date de création
+	 * Getter de la liste avec un lazy initialize : LB_ECHELON Date de crÃ©ation
 	 * : (04/10/11 09:04:41)
 	 * 
 	 */
@@ -162,7 +162,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_ECHELON Date de création : (04/10/11 09:04:41)
+	 * Setter de la liste: LB_ECHELON Date de crÃ©ation : (04/10/11 09:04:41)
 	 * 
 	 */
 	private void setLB_ECHELON(String[] newLB_ECHELON) {
@@ -170,7 +170,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_ECHELON Date de création
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_ECHELON Date de crÃ©ation
 	 * : (04/10/11 09:04:41)
 	 * 
 	 */
@@ -179,8 +179,8 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_ECHELON_SELECT Date de création : (04/10/11 09:04:41)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_ECHELON_SELECT Date de crÃ©ation : (04/10/11 09:04:41)
 	 * 
 	 */
 	public String getNOM_LB_ECHELON_SELECT() {
@@ -188,8 +188,8 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_ECHELON Date de création : (04/10/11 09:04:41)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_ECHELON Date de crÃ©ation : (04/10/11 09:04:41)
 	 * 
 	 */
 	public String[] getVAL_LB_ECHELON() {
@@ -197,8 +197,8 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_ECHELON Date de création : (04/10/11 09:04:41)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_ECHELON Date de crÃ©ation : (04/10/11 09:04:41)
 	 * 
 	 */
 	public String getVAL_LB_ECHELON_SELECT() {
@@ -207,7 +207,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 
 	/**
 	 * Getter de la liste avec un lazy initialize : LB_GRADE_GENERIQUE Date de
-	 * création : (04/10/11 09:04:41)
+	 * crÃ©ation : (04/10/11 09:04:41)
 	 * 
 	 */
 	private String[] getLB_GRADE_GENERIQUE() {
@@ -217,7 +217,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_GRADE_GENERIQUE Date de création : (04/10/11
+	 * Setter de la liste: LB_GRADE_GENERIQUE Date de crÃ©ation : (04/10/11
 	 * 09:04:41)
 	 * 
 	 */
@@ -227,7 +227,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 
 	/**
 	 * Retourne le nom de la zone pour la JSP : NOM_LB_GRADE_GENERIQUE Date de
-	 * création : (04/10/11 09:04:41)
+	 * crÃ©ation : (04/10/11 09:04:41)
 	 * 
 	 */
 	public String getNOM_LB_GRADE_GENERIQUE() {
@@ -235,8 +235,8 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_GRADE_GENERIQUE_SELECT Date de création : (04/10/11 09:04:41)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_GRADE_GENERIQUE_SELECT Date de crÃ©ation : (04/10/11 09:04:41)
 	 * 
 	 */
 	public String getNOM_LB_GRADE_GENERIQUE_SELECT() {
@@ -244,8 +244,8 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_GRADE_GENERIQUE Date de création : (04/10/11 09:04:41)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_GRADE_GENERIQUE Date de crÃ©ation : (04/10/11 09:04:41)
 	 * 
 	 */
 	public String[] getVAL_LB_GRADE_GENERIQUE() {
@@ -253,8 +253,8 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_GRADE_GENERIQUE Date de création : (04/10/11 09:04:41)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_GRADE_GENERIQUE Date de crÃ©ation : (04/10/11 09:04:41)
 	 * 
 	 */
 	public String getVAL_LB_GRADE_GENERIQUE_SELECT() {
@@ -262,10 +262,10 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones Ã  afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
-	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
-	 * addZone(getNOMxxx, String); Date de création : (04/10/11 09:12:33)
+	 * doivent avoir les Fields PUBLIC Utilisation de la mÃ©thode
+	 * addZone(getNOMxxx, String); Date de crÃ©ation : (04/10/11 09:12:33)
 	 * 
 	 */
 	public void initialiseZones(HttpServletRequest request) throws Exception {
@@ -273,11 +273,11 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 		VariableGlobale.ajouter(request, "PROCESS_MEMORISE", this);
 
 		// ----------------------------------//
-		// Vérification des droits d'accès. //
+		// VÃ©rification des droits d'acces. //
 		// ----------------------------------//
 		if (MairieUtils.estInterdit(request, getNomEcran())) {
 			// "ERR190",
-			// "Opération impossible. Vous ne disposez pas des droits d'accès à cette option."
+			// "Operation impossible. Vous ne disposez pas des droits d'acces a cette option."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
@@ -313,7 +313,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 		// ---------------------------//
 		// Initialisation de la page.//
 		// ---------------------------//
-		// initialisation de la liste des grades génériques
+		// initialisation de la liste des grades gÃ©nÃ©riques
 		if (getHashGradeGenerique().size() == 0) {
 			ArrayList<GradeGenerique> listeGradeGenerique = GradeGenerique
 					.listerGradeGeneriqueOrderLib(getTransaction());
@@ -344,7 +344,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 			}
 		}
 
-		// initialisation de la liste des échelons
+		// initialisation de la liste des Ã©chelons
 		if (getHashEchelon().size() == 0) {
 			ArrayList<Echelon> listeEchelon = Echelon.listerEchelon(getTransaction());
 			setListeEchelon(listeEchelon);
@@ -458,7 +458,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_CREER_GRILLE Date de
-	 * création : (04/10/11 09:12:40)
+	 * crÃ©ation : (04/10/11 09:12:40)
 	 * 
 	 */
 	public String getNOM_PB_CREER_GRILLE() {
@@ -466,10 +466,10 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (04/10/11 09:12:40)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (04/10/11 09:12:40)
 	 * 
 	 */
 	public boolean performPB_CREER_GRILLE(HttpServletRequest request) throws Exception {
@@ -527,8 +527,8 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * Initialise la classe échelon courante alimente le formulaire avec le
-	 * grade sélectioné
+	 * Initialise la classe Ã©chelon courante alimente le formulaire avec le
+	 * grade sÃ©lectione
 	 */
 	private boolean initialiseClasseEchelonCourant(HttpServletRequest request) throws Exception {
 
@@ -583,7 +583,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_ACTION_GRADE Date de
-	 * création : (04/10/11 09:12:40)
+	 * crÃ©ation : (04/10/11 09:12:40)
 	 * 
 	 */
 	public String getNOM_ST_ACTION_GRADE() {
@@ -591,8 +591,8 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACTION_GRADE
-	 * Date de création : (04/10/11 09:12:40)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_ACTION_GRADE
+	 * Date de crÃ©ation : (04/10/11 09:12:40)
 	 * 
 	 */
 	public String getVAL_ST_ACTION_GRADE() {
@@ -601,7 +601,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_ACTION_GRILLE Date
-	 * de création : (04/10/11 09:12:40)
+	 * de crÃ©ation : (04/10/11 09:12:40)
 	 * 
 	 */
 	public String getNOM_ST_ACTION_GRILLE() {
@@ -609,8 +609,8 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACTION_GRILLE
-	 * Date de création : (04/10/11 09:12:40)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_ACTION_GRILLE
+	 * Date de crÃ©ation : (04/10/11 09:12:40)
 	 * 
 	 */
 	public String getVAL_ST_ACTION_GRILLE() {
@@ -670,10 +670,10 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (04/10/11 10:26:55)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (04/10/11 10:26:55)
 	 * 
 	 */
 	public boolean performPB_SELECT_GRADE_GENERIQUE(HttpServletRequest request) throws Exception {
@@ -683,7 +683,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * Alimente le champ grade avec le nom du grade générique pour être modifié
+	 * Alimente le champ grade avec le nom du grade gÃ©nÃ©rique pour Ãªtre modifiÃ©
 	 * 
 	 */
 	public void initialiseNomGrade() throws Exception {
@@ -704,7 +704,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER Date de création :
+	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER Date de crÃ©ation :
 	 * (04/10/11 10:27:59)
 	 * 
 	 */
@@ -713,10 +713,10 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (04/10/11 10:27:59)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (04/10/11 10:27:59)
 	 * 
 	 */
 	public boolean performPB_ANNULER(HttpServletRequest request) throws Exception {
@@ -730,7 +730,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_SELECT_GRADE_GENERIQUE Date
-	 * de création : (04/10/11 10:27:59)
+	 * de crÃ©ation : (04/10/11 10:27:59)
 	 * 
 	 */
 	public String getNOM_PB_SELECT_GRADE_GENERIQUE() {
@@ -739,7 +739,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER_GRADE Date de
-	 * création : (04/10/11 10:27:59)
+	 * crÃ©ation : (04/10/11 10:27:59)
 	 * 
 	 */
 	public String getNOM_PB_VALIDER_GRADE() {
@@ -748,7 +748,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER_GRILLE Date de
-	 * création : (04/10/11 10:27:59)
+	 * crÃ©ation : (04/10/11 10:27:59)
 	 * 
 	 */
 	public String getNOM_PB_VALIDER_GRILLE() {
@@ -756,10 +756,10 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (04/10/11 10:27:59)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (04/10/11 10:27:59)
 	 * 
 	 */
 	public boolean performPB_VALIDER_GRADE(HttpServletRequest request) throws Exception {
@@ -783,7 +783,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 				if (getTransaction().isErreur()) {
 					getTransaction().traiterErreur();
 					// "ERR146",
-					// "Le code @ du grade suivant ne correspond à aucun grade."
+					// "Le code @ du grade suivant ne correspond a aucun grade."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR146", cdgrad));
 					return false;
 				}
@@ -792,7 +792,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 			getGradeCourant().modifierGrade(getTransaction());
 			addZone(getNOM_ST_ACTION_GRILLE(), ACTION_CONSULTATION_GRILLE);
 		} else {
-			// on met à jour le code grade suivant
+			// on met a jour le code grade suivant
 			if (getListeGrade().size() != 0) {
 				Grade dernierGrade = getListeGrade().get(getListeGrade().size() - 1);
 				dernierGrade.setCodeGradeSuivant(getGradeCourant().getCodeGrade());
@@ -818,10 +818,10 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (04/10/11 10:27:59)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (04/10/11 10:27:59)
 	 * 
 	 */
 	public boolean performPB_VALIDER_GRILLE(HttpServletRequest request) throws Exception {
@@ -835,7 +835,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 			}
 
 			if (Grade.listerGradeAvecTypeGrade(getTransaction(), getVAL_EF_GRADE().trim()).size() != 0) {
-				// "ERR141","Cette grille existe déjà."
+				// "ERR141","Cette grille existe dÃ©jÃ ."
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR141"));
 				return false;
 			}
@@ -849,7 +849,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * Controle si les champs du formulaire de création d'un grade sont remplis
+	 * Controle si les champs du formulaire de crÃ©ation d'un grade sont remplis
 	 * correctement
 	 * 
 	 * @return boolean
@@ -892,20 +892,20 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 		// champ duree min obligatoire
 		if (getVAL_EF_DUREE_MIN().equals(Const.CHAINE_VIDE)) {
 			// "ERR002","La zone @ est obligatoire."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "durée min"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "durÃ©e min"));
 			return false;
 		}
 
 		// champ duree min numerique
 		if (!Services.estNumerique(getVAL_EF_DUREE_MIN())) {
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "durée min"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "durÃ©e min"));
 			return false;
 		}
 
 		// champ duree moy obligatoire
 		if (getVAL_EF_DUREE_MOY().equals(Const.CHAINE_VIDE)) {
 			// "ERR002","La zone @ est obligatoire."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "durée moyenne"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "durÃ©e moyenne"));
 			return false;
 		}
 
@@ -918,7 +918,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 		// champ duree max obligatoire
 		if (getVAL_EF_DUREE_MAX().equals(Const.CHAINE_VIDE)) {
 			// "ERR002","La zone @ est obligatoire."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "durée max"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "durÃ©e max"));
 			return false;
 		}
 
@@ -932,7 +932,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * Controle si les regles de gestion de création d'un grade sont respectées
+	 * Controle si les regles de gestion de crÃ©ation d'un grade sont respectÃ©es
 	 * 
 	 * @return boolean
 	 */
@@ -945,7 +945,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 			Grade gradeExist = Grade.chercherGrade(getTransaction(), getVAL_EF_CODE_GRADE().toUpperCase());
 			if (!getTransaction().isErreur()) {
 				// listeMessages.put("ERR974",
-				// "Attention, il existe déjà @ avec @. Veuillez contrôler.");
+				// "Attention, il existe dÃ©jÃ  @ avec @. Veuillez contrÃ´ler.");
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "un grade", "ce code"));
 				return false;
 			} else {
@@ -956,7 +956,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 			for (Grade g : gradesExistants)
 				if (g.getCodeGrade().equals(getVAL_EF_CODE_GRADE().toUpperCase())) {
 					// listeMessages.put("ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler.");
+					// "Attention, il existe dÃ©jÃ  @ avec @. Veuillez contrÃ´ler.");
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "un grade", "ce code"));
 					return false;
 				}
@@ -981,9 +981,9 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 				if (!g.getCodeGrade().equals(getVAL_EF_CODE_GRADE()) && g.getCodeClasse().equals(classe.getCodClasse())
 						&& g.getCodeEchelon().equals(echelon.getCodEchelon())) {
 					// listeMessages.put("ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler.");
+					// "Attention, il existe dÃ©jÃ  @ avec @. Veuillez contrÃ´ler.");
 					getTransaction().declarerErreur(
-							MessageUtils.getMessage("ERR974", "un grade", "cette classe et cet échelon"));
+							MessageUtils.getMessage("ERR974", "un grade", "cette classe et cet Ã©chelon"));
 					return false;
 				}
 			}
@@ -998,15 +998,15 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 		}
 
 		if (motifAvct != null && motifAvct.getCode().equals("AD")) {
-			// durée : min <= moy <= max
+			// durÃ©e : min <= moy <= max
 			if (Integer.parseInt(getVAL_EF_DUREE_MIN()) > Integer.parseInt(getVAL_EF_DUREE_MOY())) {
-				// "ERR968", "La zone @ ne peut être supérieure à la zone @."
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR968", "durée min", "durée moyenne"));
+				// "ERR968", "La zone @ ne peut Ãªtre supÃ©rieure Ã  la zone @."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR968", "durÃ©e min", "durÃ©e moyenne"));
 				return false;
 			}
 			if (Integer.parseInt(getVAL_EF_DUREE_MOY()) > Integer.parseInt(getVAL_EF_DUREE_MAX())) {
-				// "ERR968", "La zone @ ne peut être supérieure à la zone @."
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR968", "durée moyenne", "durée max"));
+				// "ERR968", "La zone @ ne peut Ãªtre supÃ©rieure Ã  la zone @."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR968", "durÃ©e moyenne", "durÃ©e max"));
 				return false;
 			}
 
@@ -1015,21 +1015,21 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 						|| motifAvct.getCode().equals("REVA") || motifAvct.getCode().equals("TITU"))) {
 			if (Integer.parseInt(getVAL_EF_DUREE_MIN()) > 0) {
 				// "ERR187",
-				// "Si le motif d'avancement est @. Alors @ doit être égal à 0."
+				// "Si le motif d'avancement est @. Alors @ doit Ãªtre egal a 0."
 				getTransaction().declarerErreur(
-						MessageUtils.getMessage("ERR187", motifAvct.getCode(), "durée minimum"));
+						MessageUtils.getMessage("ERR187", motifAvct.getCode(), "durÃ©e minimum"));
 				return false;
 			}
 			if (Integer.parseInt(getVAL_EF_DUREE_MAX()) > 0) {
 				// "ERR187",
-				// "Si le motif d'avancement est @. Alors @ doit être égal à 0."
+				// "Si le motif d'avancement est @. Alors @ doit Ãªtre egal a 0."
 				getTransaction().declarerErreur(
-						MessageUtils.getMessage("ERR187", motifAvct.getCode(), "durée maximum"));
+						MessageUtils.getMessage("ERR187", motifAvct.getCode(), "durÃ©e maximum"));
 				return false;
 			}
 		} else if (motifAvct != null) {
 			// "ERR188",
-			// "Ce motif d'avancement n'a pas de règle de gestion. Merci de contacter le responsable du projet."
+			// "Ce motif d'avancement n'a pas de regle de gestion. Merci de contacter le responsable du projet."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR188"));
 			return false;
 		}
@@ -1044,7 +1044,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 		if (gradePrecedant != null && Services.estNumerique(gradePrecedant.getIban())) {
 			if (Integer.parseInt(gradePrecedant.getIban()) >= Integer.parseInt(bareme.getIban())) {
 				// "ERR142",
-				// "L'IBAN doit etre supérieur à l'IBAN du grade précédant."
+				// "L'IBAN doit etre supÃ©rieur a l'IBAN du grade prÃ©cÃ©dant."
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR142"));
 				return false;
 			}
@@ -1118,12 +1118,12 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 			motifAvct = (MotifAvancement) getListeMotifAvct().get(numMotifAvct - 1);
 		}
 
-		// grade générique
+		// grade gÃ©nÃ©rique
 		int numGradeGenerique = (Services.estNumerique(getZone(getNOM_LB_GRADE_GENERIQUE_SELECT())) ? Integer
 				.parseInt(getZone(getNOM_LB_GRADE_GENERIQUE_SELECT())) : -1);
 		if (numGradeGenerique == -1 || getListeGradeGenerique().size() == 0
 				|| numGradeGenerique > getListeGradeGenerique().size()) {
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "grades génériques"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "grades gÃ©nÃ©riques"));
 			return false;
 		}
 		GradeGenerique gradeGenerique = (GradeGenerique) getListeGradeGenerique().get(numGradeGenerique);
@@ -1201,7 +1201,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_VISUALISATION Date de
-	 * création : (29/09/11 10:03:38)
+	 * crÃ©ation : (29/09/11 10:03:38)
 	 * 
 	 */
 	public String getNOM_PB_GRADE_SUIVANT(int i) {
@@ -1209,10 +1209,10 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (04/10/11 11:34:53)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (04/10/11 11:34:53)
 	 * 
 	 */
 	public boolean performPB_GRADE_SUIVANT(HttpServletRequest request, int indiceEltAConsulter) throws Exception {
@@ -1220,7 +1220,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 
 		setGradeCourant(new Grade());
 
-		// init de l'échelon courant
+		// init de l'Ã©chelon courant
 		Grade dernierGrade = getListeGrade().get(getListeGrade().size() - 1);
 		if (!initialiseClasseEchelonAncien(request, dernierGrade))
 			return false;
@@ -1280,7 +1280,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_CODE_GRADE Date de
-	 * création : (04/10/11 11:47:54)
+	 * crÃ©ation : (04/10/11 11:47:54)
 	 * 
 	 */
 	public String getNOM_EF_CODE_GRADE() {
@@ -1288,8 +1288,8 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_CODE_GRADE Date de création : (04/10/11 11:47:54)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_CODE_GRADE Date de crÃ©ation : (04/10/11 11:47:54)
 	 * 
 	 */
 	public String getVAL_EF_CODE_GRADE() {
@@ -1298,7 +1298,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_DUREE_MAX Date de
-	 * création : (04/10/11 11:47:54)
+	 * crÃ©ation : (04/10/11 11:47:54)
 	 * 
 	 */
 	public String getNOM_EF_DUREE_MAX() {
@@ -1306,8 +1306,8 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_DUREE_MAX Date de création : (04/10/11 11:47:54)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_DUREE_MAX Date de crÃ©ation : (04/10/11 11:47:54)
 	 * 
 	 */
 	public String getVAL_EF_DUREE_MAX() {
@@ -1316,7 +1316,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_DUREE_MIN Date de
-	 * création : (04/10/11 11:47:54)
+	 * crÃ©ation : (04/10/11 11:47:54)
 	 * 
 	 */
 	public String getNOM_EF_DUREE_MIN() {
@@ -1324,8 +1324,8 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_DUREE_MIN Date de création : (04/10/11 11:47:54)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_DUREE_MIN Date de crÃ©ation : (04/10/11 11:47:54)
 	 * 
 	 */
 	public String getVAL_EF_DUREE_MIN() {
@@ -1334,7 +1334,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_DUREE_MOY Date de
-	 * création : (04/10/11 11:47:54)
+	 * crÃ©ation : (04/10/11 11:47:54)
 	 * 
 	 */
 	public String getNOM_EF_DUREE_MOY() {
@@ -1342,8 +1342,8 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_DUREE_MOY Date de création : (04/10/11 11:47:54)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_DUREE_MOY Date de crÃ©ation : (04/10/11 11:47:54)
 	 * 
 	 */
 	public String getVAL_EF_DUREE_MOY() {
@@ -1352,7 +1352,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_MONTANT_FORFAIT
-	 * Date de création : (04/10/11 11:47:54)
+	 * Date de crÃ©ation : (04/10/11 11:47:54)
 	 * 
 	 */
 	public String getNOM_EF_MONTANT_FORFAIT() {
@@ -1360,8 +1360,8 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_MONTANT_FORFAIT Date de création : (04/10/11 11:47:54)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_MONTANT_FORFAIT Date de crÃ©ation : (04/10/11 11:47:54)
 	 * 
 	 */
 	public String getVAL_EF_MONTANT_FORFAIT() {
@@ -1370,7 +1370,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_MONTANT_PRIME Date
-	 * de création : (04/10/11 11:47:54)
+	 * de crÃ©ation : (04/10/11 11:47:54)
 	 * 
 	 */
 	public String getNOM_EF_MONTANT_PRIME() {
@@ -1378,8 +1378,8 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_MONTANT_PRIME Date de création : (04/10/11 11:47:54)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_MONTANT_PRIME Date de crÃ©ation : (04/10/11 11:47:54)
 	 * 
 	 */
 	public String getVAL_EF_MONTANT_PRIME() {
@@ -1387,8 +1387,8 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom du groupe de radio boutons coché pour la JSP : RG_ACC
-	 * Date de création : (04/10/11 11:47:54)
+	 * Retourne le nom du groupe de radio boutons cochÃ© pour la JSP : RG_ACC
+	 * Date de crÃ©ation : (04/10/11 11:47:54)
 	 * 
 	 */
 	public String getNOM_RG_ACC() {
@@ -1396,8 +1396,8 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur du radio bouton (RB_) coché dans la JSP : RG_ACC Date
-	 * de création : (04/10/11 11:47:54)
+	 * Retourne la valeur du radio bouton (RB_) cochÃ© dans la JSP : RG_ACC Date
+	 * de crÃ©ation : (04/10/11 11:47:54)
 	 * 
 	 */
 	public String getVAL_RG_ACC() {
@@ -1405,8 +1405,8 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom du groupe de radio boutons coché pour la JSP : RG_BM Date
-	 * de création : (04/10/11 11:47:54)
+	 * Retourne le nom du groupe de radio boutons cochÃ© pour la JSP : RG_BM Date
+	 * de crÃ©ation : (04/10/11 11:47:54)
 	 * 
 	 */
 	public String getNOM_RG_BM() {
@@ -1414,8 +1414,8 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur du radio bouton (RB_) coché dans la JSP : RG_BM Date
-	 * de création : (04/10/11 11:47:54)
+	 * Retourne la valeur du radio bouton (RB_) cochÃ© dans la JSP : RG_BM Date
+	 * de crÃ©ation : (04/10/11 11:47:54)
 	 * 
 	 */
 	public String getVAL_RG_BM() {
@@ -1423,8 +1423,8 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom du groupe de radio boutons coché pour la JSP :
-	 * RG_CODE_GRILLE Date de création : (04/10/11 11:47:54)
+	 * Retourne le nom du groupe de radio boutons cochÃ© pour la JSP :
+	 * RG_CODE_GRILLE Date de crÃ©ation : (04/10/11 11:47:54)
 	 * 
 	 */
 	public String getNOM_RG_CODE_GRILLE() {
@@ -1432,8 +1432,8 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur du radio bouton (RB_) coché dans la JSP :
-	 * RG_CODE_GRILLE Date de création : (04/10/11 11:47:54)
+	 * Retourne la valeur du radio bouton (RB_) cochÃ© dans la JSP :
+	 * RG_CODE_GRILLE Date de crÃ©ation : (04/10/11 11:47:54)
 	 * 
 	 */
 	public String getVAL_RG_CODE_GRILLE() {
@@ -1441,7 +1441,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom du radio bouton pour la JSP : RB_FR Date de création :
+	 * Retourne le nom du radio bouton pour la JSP : RB_FR Date de crÃ©ation :
 	 * (04/10/11 11:47:54)
 	 * 
 	 */
@@ -1450,7 +1450,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom du radio bouton pour la JSP : RB_NC Date de création :
+	 * Retourne le nom du radio bouton pour la JSP : RB_NC Date de crÃ©ation :
 	 * (04/10/11 11:47:54)
 	 * 
 	 */
@@ -1459,7 +1459,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom du radio bouton pour la JSP : RB_NON Date de création :
+	 * Retourne le nom du radio bouton pour la JSP : RB_NON Date de crÃ©ation :
 	 * (04/10/11 11:47:54)
 	 * 
 	 */
@@ -1468,7 +1468,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom du radio bouton pour la JSP : RB_OUI Date de création :
+	 * Retourne le nom du radio bouton pour la JSP : RB_OUI Date de crÃ©ation :
 	 * (04/10/11 11:47:54)
 	 * 
 	 */
@@ -1486,7 +1486,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_MODIFIER_GRADE Date de
-	 * création : (05/10/11 15:31:07)
+	 * crÃ©ation : (05/10/11 15:31:07)
 	 * 
 	 */
 	public String getNOM_PB_MODIFIER_GRADE(int i) {
@@ -1494,20 +1494,20 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (05/10/11 15:31:07)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (05/10/11 15:31:07)
 	 * 
 	 */
 	public boolean performPB_MODIFIER_GRADE(HttpServletRequest request, int indiceEltAConsulter) throws Exception {
-		// Récup du grade courant
+		// RÃ©cup du grade courant
 		Grade gradeCourant = getListeGrade().get(indiceEltAConsulter);
 		setGradeCourant(gradeCourant);
 
 		videZonesDeSaisie(request);
 
-		// init de l'échelon courant
+		// init de l'Ã©chelon courant
 		if (!initialiseClasseEchelonCourant(request))
 			return false;
 
@@ -1520,7 +1520,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_CREER_GRADE Date de création
+	 * Retourne le nom d'un bouton pour la JSP : PB_CREER_GRADE Date de crÃ©ation
 	 * : (06/10/11 10:14:07)
 	 * 
 	 */
@@ -1529,10 +1529,10 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (06/10/11 10:14:07)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (06/10/11 10:14:07)
 	 * 
 	 */
 	public boolean performPB_CREER_GRADE(HttpServletRequest request) throws Exception {
@@ -1541,7 +1541,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 
 		setGradeCourant(new Grade());
 
-		// init de l'échelon courant
+		// init de l'Ã©chelon courant
 		if (!initialiseClasseEchelonCourant(request))
 			return false;
 
@@ -1551,15 +1551,15 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de l'écran (notamment pour déterminer les droits
-	 * associés).
+	 * Retourne le nom de l'Ã©cran (notamment pour dÃ©terminer les droits
+	 * associÃ©s).
 	 */
 	public String getNomEcran() {
 		return "ECR-PARAM-GRADE-GRADES";
 	}
 
 	/**
-	 * Constructeur du process OePARAMETRAGEGrade. Date de création : (18/10/11
+	 * Constructeur du process OePARAMETRAGEGrade. Date de crÃ©ation : (18/10/11
 	 * 16:01:01)
 	 * 
 	 */
@@ -1569,7 +1569,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_CONSULTER_GRADE Date de
-	 * création : (18/10/11 16:01:01)
+	 * crÃ©ation : (18/10/11 16:01:01)
 	 * 
 	 */
 	public String getNOM_PB_CONSULTER_GRADE(int i) {
@@ -1577,20 +1577,20 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (18/10/11 16:01:01)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (18/10/11 16:01:01)
 	 * 
 	 */
 	public boolean performPB_CONSULTER_GRADE(HttpServletRequest request, int indiceEltAConsulter) throws Exception {
-		// Récup du grade courant
+		// RÃ©cup du grade courant
 		Grade gradeCourant = getListeGrade().get(indiceEltAConsulter);
 		setGradeCourant(gradeCourant);
 
 		videZonesDeSaisie(request);
 
-		// init de l'échelon courant
+		// init de l'Ã©chelon courant
 		if (!initialiseClasseEchelonCourant(request))
 			return false;
 
@@ -1604,7 +1604,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_CONSULTER_GRILLE Date de
-	 * création : (18/10/11 16:01:01)
+	 * crÃ©ation : (18/10/11 16:01:01)
 	 * 
 	 */
 	public String getNOM_PB_CONSULTER_GRILLE(int i) {
@@ -1612,15 +1612,15 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (18/10/11 16:01:01)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (18/10/11 16:01:01)
 	 * 
 	 */
 	public boolean performPB_CONSULTER_GRILLE(HttpServletRequest request, int indiceEltAConsulter) throws Exception {
 
-		// Récup du grille courant
+		// RÃ©cup du grille courant
 		Grade grilleGradeCourant = getListeGrille().get(indiceEltAConsulter);
 		setGrilleCourant(grilleGradeCourant);
 
@@ -1640,8 +1640,8 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	private String[] LB_BAREME;
 
 	/**
-	 * Méthode appelée par la servlet qui aiguille le traitement : en fonction
-	 * du bouton de la JSP Date de création : (04/10/11 09:04:41)
+	 * mÃ©thode appelee par la servlet qui aiguille le traitement : en fonction
+	 * du bouton de la JSP Date de crÃ©ation : (04/10/11 09:04:41)
 	 * 
 	 */
 	public boolean recupererStatut(HttpServletRequest request) throws Exception {
@@ -1708,14 +1708,14 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 			}
 
 		}
-		// Si TAG INPUT non géré par le process
+		// Si TAG INPUT non gÃ©rÃ© par le process
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
 
 	/**
-	 * Retourne le nom de la JSP du process Zone à utiliser dans un champ caché
-	 * dans chaque formulaire de la JSP. Date de création : (02/11/11 08:44:31)
+	 * Retourne le nom de la JSP du process Zone a utiliser dans un champ cache
+	 * dans chaque formulaire de la JSP. Date de crÃ©ation : (02/11/11 08:44:31)
 	 * 
 	 */
 	public String getJSP() {
@@ -1723,7 +1723,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * Getter de la liste avec un lazy initialize : LB_BAREME Date de création :
+	 * Getter de la liste avec un lazy initialize : LB_BAREME Date de crÃ©ation :
 	 * (02/11/11 08:44:31)
 	 * 
 	 */
@@ -1734,7 +1734,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_BAREME Date de création : (02/11/11 08:44:31)
+	 * Setter de la liste: LB_BAREME Date de crÃ©ation : (02/11/11 08:44:31)
 	 * 
 	 */
 	private void setLB_BAREME(String[] newLB_BAREME) {
@@ -1742,7 +1742,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_BAREME Date de création :
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_BAREME Date de crÃ©ation :
 	 * (02/11/11 08:44:31)
 	 * 
 	 */
@@ -1751,8 +1751,8 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_BAREME_SELECT Date de création : (02/11/11 08:44:31)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_BAREME_SELECT Date de crÃ©ation : (02/11/11 08:44:31)
 	 * 
 	 */
 	public String getNOM_LB_BAREME_SELECT() {
@@ -1760,8 +1760,8 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_BAREME Date de création : (02/11/11 08:44:31)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_BAREME Date de crÃ©ation : (02/11/11 08:44:31)
 	 * 
 	 */
 	public String[] getVAL_LB_BAREME() {
@@ -1769,8 +1769,8 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_BAREME Date de création : (02/11/11 08:44:31)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_BAREME Date de crÃ©ation : (02/11/11 08:44:31)
 	 * 
 	 */
 	public String getVAL_LB_BAREME_SELECT() {
@@ -1793,7 +1793,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_CODE_GRADE Date de
-	 * création : (18/08/11 10:21:15)
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_CODE_GRADE(int i) {
@@ -1801,8 +1801,8 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_CODE_GRADE
-	 * Date de création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_CODE_GRADE
+	 * Date de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_CODE_GRADE(int i) {
@@ -1811,7 +1811,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_LIB_GRADE Date de
-	 * création : (18/08/11 10:21:15)
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_LIB_GRADE(int i) {
@@ -1819,8 +1819,8 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_LIB_GRADE Date
-	 * de création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_LIB_GRADE Date
+	 * de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_LIB_GRADE(int i) {
@@ -1829,7 +1829,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_IBA_GRADE Date de
-	 * création : (18/08/11 10:21:15)
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_IBA_GRADE(int i) {
@@ -1837,8 +1837,8 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_IBA_GRADE Date
-	 * de création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_IBA_GRADE Date
+	 * de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_IBA_GRADE(int i) {
@@ -1847,7 +1847,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_GRADE_SUIVANT Date
-	 * de création : (18/08/11 10:21:15)
+	 * de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_GRADE_SUIVANT(int i) {
@@ -1855,8 +1855,8 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_GRADE_SUIVANT
-	 * Date de création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_GRADE_SUIVANT
+	 * Date de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_GRADE_SUIVANT(int i) {
@@ -1865,7 +1865,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_LIB_GRADE_GRILLE
-	 * Date de création : (18/08/11 10:21:15)
+	 * Date de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_LIB_GRADE_GRILLE(int i) {
@@ -1873,8 +1873,8 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
-	 * ST_LIB_GRADE_GRILLE Date de création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone :
+	 * ST_LIB_GRADE_GRILLE Date de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_LIB_GRADE_GRILLE(int i) {
@@ -1883,7 +1883,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_ACTIF_GRADE_GRILLE
-	 * Date de création : (18/08/11 10:21:15)
+	 * Date de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_ACTIF_GRADE_GRILLE(int i) {
@@ -1891,8 +1891,8 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
-	 * ST_ACTIF_GRADE_GRILLE Date de création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone :
+	 * ST_ACTIF_GRADE_GRILLE Date de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_ACTIF_GRADE_GRILLE(int i) {

@@ -54,7 +54,7 @@ import org.springframework.context.ApplicationContext;
 import com.oreilly.servlet.MultipartRequest;
 
 /**
- * Process OeAGENTAccidentTravail Date de création : (30/06/11 13:56:32)
+ * Process OeAGENTAccidentTravail Date de crÃ©ation : (30/06/11 13:56:32)
  * 
  */
 public class OeAGENTAccidentTravail extends BasicProcess {
@@ -81,11 +81,11 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 	public String ACTION_SUPPRESSION = "Suppression d'une fiche AT.";
 	public String ACTION_CONSULTATION = "Consultation d'une fiche AT.";
 	private String ACTION_MODIFICATION = "Modification d'une fiche AT.";
-	private String ACTION_CREATION = "Création d'une fiche AT.";
+	private String ACTION_CREATION = "CrÃ©ation d'une fiche AT.";
 
 	public String ACTION_DOCUMENT = "Documents d'une fiche AT.";
 	public String ACTION_DOCUMENT_SUPPRESSION = "Suppression d'un document d'une fiche AT.";
-	public String ACTION_DOCUMENT_CREATION = "Création d'un document d'une fiche AT.";
+	public String ACTION_DOCUMENT_CREATION = "CrÃ©ation d'un document d'une fiche AT.";
 	private ArrayList<Document> listeDocuments;
 	private Document documentCourant;
 	private DocumentAgent lienDocumentAgentCourant;
@@ -102,7 +102,7 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 	private DocumentDao documentDao;
 
 	/**
-	 * Constructeur du process OeAGENTAccidentTravail. Date de création :
+	 * Constructeur du process OeAGENTAccidentTravail. Date de crÃ©ation :
 	 * (30/06/11 13:56:32)
 	 * 
 	 */
@@ -111,10 +111,10 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 	}
 
 	/**
-	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones Ã  afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
-	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
-	 * addZone(getNOMxxx, String); Date de création : (30/06/11 14:19:10)
+	 * doivent avoir les Fields PUBLIC Utilisation de la mÃ©thode
+	 * addZone(getNOMxxx, String); Date de crÃ©ation : (30/06/11 14:19:10)
 	 * 
 	 * RG_AG_AT_C01 RG_AG_AT_C02
 	 */
@@ -128,10 +128,10 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 			isImporting = false;
 		}
 
-		// Vérification des droits d'accès.
+		// VÃ©rification des droits d'acces.
 		if (MairieUtils.estInterdit(request, getNomEcran())) {
 			// "ERR190",
-			// "Opération impossible. Vous ne disposez pas des droits d'accès à cette option."
+			// "Operation impossible. Vous ne disposez pas des droits d'acces a cette option."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
@@ -166,7 +166,7 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 			}
 		}
 
-		// Si hashtable des sièges de lésion vide
+		// Si hashtable des sieges de lÃ©sion vide
 		// RG_AG_AT_C02
 
 		if (getHashSiegeLesion().size() == 0) {
@@ -233,7 +233,7 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 
 	/**
 	 * Initialisation de la liste des accidents du travail de l'agent courant
-	 * Date de création : (30/06/11)
+	 * Date de crÃ©ation : (30/06/11)
 	 */
 	private void initialiseListeAT(HttpServletRequest request) throws Exception {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
@@ -310,7 +310,7 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 	}
 
 	/**
-	 * Réinitilise les champs du formulaire de création/modification d'un
+	 * RÃ©initilise les champs du formulaire de crÃ©ation/modification d'un
 	 * accident de travail
 	 */
 	private void videZonesDeSaisie(HttpServletRequest request) throws Exception {
@@ -324,7 +324,7 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 
 	/**
 	 * Initilise les zones de saisie du formulaire de modification d'un accident
-	 * de travail Date de création : 11/07/01
+	 * de travail Date de crÃ©ation : 11/07/01
 	 */
 	private boolean initialiseATCourant(HttpServletRequest request) throws Exception {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
@@ -377,7 +377,7 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 
 		} else {
 
-			// vérification de la validité du formulaire
+			// VÃ©rification de la validitÃ© du formulaire
 			if (!performControlerChamps(request)) {
 				return false;
 			}
@@ -397,7 +397,7 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 				}
 			}
 
-			// récupération des informations remplies dans les zones de saisie
+			// rÃ©cupÃ©ration des informations remplies dans les zones de saisie
 			String date = Services.formateDate(getZone(getNOM_EF_DATE()));
 			String dateInit = getZone(getNOM_EF_DATE_INITIALE()).equals(Const.CHAINE_VIDE) ? null : Services
 					.formateDate(getZone(getNOM_EF_DATE_INITIALE()));
@@ -418,13 +418,13 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 
 			if (numLigneSiege == -1 || getListeSiegeLesion().size() == 0
 					|| numLigneSiege > getListeSiegeLesion().size()) {
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "sièges de lésion"));
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "siÃ¨ges de lÃ©sion"));
 				return false;
 			}
 
 			SiegeLesion siege = (SiegeLesion) getListeSiegeLesion().get(numLigneSiege - 1);
 
-			// Vérification si la PA de l'agent donne le droit à accidents du
+			// VÃ©rification si la PA de l'agent donne le droit a accidents du
 			// travail.
 			// RG_AG_AT_A02
 			ArrayList<PositionAdmAgent> listePA = PositionAdmAgent.listerPositionAdmAgentAvecAgent(getTransaction(),
@@ -442,7 +442,7 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 				}
 			}
 
-			// Création de l'objet VisiteMedicale à créer/modifier
+			// CrÃ©ation de l'objet VisiteMedicale a crÃ©er/modifier
 			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 			Agent agentCourant = getAgentCourant();
 			getAccidentTravailCourant().setIdAgent(agentCourant.getIdAgent());
@@ -459,7 +459,7 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 						getAccidentTravailCourant().getIdAgent(), getAccidentTravailCourant().getDateAt(),
 						getAccidentTravailCourant().getDateAtInitial(), getAccidentTravailCourant().getNbJoursItt());
 			} else if (getZone(getNOM_ST_ACTION()).equals(ACTION_CREATION)) {
-				// Création
+				// CrÃ©ation
 				getAccidentTravailDao().creerAccidentTravail(getAccidentTravailCourant().getIdTypeAt(),
 						getAccidentTravailCourant().getIdSiege(), getAccidentTravailCourant().getIdAgent(),
 						getAccidentTravailCourant().getDateAt(), getAccidentTravailCourant().getDateAtInitial(),
@@ -472,7 +472,7 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 		// On a fini l'action
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 
-		// Tout s'est bien passé
+		// Tout s'est bien passÃ©
 		commitTransaction();
 		initialiseListeAT(request);
 
@@ -480,11 +480,11 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 	}
 
 	/**
-	 * Vérifie les règles de gestion de saisie (champs obligatoires, ...) du
+	 * VÃ©rifie les regles de gestion de saisie (champs obligatoires, ...) du
 	 * formulaire d'accident du travail
 	 * 
 	 * @param request
-	 * @return true si les règles de gestion sont respectées. false sinon.
+	 * @return true si les regles de gestion sont respectÃ©es. false sinon.
 	 * @throws Exception
 	 *             RG_AG_AT_A01
 	 */
@@ -538,7 +538,7 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 		// duree ITT
 		if (!(Const.CHAINE_VIDE).equals(getZone(getNOM_EF_NB_JOUR_IIT()))
 				&& !Services.estNumerique(getZone(getNOM_EF_NB_JOUR_IIT()))) {
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "durée ITT"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "durÃ©e ITT"));
 			return false;
 		}
 
@@ -550,11 +550,11 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 			return false;
 		}
 
-		// siège des lésions obligatoire
+		// siege des lÃ©sions obligatoire
 		int indiceRecommandation = (Services.estNumerique(getVAL_LB_SIEGE_LESION_SELECT()) ? Integer
 				.parseInt(getVAL_LB_SIEGE_LESION_SELECT()) : -1);
 		if (indiceRecommandation < 1) {
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "siège des lésions"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "siÃ¨ge des lÃ©sions"));
 			return false;
 		}
 
@@ -823,7 +823,7 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 			}
 
 		}
-		// Si TAG INPUT non géré par le process
+		// Si TAG INPUT non gÃ©rÃ© par le process
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
@@ -880,7 +880,7 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 
-		// Récup de l'AT courant
+		// RÃ©cup de l'AT courant
 		AccidentTravail accidentCourant = (AccidentTravail) getListeAT().get(indiceEltAModifier);
 		setAccidentTravailCourant(accidentCourant);
 
@@ -904,7 +904,7 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 
-		// Récup de l'AT courant
+		// RÃ©cup de l'AT courant
 		AccidentTravail accidentCourant = (AccidentTravail) getListeAT().get(indiceEltAConsulter);
 		setAccidentTravailCourant(accidentCourant);
 
@@ -928,7 +928,7 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 
-		// Récup de l'AT courant
+		// RÃ©cup de l'AT courant
 		AccidentTravail accCourant = (AccidentTravail) getListeAT().get(indiceEltDocument);
 		setAccidentTravailCourant(accCourant);
 
@@ -1073,7 +1073,7 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 
 		String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_LECTURE");
 
-		// Récup du document courant
+		// RÃ©cup du document courant
 		Document d = (Document) getListeDocuments().get(indiceEltAConsulter);
 		// on affiche le document
 		setURLFichier(getScriptOuverture(repertoireStockage + d.getLienDocument()));
@@ -1113,7 +1113,7 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 
-		// Récup du Diplome courant
+		// RÃ©cup du Diplome courant
 		Document d = (Document) getListeDocuments().get(indiceEltASuprimer);
 		setDocumentCourant(d);
 
@@ -1131,7 +1131,7 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 
 	private boolean initialiseDocumentSuppression(HttpServletRequest request) throws Exception {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-		// Récup du Diplome courant
+		// RÃ©cup du Diplome courant
 		Document d = getDocumentCourant();
 
 		DocumentAgent lda = getLienDocumentAgentDao().chercherDocumentAgent(getAgentCourant().getIdAgent(),
@@ -1214,7 +1214,7 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 			logger.error("Erreur suppression physique du fichier : " + e.toString());
 		}
 
-		// tout s'est bien passé
+		// tout s'est bien passÃ©
 		commitTransaction();
 		// Alim zones
 		addZone(getNOM_ST_NOM_DOC(), Const.CHAINE_VIDE);
@@ -1253,7 +1253,7 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 		if (multi.getFile(getNOM_EF_LIENDOCUMENT()) != null) {
 			fichierUpload = multi.getFile(getNOM_EF_LIENDOCUMENT());
 		}
-		// Contrôle des champs
+		// Controle des champs
 		if (!performControlerSaisieDocument(request))
 			return false;
 
@@ -1262,12 +1262,12 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 		if (getZone(getNOM_ST_WARNING()).equals(Const.CHAINE_VIDE)) {
 			String dateJour = new SimpleDateFormat("ddMMyyyy-hhmm").format(new Date()).toString();
 
-			// on controle si il y a dejà un fichier pour cet AT
+			// on controle si il y a deja un fichier pour cet AT
 			if (!performControlerFichier(request, "AT_" + at.getIdAt() + "_" + dateJour)) {
 				// alors on affiche un message pour prevenir que l'on va ecraser
 				// le fichier precedent
 				addZone(getNOM_ST_WARNING(),
-						"Attention un fichier du même type existe déjà pour cette accident du travail. Etes-vous sûr de vouloir écraser la version précédente ?");
+						"Attention un fichier du mÃªme type existe dÃ©jÃ  pour cette accident du travail. Etes-vous sÃ»r de vouloir Ã©craser la version prÃ©cÃ©dente ?");
 				return true;
 			}
 
@@ -1276,7 +1276,7 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 			}
 
 		} else {
-			// on supprime le document existant dans la base de données
+			// on supprime le document existant dans la base de donnÃ©es
 			Document d = getDocumentDao().chercherDocumentByContainsNom("AT_" + at.getIdAt());
 			DocumentAgent l = getLienDocumentAgentDao().chercherDocumentAgent(getAgentCourant().getIdAgent(),
 					d.getIdDocument());
@@ -1299,14 +1299,14 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 		initialiseListeDocuments(request);
 		addZone(getNOM_ST_ACTION(), ACTION_DOCUMENT);
 
-		// on met à jour le tableau des AT pour avoir le nombre de documents
+		// on met a jour le tableau des AT pour avoir le nombre de documents
 		initialiseListeAT(request);
 
 		return true;
 	}
 
 	private boolean creeDocument(HttpServletRequest request, AccidentTravail at) throws Exception {
-		// on crée l'entrée dans la table
+		// on crÃ©e l'entrÃ©e dans la table
 		setDocumentCourant(new Document());
 		// on recupere le fichier mis dans le repertoire temporaire
 		if (fichierUpload == null) {
@@ -1314,7 +1314,7 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 			return false;
 		}
 
-		// on recupère le type de document
+		// on recupere le type de document
 		String codTypeDoc = "AT";
 		TypeDocument td = getTypeDocumentDao().chercherTypeDocumentByCod(codTypeDoc);
 		String extension = fichierUpload.getName().substring(fichierUpload.getName().indexOf('.'),
@@ -1333,7 +1333,7 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 		if (!upload)
 			return false;
 
-		// on crée le document en base de données
+		// on crÃ©e le document en base de donnÃ©es
 		getDocumentCourant().setLienDocument(codTypeDoc + "/" + nom);
 		getDocumentCourant().setIdTypeDocument(td.getIdTypeDocument());
 		getDocumentCourant().setNomOriginal(fichierUpload.getName());
@@ -1354,7 +1354,7 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 		if (getTransaction().isErreur())
 			return false;
 
-		// Tout s'est bien passé
+		// Tout s'est bien passÃ©
 		commitTransaction();
 		addZone(getNOM_EF_COMMENTAIRE(), Const.CHAINE_VIDE);
 
@@ -1441,7 +1441,7 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 	}
 
 	private void verifieRepertoire(String codTypeDoc) {
-		// on verifie déjà que le repertoire source existe
+		// on verifie dÃ©jÃ  que le repertoire source existe
 		String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ACTES");
 		File dossierParent = new File(repPartage);
 		if (!dossierParent.exists()) {
@@ -1469,7 +1469,7 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 
 	private boolean performControlerFichier(HttpServletRequest request, String nomFichier) {
 		boolean result = true;
-		// on regarde dans la liste des document si il y a une entrée avec ce
+		// on regarde dans la liste des document si il y a une entrÃ©e avec ce
 		// nom de contrat
 		for (Iterator<Document> iter = getListeDocuments().iterator(); iter.hasNext();) {
 			Document doc = (Document) iter.next();

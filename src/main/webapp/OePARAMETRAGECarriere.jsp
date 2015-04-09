@@ -1,4 +1,4 @@
-<!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@ page contentType="text/html; charset=UTF-8" %> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <%@page import="nc.mairie.enums.EnumTypeDroit"%>
 <%@page import="nc.mairie.utils.MairieUtils"%>
 <HTML>
@@ -7,16 +7,16 @@
 		<META name="GENERATOR" content="IBM WebSphere Page Designer V3.5.3 for Windows">
 		<META http-equiv="Content-Style-Type" content="text/css">
 		<LINK href="theme/sigp2.css" rel="stylesheet" type="text/css">
-		<TITLE>Gestion des paramètres des carrières</TITLE>
+		<TITLE>Gestion des paramÃ¨tres des carriÃ¨res</TITLE>
 		
 		<SCRIPT language="JavaScript">
-		//afin de sélectionner un élément dans une liste
+		//afin de sÃ©lectionner un Ã©lÃ©ment dans une liste
 		function executeBouton(nom)
 		{
 			document.formu.elements[nom].click();
 		}
 
-		// afin de mettre le focus sur une zone précise
+		// afin de mettre le focus sur une zone prÃ©cise
 		function setfocus(nom)
 		{
 		if (document.formu.elements[nom] != null)
@@ -25,7 +25,7 @@
 		
 		</SCRIPT>
 		
-		<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	</HEAD>
 	<jsp:useBean class="nc.mairie.gestionagent.process.parametre.OePARAMETRAGECarriere" id="process" scope="session"></jsp:useBean>
 	<BODY bgcolor="#FFFFFF" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" class="sigp2-BODY" onload="window.parent.frames['refAgent'].location.reload();return setfocus('<%= process.getFocus() %>')" >
@@ -39,7 +39,7 @@
 						<FIELDSET class="sigp2Fieldset"  style="text-align: left;">
 					    	<legend class="sigp2Legend">Liste des bases horaires</legend>
 							<span class="sigp2-saisie" style="margin-left: 5px;">Code</span>
-							<span class="sigp2-saisie" style="margin-left: 20px;">Libellé</span>
+							<span class="sigp2-saisie" style="margin-left: 20px;">LibellÃ©</span>
 							<SELECT name="<%= process.getNOM_LB_SPBASE() %>" size="10"
 								style="width:100%;" class="sigp2-liste">
 								<%=process.forComboHTML(process.getVAL_LB_SPBASE(), process.getVAL_LB_SPBASE_SELECT()) %>
@@ -56,7 +56,7 @@
 			            	<table>
 								<tr>
 									<td colspan="3">
-											<label class="sigp2Mandatory" style="color: red;">Les heures sont à saisir sous la forme "H.Mn"</label>
+											<label class="sigp2Mandatory" style="color: red;">Les heures sont Ã  saisir sous la forme "H.Mn"</label>
 									</td>
 								</tr>
 			            		<tr>
@@ -67,7 +67,7 @@
 										<INPUT class="sigp2-saisiemajuscule" maxlength="1" name="<%= process.getNOM_EF_CODE_SPBASE() %>" size="5" type="text" value="<%= process.getVAL_EF_CODE_SPBASE() %>">
 			            			</td>
 			            			<td>
-										<label class="sigp2Mandatory">Libellé :</label>
+										<label class="sigp2Mandatory">LibellÃ© :</label>
 			            			</td>
 			            			<td>
 										<INPUT class="sigp2-saisiemajuscule" maxlength="20" name="<%= process.getNOM_EF_LIB_SPBASE() %>" size="20" type="text" value="<%= process.getVAL_EF_LIB_SPBASE() %>">
@@ -129,7 +129,7 @@
 			            		</tr>
 			            		<tr>
 			            			<td colspan="2">
-										<label class="sigp2Mandatory">Base légale hebdomadaire :</label>
+										<label class="sigp2Mandatory">Base lÃ©gale hebdomadaire :</label>
 			            			</td>
 			            			<td>
 										<INPUT class="sigp2-saisiemajuscule" maxlength="2" name="<%= process.getNOM_EF_BASE_HEBDO_LEG_H_SPBASE() %>" size="5" type="text" value="<%= process.getVAL_EF_BASE_HEBDO_LEG_H_SPBASE() %>"><span class="sigp2-saisie">H</span>
@@ -160,7 +160,7 @@
 							<table>
 								<tr>
 									<td colspan="3">
-											<label class="sigp2Mandatory" style="color: red;">Les heures sont à saisir sous la forme "H.Mn"</label>
+											<label class="sigp2Mandatory" style="color: red;">Les heures sont Ã  saisir sous la forme "H.Mn"</label>
 									</td>
 								</tr>
 								<tr>
@@ -171,7 +171,7 @@
 										<INPUT class="sigp2-saisiemajuscule" disabled="disabled" name="<%= process.getNOM_EF_CODE_SPBASE() %>" size="5" type="text" value="<%= process.getVAL_EF_CODE_SPBASE() %>">
 									</td>
 									<td>
-										<label class="sigp2Mandatory">Libellé :</label>
+										<label class="sigp2Mandatory">LibellÃ© :</label>
 									</td>
 									<td>
 										<INPUT class="sigp2-saisiemajuscule" maxlength="20" name="<%= process.getNOM_EF_LIB_SPBASE() %>" size="20" type="text" value="<%= process.getVAL_EF_LIB_SPBASE() %>">
@@ -231,7 +231,7 @@
 								</tr>
 			            		<tr>
 			            			<td colspan="2">
-										<label class="sigp2Mandatory">Base légale hebdomadaire :</label>
+										<label class="sigp2Mandatory">Base lÃ©gale hebdomadaire :</label>
 			            			</td>
 			            			<td>
 										<INPUT class="sigp2-saisiemajuscule" maxlength="2" name="<%= process.getNOM_EF_BASE_HEBDO_LEG_H_SPBASE() %>" size="5" type="text" value="<%= process.getVAL_EF_BASE_HEBDO_LEG_H_SPBASE() %>"><span class="sigp2-saisie">H</span>
@@ -264,8 +264,8 @@
 					</td>
 					<td>
 						<FIELDSET class="sigp2Fieldset"  style="text-align: left;">
-					    	<legend class="sigp2Legend">Motifs des carrières</legend>
-							<span class="sigp2-saisie" style="margin-left: 5px;">Libellé</span>
+					    	<legend class="sigp2Legend">Motifs des carriÃ¨res</legend>
+							<span class="sigp2-saisie" style="margin-left: 5px;">LibellÃ©</span>
 							<SELECT name="<%= process.getNOM_LB_MOTIF() %>" size="10" style="width:100%;" class="sigp2-liste">
 								<%=process.forComboHTML(process.getVAL_LB_MOTIF(), process.getVAL_LB_MOTIF_SELECT()) %>
 							</SELECT>
@@ -282,7 +282,7 @@
 							<table>
 								<tr>
 									<td width="50px;">
-										<label class="sigp2Mandatory">Libellé:</label>
+										<label class="sigp2Mandatory">LibellÃ©:</label>
 									</td>
 									<td>
 										<INPUT class="sigp2-saisie" maxlength="50" name="<%= process.getNOM_EF_LIB_MOTIF() %>" size="35" type="text" value="<%= process.getVAL_EF_LIB_MOTIF() %>">
@@ -301,7 +301,7 @@
 							<table>
 								<tr>
 									<td width="50px;">
-										<label class="sigp2Mandatory">Libellé:</label>
+										<label class="sigp2Mandatory">LibellÃ©:</label>
 									</td>
 									<td>
 										<INPUT class="sigp2-saisie" maxlength="50" disabled="disabled" name="<%= process.getNOM_EF_LIB_MOTIF() %>" size="35" type="text" value="<%= process.getVAL_EF_LIB_MOTIF() %>">

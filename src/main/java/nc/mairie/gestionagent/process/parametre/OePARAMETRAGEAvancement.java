@@ -36,7 +36,7 @@ import nc.mairie.utils.MessageUtils;
 import org.springframework.context.ApplicationContext;
 
 /**
- * Process OePARAMETRAGERecrutement Date de création : (14/09/11 13:52:54)
+ * Process OePARAMETRAGERecrutement Date de crÃ©ation : (14/09/11 13:52:54)
  * 
  */
 public class OePARAMETRAGEAvancement extends BasicProcess {
@@ -95,10 +95,10 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	public String focus = null;
 
 	/**
-	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones Ã  afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
-	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
-	 * addZone(getNOMxxx, String); Date de création : (14/09/11 13:52:54)
+	 * doivent avoir les Fields PUBLIC Utilisation de la mÃ©thode
+	 * addZone(getNOMxxx, String); Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public void initialiseZones(HttpServletRequest request) throws Exception {
@@ -106,11 +106,11 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 		VariableGlobale.ajouter(request, "PROCESS_MEMORISE", this);
 
 		// ----------------------------------//
-		// Vérification des droits d'accès. //
+		// VÃ©rification des droits d'acces. //
 		// ----------------------------------//
 		if (MairieUtils.estInterdit(request, getNomEcran())) {
 			// "ERR190",
-			// "Opération impossible. Vous ne disposez pas des droits d'accès à cette option."
+			// "Operation impossible. Vous ne disposez pas des droits d'acces a cette option."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
@@ -149,7 +149,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	private void initialiseListeCorpsCap(HttpServletRequest request) {
-		// Afiichage des corps deja présent
+		// Afiichage des corps deja prÃ©sent
 		if (getListeCorpsCap().size() > 0) {
 			for (int i = 0; i < getListeCorps().size(); i++) {
 				GradeGenerique gg = getListeCorps().get(i);
@@ -241,7 +241,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Initialisation de la listes des cap Date de création : (14/09/11)
+	 * Initialisation de la listes des cap Date de crÃ©ation : (14/09/11)
 	 * 
 	 */
 	private void initialiseListeCap(HttpServletRequest request) throws Exception {
@@ -300,7 +300,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Initialisation de la listes des employeurs Date de création : (14/09/11)
+	 * Initialisation de la listes des employeurs Date de crÃ©ation : (14/09/11)
 	 * 
 	 */
 	private void initialiseListeEmployeur(HttpServletRequest request) throws Exception {
@@ -322,7 +322,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Initialisation de la listes des représentants Date de création :
+	 * Initialisation de la listes des reprÃ©sentants Date de crÃ©ation :
 	 * (14/09/11)
 	 * 
 	 */
@@ -348,7 +348,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Initialisation de la listes des types de représentants Date de création :
+	 * Initialisation de la listes des types de reprÃ©sentants Date de crÃ©ation :
 	 * (14/09/11)
 	 * 
 	 */
@@ -373,7 +373,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Initialisation de la listes des types de délibération Date de création :
+	 * Initialisation de la listes des types de dÃ©libÃ©ration Date de crÃ©ation :
 	 * (14/09/11)
 	 * 
 	 */
@@ -401,7 +401,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Initialisation de la listes des délibérations Date de création :
+	 * Initialisation de la listes des dÃ©libÃ©rations Date de crÃ©ation :
 	 * (14/09/11)
 	 * 
 	 */
@@ -424,7 +424,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Constructeur du process OePARAMETRAGEAvancement. Date de création :
+	 * Constructeur du process OePARAMETRAGEAvancement. Date de crÃ©ation :
 	 * (14/09/11 13:52:54)
 	 * 
 	 */
@@ -433,8 +433,8 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Méthode appelée par la servlet qui aiguille le traitement : en fonction
-	 * du bouton de la JSP Date de création : (14/09/11 13:52:54)
+	 * mÃ©thode appelee par la servlet qui aiguille le traitement : en fonction
+	 * du bouton de la JSP Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public boolean recupererStatut(HttpServletRequest request) throws Exception {
@@ -558,14 +558,14 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 			}
 
 		}
-		// Si TAG INPUT non géré par le process
+		// Si TAG INPUT non gÃ©rÃ© par le process
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
 
 	/**
-	 * Retourne le nom de la JSP du process Zone à utiliser dans un champ caché
-	 * dans chaque formulaire de la JSP. Date de création : (14/09/11 15:20:21)
+	 * Retourne le nom de la JSP du process Zone a utiliser dans un champ cache
+	 * dans chaque formulaire de la JSP. Date de crÃ©ation : (14/09/11 15:20:21)
 	 * 
 	 */
 	public String getJSP() {
@@ -573,8 +573,8 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de l'écran (notamment pour déterminer les droits
-	 * associés).
+	 * Retourne le nom de l'Ã©cran (notamment pour dÃ©terminer les droits
+	 * associÃ©s).
 	 */
 	public String getNomEcran() {
 		return "ECR-PARAM-AVANCEMENT";
@@ -582,7 +582,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_ACTION_EMPLOYEUR
-	 * Date de création : (14/09/11 13:52:54)
+	 * Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getNOM_ST_ACTION_EMPLOYEUR() {
@@ -590,8 +590,8 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
-	 * ST_ACTION_EMPLOYEUR Date de création : (14/09/11 13:52:54)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone :
+	 * ST_ACTION_EMPLOYEUR Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getVAL_ST_ACTION_EMPLOYEUR() {
@@ -600,7 +600,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_EMPLOYEUR Date de
-	 * création : (14/09/11 13:52:54)
+	 * crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getNOM_EF_EMPLOYEUR() {
@@ -608,8 +608,8 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_EMPLOYEUR Date de création : (14/09/11 13:52:54)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_EMPLOYEUR Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getVAL_EF_EMPLOYEUR() {
@@ -618,7 +618,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_TITRE_EMPLOYEUR
-	 * Date de création : (14/09/11 13:52:54)
+	 * Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getNOM_EF_TITRE_EMPLOYEUR() {
@@ -626,8 +626,8 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_TITRE_EMPLOYEUR Date de création : (14/09/11 13:52:54)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_TITRE_EMPLOYEUR Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getVAL_EF_TITRE_EMPLOYEUR() {
@@ -636,7 +636,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 
 	/**
 	 * Getter de la liste avec un lazy initialize : LB_EMPLOYEUR Date de
-	 * création : (14/09/11 13:52:54)
+	 * crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	private String[] getLB_EMPLOYEUR() {
@@ -646,7 +646,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_EMPLOYEUR Date de création : (14/09/11 13:52:54)
+	 * Setter de la liste: LB_EMPLOYEUR Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	private void setLB_EMPLOYEUR(String[] newLB_EMPLOYEUR) {
@@ -655,7 +655,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 
 	/**
 	 * Retourne le nom de la zone pour la JSP : NOM_LB_EMPLOYEUR Date de
-	 * création : (14/09/11 13:52:54)
+	 * crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getNOM_LB_EMPLOYEUR() {
@@ -663,8 +663,8 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_EMPLOYEUR_SELECT Date de création : (14/09/11 13:52:54)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_EMPLOYEUR_SELECT Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getNOM_LB_EMPLOYEUR_SELECT() {
@@ -672,8 +672,8 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_EMPLOYEUR Date de création : (14/09/11 13:52:54)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_EMPLOYEUR Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String[] getVAL_LB_EMPLOYEUR() {
@@ -681,8 +681,8 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_EMPLOYEUR Date de création : (14/09/11 13:52:54)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_EMPLOYEUR Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getVAL_LB_EMPLOYEUR_SELECT() {
@@ -709,7 +709,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER_EMPLOYEUR Date de
-	 * création : (14/09/11 13:52:54)
+	 * crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getNOM_PB_ANNULER_EMPLOYEUR() {
@@ -717,10 +717,10 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (14/09/11 13:52:54)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public boolean performPB_ANNULER_EMPLOYEUR(HttpServletRequest request) throws Exception {
@@ -732,7 +732,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_CREER_EMPLOYEUR Date de
-	 * création : (14/09/11 13:52:54)
+	 * crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getNOM_PB_CREER_EMPLOYEUR() {
@@ -740,10 +740,10 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (14/09/11 13:52:54)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public boolean performPB_CREER_EMPLOYEUR(HttpServletRequest request) throws Exception {
@@ -759,7 +759,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMER_EMPLOYEUR Date de
-	 * création : (14/09/11 13:52:54)
+	 * crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getNOM_PB_SUPPRIMER_EMPLOYEUR() {
@@ -767,10 +767,10 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (14/09/11 13:52:54)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public boolean performPB_SUPPRIMER_EMPLOYEUR(HttpServletRequest request) throws Exception {
@@ -793,7 +793,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER_EMPLOYEUR Date de
-	 * création : (14/09/11 13:52:54)
+	 * crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getNOM_PB_VALIDER_EMPLOYEUR() {
@@ -801,10 +801,10 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (14/09/11 13:52:54)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public boolean performPB_VALIDER_EMPLOYEUR(HttpServletRequest request) throws Exception {
@@ -841,13 +841,13 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Contrôle les zones saisies d'un employeur Date de création : (14/09/11)
+	 * Controle les zones saisies d'un employeur Date de crÃ©ation : (14/09/11)
 	 */
 	private boolean performControlerSaisieEmployeur(HttpServletRequest request) throws Exception {
-		// Verification libellé employeur not null
+		// Verification libellÃ© employeur not null
 		if (getZone(getNOM_EF_EMPLOYEUR()).length() == 0) {
 			// "ERR002","La zone @ est obligatoire."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "libellé"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "libellÃ©"));
 			return false;
 		}
 		// Verification titre employeur not null
@@ -860,32 +860,32 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Contrôle les règles de gestion d'un employeur Date de création :
+	 * Controle les regles de gestion d'un employeur Date de crÃ©ation :
 	 * (14/09/11)
 	 */
 	private boolean performControlerRegleGestionEmployeur(HttpServletRequest request) throws Exception {
-		// Verification si suppression d'un employeur utilisée sur une CAP
+		// Verification si suppression d'un employeur utilisee sur une CAP
 		if (getVAL_ST_ACTION_EMPLOYEUR().equals(ACTION_SUPPRESSION)
 				&& getEmployeurCapDao().listerEmployeurCapParEmployeur(getEmployeurCourant().getIdEmployeur()).size() > 0) {
 			// "ERR989",
-			// "Suppression impossible. Il existe au moins @ rattaché à @."
+			// "Suppression impossible. Il existe au moins @ rattachÃ© a @."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR989", "une CAP", "cet employeur"));
 			return false;
 		}
 
-		// Vérification des contraintes d'unicité de l'employeur
+		// VÃ©rification des contraintes d'unicitÃ© de l'employeur
 		if (getVAL_ST_ACTION_EMPLOYEUR().equals(ACTION_CREATION)) {
 
 			for (Employeur emp : getListeEmployeur()) {
 				if (emp.getLibEmployeur().equals(getVAL_EF_EMPLOYEUR())) {
 					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "un employeur", "ce libellé"));
+					// "Attention, il existe dÃ©jÃ  @ avec @. Veuillez contrÃ´ler."
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "un employeur", "ce libellÃ©"));
 					return false;
 				}
 				if (emp.getTitreEmployeur().equals(getVAL_EF_TITRE_EMPLOYEUR())) {
 					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
+					// "Attention, il existe dÃ©jÃ  @ avec @. Veuillez contrÃ´ler."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "un employeur", "ce titre"));
 					return false;
 				}
@@ -913,7 +913,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 
 	/**
 	 * Getter de la liste avec un lazy initialize : LB_REPRESENTANT Date de
-	 * création : (14/09/11 13:52:54)
+	 * crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	private String[] getLB_REPRESENTANT() {
@@ -923,7 +923,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_REPRESENTANT Date de création : (14/09/11
+	 * Setter de la liste: LB_REPRESENTANT Date de crÃ©ation : (14/09/11
 	 * 13:52:54)
 	 * 
 	 */
@@ -933,7 +933,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 
 	/**
 	 * Retourne le nom de la zone pour la JSP : NOM_LB_REPRESENTANT Date de
-	 * création : (14/09/11 13:52:54)
+	 * crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getNOM_LB_REPRESENTANT() {
@@ -941,8 +941,8 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_REPRESENTANT_SELECT Date de création : (14/09/11 13:52:54)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_REPRESENTANT_SELECT Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getNOM_LB_REPRESENTANT_SELECT() {
@@ -950,8 +950,8 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_REPRESENTANT Date de création : (14/09/11 13:52:54)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_REPRESENTANT Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String[] getVAL_LB_REPRESENTANT() {
@@ -960,7 +960,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_ACTION_REPRESENTANT
-	 * Date de création : (14/09/11 13:52:54)
+	 * Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getNOM_ST_ACTION_REPRESENTANT() {
@@ -968,8 +968,8 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
-	 * ST_ACTION_REPRESENTANT Date de création : (14/09/11 13:52:54)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone :
+	 * ST_ACTION_REPRESENTANT Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getVAL_ST_ACTION_REPRESENTANT() {
@@ -977,8 +977,8 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_REPRESENTANT Date de création : (14/09/11 13:52:54)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_REPRESENTANT Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getVAL_LB_REPRESENTANT_SELECT() {
@@ -1005,7 +1005,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER_REPRESENTANT Date de
-	 * création : (14/09/11 13:52:54)
+	 * crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getNOM_PB_ANNULER_REPRESENTANT() {
@@ -1013,10 +1013,10 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (14/09/11 13:52:54)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public boolean performPB_ANNULER_REPRESENTANT(HttpServletRequest request) throws Exception {
@@ -1029,7 +1029,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_CREER_REPRESENTANT Date de
-	 * création : (14/09/11 13:52:54)
+	 * crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getNOM_PB_CREER_REPRESENTANT() {
@@ -1037,10 +1037,10 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (14/09/11 13:52:54)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public boolean performPB_CREER_REPRESENTANT(HttpServletRequest request) throws Exception {
@@ -1058,7 +1058,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMER_REPRESENTANT Date
-	 * de création : (14/09/11 13:52:54)
+	 * de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getNOM_PB_SUPPRIMER_REPRESENTANT() {
@@ -1066,10 +1066,10 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (14/09/11 13:52:54)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public boolean performPB_SUPPRIMER_REPRESENTANT(HttpServletRequest request) throws Exception {
@@ -1088,7 +1088,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 
 			addZone(getNOM_ST_ACTION_REPRESENTANT(), ACTION_SUPPRESSION);
 		} else {
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "représentants"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "reprÃ©sentants"));
 		}
 
 		setFocus(getNOM_PB_ANNULER_REPRESENTANT());
@@ -1098,7 +1098,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER_REPRESENTANT Date de
-	 * création : (14/09/11 13:52:54)
+	 * crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getNOM_PB_VALIDER_REPRESENTANT() {
@@ -1106,10 +1106,10 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (14/09/11 13:52:54)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public boolean performPB_VALIDER_REPRESENTANT(HttpServletRequest request) throws Exception {
@@ -1149,7 +1149,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Contrôle les zones saisies d'un employeur Date de création : (14/09/11)
+	 * Controle les zones saisies d'un employeur Date de crÃ©ation : (14/09/11)
 	 */
 	private boolean performControlerSaisieRepresentant(HttpServletRequest request) throws Exception {
 		// Verification nom representant not null
@@ -1161,29 +1161,29 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 		// Verification prenom representant not null
 		if (getZone(getNOM_EF_PRENOM_REPRESENTANT()).length() == 0) {
 			// "ERR002","La zone @ est obligatoire."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "prénom"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "prÃ©nom"));
 			return false;
 		}
 		return true;
 	}
 
 	/**
-	 * Contrôle les règles de gestion d'un employeur Date de création :
+	 * Controle les regles de gestion d'un employeur Date de crÃ©ation :
 	 * (14/09/11)
 	 */
 	private boolean performControlerRegleGestionRepresentant(HttpServletRequest request) throws Exception {
-		// Verification si suppression d'un employeur utilisée sur une
+		// Verification si suppression d'un employeur utilisee sur une
 		// cap
 		if (getVAL_ST_ACTION_REPRESENTANT().equals(ACTION_SUPPRESSION)
 				&& getRepresentantCapDao().listerRepresentantCapParRepresentant(
 						getRepresentantCourant().getIdRepresentant()).size() > 0) {
 			// "ERR989",
-			// "Suppression impossible. Il existe au moins @ rattaché à @."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR989", "une CAP", "ce représentant"));
+			// "Suppression impossible. Il existe au moins @ rattachÃ© a @."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR989", "une CAP", "ce reprÃ©sentant"));
 			return false;
 		}
 
-		// Vérification des contraintes d'unicité de l'employeur
+		// VÃ©rification des contraintes d'unicitÃ© de l'employeur
 		if (getVAL_ST_ACTION_REPRESENTANT().equals(ACTION_CREATION)) {
 
 			for (Representant repre : getListeRepresentant()) {
@@ -1191,9 +1191,9 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 						&& repre.getPrenomRepresentant().trim()
 								.equals(getVAL_EF_PRENOM_REPRESENTANT().toUpperCase().trim())) {
 					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
+					// "Attention, il existe dÃ©jÃ  @ avec @. Veuillez contrÃ´ler."
 					getTransaction().declarerErreur(
-							MessageUtils.getMessage("ERR974", "un représentant", "ce nom et ce prénom"));
+							MessageUtils.getMessage("ERR974", "un reprÃ©sentant", "ce nom et ce prÃ©nom"));
 					return false;
 				}
 			}
@@ -1204,7 +1204,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 
 	/**
 	 * Getter de la liste avec un lazy initialize : LB_TYPE_REPRESENTANT Date de
-	 * création : (14/09/11 13:52:54)
+	 * crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	private String[] getLB_TYPE_REPRESENTANT() {
@@ -1214,7 +1214,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_TYPE_REPRESENTANT Date de création : (14/09/11
+	 * Setter de la liste: LB_TYPE_REPRESENTANT Date de crÃ©ation : (14/09/11
 	 * 13:52:54)
 	 * 
 	 */
@@ -1224,7 +1224,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 
 	/**
 	 * Retourne le nom de la zone pour la JSP : NOM_LB_TYPE_REPRESENTANT Date de
-	 * création : (14/09/11 13:52:54)
+	 * crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getNOM_LB_TYPE_REPRESENTANT() {
@@ -1232,8 +1232,8 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_TYPE_REPRESENTANT_SELECT Date de création : (14/09/11 13:52:54)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_TYPE_REPRESENTANT_SELECT Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getNOM_LB_TYPE_REPRESENTANT_SELECT() {
@@ -1241,8 +1241,8 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_TYPE_REPRESENTANT Date de création : (14/09/11 13:52:54)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_TYPE_REPRESENTANT Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String[] getVAL_LB_TYPE_REPRESENTANT() {
@@ -1250,8 +1250,8 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_TYPE_REPRESENTANT Date de création : (14/09/11 13:52:54)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_TYPE_REPRESENTANT Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getVAL_LB_TYPE_REPRESENTANT_SELECT() {
@@ -1278,7 +1278,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_NOM_REPRESENTANT
-	 * Date de création : (14/09/11 13:52:54)
+	 * Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getNOM_EF_NOM_REPRESENTANT() {
@@ -1286,8 +1286,8 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_NOM_REPRESENTANT Date de création : (14/09/11 13:52:54)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_NOM_REPRESENTANT Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getVAL_EF_NOM_REPRESENTANT() {
@@ -1296,7 +1296,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_PRENOM_REPRESENTANT
-	 * Date de création : (14/09/11 13:52:54)
+	 * Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getNOM_EF_PRENOM_REPRESENTANT() {
@@ -1304,8 +1304,8 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_PRENOM_REPRESENTANT Date de création : (14/09/11 13:52:54)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_PRENOM_REPRESENTANT Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getVAL_EF_PRENOM_REPRESENTANT() {
@@ -1358,7 +1358,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 
 	/**
 	 * Retourne le nom de la zone pour la JSP : NOM_LB_DELIBERATION Date de
-	 * création : (14/09/11 13:52:54)
+	 * crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getNOM_LB_DELIBERATION() {
@@ -1366,8 +1366,8 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_DELIBERATION_SELECT Date de création : (14/09/11 13:52:54)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_DELIBERATION_SELECT Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getNOM_LB_DELIBERATION_SELECT() {
@@ -1375,8 +1375,8 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_DELIBERATION Date de création : (14/09/11 13:52:54)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_DELIBERATION Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String[] getVAL_LB_DELIBERATION() {
@@ -1384,8 +1384,8 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_DELIBERATION Date de création : (14/09/11 13:52:54)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_DELIBERATION Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getVAL_LB_DELIBERATION_SELECT() {
@@ -1394,7 +1394,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_ACTION_DELIBERATION
-	 * Date de création : (14/09/11 13:52:54)
+	 * Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getNOM_ST_ACTION_DELIBERATION() {
@@ -1402,8 +1402,8 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
-	 * ST_ACTION_DELIBERATION Date de création : (14/09/11 13:52:54)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone :
+	 * ST_ACTION_DELIBERATION Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getVAL_ST_ACTION_DELIBERATION() {
@@ -1412,7 +1412,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER_DELIBERATION Date de
-	 * création : (14/09/11 13:52:54)
+	 * crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getNOM_PB_ANNULER_DELIBERATION() {
@@ -1420,10 +1420,10 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (14/09/11 13:52:54)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public boolean performPB_ANNULER_DELIBERATION(HttpServletRequest request) throws Exception {
@@ -1436,7 +1436,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_CREER_DELIBERATION Date de
-	 * création : (14/09/11 13:52:54)
+	 * crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getNOM_PB_CREER_DELIBERATION() {
@@ -1444,10 +1444,10 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (14/09/11 13:52:54)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public boolean performPB_CREER_DELIBERATION(HttpServletRequest request) throws Exception {
@@ -1465,7 +1465,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMER_DELIBERATION Date
-	 * de création : (14/09/11 13:52:54)
+	 * de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getNOM_PB_SUPPRIMER_DELIBERATION() {
@@ -1473,10 +1473,10 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (14/09/11 13:52:54)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public boolean performPB_SUPPRIMER_DELIBERATION(HttpServletRequest request) throws Exception {
@@ -1495,7 +1495,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 
 			addZone(getNOM_ST_ACTION_DELIBERATION(), ACTION_SUPPRESSION);
 		} else {
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "délibérations"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "dÃ©libÃ©rations"));
 		}
 
 		setFocus(getNOM_PB_ANNULER_DELIBERATION());
@@ -1505,7 +1505,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER_DELIBERATION Date de
-	 * création : (14/09/11 13:52:54)
+	 * crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getNOM_PB_VALIDER_DELIBERATION() {
@@ -1513,10 +1513,10 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (14/09/11 13:52:54)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public boolean performPB_VALIDER_DELIBERATION(HttpServletRequest request) throws Exception {
@@ -1530,7 +1530,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 			if (getVAL_ST_ACTION_DELIBERATION().equals(ACTION_CREATION)) {
 				setDeliberationCourant(new Deliberation());
 
-				// on recupere le type de déliberation
+				// on recupere le type de dÃ©liberation
 				int indiceTypeDelib = (Services.estNumerique(getVAL_LB_TYPE_DELIBERATION_SELECT()) ? Integer
 						.parseInt(getVAL_LB_TYPE_DELIBERATION_SELECT()) : -1);
 				String typeDelib = Const.CHAINE_VIDE;
@@ -1553,7 +1553,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 				setDeliberationCourant(null);
 			} else if (getVAL_ST_ACTION_DELIBERATION().equals(ACTION_MODIFICATION)) {
 
-				// on recupere le type de déliberation
+				// on recupere le type de dÃ©liberation
 				int indiceTypeDelib = (Services.estNumerique(getVAL_LB_TYPE_DELIBERATION_SELECT()) ? Integer
 						.parseInt(getVAL_LB_TYPE_DELIBERATION_SELECT()) : -1);
 				String typeDelib = Const.CHAINE_VIDE;
@@ -1578,7 +1578,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_CODE_DELIBERATION
-	 * Date de création : (14/09/11 13:52:54)
+	 * Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getNOM_EF_CODE_DELIBERATION() {
@@ -1586,8 +1586,8 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_CODE_DELIBERATION Date de création : (14/09/11 13:52:54)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_CODE_DELIBERATION Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getVAL_EF_CODE_DELIBERATION() {
@@ -1596,7 +1596,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_LIB_DELIBERATION
-	 * Date de création : (14/09/11 13:52:54)
+	 * Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getNOM_EF_LIB_DELIBERATION() {
@@ -1604,8 +1604,8 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_LIB_DELIBERATION Date de création : (14/09/11 13:52:54)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_LIB_DELIBERATION Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getVAL_EF_LIB_DELIBERATION() {
@@ -1614,7 +1614,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP :
-	 * EF_TEXTE_CAP_DELIBERATION Date de création : (14/09/11 13:52:54)
+	 * EF_TEXTE_CAP_DELIBERATION Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getNOM_EF_TEXTE_CAP_DELIBERATION() {
@@ -1622,8 +1622,8 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_TEXTE_CAP_DELIBERATION Date de création : (14/09/11 13:52:54)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_TEXTE_CAP_DELIBERATION Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getVAL_EF_TEXTE_CAP_DELIBERATION() {
@@ -1631,20 +1631,20 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Contrôle les zones saisies d'une délibération Date de création :
+	 * Controle les zones saisies d'une dÃ©libÃ©ration Date de crÃ©ation :
 	 * (14/09/11)
 	 */
 	private boolean performControlerSaisieDeliberation(HttpServletRequest request) throws Exception {
-		// Verification code délibération not null
+		// Verification code dÃ©libÃ©ration not null
 		if (getZone(getNOM_EF_CODE_DELIBERATION()).length() == 0) {
 			// "ERR002","La zone @ est obligatoire."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "code"));
 			return false;
 		}
-		// Verification libellé délibération not null
+		// Verification libellÃ© dÃ©libÃ©ration not null
 		if (getZone(getNOM_EF_LIB_DELIBERATION()).length() == 0) {
 			// "ERR002","La zone @ est obligatoire."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "libellé"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "libellÃ©"));
 			return false;
 		}
 		// Verification texte CAP not null
@@ -1657,38 +1657,38 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Contrôle les règles de gestion d'une délibération Date de création :
+	 * Controle les regles de gestion d'une dÃ©libÃ©ration Date de crÃ©ation :
 	 * (14/09/11)
 	 */
 	private boolean performControlerRegleGestionDeliberation(HttpServletRequest request) throws Exception {
-		// Verification si suppression d'une délibération utilisée sur un
-		// grade générique
+		// Verification si suppression d'une dÃ©libÃ©ration utilisee sur un
+		// grade gÃ©nÃ©rique
 
 		if (getVAL_ST_ACTION_DELIBERATION().equals(ACTION_SUPPRESSION)
 				&& GradeGenerique.listerGradeGeneriqueAvecDeliberation(getTransaction(),
 						getDeliberationCourant().getIdDeliberation()).size() > 0) {
 			// "ERR989",
-			// "Suppression impossible. Il existe au moins @ rattaché à @."
+			// "Suppression impossible. Il existe au moins @ rattachÃ© a @."
 			getTransaction()
-					.declarerErreur(MessageUtils.getMessage("ERR989", "une délibération", "un grade générique"));
+					.declarerErreur(MessageUtils.getMessage("ERR989", "une dÃ©libÃ©ration", "un grade gÃ©nÃ©rique"));
 			return false;
 		}
 
-		// Vérification des contraintes d'unicité de la délibération
+		// VÃ©rification des contraintes d'unicitÃ© de la dÃ©libÃ©ration
 		if (getVAL_ST_ACTION_DELIBERATION().equals(ACTION_CREATION)) {
 
 			for (Deliberation delib : getListeDeliberation()) {
 				if (delib.getCodeDeliberation().equals(getVAL_EF_CODE_DELIBERATION().toUpperCase())) {
 					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "une délibération", "ce code"));
+					// "Attention, il existe dÃ©jÃ  @ avec @. Veuillez contrÃ´ler."
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "une dÃ©libÃ©ration", "ce code"));
 					return false;
 				}
 				if (delib.getLibDeliberation().equals(getVAL_EF_LIB_DELIBERATION().toUpperCase())) {
 					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
+					// "Attention, il existe dÃ©jÃ  @ avec @. Veuillez contrÃ´ler."
 					getTransaction()
-							.declarerErreur(MessageUtils.getMessage("ERR974", "une délibération", "ce libellé"));
+							.declarerErreur(MessageUtils.getMessage("ERR974", "une dÃ©libÃ©ration", "ce libellÃ©"));
 					return false;
 				}
 			}
@@ -1707,7 +1707,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 
 	/**
 	 * Getter de la liste avec un lazy initialize : LB_TYPE_DELIBERATION Date de
-	 * création : (14/09/11 13:52:54)
+	 * crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	private String[] getLB_TYPE_DELIBERATION() {
@@ -1717,7 +1717,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_TYPE_DELIBERATION Date de création : (14/09/11
+	 * Setter de la liste: LB_TYPE_DELIBERATION Date de crÃ©ation : (14/09/11
 	 * 13:52:54)
 	 * 
 	 */
@@ -1727,7 +1727,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 
 	/**
 	 * Retourne le nom de la zone pour la JSP : NOM_LB_TYPE_DELIBERATION Date de
-	 * création : (14/09/11 13:52:54)
+	 * crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getNOM_LB_TYPE_DELIBERATION() {
@@ -1735,8 +1735,8 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_TYPE_DELIBERATION_SELECT Date de création : (14/09/11 13:52:54)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_TYPE_DELIBERATION_SELECT Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getNOM_LB_TYPE_DELIBERATION_SELECT() {
@@ -1744,8 +1744,8 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_TYPE_DELIBERATION Date de création : (14/09/11 13:52:54)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_TYPE_DELIBERATION Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String[] getVAL_LB_TYPE_DELIBERATION() {
@@ -1753,8 +1753,8 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_TYPE_DELIBERATION Date de création : (14/09/11 13:52:54)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_TYPE_DELIBERATION Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getVAL_LB_TYPE_DELIBERATION_SELECT() {
@@ -1772,7 +1772,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_CAP Date de création :
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_CAP Date de crÃ©ation :
 	 * (14/09/11 13:52:54)
 	 * 
 	 */
@@ -1781,8 +1781,8 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_CAP_SELECT Date de création : (14/09/11 13:52:54)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_CAP_SELECT Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getNOM_LB_CAP_SELECT() {
@@ -1790,8 +1790,8 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_CAP Date de création : (14/09/11 13:52:54)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_CAP Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String[] getVAL_LB_CAP() {
@@ -1799,8 +1799,8 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_CAP Date de création : (14/09/11 13:52:54)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_CAP Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getVAL_LB_CAP_SELECT() {
@@ -1809,7 +1809,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_ACTION_CAP Date de
-	 * création : (14/09/11 13:52:54)
+	 * crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getNOM_ST_ACTION_CAP() {
@@ -1817,8 +1817,8 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACTION_CAP
-	 * Date de création : (14/09/11 13:52:54)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_ACTION_CAP
+	 * Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getVAL_ST_ACTION_CAP() {
@@ -1826,7 +1826,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER_CAP Date de création
+	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER_CAP Date de crÃ©ation
 	 * : (14/09/11 13:52:54)
 	 * 
 	 */
@@ -1835,10 +1835,10 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (14/09/11 13:52:54)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public boolean performPB_ANNULER_CAP(HttpServletRequest request) throws Exception {
@@ -1849,7 +1849,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_CREER_CAP Date de création :
+	 * Retourne le nom d'un bouton pour la JSP : PB_CREER_CAP Date de crÃ©ation :
 	 * (14/09/11 13:52:54)
 	 * 
 	 */
@@ -1858,10 +1858,10 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (14/09/11 13:52:54)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public boolean performPB_CREER_CAP(HttpServletRequest request) throws Exception {
@@ -1887,7 +1887,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMER_CAP Date de
-	 * création : (14/09/11 13:52:54)
+	 * crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getNOM_PB_SUPPRIMER_CAP() {
@@ -1895,10 +1895,10 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (14/09/11 13:52:54)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public boolean performPB_SUPPRIMER_CAP(HttpServletRequest request) throws Exception {
@@ -1926,7 +1926,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 			}
 			setListeEmployeurCap(listeTempEmp);
 
-			// on affiche la liste des représentant CAP
+			// on affiche la liste des reprÃ©sentant CAP
 			ArrayList<RepresentantCap> listeRepreCap = getRepresentantCapDao().listerRepresentantCapParCap(
 					getCapCourant().getIdCap());
 			ArrayList<Representant> listeTempRepre = new ArrayList<Representant>();
@@ -1957,7 +1957,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER_CAP Date de création
+	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER_CAP Date de crÃ©ation
 	 * : (14/09/11 13:52:54)
 	 * 
 	 */
@@ -1966,10 +1966,10 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (14/09/11 13:52:54)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public boolean performPB_VALIDER_CAP(HttpServletRequest request) throws Exception {
@@ -1981,7 +1981,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 				setListeCorpsCap(null);
 				ArrayList<GradeGenerique> listeCorps = new ArrayList<GradeGenerique>();
 				for (int i = 0; i < getListeCorps().size(); i++) {
-					// on recupère la ligne concernée
+					// on recupere la ligne concernÃ©e
 					GradeGenerique gg = (GradeGenerique) getListeCorps().get(i);
 					if (getVAL_CK_SELECT_LIGNE_CORPS(i).equals(getCHECKED_ON())) {
 						listeCorps.add(gg);
@@ -2002,7 +2002,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 					// modification
 				}
 
-				// on recupere le type de déliberation
+				// on recupere le type de dÃ©liberation
 				int indicetypeCap = (Services.estNumerique(getVAL_LB_TYPE_CAP_SELECT()) ? Integer
 						.parseInt(getVAL_LB_TYPE_CAP_SELECT()) : -1);
 				String typeCap = Const.CHAINE_VIDE;
@@ -2030,13 +2030,13 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 							getCapCourant().getRefCap(), getCapCourant().getDescription(),
 							getCapCourant().getTypeCap(), getCapCourant().getCapVdn());
 
-					// on supprime les corps liés
+					// on supprime les corps liÃ©s
 					getCorpsCapDao().supprimerCorpsCapParCap(getCapCourant().getIdCap());
 
-					// on supprime les employeurs liés
+					// on supprime les employeurs liÃ©s
 					getEmployeurCapDao().supprimerEmployeurCapParCap(getCapCourant().getIdCap());
 
-					// on supprime les employeurs liés
+					// on supprime les employeurs liÃ©s
 					getRepresentantCapDao().supprimerRepresentantCapParCap(getCapCourant().getIdCap());
 				}
 
@@ -2053,7 +2053,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 				}
 				setListeEmployeurCap(null);
 
-				// on ajoute les représentants CAP
+				// on ajoute les reprÃ©sentants CAP
 				for (int i = 0; i < getListeRepresentantCap().size(); i++) {
 					getRepresentantCapDao().creerRepresentantCap(getListeRepresentantCap().get(i).getIdRepresentant(),
 							capAjoute.getIdCap(), i);
@@ -2061,13 +2061,13 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 				setListeRepresentantCap(null);
 
 			} else if (getVAL_ST_ACTION_CAP().equals(ACTION_SUPPRESSION)) {
-				// on supprime les corps liés
+				// on supprime les corps liÃ©s
 				getCorpsCapDao().supprimerCorpsCapParCap(getCapCourant().getIdCap());
 
-				// on supprime les employeurs liés
+				// on supprime les employeurs liÃ©s
 				getEmployeurCapDao().supprimerEmployeurCapParCap(getCapCourant().getIdCap());
 
-				// on supprime les employeurs liés
+				// on supprime les employeurs liÃ©s
 				getRepresentantCapDao().supprimerRepresentantCapParCap(getCapCourant().getIdCap());
 
 				getCapDao().supprimerCap(getCapCourant().getIdCap());
@@ -2108,7 +2108,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_CODE_CAP Date de
-	 * création : (14/09/11 13:52:54)
+	 * crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getNOM_EF_CODE_CAP() {
@@ -2116,8 +2116,8 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_CODE_CAP Date de création : (14/09/11 13:52:54)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_CODE_CAP Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getVAL_EF_CODE_CAP() {
@@ -2126,7 +2126,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_REF_CAP Date de
-	 * création : (14/09/11 13:52:54)
+	 * crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getNOM_EF_REF_CAP() {
@@ -2134,8 +2134,8 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_REF_CAP Date de création : (14/09/11 13:52:54)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_REF_CAP Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getVAL_EF_REF_CAP() {
@@ -2144,7 +2144,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_DESCRIPTION_CAP
-	 * Date de création : (14/09/11 13:52:54)
+	 * Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getNOM_EF_DESCRIPTION_CAP() {
@@ -2152,8 +2152,8 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_DESCRIPTION_CAP Date de création : (14/09/11 13:52:54)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_DESCRIPTION_CAP Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getVAL_EF_DESCRIPTION_CAP() {
@@ -2161,13 +2161,13 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Contrôle les zones saisies d'une cap Date de création : (14/09/11)
+	 * Controle les zones saisies d'une cap Date de crÃ©ation : (14/09/11)
 	 */
 	private boolean performControlerSaisieCap(HttpServletRequest request) throws Exception {
 		// Verification reference cap not null
 		if (getZone(getNOM_EF_REF_CAP()).length() == 0) {
 			// "ERR002","La zone @ est obligatoire."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "référence"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "rÃ©fÃ©rence"));
 			setFocus(getDefaultFocus());
 			return false;
 		}
@@ -2201,7 +2201,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 		// **********************************
 		if (getListeRepresentantCap() == null || getListeRepresentantCap().size() == 0) {
 			// "ERR002","La zone @ est obligatoire."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "Représentants"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "ReprÃ©sentants"));
 			setFocus(getDefaultFocus());
 			return false;
 		}
@@ -2219,17 +2219,17 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Contrôle les règles de gestion d'une cap Date de création : (14/09/11)
+	 * Controle les regles de gestion d'une cap Date de crÃ©ation : (14/09/11)
 	 */
 	private boolean performControlerRegleGestionCap(HttpServletRequest request) throws Exception {
 
-		// Vérification des contraintes d'unicité de la cap
+		// VÃ©rification des contraintes d'unicitÃ© de la cap
 		if (getVAL_ST_ACTION_CAP().equals(ACTION_CREATION)) {
 
 			for (Cap cap : getListeCap()) {
 				if (cap.getCodeCap().equals(getVAL_EF_CODE_CAP().toUpperCase())) {
 					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
+					// "Attention, il existe dÃ©jÃ  @ avec @. Veuillez contrÃ´ler."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "une CAP", "ce code"));
 					setFocus(getDefaultFocus());
 					return false;
@@ -2237,12 +2237,12 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 			}
 		}
 
-		// Vérification des contraintes d'unicité de la cap
+		// VÃ©rification des contraintes d'unicitÃ© de la cap
 		if (getVAL_ST_ACTION_CAP().equals(ACTION_MODIFICATION)) {
 			for (Cap cap : getListeCap()) {
 				if (cap.getCodeCap().equals(getVAL_EF_CODE_CAP().toUpperCase()) && (!cap.equals(getCapCourant()))) {
 					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
+					// "Attention, il existe dÃ©jÃ  @ avec @. Veuillez contrÃ´ler."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "une CAP", "ce code"));
 					setFocus(getDefaultFocus());
 					return false;
@@ -2302,7 +2302,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Getter de la liste avec un lazy initialize : LB_CORPS Date de création :
+	 * Getter de la liste avec un lazy initialize : LB_CORPS Date de crÃ©ation :
 	 * (14/09/11 13:52:54)
 	 * 
 	 */
@@ -2313,7 +2313,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_CORPS Date de création : (14/09/11 13:52:54)
+	 * Setter de la liste: LB_CORPS Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	private void setLB_CORPS(String[] newLB_CORPS) {
@@ -2321,7 +2321,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_CORPS Date de création :
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_CORPS Date de crÃ©ation :
 	 * (14/09/11 13:52:54)
 	 * 
 	 */
@@ -2330,8 +2330,8 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_CORPS_SELECT Date de création : (14/09/11 13:52:54)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_CORPS_SELECT Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getNOM_LB_CORPS_SELECT() {
@@ -2339,8 +2339,8 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_CORPS Date de création : (14/09/11 13:52:54)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_CORPS Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String[] getVAL_LB_CORPS() {
@@ -2348,8 +2348,8 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la case à cocher sélectionnée pour la JSP :
-	 * CK_SELECT_LIGNE_CORPS Date de création : (21/11/11 09:55:36)
+	 * Retourne le nom de la case Ã  cocher sÃ©lectionnÃ©e pour la JSP :
+	 * CK_SELECT_LIGNE_CORPS Date de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_CK_SELECT_LIGNE_CORPS(int i) {
@@ -2357,8 +2357,8 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur de la case à cocher à afficher par la JSP pour la case
-	 * à cocher : CK_SELECT_LIGNE_CORPS Date de création : (21/11/11 09:55:36)
+	 * Retourne la valeur de la case Ã  cocher Ã  afficher par la JSP pour la case
+	 * a cocher : CK_SELECT_LIGNE_CORPS Date de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_CK_SELECT_LIGNE_CORPS(int i) {
@@ -2375,7 +2375,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_MODIFIER_CAP Date de
-	 * création : (14/09/11 15:57:59)
+	 * crÃ©ation : (14/09/11 15:57:59)
 	 * 
 	 */
 	public String getNOM_PB_MODIFIER_CAP() {
@@ -2383,10 +2383,10 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (14/09/11 15:57:59)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (14/09/11 15:57:59)
 	 * 
 	 */
 	public boolean performPB_MODIFIER_CAP(HttpServletRequest request) throws Exception {
@@ -2414,7 +2414,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 				listeTempEmp.add(emp);
 			}
 			setListeEmployeurCap(listeTempEmp);
-			// Afiichage des employeurs deja présent
+			// Afiichage des employeurs deja prÃ©sent
 			if (getListeEmployeurCap().size() != 0) {
 				int tailles[] = { 70 };
 				String padding[] = { "G" };
@@ -2430,7 +2430,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 				setLB_EMP_CAP_MULTI(null);
 			}
 
-			// on affiche la liste des représentant CAP
+			// on affiche la liste des reprÃ©sentant CAP
 			ArrayList<RepresentantCap> listeRepreCap = getRepresentantCapDao().listerRepresentantCapParCap(
 					getCapCourant().getIdCap());
 			ArrayList<Representant> listeTempRepre = new ArrayList<Representant>();
@@ -2440,7 +2440,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 				listeTempRepre.add(rep);
 			}
 			setListeRepresentantCap(listeTempRepre);
-			// Afiichage des représentants deja présent
+			// Afiichage des reprÃ©sentants deja prÃ©sent
 			if (getListeRepresentantCap().size() != 0) {
 				int tailles[] = { 70 };
 				String padding[] = { "G" };
@@ -2468,7 +2468,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 				listeTempCorps.add(gg);
 			}
 			setListeCorpsCap(listeTempCorps);
-			// Afiichage des corps deja présent
+			// Afiichage des corps deja prÃ©sent
 			for (int i = 0; i < getListeCorps().size(); i++) {
 				GradeGenerique gg = getListeCorps().get(i);
 				addZone(getNOM_CK_SELECT_LIGNE_CORPS(i), getCHECKED_OFF());
@@ -2491,7 +2491,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Getter de la liste avec un lazy initialize : LB_TYPE_CAP Date de création
+	 * Getter de la liste avec un lazy initialize : LB_TYPE_CAP Date de crÃ©ation
 	 * : (14/09/11 13:52:54)
 	 * 
 	 */
@@ -2502,7 +2502,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_TYPE_CAP Date de création : (14/09/11 13:52:54)
+	 * Setter de la liste: LB_TYPE_CAP Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	private void setLB_TYPE_CAP(String[] newLB_TYPE_CAP) {
@@ -2510,7 +2510,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_TYPE_CAP Date de création
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_TYPE_CAP Date de crÃ©ation
 	 * : (14/09/11 13:52:54)
 	 * 
 	 */
@@ -2519,8 +2519,8 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_TYPE_CAP_SELECT Date de création : (14/09/11 13:52:54)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_TYPE_CAP_SELECT Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getNOM_LB_TYPE_CAP_SELECT() {
@@ -2528,8 +2528,8 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_TYPE_CAP Date de création : (14/09/11 13:52:54)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_TYPE_CAP Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String[] getVAL_LB_TYPE_CAP() {
@@ -2537,8 +2537,8 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_TYPE_CAP Date de création : (14/09/11 13:52:54)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_TYPE_CAP Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getVAL_LB_TYPE_CAP_SELECT() {
@@ -2555,7 +2555,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMER_REPRESENTANT_CAP
-	 * Date de création : (08/07/11 09:21:06)
+	 * Date de crÃ©ation : (08/07/11 09:21:06)
 	 * 
 	 * 
 	 */
@@ -2564,10 +2564,10 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (08/07/11 09:21:06)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (08/07/11 09:21:06)
 	 * 
 	 * 
 	 */
@@ -2605,7 +2605,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_AJOUTER_REPRESENTANT_CAP
-	 * Date de création : (08/07/11 09:21:06)
+	 * Date de crÃ©ation : (08/07/11 09:21:06)
 	 * 
 	 * 
 	 */
@@ -2614,15 +2614,15 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (08/07/11 09:21:06)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (08/07/11 09:21:06)
 	 * 
 	 * 
 	 */
 	public boolean performPB_AJOUTER_REPRESENTANT_CAP(HttpServletRequest request) throws Exception {
-		// Récupération du niveau d'étude à ajouter
+		// RÃ©cupÃ©ration du niveau d'Ã©tude a ajouter
 
 		int indiceRepr = (Services.estNumerique(getVAL_LB_REPRE_CAP_SELECT()) ? Integer
 				.parseInt(getVAL_LB_REPRE_CAP_SELECT()) : -1);
@@ -2667,11 +2667,11 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 		addZone(getNOM_LB_REPRE_CAP_SELECT(), Const.ZERO);
 		setFocus(getDefaultFocus());
 
-		// on gere les corps deja selctionné
+		// on gere les corps deja selctionnÃ©
 		setListeCorpsCap(null);
 		ArrayList<GradeGenerique> listeCorps = new ArrayList<GradeGenerique>();
 		for (int i = 0; i < getListeCorps().size(); i++) {
-			// on recupère la ligne concernée
+			// on recupere la ligne concernÃ©e
 			GradeGenerique gg = (GradeGenerique) getListeCorps().get(i);
 			if (getVAL_CK_SELECT_LIGNE_CORPS(i).equals(getCHECKED_ON())) {
 				listeCorps.add(gg);
@@ -2684,7 +2684,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 
 	/**
 	 * Getter de la liste avec un lazy initialize : LB_REPRE_CAP Date de
-	 * création : (08/07/11 09:13:07)
+	 * crÃ©ation : (08/07/11 09:13:07)
 	 * 
 	 * 
 	 */
@@ -2695,7 +2695,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_REPRE_CAP Date de création : (08/07/11 09:13:07)
+	 * Setter de la liste: LB_REPRE_CAP Date de crÃ©ation : (08/07/11 09:13:07)
 	 * 
 	 * 
 	 */
@@ -2705,7 +2705,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 
 	/**
 	 * Retourne le nom de la zone pour la JSP : NOM_LB_REPRE_CAP Date de
-	 * création : (08/07/11 09:13:07)
+	 * crÃ©ation : (08/07/11 09:13:07)
 	 * 
 	 * 
 	 */
@@ -2714,8 +2714,8 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_REPRE_CAP_SELECT Date de création : (08/07/11 09:13:07)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_REPRE_CAP_SELECT Date de crÃ©ation : (08/07/11 09:13:07)
 	 * 
 	 * 
 	 */
@@ -2724,8 +2724,8 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_REPRE_CAP Date de création : (08/07/11 09:13:07)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_REPRE_CAP Date de crÃ©ation : (08/07/11 09:13:07)
 	 * 
 	 * 
 	 */
@@ -2734,8 +2734,8 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_REPRE_CAP Date de création : (08/07/11 09:13:07)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_REPRE_CAP Date de crÃ©ation : (08/07/11 09:13:07)
 	 * 
 	 * 
 	 */
@@ -2744,8 +2744,8 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_REPRE_CAP_MULTI Date de création : (08/07/11 09:13:07)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_REPRE_CAP_MULTI Date de crÃ©ation : (08/07/11 09:13:07)
 	 * 
 	 * 
 	 */
@@ -2754,8 +2754,8 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_REPRE_CAP_MULTI_SELECT Date de création : (08/07/11 09:13:07)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_REPRE_CAP_MULTI_SELECT Date de crÃ©ation : (08/07/11 09:13:07)
 	 * 
 	 * 
 	 */
@@ -2765,7 +2765,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 
 	/**
 	 * Retourne le nom de la zone pour la JSP : NOM_LB_REPRE_CAP_MULTI Date de
-	 * création : (08/07/11 09:13:07)
+	 * crÃ©ation : (08/07/11 09:13:07)
 	 * 
 	 * 
 	 */
@@ -2774,8 +2774,8 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_REPRE_CAP_MULTI Date de création : (08/07/11 09:13:07)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_REPRE_CAP_MULTI Date de crÃ©ation : (08/07/11 09:13:07)
 	 * 
 	 * 
 	 */
@@ -2785,7 +2785,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 
 	/**
 	 * Getter de la liste avec un lazy initialize : LB_REPRE_CAP_MULTI Date de
-	 * création : (08/07/11 09:13:07)
+	 * crÃ©ation : (08/07/11 09:13:07)
 	 * 
 	 * 
 	 */
@@ -2796,7 +2796,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_REPRE_CAP_MULTI Date de création : (08/07/11
+	 * Setter de la liste: LB_REPRE_CAP_MULTI Date de crÃ©ation : (08/07/11
 	 * 09:13:07)
 	 * 
 	 * 
@@ -2806,7 +2806,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_EMP_CAP Date de création
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_EMP_CAP Date de crÃ©ation
 	 * : (08/07/11 09:13:07)
 	 * 
 	 * 
@@ -2817,7 +2817,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMER_EMPLOYEUR_CAP Date
-	 * de création : (08/07/11 09:21:06)
+	 * de crÃ©ation : (08/07/11 09:21:06)
 	 * 
 	 * 
 	 */
@@ -2826,10 +2826,10 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (08/07/11 09:21:06)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (08/07/11 09:21:06)
 	 * 
 	 * 
 	 */
@@ -2863,7 +2863,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Getter de la liste avec un lazy initialize : LB_EMP_CAP Date de création
+	 * Getter de la liste avec un lazy initialize : LB_EMP_CAP Date de crÃ©ation
 	 * : (08/07/11 09:13:07)
 	 * 
 	 * 
@@ -2875,7 +2875,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_EMP_CAP Date de création : (08/07/11 09:13:07)
+	 * Setter de la liste: LB_EMP_CAP Date de crÃ©ation : (08/07/11 09:13:07)
 	 * 
 	 * 
 	 */
@@ -2885,7 +2885,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_AJOUTER_EMPLOYEUR_CAP Date
-	 * de création : (08/07/11 09:21:06)
+	 * de crÃ©ation : (08/07/11 09:21:06)
 	 * 
 	 * 
 	 */
@@ -2894,15 +2894,15 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (08/07/11 09:21:06)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (08/07/11 09:21:06)
 	 * 
 	 * 
 	 */
 	public boolean performPB_AJOUTER_EMPLOYEUR_CAP(HttpServletRequest request) throws Exception {
-		// Récupération de l'employeur à ajouter
+		// RÃ©cupÃ©ration de l'employeur a ajouter
 
 		int indiceEmp = (Services.estNumerique(getVAL_LB_EMP_CAP_SELECT()) ? Integer
 				.parseInt(getVAL_LB_EMP_CAP_SELECT()) : -1);
@@ -2944,11 +2944,11 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 		addZone(getNOM_LB_EMP_CAP_SELECT(), Const.ZERO);
 		setFocus(getDefaultFocus());
 
-		// on gere les corps deja selectionnés
+		// on gere les corps deja selectionnÃ©s
 		setListeCorpsCap(null);
 		ArrayList<GradeGenerique> listeCorps = new ArrayList<GradeGenerique>();
 		for (int i = 0; i < getListeCorps().size(); i++) {
-			// on recupère la ligne concernée
+			// on recupere la ligne concernÃ©e
 			GradeGenerique gg = (GradeGenerique) getListeCorps().get(i);
 			if (getVAL_CK_SELECT_LIGNE_CORPS(i).equals(getCHECKED_ON())) {
 				listeCorps.add(gg);
@@ -2959,8 +2959,8 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_EMP_CAP Date de création : (08/07/11 09:13:07)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_EMP_CAP Date de crÃ©ation : (08/07/11 09:13:07)
 	 * 
 	 * 
 	 */
@@ -2969,8 +2969,8 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_EMP_CAP_SELECT Date de création : (08/07/11 09:13:07)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_EMP_CAP_SELECT Date de crÃ©ation : (08/07/11 09:13:07)
 	 * 
 	 * 
 	 */
@@ -2979,8 +2979,8 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_EMP_CAP Date de création : (08/07/11 09:13:07)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_EMP_CAP Date de crÃ©ation : (08/07/11 09:13:07)
 	 * 
 	 * 
 	 */
@@ -2990,7 +2990,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 
 	/**
 	 * Getter de la liste avec un lazy initialize : LB_EMP_CAP_MULTI Date de
-	 * création : (08/07/11 09:13:07)
+	 * crÃ©ation : (08/07/11 09:13:07)
 	 * 
 	 * 
 	 */
@@ -3001,7 +3001,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_EMP_CAP_MULTI Date de création : (08/07/11
+	 * Setter de la liste: LB_EMP_CAP_MULTI Date de crÃ©ation : (08/07/11
 	 * 09:13:07)
 	 * 
 	 * 
@@ -3012,7 +3012,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 
 	/**
 	 * Retourne le nom de la zone pour la JSP : NOM_LB_EMP_CAP_MULTI Date de
-	 * création : (08/07/11 09:13:07)
+	 * crÃ©ation : (08/07/11 09:13:07)
 	 * 
 	 * 
 	 */
@@ -3021,8 +3021,8 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_EMP_CAP_MULTI Date de création : (08/07/11 09:13:07)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_EMP_CAP_MULTI Date de crÃ©ation : (08/07/11 09:13:07)
 	 * 
 	 * 
 	 */
@@ -3031,8 +3031,8 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_EMP_CAP_MULTI_SELECT Date de création : (08/07/11 09:13:07)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_EMP_CAP_MULTI_SELECT Date de crÃ©ation : (08/07/11 09:13:07)
 	 * 
 	 * 
 	 */
@@ -3041,8 +3041,8 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_EMP_CAP_MULTI Date de création : (08/07/11 09:13:07)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_EMP_CAP_MULTI Date de crÃ©ation : (08/07/11 09:13:07)
 	 * 
 	 * 
 	 */
@@ -3066,7 +3066,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 
 	/**
 	 * @param focus
-	 *            focus à définir.
+	 *            focus Ã  dÃ©finir.
 	 */
 	public void setFocus(String focus) {
 		this.focus = focus;
@@ -3092,7 +3092,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 
 			addZone(getNOM_ST_ACTION_DELIBERATION(), ACTION_MODIFICATION);
 		} else {
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "délibérations"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "dÃ©libÃ©rations"));
 		}
 
 		setFocus(getNOM_PB_ANNULER_DELIBERATION());

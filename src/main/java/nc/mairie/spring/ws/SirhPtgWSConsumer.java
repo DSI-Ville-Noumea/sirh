@@ -717,7 +717,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 		ReturnMessageDto message = new ReturnMessageDto();
 
 		if (res.getStatus() == HttpStatus.CONFLICT.value()) {
-			message.getErrors().add("Le motif n'a pu être sauvegardé.");
+			message.getErrors().add("Le motif n'a pu Ãªtre sauvegardÃ©.");
 		}
 
 		return message;

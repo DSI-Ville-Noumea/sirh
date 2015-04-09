@@ -1,4 +1,4 @@
-<!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@ page contentType="text/html; charset=UTF-8" %> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <%@page import="nc.mairie.metier.Const"%>
 <%@page import="nc.mairie.enums.EnumTypeDroit"%>
 <%@page import="nc.mairie.utils.MairieUtils"%>
@@ -13,13 +13,13 @@
 <SCRIPT type="text/javascript" src="js/GestionCalendrier.js"></SCRIPT> 
 
 <SCRIPT language="JavaScript">
-//afin de sélectionner un élément dans une liste
+//afin de sÃ©lectionner un Ã©lÃ©ment dans une liste
 function executeBouton(nom)
 {
 document.formu.elements[nom].click();
 }
 
-// afin de mettre le focus sur une zone précise
+// afin de mettre le focus sur une zone prÃ©cise
 function setfocus(nom)
 {
 if (document.formu.elements[nom] != null)
@@ -41,7 +41,7 @@ function testClickEnrigistrer(){
 	}
 }
 </SCRIPT>
-<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 </HEAD>
 <jsp:useBean
  class="nc.mairie.gestionagent.process.election.OeELECSaisieCompteurA52" id="process" scope="session"></jsp:useBean>
@@ -52,7 +52,7 @@ function testClickEnrigistrer(){
 		<BR/>
 		
 	    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
-			<legend class="sigp2Legend">Décharge de service CTP</legend>			
+			<legend class="sigp2Legend">DÃ©charge de service CTP</legend>			
 				<div style="overflow: auto;height: 250px;width:1000px;">
 						<table class="sigp2NewTab" style="text-align:left;width:980px;">
 							<tr bgcolor="#EFEFEF">
@@ -60,11 +60,11 @@ function testClickEnrigistrer(){
 									<img title="ajouter" border="0" src="images/ajout.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_AJOUTER()%>');" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>">
 								</td>
 								<td width="300px;">Organisation syndicale</td>
-								<td align="center" width="90px;">Début</td>
+								<td align="center" width="90px;">DÃ©but</td>
 								<td align="center" width="90px;">Fin</td>
 								<td align="center" width="90px;">Nb heures</td>
 								<td align="center" width="90px;">Motif</td>
-								<td>Représentants</td>
+								<td>ReprÃ©sentants</td>
 							</tr>
 							<%
 							if (process.getListeCompteur()!=null){
@@ -121,7 +121,7 @@ function testClickEnrigistrer(){
 				</tr>
 				<tr>
 					<td>
-						<span class="sigp2Mandatory">Date de début :</span>
+						<span class="sigp2Mandatory">Date de dÃ©but :</span>
 					</td>
 					<td>
 						<input id="<%=process.getNOM_ST_DATE_DEBUT()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_DEBUT() %>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_DEBUT() %>">
@@ -181,7 +181,7 @@ function testClickEnrigistrer(){
 				</tr>
 				<tr>
 					<td>
-						<span class="sigp2Mandatory">Date de début :</span>
+						<span class="sigp2Mandatory">Date de dÃ©but :</span>
 					</td>
 					<td>
 						<INPUT class="sigp2-saisie" disabled="disabled" name="<%= process.getNOM_ST_DATE_DEBUT() %>" size="10" type="text"  value="<%= process.getVAL_ST_DATE_DEBUT()%>">
@@ -260,14 +260,14 @@ function testClickEnrigistrer(){
 								<span class="sigp2Mandatory" style="width:50px">Actif : </span>
 								<INPUT type="radio" <%= process.forRadioHTML(process.getNOM_RG_REPRESENTANT_INACTIF(), process.getNOM_RB_OUI()) %> ><span class="sigp2Mandatory">oui</span>
 								<INPUT type="radio" <%= process.forRadioHTML(process.getNOM_RG_REPRESENTANT_INACTIF(), process.getNOM_RB_NON()) %> ><span class="sigp2Mandatory">non</span>					
-								<INPUT onkeydown="" onkeypress="" onkeyup="" type="submit" class="sigp2-Bouton-200" value="Ajouter à la liste" name="<%=process.getNOM_PB_CREATE()%>">	 
+								<INPUT onkeydown="" onkeypress="" onkeyup="" type="submit" class="sigp2-Bouton-200" value="Ajouter Ã  la liste" name="<%=process.getNOM_PB_CREATE()%>">	 
 		                    <%}else if(process.getVAL_ST_ACTION_REPRESENTANT().equals(process.ACTION_MODIFICATION_REPRE)){ %>
 								<span class="sigp2Mandatory" style="width:70px">Agent :</span>
 	                       		<INPUT class="sigp2-saisie" disabled="disabled" name="<%= process.getNOM_ST_AGENT_CREATE()%>" size="10" type="text" value="<%= process.getVAL_ST_AGENT_CREATE()%>" style="margin-right:10px;">
 	                        	<span class="sigp2Mandatory" style="width:50px">Actif : </span>
 								<INPUT type="radio" <%= process.forRadioHTML(process.getNOM_RG_REPRESENTANT_INACTIF(), process.getNOM_RB_OUI()) %> ><span class="sigp2Mandatory">oui</span>
 								<INPUT type="radio" <%= process.forRadioHTML(process.getNOM_RG_REPRESENTANT_INACTIF(), process.getNOM_RB_NON()) %> ><span class="sigp2Mandatory">non</span>					
-								<INPUT onkeydown="" onkeypress="" onkeyup="" type="submit" class="sigp2-Bouton-200" value="Modifier l'entrée" name="<%=process.getNOM_PB_CREATE()%>">	 
+								<INPUT onkeydown="" onkeypress="" onkeyup="" type="submit" class="sigp2-Bouton-200" value="Modifier l'entrÃ©e" name="<%=process.getNOM_PB_CREATE()%>">	 
 		                    <%} %>
 		                </fieldset>
 						<%} %>

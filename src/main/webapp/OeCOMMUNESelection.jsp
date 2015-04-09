@@ -1,20 +1,20 @@
-<!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@ page contentType="text/html; charset=UTF-8" %> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <HTML>
 <HEAD>
 <META name="GENERATOR" content="IBM WebSphere Page Designer V3.5.3 for Windows">
 <META http-equiv="Content-Style-Type" content="text/css">
 <LINK href="theme/sigp2.css" rel="stylesheet" type="text/css">
-<TITLE>Sélection d'une PAYS</TITLE>
+<TITLE>SÃ©lection d'une PAYS</TITLE>
 <SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT> 
 <SCRIPT language="javaScript">
 
-//afin de sélectionner un élément dans une liste
+//afin de sÃ©lectionner un Ã©lÃ©ment dans une liste
 function executeBouton(nom)
 {
 document.formu.elements[nom].click();
 }
 
-// afin de mettre le focus sur une zone précise
+// afin de mettre le focus sur une zone prÃ©cise
 function setfocus(nom)
 {
 if (document.formu.elements[nom] != null)
@@ -30,7 +30,7 @@ function SelectLigne(id,tailleTableau)
 }
 
 </SCRIPT>
-<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 </HEAD>
 <jsp:useBean class="nc.mairie.gestionagent.process.OeCOMMUNESelection" id="process" scope="session"></jsp:useBean>
 <BODY bgcolor="#FFFFFF" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" style="tab-interval:35.4pt" onload="return setfocus('<%= process.getFocus() %>')">
@@ -39,7 +39,7 @@ function SelectLigne(id,tailleTableau)
 	<FORM name="formu" method="POST" class="sigp2-titre">
 		<INPUT name="JSP" type="hidden" value="<%= process.getJSP() %>">
 	    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
-		    <legend class="sigp2Legend">Sélection d'une commune</legend>
+		    <legend class="sigp2Legend">SÃ©lection d'une commune</legend>
 		    <br/>
 		    
 		    <div class="sigp2-RadioBouton">
@@ -50,7 +50,7 @@ function SelectLigne(id,tailleTableau)
 		    	<span>
 		    		<INPUT type="radio"	<%= process.forRadioHTML(process.getNOM_RG_ORIGINE_COMMUNE(),process.getNOM_RB_ORIGINE_COMMUNE_ETRANGER())%> onclick='executeBouton("<%=process.getNOM_PB_CHANGE_ORIGINE()%>")'>
 		    	</span>
-		    	<span>A l'étranger</span>
+		    	<span>A l'Ã©tranger</span>
 				<INPUT type="submit" class="sigp2-Bouton-100" value="Changer" style="visibility : hidden;" name="<%=process.getNOM_PB_CHANGE_ORIGINE()%>">
 			</div>
 			<BR/>
@@ -59,7 +59,7 @@ function SelectLigne(id,tailleTableau)
 			<%} else {%>
 			<div id="etranger" style="display:none;">
 			<%}%>
-				<span class="sigp2">Code ou libellé pays commençant par :</span>
+				<span class="sigp2">Code ou libellÃ© pays commenÃ§ant par :</span>
 				<span>
 					<INPUT class="sigp2-saisie" maxlength="60" name="<%= process.getNOM_EF_PAYS() %>" size="20" type="text" value="<%= process.getVAL_EF_PAYS() %>">
 				</span>
@@ -95,7 +95,7 @@ function SelectLigne(id,tailleTableau)
                 	<%if(process.getPaysCourant()!=null){ %>
 					<span class="sigp2-titre">&nbsp;Liste des communes du pays <%=process.getPaysCourant().getLibPays() %></span>
 					<%}else{ %>
-					<span class="sigp2-titre">&nbsp;Liste des communes du pays sélectionné</span>
+					<span class="sigp2-titre">&nbsp;Liste des communes du pays sÃ©lectionnÃ©</span>
 					<%} %>
 					<div style="overflow: auto;height: 250px;width:1000px;margin-right: 0px;margin-left: 0px;">
 						<table class="sigp2NewTab" style="text-align:left;width:980px;">
@@ -123,7 +123,7 @@ function SelectLigne(id,tailleTableau)
 			<div id="france" style="display: none;">
 			<%}%>
 			
-				<span class="sigp2">Code ou libellé commune commençant par :</span>
+				<span class="sigp2">Code ou libellÃ© commune commenÃ§ant par :</span>
 				<span>
 					<INPUT class="sigp2-saisie" maxlength="60" name="<%= process.getNOM_EF_COMMUNE_FRANCE() %>" size="20" type="text" value="<%= process.getVAL_EF_COMMUNE_FRANCE() %>">
 				</span>
@@ -136,7 +136,7 @@ function SelectLigne(id,tailleTableau)
                 	<TBODY>
 						<TR class="sigp2">
 							<TD style="position:relative;width:60px;text-align:left;">&nbsp;Code</TD>
-							<TD style="position:relative;text-align:left;">Libellé</TD>
+							<TD style="position:relative;text-align:left;">LibellÃ©</TD>
 						</TR>
 					</TBODY>
 				</TABLE>

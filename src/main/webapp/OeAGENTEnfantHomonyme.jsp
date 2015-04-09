@@ -1,3 +1,4 @@
+<%@ page contentType="text/html; charset=UTF-8" %> 
 <!-- Sample JSP file -->
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <HTML>
@@ -13,13 +14,13 @@
 <SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT>
 
 <SCRIPT language="JavaScript">
-//afin de sélectionner un élément dans une liste
+//afin de sÃ©lectionner un Ã©lÃ©ment dans une liste
 function executeBouton(nom)
 {
 document.formu.elements[nom].click();
 }
 </SCRIPT>
-<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 </HEAD>
 <jsp:useBean
 	class="nc.mairie.gestionagent.process.agent.OeAGENTEnfantHomonyme"
@@ -32,12 +33,12 @@ document.formu.elements[nom].click();
 <FIELDSET class="sigp2Fieldset"
 	style="text-align:left;margin:10px;width:1030px;"><legend
 	class="sigp2Legend">enfants homonymes</legend> <br />
-<span class="sigp2">D'autres enfants nommés <b><%=process.getEnfantCourant().getNom()%>
-<%=process.getEnfantCourant().getPrenom()%> </b>ont été trouvés dans la
+<span class="sigp2">D'autres enfants nommÃ©s <b><%=process.getEnfantCourant().getNom()%>
+<%=process.getEnfantCourant().getPrenom()%> </b>ont Ã©tÃ© trouvÃ©s dans la
 base.<BR/>
-Si l'un d'entre eux correspond à celui que vous souhaitiez créer, merci
-de le sélectionner.<BR/>
-Dans le cas contraire, vous pouvez créer un nouvel enfant.<BR/>
+Si l'un d'entre eux correspond Ã  celui que vous souhaitiez crÃ©er, merci
+de le sÃ©lectionner.<BR/>
+Dans le cas contraire, vous pouvez crÃ©er un nouvel enfant.<BR/>
 </span> <BR />
 <span style="margin-left:5px;position:relative;width:75px;">Matricule</span>
 <span style="position:relative;width:667px;">Parent</span> <span
@@ -51,9 +52,9 @@ Dans le cas contraire, vous pouvez créer un nouvel enfant.<BR/>
 <BR />
 
 <FIELDSET class="sigp2Fieldset" style="text-align:center;width:1030px">
-<INPUT type="submit" class="sigp2-Bouton-100" value="Sélectionner"
+<INPUT type="submit" class="sigp2-Bouton-100" value="SÃ©lectionner"
 	name="<%=process.getNOM_PB_SELECTIONNER()%>"> <INPUT
-	type="submit" class="sigp2-Bouton-100" value="Créer"
+	type="submit" class="sigp2-Bouton-100" value="CrÃ©er"
 	name="<%=process.getNOM_PB_CREER()%>"> <INPUT type="submit"
 	class="sigp2-Bouton-100" value="Annuler"
 	name="<%=process.getNOM_PB_ANNULER()%>"></FIELDSET>

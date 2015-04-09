@@ -1,4 +1,4 @@
-// active/Désactive toutes les cases à cocher pour n'en avoir qu'une
+// active/DÃ©sactive toutes les cases Ã  cocher pour n'en avoir qu'une
 function selectLigne(indice,tailleListe)
 {
 	var boxLigne = document.formu.elements['NOM_CK_SELECT_LIGNE_'+indice];
@@ -12,7 +12,7 @@ function selectLigne(indice,tailleListe)
     boxLigne.checked=true;
 }
 
-// active/Désactive toutes les cases à cocher pour les activites de la FDP
+// active/DÃ©sactive toutes les cases Ã  cocher pour les activites de la FDP
 function activeACTI(tailleListe)
 {
 	for (i=0; i<tailleListe; i++){
@@ -30,7 +30,7 @@ function activeACTI(tailleListe)
     } 
 }
 
-// active/Désactive toutes les cases à cocher pour les competences de la FDP
+// active/DÃ©sactive toutes les cases Ã  cocher pour les competences de la FDP
 function activeCOMP(tailleListe)
 {
 	for (i=0; i<tailleListe; i++){

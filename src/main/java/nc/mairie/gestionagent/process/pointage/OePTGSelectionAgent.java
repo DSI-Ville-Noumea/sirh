@@ -113,7 +113,7 @@ public class OePTGSelectionAgent extends BasicProcess {
 					continue;
 				}
 
-				// recherche du supérieur
+				// recherche du supÃ©rieur
 				String codeService = serv.getCodService();
 				while (codeService.endsWith("A")) {
 					codeService = codeService.substring(0, codeService.length() - 1);
@@ -132,7 +132,7 @@ public class OePTGSelectionAgent extends BasicProcess {
 	 * 
 	 * @param l1
 	 * @param l2
-	 * @return ArrayListe ayant éléminé de la liste l1 les éléments en communs
+	 * @return ArrayListe ayant Ã©lÃ©minÃ© de la liste l1 les Ã©lÃ©ments en communs
 	 *         avec l2 fonctionne uniquement avec une liste l1 n'ayant pas 2
 	 *         elements identiques
 	 */
@@ -154,7 +154,7 @@ public class OePTGSelectionAgent extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER Date de création :
+	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER Date de crÃ©ation :
 	 * (03/02/09 14:56:59)
 	 * 
 	 */
@@ -163,10 +163,10 @@ public class OePTGSelectionAgent extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (03/02/09 14:56:59)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (03/02/09 14:56:59)
 	 * 
 	 */
 	public boolean performPB_ANNULER(HttpServletRequest request) throws Exception {
@@ -176,14 +176,14 @@ public class OePTGSelectionAgent extends BasicProcess {
 
 	/**
 	 * @param focus
-	 *            focus à définir.
+	 *            focus Ã  dÃ©finir.
 	 */
 	public void setFocus(String focus) {
 		this.focus = focus;
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER Date de création :
+	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER Date de crÃ©ation :
 	 * (19/07/11 16:22:13)
 	 * 
 	 */
@@ -192,19 +192,19 @@ public class OePTGSelectionAgent extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (19/07/11 16:22:13)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (19/07/11 16:22:13)
 	 * 
 	 */
 	public boolean performPB_VALIDER(HttpServletRequest request) throws Exception {
 		ArrayList<Agent> listAgentSelect = new ArrayList<Agent>();
 		for (int j = 0; j < getListAff().size(); j++) {
-			// on recupère la ligne concernée
+			// on recupere la ligne concernÃ©e
 			Agent ag = (Agent) getListAff().get(j);
 			Integer i = ag.getIdAgent();
-			// si la colonne selection est cochée
+			// si la colonne selection est cochÃ©e
 			if (getVAL_CK_SELECT_LIGNE(i).equals(getCHECKED_ON())) {
 				listAgentSelect.add(ag);
 			}
@@ -216,8 +216,8 @@ public class OePTGSelectionAgent extends BasicProcess {
 	}
 
 	/**
-	 * Méthode appelée par la servlet qui aiguille le traitement : en fonction
-	 * du bouton de la JSP Date de création : (03/02/09 14:56:59)
+	 * mÃ©thode appelee par la servlet qui aiguille le traitement : en fonction
+	 * du bouton de la JSP Date de crÃ©ation : (03/02/09 14:56:59)
 	 * 
 	 */
 	public boolean recupererStatut(HttpServletRequest request) throws Exception {
@@ -240,7 +240,7 @@ public class OePTGSelectionAgent extends BasicProcess {
 				return performPB_RECHERCHER(request);
 			}
 		}
-		// Si TAG INPUT non géré par le process
+		// Si TAG INPUT non gÃ©rÃ© par le process
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
@@ -334,11 +334,11 @@ public class OePTGSelectionAgent extends BasicProcess {
 		// Si rien de saisi, recherche de tous les agents
 		if (zone.length() == 0) {
 			aListe = (ArrayList<Agent>) getAgentDao().listerAgent();
-			// Sinon, si numérique on cherche l'agent
+			// Sinon, si numÃ©rique on cherche l'agent
 		} else if (Services.estNumerique(zone)) {
 			Agent aAgent = getAgentDao().chercherAgent(
 					Integer.valueOf(Const.PREFIXE_MATRICULE + Services.lpad(zone, 5, "0")));
-			// Si erreur alors pas trouvé. On traite
+			// Si erreur alors pas trouvÃ©. On traite
 			if (getTransaction().isErreur()) {
 				return false;
 			}
@@ -349,7 +349,7 @@ public class OePTGSelectionAgent extends BasicProcess {
 			// Sinon, les agents dont le nom commence par
 		} else if (getVAL_RG_RECHERCHE().equals(getNOM_RB_RECH_NOM())) {
 			aListe = getAgentDao().listerAgentAvecNomCommencant(zone);
-			// sinon les agents dont le prénom commence par
+			// sinon les agents dont le prÃ©nom commence par
 		} else if (getVAL_RG_RECHERCHE().equals(getNOM_RB_RECH_PRENOM())) {
 			aListe = getAgentDao().listerAgentAvecPrenomCommencant(zone);
 		} else if (getVAL_RG_RECHERCHE().equals(getNOM_RB_RECH_SERVICE())) {

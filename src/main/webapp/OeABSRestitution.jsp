@@ -1,3 +1,4 @@
+<%@ page contentType="text/html; charset=UTF-8" %> 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <%@page import="java.text.SimpleDateFormat"%>
 <%@page import="nc.mairie.utils.MairieUtils"%>
@@ -15,7 +16,7 @@
 		<LINK href="theme/dataTables.css" rel="stylesheet" type="text/css">
         <LINK href="TableTools-2.0.1/media/css/TableTools.css" rel="stylesheet" type="text/css">
         <jsp:useBean class="nc.mairie.gestionagent.process.absence.OeABSRestitution" id="process" scope="session"></jsp:useBean>
-            <TITLE>Restitution massive des congés annuels</TITLE>		
+            <TITLE>Restitution massive des congÃ©s annuels</TITLE>		
 
 
             <SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT> 
@@ -32,24 +33,24 @@
                         document.formu.elements[nom].focus();
                 }
             </SCRIPT>		
-            <META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+            <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
         </HEAD>
         <BODY bgcolor="#FFFFFF" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="window.parent.frames['refAgent'].location.reload();return setfocus('<%=process.getFocus()%>')">	
         <%@ include file="BanniereErreur.jsp" %>
         <FORM onkeypress="testClickFiltrer();" name="formu" method="POST" class="sigp2-titre">
             <INPUT name="JSP" type="hidden" value="<%= process.getJSP()%>">
             <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
-                <legend class="sigp2Legend">Restitution massive des congés annuels</legend>   
+                <legend class="sigp2Legend">Restitution massive des congÃ©s annuels</legend>   
                 
-				<span class="sigp2Mandatory">Date du jour à restituer :</span>          
+				<span class="sigp2Mandatory">Date du jour Ã  restituer :</span>          
 				<input id="<%=process.getNOM_ST_DATE_RESTITUTION()%>" class="sigp2-saisie" name="<%= process.getNOM_ST_DATE_RESTITUTION() %>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_RESTITUTION() %>">
 				<IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_RESTITUTION()%>', 'dd/mm/y');">			
 				<INPUT type="submit" class="sigp2-Bouton-200" value="Lancer la restitution" name="<%=process.getNOM_PB_LANCER_RESTITUTION()%>">
 				<br/><br/>
 				<span class="sigp2Mandatory">Type restitution :</span>  			
                 <input type="radio" <%= process.forRadioHTML(process.getNOM_RG_TYPE_RESTITUTION(), process.getNOM_RB_TYPE_MATIN()) %> > <span class="sigp2Mandatory">Matin</span> 
-				<input type="radio" <%= process.forRadioHTML(process.getNOM_RG_TYPE_RESTITUTION(), process.getNOM_RB_TYPE_AM()) %> > <span class="sigp2Mandatory">Après-midi</span> 
-				<input type="radio" <%= process.forRadioHTML(process.getNOM_RG_TYPE_RESTITUTION(), process.getNOM_RB_TYPE_JOURNEE()) %> > <span class="sigp2Mandatory">Journée</span> 
+				<input type="radio" <%= process.forRadioHTML(process.getNOM_RG_TYPE_RESTITUTION(), process.getNOM_RB_TYPE_AM()) %> > <span class="sigp2Mandatory">AprÃ¨s-midi</span> 
+				<input type="radio" <%= process.forRadioHTML(process.getNOM_RG_TYPE_RESTITUTION(), process.getNOM_RB_TYPE_JOURNEE()) %> > <span class="sigp2Mandatory">JournÃ©e</span> 
 				<br/><br/>
 				<span class="sigp2Mandatory">Motif :</span>
 				<INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_MOTIF()%>" size="20" type="text" value="<%= process.getVAL_ST_MOTIF()%>" style="margin-right:10px;">
@@ -57,13 +58,13 @@
              </FIELDSET>
         
         <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
-        	<legend class="sigp2Legend">Historique des restitutions massives des congés annuels</legend>
+        	<legend class="sigp2Legend">Historique des restitutions massives des congÃ©s annuels</legend>
         	
         	<table class="display" cellpadding="0" cellspacing="0" border="0" >
         		<thead>
 	                <tr>
 	                    <th class="" style="width:120px;" align="center">Date Restitution</th>
-	                    <th style="width:120px;" align="center">Date d'exécution</th>
+	                    <th style="width:120px;" align="center">Date d'exÃ©cution</th>
 	                    <th style="width:200px;" align="center">Motif</th>
 	                    <th style="width:50px;" align="center">Statut</th>
 	                    <th style="width:50px;" align="center"><img onkeydown="" onkeypress="" onkeyup="" border="0" src="images/loupe.gif" width="16px" height="16px" /></th>
@@ -78,7 +79,7 @@
 				%>
 				<tr>
 					<td align="left" style="width:120px;"><%=sdf.format(histo.getDateRestitution()) %>
-					<% if(histo.isJournee()) { %> Journée <% } %><% if(histo.isMatin()) { %> Matin <% } %><% if(histo.isApresMidi()) { %> Après-midi <% } %>
+					<% if(histo.isJournee()) { %> JournÃ©e <% } %><% if(histo.isMatin()) { %> Matin <% } %><% if(histo.isApresMidi()) { %> AprÃ¨s-midi <% } %>
 					</td>
 					<td align="left" style="width:120px;"><%=sdf.format(histo.getDateModification()) %></td>
 					<td align="left" style="width:200px;"><%=histo.getMotif() %></td>
@@ -103,8 +104,8 @@
         	RestitutionMassiveDto histoDetails = process.getDetailsHisto();
         %>
         <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
-        	<legend class="sigp2Legend">Liste des agents ayant bénéficiés de la restitution massive du <%=sdf.format(histoDetails.getDateRestitution()) %>
-					<% if(histoDetails.isJournee()) { %> Journée <% } %><% if(histoDetails.isMatin()) { %> Matin <% } %><% if(histoDetails.isApresMidi()) { %> Après-midi <% } %></legend>
+        	<legend class="sigp2Legend">Liste des agents ayant bÃ©nÃ©ficiÃ©s de la restitution massive du <%=sdf.format(histoDetails.getDateRestitution()) %>
+					<% if(histoDetails.isJournee()) { %> JournÃ©e <% } %><% if(histoDetails.isMatin()) { %> Matin <% } %><% if(histoDetails.isApresMidi()) { %> AprÃ¨s-midi <% } %></legend>
         	
         	<table class="display" cellpadding="0" cellspacing="0" border="0" >
         		<thead>

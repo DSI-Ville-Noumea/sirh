@@ -167,7 +167,7 @@ public class SuiviMedicalDao extends SirhDao implements SuiviMedicalDaoInterface
 	@Override
 	public ArrayList<SuiviMedical> listerSuiviMedicalNonEffectue(Integer mois, Integer annee, String etat)
 			throws Exception {
-		// si mois=1 alors il faut rechercher sur le mois precedent de l'année
+		// si mois=1 alors il faut rechercher sur le mois precedent de l'annÃ©e
 		// precedente
 		if (mois == 1) {
 			mois = 12;

@@ -1,4 +1,4 @@
-<!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@ page contentType="text/html; charset=UTF-8" %> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <%@page import="nc.mairie.utils.TreeHierarchy"%>
 <%@page import="nc.mairie.metier.poste.Service"%>
 <%@page import="nc.mairie.enums.EnumTypeDroit"%>
@@ -14,20 +14,20 @@
 <SCRIPT language="javascript" src="js/dtree.js"></SCRIPT>
 
 <SCRIPT language="JavaScript">
-//afin de sélectionner un élément dans une liste
+//afin de sÃ©lectionner un Ã©lÃ©ment dans une liste
 function executeBouton(nom)
 {
 document.formu.elements[nom].click();
 }
 
-// afin de mettre le focus sur une zone précise
+// afin de mettre le focus sur une zone prÃ©cise
 function setfocus(nom)
 {
 if (document.formu.elements[nom] != null)
 document.formu.elements[nom].focus();
 }
 
-// afin d'afficher la hiérarchie des services
+// afin d'afficher la hiÃ©rarchie des services
 function agrandirHierarchy() {
 
 	hier = 	document.getElementById('treeHierarchy');
@@ -39,13 +39,13 @@ function agrandirHierarchy() {
 	}
 }
 
-// afin de cacher la hiérarchie des services
+// afin de cacher la hiÃ©rarchie des services
 function reduireHierarchy() {
 	hier = 	document.getElementById('treeHierarchy');
 	hier.style.display='none';
 }
 </SCRIPT>
-<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 </HEAD>
 <jsp:useBean
  class="nc.mairie.droits.process.OeDROITSKiosque"
@@ -109,8 +109,8 @@ function reduireHierarchy() {
 					<td><INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_AJOUTER()%>"></td>
 					<td><span><INPUT type="radio" onclick='executeBouton("<%=process.getNOM_PB_TRI() %>")'<%= process.forRadioHTML(process.getNOM_RG_TRI(),process.getNOM_RB_TRI_AGENT())%>> Agent</span></td>
 					<td><span><INPUT type="radio" onclick='executeBouton("<%=process.getNOM_PB_TRI() %>")'<%= process.forRadioHTML(process.getNOM_RG_TRI(),process.getNOM_RB_TRI_SERVICE())%>> Service</span></td>
-					<td align="center"><span>Délég <br> PTG</span></td>
-					<td align="center"><span>Délég <br> ABS</span></td>
+					<td align="center"><span>DÃ©lÃ©g <br> PTG</span></td>
+					<td align="center"><span>DÃ©lÃ©g <br> ABS</span></td>
 					<td align="center"><span>PTG</span></td>
 					<td align="center"><span>ABS</span></td>					
 				</tr>

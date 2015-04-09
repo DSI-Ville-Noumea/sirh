@@ -17,7 +17,7 @@ import nc.mairie.utils.MessageUtils;
 import nc.mairie.utils.VariablesActivite;
 
 /**
- * Process OeCOMMUNEESelection Date de création : (24/01/03 15:27:10)
+ * Process OeCOMMUNEESelection Date de crÃ©ation : (24/01/03 15:27:10)
  * 
  */
 public class OeCOMMUNESelection extends BasicProcess {
@@ -32,7 +32,7 @@ public class OeCOMMUNESelection extends BasicProcess {
 	// Pourla France
 	private ArrayList<CommuneDepartement> listeCommune;
 
-	// Pour l'étranger
+	// Pour l'etranger
 
 	private ArrayList<Pays> listePays = new ArrayList<Pays>();
 	private Hashtable<Pays, ArrayList<?>> hashPaysCommuneEtrangere = new Hashtable<Pays, ArrayList<?>>();
@@ -44,7 +44,7 @@ public class OeCOMMUNESelection extends BasicProcess {
 	public String focus = null;
 
 	/**
-	 * Insérez la description de la méthode ici. Date de création : (24/01/2003
+	 * InsÃ©rez la description de la mÃ©thode ici. Date de crÃ©ation : (24/01/2003
 	 * 15:53:30)
 	 * 
 	 * @return Hashtable
@@ -56,7 +56,7 @@ public class OeCOMMUNESelection extends BasicProcess {
 	}
 
 	/**
-	 * Insérez la description de la méthode ici. Date de création : (24/01/2003
+	 * InsÃ©rez la description de la mÃ©thode ici. Date de crÃ©ation : (24/01/2003
 	 * 15:52:16)
 	 * 
 	 * @return ArrayList
@@ -70,7 +70,7 @@ public class OeCOMMUNESelection extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_PAYS Date de
-	 * création : (24/01/03 15:27:10)
+	 * crÃ©ation : (24/01/03 15:27:10)
 	 * 
 	 */
 	public String getNOM_EF_PAYS() {
@@ -78,7 +78,7 @@ public class OeCOMMUNESelection extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER Date de création :
+	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER Date de crÃ©ation :
 	 * (24/01/03 15:27:10)
 	 * 
 	 */
@@ -87,7 +87,7 @@ public class OeCOMMUNESelection extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_RECHERCHER Date de création
+	 * Retourne le nom d'un bouton pour la JSP : PB_RECHERCHER Date de crÃ©ation
 	 * : (24/01/03 15:27:10)
 	 * 
 	 */
@@ -96,8 +96,8 @@ public class OeCOMMUNESelection extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie : EF_PAYS
-	 * Date de création : (24/01/03 15:27:10)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie : EF_PAYS
+	 * Date de crÃ©ation : (24/01/03 15:27:10)
 	 * 
 	 */
 	public String getVAL_EF_PAYS() {
@@ -105,10 +105,10 @@ public class OeCOMMUNESelection extends BasicProcess {
 	}
 
 	/**
-	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones Ã  afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
-	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
-	 * addZone(getNOMxxx, String); Date de création : (24/01/03 15:27:10)
+	 * doivent avoir les Fields PUBLIC Utilisation de la mÃ©thode
+	 * addZone(getNOMxxx, String); Date de crÃ©ation : (24/01/03 15:27:10)
 	 * 
 	 */
 	public void initialiseZones(HttpServletRequest request) throws Exception {
@@ -120,10 +120,10 @@ public class OeCOMMUNESelection extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (24/01/03 15:27:10)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (24/01/03 15:27:10)
 	 * 
 	 */
 	public boolean performPB_ANNULER(HttpServletRequest request) throws Exception {
@@ -132,10 +132,10 @@ public class OeCOMMUNESelection extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (24/01/03 15:27:10)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (24/01/03 15:27:10)
 	 * 
 	 */
 	public boolean performPB_RECHERCHER(HttpServletRequest request) throws Exception {
@@ -151,7 +151,7 @@ public class OeCOMMUNESelection extends BasicProcess {
 		setListeCommunePays(null);
 		setListePays(null);
 
-		// Si numérique alors recherche de la commune
+		// Si numÃ©rique alors recherche de la commune
 		if (Services.estNumerique(zone)) {
 			aListe = Pays.listerPaysAvecCodPaysCommencant(getTransaction(), zone);
 			// Sinon recherche de liste
@@ -189,7 +189,7 @@ public class OeCOMMUNESelection extends BasicProcess {
 	}
 
 	/**
-	 * Insérez la description de la méthode ici. Date de création : (24/01/2003
+	 * InsÃ©rez la description de la mÃ©thode ici. Date de crÃ©ation : (24/01/2003
 	 * 15:52:16)
 	 * 
 	 * @param newListePays
@@ -215,15 +215,15 @@ public class OeCOMMUNESelection extends BasicProcess {
 
 	/**
 	 * @param focus
-	 *            focus à définir.
+	 *            focus Ã  dÃ©finir.
 	 */
 	public void setFocus(String focus) {
 		this.focus = focus;
 	}
 
 	/**
-	 * Retourne le nom du groupe de radio boutons coché pour la JSP :
-	 * RG_ORIGINE_COMMUNE Date de création : (30/03/11 16:16:43)
+	 * Retourne le nom du groupe de radio boutons cochÃ© pour la JSP :
+	 * RG_ORIGINE_COMMUNE Date de crÃ©ation : (30/03/11 16:16:43)
 	 * 
 	 */
 	public String getNOM_RG_ORIGINE_COMMUNE() {
@@ -231,8 +231,8 @@ public class OeCOMMUNESelection extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur du radio bouton (RB_) coché dans la JSP :
-	 * RG_ORIGINE_COMMUNE Date de création : (30/03/11 16:16:43)
+	 * Retourne la valeur du radio bouton (RB_) cochÃ© dans la JSP :
+	 * RG_ORIGINE_COMMUNE Date de crÃ©ation : (30/03/11 16:16:43)
 	 * 
 	 */
 	public String getVAL_RG_ORIGINE_COMMUNE() {
@@ -241,7 +241,7 @@ public class OeCOMMUNESelection extends BasicProcess {
 
 	/**
 	 * Retourne le nom du radio bouton pour la JSP : RB_ORIGINE_COMMUNE_ETRANGER
-	 * Date de création : (30/03/11 16:16:43)
+	 * Date de crÃ©ation : (30/03/11 16:16:43)
 	 * 
 	 */
 	public String getNOM_RB_ORIGINE_COMMUNE_ETRANGER() {
@@ -250,7 +250,7 @@ public class OeCOMMUNESelection extends BasicProcess {
 
 	/**
 	 * Retourne le nom du radio bouton pour la JSP : RB_ORIGINE_COMMUNE_FRANCE
-	 * Date de création : (30/03/11 16:16:43)
+	 * Date de crÃ©ation : (30/03/11 16:16:43)
 	 * 
 	 */
 	public String getNOM_RB_ORIGINE_COMMUNE_FRANCE() {
@@ -259,7 +259,7 @@ public class OeCOMMUNESelection extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_RECHERCHER_FRANCE Date de
-	 * création : (31/03/11 10:11:15)
+	 * crÃ©ation : (31/03/11 10:11:15)
 	 * 
 	 */
 	public String getNOM_PB_RECHERCHER_FRANCE() {
@@ -267,10 +267,10 @@ public class OeCOMMUNESelection extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (31/03/11 10:11:15)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (31/03/11 10:11:15)
 	 * 
 	 */
 	public boolean performPB_RECHERCHER_FRANCE(HttpServletRequest request) throws Exception {
@@ -285,7 +285,7 @@ public class OeCOMMUNESelection extends BasicProcess {
 
 		ArrayList<CommuneDepartement> aListe = new ArrayList<CommuneDepartement>();
 
-		// Si numérique alors recherche de la commune
+		// Si numÃ©rique alors recherche de la commune
 		if (Services.estNumerique(zone)) {
 			aListe = CommuneDepartement.listerCommuneDepartementAvecCodCommuneCommencant(getTransaction(), zone);
 			// Sinon recherche de liste
@@ -326,7 +326,7 @@ public class OeCOMMUNESelection extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_COMMUNE_FRANCE Date
-	 * de création : (31/03/11 10:11:15)
+	 * de crÃ©ation : (31/03/11 10:11:15)
 	 * 
 	 */
 	public String getNOM_EF_COMMUNE_FRANCE() {
@@ -334,8 +334,8 @@ public class OeCOMMUNESelection extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_COMMUNE_FRANCE Date de création : (31/03/11 10:11:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_COMMUNE_FRANCE Date de crÃ©ation : (31/03/11 10:11:15)
 	 * 
 	 */
 	public String getVAL_EF_COMMUNE_FRANCE() {
@@ -343,7 +343,7 @@ public class OeCOMMUNESelection extends BasicProcess {
 	}
 
 	/**
-	 * Insérez la description de la méthode ici. Date de création : (31/03/2011
+	 * InsÃ©rez la description de la mÃ©thode ici. Date de crÃ©ation : (31/03/2011
 	 * 11:08:00)
 	 * 
 	 * @return ArrayList
@@ -356,7 +356,7 @@ public class OeCOMMUNESelection extends BasicProcess {
 	}
 
 	/**
-	 * Insérez la description de la méthode ici. Date de création : (31/03/2011
+	 * InsÃ©rez la description de la mÃ©thode ici. Date de crÃ©ation : (31/03/2011
 	 * 11:08:00)
 	 * 
 	 * @param newListeCommune
@@ -367,8 +367,8 @@ public class OeCOMMUNESelection extends BasicProcess {
 	}
 
 	/**
-	 * Méthode appelée par la servlet qui aiguille le traitement : en fonction
-	 * du bouton de la JSP Date de création : (24/01/03 15:27:10)
+	 * mÃ©thode appelee par la servlet qui aiguille le traitement : en fonction
+	 * du bouton de la JSP Date de crÃ©ation : (24/01/03 15:27:10)
 	 * 
 	 */
 	public boolean recupererStatut(HttpServletRequest request) throws Exception {
@@ -418,13 +418,13 @@ public class OeCOMMUNESelection extends BasicProcess {
 			}
 
 		}
-		// Si TAG INPUT non géré par le process
+		// Si TAG INPUT non gÃ©rÃ© par le process
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
 
 	/**
-	 * Constructeur du process OeCOMMUNESelection. Date de création : (31/03/11
+	 * Constructeur du process OeCOMMUNESelection. Date de crÃ©ation : (31/03/11
 	 * 15:07:33)
 	 * 
 	 */
@@ -433,8 +433,8 @@ public class OeCOMMUNESelection extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la JSP du process Zone à utiliser dans un champ caché
-	 * dans chaque formulaire de la JSP. Date de création : (31/03/11 15:07:33)
+	 * Retourne le nom de la JSP du process Zone a utiliser dans un champ cache
+	 * dans chaque formulaire de la JSP. Date de crÃ©ation : (31/03/11 15:07:33)
 	 * 
 	 */
 	public String getJSP() {
@@ -443,7 +443,7 @@ public class OeCOMMUNESelection extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_CHANGE_ORIGINE Date de
-	 * création : (31/03/11 15:07:33)
+	 * crÃ©ation : (31/03/11 15:07:33)
 	 * 
 	 */
 	public String getNOM_PB_CHANGE_ORIGINE() {
@@ -451,10 +451,10 @@ public class OeCOMMUNESelection extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (31/03/11 15:07:33)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (31/03/11 15:07:33)
 	 * 
 	 */
 	public boolean performPB_CHANGE_ORIGINE(HttpServletRequest request) throws Exception {
@@ -493,7 +493,7 @@ public class OeCOMMUNESelection extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_CODE_PAYS Date de
-	 * création : (18/08/11 10:21:15)
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_CODE_PAYS(int i) {
@@ -501,8 +501,8 @@ public class OeCOMMUNESelection extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_CODE_PAYS Date
-	 * de création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_CODE_PAYS Date
+	 * de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_CODE_PAYS(int i) {
@@ -511,7 +511,7 @@ public class OeCOMMUNESelection extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_LIB_PAYS Date de
-	 * création : (18/08/11 10:21:15)
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_LIB_PAYS(int i) {
@@ -519,8 +519,8 @@ public class OeCOMMUNESelection extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_LIB_PAYS Date
-	 * de création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_LIB_PAYS Date
+	 * de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_LIB_PAYS(int i) {
@@ -529,7 +529,7 @@ public class OeCOMMUNESelection extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_CODE Date de
-	 * création : (18/08/11 10:21:15)
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_CODE(int i) {
@@ -537,8 +537,8 @@ public class OeCOMMUNESelection extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_CODE Date de
-	 * création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_CODE Date de
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_CODE(int i) {
@@ -546,7 +546,7 @@ public class OeCOMMUNESelection extends BasicProcess {
 	}
 
 	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_LIB Date de création
+	 * Retourne pour la JSP le nom de la zone statique : ST_LIB Date de crÃ©ation
 	 * : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -555,8 +555,8 @@ public class OeCOMMUNESelection extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_LIB Date de
-	 * création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_LIB Date de
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_LIB(int i) {
@@ -564,7 +564,7 @@ public class OeCOMMUNESelection extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_OK Date de création :
+	 * Retourne le nom d'un bouton pour la JSP : PB_OK Date de crÃ©ation :
 	 * (24/01/03 15:27:10)
 	 * 
 	 */
@@ -573,16 +573,16 @@ public class OeCOMMUNESelection extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (24/01/03 15:27:10)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (24/01/03 15:27:10)
 	 * 
 	 */
 	public boolean performPB_OK_COMM(HttpServletRequest request, int elemSelection) throws Exception {
-		// Récupération de la commune, selon l'origine
+		// RÃ©cupÃ©ration de la commune, selon l'origine
 		if (getOrigine().equals(Const.COMMUNE_FRANCE)) {
-			// Récup de la commune sélectionnée
+			// RÃ©cup de la commune sÃ©lectionnÃ©e
 			String codeCommune = ((CommuneDepartement) getListeCommune().get(elemSelection)).getCodCommune();
 			Commune aCommune = Commune.chercherCommune(getTransaction(), Integer.valueOf(codeCommune));
 			if (getTransaction().isErreur()) {
@@ -597,7 +597,7 @@ public class OeCOMMUNESelection extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_PAYS Date de création :
+	 * Retourne le nom d'un bouton pour la JSP : PB_PAYS Date de crÃ©ation :
 	 * (24/01/03 15:27:10)
 	 * 
 	 */
@@ -606,10 +606,10 @@ public class OeCOMMUNESelection extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (24/01/03 15:27:10)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (24/01/03 15:27:10)
 	 * 
 	 */
 	public boolean performPB_PAYS(HttpServletRequest request, int elemPays) throws Exception {
@@ -653,7 +653,7 @@ public class OeCOMMUNESelection extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_OK Date de création :
+	 * Retourne le nom d'un bouton pour la JSP : PB_OK Date de crÃ©ation :
 	 * (24/01/03 15:27:10)
 	 * 
 	 */
@@ -662,14 +662,14 @@ public class OeCOMMUNESelection extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (24/01/03 15:27:10)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (24/01/03 15:27:10)
 	 * 
 	 */
 	public boolean performPB_OK_PAYS(HttpServletRequest request, int elemSelection) throws Exception {
-		// Récup de la commune sélectionnée
+		// RÃ©cup de la commune sÃ©lectionnÃ©e
 		CommuneEtrangere aCommuneEtrangere = (CommuneEtrangere) getListeCommunePays().get(elemSelection);
 
 		// Alimentation de la variable activite

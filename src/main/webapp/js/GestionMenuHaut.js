@@ -3,11 +3,11 @@ var ssModuleCourant='';
 
 // Constructeur de la classe Menu
 function MenuHaut(ssModule) { 
-//     Déclaration des variables membres (propriétés) 
+//     DÃ©claration des variables membres (propriÃ©tÃ©s) 
     this.listeObjet = new Array();
     this.niveau=0;
     this.nom= ssModule;
-//     Déclaration d'une fonction membre (méthode) 
+//     DÃ©claration d'une fonction membre (mÃ©thode) 
     this.ajouterFils= ajouterObjet;
     this.incrementeFils = incrementeNiveau;
     this.afficher = AfficherMenu;
@@ -26,7 +26,7 @@ function AfficherMenu() {
 
 // Constructeur de la classe Lien
 function Lien(aDroit, aTitreLien, aTitre, actif, selected, img) { 
-//     Déclaration des variables membres (propriétés) 
+//     DÃ©claration des variables membres (propriÃ©tÃ©s) 
     this.droit= aDroit;
     this.titreLien=aTitreLien;
     this.titre= aTitre; 
@@ -35,14 +35,14 @@ function Lien(aDroit, aTitreLien, aTitre, actif, selected, img) {
     this.type='lien';
     this.isSelected = selected;
     this.img = img;
-	//Déclaration d'une fonction membre (méthode)
+	//DÃ©claration d'une fonction membre (mÃ©thode)
     this.afficher= afficherLien; 
 } 
 
 // Implantation du code de la fonction membre 
 function afficherLien() {
 	var trouve = false;
-//	Vérif du droit de l'utilisateur
+//	VÃ©rif du droit de l'utilisateur
 	var a;
 	for (a in listeDroits) {
 		if (listeDroits[a] == this.droit) {
@@ -50,7 +50,7 @@ function afficherLien() {
 		}
 	}
 
-//	Si droit trouvé
+//	Si droit trouvÃ©
 	if (trouve) {
 		// Si menu actif
 		if (this.isActif) {
@@ -75,7 +75,7 @@ function afficherLien() {
 	}
  } 
 
-//Ajoute un objet à la liste
+//Ajoute un objet Ã  la liste
 function ajouterObjet (obj) {
    var objInc=this.incrementeFils(obj);
    var v = new Array(objInc);
@@ -86,7 +86,7 @@ function ajouterObjet (obj) {
 function incrementeNiveau(obj){
    obj.niveau=this.niveau + 1;
    if (obj.type=='dossier') {
-	//parcours des éléments et incrémente niveau
+	//parcours des Ã©lÃ©ments et incrÃ©mente niveau
 	var a;
 	for (a in obj.listeObjet) {
 		var v = obj.incrementeFils(obj.listeObjet[a]);

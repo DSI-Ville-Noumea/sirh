@@ -60,23 +60,23 @@ public enum EtatPointageEnum {
             case 0:
                 return "Saisi";
             case 1:
-                return "Approuvé";
+                return "ApprouvÃ©";
             case 2:
-                return "Refusé";
+                return "RefusÃ©";
             case 3:
-                return "Refusé définitivement";
+                return "RefusÃ© dÃ©finitivement";
             case 4:
-                return "Ventilé";
+                return "VentilÃ©";
             case 5:
-                return "Rejeté";
+                return "RejetÃ©";
             case 6:
-                return "Rejeté définitivement";
+                return "RejetÃ© dÃ©finitivement";
             case 7:
-                return "Validé";
+                return "ValidÃ©";
             case 8:
                 return "En attente";
             case 9:
-                return "Journalisé";
+                return "JournalisÃ©";
             default:
                 return "Etat inconnu";
         }

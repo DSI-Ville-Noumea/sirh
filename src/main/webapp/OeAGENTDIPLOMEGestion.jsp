@@ -1,4 +1,4 @@
-<!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@ page contentType="text/html; charset=UTF-8" %> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <%@page import="nc.mairie.metier.parametrage.CentreFormation"%>
 <%@page import="nc.mairie.metier.parametrage.TitreFormation"%>
 <%@page import="nc.mairie.metier.diplome.DiplomeAgent"%>
@@ -14,7 +14,7 @@
 <SCRIPT type="text/javascript" src="js/GestionCalendrier.js"></SCRIPT>
 <SCRIPT language="javascript" src="js/GestionOnglet.js"></SCRIPT>
 <LINK href="theme/sigp2.css" rel="stylesheet" type="text/css">
-<TITLE>Gestion des diplômes d'un agent</TITLE>
+<TITLE>Gestion des diplÃ´mes d'un agent</TITLE>
 
 <SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT> 
 		
@@ -26,13 +26,13 @@
 		<script type="text/javascript" src="development-bundle/ui/jquery.ui.autocomplete.js"></script>
 
 <SCRIPT language="JavaScript">
-		//afin de sélectionner un élément dans une liste
+		//afin de sÃ©lectionner un Ã©lÃ©ment dans une liste
 		function executeBouton(nom)
 		{
 		document.formu.elements[nom].click();
 		}
 		
-		// afin de mettre le focus sur une zone précise
+		// afin de mettre le focus sur une zone prÃ©cise
 		function setfocus(nom)
 		{
 		if (document.formu.elements[nom] != null)
@@ -124,7 +124,7 @@
 				});
 			});	
 		</SCRIPT>
-<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 </HEAD>
 <BODY bgcolor="#FFFFFF" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="window.parent.frames['refAgent'].location.reload();return setfocus('<%= process.getFocus() %>')">
 	<%@ include file="BanniereErreur.jsp" %>
@@ -135,9 +135,9 @@
 
 		<div style="margin-left:10px;margin-top:20px;text-align:left;width:1030px" align="left">
 			<% if (process.onglet.equals("ONGLET1")) {%>
-				<span id="titreOngletDiplome" class="OngletActif" onclick="afficheOnglet('ONGLET1');">&nbsp;Diplômes&nbsp;</span>&nbsp;&nbsp;
+				<span id="titreOngletDiplome" class="OngletActif" onclick="afficheOnglet('ONGLET1');">&nbsp;DiplÃ´mes&nbsp;</span>&nbsp;&nbsp;
 			<% }else {%>
-				<span id="titreOngletDiplome" class="OngletInactif" onclick="afficheOnglet('ONGLET1');">&nbsp;Diplômes&nbsp;</span>&nbsp;&nbsp;
+				<span id="titreOngletDiplome" class="OngletInactif" onclick="afficheOnglet('ONGLET1');">&nbsp;DiplÃ´mes&nbsp;</span>&nbsp;&nbsp;
 			<% } %>
 			<% if (process.onglet.equals("ONGLET2")) {%>
 				<span id="titreOngletFormation" class="OngletActif" onclick="afficheOnglet('ONGLET2');">&nbsp;Formations&nbsp;</span>&nbsp;&nbsp;
@@ -156,11 +156,11 @@
 			<div id="corpsOngletDiplome" title="Diplomes" class="OngletCorps" style="display:none;margin-right:10px;width:1030px;">
 		<% } %>
 			<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1000px;">
-				    <legend class="sigp2Legend">Gestion des diplômes d'un agent</legend>
+				    <legend class="sigp2Legend">Gestion des diplÃ´mes d'un agent</legend>
 				    <br/>
 				    <span style="margin-left: 5px;"><INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_CREER_DIPLOME()%>"></span>
 				    <span style="margin-left: 50px;">Titre</span>
-					<span style="margin-left: 375px;">Spécialité</span>
+					<span style="margin-left: 375px;">SpÃ©cialitÃ©</span>
 					<span style="margin-left: 250px;">Niveau</span>
 					<span style="margin-left: 65px;">Nb docs</span>
 					<br/>
@@ -199,7 +199,7 @@
 			<table>
 				<tr>
 					<td width="100px;">
-						<span class="sigp2Mandatory">Titre du diplôme : </span>
+						<span class="sigp2Mandatory">Titre du diplÃ´me : </span>
 					</td>
 					<td>
 						<span>
@@ -217,7 +217,7 @@
 				</tr>
 				<tr>
 					<td>
-						<span class="sigp2Mandatory">Specialite du diplôme : </span>
+						<span class="sigp2Mandatory">Specialite du diplÃ´me : </span>
 					</td>
 					<td colspan="2">
 						<span>
@@ -229,7 +229,7 @@
 				</tr>
 				<tr>
 					<td >
-						<span class="sigp2">Nom de l'école : </span>
+						<span class="sigp2">Nom de l'Ã©cole : </span>
 					</td>
 					<td colspan="2">
 						<span>
@@ -252,7 +252,7 @@
 			</table>
 			<BR/>
 			<FIELDSET class="sigp2Fieldset" style="text-align: left; width:930px;">
-				<legend class="sigp2Legend">Liste des documents du diplôme</legend>
+				<legend class="sigp2Legend">Liste des documents du diplÃ´me</legend>
 					<span style="margin-left: 5px;">	
 						<INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_CREER_DOC_DIPLOME()%>">
 					</span>
@@ -325,11 +325,11 @@
 		  	 	<FONT color='red'>Veuillez valider votre choix.</FONT>
 		    	<BR/><BR/>
 		    <% } %>
-			<span class="sigp2">Titre du diplôme : </span>
+			<span class="sigp2">Titre du diplÃ´me : </span>
 			<span class="sigp2-saisie"  style="margin-left: 30px;"><%=process.getVAL_ST_TITRE()%></span>
 			<BR/>
 			<BR/>
-			<span class="sigp2">Spécialité du diplôme : </span>
+			<span class="sigp2">SpÃ©cialitÃ© du diplÃ´me : </span>
 			<span class="sigp2-saisie" style="margin-left: 5px;"><%=process.getVAL_ST_SPECIALITE_DIPLOME()%></span>
 			<BR/>
 			<BR/>
@@ -337,7 +337,7 @@
 			<span class="sigp2-saisie" style="margin-left: 70px;"><%=process.getVAL_ST_NIVEAU()%></span>
 			<BR/>
 			<BR/>
-			<span class="sigp2">Nom de l'école : </span>
+			<span class="sigp2">Nom de l'Ã©cole : </span>
 			<span class="sigp2-saisie" style="margin-left: 35px;"><%=process.getVAL_EF_NOM_ECOLE()%></span>
 			<BR/>
 			<BR/>
@@ -345,7 +345,7 @@
 			<span class="sigp2-saisie" style="margin-left: 25px;"><%=process.getVAL_EF_DATE_OBTENTION_DIPLOME()%></span>
 				<BR/><BR/>				
 				<FIELDSET class="sigp2Fieldset" style="text-align: left; width:930px;">
-				<legend class="sigp2Legend">Liste des documents du diplôme</legend>
+				<legend class="sigp2Legend">Liste des documents du diplÃ´me</legend>
 					<span style="margin-left: 65px;">Nom du document</span>
 					<span style="margin-left: 65px;">Nom original</span>
 					<span style="margin-left: 160px;">Date</span> 
@@ -397,7 +397,7 @@
 				    <br/>
 				    <span style="margin-left: 5px;"><INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_CREER_FORMATION()%>"></span>
 				    <span style="margin-left: 50px;">Titre de la formation</span>
-					<span style="margin-left: 510px;">Année</span>
+					<span style="margin-left: 510px;">AnnÃ©e</span>
 					<span style="margin-left: 20px;">Nb docs</span>
 					<br/>
 				<div style="overflow: auto;height: 250px;width:980px;">
@@ -443,7 +443,7 @@
 							type="text" value="<%= process.getVAL_EF_CENTRE_FORM() %>">
 					</span>
 					<BR/><BR/>
-					<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Durée formation : </span>
+					<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">DurÃ©e formation : </span>
 					<INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_DUREE_FORMATION() %>" size="10" type="text"  value="<%= process.getVAL_ST_DUREE_FORMATION() %>">
 					<span style="margin-left:20px;">
 						<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_UNITE_DUREE() %>"  style="width : 70px;">
@@ -451,7 +451,7 @@
 						</SELECT>
 					</span>
 					<BR/><BR/>
-					<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Année formation : </span>
+					<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">AnnÃ©e formation : </span>
 					<INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_ANNEE_FORMATION() %>" size="10" type="text"  value="<%= process.getVAL_ST_ANNEE_FORMATION() %>">
 					<BR/><BR/>
 				<FIELDSET class="sigp2Fieldset" style="text-align: left; width:930px;">
@@ -535,7 +535,7 @@
 					<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Centre de formation : </span>
 					<span class="sigp2-saisie"><%=process.getVAL_ST_CENTRE_FORM()%></span>
 					<BR/><BR/>
-					<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Durée formation : </span>
+					<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">DurÃ©e formation : </span>
 					<span class="sigp2-saisie"><%=process.getVAL_ST_DUREE_FORMATION()%></span>
 					<span style="margin-left:20px;">
 						<SELECT disabled="disabled" class="sigp2-liste" name="<%= process.getNOM_LB_UNITE_DUREE() %>"  style="width : 70px;">
@@ -543,7 +543,7 @@
 						</SELECT>
 					</span>
 					<BR/><BR/>
-					<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Année formation : </span>
+					<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">AnnÃ©e formation : </span>
 					<span class="sigp2-saisie"><%=process.getVAL_ST_ANNEE_FORMATION()%></span>
 				<BR/><BR/>				
 				<FIELDSET class="sigp2Fieldset" style="text-align: left; width:930px;">
@@ -601,7 +601,7 @@
 				    <br/>
 				    <span style="margin-left: 5px;"><INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_CREER_PERMIS()%>"></span>
 				    <span style="margin-left: 45px;">Titre</span>
-				    <span style="margin-left: 580px;">Limite de validité</span>
+				    <span style="margin-left: 580px;">Limite de validitÃ©</span>
 					<span style="margin-left: 5px;">Nb docs</span>
 					<br/>
 				<div style="overflow: auto;height: 250px;width:980px;">
@@ -642,7 +642,7 @@
 						</SELECT>
 					</span>
 					<BR/><BR/>
-					<span class="sigp2" style="margin-left:20px;position:relative;width:150px;">Durée de validité : </span>
+					<span class="sigp2" style="margin-left:20px;position:relative;width:150px;">DurÃ©e de validitÃ© : </span>
 					<INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_DUREE_PERMIS() %>" size="10" type="text"  value="<%= process.getVAL_ST_DUREE_PERMIS() %>">
 					<span style="margin-left:20px;">
 						<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_UNITE_DUREE() %>"  style="width : 70px;">
@@ -738,7 +738,7 @@
 						</SELECT>
 					</span>
 					<BR/><BR/>
-					<span class="sigp2" style="margin-left:20px;position:relative;width:150px;">Durée de validité : </span>
+					<span class="sigp2" style="margin-left:20px;position:relative;width:150px;">DurÃ©e de validitÃ© : </span>
 					<span class="sigp2-saisie"><%=process.getVAL_ST_DUREE_PERMIS()%></span>
 					<span style="margin-left:20px;">
 						<SELECT disabled="disabled" class="sigp2-liste" name="<%= process.getNOM_LB_UNITE_DUREE() %>"  style="width : 70px;">
@@ -750,7 +750,7 @@
 					<span class="sigp2-saisie"><%=process.getVAL_EF_DATE_OBTENTION_PERMIS()%></span>
 				<BR/><BR/>				
 				<FIELDSET class="sigp2Fieldset" style="text-align: left; width:930px;">
-				<legend class="sigp2Legend">Liste des documents du diplôme</legend>
+				<legend class="sigp2Legend">Liste des documents du diplÃ´me</legend>
 					<span style="position:relative;width:9px;"></span>
 					<span style="position:relative;width:55px;"></span>
 					<span style="margin-left:5px;position:relative;width:230px;text-align: left;">Nom du document</span>

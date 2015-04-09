@@ -1,4 +1,4 @@
-<!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@ page contentType="text/html; charset=UTF-8" %> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <%@page import="nc.mairie.metier.eae.CampagneAction"%>
 <%@page import="nc.mairie.technique.Services"%>
 <%@page import="nc.mairie.metier.eae.CampagneEAE"%>
@@ -22,13 +22,13 @@
 		<script type="text/javascript" src="development-bundle/ui/jquery.ui.autocomplete.js"></script>
 
 <SCRIPT language="JavaScript">
-//afin de sélectionner un élément dans une liste
+//afin de sÃ©lectionner un Ã©lÃ©ment dans une liste
 function executeBouton(nom)
 {
 document.formu.elements[nom].click();
 }
 
-// afin de mettre le focus sur une zone précise
+// afin de mettre le focus sur une zone prÃ©cise
 function setfocus(nom)
 {
 if (document.formu.elements[nom] != null)
@@ -43,7 +43,7 @@ function SelectLigne(id,tailleTableau)
  document.getElementById(id).className="selectLigne";
 }
 </SCRIPT>
-<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 </HEAD>
 <jsp:useBean
  class="nc.mairie.gestionagent.process.avancement.OeAVCTCampagnePlanification" id="process" scope="session"></jsp:useBean>
@@ -51,10 +51,10 @@ function SelectLigne(id,tailleTableau)
 	<%@ include file="BanniereErreur.jsp" %>
 	<FORM name="formu" <%=process.isImporting ? "ENCTYPE=\"multipart/form-data\"" : ""%> method="POST" class="sigp2-titre">
 		<BR/>
-		<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;" title="Recherche avancée d'une fiche de poste">
+		<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;" title="Recherche avancÃ©e d'une fiche de poste">
 				<LEGEND class="sigp2Legend">Choix de la campagne</LEGEND>
 				<BR/>
-				<span class="sigp2Mandatory" style="width:60px;">Année :</span>
+				<span class="sigp2Mandatory" style="width:60px;">AnnÃ©e :</span>
 				<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_ANNEE() %>">
 					<%=process.forComboHTML(process.getVAL_LB_ANNEE(), process.getVAL_LB_ANNEE_SELECT()) %>
 				</SELECT>
@@ -73,7 +73,7 @@ function SelectLigne(id,tailleTableau)
 			<span style="margin-left: 35px;">Action</span>
 			<span style="margin-left: 30px;">Transmettre le</span>
 			<span style="margin-left: 120px;">Message</span>
-			<span style="margin-left: 150px;">Action à réaliser par</span>
+			<span style="margin-left: 150px;">Action Ã  rÃ©aliser par</span>
 			<span style="margin-left: 25px;">A faire pour le</span>
 			<span style="margin-left: 55px;">Fait le</span>
 			<br/>
@@ -156,7 +156,7 @@ function SelectLigne(id,tailleTableau)
 					</tr>
 					<tr>
 						<td>
-							<span class="sigp2Mandatory">A réaliser par :</span>
+							<span class="sigp2Mandatory">A rÃ©aliser par :</span>
 						</td>
 						<td>
 							<%if(process.getActionCourante()==null || !process.isMailDiffuse(process.getActionCourante())){ %>
@@ -328,7 +328,7 @@ function SelectLigne(id,tailleTableau)
 				<span class="sigp2" style="margin-left:20px;position:relative;width:100px;">A transmettre le : </span>
 				<span class="sigp2-saisie"><%=process.getVAL_ST_TRANSMETTRE()%></span>
 				<BR/><BR/>
-				<span class="sigp2" style="margin-left:20px;position:relative;width:100px;">A réaliser par : </span>
+				<span class="sigp2" style="margin-left:20px;position:relative;width:100px;">A rÃ©aliser par : </span>
 				<span class="sigp2-saisie"><%=process.getVAL_ST_AGENT()%></span>
 				<BR/><BR/>
 				<span class="sigp2" style="margin-left:20px;position:relative;width:100px;">A faire pour le : </span>

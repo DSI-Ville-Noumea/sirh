@@ -1,4 +1,4 @@
-<!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@ page contentType="text/html; charset=UTF-8" %> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <%@page import="nc.mairie.utils.MairieUtils"%>
 <%@page import="nc.mairie.enums.EnumTypeDroit"%>
 <%@page import="nc.mairie.metier.Const"%>
@@ -8,18 +8,18 @@
 		<META name="GENERATOR" content="IBM WebSphere Page Designer V3.5.3 for Windows">
 		<META http-equiv="Content-Style-Type" content="text/css">
 		<LINK href="theme/sigp2.css" rel="stylesheet" type="text/css">
-		<TITLE>Gestion des paramètres de grade</TITLE>
+		<TITLE>Gestion des paramÃ¨tres de grade</TITLE>
 		<LINK rel="stylesheet" href="theme/calendrier-mairie.css" type="text/css">
 		<SCRIPT type="text/javascript" src="js/GestionCalendrier.js"></SCRIPT> <SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT>
 		
 		<SCRIPT language="JavaScript">
-		//afin de sélectionner un élément dans une liste
+		//afin de sÃ©lectionner un Ã©lÃ©ment dans une liste
 		function executeBouton(nom)
 		{
 			document.formu.elements[nom].click();
 		}
 
-		// afin de mettre le focus sur une zone précise
+		// afin de mettre le focus sur une zone prÃ©cise
 		function setfocus(nom)
 		{
 		if (document.formu.elements[nom] != null)
@@ -28,7 +28,7 @@
 		
 		</SCRIPT>
 		
-		<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	</HEAD>
 	<jsp:useBean class="nc.mairie.gestionagent.process.parametre.OePARAMETRAGEGradeRef" id="process" scope="session"></jsp:useBean>
 	<BODY bgcolor="#FFFFFF" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" class="sigp2-BODY" onload="window.parent.frames['refAgent'].location.reload();" >
@@ -65,7 +65,7 @@
 					            	</tr>	
 					            	<tr>
 					            		<td>
-											<label class="sigp2Mandatory">Libellé:</label>
+											<label class="sigp2Mandatory">LibellÃ©:</label>
 					            		</td>
 					            		<td>
 					            			<INPUT class="sigp2-saisie" maxlength="60" name="<%= process.getNOM_EF_LIBELLE_CLASSE() %>" size="35" type="text" value="<%= process.getVAL_EF_LIBELLE_CLASSE() %>">
@@ -112,7 +112,7 @@
 					            	</tr>	
 					            	<tr>
 					            		<td>
-											<label class="sigp2Mandatory">Libellé:</label>
+											<label class="sigp2Mandatory">LibellÃ©:</label>
 					            		</td>
 					            		<td>
 					            			<INPUT class="sigp2-saisie" maxlength="60" name="<%= process.getNOM_EF_LIBELLE_ECHELON() %>" size="35" type="text" value="<%= process.getVAL_EF_LIBELLE_ECHELON() %>">
@@ -136,7 +136,7 @@
 				<tr>
 					<td>
 						<FIELDSET class="sigp2Fieldset"  style="text-align: left;">
-					    	<legend class="sigp2Legend">Barêmes</legend>
+					    	<legend class="sigp2Legend">BarÃªmes</legend>
 							<span style="margin-left: 5px;">IBA</span>
 							<span style="margin-left: 70px;">INA</span>
 							<span style="margin-left: 65px;">INM</span>
@@ -200,11 +200,11 @@
 					</td>
 					<td>
 						<FIELDSET class="sigp2Fieldset"  style="text-align: left;">
-					    	<legend class="sigp2Legend">Grades génériques</legend>
+					    	<legend class="sigp2Legend">Grades gÃ©nÃ©riques</legend>
 							<span style="margin-left:0px;">Code</span>
 							<span style="margin-left:25px;">Cat</span>
 							<span style="margin-left:10px;">Inactif</span>
-							<span style="margin-left:10px;">Libellé</span>
+							<span style="margin-left:10px;">LibellÃ©</span>
 							
 							<br/>
 							<span class="sigp2-titre" align="center" colspan="2">
@@ -234,7 +234,7 @@
 					            	</tr>	
 					            	<tr>
 					            		<td>
-											<label class="sigp2Mandatory">Libellé:</label>
+											<label class="sigp2Mandatory">LibellÃ©:</label>
 					            		</td>
 					            		<td>
 					            			<INPUT class="sigp2-saisiemajuscule" maxlength="50"	  name="<%= process.getNOM_EF_LIBELLE_GRADE_GENERIQUE() %>" size="50" type="text" value="<%= process.getVAL_EF_LIBELLE_GRADE_GENERIQUE() %>">
@@ -242,7 +242,7 @@
 					            	</tr>
 					            	<tr>
 					            		<td>
-											<label class="sigp2Mandatory">Catégorie:</label>
+											<label class="sigp2Mandatory">CatÃ©gorie:</label>
 					            		</td>
 					            		<td>
 											<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_CATEGORIE() %>">
@@ -279,7 +279,7 @@
 					            	</tr>
 					            	<tr>
 					            		<td>
-											<label class="sigp2Mandatory">Filière:</label>
+											<label class="sigp2Mandatory">FiliÃ¨re:</label>
 					            		</td>
 					            		<td>
 											<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_FILIERE() %>">
@@ -297,7 +297,7 @@
 					            	</tr>
 					            	<tr>
 					            		<td>
-											<label class="sigp2Mandatory">Déliberation territoriale:</label>
+											<label class="sigp2Mandatory">DÃ©liberation territoriale:</label>
 					            		</td>
 					            		<td>
 											<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_DELIB_TERR_GRADE() %>">
@@ -307,7 +307,7 @@
 					            	</tr>
 					            	<tr>
 					            		<td>
-											<label class="sigp2Mandatory">Déliberation communale:</label>
+											<label class="sigp2Mandatory">DÃ©liberation communale:</label>
 					            		</td>
 					            		<td>
 											<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_DELIB_COMM_GRADE() %>">
@@ -334,7 +334,7 @@
 					<td>
 						<FIELDSET class="sigp2Fieldset"  style="text-align: left;">			
 					    	<legend class="sigp2Legend">Cadre emploi</legend>
-							<span style="position:relative;width:290px;">Libellé</span>				
+							<span style="position:relative;width:290px;">LibellÃ©</span>				
 							<br/>
 							<span class="sigp2-titre">
 							<SELECT name="<%= process.getNOM_LB_CADRE_EMPLOI() %>" size="10" style="width:100%;" class="sigp2-liste">
@@ -353,7 +353,7 @@
 								<% if (!process.ACTION_SUPPRESSION.equals(process.getVAL_EF_ACTION_CADRE_EMPLOI())) { %>
 					            	<tr>
 					            		<td width="50px">
-											<label class="sigp2Mandatory">Libellé:</label>
+											<label class="sigp2Mandatory">LibellÃ©:</label>
 					            		</td>
 					            		<td>
 					            			<INPUT class="sigp2-saisiemajuscule" maxlength="100" name="<%= process.getNOM_EF_CADRE_EMPLOI() %>" size="35" type="text" value="<%= process.getVAL_EF_CADRE_EMPLOI() %>">
@@ -370,7 +370,7 @@
 					            <% }else{%>
 					            	<tr>
 					            		<td width="50px">
-											<label class="sigp2Mandatory">Libellé:</label>
+											<label class="sigp2Mandatory">LibellÃ©:</label>
 					            		</td>
 					            		<td>
 					            			<INPUT disabled="disabled" class="sigp2-saisiemajuscule" maxlength="100" name="<%= process.getNOM_EF_CADRE_EMPLOI() %>" size="35" type="text" value="<%= process.getVAL_EF_CADRE_EMPLOI() %>">

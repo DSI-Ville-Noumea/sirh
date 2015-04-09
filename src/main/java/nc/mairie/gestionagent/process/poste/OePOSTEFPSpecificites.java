@@ -35,7 +35,7 @@ import nc.mairie.utils.VariablesActivite;
 import org.springframework.context.ApplicationContext;
 
 /**
- * Process OePOSTEFPSpecificites Date de création : (27/07/11 12:13:47)
+ * Process OePOSTEFPSpecificites Date de crÃ©ation : (27/07/11 12:13:47)
  * 
  */
 public class OePOSTEFPSpecificites extends BasicProcess {
@@ -47,8 +47,8 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	private final String ACTION_AJOUTER = "Ajouter";
 	public final String ACTION_SUPPRIMER = "Supprimer";
 	public final String SPEC_AVANTAGE_NATURE = "avantage en nature";
-	public final String SPEC_DELEGATION = "délégation";
-	public final String SPEC_REG_INDEMN = "régime indemnitaire";
+	public final String SPEC_DELEGATION = "dÃ©lÃ©gation";
+	public final String SPEC_REG_INDEMN = "rÃ©gime indemnitaire";
 	public final String SPEC_PRIME_POINTAGE = "prime pointage";
 
 	private String[] LB_AVANTAGE;
@@ -92,7 +92,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	private RubriqueDao rubriqueDao;
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER Date de création :
+	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER Date de crÃ©ation :
 	 * (27/07/11 12:13:47)
 	 * 
 	 */
@@ -101,10 +101,10 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (27/07/11 12:13:47)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (27/07/11 12:13:47)
 	 * 
 	 */
 	public boolean performPB_ANNULER(HttpServletRequest request) throws Exception {
@@ -113,7 +113,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER Date de création :
+	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER Date de crÃ©ation :
 	 * (27/07/11 12:13:47)
 	 * 
 	 */
@@ -122,10 +122,10 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (27/07/11 12:13:47)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (27/07/11 12:13:47)
 	 * 
 	 */
 	public boolean performPB_VALIDER(HttpServletRequest request) throws Exception {
@@ -170,7 +170,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Contrôle les zones saisies d'un avantage en nature. Date de création :
+	 * Controle les zones saisies d'un avantage en nature. Date de crÃ©ation :
 	 * (28/07/11)
 	 */
 	private boolean performControlerSaisieAvNat(HttpServletRequest request) throws Exception {
@@ -186,12 +186,12 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 		}
 
 		// ****************************************
-		// Verification Montant OU Nature renseigné
+		// Verification Montant OU Nature renseignÃ©
 		// ****************************************
 		if (getVAL_EF_MONTANT_AVANTAGE().length() == 0
 				&& ((NatureAvantage) getListeNatureAvantage().get(Integer.parseInt(getVAL_LB_NATURE_AVANTAGE_SELECT())))
 						.getIdNatureAvantage() == null) {
-			// "ERR979","Au moins une des 2 zones suivantes doit être renseignée : @ ou @."
+			// "ERR979","Au moins une des 2 zones suivantes doit Ãªtre renseignÃ©e : @ ou @."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR979", "Nature avantage", "Montant"));
 			setFocus(getNOM_LB_NATURE_AVANTAGE());
 			return false;
@@ -201,7 +201,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 		// Verification Montant
 		// ********************
 		if (getVAL_EF_MONTANT_AVANTAGE().length() != 0 && !Services.estNumerique(getVAL_EF_MONTANT_AVANTAGE())) {
-			// "ERR992","La zone @ doit être numérique."
+			// "ERR992","La zone @ doit Ãªtre numÃ©rique."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "Montant"));
 			setFocus(getNOM_EF_MONTANT_AVANTAGE());
 			return false;
@@ -211,7 +211,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Contrôle les zones saisies d'une délégation. Date de création :
+	 * Controle les zones saisies d'une dÃ©lÃ©gation. Date de crÃ©ation :
 	 * (29/07/11)
 	 */
 	private boolean performControlerSaisieDel(HttpServletRequest request) throws Exception {
@@ -219,16 +219,16 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Contrôle les zones saisies d'un régime indemnitaire. Date de création :
+	 * Controle les zones saisies d'un rÃ©gime indemnitaire. Date de crÃ©ation :
 	 * (29/07/11)
 	 */
 	private boolean performControlerSaisieRegIndemn(HttpServletRequest request) throws Exception {
 
 		// *******************************************
-		// Verification Forfait OU Nb points renseigné
+		// Verification Forfait OU Nb points renseignÃ©
 		// *******************************************
 		if (getVAL_EF_FORFAIT_REGIME().length() == 0 && getVAL_EF_NB_POINTS_REGIME().length() == 0) {
-			// "ERR979","Au moins une des 2 zones suivantes doit être renseignée : @ ou @."
+			// "ERR979","Au moins une des 2 zones suivantes doit Ãªtre renseignÃ©e : @ ou @."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR979", "Forfait", "Nb points"));
 			setFocus(getNOM_EF_FORFAIT_REGIME());
 			return false;
@@ -238,7 +238,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 		// Verification Forfait
 		// ********************
 		if (getVAL_EF_FORFAIT_REGIME().length() != 0 && !Services.estNumerique(getVAL_EF_FORFAIT_REGIME())) {
-			// "ERR992","La zone @ doit être numérique."
+			// "ERR992","La zone @ doit Ãªtre numÃ©rique."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "Forfait"));
 			setFocus(getNOM_EF_FORFAIT_REGIME());
 			return false;
@@ -248,7 +248,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 		// Verification Nb points
 		// **********************
 		if (getVAL_EF_NB_POINTS_REGIME().length() != 0 && !Services.estNumerique(getVAL_EF_NB_POINTS_REGIME())) {
-			// "ERR992","La zone @ doit être numérique."
+			// "ERR992","La zone @ doit Ãªtre numÃ©rique."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "Nb points"));
 			setFocus(getNOM_EF_NB_POINTS_REGIME());
 			return false;
@@ -259,7 +259,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique :
-	 * ST_CODE_RUBRIQUE_AVANTAGE Date de création : (27/07/11 12:13:47)
+	 * ST_CODE_RUBRIQUE_AVANTAGE Date de crÃ©ation : (27/07/11 12:13:47)
 	 * 
 	 */
 	public String getNOM_ST_CODE_RUBRIQUE_AVANTAGE() {
@@ -267,8 +267,8 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
-	 * ST_CODE_RUBRIQUE_AVANTAGE Date de création : (27/07/11 12:13:47)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone :
+	 * ST_CODE_RUBRIQUE_AVANTAGE Date de crÃ©ation : (27/07/11 12:13:47)
 	 * 
 	 */
 	public String getVAL_ST_CODE_RUBRIQUE_AVANTAGE() {
@@ -277,7 +277,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_CODE_RUBRIQUE_REGIME
-	 * Date de création : (27/07/11 12:13:47)
+	 * Date de crÃ©ation : (27/07/11 12:13:47)
 	 * 
 	 */
 	public String getNOM_ST_CODE_RUBRIQUE_REGIME() {
@@ -285,8 +285,8 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
-	 * ST_CODE_RUBRIQUE_REGIME Date de création : (27/07/11 12:13:47)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone :
+	 * ST_CODE_RUBRIQUE_REGIME Date de crÃ©ation : (27/07/11 12:13:47)
 	 * 
 	 */
 	public String getVAL_ST_CODE_RUBRIQUE_REGIME() {
@@ -295,7 +295,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_COMMENT_DELEGATION
-	 * Date de création : (27/07/11 12:13:47)
+	 * Date de crÃ©ation : (27/07/11 12:13:47)
 	 * 
 	 */
 	public String getNOM_EF_COMMENT_DELEGATION() {
@@ -303,8 +303,8 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_COMMENT_DELEGATION Date de création : (27/07/11 12:13:47)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_COMMENT_DELEGATION Date de crÃ©ation : (27/07/11 12:13:47)
 	 * 
 	 */
 	public String getVAL_EF_COMMENT_DELEGATION() {
@@ -313,7 +313,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_FORFAIT_REGIME Date
-	 * de création : (27/07/11 12:13:47)
+	 * de crÃ©ation : (27/07/11 12:13:47)
 	 * 
 	 */
 	public String getNOM_EF_FORFAIT_REGIME() {
@@ -321,8 +321,8 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_FORFAIT_REGIME Date de création : (27/07/11 12:13:47)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_FORFAIT_REGIME Date de crÃ©ation : (27/07/11 12:13:47)
 	 * 
 	 */
 	public String getVAL_EF_FORFAIT_REGIME() {
@@ -331,7 +331,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_MONTANT_AVANTAGE
-	 * Date de création : (27/07/11 12:13:47)
+	 * Date de crÃ©ation : (27/07/11 12:13:47)
 	 * 
 	 */
 	public String getNOM_EF_MONTANT_AVANTAGE() {
@@ -339,8 +339,8 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_MONTANT_AVANTAGE Date de création : (27/07/11 12:13:47)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_MONTANT_AVANTAGE Date de crÃ©ation : (27/07/11 12:13:47)
 	 * 
 	 */
 	public String getVAL_EF_MONTANT_AVANTAGE() {
@@ -349,7 +349,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_NB_POINTS_REGIME
-	 * Date de création : (27/07/11 12:13:47)
+	 * Date de crÃ©ation : (27/07/11 12:13:47)
 	 * 
 	 */
 	public String getNOM_EF_NB_POINTS_REGIME() {
@@ -357,8 +357,8 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_NB_POINTS_REGIME Date de création : (27/07/11 12:13:47)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_NB_POINTS_REGIME Date de crÃ©ation : (27/07/11 12:13:47)
 	 * 
 	 */
 	public String getVAL_EF_NB_POINTS_REGIME() {
@@ -367,7 +367,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 
 	/**
 	 * Getter de la liste avec un lazy initialize : LB_NATURE_AVANTAGE Date de
-	 * création : (27/07/11 12:13:47)
+	 * crÃ©ation : (27/07/11 12:13:47)
 	 * 
 	 */
 	private String[] getLB_NATURE_AVANTAGE() {
@@ -377,7 +377,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_NATURE_AVANTAGE Date de création : (27/07/11
+	 * Setter de la liste: LB_NATURE_AVANTAGE Date de crÃ©ation : (27/07/11
 	 * 12:13:47)
 	 * 
 	 */
@@ -387,7 +387,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 
 	/**
 	 * Retourne le nom de la zone pour la JSP : NOM_LB_NATURE_AVANTAGE Date de
-	 * création : (27/07/11 12:13:47)
+	 * crÃ©ation : (27/07/11 12:13:47)
 	 * 
 	 */
 	public String getNOM_LB_NATURE_AVANTAGE() {
@@ -395,8 +395,8 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_NATURE_AVANTAGE_SELECT Date de création : (27/07/11 12:13:47)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_NATURE_AVANTAGE_SELECT Date de crÃ©ation : (27/07/11 12:13:47)
 	 * 
 	 */
 	public String getNOM_LB_NATURE_AVANTAGE_SELECT() {
@@ -404,8 +404,8 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_NATURE_AVANTAGE Date de création : (27/07/11 12:13:47)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_NATURE_AVANTAGE Date de crÃ©ation : (27/07/11 12:13:47)
 	 * 
 	 */
 	public String[] getVAL_LB_NATURE_AVANTAGE() {
@@ -413,8 +413,8 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_NATURE_AVANTAGE Date de création : (27/07/11 12:13:47)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_NATURE_AVANTAGE Date de crÃ©ation : (27/07/11 12:13:47)
 	 * 
 	 */
 	public String getVAL_LB_NATURE_AVANTAGE_SELECT() {
@@ -423,7 +423,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 
 	/**
 	 * Getter de la liste avec un lazy initialize : LB_RUBRIQUE_AVANTAGE Date de
-	 * création : (27/07/11 12:13:47)
+	 * crÃ©ation : (27/07/11 12:13:47)
 	 * 
 	 */
 	private String[] getLB_RUBRIQUE_AVANTAGE() {
@@ -433,7 +433,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_RUBRIQUE_AVANTAGE Date de création : (27/07/11
+	 * Setter de la liste: LB_RUBRIQUE_AVANTAGE Date de crÃ©ation : (27/07/11
 	 * 12:13:47)
 	 * 
 	 */
@@ -443,7 +443,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 
 	/**
 	 * Retourne le nom de la zone pour la JSP : NOM_LB_RUBRIQUE_AVANTAGE Date de
-	 * création : (27/07/11 12:13:47)
+	 * crÃ©ation : (27/07/11 12:13:47)
 	 * 
 	 */
 	public String getNOM_LB_RUBRIQUE_AVANTAGE() {
@@ -451,8 +451,8 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_RUBRIQUE_AVANTAGE_SELECT Date de création : (27/07/11 12:13:47)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_RUBRIQUE_AVANTAGE_SELECT Date de crÃ©ation : (27/07/11 12:13:47)
 	 * 
 	 */
 	public String getNOM_LB_RUBRIQUE_AVANTAGE_SELECT() {
@@ -460,8 +460,8 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_RUBRIQUE_AVANTAGE Date de création : (27/07/11 12:13:47)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_RUBRIQUE_AVANTAGE Date de crÃ©ation : (27/07/11 12:13:47)
 	 * 
 	 */
 	public String[] getVAL_LB_RUBRIQUE_AVANTAGE() {
@@ -469,8 +469,8 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_RUBRIQUE_AVANTAGE Date de création : (27/07/11 12:13:47)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_RUBRIQUE_AVANTAGE Date de crÃ©ation : (27/07/11 12:13:47)
 	 * 
 	 */
 	public String getVAL_LB_RUBRIQUE_AVANTAGE_SELECT() {
@@ -479,7 +479,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 
 	/**
 	 * Getter de la liste avec un lazy initialize : LB_RUBRIQUE_REGIME Date de
-	 * création : (27/07/11 12:13:47)
+	 * crÃ©ation : (27/07/11 12:13:47)
 	 * 
 	 */
 	private String[] getLB_RUBRIQUE_REGIME() {
@@ -489,7 +489,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_RUBRIQUE_REGIME Date de création : (27/07/11
+	 * Setter de la liste: LB_RUBRIQUE_REGIME Date de crÃ©ation : (27/07/11
 	 * 12:13:47)
 	 * 
 	 */
@@ -499,7 +499,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 
 	/**
 	 * Retourne le nom de la zone pour la JSP : NOM_LB_RUBRIQUE_REGIME Date de
-	 * création : (27/07/11 12:13:47)
+	 * crÃ©ation : (27/07/11 12:13:47)
 	 * 
 	 */
 	public String getNOM_LB_RUBRIQUE_REGIME() {
@@ -507,8 +507,8 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_RUBRIQUE_REGIME_SELECT Date de création : (27/07/11 12:13:47)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_RUBRIQUE_REGIME_SELECT Date de crÃ©ation : (27/07/11 12:13:47)
 	 * 
 	 */
 	public String getNOM_LB_RUBRIQUE_REGIME_SELECT() {
@@ -516,8 +516,8 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_RUBRIQUE_REGIME Date de création : (27/07/11 12:13:47)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_RUBRIQUE_REGIME Date de crÃ©ation : (27/07/11 12:13:47)
 	 * 
 	 */
 	public String[] getVAL_LB_RUBRIQUE_REGIME() {
@@ -525,8 +525,8 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_RUBRIQUE_REGIME Date de création : (27/07/11 12:13:47)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_RUBRIQUE_REGIME Date de crÃ©ation : (27/07/11 12:13:47)
 	 * 
 	 */
 	public String getVAL_LB_RUBRIQUE_REGIME_SELECT() {
@@ -535,7 +535,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 
 	/**
 	 * Getter de la liste avec un lazy initialize : LB_RUBRIQUE_PRIME_POINTAGE
-	 * Date de création : (27/07/11 12:13:47)
+	 * Date de crÃ©ation : (27/07/11 12:13:47)
 	 * 
 	 */
 	private String[] getLB_RUBRIQUE_PRIME_POINTAGE() {
@@ -545,7 +545,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_RUBRIQUE_PRIME_POINTAGE Date de création :
+	 * Setter de la liste: LB_RUBRIQUE_PRIME_POINTAGE Date de crÃ©ation :
 	 * (27/07/11 12:13:47)
 	 * 
 	 */
@@ -555,7 +555,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 
 	/**
 	 * Retourne le nom de la zone pour la JSP : NOM_LB_RUBRIQUE_PRIME_POINTAGE
-	 * Date de création : (27/07/11 12:13:47)
+	 * Date de crÃ©ation : (27/07/11 12:13:47)
 	 * 
 	 */
 	public String getNOM_LB_RUBRIQUE_PRIME_POINTAGE() {
@@ -563,8 +563,8 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_RUBRIQUE_PRIME_POINTAGE_SELECT Date de création : (27/07/11
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_RUBRIQUE_PRIME_POINTAGE_SELECT Date de crÃ©ation : (27/07/11
 	 * 12:13:47)
 	 * 
 	 */
@@ -573,8 +573,8 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_RUBRIQUE_PRIME_POINTAGE Date de création : (27/07/11 12:13:47)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_RUBRIQUE_PRIME_POINTAGE Date de crÃ©ation : (27/07/11 12:13:47)
 	 * 
 	 */
 	public String[] getVAL_LB_RUBRIQUE_PRIME_POINTAGE() {
@@ -582,8 +582,8 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_RUBRIQUE_PRIME_POINTAGE Date de création : (27/07/11
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_RUBRIQUE_PRIME_POINTAGE Date de crÃ©ation : (27/07/11
 	 * 12:13:47)
 	 * 
 	 */
@@ -593,7 +593,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 
 	/**
 	 * Getter de la liste avec un lazy initialize : LB_TYPE_AVANTAGE Date de
-	 * création : (27/07/11 12:13:47)
+	 * crÃ©ation : (27/07/11 12:13:47)
 	 * 
 	 */
 	private String[] getLB_TYPE_AVANTAGE() {
@@ -603,7 +603,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_TYPE_AVANTAGE Date de création : (27/07/11
+	 * Setter de la liste: LB_TYPE_AVANTAGE Date de crÃ©ation : (27/07/11
 	 * 12:13:47)
 	 * 
 	 */
@@ -613,7 +613,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 
 	/**
 	 * Retourne le nom de la zone pour la JSP : NOM_LB_TYPE_AVANTAGE Date de
-	 * création : (27/07/11 12:13:47)
+	 * crÃ©ation : (27/07/11 12:13:47)
 	 * 
 	 */
 	public String getNOM_LB_TYPE_AVANTAGE() {
@@ -621,8 +621,8 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_TYPE_AVANTAGE_SELECT Date de création : (27/07/11 12:13:47)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_TYPE_AVANTAGE_SELECT Date de crÃ©ation : (27/07/11 12:13:47)
 	 * 
 	 */
 	public String getNOM_LB_TYPE_AVANTAGE_SELECT() {
@@ -630,8 +630,8 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_TYPE_AVANTAGE Date de création : (27/07/11 12:13:47)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_TYPE_AVANTAGE Date de crÃ©ation : (27/07/11 12:13:47)
 	 * 
 	 */
 	public String[] getVAL_LB_TYPE_AVANTAGE() {
@@ -639,8 +639,8 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_TYPE_AVANTAGE Date de création : (27/07/11 12:13:47)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_TYPE_AVANTAGE Date de crÃ©ation : (27/07/11 12:13:47)
 	 * 
 	 */
 	public String getVAL_LB_TYPE_AVANTAGE_SELECT() {
@@ -649,7 +649,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 
 	/**
 	 * Getter de la liste avec un lazy initialize : LB_TYPE_DELEGATION Date de
-	 * création : (27/07/11 12:13:47)
+	 * crÃ©ation : (27/07/11 12:13:47)
 	 * 
 	 */
 	private String[] getLB_TYPE_DELEGATION() {
@@ -659,7 +659,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_TYPE_DELEGATION Date de création : (27/07/11
+	 * Setter de la liste: LB_TYPE_DELEGATION Date de crÃ©ation : (27/07/11
 	 * 12:13:47)
 	 * 
 	 */
@@ -669,7 +669,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 
 	/**
 	 * Retourne le nom de la zone pour la JSP : NOM_LB_TYPE_DELEGATION Date de
-	 * création : (27/07/11 12:13:47)
+	 * crÃ©ation : (27/07/11 12:13:47)
 	 * 
 	 */
 	public String getNOM_LB_TYPE_DELEGATION() {
@@ -677,8 +677,8 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_TYPE_DELEGATION_SELECT Date de création : (27/07/11 12:13:47)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_TYPE_DELEGATION_SELECT Date de crÃ©ation : (27/07/11 12:13:47)
 	 * 
 	 */
 	public String getNOM_LB_TYPE_DELEGATION_SELECT() {
@@ -686,8 +686,8 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_TYPE_DELEGATION Date de création : (27/07/11 12:13:47)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_TYPE_DELEGATION Date de crÃ©ation : (27/07/11 12:13:47)
 	 * 
 	 */
 	public String[] getVAL_LB_TYPE_DELEGATION() {
@@ -695,8 +695,8 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_TYPE_DELEGATION Date de création : (27/07/11 12:13:47)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_TYPE_DELEGATION Date de crÃ©ation : (27/07/11 12:13:47)
 	 * 
 	 */
 	public String getVAL_LB_TYPE_DELEGATION_SELECT() {
@@ -705,7 +705,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 
 	/**
 	 * Getter de la liste avec un lazy initialize : LB_TYPE_REGIME Date de
-	 * création : (27/07/11 12:13:47)
+	 * crÃ©ation : (27/07/11 12:13:47)
 	 * 
 	 */
 	private String[] getLB_TYPE_REGIME() {
@@ -715,7 +715,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_TYPE_REGIME Date de création : (27/07/11 12:13:47)
+	 * Setter de la liste: LB_TYPE_REGIME Date de crÃ©ation : (27/07/11 12:13:47)
 	 * 
 	 */
 	private void setLB_TYPE_REGIME(String[] newLB_TYPE_REGIME) {
@@ -724,7 +724,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 
 	/**
 	 * Retourne le nom de la zone pour la JSP : NOM_LB_TYPE_REGIME Date de
-	 * création : (27/07/11 12:13:47)
+	 * crÃ©ation : (27/07/11 12:13:47)
 	 * 
 	 */
 	public String getNOM_LB_TYPE_REGIME() {
@@ -732,8 +732,8 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_TYPE_REGIME_SELECT Date de création : (27/07/11 12:13:47)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_TYPE_REGIME_SELECT Date de crÃ©ation : (27/07/11 12:13:47)
 	 * 
 	 */
 	public String getNOM_LB_TYPE_REGIME_SELECT() {
@@ -741,8 +741,8 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_TYPE_REGIME Date de création : (27/07/11 12:13:47)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_TYPE_REGIME Date de crÃ©ation : (27/07/11 12:13:47)
 	 * 
 	 */
 	public String[] getVAL_LB_TYPE_REGIME() {
@@ -750,8 +750,8 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_TYPE_REGIME Date de création : (27/07/11 12:13:47)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_TYPE_REGIME Date de crÃ©ation : (27/07/11 12:13:47)
 	 * 
 	 */
 	public String getVAL_LB_TYPE_REGIME_SELECT() {
@@ -774,7 +774,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 
 	/**
 	 * @param focus
-	 *            focus à définir.
+	 *            focus Ã  dÃ©finir.
 	 */
 	public void setFocus(String focus) {
 		this.focus = focus;
@@ -782,7 +782,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_AJOUTER_AVANTAGE Date de
-	 * création : (27/07/11 14:09:02)
+	 * crÃ©ation : (27/07/11 14:09:02)
 	 * 
 	 */
 	public String getNOM_PB_AJOUTER_AVANTAGE() {
@@ -790,10 +790,10 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (27/07/11 14:09:02)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (27/07/11 14:09:02)
 	 * 
 	 */
 	public boolean performPB_AJOUTER_AVANTAGE(HttpServletRequest request) throws Exception {
@@ -804,7 +804,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_AJOUTER_DELEGATION Date de
-	 * création : (27/07/11 14:09:02)
+	 * crÃ©ation : (27/07/11 14:09:02)
 	 * 
 	 */
 	public String getNOM_PB_AJOUTER_DELEGATION() {
@@ -812,10 +812,10 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (27/07/11 14:09:02)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (27/07/11 14:09:02)
 	 * 
 	 */
 	public boolean performPB_AJOUTER_DELEGATION(HttpServletRequest request) throws Exception {
@@ -826,7 +826,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_AJOUTER_REGIME Date de
-	 * création : (27/07/11 14:09:02)
+	 * crÃ©ation : (27/07/11 14:09:02)
 	 * 
 	 */
 	public String getNOM_PB_AJOUTER_REGIME() {
@@ -834,10 +834,10 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (27/07/11 14:09:02)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (27/07/11 14:09:02)
 	 * 
 	 */
 	public boolean performPB_AJOUTER_REGIME(HttpServletRequest request) throws Exception {
@@ -848,7 +848,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_AJOUTER_PRIME_POINTAGE Date
-	 * de création : (27/07/11 14:09:02)
+	 * de crÃ©ation : (27/07/11 14:09:02)
 	 * 
 	 */
 	public String getNOM_PB_AJOUTER_PRIME_POINTAGE() {
@@ -856,10 +856,10 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (27/07/11 14:09:02)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (27/07/11 14:09:02)
 	 * 
 	 */
 	public boolean performPB_AJOUTER_PRIME_POINTAGE(HttpServletRequest request) throws Exception {
@@ -870,7 +870,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMER_AVANTAGE Date de
-	 * création : (27/07/11 14:09:02)
+	 * crÃ©ation : (27/07/11 14:09:02)
 	 * 
 	 */
 	public String getNOM_PB_SUPPRIMER_AVANTAGE() {
@@ -878,14 +878,14 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (27/07/11 14:09:02)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (27/07/11 14:09:02)
 	 * 
 	 */
 	public boolean performPB_SUPPRIMER_AVANTAGE(HttpServletRequest request) throws Exception {
-		// Récupération de l'avantage à supprimer
+		// RÃ©cupÃ©ration de l'avantage a supprimer
 		int indiceAvNat = (Services.estNumerique(getVAL_LB_AVANTAGE_SELECT()) ? Integer
 				.parseInt(getVAL_LB_AVANTAGE_SELECT()) : -1);
 		if (indiceAvNat == -1 || getListeAvantage().size() == 0 || indiceAvNat > getListeAvantage().size() - 1) {
@@ -910,7 +910,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMER_DELEGATION Date de
-	 * création : (27/07/11 14:09:02)
+	 * crÃ©ation : (27/07/11 14:09:02)
 	 * 
 	 */
 	public String getNOM_PB_SUPPRIMER_DELEGATION() {
@@ -918,18 +918,18 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (27/07/11 14:09:02)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (27/07/11 14:09:02)
 	 * 
 	 */
 	public boolean performPB_SUPPRIMER_DELEGATION(HttpServletRequest request) throws Exception {
-		// Récupération de la délégation à supprimer
+		// RÃ©cupÃ©ration de la dÃ©lÃ©gation a supprimer
 		int indiceDel = (Services.estNumerique(getVAL_LB_DELEGATION_SELECT()) ? Integer
 				.parseInt(getVAL_LB_DELEGATION_SELECT()) : -1);
 		if (indiceDel == -1 || getListeDelegation().size() == 0 || indiceDel > getListeDelegation().size() - 1) {
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "Délégations"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "dÃ©lÃ©gations"));
 			return false;
 		}
 		Delegation del = (Delegation) getListeDelegation().get(indiceDel);
@@ -950,7 +950,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMER_REGIME Date de
-	 * création : (27/07/11 14:09:02)
+	 * crÃ©ation : (27/07/11 14:09:02)
 	 * 
 	 */
 	public String getNOM_PB_SUPPRIMER_REGIME() {
@@ -958,18 +958,18 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (27/07/11 14:09:02)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (27/07/11 14:09:02)
 	 * 
 	 */
 	public boolean performPB_SUPPRIMER_REGIME(HttpServletRequest request) throws Exception {
-		// Récupération du régime indemnitaire à supprimer
+		// RÃ©cupÃ©ration du rÃ©gime indemnitaire a supprimer
 		int indiceRI = (Services.estNumerique(getVAL_LB_REGIME_SELECT()) ? Integer.parseInt(getVAL_LB_REGIME_SELECT())
 				: -1);
 		if (indiceRI == -1 || getListeRegime().size() == 0 || indiceRI > getListeRegime().size() - 1) {
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "Régimes indemnitaires"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "RÃ©gimes indemnitaires"));
 			return false;
 		}
 		RegimeIndemnitaire ri = (RegimeIndemnitaire) getListeRegime().get(indiceRI);
@@ -990,7 +990,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMER_PRIME_POINTAGE
-	 * Date de création : (27/07/11 14:09:02)
+	 * Date de crÃ©ation : (27/07/11 14:09:02)
 	 * 
 	 */
 	public String getNOM_PB_SUPPRIMER_PRIME_POINTAGE() {
@@ -998,14 +998,14 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (27/07/11 14:09:02)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (27/07/11 14:09:02)
 	 * 
 	 */
 	public boolean performPB_SUPPRIMER_PRIME_POINTAGE(HttpServletRequest request) throws Exception {
-		// Récupération de la prime pointage à supprimer
+		// RÃ©cupÃ©ration de la prime pointage a supprimer
 		int indicePrime = (Services.estNumerique(getVAL_LB_PRIME_POINTAGE_SELECT()) ? Integer
 				.parseInt(getVAL_LB_PRIME_POINTAGE_SELECT()) : -1);
 		if (indicePrime == -1 || getListePrimePointageFP().isEmpty()
@@ -1030,7 +1030,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Getter de la liste avec un lazy initialize : LB_AVANTAGE Date de création
+	 * Getter de la liste avec un lazy initialize : LB_AVANTAGE Date de crÃ©ation
 	 * : (27/07/11 14:09:02)
 	 * 
 	 */
@@ -1041,7 +1041,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_AVANTAGE Date de création : (27/07/11 14:09:02)
+	 * Setter de la liste: LB_AVANTAGE Date de crÃ©ation : (27/07/11 14:09:02)
 	 * 
 	 */
 	private void setLB_AVANTAGE(String[] newLB_AVANTAGE) {
@@ -1049,7 +1049,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_AVANTAGE Date de création
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_AVANTAGE Date de crÃ©ation
 	 * : (27/07/11 14:09:02)
 	 * 
 	 */
@@ -1058,8 +1058,8 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_AVANTAGE_SELECT Date de création : (27/07/11 14:09:02)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_AVANTAGE_SELECT Date de crÃ©ation : (27/07/11 14:09:02)
 	 * 
 	 */
 	public String getNOM_LB_AVANTAGE_SELECT() {
@@ -1067,8 +1067,8 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_AVANTAGE Date de création : (27/07/11 14:09:02)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_AVANTAGE Date de crÃ©ation : (27/07/11 14:09:02)
 	 * 
 	 */
 	public String[] getVAL_LB_AVANTAGE() {
@@ -1076,8 +1076,8 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_AVANTAGE Date de création : (27/07/11 14:09:02)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_AVANTAGE Date de crÃ©ation : (27/07/11 14:09:02)
 	 * 
 	 */
 	public String getVAL_LB_AVANTAGE_SELECT() {
@@ -1086,7 +1086,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 
 	/**
 	 * Getter de la liste avec un lazy initialize : LB_DELEGATION Date de
-	 * création : (27/07/11 14:09:02)
+	 * crÃ©ation : (27/07/11 14:09:02)
 	 * 
 	 */
 	private String[] getLB_DELEGATION() {
@@ -1096,7 +1096,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_DELEGATION Date de création : (27/07/11 14:09:02)
+	 * Setter de la liste: LB_DELEGATION Date de crÃ©ation : (27/07/11 14:09:02)
 	 * 
 	 */
 	private void setLB_DELEGATION(String[] newLB_DELEGATION) {
@@ -1105,7 +1105,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 
 	/**
 	 * Retourne le nom de la zone pour la JSP : NOM_LB_DELEGATION Date de
-	 * création : (27/07/11 14:09:02)
+	 * crÃ©ation : (27/07/11 14:09:02)
 	 * 
 	 */
 	public String getNOM_LB_DELEGATION() {
@@ -1113,8 +1113,8 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_DELEGATION_SELECT Date de création : (27/07/11 14:09:02)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_DELEGATION_SELECT Date de crÃ©ation : (27/07/11 14:09:02)
 	 * 
 	 */
 	public String getNOM_LB_DELEGATION_SELECT() {
@@ -1122,8 +1122,8 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_DELEGATION Date de création : (27/07/11 14:09:02)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_DELEGATION Date de crÃ©ation : (27/07/11 14:09:02)
 	 * 
 	 */
 	public String[] getVAL_LB_DELEGATION() {
@@ -1131,8 +1131,8 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_DELEGATION Date de création : (27/07/11 14:09:02)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_DELEGATION Date de crÃ©ation : (27/07/11 14:09:02)
 	 * 
 	 */
 	public String getVAL_LB_DELEGATION_SELECT() {
@@ -1141,7 +1141,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 
 	/**
 	 * Getter de la liste avec un lazy initialize : LB_PRIME_POINTAGE Date de
-	 * création : (27/07/11 14:09:02)
+	 * crÃ©ation : (27/07/11 14:09:02)
 	 * 
 	 */
 	private String[] getLB_PRIME_POINTAGE() {
@@ -1151,7 +1151,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_PRIME_POINTAGE Date de création : (27/07/11
+	 * Setter de la liste: LB_PRIME_POINTAGE Date de crÃ©ation : (27/07/11
 	 * 14:09:02)
 	 * 
 	 */
@@ -1161,7 +1161,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 
 	/**
 	 * Retourne le nom de la zone pour la JSP : NOM_LB_PRIME_POINTAGE Date de
-	 * création : (27/07/11 14:09:02)
+	 * crÃ©ation : (27/07/11 14:09:02)
 	 * 
 	 */
 	public String getNOM_LB_PRIME_POINTAGE() {
@@ -1169,8 +1169,8 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_PRIME_POINTAGE_SELECT Date de création : (27/07/11 14:09:02)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_PRIME_POINTAGE_SELECT Date de crÃ©ation : (27/07/11 14:09:02)
 	 * 
 	 */
 	public String getNOM_LB_PRIME_POINTAGE_SELECT() {
@@ -1178,8 +1178,8 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_PRIME_POINTAGE Date de création : (27/07/11 14:09:02)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_PRIME_POINTAGE Date de crÃ©ation : (27/07/11 14:09:02)
 	 * 
 	 */
 	public String[] getVAL_LB_PRIME_POINTAGE() {
@@ -1187,8 +1187,8 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_PRIME_POINTAGE Date de création : (27/07/11 14:09:02)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_PRIME_POINTAGE Date de crÃ©ation : (27/07/11 14:09:02)
 	 * 
 	 */
 	public String getVAL_LB_PRIME_POINTAGE_SELECT() {
@@ -1196,7 +1196,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Getter de la liste avec un lazy initialize : LB_REGIME Date de création :
+	 * Getter de la liste avec un lazy initialize : LB_REGIME Date de crÃ©ation :
 	 * (27/07/11 14:09:02)
 	 * 
 	 */
@@ -1207,7 +1207,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_REGIME Date de création : (27/07/11 14:09:02)
+	 * Setter de la liste: LB_REGIME Date de crÃ©ation : (27/07/11 14:09:02)
 	 * 
 	 */
 	private void setLB_REGIME(String[] newLB_REGIME) {
@@ -1215,7 +1215,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_REGIME Date de création :
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_REGIME Date de crÃ©ation :
 	 * (27/07/11 14:09:02)
 	 * 
 	 */
@@ -1224,8 +1224,8 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_REGIME_SELECT Date de création : (27/07/11 14:09:02)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_REGIME_SELECT Date de crÃ©ation : (27/07/11 14:09:02)
 	 * 
 	 */
 	public String getNOM_LB_REGIME_SELECT() {
@@ -1233,8 +1233,8 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_REGIME Date de création : (27/07/11 14:09:02)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_REGIME Date de crÃ©ation : (27/07/11 14:09:02)
 	 * 
 	 */
 	public String[] getVAL_LB_REGIME() {
@@ -1242,8 +1242,8 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_REGIME Date de création : (27/07/11 14:09:02)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_REGIME Date de crÃ©ation : (27/07/11 14:09:02)
 	 * 
 	 */
 	public String getVAL_LB_REGIME_SELECT() {
@@ -1260,7 +1260,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Met à jour la liste des AvantageNature.
+	 * Met a jour la liste des AvantageNature.
 	 * 
 	 * @param listeAvantage
 	 */
@@ -1278,7 +1278,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Met à jour la liste des Delegation.
+	 * Met a jour la liste des Delegation.
 	 * 
 	 * @param listeDelegation
 	 */
@@ -1296,7 +1296,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Met à jour la liste des RegimeIndemnitaire.
+	 * Met a jour la liste des RegimeIndemnitaire.
 	 * 
 	 * @param listeRegime
 	 */
@@ -1305,10 +1305,10 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones Ã  afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
-	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
-	 * addZone(getNOMxxx, String); Date de création : (27/07/11 14:55:24)
+	 * doivent avoir les Fields PUBLIC Utilisation de la mÃ©thode
+	 * addZone(getNOMxxx, String); Date de crÃ©ation : (27/07/11 14:55:24)
 	 * 
 	 */
 	public void initialiseZones(HttpServletRequest request) throws Exception {
@@ -1342,7 +1342,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Initialise les listes de spécificités. Date de création : (28/07/11)
+	 * Initialise les listes de spÃ©cificitÃ©s. Date de crÃ©ation : (28/07/11)
 	 * 
 	 * @throws Exception
 	 */
@@ -1371,7 +1371,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 			setLB_AVANTAGE(null);
 		}
 
-		// Délégations
+		// dÃ©lÃ©gations
 		if (getListeDelegation() == null)
 			setListeDelegation((ArrayList<Delegation>) VariablesActivite.recuperer(this,
 					VariablesActivite.ACTIVITE_LST_DELEGATION));
@@ -1391,7 +1391,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 			setLB_DELEGATION(null);
 		}
 
-		// Régimes indemnitaires
+		// RÃ©gimes indemnitaires
 		if (getListeRegime() == null)
 			setListeRegime((ArrayList<RegimeIndemnitaire>) VariablesActivite.recuperer(this,
 					VariablesActivite.ACTIVITE_LST_REG_INDEMN));
@@ -1437,7 +1437,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * #3264 Initialisation de la liste déroulantes des primes.
+	 * #3264 Initialisation de la liste deroulantes des primes.
 	 */
 	private List<RefPrimeDto> initialiseListeDeroulantePrimes() {
 		SirhPtgWSConsumer t = new SirhPtgWSConsumer();
@@ -1456,7 +1456,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	 */
 
 	/**
-	 * Initialise les listes déroulantes de l'écran. Date de création :
+	 * Initialise les listes deroulantes de l'Ã©cran. Date de crÃ©ation :
 	 * (28/07/11)
 	 * 
 	 * @throws Exception
@@ -1467,7 +1467,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 			ArrayList<TypeAvantage> typeAvantage = getTypeAvantageDao().listerTypeAvantage();
 			if (getTransaction().isErreur()) {
 				getTransaction().declarerErreur(
-						getTransaction().traiterErreur() + "Liste des type avantage non trouvée");
+						getTransaction().traiterErreur() + "Liste des type avantage non trouvÃ©e");
 			}
 			setListeTypeAvantage(typeAvantage);
 			if (getListeTypeAvantage().size() != 0) {
@@ -1490,7 +1490,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 			ArrayList<NatureAvantage> natureAvantage = getNatureAvantageDao().listerNatureAvantage();
 			if (getTransaction().isErreur()) {
 				getTransaction().declarerErreur(
-						getTransaction().traiterErreur() + "Liste des nature avantage non trouvée");
+						getTransaction().traiterErreur() + "Liste des nature avantage non trouvÃ©e");
 			}
 			NatureAvantage natAvVide = new NatureAvantage();
 			natureAvantage.add(0, natAvVide);
@@ -1514,7 +1514,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 		if (getLB_RUBRIQUE_AVANTAGE() == LBVide || getLB_RUBRIQUE_REGIME() == LBVide) {
 			ArrayList<Rubrique> rubrique = getRubriqueDao().listerRubrique7000();
 			if (getTransaction().isErreur()) {
-				getTransaction().declarerErreur(getTransaction().traiterErreur() + "Liste des rubriques non trouvée");
+				getTransaction().declarerErreur(getTransaction().traiterErreur() + "Liste des rubriques non trouvÃ©e");
 			}
 			setListeRubrique(rubrique);
 
@@ -1554,12 +1554,12 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 			 */
 		}
 
-		// Si liste type délégation vide alors affectation
+		// Si liste type dÃ©lÃ©gation vide alors affectation
 		if (getLB_TYPE_DELEGATION() == LBVide) {
 			ArrayList<TypeDelegation> typeDelegation = getTypeDelegationDao().listerTypeDelegation();
 			if (getTransaction().isErreur()) {
 				getTransaction().declarerErreur(
-						getTransaction().traiterErreur() + "Liste des types délégation non trouvée");
+						getTransaction().traiterErreur() + "Liste des types dÃ©lÃ©gation non trouvÃ©e");
 			}
 			setListeTypeDelegation(typeDelegation);
 			if (getListeTypeDelegation().size() != 0) {
@@ -1577,12 +1577,12 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 			}
 		}
 
-		// Si liste type régime vide alors affectation
+		// Si liste type rÃ©gime vide alors affectation
 		if (getLB_TYPE_REGIME() == LBVide) {
 			ArrayList<TypeRegIndemn> typeRegime = getTypeRegIndemnDao().listerTypeRegIndemn();
 			if (getTransaction().isErreur()) {
 				getTransaction().declarerErreur(
-						getTransaction().traiterErreur() + "Liste des types de régimes indemnitaires non trouvée");
+						getTransaction().traiterErreur() + "Liste des types de rÃ©gimes indemnitaires non trouvÃ©e");
 			}
 			setListeTypeRegIndemn(typeRegime);
 			if (getListeTypeRegIndemn().size() != 0) {
@@ -1603,7 +1603,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_ACTION Date de
-	 * création : (27/07/11 14:55:25)
+	 * crÃ©ation : (27/07/11 14:55:25)
 	 * 
 	 */
 	public String getNOM_ST_ACTION() {
@@ -1611,8 +1611,8 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACTION Date de
-	 * création : (27/07/11 14:55:25)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_ACTION Date de
+	 * crÃ©ation : (27/07/11 14:55:25)
 	 * 
 	 */
 	public String getVAL_ST_ACTION() {
@@ -1621,7 +1621,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_SPECIFICITE Date de
-	 * création : (28/07/11 12:09:49)
+	 * crÃ©ation : (28/07/11 12:09:49)
 	 * 
 	 */
 	public String getNOM_ST_SPECIFICITE() {
@@ -1629,8 +1629,8 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_SPECIFICITE
-	 * Date de création : (28/07/11 12:09:49)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_SPECIFICITE
+	 * Date de crÃ©ation : (28/07/11 12:09:49)
 	 * 
 	 */
 	public String getVAL_ST_SPECIFICITE() {
@@ -1647,7 +1647,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Met à jour la liste des types d'avantage en nature.
+	 * Met a jour la liste des types d'avantage en nature.
 	 * 
 	 * @param listeTypeAvantage
 	 */
@@ -1656,7 +1656,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la liste des avantages en nature à ajouter.
+	 * Retourne la liste des avantages en nature a ajouter.
 	 * 
 	 * @return listeAvantageAAjouter
 	 */
@@ -1667,7 +1667,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la liste des avantages en nature à supprimer.
+	 * Retourne la liste des avantages en nature a supprimer.
 	 * 
 	 * @return listeAvantageASupprimer
 	 */
@@ -1678,7 +1678,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la liste des délégations à ajouter.
+	 * Retourne la liste des dÃ©lÃ©gations a ajouter.
 	 * 
 	 * @return listeDelegationAAjouter
 	 */
@@ -1689,7 +1689,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la liste des délégations à supprimer.
+	 * Retourne la liste des dÃ©lÃ©gations a supprimer.
 	 * 
 	 * @return listeDelegationASupprimer
 	 */
@@ -1700,7 +1700,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la liste des régimes indemnitaires à ajouter.
+	 * Retourne la liste des rÃ©gimes indemnitaires a ajouter.
 	 * 
 	 * @return listeRegimeAAjouter
 	 */
@@ -1711,7 +1711,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la liste des régimes indemnitaires à supprimer.
+	 * Retourne la liste des rÃ©gimes indemnitaires a supprimer.
 	 * 
 	 * @return listeRegimeASupprimer
 	 */
@@ -1722,7 +1722,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la liste des régimes indemnitaires à ajouter.
+	 * Retourne la liste des rÃ©gimes indemnitaires a ajouter.
 	 * 
 	 * @return listePrimePointageAAjouter
 	 */
@@ -1733,7 +1733,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la liste des régimes indemnitaires à supprimer.
+	 * Retourne la liste des rÃ©gimes indemnitaires a supprimer.
 	 * 
 	 * @return listePrimePointageASupprimer
 	 */
@@ -1762,7 +1762,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Met à jour la liste des natures d'avantage en nature.
+	 * Met a jour la liste des natures d'avantage en nature.
 	 * 
 	 * @param listeNatureAvantage
 	 */
@@ -1771,7 +1771,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Met à jour la liste des rubriques.
+	 * Met a jour la liste des rubriques.
 	 * 
 	 * @param listeRubrique
 	 */
@@ -1781,7 +1781,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER_AJOUT Date de
-	 * création : (29/07/11 11:47:48)
+	 * crÃ©ation : (29/07/11 11:47:48)
 	 * 
 	 */
 	public String getNOM_PB_VALIDER_AJOUT() {
@@ -1789,15 +1789,15 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (29/07/11 11:47:48)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (29/07/11 11:47:48)
 	 * 
 	 */
 	public boolean performPB_VALIDER_AJOUT(HttpServletRequest request) throws Exception {
 		if (getVAL_ST_SPECIFICITE().equals(SPEC_AVANTAGE_NATURE)) {
-			// Contrôle des champs
+			// Controle des champs
 			if (!performControlerSaisieAvNat(request))
 				return false;
 
@@ -1830,7 +1830,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 				}
 			}
 		} else if (getVAL_ST_SPECIFICITE().equals(SPEC_DELEGATION)) {
-			// Contrôle des champs
+			// Controle des champs
 			if (!performControlerSaisieDel(request))
 				return false;
 
@@ -1856,7 +1856,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 				}
 			}
 		} else if (getVAL_ST_SPECIFICITE().equals(SPEC_REG_INDEMN)) {
-			// Contrôle des champs
+			// Controle des champs
 			if (!performControlerSaisieRegIndemn(request))
 				return false;
 
@@ -1886,7 +1886,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 				}
 			}
 		} else if (getVAL_ST_SPECIFICITE().equals(SPEC_PRIME_POINTAGE)) {
-			// Contrôle des champs
+			// Controle des champs
 			if (!performControlerSaisiePrimePointage(request))
 				return false;
 
@@ -1963,7 +1963,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Met à jour la liste des TypeDelegation.
+	 * Met a jour la liste des TypeDelegation.
 	 * 
 	 * @param listeTypeDelegation
 	 */
@@ -1981,7 +1981,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Met à jour la liste des PrimePointageIndemnitaire que l'on peut ajouter.
+	 * Met a jour la liste des PrimePointageIndemnitaire que l'on peut ajouter.
 	 * 
 	 * @param listePrimes
 	 */
@@ -2000,7 +2000,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Met à jour la liste des PrimePointageIndemnitaire.
+	 * Met a jour la liste des PrimePointageIndemnitaire.
 	 * 
 	 * @param listePrimePointageFP
 	 */
@@ -2018,7 +2018,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Met à jour la liste des RegimeIndemnitaire.
+	 * Met a jour la liste des RegimeIndemnitaire.
 	 * 
 	 * @param listeTypeRegIndemn
 	 */
@@ -2027,8 +2027,8 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom du groupe de radio boutons coché pour la JSP :
-	 * RG_SPECIFICITE Date de création : (02/08/11 08:59:59)
+	 * Retourne le nom du groupe de radio boutons cochÃ© pour la JSP :
+	 * RG_SPECIFICITE Date de crÃ©ation : (02/08/11 08:59:59)
 	 * 
 	 */
 	public String getNOM_RG_SPECIFICITE() {
@@ -2036,8 +2036,8 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur du radio bouton (RB_) coché dans la JSP :
-	 * RG_SPECIFICITE Date de création : (02/08/11 08:59:59)
+	 * Retourne la valeur du radio bouton (RB_) cochÃ© dans la JSP :
+	 * RG_SPECIFICITE Date de crÃ©ation : (02/08/11 08:59:59)
 	 * 
 	 */
 	public String getVAL_RG_SPECIFICITE() {
@@ -2046,7 +2046,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 
 	/**
 	 * Retourne le nom du radio bouton pour la JSP : RB_SPECIFICITE_AN Date de
-	 * création : (02/08/11 08:59:59)
+	 * crÃ©ation : (02/08/11 08:59:59)
 	 * 
 	 */
 	public String getNOM_RB_SPECIFICITE_AN() {
@@ -2055,7 +2055,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 
 	/**
 	 * Retourne le nom du radio bouton pour la JSP : RB_SPECIFICITE_D Date de
-	 * création : (02/08/11 08:59:59)
+	 * crÃ©ation : (02/08/11 08:59:59)
 	 * 
 	 */
 	public String getNOM_RB_SPECIFICITE_D() {
@@ -2064,7 +2064,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 
 	/**
 	 * Retourne le nom du radio bouton pour la JSP : RB_SPECIFICITE_RI Date de
-	 * création : (02/08/11 08:59:59)
+	 * crÃ©ation : (02/08/11 08:59:59)
 	 * 
 	 */
 	public String getNOM_RB_SPECIFICITE_RI() {
@@ -2073,7 +2073,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 
 	/**
 	 * Retourne le nom du radio bouton pour la JSP : RB_SPECIFICITE_PP Date de
-	 * création : (02/08/11 08:59:59)
+	 * crÃ©ation : (02/08/11 08:59:59)
 	 * 
 	 */
 	public String getNOM_RB_SPECIFICITE_PP() {
@@ -2081,8 +2081,8 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Méthode appelée par la servlet qui aiguille le traitement : en fonction
-	 * du bouton de la JSP Date de création : (27/07/11 12:13:47)
+	 * mÃ©thode appelee par la servlet qui aiguille le traitement : en fonction
+	 * du bouton de la JSP Date de crÃ©ation : (27/07/11 12:13:47)
 	 * 
 	 */
 	public boolean recupererStatut(HttpServletRequest request) throws Exception {
@@ -2150,13 +2150,13 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 				return performPB_ANNULER(request);
 			}
 		}
-		// Si TAG INPUT non géré par le process
+		// Si TAG INPUT non gÃ©rÃ© par le process
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
 
 	/**
-	 * Constructeur du process OePOSTEFPSpecificites. Date de création :
+	 * Constructeur du process OePOSTEFPSpecificites. Date de crÃ©ation :
 	 * (02/08/11 09:18:22)
 	 * 
 	 */
@@ -2165,8 +2165,8 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la JSP du process Zone à utiliser dans un champ caché
-	 * dans chaque formulaire de la JSP. Date de création : (02/08/11 09:18:23)
+	 * Retourne le nom de la JSP du process Zone a utiliser dans un champ cache
+	 * dans chaque formulaire de la JSP. Date de crÃ©ation : (02/08/11 09:18:23)
 	 * 
 	 */
 	public String getJSP() {
@@ -2175,7 +2175,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_CHANGER_SPECIFICITE Date de
-	 * création : (02/08/11 09:18:23)
+	 * crÃ©ation : (02/08/11 09:18:23)
 	 * 
 	 */
 	public String getNOM_PB_CHANGER_SPECIFICITE() {
@@ -2183,10 +2183,10 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (02/08/11 09:18:23)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (02/08/11 09:18:23)
 	 * 
 	 */
 	public boolean performPB_CHANGER_SPECIFICITE(HttpServletRequest request) throws Exception {

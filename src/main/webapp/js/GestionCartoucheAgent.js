@@ -1,4 +1,4 @@
-//Execute l'action passée en paramètre
+//Execute l'action passÃ©e en paramÃ¨tre
 function executeBouton(action)
 {
 	//window.parent.frames("MenuHaut").changerMenuHaut("Empty");	

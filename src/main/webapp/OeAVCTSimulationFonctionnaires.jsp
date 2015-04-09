@@ -1,4 +1,4 @@
-<!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@ page contentType="text/html; charset=UTF-8" %> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <%@page import="nc.mairie.metier.poste.Service"%>
 <%@page import="nc.mairie.utils.TreeHierarchy"%>
 <HTML>
@@ -14,20 +14,20 @@
 		<SCRIPT language="javascript" src="js/dtree.js"></SCRIPT>
 		
 		<SCRIPT language="JavaScript">
-		//afin de sélectionner un élément dans une liste
+		//afin de sÃ©lectionner un Ã©lÃ©ment dans une liste
 		function executeBouton(nom)
 		{
 		document.formu.elements[nom].click();
 		}
 		
-		// afin de mettre le focus sur une zone précise
+		// afin de mettre le focus sur une zone prÃ©cise
 		function setfocus(nom)
 		{
 		if (document.formu.elements[nom] != null)
 		document.formu.elements[nom].focus();
 		}
 		
-		// afin d'afficher la hiérarchie des services
+		// afin d'afficher la hiÃ©rarchie des services
 		function agrandirHierarchy() {
 		
 			hier = 	document.getElementById('treeHierarchy');
@@ -39,21 +39,21 @@
 			}
 		}
 		
-		// afin de cacher la hiérarchie des services
+		// afin de cacher la hiÃ©rarchie des services
 		function reduireHierarchy() {
 			hier = 	document.getElementById('treeHierarchy');
 			hier.style.display='none';
 		}
 		</SCRIPT>
-		<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	</HEAD>
 	<BODY bgcolor="#FFFFFF" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="window.parent.frames['refAgent'].location.reload();return setfocus('<%= process.getFocus() %>')">
 		<%@ include file="BanniereErreur.jsp"%>
 		<FORM name="formu" method="POST" class="sigp2-titre">
-			<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;" title="Recherche avancée d'une fiche de poste">
+			<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;" title="Recherche avancÃ©e d'une fiche de poste">
 				<LEGEND class="sigp2Legend">Simulation des avancements des fonctionnaires</LEGEND>
 				<BR/>
-				<span class="sigp2Mandatory" style="width:70px;">Année :</span>
+				<span class="sigp2Mandatory" style="width:70px;">AnnÃ©e :</span>
 				<SELECT disabled="disabled" class="sigp2-saisie" name="<%= process.getNOM_LB_ANNEE() %>">
 					<%=process.forComboHTML(process.getVAL_LB_ANNEE(), process.getVAL_LB_ANNEE_SELECT()) %>
 				</SELECT>
@@ -104,7 +104,7 @@
 				<% if (!process.agentEnErreur.equals("")){ %>
 					<span style="color: red;" class="sigp2Mandatory">Agents en anomalies :<br/><br/> <%=process.agentEnErreur %></span>
 					<BR/><BR/> 
-					<span style="color: red;" class="sigp2Mandatory">Pour ces agents, un avancement n'a pu être calculé car ils sont en haut de grille.</span>
+					<span style="color: red;" class="sigp2Mandatory">Pour ces agents, un avancement n'a pu Ãªtre calculÃ© car ils sont en haut de grille.</span>
 				<%} %>
 			</FIELDSET>
 

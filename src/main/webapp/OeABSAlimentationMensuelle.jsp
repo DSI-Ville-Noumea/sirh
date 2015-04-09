@@ -1,3 +1,4 @@
+<%@ page contentType="text/html; charset=UTF-8" %> 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <%@page import="nc.mairie.utils.MairieUtils"%>
 <%@page import="nc.mairie.enums.EnumTypeDroit"%>
@@ -8,7 +9,7 @@
         <LINK href="theme/sigp2.css" rel="stylesheet" type="text/css">
 		<LINK rel="stylesheet" href="theme/calendrier-mairie.css" type="text/css">
         <jsp:useBean class="nc.mairie.gestionagent.process.absence.OeABSAlimentationMensuelle" id="process" scope="session"></jsp:useBean>
-            <TITLE>Alimentation mensuelle des congés annuels</TITLE>		
+            <TITLE>Alimentation mensuelle des congÃ©s annuels</TITLE>		
 
 
             <SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT> 
@@ -24,17 +25,17 @@
                         document.formu.elements[nom].focus();
                 }
             </SCRIPT>		
-            <META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+            <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
         </HEAD>
         <BODY bgcolor="#FFFFFF" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="window.parent.frames['refAgent'].location.reload();return setfocus('<%=process.getFocus()%>')">	
         <%@ include file="BanniereErreur.jsp" %>
         <FORM name="formu" method="POST" class="sigp2-titre">
             <INPUT name="JSP" type="hidden" value="<%= process.getJSP()%>">
             <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
-                <legend class="sigp2Legend">Alimentation mensuelle des congés annuels</legend>   
-				<span class="sigp2Mandatory">Retrouver ici toutes les alimenations automatiques de congés annuels.</span>      
+                <legend class="sigp2Legend">Alimentation mensuelle des congÃ©s annuels</legend>   
+				<span class="sigp2Mandatory">Retrouver ici toutes les alimenations automatiques de congÃ©s annuels.</span>      
 				<br/><br/>   
-				<span class="sigp2" style="width:100px">Choisissez le mois à afficher : </span>
+				<span class="sigp2" style="width:100px">Choisissez le mois Ã  afficher : </span>
 				<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_MOIS_ALIM_AUTO() %>" style="width:100px;">
 					<%=process.forComboHTML(process.getVAL_LB_MOIS_ALIM_AUTO(), process.getVAL_LB_MOIS_ALIM_AUTO_SELECT()) %>
 				</SELECT>  

@@ -3,10 +3,10 @@ var courant='';
 
 // Constructeur de la classe Menu
 function Menu() { 
-//     Déclaration des variables membres (propriétés) 
+//     DÃ©claration des variables membres (propriÃ©tÃ©s) 
     this.listeObjet = new Array();
     this.niveau=0;
-//     Déclaration d'une fonction membre (méthode) 
+//     DÃ©claration d'une fonction membre (mÃ©thode) 
     this.ajouterFils= ajouterObjet;
     this.incrementeFils = incrementeNiveau;
     this.afficher = afficherMenu;
@@ -25,7 +25,7 @@ function afficherMenu() {
 
 // Constructeur de la classe Lien
 function Lien(aSsModule, aDroit, aTitreLien, aTitre, actif) { 
-//     Déclaration des variables membres (propriétés) 
+//     DÃ©claration des variables membres (propriÃ©tÃ©s) 
     this.ssModule= aSsModule;
     this.droit= aDroit;
     this.titreLien=aTitreLien;
@@ -34,14 +34,14 @@ function Lien(aSsModule, aDroit, aTitreLien, aTitre, actif) {
     this.niveau=0;
     this.type='lien';
     this.parent= '';
-//     Déclaration d'une fonction membre (méthode) 
+//     DÃ©claration d'une fonction membre (mÃ©thode) 
     this.afficher= afficherLien; 
 } 
 
 // Implantation du code de la fonction membre 
 function afficherLien() {
 	var trouve = false;
-//	Vérif du droit de l'utilisateur
+//	VÃ©rif du droit de l'utilisateur
 	var a;
 	for (a in listeDroits) {
 		if (listeDroits[a] == this.droit) {
@@ -49,7 +49,7 @@ function afficherLien() {
 		}
 	}
 
-//	Si droit trouvé
+//	Si droit trouvÃ©
 	if (trouve) {
 		var comment='';
 //		Si menu actif
@@ -72,20 +72,20 @@ function afficherLien() {
 
 // Constructeur de la classe Dossier
 function Dossier(aNom, aTitre,img) { 
-//     Déclaration des variables membres (propriétés) 
+//     DÃ©claration des variables membres (propriÃ©tÃ©s) 
     this.nom= aNom; 
     this.titre= aTitre;
     this.listeObjet = new Array();
     this.niveau=1;
     this.type='dossier';
     this.img = img;
-//     Déclaration d'une fonction membre (méthode) 
+//     DÃ©claration d'une fonction membre (mÃ©thode) 
     this.afficher= afficherDossier; 
     this.ajouterFils= ajouterObjet;
     this.incrementeFils = incrementeNiveau;
 } 
 
-//Ajoute un objet à la liste
+//Ajoute un objet Ã  la liste
 function ajouterObjet (obj) {
    if (obj.type='lien'){
       obj.parent= this;
@@ -99,7 +99,7 @@ function ajouterObjet (obj) {
 function incrementeNiveau(obj){
    obj.niveau=this.niveau + 1;
    if (obj.type=='dossier') {
-//      parcours des éléments et incrémente niveau
+//      parcours des Ã©lÃ©ments et incrÃ©mente niveau
 	var a;
 	for (a in obj.listeObjet) {
 		var v = obj.incrementeFils(obj.listeObjet[a]);
@@ -122,7 +122,7 @@ function afficherDossier() {
 	var res = '<div id="'+this.nom+'" onClick="switchMenu('+this.nom+')" class="Dossier" TITLE="'+this.titre+'"><span class="DossierContainer"> ' +
 				this.img + '</span></div>';
 	
-//	parcours des éléments et rajout
+//	parcours des Ã©lÃ©ments et rajout
 	var a;
 	var contenu = '<DIV id="'+this.nom+'_SsMenu" class="SsMenu">';
 	for (a in this.listeObjet) {
@@ -162,7 +162,7 @@ function preload(){
 function switchMenu(obj){
 	var listeDossiers = document.getElementById("menudiv").getElementsByTagName("span");
 	var dossierSelected = document.getElementById(obj.nom);
-	// Parcours des dossiers pour surligner le dossier sélectionné
+	// Parcours des dossiers pour surligner le dossier sÃ©lectionnÃ©
 	for (var i=0; i<listeDossiers.length; i++){
 		if (listeDossiers[i].className == "Dossier" || listeDossiers[i].className == "DossierSelected"){
 			listeDossiers[i].className = "Dossier";
@@ -174,15 +174,15 @@ function switchMenu(obj){
 	
 	var ssMenu = document.getElementById(obj.nom+'_SsMenu');
 	var eltsSsMenu = document.getElementById("menudiv").getElementsByTagName("div");
-	// Si le sous-menu sélectionné n'est pas affiché, on l'affiche.
-	// S'il est sélectionné, on le ferme
+	// Si le sous-menu sÃ©lectionnÃ© n'est pas affichÃ©, on l'affiche.
+	// S'il est sÃ©lectionnÃ©, on le ferme
 	if(ssMenu.style.display != "block"){
-		// Parcours des éléments de sous-menus pour tous les rendre invisibles
+		// Parcours des Ã©lÃ©ments de sous-menus pour tous les rendre invisibles
 		for (var i=0; i<eltsSsMenu.length; i++){
 			if (eltsSsMenu[i].className=="SsMenu")
 			eltsSsMenu[i].style.display = "none";
 		}
-		// Affichage du sous-menu sélectionné
+		// Affichage du sous-menu sÃ©lectionnÃ©
 		ssMenu.style.display = "block";
 	}else{
 		ssMenu.style.display = "none";

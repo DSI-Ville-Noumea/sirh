@@ -25,7 +25,7 @@ import nc.mairie.technique.VariableGlobale;
 import org.springframework.context.ApplicationContext;
 
 /**
- * Insérez la description du type ici. Date de création : (30/10/2002 14:15:09)
+ * InsÃ©rez la description du type ici. Date de crÃ©ation : (30/10/2002 14:15:09)
  */
 public class ServletAgent extends Frontale {
 
@@ -36,7 +36,7 @@ public class ServletAgent extends Frontale {
 	private AutorisationDao autorisationDao;
 
 	/**
-	 * Insérez la description de la méthode ici. Date de création : (05/11/2002
+	 * InsÃ©rez la description de la mÃ©thode ici. Date de crÃ©ation : (05/11/2002
 	 * 09:00:21)
 	 */
 	public ServletAgent() {
@@ -45,11 +45,11 @@ public class ServletAgent extends Frontale {
 
 	@Override
 	public void performTask(HttpServletRequest request, HttpServletResponse response) {
-		// recup de la demande d’action envoyée par la recherche en haut à
+		// recup de la demande dÃ©action envoyÃ©e par la recherche en haut a
 		// gauche
 		String ACTION = request.getParameter("ACTION");
 		if (ACTION != null && !ACTION.equals(Const.CHAINE_VIDE)) {
-			// On vérifie si on a une session
+			// On VÃ©rifie si on a une session
 			BasicProcess processCourant = (BasicProcess) VariableGlobale.recuperer(request,
 					VariableGlobale.GLOBAL_PROCESS);
 
@@ -66,7 +66,7 @@ public class ServletAgent extends Frontale {
 	}
 
 	/**
-	 * Récupération du statut
+	 * RÃ©cupÃ©ration du statut
 	 * 
 	 * @param request
 	 *            Object that encapsulates the request to the servlet
@@ -114,7 +114,7 @@ public class ServletAgent extends Frontale {
 
 			// Si pas d'habilitation alors erreur
 			if (aUserAppli.getListeDroits().size() == 0) {
-				String message = "Le user " + aUserAppli.getUserName() + " n'est pas habilité à utiliser l'application";
+				String message = "Le user " + aUserAppli.getUserName() + " n'est pas habilitÃ© a utiliser l'application";
 				System.out.println(message);
 				throw new Exception(message);
 				// return false;
@@ -149,8 +149,8 @@ public class ServletAgent extends Frontale {
 	}
 
 	/**
-	 * Datasource pour l'accès aux données de l'AS400 Ici, les données sur
-	 * l'AS400 concerne le schéma MAIRIE uniquement
+	 * Datasource pour l'acces aux donnÃ©es de l'AS400 Ici, les donnÃ©es sur
+	 * l'AS400 concerne le schÃ©ma MAIRIE uniquement
 	 * 
 	 * @return DataSource
 	 * @throws NamingException
@@ -170,7 +170,7 @@ public class ServletAgent extends Frontale {
 				ds = (DataSource) ctx.lookup(jndi_name);
 
 			} catch (NamingException ex) {
-				System.err.println("Aucun datasource envisagé : " + ex.getMessage());
+				System.err.println("Aucun datasource envisagÃ© : " + ex.getMessage());
 				throw ex;
 			}
 		}

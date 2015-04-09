@@ -1,4 +1,4 @@
-<!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@ page contentType="text/html; charset=UTF-8" %> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <%@page import="nc.mairie.metier.poste.Competence"%>
 <HTML>
 <HEAD>
@@ -6,20 +6,20 @@
 <META http-equiv="Content-Style-Type" content="text/css">
 <LINK href="theme/sigp2.css" rel="stylesheet" type="text/css">
 <LINK href="theme/dataTables.css" rel="stylesheet" type="text/css">
-<TITLE>Sélection d'une compétence</TITLE>
+<TITLE>SÃ©lection d'une compÃ©tence</TITLE>
 
 <SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT> 
 <script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
 <script type="text/javascript" src="js/jquery.dataTables.js"></script>
 
 <SCRIPT language="JavaScript">
-//afin de sélectionner un élément dans une liste
+//afin de sÃ©lectionner un Ã©lÃ©ment dans une liste
 function executeBouton(nom)
 {
 document.formu.elements[nom].click();
 }
 
-// afin de mettre le focus sur une zone précise
+// afin de mettre le focus sur une zone prÃ©cise
 function setfocus(nom)
 {
 if (document.formu.elements[nom] != null)
@@ -27,21 +27,21 @@ document.formu.elements[nom].focus();
 }
 
 </SCRIPT>
-<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 </HEAD>
 <jsp:useBean class="nc.mairie.gestionagent.process.poste.OePOSTEFECompetenceSelection" id="process" scope="session"></jsp:useBean>
 <BODY bgcolor="#FFFFFF" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" class="sigp2-BODY">
 	<%@ include file="BanniereErreur.jsp"%>
 	<FORM name="formu" method="POST" class="sigp2-titre">
 		<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
-		    <legend class="sigp2Legend">Sélection d'une compétence</legend>
+		    <legend class="sigp2Legend">SÃ©lection d'une compÃ©tence</legend>
 		    <br/>
 			<table class="display" id="tabCompSelect">
 				<thead>
 					<tr>
 						<th>idComp</th>
 						<th width="50" >Selection</th>
-						<th>Libellé</th>
+						<th>LibellÃ©</th>
 					</tr>
 				</thead>
 				<tbody>

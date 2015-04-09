@@ -23,7 +23,7 @@ import nc.mairie.utils.MessageUtils;
 import org.springframework.context.ApplicationContext;
 
 /**
- * Process OePARAMETRAGERecrutement Date de création : (14/09/11 13:52:54)
+ * Process OePARAMETRAGERecrutement Date de crÃ©ation : (14/09/11 13:52:54)
  * 
  */
 public class OePARAMETRAGERecrutement extends BasicProcess {
@@ -48,10 +48,10 @@ public class OePARAMETRAGERecrutement extends BasicProcess {
 	private RecrutementDao recrutementDao;
 
 	/**
-	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones Ã  afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
-	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
-	 * addZone(getNOMxxx, String); Date de création : (14/09/11 13:52:54)
+	 * doivent avoir les Fields PUBLIC Utilisation de la mÃ©thode
+	 * addZone(getNOMxxx, String); Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public void initialiseZones(HttpServletRequest request) throws Exception {
@@ -59,11 +59,11 @@ public class OePARAMETRAGERecrutement extends BasicProcess {
 		VariableGlobale.ajouter(request, "PROCESS_MEMORISE", this);
 
 		// ----------------------------------//
-		// Vérification des droits d'accès. //
+		// VÃ©rification des droits d'acces. //
 		// ----------------------------------//
 		if (MairieUtils.estInterdit(request, getNomEcran())) {
 			// "ERR190",
-			// "Opération impossible. Vous ne disposez pas des droits d'accès à cette option."
+			// "Operation impossible. Vous ne disposez pas des droits d'acces a cette option."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
@@ -100,7 +100,7 @@ public class OePARAMETRAGERecrutement extends BasicProcess {
 	}
 
 	/**
-	 * Initialisation de la listes des motifs de recrutement Date de création :
+	 * Initialisation de la listes des motifs de recrutement Date de crÃ©ation :
 	 * (14/09/11)
 	 * 
 	 */
@@ -124,7 +124,7 @@ public class OePARAMETRAGERecrutement extends BasicProcess {
 
 	/**
 	 * Initialisation de la listes des motifs de non recrutement Date de
-	 * création : (14/09/11)
+	 * crÃ©ation : (14/09/11)
 	 * 
 	 */
 	private void initialiseListeNonRec(HttpServletRequest request) throws Exception {
@@ -146,7 +146,7 @@ public class OePARAMETRAGERecrutement extends BasicProcess {
 	}
 
 	/**
-	 * Constructeur du process OePARAMETRAGERecrutement. Date de création :
+	 * Constructeur du process OePARAMETRAGERecrutement. Date de crÃ©ation :
 	 * (14/09/11 13:52:54)
 	 * 
 	 */
@@ -156,7 +156,7 @@ public class OePARAMETRAGERecrutement extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER_MOTIF Date de
-	 * création : (14/09/11 13:52:54)
+	 * crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getNOM_PB_ANNULER_MOTIF() {
@@ -164,10 +164,10 @@ public class OePARAMETRAGERecrutement extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (14/09/11 13:52:54)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public boolean performPB_ANNULER_MOTIF(HttpServletRequest request) throws Exception {
@@ -177,7 +177,7 @@ public class OePARAMETRAGERecrutement extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_CREER_MOTIF Date de création
+	 * Retourne le nom d'un bouton pour la JSP : PB_CREER_MOTIF Date de crÃ©ation
 	 * : (14/09/11 13:52:54)
 	 * 
 	 */
@@ -186,10 +186,10 @@ public class OePARAMETRAGERecrutement extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (14/09/11 13:52:54)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public boolean performPB_CREER_MOTIF(HttpServletRequest request) throws Exception {
@@ -203,7 +203,7 @@ public class OePARAMETRAGERecrutement extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMER_MOTIF Date de
-	 * création : (14/09/11 13:52:54)
+	 * crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getNOM_PB_SUPPRIMER_MOTIF() {
@@ -211,10 +211,10 @@ public class OePARAMETRAGERecrutement extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (14/09/11 13:52:54)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public boolean performPB_SUPPRIMER_MOTIF(HttpServletRequest request) throws Exception {
@@ -236,7 +236,7 @@ public class OePARAMETRAGERecrutement extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER_MOTIF Date de
-	 * création : (14/09/11 13:52:54)
+	 * crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getNOM_PB_VALIDER_MOTIF() {
@@ -244,10 +244,10 @@ public class OePARAMETRAGERecrutement extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (14/09/11 13:52:54)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public boolean performPB_VALIDER_MOTIF(HttpServletRequest request) throws Exception {
@@ -283,15 +283,15 @@ public class OePARAMETRAGERecrutement extends BasicProcess {
 	}
 
 	/**
-	 * Contrôle les zones saisies d'un motif de recrutement Date de création :
+	 * Controle les zones saisies d'un motif de recrutement Date de crÃ©ation :
 	 * (14/09/11)
 	 */
 	private boolean performControlerSaisieMotif(HttpServletRequest request) throws Exception {
 
-		// Verification libellé motif not null
+		// Verification libellÃ© motif not null
 		if (getZone(getNOM_EF_MOTIF()).length() == 0) {
 			// "ERR002","La zone @ est obligatoire."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "libellé"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "libellÃ©"));
 			return false;
 		}
 
@@ -299,32 +299,32 @@ public class OePARAMETRAGERecrutement extends BasicProcess {
 	}
 
 	/**
-	 * Contrôle les règles de gestion d'une entité géographique Date de création
+	 * Controle les regles de gestion d'une entitÃ© geographique Date de crÃ©ation
 	 * : (14/09/11)
 	 */
 	private boolean performControlerRegleGestionMotif(HttpServletRequest request) throws Exception {
 
-		// Verification si suppression d'une entité géographique utilisée sur
+		// Verification si suppression d'une entitÃ© geographique utilisee sur
 		// une fiche de poste
 		if (getVAL_ST_ACTION_MOTIF().equals(ACTION_SUPPRESSION)
 				&& getRecrutementDao().listerRecrutementAvecMotifRec(getMotifCourant().getIdMotifRecrut()).size() > 0) {
 
 			// "ERR989",
-			// "Suppression impossible. Il existe au moins @ rattaché à @."
+			// "Suppression impossible. Il existe au moins @ rattachÃ© a @."
 			getTransaction().declarerErreur(
 					MessageUtils.getMessage("ERR989", "un recrutement", "ce motif de recrutement"));
 			return false;
 		}
 
-		// Vérification des contraintes d'unicité de l'entité géographique
+		// VÃ©rification des contraintes d'unicitÃ© de l'entitÃ© geographique
 		if (getVAL_ST_ACTION_MOTIF().equals(ACTION_CREATION)) {
 
 			for (MotifRecrutement motif : getListeMotif()) {
 				if (motif.getLibMotifRecrut().equals(getVAL_EF_MOTIF().toUpperCase())) {
 					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
+					// "Attention, il existe dÃ©jÃ  @ avec @. Veuillez contrÃ´ler."
 					getTransaction().declarerErreur(
-							MessageUtils.getMessage("ERR974", "un motif de recrutement", "ce libellé"));
+							MessageUtils.getMessage("ERR974", "un motif de recrutement", "ce libellÃ©"));
 					return false;
 				}
 			}
@@ -335,7 +335,7 @@ public class OePARAMETRAGERecrutement extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_ACTION_MOTIF Date de
-	 * création : (14/09/11 13:52:54)
+	 * crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getNOM_ST_ACTION_MOTIF() {
@@ -343,8 +343,8 @@ public class OePARAMETRAGERecrutement extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACTION_MOTIF
-	 * Date de création : (14/09/11 13:52:54)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_ACTION_MOTIF
+	 * Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getVAL_ST_ACTION_MOTIF() {
@@ -353,7 +353,7 @@ public class OePARAMETRAGERecrutement extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_MOTIF Date de
-	 * création : (14/09/11 13:52:54)
+	 * crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getNOM_EF_MOTIF() {
@@ -361,8 +361,8 @@ public class OePARAMETRAGERecrutement extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_MOTIF Date de création : (14/09/11 13:52:54)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_MOTIF Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getVAL_EF_MOTIF() {
@@ -370,7 +370,7 @@ public class OePARAMETRAGERecrutement extends BasicProcess {
 	}
 
 	/**
-	 * Getter de la liste avec un lazy initialize : LB_MOTIF Date de création :
+	 * Getter de la liste avec un lazy initialize : LB_MOTIF Date de crÃ©ation :
 	 * (14/09/11 13:52:54)
 	 * 
 	 */
@@ -381,7 +381,7 @@ public class OePARAMETRAGERecrutement extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_MOTIF Date de création : (14/09/11 13:52:54)
+	 * Setter de la liste: LB_MOTIF Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	private void setLB_MOTIF(String[] newLB_MOTIF) {
@@ -389,7 +389,7 @@ public class OePARAMETRAGERecrutement extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_MOTIF Date de création :
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_MOTIF Date de crÃ©ation :
 	 * (14/09/11 13:52:54)
 	 * 
 	 */
@@ -398,8 +398,8 @@ public class OePARAMETRAGERecrutement extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_MOTIF_SELECT Date de création : (14/09/11 13:52:54)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_MOTIF_SELECT Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getNOM_LB_MOTIF_SELECT() {
@@ -407,8 +407,8 @@ public class OePARAMETRAGERecrutement extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_MOTIF Date de création : (14/09/11 13:52:54)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_MOTIF Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String[] getVAL_LB_MOTIF() {
@@ -416,8 +416,8 @@ public class OePARAMETRAGERecrutement extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_MOTIF Date de création : (14/09/11 13:52:54)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_MOTIF Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getVAL_LB_MOTIF_SELECT() {
@@ -443,8 +443,8 @@ public class OePARAMETRAGERecrutement extends BasicProcess {
 	private String[] LB_NON_REC;
 
 	/**
-	 * Méthode appelée par la servlet qui aiguille le traitement : en fonction
-	 * du bouton de la JSP Date de création : (14/09/11 13:52:54)
+	 * mÃ©thode appelee par la servlet qui aiguille le traitement : en fonction
+	 * du bouton de la JSP Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public boolean recupererStatut(HttpServletRequest request) throws Exception {
@@ -493,14 +493,14 @@ public class OePARAMETRAGERecrutement extends BasicProcess {
 			}
 
 		}
-		// Si TAG INPUT non géré par le process
+		// Si TAG INPUT non gÃ©rÃ© par le process
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
 
 	/**
-	 * Retourne le nom de la JSP du process Zone à utiliser dans un champ caché
-	 * dans chaque formulaire de la JSP. Date de création : (14/09/11 15:20:21)
+	 * Retourne le nom de la JSP du process Zone a utiliser dans un champ cache
+	 * dans chaque formulaire de la JSP. Date de crÃ©ation : (14/09/11 15:20:21)
 	 * 
 	 */
 	public String getJSP() {
@@ -508,8 +508,8 @@ public class OePARAMETRAGERecrutement extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de l'écran (notamment pour déterminer les droits
-	 * associés).
+	 * Retourne le nom de l'Ã©cran (notamment pour dÃ©terminer les droits
+	 * associÃ©s).
 	 */
 	public String getNomEcran() {
 		return "ECR-PARAM-PE-RECRUTEMENT";
@@ -517,7 +517,7 @@ public class OePARAMETRAGERecrutement extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER_NON_REC Date de
-	 * création : (14/09/11 15:20:21)
+	 * crÃ©ation : (14/09/11 15:20:21)
 	 * 
 	 */
 	public String getNOM_PB_ANNULER_NON_REC() {
@@ -525,10 +525,10 @@ public class OePARAMETRAGERecrutement extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (14/09/11 15:20:21)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (14/09/11 15:20:21)
 	 * 
 	 */
 	public boolean performPB_ANNULER_NON_REC(HttpServletRequest request) throws Exception {
@@ -539,7 +539,7 @@ public class OePARAMETRAGERecrutement extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_CREER_NON_REC Date de
-	 * création : (14/09/11 15:20:21)
+	 * crÃ©ation : (14/09/11 15:20:21)
 	 * 
 	 */
 	public String getNOM_PB_CREER_NON_REC() {
@@ -547,10 +547,10 @@ public class OePARAMETRAGERecrutement extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (14/09/11 15:20:21)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (14/09/11 15:20:21)
 	 * 
 	 */
 	public boolean performPB_CREER_NON_REC(HttpServletRequest request) throws Exception {
@@ -564,7 +564,7 @@ public class OePARAMETRAGERecrutement extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMER_NON_REC Date de
-	 * création : (14/09/11 15:20:21)
+	 * crÃ©ation : (14/09/11 15:20:21)
 	 * 
 	 */
 	public String getNOM_PB_SUPPRIMER_NON_REC() {
@@ -572,10 +572,10 @@ public class OePARAMETRAGERecrutement extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (14/09/11 15:20:21)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (14/09/11 15:20:21)
 	 * 
 	 */
 	public boolean performPB_SUPPRIMER_NON_REC(HttpServletRequest request) throws Exception {
@@ -596,7 +596,7 @@ public class OePARAMETRAGERecrutement extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER_NON_REC Date de
-	 * création : (14/09/11 15:20:21)
+	 * crÃ©ation : (14/09/11 15:20:21)
 	 * 
 	 */
 	public String getNOM_PB_VALIDER_NON_REC() {
@@ -604,10 +604,10 @@ public class OePARAMETRAGERecrutement extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (14/09/11 15:20:21)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (14/09/11 15:20:21)
 	 * 
 	 */
 	public boolean performPB_VALIDER_NON_REC(HttpServletRequest request) throws Exception {
@@ -643,15 +643,15 @@ public class OePARAMETRAGERecrutement extends BasicProcess {
 	}
 
 	/**
-	 * Contrôle les zones saisies d'un motif de non recrutement Date de création
+	 * Controle les zones saisies d'un motif de non recrutement Date de crÃ©ation
 	 * : (14/09/11)
 	 */
 	private boolean performControlerSaisieNonRec(HttpServletRequest request) throws Exception {
 
-		// Verification libellé motif not null
+		// Verification libellÃ© motif not null
 		if (getZone(getNOM_EF_NON_REC()).length() == 0) {
 			// "ERR002","La zone @ est obligatoire."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "libellé"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "libellÃ©"));
 			return false;
 		}
 
@@ -659,33 +659,33 @@ public class OePARAMETRAGERecrutement extends BasicProcess {
 	}
 
 	/**
-	 * Contrôle les règles de gestion d'un motif de non recrutement Date de
-	 * création : (14/09/11)
+	 * Controle les regles de gestion d'un motif de non recrutement Date de
+	 * crÃ©ation : (14/09/11)
 	 */
 	private boolean performControlerRegleGestionNonRec(HttpServletRequest request) throws Exception {
 
-		// Verification si suppression d'une entité géographique utilisée sur
+		// Verification si suppression d'une entitÃ© geographique utilisee sur
 		// une fiche de poste
 		if (getVAL_ST_ACTION_NON_REC().equals(ACTION_SUPPRESSION)
 				&& getRecrutementDao().listerRecrutementAvecMotifNonRec(getNonRecCourant().getIdMotifNonRecrut())
 						.size() > 0) {
 
 			// "ERR989",
-			// "Suppression impossible. Il existe au moins @ rattaché à @."
+			// "Suppression impossible. Il existe au moins @ rattachÃ© a @."
 			getTransaction().declarerErreur(
 					MessageUtils.getMessage("ERR989", "un recrutement", "ce motif de non recrutement"));
 			return false;
 		}
 
-		// Vérification des contraintes d'unicité de l'entité géographique
+		// VÃ©rification des contraintes d'unicitÃ© de l'entitÃ© geographique
 		if (getVAL_ST_ACTION_NON_REC().equals(ACTION_CREATION)) {
 
 			for (MotifNonRecrutement motif : getListeNonRec()) {
 				if (motif.getLibMotifNonRecrut().equals(getVAL_EF_NON_REC().toUpperCase())) {
 					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
+					// "Attention, il existe dÃ©jÃ  @ avec @. Veuillez contrÃ´ler."
 					getTransaction().declarerErreur(
-							MessageUtils.getMessage("ERR974", "un motif de non recrutement", "ce libellé"));
+							MessageUtils.getMessage("ERR974", "un motif de non recrutement", "ce libellÃ©"));
 					return false;
 				}
 			}
@@ -696,7 +696,7 @@ public class OePARAMETRAGERecrutement extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_ACTION_NON_REC Date
-	 * de création : (14/09/11 15:20:21)
+	 * de crÃ©ation : (14/09/11 15:20:21)
 	 * 
 	 */
 	public String getNOM_ST_ACTION_NON_REC() {
@@ -704,8 +704,8 @@ public class OePARAMETRAGERecrutement extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACTION_NON_REC
-	 * Date de création : (14/09/11 15:20:21)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_ACTION_NON_REC
+	 * Date de crÃ©ation : (14/09/11 15:20:21)
 	 * 
 	 */
 	public String getVAL_ST_ACTION_NON_REC() {
@@ -714,7 +714,7 @@ public class OePARAMETRAGERecrutement extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_NON_REC Date de
-	 * création : (14/09/11 15:20:21)
+	 * crÃ©ation : (14/09/11 15:20:21)
 	 * 
 	 */
 	public String getNOM_EF_NON_REC() {
@@ -722,8 +722,8 @@ public class OePARAMETRAGERecrutement extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_NON_REC Date de création : (14/09/11 15:20:21)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_NON_REC Date de crÃ©ation : (14/09/11 15:20:21)
 	 * 
 	 */
 	public String getVAL_EF_NON_REC() {
@@ -731,7 +731,7 @@ public class OePARAMETRAGERecrutement extends BasicProcess {
 	}
 
 	/**
-	 * Getter de la liste avec un lazy initialize : LB_NON_REC Date de création
+	 * Getter de la liste avec un lazy initialize : LB_NON_REC Date de crÃ©ation
 	 * : (14/09/11 15:20:21)
 	 * 
 	 */
@@ -742,7 +742,7 @@ public class OePARAMETRAGERecrutement extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_NON_REC Date de création : (14/09/11 15:20:21)
+	 * Setter de la liste: LB_NON_REC Date de crÃ©ation : (14/09/11 15:20:21)
 	 * 
 	 */
 	private void setLB_NON_REC(String[] newLB_NON_REC) {
@@ -750,7 +750,7 @@ public class OePARAMETRAGERecrutement extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_NON_REC Date de création
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_NON_REC Date de crÃ©ation
 	 * : (14/09/11 15:20:21)
 	 * 
 	 */
@@ -759,8 +759,8 @@ public class OePARAMETRAGERecrutement extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_NON_REC_SELECT Date de création : (14/09/11 15:20:21)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_NON_REC_SELECT Date de crÃ©ation : (14/09/11 15:20:21)
 	 * 
 	 */
 	public String getNOM_LB_NON_REC_SELECT() {
@@ -768,8 +768,8 @@ public class OePARAMETRAGERecrutement extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_NON_REC Date de création : (14/09/11 15:20:21)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_NON_REC Date de crÃ©ation : (14/09/11 15:20:21)
 	 * 
 	 */
 	public String[] getVAL_LB_NON_REC() {
@@ -777,8 +777,8 @@ public class OePARAMETRAGERecrutement extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_NON_REC Date de création : (14/09/11 15:20:21)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_NON_REC Date de crÃ©ation : (14/09/11 15:20:21)
 	 * 
 	 */
 	public String getVAL_LB_NON_REC_SELECT() {

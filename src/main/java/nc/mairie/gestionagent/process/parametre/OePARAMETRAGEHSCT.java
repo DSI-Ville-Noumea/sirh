@@ -37,7 +37,7 @@ import nc.mairie.utils.MessageUtils;
 import org.springframework.context.ApplicationContext;
 
 /**
- * Process OePARAMETRAGEHSCT Date de création : (15/09/11 08:57:49)
+ * Process OePARAMETRAGEHSCT Date de crÃ©ation : (15/09/11 08:57:49)
  * 
  */
 public class OePARAMETRAGEHSCT extends BasicProcess {
@@ -91,10 +91,10 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	private InaptitudeDao inaptitudeDao;
 
 	/**
-	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones Ã  afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
-	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
-	 * addZone(getNOMxxx, String); Date de création : (15/09/11 08:57:49)
+	 * doivent avoir les Fields PUBLIC Utilisation de la mÃ©thode
+	 * addZone(getNOMxxx, String); Date de crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public void initialiseZones(HttpServletRequest request) throws Exception {
@@ -102,11 +102,11 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 		VariableGlobale.ajouter(request, "PROCESS_MEMORISE", this);
 
 		// ----------------------------------//
-		// Vérification des droits d'accès. //
+		// VÃ©rification des droits d'acces. //
 		// ----------------------------------//
 		if (MairieUtils.estInterdit(request, getNomEcran())) {
 			// "ERR190",
-			// "Opération impossible. Vous ne disposez pas des droits d'accès à cette option."
+			// "Operation impossible. Vous ne disposez pas des droits d'acces a cette option."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
@@ -117,7 +117,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 		// ---------------------------//
 
 		if (getListeMedecin() == null) {
-			// Recherche des médecins
+			// Recherche des mÃ©decins
 			ArrayList<Medecin> listeMedecin = getMedecinDao().listerMedecin();
 			setListeMedecin(listeMedecin);
 			initialiseListeMedecin(request);
@@ -145,7 +145,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 		}
 
 		if (getListeLesion() == null) {
-			// Recherche des des sièges de lésions
+			// Recherche des des sieges de lÃ©sions
 			ArrayList<SiegeLesion> listeLesion = getSiegeLesionDao().listerSiegeLesion();
 			setListeLesion(listeLesion);
 			initialiseListeLesion(request);
@@ -208,7 +208,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Initialisation de la listes des médecins Date de création : (15/09/11)
+	 * Initialisation de la listes des mÃ©decins Date de crÃ©ation : (15/09/11)
 	 * 
 	 */
 	private void initialiseListeMedecin(HttpServletRequest request) throws Exception {
@@ -230,7 +230,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Initialisation de la listes des recommandations Date de création :
+	 * Initialisation de la listes des recommandations Date de crÃ©ation :
 	 * (15/09/11)
 	 * 
 	 */
@@ -252,7 +252,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Initialisation de la listes des types d'inaptitude Date de création :
+	 * Initialisation de la listes des types d'inaptitude Date de crÃ©ation :
 	 * (15/09/11)
 	 * 
 	 */
@@ -275,7 +275,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Initialisation de la listes des types d'AT Date de création : (15/09/11)
+	 * Initialisation de la listes des types d'AT Date de crÃ©ation : (15/09/11)
 	 * 
 	 */
 	private void initialiseListeAT(HttpServletRequest request) throws Exception {
@@ -297,7 +297,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Initialisation de la listes des sièges de lésions Date de création :
+	 * Initialisation de la listes des sieges de lÃ©sions Date de crÃ©ation :
 	 * (15/09/11)
 	 * 
 	 */
@@ -321,7 +321,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 
 	/**
 	 * Initialisation de la listes des maladies professionnelles Date de
-	 * création : (15/09/11)
+	 * crÃ©ation : (15/09/11)
 	 * 
 	 */
 	private void initialiseListeMaladie(HttpServletRequest request) throws Exception {
@@ -343,8 +343,8 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Méthode appelée par la servlet qui aiguille le traitement : en fonction
-	 * du bouton de la JSP Date de création : (15/09/11 08:57:49)
+	 * mÃ©thode appelee par la servlet qui aiguille le traitement : en fonction
+	 * du bouton de la JSP Date de crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public boolean recupererStatut(HttpServletRequest request) throws Exception {
@@ -493,13 +493,13 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 			}
 
 		}
-		// Si TAG INPUT non géré par le process
+		// Si TAG INPUT non gÃ©rÃ© par le process
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
 
 	/**
-	 * Constructeur du process OePARAMETRAGEHSCT. Date de création : (15/09/11
+	 * Constructeur du process OePARAMETRAGEHSCT. Date de crÃ©ation : (15/09/11
 	 * 08:57:49)
 	 * 
 	 */
@@ -508,8 +508,8 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la JSP du process Zone à utiliser dans un champ caché
-	 * dans chaque formulaire de la JSP. Date de création : (15/09/11 08:57:49)
+	 * Retourne le nom de la JSP du process Zone a utiliser dans un champ cache
+	 * dans chaque formulaire de la JSP. Date de crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public String getJSP() {
@@ -517,15 +517,15 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de l'écran (notamment pour déterminer les droits
-	 * associés).
+	 * Retourne le nom de l'Ã©cran (notamment pour dÃ©terminer les droits
+	 * associÃ©s).
 	 */
 	public String getNomEcran() {
 		return "ECR-PARAM-AG-HSCT";
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER_AT Date de création
+	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER_AT Date de crÃ©ation
 	 * : (15/09/11 08:57:49)
 	 * 
 	 */
@@ -534,10 +534,10 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (15/09/11 08:57:49)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public boolean performPB_ANNULER_AT(HttpServletRequest request) throws Exception {
@@ -548,7 +548,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER_INAPTITUDE Date de
-	 * création : (15/09/11 08:57:49)
+	 * crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public String getNOM_PB_ANNULER_INAPTITUDE() {
@@ -556,10 +556,10 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (15/09/11 08:57:49)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public boolean performPB_ANNULER_INAPTITUDE(HttpServletRequest request) throws Exception {
@@ -570,7 +570,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER_LESION Date de
-	 * création : (15/09/11 08:57:49)
+	 * crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public String getNOM_PB_ANNULER_LESION() {
@@ -578,10 +578,10 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (15/09/11 08:57:49)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public boolean performPB_ANNULER_LESION(HttpServletRequest request) throws Exception {
@@ -592,7 +592,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER_MALADIE Date de
-	 * création : (15/09/11 08:57:49)
+	 * crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public String getNOM_PB_ANNULER_MALADIE() {
@@ -600,10 +600,10 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (15/09/11 08:57:49)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public boolean performPB_ANNULER_MALADIE(HttpServletRequest request) throws Exception {
@@ -614,7 +614,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER_MEDECIN Date de
-	 * création : (15/09/11 08:57:49)
+	 * crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public String getNOM_PB_ANNULER_MEDECIN() {
@@ -622,10 +622,10 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (15/09/11 08:57:49)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public boolean performPB_ANNULER_MEDECIN(HttpServletRequest request) throws Exception {
@@ -636,7 +636,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER_RECOMMANDATION Date
-	 * de création : (15/09/11 08:57:49)
+	 * de crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public String getNOM_PB_ANNULER_RECOMMANDATION() {
@@ -644,10 +644,10 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (15/09/11 08:57:49)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public boolean performPB_ANNULER_RECOMMANDATION(HttpServletRequest request) throws Exception {
@@ -657,7 +657,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_CREER_AT Date de création :
+	 * Retourne le nom d'un bouton pour la JSP : PB_CREER_AT Date de crÃ©ation :
 	 * (15/09/11 08:57:49)
 	 * 
 	 */
@@ -666,10 +666,10 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (15/09/11 08:57:49)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public boolean performPB_CREER_AT(HttpServletRequest request) throws Exception {
@@ -683,7 +683,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_CREER_INAPTITUDE Date de
-	 * création : (15/09/11 08:57:49)
+	 * crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public String getNOM_PB_CREER_INAPTITUDE() {
@@ -691,10 +691,10 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (15/09/11 08:57:49)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public boolean performPB_CREER_INAPTITUDE(HttpServletRequest request) throws Exception {
@@ -708,7 +708,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_CREER_LESION Date de
-	 * création : (15/09/11 08:57:49)
+	 * crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public String getNOM_PB_CREER_LESION() {
@@ -716,10 +716,10 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (15/09/11 08:57:49)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public boolean performPB_CREER_LESION(HttpServletRequest request) throws Exception {
@@ -733,7 +733,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_CREER_MALADIE Date de
-	 * création : (15/09/11 08:57:49)
+	 * crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public String getNOM_PB_CREER_MALADIE() {
@@ -741,10 +741,10 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (15/09/11 08:57:49)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public boolean performPB_CREER_MALADIE(HttpServletRequest request) throws Exception {
@@ -759,7 +759,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_CREER_MEDECIN Date de
-	 * création : (15/09/11 08:57:49)
+	 * crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public String getNOM_PB_CREER_MEDECIN() {
@@ -767,10 +767,10 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (15/09/11 08:57:49)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public boolean performPB_CREER_MEDECIN(HttpServletRequest request) throws Exception {
@@ -784,7 +784,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_CREER_RECOMMANDATION Date de
-	 * création : (15/09/11 08:57:49)
+	 * crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public String getNOM_PB_CREER_RECOMMANDATION() {
@@ -792,10 +792,10 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (15/09/11 08:57:49)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public boolean performPB_CREER_RECOMMANDATION(HttpServletRequest request) throws Exception {
@@ -809,7 +809,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMER_AT Date de
-	 * création : (15/09/11 08:57:49)
+	 * crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public String getNOM_PB_SUPPRIMER_AT() {
@@ -817,10 +817,10 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (15/09/11 08:57:49)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public boolean performPB_SUPPRIMER_AT(HttpServletRequest request) throws Exception {
@@ -840,7 +840,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMER_INAPTITUDE Date de
-	 * création : (15/09/11 08:57:49)
+	 * crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public String getNOM_PB_SUPPRIMER_INAPTITUDE() {
@@ -848,10 +848,10 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (15/09/11 08:57:49)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public boolean performPB_SUPPRIMER_INAPTITUDE(HttpServletRequest request) throws Exception {
@@ -872,7 +872,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMER_LESION Date de
-	 * création : (15/09/11 08:57:49)
+	 * crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public String getNOM_PB_SUPPRIMER_LESION() {
@@ -880,10 +880,10 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (15/09/11 08:57:49)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public boolean performPB_SUPPRIMER_LESION(HttpServletRequest request) throws Exception {
@@ -896,7 +896,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 			addZone(getNOM_EF_DESC_LESION(), sl.getDescSiege());
 			addZone(getNOM_ST_ACTION_LESION(), ACTION_SUPPRESSION);
 		} else {
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "sièges de lésion"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "siÃ¨ges de lÃ©sion"));
 		}
 
 		return true;
@@ -904,7 +904,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMER_MALADIE Date de
-	 * création : (15/09/11 08:57:49)
+	 * crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public String getNOM_PB_SUPPRIMER_MALADIE() {
@@ -912,10 +912,10 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (15/09/11 08:57:49)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public boolean performPB_SUPPRIMER_MALADIE(HttpServletRequest request) throws Exception {
@@ -937,7 +937,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMER_MEDECIN Date de
-	 * création : (15/09/11 08:57:49)
+	 * crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public String getNOM_PB_SUPPRIMER_MEDECIN() {
@@ -945,10 +945,10 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (15/09/11 08:57:49)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public boolean performPB_SUPPRIMER_MEDECIN(HttpServletRequest request) throws Exception {
@@ -963,7 +963,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 			addZone(getNOM_EF_TITRE_MEDECIN(), m.getTitreMedecin());
 			addZone(getNOM_ST_ACTION_MEDECIN(), ACTION_SUPPRESSION);
 		} else {
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "médecins"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "mÃ©decins"));
 		}
 
 		return true;
@@ -971,7 +971,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMER_RECOMMANDATION
-	 * Date de création : (15/09/11 08:57:49)
+	 * Date de crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public String getNOM_PB_SUPPRIMER_RECOMMANDATION() {
@@ -979,10 +979,10 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (15/09/11 08:57:49)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public boolean performPB_SUPPRIMER_RECOMMANDATION(HttpServletRequest request) throws Exception {
@@ -1002,7 +1002,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER_AT Date de création
+	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER_AT Date de crÃ©ation
 	 * : (15/09/11 08:57:49)
 	 * 
 	 */
@@ -1011,10 +1011,10 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (15/09/11 08:57:49)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public boolean performPB_VALIDER_AT(HttpServletRequest request) throws Exception {
@@ -1050,7 +1050,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Contrôle les zones saisies d'un type d'AT Date de création : (15/09/11)
+	 * Controle les zones saisies d'un type d'AT Date de crÃ©ation : (15/09/11)
 	 */
 	private boolean performControlerSaisieAT(HttpServletRequest request) throws Exception {
 
@@ -1065,30 +1065,30 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Contrôle les règles de gestion d'un type d'AT Date de création :
+	 * Controle les regles de gestion d'un type d'AT Date de crÃ©ation :
 	 * (15/09/11)
 	 */
 	private boolean performControlerRegleGestionAT(HttpServletRequest request) throws Exception {
 
-		// Verification si suppression d'un type d'AT utilisé sur un accident du
+		// Verification si suppression d'un type d'AT utilise sur un accident du
 		// travail
 		if (getVAL_ST_ACTION_AT().equals(ACTION_SUPPRESSION)
 				&& getAccidentTravailDao().listerAccidentTravailAvecTypeAT(getAtCourant().getIdTypeAt()).size() > 0) {
 
 			// "ERR989",
-			// "Suppression impossible. Il existe au moins @ rattaché à @."
+			// "Suppression impossible. Il existe au moins @ rattachÃ© a @."
 			getTransaction()
 					.declarerErreur(MessageUtils.getMessage("ERR989", "un accident du travail", "ce type d'AT"));
 			return false;
 		}
 
-		// Vérification des contraintes d'unicité du type d'AT
+		// VÃ©rification des contraintes d'unicitÃ© du type d'AT
 		if (getVAL_ST_ACTION_AT().equals(ACTION_CREATION)) {
 
 			for (TypeAT at : getListeAT()) {
 				if (at.getDescTypeAt().equals(getVAL_EF_DESC_AT().toUpperCase())) {
 					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
+					// "Attention, il existe dÃ©jÃ  @ avec @. Veuillez contrÃ´ler."
 					getTransaction().declarerErreur(
 							MessageUtils.getMessage("ERR974", "un type d'AT", "cette description"));
 					return false;
@@ -1101,7 +1101,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER_INAPTITUDE Date de
-	 * création : (15/09/11 08:57:49)
+	 * crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public String getNOM_PB_VALIDER_INAPTITUDE() {
@@ -1109,10 +1109,10 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (15/09/11 08:57:49)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public boolean performPB_VALIDER_INAPTITUDE(HttpServletRequest request) throws Exception {
@@ -1148,7 +1148,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Contrôle les zones saisies d'un type d'inaptitude Date de création :
+	 * Controle les zones saisies d'un type d'inaptitude Date de crÃ©ation :
 	 * (15/09/11)
 	 */
 	private boolean performControlerSaisieInaptitude(HttpServletRequest request) throws Exception {
@@ -1164,30 +1164,30 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Contrôle les règles de gestion d'un type d'inaptitude Date de création :
+	 * Controle les regles de gestion d'un type d'inaptitude Date de crÃ©ation :
 	 * (15/09/11)
 	 */
 	private boolean performControlerRegleGestionInaptitude(HttpServletRequest request) throws Exception {
 
-		// Verification si suppression d'un type d'inaptitude utilisé sur une
+		// Verification si suppression d'un type d'inaptitude utilise sur une
 		// inaptitude
 		if (getVAL_ST_ACTION_INAPTITUDE().equals(ACTION_SUPPRESSION)
 				&& getInaptitudeDao().listerInaptitudeAvecTypeInaptitude(getInaptitudeCourante().getIdTypeInaptitude())
 						.size() > 0) {
 
 			// "ERR989",
-			// "Suppression impossible. Il existe au moins @ rattaché à @."
+			// "Suppression impossible. Il existe au moins @ rattachÃ© a @."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR989", "inaptitude", "ce type d'inaptitude"));
 			return false;
 		}
 
-		// Vérification des contraintes d'unicité du type d'inaptitude
+		// VÃ©rification des contraintes d'unicitÃ© du type d'inaptitude
 		if (getVAL_ST_ACTION_INAPTITUDE().equals(ACTION_CREATION)) {
 
 			for (TypeInaptitude titre : getListeInaptitude()) {
 				if (titre.getDescTypeInaptitude().equals(getVAL_EF_DESC_INAPTITUDE().toUpperCase())) {
 					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
+					// "Attention, il existe dÃ©jÃ  @ avec @. Veuillez contrÃ´ler."
 					getTransaction().declarerErreur(
 							MessageUtils.getMessage("ERR974", "un type d'inaptitude", "cette description"));
 					return false;
@@ -1200,7 +1200,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER_LESION Date de
-	 * création : (15/09/11 08:57:49)
+	 * crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public String getNOM_PB_VALIDER_LESION() {
@@ -1208,10 +1208,10 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (15/09/11 08:57:49)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public boolean performPB_VALIDER_LESION(HttpServletRequest request) throws Exception {
@@ -1247,7 +1247,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Contrôle les zones saisies d'un siège de lésion Date de création :
+	 * Controle les zones saisies d'un siege de lÃ©sion Date de crÃ©ation :
 	 * (15/09/11)
 	 */
 	private boolean performControlerSaisieLesion(HttpServletRequest request) throws Exception {
@@ -1263,32 +1263,32 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Contrôle les règles de gestion d'un siège de lésion Date de création :
+	 * Controle les regles de gestion d'un siege de lÃ©sion Date de crÃ©ation :
 	 * (15/09/11)
 	 */
 	private boolean performControlerRegleGestionLesion(HttpServletRequest request) throws Exception {
 
-		// Verification si suppression d'un siège de lésion utilisé sur un
+		// Verification si suppression d'un siege de lÃ©sion utilise sur un
 		// accident du travail
 		if (getVAL_ST_ACTION_LESION().equals(ACTION_SUPPRESSION)
 				&& getAccidentTravailDao().listerAccidentTravailAvecSiegeLesion(getLesionCourant().getIdSiege()).size() > 0) {
 
 			// "ERR989",
-			// "Suppression impossible. Il existe au moins @ rattaché à @."
+			// "Suppression impossible. Il existe au moins @ rattachÃ© a @."
 			getTransaction().declarerErreur(
-					MessageUtils.getMessage("ERR989", "accident du travail", "ce siège de lésion"));
+					MessageUtils.getMessage("ERR989", "accident du travail", "ce siÃ¨ge de lÃ©sion"));
 			return false;
 		}
 
-		// Vérification des contraintes d'unicité du siège de lésion
+		// VÃ©rification des contraintes d'unicitÃ© du siege de lÃ©sion
 		if (getVAL_ST_ACTION_LESION().equals(ACTION_CREATION)) {
 
 			for (SiegeLesion siege : getListeLesion()) {
 				if (siege.getDescSiege().equals(getVAL_EF_DESC_LESION().toUpperCase())) {
 					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
+					// "Attention, il existe dÃ©jÃ  @ avec @. Veuillez contrÃ´ler."
 					getTransaction().declarerErreur(
-							MessageUtils.getMessage("ERR974", "un siège de lésion", "cette description"));
+							MessageUtils.getMessage("ERR974", "un siÃ¨ge de lÃ©sion", "cette description"));
 					return false;
 				}
 			}
@@ -1299,7 +1299,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER_MALADIE Date de
-	 * création : (15/09/11 08:57:49)
+	 * crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public String getNOM_PB_VALIDER_MALADIE() {
@@ -1307,10 +1307,10 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (15/09/11 08:57:49)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public boolean performPB_VALIDER_MALADIE(HttpServletRequest request) throws Exception {
@@ -1348,15 +1348,15 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Contrôle les zones saisies d'une maladie professionnelle Date de création
+	 * Controle les zones saisies d'une maladie professionnelle Date de crÃ©ation
 	 * : (15/09/11)
 	 */
 	private boolean performControlerSaisieMaladie(HttpServletRequest request) throws Exception {
 
-		// Verification libellé maladie not null
+		// Verification libellÃ© maladie not null
 		if (getZone(getNOM_EF_LIBELLE_MALADIE()).length() == 0) {
 			// "ERR002","La zone @ est obligatoire."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "libellé"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "libellÃ©"));
 			return false;
 		}
 
@@ -1371,30 +1371,30 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Contrôle les règles de gestion d'une maladie professionnelle Date de
-	 * création : (15/09/11)
+	 * Controle les regles de gestion d'une maladie professionnelle Date de
+	 * crÃ©ation : (15/09/11)
 	 */
 	private boolean performControlerRegleGestionMaladie(HttpServletRequest request) throws Exception {
 
-		// Verification si suppression d'une maladie professionnelle utilisé sur
+		// Verification si suppression d'une maladie professionnelle utilise sur
 		// un handicap
 		if (getVAL_ST_ACTION_MALADIE().equals(ACTION_SUPPRESSION)
 				&& getHandicapDao().listerHandicapAvecMaladiePro(getMaladieCourante().getIdMaladiePro()).size() > 0) {
 
 			// "ERR989",
-			// "Suppression impossible. Il existe au moins @ rattaché à @."
+			// "Suppression impossible. Il existe au moins @ rattachÃ© a @."
 			getTransaction().declarerErreur(
 					MessageUtils.getMessage("ERR989", "handicap", "cette maladie professionnelle"));
 			return false;
 		}
 
-		// Vérification des contraintes d'unicité de la maladie professionnelle
+		// VÃ©rification des contraintes d'unicitÃ© de la maladie professionnelle
 		if (getVAL_ST_ACTION_MALADIE().equals(ACTION_CREATION)) {
 
 			for (MaladiePro maladie : getListeMaladie()) {
 				if (maladie.getCodeMaladiePro().equals(getVAL_EF_CODE_MALADIE().toUpperCase())) {
 					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
+					// "Attention, il existe dÃ©jÃ  @ avec @. Veuillez contrÃ´ler."
 					getTransaction().declarerErreur(
 							MessageUtils.getMessage("ERR974", "une maladie professionnelle", "ce code"));
 					return false;
@@ -1402,9 +1402,9 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 
 				if (maladie.getLibMaladiePro().equals(getVAL_EF_LIBELLE_MALADIE().toUpperCase())) {
 					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
+					// "Attention, il existe dÃ©jÃ  @ avec @. Veuillez contrÃ´ler."
 					getTransaction().declarerErreur(
-							MessageUtils.getMessage("ERR974", "une maladie professionnelle", "ce libellé"));
+							MessageUtils.getMessage("ERR974", "une maladie professionnelle", "ce libellÃ©"));
 					return false;
 				}
 			}
@@ -1415,7 +1415,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER_MEDECIN Date de
-	 * création : (15/09/11 08:57:49)
+	 * crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public String getNOM_PB_VALIDER_MEDECIN() {
@@ -1423,10 +1423,10 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (15/09/11 08:57:49)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public boolean performPB_VALIDER_MEDECIN(HttpServletRequest request) throws Exception {
@@ -1468,7 +1468,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Contrôle les zones saisies d'un medecin Date de création : (15/09/11)
+	 * Controle les zones saisies d'un medecin Date de crÃ©ation : (15/09/11)
 	 */
 	private boolean performControlerSaisieMedecin(HttpServletRequest request) throws Exception {
 
@@ -1482,7 +1482,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 		// Verification prenom medecin not null
 		if (getZone(getNOM_EF_PRENOM_MEDECIN()).length() == 0) {
 			// "ERR002","La zone @ est obligatoire."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "prénom"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "prÃ©nom"));
 			return false;
 		}
 
@@ -1497,31 +1497,31 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Contrôle les règles de gestion d'un medecin Date de création : (15/09/11)
+	 * Controle les regles de gestion d'un medecin Date de crÃ©ation : (15/09/11)
 	 */
 	private boolean performControlerRegleGestionMedecin(HttpServletRequest request) throws Exception {
 
-		// Verification si suppression d'un medecin utilisé sur une visite
-		// médicale
+		// Verification si suppression d'un medecin utilise sur une visite
+		// mÃ©dicale
 		if (getVAL_ST_ACTION_MEDECIN().equals(ACTION_SUPPRESSION)
 				&& getVisiteMedicaleDao().listerVisiteMedicaleAvecMedecin(getMedecinCourant().getIdMedecin()).size() > 0) {
 
 			// "ERR989",
-			// "Suppression impossible. Il existe au moins @ rattaché à @."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR989", "une visite médicale", "ce médecin"));
+			// "Suppression impossible. Il existe au moins @ rattachÃ© a @."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR989", "une visite mÃ©dicale", "ce mÃ©decin"));
 			return false;
 		}
 
-		// Vérification des contraintes d'unicité du medecin
+		// VÃ©rification des contraintes d'unicitÃ© du medecin
 		if (getVAL_ST_ACTION_MEDECIN().equals(ACTION_CREATION)) {
 
 			for (Medecin medecin : getListeMedecin()) {
 				if (medecin.getNomMedecin().equals(getVAL_EF_NOM_MEDECIN().toUpperCase())
 						&& medecin.getPrenomMedecin().equals(getVAL_EF_PRENOM_MEDECIN().toUpperCase())) {
 					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
+					// "Attention, il existe dÃ©jÃ  @ avec @. Veuillez contrÃ´ler."
 					getTransaction().declarerErreur(
-							MessageUtils.getMessage("ERR974", "un médecin", "ce nom et ce prénom"));
+							MessageUtils.getMessage("ERR974", "un mÃ©decin", "ce nom et ce prÃ©nom"));
 					return false;
 				}
 			}
@@ -1532,7 +1532,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER_RECOMMANDATION Date
-	 * de création : (15/09/11 08:57:49)
+	 * de crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public String getNOM_PB_VALIDER_RECOMMANDATION() {
@@ -1540,10 +1540,10 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (15/09/11 08:57:49)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public boolean performPB_VALIDER_RECOMMANDATION(HttpServletRequest request) throws Exception {
@@ -1579,7 +1579,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Contrôle les zones saisies d'une recommandation Date de création :
+	 * Controle les zones saisies d'une recommandation Date de crÃ©ation :
 	 * (15/09/11)
 	 */
 	private boolean performControlerSaisieRecommandation(HttpServletRequest request) throws Exception {
@@ -1595,31 +1595,31 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Contrôle les règles de gestion d'une recommandation Date de création :
+	 * Controle les regles de gestion d'une recommandation Date de crÃ©ation :
 	 * (15/09/11)
 	 */
 	private boolean performControlerRegleGestionRecommandation(HttpServletRequest request) throws Exception {
 
-		// Verification si suppression d'une recommandation utilisé sur une
-		// visite médicale
+		// Verification si suppression d'une recommandation utilise sur une
+		// visite mÃ©dicale
 		if (getVAL_ST_ACTION_RECOMMANDATION().equals(ACTION_SUPPRESSION)
 				&& getVisiteMedicaleDao().listerVisiteMedicaleAvecRecommandation(
 						getRecommandationCourante().getIdRecommandation()).size() > 0) {
 
 			// "ERR989",
-			// "Suppression impossible. Il existe au moins @ rattaché à @."
+			// "Suppression impossible. Il existe au moins @ rattachÃ© a @."
 			getTransaction().declarerErreur(
-					MessageUtils.getMessage("ERR989", "une visite médicale", "cette recommandation"));
+					MessageUtils.getMessage("ERR989", "une visite mÃ©dicale", "cette recommandation"));
 			return false;
 		}
 
-		// Vérification des contraintes d'unicité de la recommandation
+		// VÃ©rification des contraintes d'unicitÃ© de la recommandation
 		if (getVAL_ST_ACTION_RECOMMANDATION().equals(ACTION_CREATION)) {
 
 			for (Recommandation rec : getListeRecommandation()) {
 				if (rec.getDescRecommandation().equals(getVAL_EF_DESC_RECOMMANDATION().toUpperCase())) {
 					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
+					// "Attention, il existe dÃ©jÃ  @ avec @. Veuillez contrÃ´ler."
 					getTransaction().declarerErreur(
 							MessageUtils.getMessage("ERR974", "une recommandation", "cette description"));
 					return false;
@@ -1632,7 +1632,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_ACTION_AT Date de
-	 * création : (15/09/11 08:57:49)
+	 * crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public String getNOM_ST_ACTION_AT() {
@@ -1640,8 +1640,8 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACTION_AT Date
-	 * de création : (15/09/11 08:57:49)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_ACTION_AT Date
+	 * de crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public String getVAL_ST_ACTION_AT() {
@@ -1650,7 +1650,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_ACTION_INAPTITUDE
-	 * Date de création : (15/09/11 08:57:49)
+	 * Date de crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public String getNOM_ST_ACTION_INAPTITUDE() {
@@ -1658,8 +1658,8 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
-	 * ST_ACTION_INAPTITUDE Date de création : (15/09/11 08:57:49)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone :
+	 * ST_ACTION_INAPTITUDE Date de crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public String getVAL_ST_ACTION_INAPTITUDE() {
@@ -1668,7 +1668,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_ACTION_LESION Date
-	 * de création : (15/09/11 08:57:49)
+	 * de crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public String getNOM_ST_ACTION_LESION() {
@@ -1676,8 +1676,8 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACTION_LESION
-	 * Date de création : (15/09/11 08:57:49)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_ACTION_LESION
+	 * Date de crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public String getVAL_ST_ACTION_LESION() {
@@ -1686,7 +1686,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_ACTION_MALADIE Date
-	 * de création : (15/09/11 08:57:49)
+	 * de crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public String getNOM_ST_ACTION_MALADIE() {
@@ -1694,8 +1694,8 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACTION_MALADIE
-	 * Date de création : (15/09/11 08:57:49)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_ACTION_MALADIE
+	 * Date de crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public String getVAL_ST_ACTION_MALADIE() {
@@ -1704,7 +1704,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_ACTION_MEDECIN Date
-	 * de création : (15/09/11 08:57:49)
+	 * de crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public String getNOM_ST_ACTION_MEDECIN() {
@@ -1712,8 +1712,8 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACTION_MEDECIN
-	 * Date de création : (15/09/11 08:57:49)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_ACTION_MEDECIN
+	 * Date de crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public String getVAL_ST_ACTION_MEDECIN() {
@@ -1722,7 +1722,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique :
-	 * ST_ACTION_RECOMMANDATION Date de création : (15/09/11 08:57:49)
+	 * ST_ACTION_RECOMMANDATION Date de crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public String getNOM_ST_ACTION_RECOMMANDATION() {
@@ -1730,8 +1730,8 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
-	 * ST_ACTION_RECOMMANDATION Date de création : (15/09/11 08:57:49)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone :
+	 * ST_ACTION_RECOMMANDATION Date de crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public String getVAL_ST_ACTION_RECOMMANDATION() {
@@ -1740,7 +1740,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_CODE_MALADIE Date
-	 * de création : (15/09/11 08:57:49)
+	 * de crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public String getNOM_EF_CODE_MALADIE() {
@@ -1748,8 +1748,8 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_CODE_MALADIE Date de création : (15/09/11 08:57:49)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_CODE_MALADIE Date de crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public String getVAL_EF_CODE_MALADIE() {
@@ -1758,7 +1758,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_DESC_AT Date de
-	 * création : (15/09/11 08:57:49)
+	 * crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public String getNOM_EF_DESC_AT() {
@@ -1766,8 +1766,8 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_DESC_AT Date de création : (15/09/11 08:57:49)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_DESC_AT Date de crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public String getVAL_EF_DESC_AT() {
@@ -1776,7 +1776,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_DESC_INAPTITUDE
-	 * Date de création : (15/09/11 08:57:49)
+	 * Date de crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public String getNOM_EF_DESC_INAPTITUDE() {
@@ -1784,8 +1784,8 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_DESC_INAPTITUDE Date de création : (15/09/11 08:57:49)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_DESC_INAPTITUDE Date de crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public String getVAL_EF_DESC_INAPTITUDE() {
@@ -1794,7 +1794,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_DESC_LESION Date de
-	 * création : (15/09/11 08:57:49)
+	 * crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public String getNOM_EF_DESC_LESION() {
@@ -1802,8 +1802,8 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_DESC_LESION Date de création : (15/09/11 08:57:49)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_DESC_LESION Date de crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public String getVAL_EF_DESC_LESION() {
@@ -1812,7 +1812,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_DESC_RECOMMANDATION
-	 * Date de création : (15/09/11 08:57:49)
+	 * Date de crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public String getNOM_EF_DESC_RECOMMANDATION() {
@@ -1820,8 +1820,8 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_DESC_RECOMMANDATION Date de création : (15/09/11 08:57:49)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_DESC_RECOMMANDATION Date de crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public String getVAL_EF_DESC_RECOMMANDATION() {
@@ -1830,7 +1830,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_LIBELLE_MALADIE
-	 * Date de création : (15/09/11 08:57:49)
+	 * Date de crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public String getNOM_EF_LIBELLE_MALADIE() {
@@ -1838,8 +1838,8 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_LIBELLE_MALADIE Date de création : (15/09/11 08:57:49)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_LIBELLE_MALADIE Date de crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public String getVAL_EF_LIBELLE_MALADIE() {
@@ -1848,7 +1848,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_NOM_MEDECIN Date de
-	 * création : (15/09/11 08:57:49)
+	 * crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public String getNOM_EF_NOM_MEDECIN() {
@@ -1856,8 +1856,8 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_NOM_MEDECIN Date de création : (15/09/11 08:57:49)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_NOM_MEDECIN Date de crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public String getVAL_EF_NOM_MEDECIN() {
@@ -1866,7 +1866,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_PRENOM_MEDECIN Date
-	 * de création : (15/09/11 08:57:49)
+	 * de crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public String getNOM_EF_PRENOM_MEDECIN() {
@@ -1874,8 +1874,8 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_PRENOM_MEDECIN Date de création : (15/09/11 08:57:49)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_PRENOM_MEDECIN Date de crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public String getVAL_EF_PRENOM_MEDECIN() {
@@ -1884,7 +1884,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_TITRE_MEDECIN Date
-	 * de création : (15/09/11 08:57:49)
+	 * de crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public String getNOM_EF_TITRE_MEDECIN() {
@@ -1892,8 +1892,8 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_TITRE_MEDECIN Date de création : (15/09/11 08:57:49)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_TITRE_MEDECIN Date de crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public String getVAL_EF_TITRE_MEDECIN() {
@@ -1901,7 +1901,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Getter de la liste avec un lazy initialize : LB_AT Date de création :
+	 * Getter de la liste avec un lazy initialize : LB_AT Date de crÃ©ation :
 	 * (15/09/11 08:57:49)
 	 * 
 	 */
@@ -1912,7 +1912,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_AT Date de création : (15/09/11 08:57:49)
+	 * Setter de la liste: LB_AT Date de crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	private void setLB_AT(String[] newLB_AT) {
@@ -1920,7 +1920,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_AT Date de création :
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_AT Date de crÃ©ation :
 	 * (15/09/11 08:57:49)
 	 * 
 	 */
@@ -1929,8 +1929,8 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_AT_SELECT Date de création : (15/09/11 08:57:49)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_AT_SELECT Date de crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public String getNOM_LB_AT_SELECT() {
@@ -1938,8 +1938,8 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_AT Date de création : (15/09/11 08:57:49)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_AT Date de crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public String[] getVAL_LB_AT() {
@@ -1947,8 +1947,8 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_AT Date de création : (15/09/11 08:57:49)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_AT Date de crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public String getVAL_LB_AT_SELECT() {
@@ -1957,7 +1957,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 
 	/**
 	 * Getter de la liste avec un lazy initialize : LB_INAPTITUDE Date de
-	 * création : (15/09/11 08:57:49)
+	 * crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	private String[] getLB_INAPTITUDE() {
@@ -1967,7 +1967,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_INAPTITUDE Date de création : (15/09/11 08:57:49)
+	 * Setter de la liste: LB_INAPTITUDE Date de crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	private void setLB_INAPTITUDE(String[] newLB_INAPTITUDE) {
@@ -1976,7 +1976,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 
 	/**
 	 * Retourne le nom de la zone pour la JSP : NOM_LB_INAPTITUDE Date de
-	 * création : (15/09/11 08:57:49)
+	 * crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public String getNOM_LB_INAPTITUDE() {
@@ -1984,8 +1984,8 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_INAPTITUDE_SELECT Date de création : (15/09/11 08:57:49)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_INAPTITUDE_SELECT Date de crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public String getNOM_LB_INAPTITUDE_SELECT() {
@@ -1993,8 +1993,8 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_INAPTITUDE Date de création : (15/09/11 08:57:49)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_INAPTITUDE Date de crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public String[] getVAL_LB_INAPTITUDE() {
@@ -2002,8 +2002,8 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_INAPTITUDE Date de création : (15/09/11 08:57:49)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_INAPTITUDE Date de crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public String getVAL_LB_INAPTITUDE_SELECT() {
@@ -2011,7 +2011,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Getter de la liste avec un lazy initialize : LB_LESION Date de création :
+	 * Getter de la liste avec un lazy initialize : LB_LESION Date de crÃ©ation :
 	 * (15/09/11 08:57:49)
 	 * 
 	 */
@@ -2022,7 +2022,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_LESION Date de création : (15/09/11 08:57:49)
+	 * Setter de la liste: LB_LESION Date de crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	private void setLB_LESION(String[] newLB_LESION) {
@@ -2030,7 +2030,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_LESION Date de création :
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_LESION Date de crÃ©ation :
 	 * (15/09/11 08:57:49)
 	 * 
 	 */
@@ -2039,8 +2039,8 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_LESION_SELECT Date de création : (15/09/11 08:57:49)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_LESION_SELECT Date de crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public String getNOM_LB_LESION_SELECT() {
@@ -2048,8 +2048,8 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_LESION Date de création : (15/09/11 08:57:49)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_LESION Date de crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public String[] getVAL_LB_LESION() {
@@ -2057,8 +2057,8 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_LESION Date de création : (15/09/11 08:57:49)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_LESION Date de crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public String getVAL_LB_LESION_SELECT() {
@@ -2066,7 +2066,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Getter de la liste avec un lazy initialize : LB_MALADIE Date de création
+	 * Getter de la liste avec un lazy initialize : LB_MALADIE Date de crÃ©ation
 	 * : (15/09/11 08:57:49)
 	 * 
 	 */
@@ -2077,7 +2077,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_MALADIE Date de création : (15/09/11 08:57:49)
+	 * Setter de la liste: LB_MALADIE Date de crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	private void setLB_MALADIE(String[] newLB_MALADIE) {
@@ -2085,7 +2085,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_MALADIE Date de création
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_MALADIE Date de crÃ©ation
 	 * : (15/09/11 08:57:49)
 	 * 
 	 */
@@ -2094,8 +2094,8 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_MALADIE_SELECT Date de création : (15/09/11 08:57:49)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_MALADIE_SELECT Date de crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public String getNOM_LB_MALADIE_SELECT() {
@@ -2103,8 +2103,8 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_MALADIE Date de création : (15/09/11 08:57:49)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_MALADIE Date de crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public String[] getVAL_LB_MALADIE() {
@@ -2112,8 +2112,8 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_MALADIE Date de création : (15/09/11 08:57:49)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_MALADIE Date de crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public String getVAL_LB_MALADIE_SELECT() {
@@ -2121,7 +2121,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Getter de la liste avec un lazy initialize : LB_MEDECIN Date de création
+	 * Getter de la liste avec un lazy initialize : LB_MEDECIN Date de crÃ©ation
 	 * : (15/09/11 08:57:49)
 	 * 
 	 */
@@ -2132,7 +2132,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_MEDECIN Date de création : (15/09/11 08:57:49)
+	 * Setter de la liste: LB_MEDECIN Date de crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	private void setLB_MEDECIN(String[] newLB_MEDECIN) {
@@ -2140,7 +2140,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_MEDECIN Date de création
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_MEDECIN Date de crÃ©ation
 	 * : (15/09/11 08:57:49)
 	 * 
 	 */
@@ -2149,8 +2149,8 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_MEDECIN_SELECT Date de création : (15/09/11 08:57:49)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_MEDECIN_SELECT Date de crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public String getNOM_LB_MEDECIN_SELECT() {
@@ -2158,8 +2158,8 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_MEDECIN Date de création : (15/09/11 08:57:49)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_MEDECIN Date de crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public String[] getVAL_LB_MEDECIN() {
@@ -2167,8 +2167,8 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_MEDECIN Date de création : (15/09/11 08:57:49)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_MEDECIN Date de crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public String getVAL_LB_MEDECIN_SELECT() {
@@ -2177,7 +2177,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 
 	/**
 	 * Getter de la liste avec un lazy initialize : LB_RECOMMANDATION Date de
-	 * création : (15/09/11 08:57:49)
+	 * crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	private String[] getLB_RECOMMANDATION() {
@@ -2187,7 +2187,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_RECOMMANDATION Date de création : (15/09/11
+	 * Setter de la liste: LB_RECOMMANDATION Date de crÃ©ation : (15/09/11
 	 * 08:57:49)
 	 * 
 	 */
@@ -2197,7 +2197,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 
 	/**
 	 * Retourne le nom de la zone pour la JSP : NOM_LB_RECOMMANDATION Date de
-	 * création : (15/09/11 08:57:49)
+	 * crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public String getNOM_LB_RECOMMANDATION() {
@@ -2205,8 +2205,8 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_RECOMMANDATION_SELECT Date de création : (15/09/11 08:57:49)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_RECOMMANDATION_SELECT Date de crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public String getNOM_LB_RECOMMANDATION_SELECT() {
@@ -2214,8 +2214,8 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_RECOMMANDATION Date de création : (15/09/11 08:57:49)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_RECOMMANDATION Date de crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public String[] getVAL_LB_RECOMMANDATION() {
@@ -2223,8 +2223,8 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_RECOMMANDATION Date de création : (15/09/11 08:57:49)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_RECOMMANDATION Date de crÃ©ation : (15/09/11 08:57:49)
 	 * 
 	 */
 	public String getVAL_LB_RECOMMANDATION_SELECT() {
@@ -2336,7 +2336,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_TYPE_DOCUMENT
 	 * 
 	 */
@@ -2345,7 +2345,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
 	 * NOM_LB_TYPE_DOCUMENT_SELECT
 	 * 
 	 */
@@ -2354,7 +2354,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
 	 * JSP : LB_TYPE_DOCUMENT
 	 * 
 	 */
@@ -2374,7 +2374,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_CREER_TYPE_DOUMENT Date de
-	 * création : (15/09/11 14:14:43)
+	 * crÃ©ation : (15/09/11 14:14:43)
 	 * 
 	 */
 	public String getNOM_PB_CREER_TYPE_DOCUMENT() {
@@ -2383,7 +2383,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMER_TYPE_DOUMENT Date
-	 * de création : (15/09/11 14:14:43)
+	 * de crÃ©ation : (15/09/11 14:14:43)
 	 * 
 	 */
 	public String getNOM_PB_SUPPRIMER_TYPE_DOCUMENT() {
@@ -2391,8 +2391,8 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
-	 * ST_ACTION_TYPE_DOUMENT Date de création : (15/09/11 14:14:43)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone :
+	 * ST_ACTION_TYPE_DOUMENT Date de crÃ©ation : (15/09/11 14:14:43)
 	 * 
 	 */
 	public String getVAL_ST_ACTION_TYPE_DOCUMENT() {
@@ -2401,7 +2401,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_ACTION_TYPE_DOUMENT
-	 * Date de création : (15/09/11 14:14:43)
+	 * Date de crÃ©ation : (15/09/11 14:14:43)
 	 * 
 	 */
 	public String getNOM_ST_ACTION_TYPE_DOCUMENT() {
@@ -2410,7 +2410,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_TYPE_DOCUMENT Date
-	 * de création : (15/09/11 14:14:43)
+	 * de crÃ©ation : (15/09/11 14:14:43)
 	 * 
 	 */
 	public String getNOM_EF_TYPE_DOCUMENT() {
@@ -2419,7 +2419,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_CODE_TYPE_DOCUMENT
-	 * Date de création : (15/09/11 14:14:43)
+	 * Date de crÃ©ation : (15/09/11 14:14:43)
 	 * 
 	 */
 	public String getNOM_EF_CODE_TYPE_DOCUMENT() {
@@ -2427,8 +2427,8 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_TYPE_DOCUMENT Date de création : (15/09/11 14:14:43)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_TYPE_DOCUMENT Date de crÃ©ation : (15/09/11 14:14:43)
 	 * 
 	 */
 	public String getVAL_EF_TYPE_DOCUMENT() {
@@ -2436,8 +2436,8 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_CODE_TYPE_DOCUMENT Date de création : (15/09/11 14:14:43)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_CODE_TYPE_DOCUMENT Date de crÃ©ation : (15/09/11 14:14:43)
 	 * 
 	 */
 	public String getVAL_EF_CODE_TYPE_DOCUMENT() {
@@ -2446,7 +2446,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER_TYPE_DOCUMENT Date
-	 * de création : (15/09/11 14:14:43)
+	 * de crÃ©ation : (15/09/11 14:14:43)
 	 * 
 	 */
 	public String getNOM_PB_VALIDER_TYPE_DOCUMENT() {
@@ -2454,10 +2454,10 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (15/09/11 14:14:43)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (15/09/11 14:14:43)
 	 * 
 	 */
 	public boolean performPB_VALIDER_TYPE_DOCUMENT(HttpServletRequest request) throws Exception {
@@ -2503,7 +2503,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER_TYPE_DOCUMENT Date
-	 * de création : (15/09/11 14:14:43)
+	 * de crÃ©ation : (15/09/11 14:14:43)
 	 * 
 	 */
 	public String getNOM_PB_ANNULER_TYPE_DOCUMENT() {
@@ -2511,10 +2511,10 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (15/09/11 14:14:43)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (15/09/11 14:14:43)
 	 * 
 	 */
 	public boolean performPB_ANNULER_TYPE_DOCUMENT(HttpServletRequest request) throws Exception {
@@ -2540,7 +2540,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_TYPE_DOCUMENT Date de création : (15/09/11
+	 * Setter de la liste: LB_TYPE_DOCUMENT Date de crÃ©ation : (15/09/11
 	 * 14:14:43)
 	 * 
 	 */
@@ -2549,18 +2549,18 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Contrôle les zones saisies d'un type de document Date de création :
+	 * Controle les zones saisies d'un type de document Date de crÃ©ation :
 	 * (14/09/11)
 	 */
 	private boolean performControlerSaisieTypeDocument(HttpServletRequest request) throws Exception {
 
-		// Verification libellé type document not null
+		// Verification libellÃ© type document not null
 		if (getZone(getNOM_EF_TYPE_DOCUMENT()).length() == 0) {
 			// "ERR002","La zone @ est obligatoire."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "libellé"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "libellÃ©"));
 			return false;
 		}
-		// Verification libellé du code du type document not null
+		// Verification libellÃ© du code du type document not null
 		if (getZone(getNOM_EF_CODE_TYPE_DOCUMENT()).length() == 0) {
 			// "ERR002","La zone @ est obligatoire."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "code"));
@@ -2571,39 +2571,39 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Contrôle les règles de gestion d'une autre administration Date de
-	 * création : (14/09/11)
+	 * Controle les regles de gestion d'une autre administration Date de
+	 * crÃ©ation : (14/09/11)
 	 */
 	private boolean performControlerRegleGestionTypeDocument(HttpServletRequest request) throws Exception {
 
-		// Verification si suppression d'un type de document utilisé sur
+		// Verification si suppression d'un type de document utilise sur
 		// document agent
 
 		if (getVAL_ST_ACTION_TYPE_DOCUMENT().equals(ACTION_SUPPRESSION)
 				&& getDocumentDao().listerDocumentAvecType(getTypeDocumentCourant().getIdTypeDocument()).size() > 0) {
 
 			// "ERR989",
-			// "Suppression impossible. Il existe au moins @ rattaché à @."
+			// "Suppression impossible. Il existe au moins @ rattachÃ© a @."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR989", "un document", "ce type"));
 			return false;
 		}
 
-		// Vérification des contraintes d'unicité du type de document
+		// VÃ©rification des contraintes d'unicitÃ© du type de document
 		if (getVAL_ST_ACTION_TYPE_DOCUMENT().equals(ACTION_CREATION)) {
 
 			for (TypeDocument typeDoc : getListeTypeDocument()) {
 				if (typeDoc.getLibTypeDocument().equals(getVAL_EF_TYPE_DOCUMENT().toUpperCase())) {
 					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
+					// "Attention, il existe dÃ©jÃ  @ avec @. Veuillez contrÃ´ler."
 					getTransaction().declarerErreur(
-							MessageUtils.getMessage("ERR974", "un type de document", "ce libellé"));
+							MessageUtils.getMessage("ERR974", "un type de document", "ce libellÃ©"));
 					return false;
 				}
 				if (typeDoc.getCodTypeDocument().equals(getVAL_EF_CODE_TYPE_DOCUMENT().toUpperCase())) {
 					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
+					// "Attention, il existe dÃ©jÃ  @ avec @. Veuillez contrÃ´ler."
 					getTransaction().declarerErreur(
-							MessageUtils.getMessage("ERR974", "un code type de document", "ce libellé"));
+							MessageUtils.getMessage("ERR974", "un code type de document", "ce libellÃ©"));
 					return false;
 				}
 			}
@@ -2613,7 +2613,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Initialisation de la listes des types de documents Date de création :
+	 * Initialisation de la listes des types de documents Date de crÃ©ation :
 	 * (15/09/11)
 	 * 
 	 */
@@ -2636,10 +2636,10 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (15/09/11 14:14:43)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (15/09/11 14:14:43)
 	 * 
 	 */
 	public boolean performPB_CREER_TYPE_DOCUMENT(HttpServletRequest request) throws Exception {
@@ -2653,10 +2653,10 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (15/09/11 14:14:43)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (15/09/11 14:14:43)
 	 * 
 	 */
 	public boolean performPB_SUPPRIMER_TYPE_DOCUMENT(HttpServletRequest request) throws Exception {

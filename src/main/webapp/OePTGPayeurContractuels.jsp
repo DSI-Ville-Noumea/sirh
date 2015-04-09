@@ -1,4 +1,4 @@
-<!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@ page contentType="text/html; charset=UTF-8" %> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <%@page import="nc.mairie.enums.EnumTypeDroit"%>
 <%@page import="nc.mairie.utils.MairieUtils"%>
 
@@ -23,7 +23,7 @@ function SelectLigne(id,tailleTableau)
 }
 </SCRIPT>
 		
-		<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	</HEAD>
 	
 	<jsp:useBean class="nc.mairie.gestionagent.process.pointage.OePTGPayeurContractuels" id="process" scope="session"></jsp:useBean>
@@ -37,13 +37,13 @@ function SelectLigne(id,tailleTableau)
 		<span style="color: red; margin-left:5px;">Attention, cette action est irr&eacute;versible !</span>
 		<br />
 		
-		<INPUT type="submit" class="sigp2-Bouton-100" value="Lancer éditions" name="<%=process.getNOM_PB_LANCER_EDITIONS() %>" <%if(!process.isBoutonLancerEditionAffiche()){ %> disabled="disabled"<% } %> />
+		<INPUT type="submit" class="sigp2-Bouton-100" value="Lancer Ã©ditions" name="<%=process.getNOM_PB_LANCER_EDITIONS() %>" <%if(!process.isBoutonLancerEditionAffiche()){ %> disabled="disabled"<% } %> />
 		
 		<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
-		    <legend class="sigp2Legend">Historique des éditions des contractuels</legend>
+		    <legend class="sigp2Legend">Historique des Ã©ditions des contractuels</legend>
 		    <br/>
-		    <span style="position:relative;width:210px;text-align: center;">Imprimé le <br> A <br> PAR</span>
-		    <span style="position:relative;width:290px;text-align: center;">Libellé</span>
+		    <span style="position:relative;width:210px;text-align: center;">ImprimÃ© le <br> A <br> PAR</span>
+		    <span style="position:relative;width:290px;text-align: center;">LibellÃ©</span>
 		    <span style="position:relative;width:150px;text-align: center;">Consulter</span>
 			<br/>
 			

@@ -18,7 +18,7 @@ public interface ScolariteDaoInterface {
 	public void modifierScolarite(Integer idScolarite, Integer idEnfant, Date dateDebut, Date dateFin) throws Exception;
 
 	/**
-	 * Retourne un ArrayList d'objet métier Scolarite d'un enfant.
+	 * Retourne un ArrayList d'objet metier Scolarite d'un enfant.
 	 * 
 	 * @return ArrayList
 	 */

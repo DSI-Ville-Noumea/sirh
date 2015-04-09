@@ -1,4 +1,4 @@
-<!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@ page contentType="text/html; charset=UTF-8" %> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <HTML>
 	
 	<jsp:useBean class="nc.mairie.gestionagent.process.agent.OeAGENTAbsencesHisto" id="process" scope="session"></jsp:useBean>
@@ -13,13 +13,13 @@
         <SCRIPT type="text/javascript" src="js/GestionCalendrier.js"></SCRIPT>
 		
 		<SCRIPT language="JavaScript">
-		//afin de sélectionner un élément dans une liste
+		//afin de sÃ©lectionner un Ã©lÃ©ment dans une liste
 		function executeBouton(nom)
 		{
 			document.formu.elements[nom].click();
 		}
 
-		// afin de mettre le focus sur une zone précise
+		// afin de mettre le focus sur une zone prÃ©cise
 		function setfocus(nom)
 		{
 			if (document.formu.elements[nom] != null)
@@ -35,7 +35,7 @@
 		}
 		
 		</SCRIPT>	
-		<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	</HEAD>
 	<BODY bgcolor="#FFFFFF" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="window.parent.frames['refAgent'].location.reload();">
 	<%@ include file="BanniereErreur.jsp" %>
@@ -67,12 +67,12 @@
 			<div id="corpsOngletNonPrises" title="NonPrises" class="OngletCorps" style="display:none;margin-right:10px;width:1030px;">
 		<% } %>
 			    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
-				    <legend class="sigp2Legend">Tri des absences à afficher</legend>
+				    <legend class="sigp2Legend">Tri des absences Ã  afficher</legend>
 					<span class="sigp2" style="width:100px">Groupe d'absence : </span>
 					<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_TYPE_ABSENCE_NP() %>" style="width=150px;margin-right:20px;">
 						<%=process.forComboHTML(process.getVAL_LB_TYPE_ABSENCE_NP(), process.getVAL_LB_TYPE_ABSENCE_NP_SELECT()) %>
 					</SELECT>
-					<span class="sigp2" style="width:65px">Date début : </span>
+					<span class="sigp2" style="width:65px">Date dÃ©but : </span>
 	                <input id="<%=process.getNOM_ST_DATE_DEB_NP()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_DEB_NP()%>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_DEB_NP()%>" >
 	                <IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_DEB_NP()%>', 'dd/mm/y');">
 	                <span class="sigp2" style="width:55px">Date fin : </span>
@@ -94,9 +94,9 @@
 						<table class="sigp2NewTab" style="text-align:left;width:980px;">
 							<tr bgcolor="#EFEFEF">
 								<td width="300px;">Type Demande</td>
-								<td width="100px;" align="left">Date début</td>
+								<td width="100px;" align="left">Date dÃ©but</td>
 								<td width="100px;" align="left">Date fin</td>
-								<td width="90px;" align="center">Durée</td>
+								<td width="90px;" align="center">DurÃ©e</td>
 								<td width="300px;" align="center">Motif</td>
 								<td width="90px;" align="center">Date Demande</td>
 								<td>Etat</td>
@@ -126,12 +126,12 @@
 			<div id="corpsOngletEnCours" title="EnCours" class="OngletCorps" style="display:none;margin-right:10px;width:1030px;">
 		<% } %>
 			    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
-				    <legend class="sigp2Legend">Tri des absences à afficher</legend>
+				    <legend class="sigp2Legend">Tri des absences Ã  afficher</legend>
 					<span class="sigp2" style="width:100px">Famille d'absence : </span>
 					<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_TYPE_ABSENCE_EC() %>" style="width=150px;margin-right:20px;">
 						<%=process.forComboHTML(process.getVAL_LB_TYPE_ABSENCE_EC(), process.getVAL_LB_TYPE_ABSENCE_EC_SELECT()) %>
 					</SELECT>
-					<span class="sigp2" style="width:65px">Date début : </span>
+					<span class="sigp2" style="width:65px">Date dÃ©but : </span>
 	                <input id="<%=process.getNOM_ST_DATE_DEB_EC()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_DEB_EC()%>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_DEB_EC()%>" >
 	                <IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_DEB_EC()%>', 'dd/mm/y');">
 	                <span class="sigp2" style="width:55px">Date fin : </span>
@@ -153,9 +153,9 @@
 						<table class="sigp2NewTab" style="text-align:left;width:980px;">
 							<tr bgcolor="#EFEFEF">
 								<td width="300px;">Type Demande</td>
-								<td width="100px;" align="left">Date début</td>
+								<td width="100px;" align="left">Date dÃ©but</td>
 								<td width="100px;" align="left">Date fin</td>
-								<td width="90px;" align="center">Durée</td>
+								<td width="90px;" align="center">DurÃ©e</td>
 								<td width="300px;" align="center">Motif</td>
 								<td width="90px;" align="center">Date Demande</td>
 								<td>Etat</td>
@@ -185,12 +185,12 @@
 			<div id="corpsOngletToutes" title="Toutes" class="OngletCorps" style="display:none;margin-right:10px;width:1030px;">
 		<% } %>
 			    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
-				    <legend class="sigp2Legend">Tri des absences à afficher</legend>
+				    <legend class="sigp2Legend">Tri des absences Ã  afficher</legend>
 					<span class="sigp2" style="width:100px">Famille d'absence : </span>
 					<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_TYPE_ABSENCE_TT() %>" style="width=150px;margin-right:20px;">
 						<%=process.forComboHTML(process.getVAL_LB_TYPE_ABSENCE_TT(), process.getVAL_LB_TYPE_ABSENCE_TT_SELECT()) %>
 					</SELECT>
-					<span class="sigp2" style="width:65px">Date début : </span>
+					<span class="sigp2" style="width:65px">Date dÃ©but : </span>
 	                <input id="<%=process.getNOM_ST_DATE_DEB_TT()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_DEB_TT()%>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_DEB_TT()%>" >
 	                <IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_DEB_TT()%>', 'dd/mm/y');">
 	                <span class="sigp2" style="width:55px">Date fin : </span>
@@ -212,9 +212,9 @@
 						<table class="sigp2NewTab" style="text-align:left;width:980px;">
 							<tr bgcolor="#EFEFEF">
 								<td width="300px;">Type Demande</td>
-								<td width="100px;" align="left">Date début</td>
+								<td width="100px;" align="left">Date dÃ©but</td>
 								<td width="100px;" align="left">Date fin</td>
-								<td width="90px;" align="center">Durée</td>
+								<td width="90px;" align="center">DurÃ©e</td>
 								<td width="300px;" align="center">Motif</td>
 								<td width="90px;" align="center">Date Demande</td>
 								<td>Etat</td>

@@ -112,7 +112,7 @@ public interface ISirhAbsWSConsumer {
 
 	ReturnMessageDto addRestitutionMassive(Integer idAgent, String json);
 
-	// alimentation auto des congés annuels
+	// alimentation auto des congÃ©s annuels
 	List<MoisAlimAutoCongesAnnuelsDto> getListeMoisALimAUtoCongeAnnuel();
 
 	List<MoisAlimAutoCongesAnnuelsDto> getListeAlimAutoCongeAnnuel(MoisAlimAutoCongesAnnuelsDto moisChoisi);

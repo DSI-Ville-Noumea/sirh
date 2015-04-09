@@ -119,7 +119,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 
 /**
- * Process OeAVCTFonctionnaires Date de création : (21/11/11 09:55:36)
+ * Process OeAVCTFonctionnaires Date de crÃ©ation : (21/11/11 09:55:36)
  * 
  */
 public class OeAVCTCampagneGestionEAE extends BasicProcess {
@@ -198,10 +198,10 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	private AgentDao agentDao;
 
 	/**
-	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones Ã  afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
-	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
-	 * addZone(getNOMxxx, String); Date de création : (21/11/11 09:55:36)
+	 * doivent avoir les Fields PUBLIC Utilisation de la mÃ©thode
+	 * addZone(getNOMxxx, String); Date de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public void initialiseZones(HttpServletRequest request) throws Exception {
@@ -209,18 +209,18 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 		VariableGlobale.ajouter(request, "PROCESS_MEMORISE", this);
 
 		// ----------------------------------//
-		// Vérification des droits d'accès. //
+		// VÃ©rification des droits d'acces. //
 		// ----------------------------------//
 		if (MairieUtils.estInterdit(request, getNomEcran())) {
 			// "ERR190",
-			// "Opération impossible. Vous ne disposez pas des droits d'accès à cette option."
+			// "Operation impossible. Vous ne disposez pas des droits d'acces a cette option."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
 
 		initialiseDao();
 
-		// Initialisation des listes déroulantes
+		// Initialisation des listes deroulantes
 		initialiseListeDeroulante();
 
 		initialiseListeService();
@@ -289,7 +289,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 				if (Const.CHAINE_VIDE.equals(serv.getCodService()))
 					continue;
 
-				// recherche du supérieur
+				// recherche du supÃ©rieur
 				String codeService = serv.getCodService();
 				while (codeService.endsWith("A")) {
 					codeService = codeService.substring(0, codeService.length() - 1);
@@ -310,8 +310,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 		if (getEaeCourant() != null && agt != null) {
 			getEaeCourant().setIdDelegataire(agt.getIdAgent());
 			getEaeDao().modifierDelegataire(getEaeCourant().getIdEae(), getEaeCourant().getIdDelegataire());
-			// si EAE d'un détachés alors on passe le statut de l'EAE en
-			// "on debuté"
+			// si EAE d'un dÃ©tachÃ©s alors on passe le statut de l'EAE en
+			// "on debute"
 			EaeEvalue evalue = getEaeEvalueDao().chercherEaeEvalue(getEaeCourant().getIdEae());
 			if (evalue.isAgentDetache()) {
 				getEaeCourant().setEtat(EnumEtatEAE.NON_DEBUTE.getCode());
@@ -339,7 +339,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 				for (int j = 0; j < listeEvaluateurSelect.size(); j++) {
 					Agent agentEvaluateur = listeEvaluateurSelect.get(j);
 					if (agentEvaluateur != null) {
-						// on crée les nouveaux evaluateurs
+						// on crÃ©e les nouveaux evaluateurs
 						EaeEvaluateur eval = new EaeEvaluateur();
 						eval.setIdEae(getEaeCourant().getIdEae());
 						eval.setIdAgent(agentEvaluateur.getIdAgent());
@@ -398,13 +398,13 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 								eval.getDateEntreeFonction());
 					}
 				}
-				// on sort de la boucle, on change l'état de l'EAE en NON-DEBUTE
+				// on sort de la boucle, on change l'etat de l'EAE en NON-DEBUTE
 				getEaeCourant().setEtat(EnumEtatEAE.NON_DEBUTE.getCode());
 				getEaeDao().modifierEtat(getEaeCourant().getIdEae(), getEaeCourant().getEtat());
 
 			} else {
 				if (getEaeCourant() != null) {
-					// si pas d'évaluateur choisi alors on passe l'eae en NON
+					// si pas d'evaluateur choisi alors on passe l'eae en NON
 					// AFFECTE et on supprime le delegataire
 					getEaeDao().modifierDelegataire(getEaeCourant().getIdEae(), null);
 					getEaeCourant().setEtat(EnumEtatEAE.NON_AFFECTE.getCode());
@@ -619,7 +619,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	}
 
 	/**
-	 * Initialisation des liste déroulantes.
+	 * Initialisation des liste deroulantes.
 	 */
 	private void initialiseListeDeroulante() throws Exception {
 		// Si liste annee vide alors affectation
@@ -703,8 +703,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	}
 
 	/**
-	 * Méthode appelée par la servlet qui aiguille le traitement : en fonction
-	 * du bouton de la JSP Date de création : (21/11/11 09:55:36)
+	 * mÃ©thode appelee par la servlet qui aiguille le traitement : en fonction
+	 * du bouton de la JSP Date de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public boolean recupererStatut(HttpServletRequest request) throws Exception {
@@ -825,13 +825,13 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 			}
 
 		}
-		// Si TAG INPUT non géré par le process
+		// Si TAG INPUT non gÃ©rÃ© par le process
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
 
 	/**
-	 * Constructeur du process OeAVCTFonctionnaires. Date de création :
+	 * Constructeur du process OeAVCTFonctionnaires. Date de crÃ©ation :
 	 * (21/11/11 09:55:36)
 	 * 
 	 */
@@ -840,8 +840,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la JSP du process Zone à utiliser dans un champ caché
-	 * dans chaque formulaire de la JSP. Date de création : (21/11/11 09:55:36)
+	 * Retourne le nom de la JSP du process Zone a utiliser dans un champ cache
+	 * dans chaque formulaire de la JSP. Date de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getJSP() {
@@ -850,7 +850,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_GERER_EVALUATEUR Date de
-	 * création : (21/11/11 09:55:36)
+	 * crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_PB_GERER_EVALUATEUR(int i) {
@@ -858,10 +858,10 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (21/11/11 09:55:36)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public boolean performPB_GERER_EVALUATEUR(HttpServletRequest request, int idEae) throws Exception {
@@ -884,7 +884,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_FILTRER Date de création :
+	 * Retourne le nom d'un bouton pour la JSP : PB_FILTRER Date de crÃ©ation :
 	 * (28/11/11)
 	 * 
 	 */
@@ -893,10 +893,10 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (28/11/11)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (28/11/11)
 	 * 
 	 */
 	public boolean performPB_FILTRER(HttpServletRequest request) throws Exception {
@@ -909,7 +909,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 				.parseInt(getVAL_LB_ANNEE_SELECT()) : -1);
 		setCampagneCourante((CampagneEAE) getListeCampagneEAE().get(indiceCampagne));
 
-		// Recherche des eae de la campagne en fonction de l'état
+		// Recherche des eae de la campagne en fonction de l'etat
 		int indiceEtat = (Services.estNumerique(getVAL_LB_ETAT_SELECT()) ? Integer.parseInt(getVAL_LB_ETAT_SELECT())
 				: -1);
 		String etat = Const.CHAINE_VIDE;
@@ -1003,7 +1003,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_CALCULER Date de création :
+	 * Retourne le nom d'un bouton pour la JSP : PB_CALCULER Date de crÃ©ation :
 	 * (24/03/14)
 	 * 
 	 */
@@ -1026,7 +1026,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 				return false;
 			}
 
-			// "INF202","Calcul effectué."
+			// "INF202","Calcul effectue."
 			setMessage(MessageUtils.getMessage("INF502"));
 			return true;
 		} else {
@@ -1078,7 +1078,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_ACTION Date de
-	 * création : (05/09/11 11:39:24)
+	 * crÃ©ation : (05/09/11 11:39:24)
 	 * 
 	 */
 	public String getNOM_ST_ACTION() {
@@ -1086,8 +1086,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACTION Date de
-	 * création : (05/09/11 11:39:24)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_ACTION Date de
+	 * crÃ©ation : (05/09/11 11:39:24)
 	 * 
 	 */
 	public String getVAL_ST_ACTION() {
@@ -1095,14 +1095,14 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	}
 
 	/**
-	 * Getter du nom de l'écran (pour la gestion des droits)
+	 * Getter du nom de l'Ã©cran (pour la gestion des droits)
 	 */
 	public String getNomEcran() {
 		return "ECR-AVCT-CAMPAGNE-GESTION";
 	}
 
 	/**
-	 * Getter de la liste avec un lazy initialize : LB_ANNEE Date de création :
+	 * Getter de la liste avec un lazy initialize : LB_ANNEE Date de crÃ©ation :
 	 * (28/11/11)
 	 * 
 	 */
@@ -1113,7 +1113,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_ANNEE Date de création : (28/11/11)
+	 * Setter de la liste: LB_ANNEE Date de crÃ©ation : (28/11/11)
 	 * 
 	 */
 	private void setLB_ANNEE(String[] newLB_ANNEE) {
@@ -1121,7 +1121,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_ANNEE Date de création :
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_ANNEE Date de crÃ©ation :
 	 * (28/11/11)
 	 * 
 	 */
@@ -1130,8 +1130,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_ANNEE_SELECT Date de création : (28/11/11)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_ANNEE_SELECT Date de crÃ©ation : (28/11/11)
 	 * 
 	 */
 	public String getNOM_LB_ANNEE_SELECT() {
@@ -1139,8 +1139,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_ANNEE Date de création : (28/11/11 09:55:36)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_ANNEE Date de crÃ©ation : (28/11/11 09:55:36)
 	 * 
 	 */
 	public String[] getVAL_LB_ANNEE() {
@@ -1148,8 +1148,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_ANNEE Date de création : (28/11/11)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_ANNEE Date de crÃ©ation : (28/11/11)
 	 * 
 	 */
 	public String getVAL_LB_ANNEE_SELECT() {
@@ -1158,7 +1158,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_DIRECTION Date de
-	 * création : (21/11/11 09:55:36)
+	 * crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_ST_DIRECTION(int i) {
@@ -1166,8 +1166,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DIRECTION Date
-	 * de création : (21/11/11 09:55:36)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_DIRECTION Date
+	 * de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_ST_DIRECTION(int i) {
@@ -1176,7 +1176,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_AGENT Date de
-	 * création : (21/11/11 09:55:36)
+	 * crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_ST_AGENT(int i) {
@@ -1184,8 +1184,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_AGENT Date de
-	 * création : (21/11/11 09:55:36)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_AGENT Date de
+	 * crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_ST_AGENT(int i) {
@@ -1194,7 +1194,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_STATUT Date de
-	 * création : (21/11/11 09:55:36)
+	 * crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_ST_STATUT(int i) {
@@ -1202,8 +1202,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_STATUT Date de
-	 * création : (21/11/11 09:55:36)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_STATUT Date de
+	 * crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_ST_STATUT(int i) {
@@ -1211,7 +1211,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	}
 
 	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_SHD Date de création
+	 * Retourne pour la JSP le nom de la zone statique : ST_SHD Date de crÃ©ation
 	 * : (21/11/11 09:55:36)
 	 * 
 	 */
@@ -1220,8 +1220,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_SHD Date de
-	 * création : (21/11/11 09:55:36)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_SHD Date de
+	 * crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_ST_SHD(int i) {
@@ -1230,7 +1230,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_EVALUATEURS Date de
-	 * création : (21/11/11 09:55:36)
+	 * crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_ST_EVALUATEURS(int i) {
@@ -1238,8 +1238,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_EVALUATEURS
-	 * Date de création : (21/11/11 09:55:36)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_EVALUATEURS
+	 * Date de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_ST_EVALUATEURS(int i) {
@@ -1248,7 +1248,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_DELEGATAIRE Date de
-	 * création : (21/11/11 09:55:36)
+	 * crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_ST_DELEGATAIRE(int i) {
@@ -1256,8 +1256,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DELEGATAIRE
-	 * Date de création : (21/11/11 09:55:36)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_DELEGATAIRE
+	 * Date de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_ST_DELEGATAIRE(int i) {
@@ -1265,7 +1265,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	}
 
 	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_CAP Date de création
+	 * Retourne pour la JSP le nom de la zone statique : ST_CAP Date de crÃ©ation
 	 * : (21/11/11 09:55:36)
 	 * 
 	 */
@@ -1274,8 +1274,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_CAP Date de
-	 * création : (21/11/11 09:55:36)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_CAP Date de
+	 * crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_ST_CAP(int i) {
@@ -1284,7 +1284,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_AVIS_SHD Date de
-	 * création : (21/11/11 09:55:36)
+	 * crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_ST_AVIS_SHD(int i) {
@@ -1292,8 +1292,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_AVIS_SHD Date
-	 * de création : (21/11/11 09:55:36)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_AVIS_SHD Date
+	 * de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_ST_AVIS_SHD(int i) {
@@ -1302,7 +1302,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_EAE_JOINT Date de
-	 * création : (21/11/11 09:55:36)
+	 * crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_ST_EAE_JOINT(int i) {
@@ -1310,8 +1310,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_EAE_JOINT Date
-	 * de création : (21/11/11 09:55:36)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_EAE_JOINT Date
+	 * de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_ST_EAE_JOINT(int i) {
@@ -1320,7 +1320,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_CONTROLE Date de
-	 * création : (21/11/11 09:55:36)
+	 * crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_ST_CONTROLE(int i) {
@@ -1328,8 +1328,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_CONTROLE Date
-	 * de création : (21/11/11 09:55:36)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_CONTROLE Date
+	 * de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_ST_CONTROLE(int i) {
@@ -1338,7 +1338,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_ACTIONS_DEFINALISE
-	 * Date de création : (21/11/11 09:55:36)
+	 * Date de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_ST_ACTIONS_DEFINALISE(int i) {
@@ -1346,8 +1346,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
-	 * ST_ACTIONS_DEFINALISE Date de création : (21/11/11 09:55:36)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone :
+	 * ST_ACTIONS_DEFINALISE Date de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_ST_ACTIONS_DEFINALISE(int i) {
@@ -1356,7 +1356,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_ACTIONS_MAJ Date de
-	 * création : (21/11/11 09:55:36)
+	 * crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_ST_ACTIONS_MAJ(int i) {
@@ -1364,8 +1364,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACTIONS_MAJ
-	 * Date de création : (21/11/11 09:55:36)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_ACTIONS_MAJ
+	 * Date de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_ST_ACTIONS_MAJ(int i) {
@@ -1374,7 +1374,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_CONTROLE_PAR Date de
-	 * création : (21/11/11 09:55:36)
+	 * crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_ST_CONTROLE_PAR(int i) {
@@ -1382,8 +1382,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_CONTROLE_PAR
-	 * Date de création : (21/11/11 09:55:36)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_CONTROLE_PAR
+	 * Date de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_ST_CONTROLE_PAR(int i) {
@@ -1428,7 +1428,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_RECHERCHER_AGENT Date de
-	 * création : (02/08/11 09:42:00)
+	 * crÃ©ation : (02/08/11 09:42:00)
 	 * 
 	 */
 	public String getNOM_PB_RECHERCHER_AGENT(int i) {
@@ -1436,16 +1436,16 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (02/08/11 09:42:00)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (02/08/11 09:42:00)
 	 * 
 	 */
 	public boolean performPB_RECHERCHER_AGENT(HttpServletRequest request, int idEae) throws Exception {
 		setMessage(Const.CHAINE_VIDE);
 
-		// On met l'agent courant en var d'activité
+		// On met l'agent courant en var d'activitÃ©
 		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new Agent());
 
 		EAE eaeCourant = getEaeDao().chercherEAE(idEae);
@@ -1457,7 +1457,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMER_RECHERCHER_AGENT
-	 * Date de création : (13/07/11 09:49:02)
+	 * Date de crÃ©ation : (13/07/11 09:49:02)
 	 * 
 	 * 
 	 */
@@ -1467,17 +1467,17 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 
 	public boolean performPB_SUPPRIMER_RECHERCHER_AGENT(HttpServletRequest request, int idEae) throws Exception {
 		setMessage(Const.CHAINE_VIDE);
-		// On enlève l'agent selectionnée
+		// On enleve l'agent selectionnÃ©e
 		EAE eaeSelection = getEaeDao().chercherEAE(idEae);
 		eaeSelection.setIdDelegataire(null);
 		getEaeDao().modifierDelegataire(eaeSelection.getIdEae(), eaeSelection.getIdDelegataire());
-		// si EAE d'un détaché alors on repasse le statut a "NA"
+		// si EAE d'un dÃ©tachÃ© alors on repasse le statut a "NA"
 		EaeEvalue eval = getEaeEvalueDao().chercherEaeEvalue(eaeSelection.getIdEae());
 		if (eval.isAgentDetache()) {
 			eaeSelection.setEtat(EnumEtatEAE.NON_AFFECTE.getCode());
 			getEaeDao().modifierEtat(eaeSelection.getIdEae(), eaeSelection.getEtat());
 		}
-		// on réinitilise l'affichage
+		// on rÃ©initilise l'affichage
 		performPB_FILTRER(request);
 		return true;
 	}
@@ -1544,7 +1544,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	private void performCreerActivitesFichePostePrincipale(HttpServletRequest request, FichePoste fpPrincipale)
 			throws Exception {
 		if (fpPrincipale != null) {
-			// gère les activites
+			// gere les activites
 			// Recherche de tous les liens FicheEmploi / Activite
 			ArrayList<ActiviteFP> liens = getActiviteFPDao().listerActiviteFPAvecFP(fpPrincipale.getIdFichePoste());
 			ArrayList<Activite> listActFDP = getActiviteDao().listerActiviteAvecFP(liens);
@@ -1561,7 +1561,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 
 	private void performCreerActivitesFichePosteSecondaire(HttpServletRequest request, FichePoste fpSecondaire)
 			throws Exception {
-		// gère les activites
+		// gere les activites
 		if (fpSecondaire != null) {
 			// Recherche de tous les liens FicheEmploi / Activite
 			ArrayList<ActiviteFP> liens = getActiviteFPDao().listerActiviteFPAvecFP(fpSecondaire.getIdFichePoste());
@@ -1587,7 +1587,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 			// on supprime les lignes existantes si elles existent
 			try {
 				EaeFichePoste aSupp = getEaeFichePosteDao().chercherEaeFichePoste(eae.getIdEae(), false);
-				// on recupere les activites/competences liées
+				// on recupere les activites/competences liees
 				try {
 					ArrayList<EaeFDPActivite> listActi = getEaeFDPActiviteDao().listerEaeFDPActivite(
 							aSupp.getIdEaeFichePoste());
@@ -1742,7 +1742,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 				}
 			}
 
-			// on créer la ligne
+			// on crÃ©er la ligne
 			// on recupere l'id
 			Integer idCreer = getEaeFichePosteDao().getIdEaeFichePoste();
 			setIdCreerFichePosteSecondaire(idCreer);
@@ -1760,7 +1760,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 			// on supprime les lignes existantes si elles existent
 			try {
 				EaeFichePoste aSupp = getEaeFichePosteDao().chercherEaeFichePoste(eae.getIdEae(), false);
-				// on recupere les activites/competences liées
+				// on recupere les activites/competences liees
 				try {
 					ArrayList<EaeFDPActivite> listActi = getEaeFDPActiviteDao().listerEaeFDPActivite(
 							aSupp.getIdEaeFichePoste());
@@ -1794,7 +1794,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 			// on supprime les lignes existantes si elles existent
 			try {
 				fpModif = getEaeFichePosteDao().chercherEaeFichePoste(eae.getIdEae(), true);
-				// on recupere les activites/competence liées
+				// on recupere les activites/competence liees
 				try {
 					ArrayList<EaeFDPActivite> listActi = getEaeFDPActiviteDao().listerEaeFDPActivite(
 							fpModif.getIdEaeFichePoste());
@@ -1821,8 +1821,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 				try {
 					evalue = getEaeEvalueDao().chercherEaeEvalue(eae.getIdEae());
 				} catch (Exception e) {
-					// on ne fait rien, seule la date d'entrée dans la fonction
-					// ne sera pas renseignée.
+					// on ne fait rien, seule la date d'entrÃ©e dans la fonction
+					// ne sera pas renseignÃ©e.
 				}
 				fpModif.setIdEae(eae.getIdEae());
 				fpModif.setIdSirhFichePoste(fpPrincipale.getIdFichePoste());
@@ -1965,7 +1965,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 				}
 
 				if (modeCreation || fpModif.getIdEaeFichePoste() == null) {
-					// on créer la ligne
+					// on crÃ©er la ligne
 					// on recupere l'id
 					Integer idCreer = getEaeFichePosteDao().getIdEaeFichePoste();
 					setIdCreerFichePostePrimaire(idCreer);
@@ -2004,7 +2004,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 				getTransaction().traiterErreur();
 			}
 			if (sp.getDatfin() == null || sp.getDatfin().equals(Const.ZERO) || sp.getDatfin().equals(Const.DATE_NULL)) {
-				// on crée une ligne pour affectation
+				// on crÃ©e une ligne pour affectation
 				EaeParcoursPro parcours = new EaeParcoursPro();
 				parcours.setIdEAE(getEaeCourant().getIdEae());
 				String anneeDateDebSpmtsr = sp.getDatdeb().substring(0, 4);
@@ -2034,7 +2034,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 						(Integer.valueOf(sp.getDatfin()) + 1));
 				if (getTransaction().isErreur()) {
 					getTransaction().traiterErreur();
-					// on crée une ligne pour administration
+					// on crÃ©e une ligne pour administration
 					EaeParcoursPro parcours = new EaeParcoursPro();
 					parcours.setIdEAE(getEaeCourant().getIdEae());
 					String anneeDateDebSpmtsr = sp.getDatdeb().substring(0, 4);
@@ -2087,7 +2087,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 							dateSortie = Integer.valueOf(dateDebSpmtsr);
 						}
 					}
-					// on crée la ligne
+					// on crÃ©e la ligne
 					EaeParcoursPro parcours = new EaeParcoursPro();
 					parcours.setIdEAE(getEaeCourant().getIdEae());
 					String anneeDateDebSpmtsr = sp.getDatdeb().substring(0, 4);
@@ -2114,7 +2114,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 			AutreAdministration administration = getAutreAdministrationDao().chercherAutreAdministration(
 					admAgent.getIdAutreAdmin());
 			if (admAgent.getDateSortie() == null) {
-				// on crée une ligne pour administration
+				// on crÃ©e une ligne pour administration
 				EaeParcoursPro parcours = new EaeParcoursPro();
 				parcours.setIdEAE(getEaeCourant().getIdEae());
 				parcours.setDateDebut(admAgent.getDateEntree());
@@ -2139,7 +2139,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 							fin = true;
 						}
 					}
-					// on crée la ligne
+					// on crÃ©e la ligne
 					EaeParcoursPro parcours = new EaeParcoursPro();
 					parcours.setIdEAE(getEaeCourant().getIdEae());
 					parcours.setDateDebut(admAgent.getDateEntree());
@@ -2149,7 +2149,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 							parcours.getDateFin(), parcours.getLibelleParcoursPro());
 				} catch (Exception e) {
 
-					// on crée une ligne pour administration
+					// on crÃ©e une ligne pour administration
 					EaeParcoursPro parcours = new EaeParcoursPro();
 					parcours.setIdEAE(getEaeCourant().getIdEae());
 					parcours.setDateDebut(admAgent.getDateEntree());
@@ -2188,7 +2188,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 		// cas de la modif
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		EaeEvalue evalAModif = null;
-		// on cherche la ligen de l'EAE Evalué
+		// on cherche la ligen de l'EAE Evalue
 		try {
 			evalAModif = getEaeEvalueDao().chercherEaeEvalue(getEaeCourant().getIdEae());
 		} catch (Exception e) {
@@ -2273,12 +2273,12 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 					evalAModif.setDateEntreeFonctionnaire(dateCarriere);
 				}
 			}
-			// on regarde si la date de l'EAE precedent est différente alors on
-			// prend la date de l'EAE de l'année passée
+			// on regarde si la date de l'EAE precedent est differente alors on
+			// prend la date de l'EAE de l'annÃ©e passÃ©e
 			CampagneEAE campagneActuelle = getCampagneCourante();
 			CampagneEAE campagnePrec = getCampagneEAEDao().chercherCampagneEAEAnnee(campagneActuelle.getAnnee() - 1);
 			EAE eaeAnneePrec = getEaeDao().chercherEAEAgent(ag.getIdAgent(), campagnePrec.getIdCampagneEae());
-			// si on ne trouve pas d'EAE pour l'année precedente
+			// si on ne trouve pas d'EAE pour l'annÃ©e precedente
 			EaeEvalue ancienneValeur = null;
 			if (eaeAnneePrec != null) {
 				ancienneValeur = getEaeEvalueDao().chercherEaeEvalue(eaeAnneePrec.getIdEae());
@@ -2333,8 +2333,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 				}
 			}
 
-			// on regarde si la date de l'EAE precedent est différente alors on
-			// prend la date de l'EAE de l'année passée
+			// on regarde si la date de l'EAE precedent est differente alors on
+			// prend la date de l'EAE de l'annÃ©e passÃ©e
 			if (ancienneValeur != null) {
 				if (evalAModif.getDateEntreeAdministration() != null) {
 					if (ancienneValeur.getDateEntreeAdministration() != null
@@ -2487,7 +2487,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 					}
 				}
 			} catch (Exception e) {
-				// sinon, on cherche dans les détachés
+				// sinon, on cherche dans les dÃ©tachÃ©s
 				try {
 					AvancementDetaches avctDetache = getAvancementDetachesDao().chercherAvancementAvecAnneeEtAgent(
 							getCampagneCourante().getAnnee(), ag.getIdAgent());
@@ -2556,7 +2556,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 
 			evalAModif.setAgentDetache(agentAffecte);
 			if (modeCreation || evalAModif.getIdEaeEvalue() == null) {
-				// enfin on créer la ligne
+				// enfin on crÃ©er la ligne
 				getEaeEvalueDao().creerEaeEvalue(evalAModif.getIdEae(), evalAModif.getIdAgent(),
 						evalAModif.getDateEntreeService(), evalAModif.getDateEntreeCollectivite(),
 						evalAModif.getDateEntreeFonctionnaire(), evalAModif.getDateEntreeAdministration(),
@@ -2597,7 +2597,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	}
 
 	/**
-	 * Getter de la liste avec un lazy initialize : LB_ETAT Date de création :
+	 * Getter de la liste avec un lazy initialize : LB_ETAT Date de crÃ©ation :
 	 * (28/11/11)
 	 * 
 	 */
@@ -2608,7 +2608,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_ETAT Date de création : (28/11/11)
+	 * Setter de la liste: LB_ETAT Date de crÃ©ation : (28/11/11)
 	 * 
 	 */
 	private void setLB_ETAT(String[] newLB_ETAT) {
@@ -2616,7 +2616,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_ETAT Date de création :
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_ETAT Date de crÃ©ation :
 	 * (28/11/11)
 	 * 
 	 */
@@ -2625,8 +2625,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_ETAT_SELECT Date de création : (28/11/11)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_ETAT_SELECT Date de crÃ©ation : (28/11/11)
 	 * 
 	 */
 	public String getNOM_LB_ETAT_SELECT() {
@@ -2634,8 +2634,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_ETAT Date de création : (28/11/11 09:55:36)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_ETAT Date de crÃ©ation : (28/11/11 09:55:36)
 	 * 
 	 */
 	public String[] getVAL_LB_ETAT() {
@@ -2643,8 +2643,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_ETAT Date de création : (28/11/11)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_ETAT Date de crÃ©ation : (28/11/11)
 	 * 
 	 */
 	public String getVAL_LB_ETAT_SELECT() {
@@ -2662,7 +2662,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	}
 
 	/**
-	 * Getter de la liste avec un lazy initialize : LB_STATUT Date de création :
+	 * Getter de la liste avec un lazy initialize : LB_STATUT Date de crÃ©ation :
 	 * (28/11/11)
 	 * 
 	 */
@@ -2673,7 +2673,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_STATUT Date de création : (28/11/11)
+	 * Setter de la liste: LB_STATUT Date de crÃ©ation : (28/11/11)
 	 * 
 	 */
 	private void setLB_STATUT(String[] newLB_STATUT) {
@@ -2681,7 +2681,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_STATUT Date de création :
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_STATUT Date de crÃ©ation :
 	 * (28/11/11)
 	 * 
 	 */
@@ -2690,8 +2690,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_STATUT_SELECT Date de création : (28/11/11)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_STATUT_SELECT Date de crÃ©ation : (28/11/11)
 	 * 
 	 */
 	public String getNOM_LB_STATUT_SELECT() {
@@ -2699,8 +2699,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_STATUT Date de création : (28/11/11 09:55:36)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_STATUT Date de crÃ©ation : (28/11/11 09:55:36)
 	 * 
 	 */
 	public String[] getVAL_LB_STATUT() {
@@ -2708,8 +2708,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_STATUT Date de création : (28/11/11)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_STATUT Date de crÃ©ation : (28/11/11)
 	 * 
 	 */
 	public String getVAL_LB_STATUT_SELECT() {
@@ -2728,7 +2728,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_SERVICE Date de
-	 * création : (13/09/11 11:47:15)
+	 * crÃ©ation : (13/09/11 11:47:15)
 	 * 
 	 */
 	public String getNOM_EF_SERVICE() {
@@ -2736,8 +2736,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_SERVICE Date de création : (13/09/11 11:47:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_SERVICE Date de crÃ©ation : (13/09/11 11:47:15)
 	 * 
 	 */
 	public String getVAL_EF_SERVICE() {
@@ -2746,7 +2746,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMER_RECHERCHER_SERVICE
-	 * Date de création : (13/07/11 09:49:02)
+	 * Date de crÃ©ation : (13/07/11 09:49:02)
 	 * 
 	 * 
 	 */
@@ -2755,24 +2755,24 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (13/07/11 09:49:02)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (13/07/11 09:49:02)
 	 * 
 	 * 
 	 */
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (25/03/03 15:33:11)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (25/03/03 15:33:11)
 	 * 
 	 */
 	public boolean performPB_SUPPRIMER_RECHERCHER_SERVICE(HttpServletRequest request) throws Exception {
 		setMessage(Const.CHAINE_VIDE);
-		// On enlève le service selectionnée
+		// On enleve le service selectionnÃ©e
 		addZone(getNOM_ST_CODE_SERVICE(), Const.CHAINE_VIDE);
 		addZone(getNOM_EF_SERVICE(), Const.CHAINE_VIDE);
 		return true;
@@ -2780,7 +2780,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_CODE_SERVICE Date de
-	 * création : (13/09/11 08:45:29)
+	 * crÃ©ation : (13/09/11 08:45:29)
 	 * 
 	 */
 	public String getNOM_ST_CODE_SERVICE() {
@@ -2788,8 +2788,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_CODE_SERVICE
-	 * Date de création : (13/09/11 08:45:29)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_CODE_SERVICE
+	 * Date de crÃ©ation : (13/09/11 08:45:29)
 	 * 
 	 */
 	public String getVAL_ST_CODE_SERVICE() {
@@ -2806,7 +2806,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	}
 
 	/**
-	 * Met à jour la liste des services.
+	 * Met a jour la liste des services.
 	 * 
 	 * @param listeServices
 	 */
@@ -2815,7 +2815,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	}
 
 	/**
-	 * Retourne une hashTable de la hiérarchie des Service selon le code
+	 * Retourne une hashTable de la hierarchie des Service selon le code
 	 * Service.
 	 * 
 	 * @return hTree
@@ -2825,7 +2825,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	}
 
 	/**
-	 * Getter de la liste avec un lazy initialize : LB_CAP Date de création :
+	 * Getter de la liste avec un lazy initialize : LB_CAP Date de crÃ©ation :
 	 * (28/11/11)
 	 * 
 	 */
@@ -2836,7 +2836,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_CAP Date de création : (28/11/11)
+	 * Setter de la liste: LB_CAP Date de crÃ©ation : (28/11/11)
 	 * 
 	 */
 	private void setLB_CAP(String[] newLB_CAP) {
@@ -2844,7 +2844,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_CAP Date de création :
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_CAP Date de crÃ©ation :
 	 * (28/11/11)
 	 * 
 	 */
@@ -2853,8 +2853,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_CAP_SELECT Date de création : (28/11/11)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_CAP_SELECT Date de crÃ©ation : (28/11/11)
 	 * 
 	 */
 	public String getNOM_LB_CAP_SELECT() {
@@ -2862,8 +2862,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_CAP Date de création : (28/11/11 09:55:36)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_CAP Date de crÃ©ation : (28/11/11 09:55:36)
 	 * 
 	 */
 	public String[] getVAL_LB_CAP() {
@@ -2871,8 +2871,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_CAP Date de création : (28/11/11)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_CAP Date de crÃ©ation : (28/11/11)
 	 * 
 	 */
 	public String getVAL_LB_CAP_SELECT() {
@@ -2994,8 +2994,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la case à cocher sélectionnée pour la JSP :
-	 * CK_VALID_EAE Date de création : (21/11/11 09:55:36)
+	 * Retourne le nom de la case Ã  cocher sÃ©lectionnÃ©e pour la JSP :
+	 * CK_VALID_EAE Date de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_CK_VALID_EAE(int i) {
@@ -3003,8 +3003,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur de la case à cocher à afficher par la JSP pour la case
-	 * à cocher : CK_VALID_DRH Date de création : (21/11/11 09:55:36)
+	 * Retourne la valeur de la case Ã  cocher Ã  afficher par la JSP pour la case
+	 * a cocher : CK_VALID_DRH Date de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_CK_VALID_EAE(int i) {
@@ -3013,7 +3013,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_PB_CREER_EAE Date de
-	 * création : (21/11/11 09:55:36)
+	 * crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_PB_VALID_EAE(int i) {
@@ -3021,10 +3021,10 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (21/11/11 09:55:36)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public boolean performPB_VALID_EAE(HttpServletRequest request, int idEae) throws Exception {
@@ -3040,31 +3040,31 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 			boolean agentAsCompteAD = radiConsu.asAgentCompteAD(Integer.valueOf(evalue.getIdAgent().toString()
 					.substring(3, evalue.getIdAgent().toString().length())));
 
-			// si l'agent n'a pas de compte AD alors on ne fait pas la mise à
+			// si l'agent n'a pas de compte AD alors on ne fait pas la mise e
 			// jour des droits
 			if (agentAsCompteAD) {
 
-				// RG-EAE-6 --> mis au moment où on controle un EAE.
-				// on cherche le document concerné
+				// RG-EAE-6 --> mis au moment ou on controle un EAE.
+				// on cherche le document concernÃ©
 				try {
 					String docFinalise = getEaeFinalisationDao().chercherDernierDocumentFinalise(idEae);
-					// on fait appel au WS de Sharepoint pour mettre à jour les
-					// droits de l'évalué sur le document.
+					// on fait appel au WS de Sharepoint pour mettre a jour les
+					// droits de l'evalue sur le document.
 					SirhKiosqueWSConsumer t = new SirhKiosqueWSConsumer();
 					KiosqueDto retour = t.setDroitEvalueEAE(docFinalise, false);
 					if (retour.getStatus().equals("ko")) {
 						// "ERR214",
-						// "Une erreur est survenue dans la mise à jour des droits des fichiers EAEs. Cet EAE ne peut être contrôlé. Merci de contacter le responsable du projet.");
+						// "Une erreur est survenue dans la mise Ã  jour des droits des fichiers EAEs. Cet EAE ne peut Ãªtre contrÃ´le. Merci de contacter le responsable du projet.");
 						getTransaction().declarerErreur(MessageUtils.getMessage("ERR214"));
-						logger.error("Pb mise à jour Droit EAE sur idEAe = " + getEaeCourant().getIdEae()
+						logger.error("Pb mise Ã  jour Droit EAE sur idEAe = " + getEaeCourant().getIdEae()
 								+ " et idEvalue = " + evalue.getIdAgent() + ", erreur :" + retour.getMessage());
 						return false;
 					}
 				} catch (SirhKiosqueWSConsumerException e) {
 					// "ERR214",
-					// "Une erreur est survenue dans la mise à jour des droits des fichiers EAEs. Cet EAE ne peut être contrôlé. Merci de contacter le responsable du projet.");
+					// "Une erreur est survenue dans la mise Ã  jour des droits des fichiers EAEs. Cet EAE ne peut Ãªtre contrÃ´le. Merci de contacter le responsable du projet.");
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR214"));
-					logger.error("Pb mise à jour Droit EAE sur idEAe = " + getEaeCourant().getIdEae()
+					logger.error("Pb mise Ã  jour Droit EAE sur idEAe = " + getEaeCourant().getIdEae()
 							+ " et idEvalue = " + evalue.getIdAgent() + ", erreur :" + e.getMessage());
 					return false;
 				}
@@ -3072,7 +3072,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 
 			// on cherche pour chaque EAE de la campagne si il y a une ligne
 			// dans
-			// Avanacement pourla meme année
+			// Avanacement pourla meme annÃ©e
 			MotifAvancement motifRevalo = getMotifAvancementDao().chercherMotifAvancementByLib("REVALORISATION");
 			MotifAvancement motifAD = getMotifAvancementDao().chercherMotifAvancementByLib("AVANCEMENT DIFFERENCIE");
 			MotifAvancement motifPromo = getMotifAvancementDao().chercherMotifAvancementByLib("PROMOTION");
@@ -3100,13 +3100,13 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 										getEaeCourant().getIdEae());
 								// #14791 bug sur le champ AVIS_SHD de SIRH.AVCT_FONCT
 								if (Integer.valueOf(typeAvct).equals(motifRevalo.getIdMotifAvct())) {
-									avct.setAvisShd(eval.getAvisRevalorisation() == 1 ? "Favorable" : "Défavorable");
+									avct.setAvisShd(eval.getAvisRevalorisation() == 1 ? "Favorable" : "DÃ©favorable");
 								} else if (Integer.valueOf(typeAvct).equals(motifAD.getIdMotifAvct())) {
 									avct.setAvisShd(eval.getPropositionAvancement());
 								} else if (Integer.valueOf(typeAvct).equals(motifTitu.getIdMotifAvct())) {
 									avct.setAvisShd("MOY");
 								} else if (Integer.valueOf(typeAvct).equals(motifPromo.getIdMotifAvct())) {
-									avct.setAvisShd(eval.getAvisChangementClasse() == 1 ? "Favorable" : "Défavorable");
+									avct.setAvisShd(eval.getAvisChangementClasse() == 1 ? "Favorable" : "DÃ©favorable");
 								} else {
 									avct.setAvisShd(null);
 								}
@@ -3143,15 +3143,15 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 				if (getTransaction().isErreur())
 					return false;
 
-				// tout s'est bien passé
+				// tout s'est bien passÃ©
 				commitTransaction();
 			} catch (Exception e) {
 				// "INF500",
-				// "Aucun avancement n'a été trouvé pour cet EAE. Le motif et l'avis SHD n'ont pu être mis à jour.");
+				// "Aucun avancement n'a Ã©tÃ© trouvÃ© pour cet EAE. Le motif et l'avis SHD n'ont pu Ãªtre mis a jour.");
 				setMessage(MessageUtils.getMessage("INF500"));
 			}
 
-			// on met à jour le statut de l'EAE
+			// on met a jour le statut de l'EAE
 			getEaeCourant().setEtat(EnumEtatEAE.CONTROLE.getCode());
 			getEaeCourant().setDateControle(new Date());
 			getEaeCourant().setHeureControle(heureAction);
@@ -3166,7 +3166,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_PB_CREER_EAE Date de
-	 * création : (21/11/11 09:55:36)
+	 * crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_PB_DEVALID_EAE(int i) {
@@ -3174,10 +3174,10 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (21/11/11 09:55:36)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public boolean performPB_DEVALID_EAE(HttpServletRequest request, int idEae) throws Exception {
@@ -3193,31 +3193,31 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 		boolean agentAsCompteAD = radiConsu.asAgentCompteAD(Integer.valueOf(evalue.getIdAgent().toString()
 				.substring(3, evalue.getIdAgent().toString().length())));
 
-		// si l'agent est hors VDN alors on ne fait pas la mise à jour des
+		// si l'agent est hors VDN alors on ne fait pas la mise Ã  jour des
 		// droits
 		if (agentAsCompteAD) {
-			// RG-EAE-6 --> mis au moment où on controle un EAE.
-			// on cherche le document concerné
+			// RG-EAE-6 --> mis au moment ou on controle un EAE.
+			// on cherche le document concernÃ©
 			try {
 				String docFinalise = getEaeFinalisationDao().chercherDernierDocumentFinalise(idEae);
-				// on fait appel au WS de Sharepoint pour mettre à jour les
+				// on fait appel au WS de Sharepoint pour mettre a jour les
 				// droits
-				// de l'évalué sur le document.
+				// de l'evalue sur le document.
 				SirhKiosqueWSConsumer t = new SirhKiosqueWSConsumer();
 				KiosqueDto retour = t.setDroitEvalueEAE(docFinalise, true);
 				if (retour.getStatus().equals("ko")) {
 					// "ERR215",
-					// "Une erreur est survenue dans la mise à jour des droits des fichiers EAEs.Cet EAE ne peut être dé-contrôlé. Merci de contacter le responsable du projet.");
+					// "Une erreur est survenue dans la mise Ã  jour des droits des fichiers EAEs.Cet EAE ne peut Ãªtre dÃ©-contrÃ´le. Merci de contacter le responsable du projet.");
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR215"));
-					logger.error("Pb mise à jour Droit EAE sur idEAe = " + getEaeCourant().getIdEae()
+					logger.error("Pb mise Ã  jour Droit EAE sur idEAe = " + getEaeCourant().getIdEae()
 							+ " et idEvalue = " + evalue.getIdAgent() + ", erreur :" + retour.getMessage());
 					return false;
 				}
 			} catch (SirhKiosqueWSConsumerException e) {
 				// "ERR215",
-				// "Une erreur est survenue dans la mise à jour des droits des fichiers EAEs.Cet EAE ne peut être dé-contrôlé. Merci de contacter le responsable du projet.");
+				// "Une erreur est survenue dans la mise Ã  jour des droits des fichiers EAEs.Cet EAE ne peut Ãªtre dÃ©-contrÃ´le. Merci de contacter le responsable du projet.");
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR215"));
-				logger.error("Pb mise à jour Droit EAE sur idEAe = " + getEaeCourant().getIdEae() + " et idEvalue = "
+				logger.error("Pb mise Ã  jour Droit EAE sur idEAe = " + getEaeCourant().getIdEae() + " et idEvalue = "
 						+ evalue.getIdAgent() + ", erreur :" + e.getMessage());
 				return false;
 			}
@@ -3247,15 +3247,15 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 					avct.getHeureVerifArrImpr(), avct.isRegularisation(), avct.isAgentVdn(), avct.getIdCap(),
 					avct.getCodePa());
 
-			// tout s'est bien passé
+			// tout s'est bien passÃ©
 			commitTransaction();
 		} catch (Exception e) {
 			// "INF500",
-			// "Aucun avancement n'a été trouvé pour cet EAE. Le motif et l'avis SHD 'nont pu être mis à jour.");
+			// "Aucun avancement n'a Ã©tÃ© trouvÃ© pour cet EAE. Le motif et l'avis SHD 'nont pu Ãªtre mis a jour.");
 			setMessage(MessageUtils.getMessage("INF500"));
 		}
 
-		// on met à jour le statut de l'EAE
+		// on met a jour le statut de l'EAE
 		getEaeCourant().setEtat(EnumEtatEAE.FINALISE.getCode());
 		getEaeCourant().setDateControle(new Date());
 		getEaeCourant().setHeureControle(heureAction);
@@ -3269,16 +3269,16 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (21/11/11 09:55:36)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public boolean perform_METTRE_A_JOUR_EAE(HttpServletRequest request, EAE eaeChoisi) throws Exception {
 		setEaeCourant(eaeChoisi);
 
-		// on met à jour les tables utiles
+		// on met a jour les tables utiles
 		// RG-EAE-41
 		EaeEvalue evalue = getEaeEvalueDao().chercherEaeEvalue(getEaeCourant().getIdEae());
 		Agent ag = getAgentDao().chercherAgent(evalue.getIdAgent());
@@ -3294,12 +3294,12 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 		} catch (Exception e) {
 
 		}
-		// on met les données dans EAE-evalué
+		// on met les donnÃ©es dans EAE-evalue
 		performCreerEvalue(request, ag, false, evalue.isAgentDetache(), false);
-		// on met les données dans EAE-FichePoste
+		// on met les donnÃ©es dans EAE-FichePoste
 		performCreerFichePostePrincipale(request, fpPrincipale, getEaeCourant(), false, false);
 		performCreerFichePosteSecondaire(request, fpSecondaire, getEaeCourant());
-		// on met les données dans EAE-FDP-Activites
+		// on met les donnÃ©es dans EAE-FDP-Activites
 		performCreerActivitesFichePostePrincipale(request, fpPrincipale);
 		performCreerActivitesFichePosteSecondaire(request, fpSecondaire);
 		performCreerCompetencesFichePostePrincipale(request, fpPrincipale);
@@ -3311,7 +3311,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 			EaeDiplome dip = listeEaeDiplome.get(j);
 			getEaeDiplomeDao().supprimerEaeDiplome(dip.getIdEaeDiplome());
 		}
-		// on met les données dans EAE-Diplome
+		// on met les donnÃ©es dans EAE-Diplome
 		performCreerDiplome(request, ag);
 
 		// on supprime les parcours pro
@@ -3321,7 +3321,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 			EaeParcoursPro parcours = listeEaeParcoursPro.get(j);
 			getEaeParcoursProDao().supprimerEaeParcoursPro(parcours.getIdEaeParcoursPro());
 		}
-		// on met les données dans EAE-Parcours-Pro
+		// on met les donnÃ©es dans EAE-Parcours-Pro
 		performCreerParcoursPro(request, ag);
 
 		// on supprime les formations
@@ -3330,19 +3330,19 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 			EaeFormation form = listeEaeFormation.get(j);
 			getEaeFormationDao().supprimerEaeFormation(form.getIdEaeFormation());
 		}
-		// on met les données dans EAE-Formation
+		// on met les donnÃ©es dans EAE-Formation
 		performCreerFormation(request, ag);
 
-		// on met à jour le champ CAP
+		// on met a jour le champ CAP
 		// on cherche si il y a une ligne dans les avancements
 		EAE eae = getEaeCourant();
 		try {
 			AvancementFonctionnaires avct = getAvancementFonctionnairesDao()
 					.chercherAvancementFonctionnaireAvecAnneeEtAgent(getCampagneCourante().getAnnee(),
 							evalue.getIdAgent());
-			// on a trouvé une ligne dans avancement
+			// on a trouvÃ© une ligne dans avancement
 			// on regarde l'etat de la ligne
-			// si 'valid DRH' alors on met CAP à true;
+			// si 'valid DRH' alors on met CAP a true;
 			if (avct.getEtat().equals(EnumEtatAvancement.SGC.getValue())) {
 				// si l'avancement est de type TITU alors on met false #11510
 				if (avct.getIdMotifAvct() != null && avct.getIdMotifAvct().toString().equals("6")) {
@@ -3367,7 +3367,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_PB_CREER_EAE Date de
-	 * création : (21/11/11 09:55:36)
+	 * crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_PB_DEFINALISE_EAE(int i) {
@@ -3375,10 +3375,10 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (21/11/11 09:55:36)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public boolean performPB_DEFINALISE_EAE(HttpServletRequest request, int idEae) throws Exception {
@@ -3403,7 +3403,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_SUPP_EAE Date de création :
+	 * Retourne le nom d'un bouton pour la JSP : PB_SUPP_EAE Date de crÃ©ation :
 	 * (29/09/11 10:03:38)
 	 * 
 	 */
@@ -3412,10 +3412,10 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (29/09/11 10:03:38)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (29/09/11 10:03:38)
 	 * 
 	 */
 	public boolean performPB_SUPP_EAE(HttpServletRequest request, int idEae) throws Exception {
@@ -3434,7 +3434,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 		}
 		// on supprime le delegataire
 		getEaeDao().modifierDelegataire(eaeSelection.getIdEae(), null);
-		// on met à jour le statut de l'EAE
+		// on met a jour le statut de l'EAE
 		eaeSelection.setEtat(EnumEtatEAE.SUPPRIME.getCode());
 		getEaeDao().modifierEtat(eaeSelection.getIdEae(), eaeSelection.getEtat());
 
@@ -3444,7 +3444,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_DESUPP_EAE Date de création
+	 * Retourne le nom d'un bouton pour la JSP : PB_DESUPP_EAE Date de crÃ©ation
 	 * : (29/09/11 10:03:38)
 	 * 
 	 */
@@ -3453,10 +3453,10 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (29/09/11 10:03:38)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (29/09/11 10:03:38)
 	 * 
 	 */
 	public boolean performPB_DESUPP_EAE(HttpServletRequest request, int idEae) throws Exception {
@@ -3466,7 +3466,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 
 		EAE eaeSelection = getEaeDao().chercherEAE(idEae);
-		// on met à jour le statut de l'EAE
+		// on met a jour le statut de l'EAE
 		eaeSelection.setEtat(EnumEtatEAE.NON_AFFECTE.getCode());
 		getEaeDao().modifierEtat(eaeSelection.getIdEae(), eaeSelection.getEtat());
 
@@ -3477,7 +3477,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_AGENT_EVALUATEUR
-	 * Date de création : (02/08/11 09:40:42)
+	 * Date de crÃ©ation : (02/08/11 09:40:42)
 	 * 
 	 */
 	public String getNOM_ST_AGENT_EVALUATEUR() {
@@ -3485,8 +3485,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
-	 * ST_AGENT_EVALUATEUR Date de création : (02/08/11 09:40:42)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone :
+	 * ST_AGENT_EVALUATEUR Date de crÃ©ation : (02/08/11 09:40:42)
 	 * 
 	 */
 	public String getVAL_ST_AGENT_EVALUATEUR() {
@@ -3495,7 +3495,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_RECHERCHER_AGENT_EVALUATEUR
-	 * Date de création : (02/08/11 09:42:00)
+	 * Date de crÃ©ation : (02/08/11 09:42:00)
 	 * 
 	 */
 	public String getNOM_PB_RECHERCHER_AGENT_EVALUATEUR() {
@@ -3503,16 +3503,16 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (02/08/11 09:42:00)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (02/08/11 09:42:00)
 	 * 
 	 */
 	public boolean performPB_RECHERCHER_AGENT_EVALUATEUR(HttpServletRequest request) throws Exception {
 		setMessage(Const.CHAINE_VIDE);
 
-		// On met l'agent courant en var d'activité
+		// On met l'agent courant en var d'activitÃ©
 		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new Agent());
 
 		setStatut(STATUT_RECHERCHER_AGENT_EVALUATEUR, true);
@@ -3521,7 +3521,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP :
-	 * PB_SUPPRIMER_RECHERCHER_AGENT_EVALUATEUR Date de création : (13/07/11
+	 * PB_SUPPRIMER_RECHERCHER_AGENT_EVALUATEUR Date de crÃ©ation : (13/07/11
 	 * 09:49:02)
 	 * 
 	 * 
@@ -3531,22 +3531,22 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (25/03/03 15:33:11)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (25/03/03 15:33:11)
 	 * 
 	 */
 	public boolean performPB_SUPPRIMER_RECHERCHER_AGENT_EVALUATEUR(HttpServletRequest request) throws Exception {
 		setMessage(Const.CHAINE_VIDE);
-		// On enlève l'agent selectionnée
+		// On enleve l'agent selectionnÃ©e
 		addZone(getNOM_ST_AGENT_EVALUATEUR(), Const.CHAINE_VIDE);
 		return true;
 	}
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_AGENT_EVALUE Date de
-	 * création : (02/08/11 09:40:42)
+	 * crÃ©ation : (02/08/11 09:40:42)
 	 * 
 	 */
 	public String getNOM_ST_AGENT_EVALUE() {
@@ -3554,8 +3554,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_AGENT_EVALUE
-	 * Date de création : (02/08/11 09:40:42)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_AGENT_EVALUE
+	 * Date de crÃ©ation : (02/08/11 09:40:42)
 	 * 
 	 */
 	public String getVAL_ST_AGENT_EVALUE() {
@@ -3564,7 +3564,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_RECHERCHER_AGENT_EVALUE Date
-	 * de création : (02/08/11 09:42:00)
+	 * de crÃ©ation : (02/08/11 09:42:00)
 	 * 
 	 */
 	public String getNOM_PB_RECHERCHER_AGENT_EVALUE() {
@@ -3572,16 +3572,16 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (02/08/11 09:42:00)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (02/08/11 09:42:00)
 	 * 
 	 */
 	public boolean performPB_RECHERCHER_AGENT_EVALUE(HttpServletRequest request) throws Exception {
 		setMessage(Const.CHAINE_VIDE);
 
-		// On met l'agent courant en var d'activité
+		// On met l'agent courant en var d'activitÃ©
 		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new Agent());
 
 		setStatut(STATUT_RECHERCHER_AGENT_EVALUE, true);
@@ -3590,7 +3590,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP :
-	 * PB_SUPPRIMER_RECHERCHER_AGENT_EVALUE Date de création : (13/07/11
+	 * PB_SUPPRIMER_RECHERCHER_AGENT_EVALUE Date de crÃ©ation : (13/07/11
 	 * 09:49:02)
 	 * 
 	 * 
@@ -3600,22 +3600,22 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (25/03/03 15:33:11)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (25/03/03 15:33:11)
 	 * 
 	 */
 	public boolean performPB_SUPPRIMER_RECHERCHER_AGENT_EVALUE(HttpServletRequest request) throws Exception {
 		setMessage(Const.CHAINE_VIDE);
-		// On enlève l'agent selectionnée
+		// On enleve l'agent selectionnÃ©e
 		addZone(getNOM_ST_AGENT_EVALUE(), Const.CHAINE_VIDE);
 		return true;
 	}
 
 	/**
-	 * Retourne le nom de la case à cocher sélectionnée pour la JSP :
-	 * CK_VALID_MAJ Date de création : (21/11/11 09:55:36)
+	 * Retourne le nom de la case Ã  cocher sÃ©lectionnÃ©e pour la JSP :
+	 * CK_VALID_MAJ Date de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_CK_VALID_MAJ(int i) {
@@ -3623,8 +3623,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur de la case à cocher à afficher par la JSP pour la case
-	 * à cocher : CK_VALID_MAJ Date de création : (21/11/11 09:55:36)
+	 * Retourne la valeur de la case Ã  cocher Ã  afficher par la JSP pour la case
+	 * a cocher : CK_VALID_MAJ Date de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_CK_VALID_MAJ(int i) {
@@ -3633,7 +3633,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_METTRE_A_JOUR_EAE Date de
-	 * création : (21/11/11 09:55:36)
+	 * crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_PB_METTRE_A_JOUR_EAE() {
@@ -3641,21 +3641,21 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (21/11/11 09:55:36)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public boolean performPB_METTRE_A_JOUR_EAE(HttpServletRequest request) throws Exception {
 		setMessage(Const.CHAINE_VIDE);
-		// on recupere les lignes qui sont cochées pour mettre à jour
+		// on recupere les lignes qui sont cochÃ©es pour mettre a jour
 		int nbEae = 0;
 		for (int j = 0; j < getListeEAE().size(); j++) {
-			// on recupère la ligne concernée
+			// on recupere la ligne concernÃ©e
 			EAE eae = (EAE) getListeEAE().get(j);
 			Integer i = eae.getIdEae();
-			// si la colonne mettre à jour est cochée
+			// si la colonne mettre a jour est cochÃ©e
 			if (getVAL_CK_VALID_MAJ(i).equals(getCHECKED_ON())) {
 				setEaeCourant(eae);
 				perform_METTRE_A_JOUR_EAE(request, eae);
@@ -3667,7 +3667,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 		// pour reinitiliser l'affichage du tableau.
 		performPB_FILTRER(request);
 
-		// "INF203", "@ EAE(s) ont été mis à jour.");
+		// "INF203", "@ EAE(s) ont Ã©tÃ© mis a jour.");
 		setMessage(MessageUtils.getMessage("INF203", String.valueOf(nbEae)));
 		return true;
 	}
@@ -3682,7 +3682,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_VISUALISATION_DOC Date de
-	 * création : (29/09/11 10:03:38)
+	 * crÃ©ation : (29/09/11 10:03:38)
 	 * 
 	 */
 	public String getNOM_PB_CONSULTER_DOC(int i) {
@@ -3690,10 +3690,10 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (29/09/11 10:03:38)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (29/09/11 10:03:38)
 	 * 
 	 */
 	public boolean performPB_CONSULTER_DOC(HttpServletRequest request, int idEae) throws Exception {
@@ -3703,7 +3703,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 		String repertoireStockage = (String) ServletAgent.getMesParametres().get("URL_SHAREPOINT_GED");
 		logger.info("Rep stock : " + repertoireStockage);
 
-		// Récup de l'EAE courant
+		// RÃ©cup de l'EAE courant
 		EAE eae = getEaeDao().chercherEAE(idEae);
 		String finalisation = getEaeFinalisationDao().chercherDernierDocumentFinalise(eae.getIdEae());
 		// on affiche le document
@@ -3954,7 +3954,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 
 	private void initialiseAffichageListeCampagneTask(HttpServletRequest request) {
 
-		// on recupere l'année choisie
+		// on recupere l'annÃ©e choisie
 		int indiceCampagne = (Services.estNumerique(getVAL_LB_ANNEE_SELECT()) ? Integer
 				.parseInt(getVAL_LB_ANNEE_SELECT()) : -1);
 		CampagneEAE camp = getListeCampagneEAE().get(indiceCampagne);
@@ -3970,7 +3970,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 			try {
 				Agent agentTask = getAgentDao().chercherAgent(task.getIdAgent());
 				addZone(getNOM_ST_AGENT_TASK(i), agentTask.getNomAgent() + " " + agentTask.getPrenomAgent());
-				addZone(getNOM_ST_STATUT_TASK(i), task.getTaskStatus() == null ? " En cours" : "Terminé");
+				addZone(getNOM_ST_STATUT_TASK(i), task.getTaskStatus() == null ? " En cours" : "TerminÃ©");
 				addZone(getNOM_ST_ERREUR_TASK(i),
 						task.getTaskStatus() != null ? task.getTaskStatus().length() > 100 ? task.getTaskStatus()
 								.substring(0, 99) : task.getTaskStatus() : "");

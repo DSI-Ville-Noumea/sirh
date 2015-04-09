@@ -57,7 +57,7 @@ import org.springframework.context.ApplicationContext;
 import com.oreilly.servlet.MultipartRequest;
 
 /**
- * Process OeAGENTActesDonneesPerso Date de création : (11/10/11 08:38:48)
+ * Process OeAGENTActesDonneesPerso Date de crÃ©ation : (11/10/11 08:38:48)
  * 
  */
 public class OeAGENTActesDonneesPerso extends BasicProcess {
@@ -86,7 +86,7 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 	private ArrayList<FichePoste> listeFichePoste;
 
 	public String ACTION_SUPPRESSION = "Suppression d'un document";
-	public String ACTION_CREATION = "Choix du fichier à ajouter";
+	public String ACTION_CREATION = "Choix du fichier a ajouter";
 
 	public boolean isImporting = false;
 	public MultipartRequest multi = null;
@@ -105,10 +105,10 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 	private AffectationDao affectationDao;
 
 	/**
-	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones Ã  afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
-	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
-	 * addZone(getNOMxxx, String); Date de création : (11/10/11 08:38:48)
+	 * doivent avoir les Fields PUBLIC Utilisation de la mÃ©thode
+	 * addZone(getNOMxxx, String); Date de crÃ©ation : (11/10/11 08:38:48)
 	 * 
 	 */
 	public void initialiseZones(HttpServletRequest request) throws Exception {
@@ -125,10 +125,10 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 			isImporting = false;
 		}
 
-		// Vérification des droits d'accès.
+		// VÃ©rification des droits d'acces.
 		if (MairieUtils.estInterdit(request, getNomEcran())) {
 			// "ERR190",
-			// "Opération impossible. Vous ne disposez pas des droits d'accès à cette option."
+			// "Operation impossible. Vous ne disposez pas des droits d'acces a cette option."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
@@ -291,7 +291,7 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 	}
 
 	/**
-	 * Constructeur du process OeAGENTActesDonneesPerso. Date de création :
+	 * Constructeur du process OeAGENTActesDonneesPerso. Date de crÃ©ation :
 	 * (11/10/11 08:38:48)
 	 * 
 	 */
@@ -300,7 +300,7 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_UPLOADER Date de création :
+	 * Retourne le nom d'un bouton pour la JSP : PB_UPLOADER Date de crÃ©ation :
 	 * (11/10/11 08:38:48)
 	 * 
 	 */
@@ -330,7 +330,7 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 			result &= false;
 		}
 
-		// si le type de document est contrat alors le contrat concerné est
+		// si le type de document est contrat alors le contrat concernÃ© est
 		// obligatoire
 		int indiceTypeDoc = (Services.estNumerique(getVAL_LB_TYPE_DOCUMENT_SELECT()) ? Integer
 				.parseInt(getVAL_LB_TYPE_DOCUMENT_SELECT()) : -1);
@@ -376,10 +376,10 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (11/10/11 08:38:48)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (11/10/11 08:38:48)
 	 * 
 	 */
 	public boolean performPB_VALIDER(HttpServletRequest request) throws Exception {
@@ -387,10 +387,10 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 		if (multi.getFile(getNOM_EF_LIENDOCUMENT()) != null) {
 			fichierUpload = multi.getFile(getNOM_EF_LIENDOCUMENT());
 		}
-		// Contrôle des champs
+		// Controle des champs
 		if (!performControlerSaisie(request, true))
 			return false;
-		// on recupere le contrat concerné par l'ajout
+		// on recupere le contrat concernÃ© par l'ajout
 		int indice = (Services.estNumerique(getVAL_LB_TYPE_DOCUMENT_SELECT()) ? Integer
 				.parseInt(getVAL_LB_TYPE_DOCUMENT_SELECT()) : -1);
 		String nomType = ((TypeDocument) getListeTypeDocument().get(indice - 1)).getLibTypeDocument();
@@ -415,7 +415,7 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 					&& !multi.getParameter(getNOM_LB_TYPE_FICHIER_AFFECTATION()).equals("0")) {
 				int indiceAffectation = (Services.estNumerique(multi.getParameter(getNOM_LB_AFFECTATION())) ? Integer
 						.parseInt(multi.getParameter(getNOM_LB_AFFECTATION())) : -1);
-				// recup du document à imprimer
+				// recup du document a imprimer
 				nomDocumentNS = EnumImpressionAffectation.getCodeImpressionAffectation(Integer.parseInt(multi
 						.getParameter(getNOM_LB_TYPE_FICHIER_AFFECTATION())));
 				aff = ((Affectation) getListeAffectation().get(indiceAffectation));
@@ -434,13 +434,13 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 			ajoutPhoto = true;
 		}
 		if (getZone(getNOM_ST_WARNING()).equals(Const.CHAINE_VIDE)) {
-			// on controle si il y a dejà un fichier pour ce contrat
+			// on controle si il y a deja un fichier pour ce contrat
 			if (ajoutContrat) {
 				if (!performControlerFichier(request, "C_" + c.getIdContrat())) {
 					// alors on affiche un message pour prevenir que l'on va
 					// ecraser le fichier precedent
 					addZone(getNOM_ST_WARNING(),
-							"Attention un fichier existe déjà pour ce contrat. Etes-vous sûr de vouloir écraser la version précédente ?");
+							"Attention un fichier existe dÃ©jÃ  pour ce contrat. Etes-vous sÃ»r de vouloir Ã©craser la version prÃ©cÃ©dente ?");
 					return true;
 				}
 			} else if (ajoutAffectation) {
@@ -451,7 +451,7 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 					// alors on affiche un message pour prevenir que l'on va
 					// ecraser le fichier precedent
 					addZone(getNOM_ST_WARNING(),
-							"Attention un fichier du même type existe déjà pour cette affectation. Etes-vous sûr de vouloir écraser la version précédente ?");
+							"Attention un fichier du mÃªme type existe dÃ©jÃ  pour cette affectation. Etes-vous sÃ»r de vouloir Ã©craser la version prÃ©cÃ©dente ?");
 					return true;
 				}
 			} else if (ajoutFichePoste) {
@@ -459,7 +459,7 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 					// alors on affiche un message pour prevenir que l'on va
 					// ecraser le fichier precedent
 					addZone(getNOM_ST_WARNING(),
-							"Attention un fichier du même type existe déjà pour cette fiche de poste. Etes-vous sûr de vouloir écraser la version précédente ?");
+							"Attention un fichier du mÃªme type existe dÃ©jÃ  pour cette fiche de poste. Etes-vous sÃ»r de vouloir Ã©craser la version prÃ©cÃ©dente ?");
 					return true;
 				}
 			} else if (ajoutPhoto) {
@@ -467,7 +467,7 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 					// alors on affiche un message pour prevenir que l'on va
 					// ecraser le fichier precedent
 					addZone(getNOM_ST_WARNING(),
-							"Attention une photo existe déjà pour cet agent. Etes-vous sûr de vouloir écraser la version précédente ?");
+							"Attention une photo existe dÃ©jÃ  pour cet agent. Etes-vous sÃ»r de vouloir Ã©craser la version prÃ©cÃ©dente ?");
 					return true;
 				}
 
@@ -479,7 +479,7 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 
 		} else {
 			if (ajoutContrat) {
-				// on supprime le document existant dans la base de données
+				// on supprime le document existant dans la base de donnÃ©es
 				Document d = getDocumentDao().chercherDocumentByContainsNom("C_" + c.getIdContrat());
 				DocumentAgent l = getLienDocumentAgentDao().chercherDocumentAgent(
 						getAgentCourant().getIdAgent(), d.getIdDocument());
@@ -491,7 +491,7 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 				getLienDocumentAgentDao().supprimerDocumentAgent(l.getIdAgent(), l.getIdDocument());
 				getDocumentDao().supprimerDocument(d.getIdDocument());
 			} else if (ajoutAffectation) {
-				// on supprime le document existant dans la base de données
+				// on supprime le document existant dans la base de donnÃ©es
 				String nomSansExtension = nomDocumentNS.substring(0, nomDocumentNS.indexOf("."));
 				Document d = getDocumentDao()
 						.chercherDocumentByContainsNom(
@@ -507,7 +507,7 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 				getLienDocumentAgentDao().supprimerDocumentAgent(l.getIdAgent(), l.getIdDocument());
 				getDocumentDao().supprimerDocument(d.getIdDocument());
 			} else if (ajoutFichePoste) {
-				// on supprime le document existant dans la base de données
+				// on supprime le document existant dans la base de donnÃ©es
 				Document d = getDocumentDao().chercherDocumentByContainsNom("FP_" + fichePoste.getIdFichePoste());
 				DocumentAgent l = getLienDocumentAgentDao().chercherDocumentAgent(
 						getAgentCourant().getIdAgent(), d.getIdDocument());
@@ -519,7 +519,7 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 				getLienDocumentAgentDao().supprimerDocumentAgent(l.getIdAgent(), l.getIdDocument());
 				getDocumentDao().supprimerDocument(d.getIdDocument());
 			} else if (ajoutPhoto) {
-				// on supprime le document existant dans la base de données
+				// on supprime le document existant dans la base de donnÃ©es
 				Document d = getDocumentDao().chercherDocumentByContainsNom("PHO_" + getAgentCourant().getIdAgent());
 				DocumentAgent l = getLienDocumentAgentDao().chercherDocumentAgent(
 						getAgentCourant().getIdAgent(), d.getIdDocument());
@@ -546,7 +546,7 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 	private boolean creeDocument(HttpServletRequest request, boolean ajoutContrat, Contrat c, boolean ajoutAffectation,
 			Affectation aff, String nomDocumentNS, boolean ajoutFichePoste, FichePoste fp, boolean ajoutPhoto)
 			throws Exception {
-		// on crée l'entrée dans la table
+		// on crÃ©e l'entrÃ©e dans la table
 		setDocumentCourant(new Document());
 		// on recupere le fichier mis dans le repertoire temporaire
 		if (fichierUpload == null) {
@@ -554,7 +554,7 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 			return false;
 		}
 
-		// on recupère le type de document
+		// on recupere le type de document
 		int indiceTypeDoc = (Services.estNumerique(getVAL_LB_TYPE_DOCUMENT_SELECT()) ? Integer
 				.parseInt(getVAL_LB_TYPE_DOCUMENT_SELECT()) : -1);
 		String codTypeDoc = ((TypeDocument) getListeTypeDocument().get(indiceTypeDoc - 1)).getCodTypeDocument();
@@ -586,7 +586,7 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 		if (!upload)
 			return false;
 
-		// on crée le document en base de données
+		// on crÃ©e le document en base de donnÃ©es
 		// String repPartage = (String)
 		// ServletAgent.getMesParametres().get("REPERTOIRE_ACTES");
 		getDocumentCourant().setLienDocument(codTypeDoc + "/" + nom);
@@ -610,7 +610,7 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 		if (getTransaction().isErreur())
 			return false;
 
-		// Tout s'est bien passé
+		// Tout s'est bien passÃ©
 		commitTransaction();
 		addZone(getNOM_EF_COMMENTAIRE(), Const.CHAINE_VIDE);
 		addZone(getNOM_LB_TYPE_DOCUMENT_SELECT(), Const.CHAINE_VIDE);
@@ -629,7 +629,7 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 
 	private boolean performControlerFichier(HttpServletRequest request, String nomFichier) {
 		boolean result = true;
-		// on regarde dans la liste des document si il y a une entrée avec ce
+		// on regarde dans la liste des document si il y a une entrÃ©e avec ce
 		// nom de contrat
 		for (Iterator<Document> iter = getListeDocuments().iterator(); iter.hasNext();) {
 			Document doc = (Document) iter.next();
@@ -717,7 +717,7 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 	}
 
 	private void verifieRepertoire(String codTypeDoc) {
-		// on verifie déjà que le repertoire source existe
+		// on verifie dÃ©jÃ  que le repertoire source existe
 		String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ACTES");
 		File dossierParent = new File(repPartage);
 		if (!dossierParent.exists()) {
@@ -731,7 +731,7 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_LIENDOCUMENT Date
-	 * de création : (11/10/11 08:38:48)
+	 * de crÃ©ation : (11/10/11 08:38:48)
 	 * 
 	 */
 	public String getNOM_EF_LIENDOCUMENT() {
@@ -739,8 +739,8 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_LIENDOCUMENT Date de création : (11/10/11 08:38:48)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_LIENDOCUMENT Date de crÃ©ation : (11/10/11 08:38:48)
 	 * 
 	 */
 	public String getVAL_EF_LIENDOCUMENT() {
@@ -763,7 +763,7 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 
 	/**
 	 * @param focus
-	 *            focus à définir.
+	 *            focus Ã  dÃ©finir.
 	 */
 	public void setFocus(String focus) {
 		this.focus = focus;
@@ -779,7 +779,7 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 	}
 
 	/**
-	 * Met à jour l'agent courant
+	 * Met a jour l'agent courant
 	 * 
 	 * @param agentCourant
 	 */
@@ -797,7 +797,7 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 	}
 
 	/**
-	 * Met à jour le doc en cours.
+	 * Met a jour le doc en cours.
 	 * 
 	 * @param documentCourant
 	 *            Nouvelle document en cours
@@ -807,7 +807,7 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 	}
 
 	/**
-	 * Insérez la description de la méthode ici. Date de création : (27/03/2003
+	 * InsÃ©rez la description de la mÃ©thode ici. Date de crÃ©ation : (27/03/2003
 	 * 10:55:12)
 	 * 
 	 * @param newListeDocuments
@@ -910,7 +910,7 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 
 	private boolean initialiseDocumentSuppression(HttpServletRequest request) throws Exception {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-		// Récup du Diplome courant
+		// RÃ©cup du Diplome courant
 		Document d = getDocumentCourant();
 
 		TypeDocument td = (TypeDocument) getTypeDocumentDao().chercherTypeDocument(d.getIdTypeDocument());
@@ -933,7 +933,7 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 	}
 
 	/**
-	 * Met à jour le doc en cours.
+	 * Met a jour le doc en cours.
 	 * 
 	 * @param documentCourant
 	 *            Nouvelle document en cours
@@ -997,7 +997,7 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 			logger.error("Erreur suppression physique du fichier : " + e.toString());
 		}
 
-		// tout s'est bien passé
+		// tout s'est bien passÃ©
 		commitTransaction();
 		// Alim zones
 		addZone(getNOM_ST_NOM_DOC(), Const.CHAINE_VIDE);
@@ -1059,8 +1059,8 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 	}
 
 	/**
-	 * Méthode appelée par la servlet qui aiguille le traitement : en fonction
-	 * du bouton de la JSP Date de création : (11/10/11 08:38:48)
+	 * mÃ©thode appelee par la servlet qui aiguille le traitement : en fonction
+	 * du bouton de la JSP Date de crÃ©ation : (11/10/11 08:38:48)
 	 * 
 	 */
 	public boolean recupererStatut(HttpServletRequest request) throws Exception {
@@ -1121,14 +1121,14 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 				}
 			}
 		}
-		// Si TAG INPUT non géré par le process
+		// Si TAG INPUT non gÃ©rÃ© par le process
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
 
 	/**
-	 * Retourne le nom de la JSP du process Zone à utiliser dans un champ caché
-	 * dans chaque formulaire de la JSP. Date de création : (17/10/11 13:46:24)
+	 * Retourne le nom de la JSP du process Zone a utiliser dans un champ cache
+	 * dans chaque formulaire de la JSP. Date de crÃ©ation : (17/10/11 13:46:24)
 	 * 
 	 */
 	public String getJSP() {
@@ -1136,7 +1136,7 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_CREER Date de création :
+	 * Retourne le nom d'un bouton pour la JSP : PB_CREER Date de crÃ©ation :
 	 * (17/10/11 13:46:25)
 	 * 
 	 */
@@ -1145,10 +1145,10 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (17/10/11 13:46:25)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (17/10/11 13:46:25)
 	 * 
 	 */
 	public boolean performPB_CREER(HttpServletRequest request) throws Exception {
@@ -1170,17 +1170,17 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de l'ecran utilisé par la gestion des droits
+	 * Retourne le nom de l'ecran utilise par la gestion des droits
 	 */
 	public String getNomEcran() {
 		return "ECR-AG-DP-ACTES";
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (16/03/11 09:31:44)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (16/03/11 09:31:44)
 	 * 
 	 * 
 	 */
@@ -1190,15 +1190,15 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 		if (indiceTypeDoc != -1 && indiceTypeDoc != 0) {
 			String nomType = ((TypeDocument) getListeTypeDocument().get(indiceTypeDoc - 1)).getLibTypeDocument();
 			if (nomType.toUpperCase().equals("CONTRAT")) {
-				// on affiche une liste deroulante des différents contrats
+				// on affiche une liste deroulante des differents contrats
 				// disponibles
 				addZone(getNOM_ST_CHOIX_TYPE_DOC(), "CONTRAT");
 			} else if (nomType.toUpperCase().equals("NOTE DE SERVICE")) {
-				// on affiche une liste deroulante des différents affectations
+				// on affiche une liste deroulante des differents affectations
 				// disponibles
 				addZone(getNOM_ST_CHOIX_TYPE_DOC(), "NOTE DE SERVICE");
 			} else if (nomType.toUpperCase().equals("FICHE DE POSTE")) {
-				// on affiche une liste deroulante des différents FP disponibles
+				// on affiche une liste deroulante des differents FP disponibles
 				addZone(getNOM_ST_CHOIX_TYPE_DOC(), "FICHE DE POSTE");
 			} else {
 				addZone(getNOM_ST_CHOIX_TYPE_DOC(), Const.CHAINE_VIDE);
@@ -1261,8 +1261,8 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_WARNING Date de création : (16/05/11 09:36:20)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_WARNING Date de crÃ©ation : (16/05/11 09:36:20)
 	 * 
 	 */
 	public String getVAL_ST_WARNING() {
@@ -1370,7 +1370,7 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 	}
 
 	/**
-	 * Méthode qui teste si un paramètre se trouve dans le formulaire
+	 * mÃ©thode qui teste si un parametre se trouve dans le formulaire
 	 */
 	public boolean testerParametre(HttpServletRequest request, String param) {
 		return (request.getParameter(param) != null || request.getParameter(param + ".x") != null || (multi != null && multi
@@ -1401,7 +1401,7 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_CHANGER_VUE Date de création
+	 * Retourne le nom d'un bouton pour la JSP : PB_CHANGER_VUE Date de crÃ©ation
 	 * : (04/07/11 13:57:35)
 	 * 
 	 */
@@ -1410,14 +1410,14 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (04/07/11 13:57:35)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (04/07/11 13:57:35)
 	 * 
 	 */
 	public boolean performPB_CHANGER_VUE(HttpServletRequest request) throws Exception {
-		// Mise à jour de la liste des compétences
+		// Mise Ã  jour de la liste des compÃ©tences
 		if (getVAL_RG_VUE().equals(getNOM_RB_VUE_AUTRE()))
 			setVueCourant("Autre");
 		if (getVAL_RG_VUE().equals(getNOM_RB_VUE_SAUVEGARDE()))
@@ -1430,8 +1430,8 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom du groupe de radio boutons coché pour la JSP : RG_VUE
-	 * Date de création : (01/07/11 10:39:25)
+	 * Retourne le nom du groupe de radio boutons cochÃ© pour la JSP : RG_VUE
+	 * Date de crÃ©ation : (01/07/11 10:39:25)
 	 * 
 	 */
 	public String getNOM_RG_VUE() {
@@ -1439,8 +1439,8 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur du radio bouton (RB_) coché dans la JSP : RG_VUE Date
-	 * de création : (01/07/11 10:39:25)
+	 * Retourne la valeur du radio bouton (RB_) cochÃ© dans la JSP : RG_VUE Date
+	 * de crÃ©ation : (01/07/11 10:39:25)
 	 * 
 	 */
 	public String getVAL_RG_VUE() {
@@ -1449,7 +1449,7 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 
 	/**
 	 * Retourne le nom du radio bouton pour la JSP : RB_VUE_AUTRE Date de
-	 * création : (01/07/11 10:39:25)
+	 * crÃ©ation : (01/07/11 10:39:25)
 	 * 
 	 */
 	public String getNOM_RB_VUE_AUTRE() {
@@ -1458,7 +1458,7 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 
 	/**
 	 * Retourne le nom du radio bouton pour la JSP : RB_VUE_SAUVEGARDE Date de
-	 * création : (01/07/11 10:39:25)
+	 * crÃ©ation : (01/07/11 10:39:25)
 	 * 
 	 */
 	public String getNOM_RB_VUE_SAUVEGARDE() {
@@ -1475,7 +1475,7 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_NOM_DOC Date de
-	 * création : (18/08/11 10:21:15)
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_NOM_DOC(int i) {
@@ -1483,8 +1483,8 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_NOM_DOC Date
-	 * de création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_NOM_DOC Date
+	 * de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_NOM_DOC(int i) {
@@ -1493,7 +1493,7 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_TYPE_DOC Date de
-	 * création : (18/08/11 10:21:15)
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_TYPE_DOC(int i) {
@@ -1501,8 +1501,8 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_TYPE_DOC Date
-	 * de création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_TYPE_DOC Date
+	 * de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_TYPE_DOC(int i) {
@@ -1511,7 +1511,7 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_DATE_DOC Date de
-	 * création : (18/08/11 10:21:15)
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_DATE_DOC(int i) {
@@ -1519,8 +1519,8 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE_DOC Date
-	 * de création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_DATE_DOC Date
+	 * de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_DATE_DOC(int i) {
@@ -1529,7 +1529,7 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_COMMENTAIRE Date de
-	 * création : (18/08/11 10:21:15)
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_COMMENTAIRE(int i) {
@@ -1537,8 +1537,8 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_COMMENTAIRE
-	 * Date de création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_COMMENTAIRE
+	 * Date de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_COMMENTAIRE(int i) {
@@ -1547,7 +1547,7 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_VISUALISATION Date de
-	 * création : (29/09/11 10:03:38)
+	 * crÃ©ation : (29/09/11 10:03:38)
 	 * 
 	 */
 	public String getNOM_PB_CONSULTER(int i) {
@@ -1555,10 +1555,10 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (29/09/11 10:03:38)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (29/09/11 10:03:38)
 	 * 
 	 */
 	public boolean performPB_CONSULTER(HttpServletRequest request, int indiceEltAConsulter) throws Exception {
@@ -1574,7 +1574,7 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 		String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_LECTURE");
 		logger.info("Rep stock : " + repertoireStockage);
 
-		// Récup du document courant
+		// RÃ©cup du document courant
 		Document d = (Document) getListeDocuments().get(indiceEltAConsulter);
 		// on affiche le document
 		logger.info("Lien doc : " + d.getLienDocument());
@@ -1585,7 +1585,7 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMMER Date de création
+	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMMER Date de crÃ©ation
 	 * : (05/09/11 11:31:37)
 	 * 
 	 */
@@ -1594,10 +1594,10 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (05/09/11 11:31:37)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (05/09/11 11:31:37)
 	 * 
 	 */
 	public boolean performPB_SUPPRIMER(HttpServletRequest request, int indiceEltASuprimer) throws Exception {
@@ -1605,7 +1605,7 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 
-		// Récup du Diplome courant
+		// RÃ©cup du Diplome courant
 		Document d = (Document) getListeDocuments().get(indiceEltASuprimer);
 		setDocumentCourant(d);
 

@@ -24,7 +24,7 @@ import nc.mairie.utils.VariablesActivite;
 import org.springframework.context.ApplicationContext;
 
 /**
- * Process OePOSTEFPSelection Date de création : (22/07/11 16:01:21)
+ * Process OePOSTEFPSelection Date de crÃ©ation : (22/07/11 16:01:21)
  * 
  */
 public class OePOSTEFPSelection extends BasicProcess {
@@ -48,10 +48,10 @@ public class OePOSTEFPSelection extends BasicProcess {
 	private AgentDao agentDao;
 
 	/**
-	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones Ã  afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
-	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
-	 * addZone(getNOMxxx, String); Date de création : (22/07/11 16:01:21)
+	 * doivent avoir les Fields PUBLIC Utilisation de la mÃ©thode
+	 * addZone(getNOMxxx, String); Date de crÃ©ation : (22/07/11 16:01:21)
 	 * 
 	 */
 	public void initialiseZones(HttpServletRequest request) throws Exception {
@@ -122,7 +122,7 @@ public class OePOSTEFPSelection extends BasicProcess {
 	}
 
 	/**
-	 * Constructeur du process OePOSTEFPSelection. Date de création : (22/07/11
+	 * Constructeur du process OePOSTEFPSelection. Date de crÃ©ation : (22/07/11
 	 * 16:01:21)
 	 * 
 	 */
@@ -131,7 +131,7 @@ public class OePOSTEFPSelection extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER Date de création :
+	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER Date de crÃ©ation :
 	 * (22/07/11 16:01:21)
 	 * 
 	 */
@@ -140,10 +140,10 @@ public class OePOSTEFPSelection extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (22/07/11 16:01:21)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (22/07/11 16:01:21)
 	 * 
 	 */
 	public boolean performPB_ANNULER(HttpServletRequest request) throws Exception {
@@ -153,7 +153,7 @@ public class OePOSTEFPSelection extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_RECHERCHER Date de création
+	 * Retourne le nom d'un bouton pour la JSP : PB_RECHERCHER Date de crÃ©ation
 	 * : (22/07/11 16:01:21)
 	 * 
 	 */
@@ -162,7 +162,7 @@ public class OePOSTEFPSelection extends BasicProcess {
 	}
 
 	/**
-	 * Rempli la liste des fiches de poste trouvées
+	 * Rempli la liste des fiches de poste trouvÃ©es
 	 */
 	private boolean fillList(ArrayList<FichePoste> aListe) throws Exception {
 		// Affectation de la liste
@@ -205,7 +205,7 @@ public class OePOSTEFPSelection extends BasicProcess {
 							|| !getStatutFPDao().chercherStatutFP(fp.getIdStatutFp()).getLibStatutFp()
 									.equals(EnumStatutFichePoste.GELEE.getLibLong())) {
 						// "ERR087",
-						// "Cette fiche de poste n'est pas 'Validée'  ou 'Gelée'. Elle ne peut pas être affectée à un agent."
+						// "Cette fiche de poste n'est pas 'ValidÃ©e'  ou 'Gelee'. Elle ne peut pas Ãªtre affectÃ©e a un agent."
 						setStatut(STATUT_MEME_PROCESS, false, MessageUtils.getMessage("ERR087"));
 						return false;
 					}
@@ -240,7 +240,7 @@ public class OePOSTEFPSelection extends BasicProcess {
 		ArrayList<FichePoste> aListe = new ArrayList<FichePoste>();
 
 		if (isRechercheAffectation()) {
-			// Si la zone est vide alors on prend toutes les FP non affectées
+			// Si la zone est vide alors on prend toutes les FP non affectÃ©es
 			if (getVAL_EF_NUM_FICHE_POSTE().length() == 0) {
 				aListe = getFichePosteDao().listerFichePosteValideesouGeleeNonAffectees();
 			} else {
@@ -320,10 +320,10 @@ public class OePOSTEFPSelection extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (22/07/11 16:01:21)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (22/07/11 16:01:21)
 	 * 
 	 */
 	public boolean performPB_RECHERCHER(HttpServletRequest request) throws Exception {
@@ -352,7 +352,7 @@ public class OePOSTEFPSelection extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_NUM_FICHE_POSTE
-	 * Date de création : (22/07/11 16:01:21)
+	 * Date de crÃ©ation : (22/07/11 16:01:21)
 	 * 
 	 */
 	public String getNOM_EF_NUM_FICHE_POSTE() {
@@ -360,8 +360,8 @@ public class OePOSTEFPSelection extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_NUM_FICHE_POSTE Date de création : (22/07/11 16:01:21)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_NUM_FICHE_POSTE Date de crÃ©ation : (22/07/11 16:01:21)
 	 * 
 	 */
 	public String getVAL_EF_NUM_FICHE_POSTE() {
@@ -384,7 +384,7 @@ public class OePOSTEFPSelection extends BasicProcess {
 
 	/**
 	 * @param focus
-	 *            focus à définir.
+	 *            focus Ã  dÃ©finir.
 	 */
 	public void setFocus(String focus) {
 		this.focus = focus;
@@ -402,7 +402,7 @@ public class OePOSTEFPSelection extends BasicProcess {
 	}
 
 	/**
-	 * Met à jour la liste des fiches de poste.
+	 * Met a jour la liste des fiches de poste.
 	 * 
 	 * @param fichePoste
 	 *            la liste des fiches de poste
@@ -412,8 +412,8 @@ public class OePOSTEFPSelection extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom du groupe de radio boutons coché pour la JSP :
-	 * RG_TYPE_RECHERCHE Date de création : (02/08/11 08:51:46)
+	 * Retourne le nom du groupe de radio boutons cochÃ© pour la JSP :
+	 * RG_TYPE_RECHERCHE Date de crÃ©ation : (02/08/11 08:51:46)
 	 * 
 	 */
 	public String getNOM_RG_TYPE_RECHERCHE() {
@@ -421,8 +421,8 @@ public class OePOSTEFPSelection extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur du radio bouton (RB_) coché dans la JSP :
-	 * RG_TYPE_RECHERCHE Date de création : (02/08/11 08:51:46)
+	 * Retourne la valeur du radio bouton (RB_) cochÃ© dans la JSP :
+	 * RG_TYPE_RECHERCHE Date de crÃ©ation : (02/08/11 08:51:46)
 	 * 
 	 */
 	public String getVAL_RG_TYPE_RECHERCHE() {
@@ -431,7 +431,7 @@ public class OePOSTEFPSelection extends BasicProcess {
 
 	/**
 	 * Retourne le nom du radio bouton pour la JSP : RB_TYPE_AGENT Date de
-	 * création : (02/08/11 08:51:46)
+	 * crÃ©ation : (02/08/11 08:51:46)
 	 * 
 	 */
 	public String getNOM_RB_TYPE_AGENT() {
@@ -440,7 +440,7 @@ public class OePOSTEFPSelection extends BasicProcess {
 
 	/**
 	 * Retourne le nom du radio bouton pour la JSP : RB_TYPE_NUMERO Date de
-	 * création : (02/08/11 08:51:46)
+	 * crÃ©ation : (02/08/11 08:51:46)
 	 * 
 	 */
 	public String getNOM_RB_TYPE_NUMERO() {
@@ -449,7 +449,7 @@ public class OePOSTEFPSelection extends BasicProcess {
 
 	/**
 	 * Retourne le nom du radio bouton pour la JSP : RB_TYPE_SERVICE Date de
-	 * création : (02/08/11 08:51:46)
+	 * crÃ©ation : (02/08/11 08:51:46)
 	 * 
 	 */
 	public String getNOM_RB_TYPE_SERVICE() {
@@ -466,7 +466,7 @@ public class OePOSTEFPSelection extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_AGENT Date de
-	 * création : (02/08/11 09:40:42)
+	 * crÃ©ation : (02/08/11 09:40:42)
 	 * 
 	 */
 	public String getNOM_ST_AGENT() {
@@ -474,8 +474,8 @@ public class OePOSTEFPSelection extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_AGENT Date de
-	 * création : (02/08/11 09:40:42)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_AGENT Date de
+	 * crÃ©ation : (02/08/11 09:40:42)
 	 * 
 	 */
 	public String getVAL_ST_AGENT() {
@@ -484,7 +484,7 @@ public class OePOSTEFPSelection extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_SERVICE Date de
-	 * création : (02/08/11 09:40:42)
+	 * crÃ©ation : (02/08/11 09:40:42)
 	 * 
 	 */
 	public String getNOM_ST_SERVICE() {
@@ -492,8 +492,8 @@ public class OePOSTEFPSelection extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_SERVICE Date
-	 * de création : (02/08/11 09:40:42)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_SERVICE Date
+	 * de crÃ©ation : (02/08/11 09:40:42)
 	 * 
 	 */
 	public String getVAL_ST_SERVICE() {
@@ -502,7 +502,7 @@ public class OePOSTEFPSelection extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_RECHERCHER_AGENT Date de
-	 * création : (02/08/11 09:42:00)
+	 * crÃ©ation : (02/08/11 09:42:00)
 	 * 
 	 */
 	public String getNOM_PB_RECHERCHER_AGENT() {
@@ -510,15 +510,15 @@ public class OePOSTEFPSelection extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (02/08/11 09:42:00)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (02/08/11 09:42:00)
 	 * 
 	 */
 	public boolean performPB_RECHERCHER_AGENT(HttpServletRequest request) throws Exception {
 
-		// On met l'agent courant en var d'activité
+		// On met l'agent courant en var d'activitÃ©
 		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new Agent());
 
 		setStatut(STATUT_RECHERCHER_AGENT, true);
@@ -526,8 +526,8 @@ public class OePOSTEFPSelection extends BasicProcess {
 	}
 
 	/**
-	 * Méthode appelée par la servlet qui aiguille le traitement : en fonction
-	 * du bouton de la JSP Date de création : (22/07/11 16:01:21)
+	 * mÃ©thode appelee par la servlet qui aiguille le traitement : en fonction
+	 * du bouton de la JSP Date de crÃ©ation : (22/07/11 16:01:21)
 	 * 
 	 */
 	public boolean recupererStatut(HttpServletRequest request) throws Exception {
@@ -558,14 +558,14 @@ public class OePOSTEFPSelection extends BasicProcess {
 			}
 
 		}
-		// Si TAG INPUT non géré par le process
+		// Si TAG INPUT non gÃ©rÃ© par le process
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
 
 	/**
-	 * Retourne le nom de la JSP du process Zone à utiliser dans un champ caché
-	 * dans chaque formulaire de la JSP. Date de création : (02/08/11 09:43:30)
+	 * Retourne le nom de la JSP du process Zone a utiliser dans un champ cache
+	 * dans chaque formulaire de la JSP. Date de crÃ©ation : (02/08/11 09:43:30)
 	 * 
 	 */
 	public String getJSP() {
@@ -573,7 +573,7 @@ public class OePOSTEFPSelection extends BasicProcess {
 	}
 
 	/**
-	 * Met à jour le service
+	 * Met a jour le service
 	 * 
 	 * @param service
 	 *            Nouveau service
@@ -583,7 +583,7 @@ public class OePOSTEFPSelection extends BasicProcess {
 	}
 
 	/**
-	 * Getter du booléen de recherche de FP pour affectation.
+	 * Getter du booleen de recherche de FP pour affectation.
 	 * 
 	 * @return rechercheAffectation
 	 */
@@ -592,7 +592,7 @@ public class OePOSTEFPSelection extends BasicProcess {
 	}
 
 	/**
-	 * Setter du booléen de recherche de FP pour affectation.
+	 * Setter du booleen de recherche de FP pour affectation.
 	 * 
 	 * @param newRechercheAffectation
 	 */
@@ -601,7 +601,7 @@ public class OePOSTEFPSelection extends BasicProcess {
 	}
 
 	/**
-	 * Getter du booléen de rechercher avancée de FP.
+	 * Getter du booleen de rechercher avancee de FP.
 	 * 
 	 * @return advancedSearch
 	 */
@@ -610,7 +610,7 @@ public class OePOSTEFPSelection extends BasicProcess {
 	}
 
 	/**
-	 * Setter du booléen de recherche avancée de FP.
+	 * Setter du booleen de recherche avancee de FP.
 	 * 
 	 * @param advancedSearch
 	 */
@@ -637,7 +637,7 @@ public class OePOSTEFPSelection extends BasicProcess {
 	}
 
 	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_NUM Date de création
+	 * Retourne pour la JSP le nom de la zone statique : ST_NUM Date de crÃ©ation
 	 * : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -646,8 +646,8 @@ public class OePOSTEFPSelection extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_NUM Date de
-	 * création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_NUM Date de
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_NUM(int i) {
@@ -656,7 +656,7 @@ public class OePOSTEFPSelection extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_TITRE Date de
-	 * création : (18/08/11 10:21:15)
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_TITRE(int i) {
@@ -664,8 +664,8 @@ public class OePOSTEFPSelection extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_TITRE Date de
-	 * création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_TITRE Date de
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_TITRE(int i) {
@@ -674,7 +674,7 @@ public class OePOSTEFPSelection extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_AGENT Date de
-	 * création : (18/08/11 10:21:15)
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_AGENT(int i) {
@@ -682,8 +682,8 @@ public class OePOSTEFPSelection extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_AGENT Date de
-	 * création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_AGENT Date de
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_AGENT(int i) {
@@ -691,7 +691,7 @@ public class OePOSTEFPSelection extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER Date de création :
+	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER Date de crÃ©ation :
 	 * (22/07/11 16:01:21)
 	 * 
 	 */
@@ -700,15 +700,15 @@ public class OePOSTEFPSelection extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (22/07/11 16:01:21)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (22/07/11 16:01:21)
 	 * 
 	 */
 	public boolean performPB_VALIDER(HttpServletRequest request, int elemSelection) throws Exception {
 
-		// Récup de la fiche de poste sélectionnée
+		// RÃ©cup de la fiche de poste sÃ©lectionnÃ©e
 		FichePoste fp = (FichePoste) getListeFichePoste().get(elemSelection);
 
 		// Alimentation de la variable fichePoste

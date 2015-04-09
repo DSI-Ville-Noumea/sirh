@@ -1,5 +1,6 @@
-<!-- Sample JSP file -->
+<%@ page contentType="text/html; charset=UTF-8" %> 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- Sample JSP file -->
 <%@page import="nc.mairie.utils.MairieUtils"%>
 <%@page import="nc.mairie.enums.EnumTypeDroit"%>
 <HTML>
@@ -15,13 +16,13 @@
 <SCRIPT language="javascript" src="js/GestionMenu.js"></SCRIPT>
 <SCRIPT language="JavaScript">
 
-//afin de sélectionner un élément dans une liste
+//afin de sÃ©lectionner un Ã©lÃ©ment dans une liste
 function executeBouton(nom)
 {
 document.formu.elements[nom].click();
 }
 
-// afin de mettre le focus sur une zone précise
+// afin de mettre le focus sur une zone prÃ©cise
 function setfocus(nom)
 {
 if (document.formu.elements[nom] != null)
@@ -50,7 +51,7 @@ document.formu.elements[nom].focus();
 			<table>
 				<tr>
 					<td>
-						<span class="sigp2Mandatory" style="width:60px;margin-right:10px">Collectivité :</span>
+						<span class="sigp2Mandatory" style="width:60px;margin-right:10px">CollectivitÃ© :</span>
 					</td>
 					<td>
 						<SELECT disabled="disabled" class="sigp2-saisie" name="<%= process.getNOM_LB_COLLECTIVITE() %>" style="width:200px;">
@@ -71,7 +72,7 @@ document.formu.elements[nom].focus();
 						</span>
 					</td>
 					<td width="60px;" align="left">
-						<span class="sigp2Mandatory">Civilité :</span>
+						<span class="sigp2Mandatory">CivilitÃ© :</span>
 					</td>
 					<td width="90px;" align="left">
 						<SELECT onchange='executeBouton("<%=process.getNOM_PB_CIVILITE() %>")' <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> class="sigp2-saisie" style="width:50px;" name="<%= process.getNOM_LB_CIVILITE() %>">
@@ -79,7 +80,7 @@ document.formu.elements[nom].focus();
 						</SELECT>
 					</td>
 					<td width="90px;" align="left">
-						<span class="sigp2Mandatory">Prénom :</span>
+						<span class="sigp2Mandatory">PrÃ©nom :</span>
 					</td>
 					<td width="190px;">
 						<INPUT class="sigp2-saisie" size="30" maxlength="50" type="text" name="<%= process.getNOM_EF_PRENOM() %>" value="<%= process.getVAL_EF_PRENOM() %>" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>>
@@ -100,7 +101,7 @@ document.formu.elements[nom].focus();
 						<span class="sigp2-statique" ><%=process.getVAL_ST_SEXE()%></span>
 					</td>
 					<td>
-						<span class="sigp2">Prénom d'usage :</span>
+						<span class="sigp2">PrÃ©nom d'usage :</span>
 					</td>
 					<td>
 						<INPUT class="sigp2-saisie" size="30" maxlength="50" type="text" name="<%= process.getNOM_EF_PRENOM_USAGE() %>" value="<%= process.getVAL_EF_PRENOM_USAGE() %>" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>>
@@ -150,7 +151,7 @@ document.formu.elements[nom].focus();
 						</span>
 					</td>
 					<td width="180px;">				
-						<span class="sigp2Mandatory"> Nationalité : </span>
+						<span class="sigp2Mandatory"> NationalitÃ© : </span>
 					</td>
 					<td>
 						<span class="sigp2-saisie">
@@ -182,7 +183,7 @@ document.formu.elements[nom].focus();
 				<tr>
 					<td>&nbsp;</td>
 					<td>
-						<span class="sigp2Mandatory"> Date de première embauche : </span>
+						<span class="sigp2Mandatory"> Date de premiÃ¨re embauche : </span>
 					</td>
 					<td>
 						<span>
@@ -191,7 +192,7 @@ document.formu.elements[nom].focus();
 						</span>
 					</td>
 					<td>
-						<span class="sigp2">Date de dernière embauche : </span>
+						<span class="sigp2">Date de derniÃ¨re embauche : </span>
 					</td>
 					<td>
 						<span>
@@ -203,7 +204,7 @@ document.formu.elements[nom].focus();
 				<tr>
 					<td>&nbsp;</td>
 					<td>
-						<span class="sigp2">Numéro de carte de séjour : </span>
+						<span class="sigp2">NumÃ©ro de carte de sÃ©jour : </span>
 					</td>
 					<td>
 						<span>
@@ -211,7 +212,7 @@ document.formu.elements[nom].focus();
 						</span>
 					</td>
 					<td>
-						<span class="sigp2">Date de validité : </span>
+						<span class="sigp2">Date de validitÃ© : </span>
 					</td>
 					<td>
 						<INPUT id="<%=process.getNOM_EF_DATE_VALIDITE_CARTE_SEJOUR()%>" class="sigp2-saisie" maxlength="10" style="width: 90px;"	<%= MairieUtils.getDisabled(request, process.getNomEcran()) %> name="<%= process.getNOM_EF_DATE_VALIDITE_CARTE_SEJOUR() %>" type="text" value="<%= process.getVAL_EF_DATE_VALIDITE_CARTE_SEJOUR() %>">
@@ -223,7 +224,7 @@ document.formu.elements[nom].focus();
 	
 		<FIELDSET class="sigp2Fieldset" style="text-align:left;margin:10px;width:1030px;">
 			<legend class="sigp2Legend">Adresse</legend>
-			<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> onclick='executeBouton("<%=process.getNOM_PB_ADRESSE() %>")' <%= process.forRadioHTML(process.getNOM_RG_VILLE_DOMICILE(),process.getNOM_RB_VILLE_DOMICILE_NOUMEA())%>>Nouméa
+			<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> onclick='executeBouton("<%=process.getNOM_PB_ADRESSE() %>")' <%= process.forRadioHTML(process.getNOM_RG_VILLE_DOMICILE(),process.getNOM_RB_VILLE_DOMICILE_NOUMEA())%>>NoumÃ©a
 			<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> onclick='executeBouton("<%=process.getNOM_PB_ADRESSE() %>")' <%= process.forRadioHTML(process.getNOM_RG_VILLE_DOMICILE(),process.getNOM_RB_VILLE_DOMICILE_AUTRE())%>>Autre
 			<BR/>
 			<%if (!"".equals(process.getVAL_RG_VILLE_DOMICILE())) {%>
@@ -232,7 +233,7 @@ document.formu.elements[nom].focus();
 					<hr>
 					<span class="sigp2-titre">Domicile</span>
 					<br/>
-					<span class="sigp2" style="width:80px">Numéro de rue :</span>
+					<span class="sigp2" style="width:80px">NumÃ©ro de rue :</span>
 					<INPUT class="sigp2-saisie" maxlength="3" style="width:40px;margin-left: 10px;" name="<%= process.getNOM_EF_NUM_RUE() %>" type="text" value="<%= process.getVAL_EF_NUM_RUE() %>"  <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>>
 					
 					<span class="sigp2" style="width:40px;margin-left: 10px;">Bis/Ter :</span>
@@ -243,7 +244,7 @@ document.formu.elements[nom].focus();
 					<span class="sigp2-saisie"><%=process.getVAL_ST_VOIE()%></span>
 					<br/><br/>
 					
-					<span class="sigp2">Adresse complémentaire :</span>
+					<span class="sigp2">Adresse complÃ©mentaire :</span>
 					<INPUT class="sigp2-saisie" maxlength="100" style="width:600px;margin-left: 10px;" name="<%= process.getNOM_EF_ADRESSE_COMPLEMENTAIRE() %>" type="text" value="<%= process.getVAL_EF_ADRESSE_COMPLEMENTAIRE() %>" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>>
 					<br/><br/>
 					
@@ -260,7 +261,7 @@ document.formu.elements[nom].focus();
 					<hr>
 					<span class="sigp2-titre">Domicile</span>
 					<br/>
-					<span class="sigp2" style="width:80px">Numéro de rue :</span>
+					<span class="sigp2" style="width:80px">NumÃ©ro de rue :</span>
 					<INPUT class="sigp2-saisie" maxlength="3" style="width:40px;margin-left: 10px;" name="<%= process.getNOM_EF_NUM_RUE() %>" type="text" value="<%= process.getVAL_EF_NUM_RUE() %>"  <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>>
 					
 					<span class="sigp2" style="width:40px;margin-left: 10px;">Bis/Ter :</span>
@@ -271,7 +272,7 @@ document.formu.elements[nom].focus();
 					<INPUT class="sigp2-saisie" maxlength="120" style="width:723px;margin-left: 10px;" name="<%= process.getNOM_EF_RUE_NON_NOUMEA() %>" type="text" value="<%= process.getVAL_EF_RUE_NON_NOUMEA() %>" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>>
 					<br/><br/>
 					
-					<span class="sigp2Mandatory">Adresse complémentaire :</span>
+					<span class="sigp2Mandatory">Adresse complÃ©mentaire :</span>
 					<INPUT class="sigp2-saisie" maxlength="100" style="width:600px;margin-left: 10px;" name="<%= process.getNOM_EF_ADRESSE_COMPLEMENTAIRE() %>" type="text" value="<%= process.getVAL_EF_ADRESSE_COMPLEMENTAIRE() %>" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>>
 					<br/><br/>
 					
@@ -287,7 +288,7 @@ document.formu.elements[nom].focus();
 				<br/>
 				<hr>
 				<div>
-					<span class="sigp2-titre">Boîte postale</span>
+					<span class="sigp2-titre">BoÃ®te postale</span>
 					<br/><br/>
 					<span class="sigp2" style="width:30px;">BP :</span>
 					<INPUT class="sigp2-saisie" maxlength="5" style="width: 40px;" name="<%= process.getNOM_EF_BP() %>" type="text" value="<%= process.getVAL_EF_BP() %>" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>>
@@ -305,14 +306,14 @@ document.formu.elements[nom].focus();
 		
 			
 		<FIELDSET class="sigp2Fieldset" style="text-align:left;margin:10px;width:1030px;">
-			<legend class="sigp2Legend">Coordonnées bancaires</legend>
+			<legend class="sigp2Legend">CoordonnÃ©es bancaires</legend>
 			<TABLE border="0" cellpadding="0" cellspacing="0">
 				<TBODY>
 					<TR>
 						<TD colspan="2" class="sigp2" style="text-align : center;" width="514">Code banque / Guichet</TD>
-						<TD class="sigp2" style="text-align : center;" width="116">N° de compte</TD>
-						<TD class="sigp2" style="text-align : center;" width="100">clé RIB</TD>
-						<TD class="sigp2" style="text-align : center;">Intitulé de compte</TD>
+						<TD class="sigp2" style="text-align : center;" width="116">NÂ° de compte</TD>
+						<TD class="sigp2" style="text-align : center;" width="100">clÃ© RIB</TD>
+						<TD class="sigp2" style="text-align : center;">IntitulÃ© de compte</TD>
 					</TR>
 					<TR>
 						<TD class="sigp2-saisie" style="text-align : center;" width="134">
@@ -364,12 +365,12 @@ document.formu.elements[nom].focus();
 			<TABLE border="0" cellpadding="0" cellspacing="0">
 				<TBODY>
 					<TR>
-						<TD class="sigp2" style="text-align : center;" width="150">N° CAFAT</TD>
-						<TD class="sigp2" style="text-align : center;" width="150">N° RUAMM</TD>
-						<TD class="sigp2" style="text-align : center;" width="150">N° Mutuelle</TD>
-						<TD class="sigp2" style="text-align : center;" width="150">N° CRE</TD>
-						<TD class="sigp2" style="text-align : center;" width="150">N° IRCAFEX</TD>
-						<TD class="sigp2" style="text-align : center;" width="150">N° CLR</TD>
+						<TD class="sigp2" style="text-align : center;" width="150">NÂ° CAFAT</TD>
+						<TD class="sigp2" style="text-align : center;" width="150">NÂ° RUAMM</TD>
+						<TD class="sigp2" style="text-align : center;" width="150">NÂ° Mutuelle</TD>
+						<TD class="sigp2" style="text-align : center;" width="150">NÂ° CRE</TD>
+						<TD class="sigp2" style="text-align : center;" width="150">NÂ° IRCAFEX</TD>
+						<TD class="sigp2" style="text-align : center;" width="150">NÂ° CLR</TD>
 					</TR>
 					<TR>
 						<TD class="sigp2-saisie" style="text-align : center;" width="150">

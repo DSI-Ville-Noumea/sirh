@@ -1,4 +1,4 @@
-<!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@ page contentType="text/html; charset=UTF-8" %> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <%@page import="nc.mairie.enums.EnumTypeAbsence"%>
 <%@page import="nc.mairie.enums.EnumTypeDroit"%>
 <%@page import="nc.mairie.utils.MairieUtils"%>
@@ -16,13 +16,13 @@
 		<SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT>
 		
 		<SCRIPT language="JavaScript">
-		//afin de sélectionner un élément dans une liste
+		//afin de sÃ©lectionner un Ã©lÃ©ment dans une liste
 		function executeBouton(nom)
 		{
 			document.formu.elements[nom].click();
 		}
 
-		// afin de mettre le focus sur une zone précise
+		// afin de mettre le focus sur une zone prÃ©cise
 		function setfocus(nom)
 		{
 			if (document.formu.elements[nom] != null)
@@ -38,7 +38,7 @@
 		}
 		
 		</SCRIPT>	
-		<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	</HEAD>
 	<BODY bgcolor="#FFFFFF" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="window.parent.frames['refAgent'].location.reload();return setfocus('<%= process.getFocus() %>');">
 	<%@ include file="BanniereErreur.jsp" %>
@@ -51,11 +51,11 @@
 				    	<tr>
 				    		<td width="50%">
 							    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:450px;">
-							    	<legend class="sigp2Legend">Congés</legend>
+							    	<legend class="sigp2Legend">CongÃ©s</legend>
 									<table class="sigp2NewTab" style="text-align:left;width:400px;">
 										<tr bgcolor="#EFEFEF">
-											<td width="100px;" align="center">année prec.</td>
-											<td width="120px;" align="center">année</td>
+											<td width="100px;" align="center">annÃ©e prec.</td>
+											<td width="120px;" align="center">annÃ©e</td>
 											<td width="80px;">Historique</td>
 											<td>Samedi offert</td>
 										</tr>
@@ -70,7 +70,7 @@
 				    		</td>
 				    		<td>
 							    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:450px;">
-							    	<legend class="sigp2Legend">Récupérations</legend>
+							    	<legend class="sigp2Legend">RÃ©cupÃ©rations</legend>
 									<table class="sigp2NewTab" style="text-align:left;width:200px;">
 										<tr bgcolor="#EFEFEF">
 											<td width="200px;" align="center">En cours</td>
@@ -91,8 +91,8 @@
 				    	<legend class="sigp2Legend">Repos compensateurs</legend>
 							<table class="sigp2NewTab" style="text-align:left;width:200px;">
 								<tr bgcolor="#EFEFEF">
-									<td width="100px;" align="center">année prec.</td>
-									<td width="100px;" align="center">année</td>
+									<td width="100px;" align="center">annÃ©e prec.</td>
+									<td width="100px;" align="center">annÃ©e</td>
 									<td>Historique</td>
 								</tr>
 								<tr>
@@ -106,11 +106,11 @@
 				    <BR/>	
 				    
 				     <FIELDSET class="sigp2Fieldset" style="text-align:left;width:950px;">
-				    	<legend class="sigp2Legend">Congés Exceptionnels</legend>
+				    	<legend class="sigp2Legend">CongÃ©s Exceptionnels</legend>
 						<table class="sigp2NewTab" style="text-align:left;width:900px;">
 							<tr bgcolor="#EFEFEF">
 								<td width="750px;">Type</td>
-								<td width="150px;" align="center">Congés déjà pris ou en cours</td>
+								<td width="150px;" align="center">CongÃ©s dÃ©jÃ  pris ou en cours</td>
 							</tr>
 							<% for(int i = 0; i< process.getListeSoldeCongesExcep().size();i++){ %>
 							<tr>
@@ -130,10 +130,10 @@
 					<div style="overflow: auto;height: 250px;width:1000px;margin-right: 0px;margin-left: 0px;">
 						<table class="sigp2NewTab" style="text-align:left;width:980px;">
 							<tr bgcolor="#EFEFEF">
-								<td align="center" width="90px;">Le <br/> à</td>
+								<td align="center" width="90px;">Le <br/> Ã </td>
 								<td width="180px;">Par</td>
 								<td width="180px;">Motif</td>
-								<td>Opération</td>
+								<td>OpÃ©ration</td>
 							</tr>
 							<%
 							for (int i = 0;i<process.getListeHistorique().size();i++){
@@ -167,7 +167,7 @@
 				    		<td>
 							<%if(process.isAfficheSoldeAsaA48()){ %>
 					    		 <FIELDSET class="sigp2Fieldset" style="text-align:left;width:450px;">
-							    	<legend class="sigp2Legend">* Réunion des membres du bureau directeur</legend>
+							    	<legend class="sigp2Legend">* RÃ©union des membres du bureau directeur</legend>
 									<table class="sigp2NewTab" style="text-align:left;width:200px;">
 										<tr bgcolor="#EFEFEF">
 											<td width="200px;" align="center">En cours</td>
@@ -184,7 +184,7 @@
 				    		<td>
 							<%if(process.isAfficheSoldeAsaA54()){ %>
 					    		 <FIELDSET class="sigp2Fieldset" style="text-align:left;width:450px;">
-							    	<legend class="sigp2Legend">* Congrès et conseil syndical</legend>
+							    	<legend class="sigp2Legend">* CongrÃ¨s et conseil syndical</legend>
 									<table class="sigp2NewTab" style="text-align:left;width:200px;">
 										<tr bgcolor="#EFEFEF">
 											<td width="200px;" align="center">En cours</td>
@@ -203,11 +203,11 @@
 				    		<td>
 							<%if(process.isAfficheSoldeAsaA55()){ %>
 					    		 <FIELDSET class="sigp2Fieldset" style="text-align:left;width:450px;">
-							    	<legend class="sigp2Legend">* Délégation DP</legend>
+							    	<legend class="sigp2Legend">* DÃ©lÃ©gation DP</legend>
 									<table class="sigp2NewTab" style="text-align:left;width:400px;">
 										<tr bgcolor="#EFEFEF">
 											<td width="150px;" align="center">En cours</td>
-											<td width="90px;" align="center">Début</td>
+											<td width="90px;" align="center">DÃ©but</td>
 											<td width="90px;" align="center">Fin</td>
 											<td>Historique</td>
 										</tr>
@@ -226,7 +226,7 @@
 				    		<td>
 							<%if(process.isAfficheSoldeAsaA52()){ %>
 					    		<FIELDSET class="sigp2Fieldset" style="text-align:left;width:450px;">
-							    	<legend class="sigp2Legend">* Décharge de service CTP</legend>
+							    	<legend class="sigp2Legend">* DÃ©charge de service CTP</legend>
 							    	
 										<table class="sigp2NewTab" style="text-align:left;width:400px;">
 											<tr bgcolor="#EFEFEF">
@@ -235,7 +235,7 @@
 											<%}else{ %>
 												<td width="150px;" align="center">En cours pourOS</td>
 											<%} %>
-												<td width="90px;" align="center">Début</td>
+												<td width="90px;" align="center">DÃ©but</td>
 												<td width="90px;" align="center">Fin</td>
 												<td>Historique</td>
 											</tr>
@@ -263,7 +263,7 @@
 		    		<td>
 		    		
 					<FIELDSET class="sigp2Fieldset" style="text-align:left;width:300px;">
-				    	<legend class="sigp2Legend">Opérateurs</legend>
+				    	<legend class="sigp2Legend">OpÃ©rateurs</legend>
 						<table class="sigp2NewTab" style="text-align:left;width:250px;">
 							<% for(int i = 0; i< process.getActeursDto().getListOperateurs().size();i++){ 
 							
@@ -316,7 +316,7 @@
 							%>
 							<tr>
 								<td style="text-align: center"><%=approbateur.getApprobateur().getPrenom() + " " + approbateur.getApprobateur().getNom() + " (" + approbateur.getApprobateur().getIdAgent().toString().substring(3, approbateur.getApprobateur().getIdAgent().toString().length()) + ")" %></td>
-								<td style="text-align: center"><% if(null != approbateur.getDelegataire()) { %> (délégataire : <%=approbateur.getDelegataire().getPrenom() + " " + approbateur.getDelegataire().getNom() + " (" + approbateur.getDelegataire().getIdAgent().toString().substring(3, approbateur.getDelegataire().getIdAgent().toString().length()) + ")" %>) <% } %></td>
+								<td style="text-align: center"><% if(null != approbateur.getDelegataire()) { %> (dÃ©lÃ©gataire : <%=approbateur.getDelegataire().getPrenom() + " " + approbateur.getDelegataire().getNom() + " (" + approbateur.getDelegataire().getIdAgent().toString().substring(3, approbateur.getDelegataire().getIdAgent().toString().length()) + ")" %>) <% } %></td>
 							</tr>
 							<% } %>
 						</table>

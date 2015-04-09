@@ -19,7 +19,7 @@ import nc.mairie.utils.MessageUtils;
 import org.springframework.context.ApplicationContext;
 
 /**
- * Process OePOSTEFEActivite Date de création : (04/07/11 16:24:13)
+ * Process OePOSTEFEActivite Date de crÃ©ation : (04/07/11 16:24:13)
  * 
  */
 public class OePOSTEFEActivite extends BasicProcess {
@@ -43,10 +43,10 @@ public class OePOSTEFEActivite extends BasicProcess {
 	private ActiviteFEDao activiteFEDao;
 
 	/**
-	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones Ã  afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
-	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
-	 * addZone(getNOMxxx, String); Date de création : (04/07/11 16:24:13)
+	 * doivent avoir les Fields PUBLIC Utilisation de la mÃ©thode
+	 * addZone(getNOMxxx, String); Date de crÃ©ation : (04/07/11 16:24:13)
 	 * 
 	 */
 	public void initialiseZones(HttpServletRequest request) throws Exception {
@@ -54,11 +54,11 @@ public class OePOSTEFEActivite extends BasicProcess {
 		VariableGlobale.ajouter(request, "PROCESS_MEMORISE", this);
 
 		// ----------------------------------//
-		// Vérification des droits d'accès. //
+		// VÃ©rification des droits d'acces. //
 		// ----------------------------------//
 		if (MairieUtils.estInterdit(request, getNomEcran())) {
 			// "ERR190",
-			// "Opération impossible. Vous ne disposez pas des droits d'accès à cette option."
+			// "Operation impossible. Vous ne disposez pas des droits d'acces a cette option."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
@@ -95,7 +95,7 @@ public class OePOSTEFEActivite extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_ACTION Date de
-	 * création : (04/07/11 16:24:13)
+	 * crÃ©ation : (04/07/11 16:24:13)
 	 * 
 	 */
 	public String getNOM_ST_ACTION() {
@@ -103,8 +103,8 @@ public class OePOSTEFEActivite extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACTION Date de
-	 * création : (04/07/11 16:24:13)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_ACTION Date de
+	 * crÃ©ation : (04/07/11 16:24:13)
 	 * 
 	 */
 	public String getVAL_ST_ACTION() {
@@ -113,7 +113,7 @@ public class OePOSTEFEActivite extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER_ACTIVITE Date de
-	 * création : (05/07/11 10:43:04)
+	 * crÃ©ation : (05/07/11 10:43:04)
 	 * 
 	 */
 	public String getNOM_PB_VALIDER_ACTIVITE() {
@@ -121,10 +121,10 @@ public class OePOSTEFEActivite extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (05/07/11 10:43:04)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (05/07/11 10:43:04)
 	 * 
 	 */
 	public boolean performPB_VALIDER_ACTIVITE(HttpServletRequest request) throws Exception {
@@ -141,15 +141,15 @@ public class OePOSTEFEActivite extends BasicProcess {
 			if (getVAL_ST_ACTION().equals(ACTION_AJOUT)) {
 				setActiviteCourante(new Activite(getVAL_EF_DESC_ACTIVITE()));
 				getActiviteDao().creerActivite(getActiviteCourante().getNomActivite());
-				messageInf = MessageUtils.getMessage("INF110", "créée", getActiviteCourante().getNomActivite());
+				messageInf = MessageUtils.getMessage("INF110", "crÃ©Ã©e", getActiviteCourante().getNomActivite());
 			} else if (getVAL_ST_ACTION().equals(ACTION_MODIFICATION)) {
 				getActiviteCourante().setNomActivite(getVAL_EF_DESC_ACTIVITE());
 				getActiviteDao().modifierActivite(getActiviteCourante().getIdActivite(),
 						getActiviteCourante().getNomActivite());
-				messageInf = MessageUtils.getMessage("INF110", "modifiée", getActiviteCourante().getNomActivite());
+				messageInf = MessageUtils.getMessage("INF110", "modifiÃ©e", getActiviteCourante().getNomActivite());
 			} else if (getVAL_ST_ACTION().equals(ACTION_SUPPRESSION)) {
 				getActiviteDao().supprimerActivite(getActiviteCourante().getIdActivite());
-				messageInf = MessageUtils.getMessage("INF110", "supprimée", getActiviteCourante().getNomActivite());
+				messageInf = MessageUtils.getMessage("INF110", "supprimÃ©e", getActiviteCourante().getNomActivite());
 				setActiviteCourante(null);
 			}
 			getTransaction().commitTransaction();
@@ -165,7 +165,7 @@ public class OePOSTEFEActivite extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER_ACTIVITE Date de
-	 * création : (05/07/11 10:44:10)
+	 * crÃ©ation : (05/07/11 10:44:10)
 	 * 
 	 */
 	public String getNOM_PB_ANNULER_ACTIVITE() {
@@ -173,10 +173,10 @@ public class OePOSTEFEActivite extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (05/07/11 10:44:10)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (05/07/11 10:44:10)
 	 * 
 	 */
 	public boolean performPB_ANNULER_ACTIVITE(HttpServletRequest request) throws Exception {
@@ -194,7 +194,7 @@ public class OePOSTEFEActivite extends BasicProcess {
 	}
 
 	/**
-	 * Met à jour la liste des activités.
+	 * Met a jour la liste des activitÃ©s.
 	 * 
 	 * @param listeActivite
 	 *            ArrayList(Activite)
@@ -213,7 +213,7 @@ public class OePOSTEFEActivite extends BasicProcess {
 	}
 
 	/**
-	 * Met à jour l'activité courante.
+	 * Met a jour l'activitÃ© courante.
 	 * 
 	 * @param activiteCourante
 	 *            Activite
@@ -223,7 +223,7 @@ public class OePOSTEFEActivite extends BasicProcess {
 	}
 
 	/**
-	 * Contrôle les zones saisies Date de création : (04/07/11 11:04:00)
+	 * Controle les zones saisies Date de crÃ©ation : (04/07/11 11:04:00)
 	 * RG_PE_AC_A01
 	 */
 	private boolean performControlerSaisie(HttpServletRequest request) throws Exception {
@@ -233,7 +233,7 @@ public class OePOSTEFEActivite extends BasicProcess {
 		// ************************************
 		if (getZone(getNOM_EF_DESC_ACTIVITE()).length() == 0) {
 			// "ERR002","La zone @ est obligatoire."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "libellé"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "libellÃ©"));
 			setFocus(getNOM_EF_DESC_ACTIVITE());
 			return false;
 		}
@@ -241,18 +241,18 @@ public class OePOSTEFEActivite extends BasicProcess {
 	}
 
 	/**
-	 * Contrôle les règles de gestion Date de création : (23/08/11) RG_PE_AC_A02
+	 * Controle les regles de gestion Date de crÃ©ation : (23/08/11) RG_PE_AC_A02
 	 */
 	private boolean performControlerRegleGestion(HttpServletRequest request) throws Exception {
 		// RG_PE_AC_A02
 		// **********************************************************************
-		// Verification si suppression d'une activite utilisée sur une fiche de
+		// Verification si suppression d'une activite utilisee sur une fiche de
 		// poste
 		// **********************************************************************
 		if (getVAL_ST_ACTION().equals(ACTION_SUPPRESSION)
 				&& getActiviteFEDao().listerActiviteFEAvecActivite(getActiviteCourante().getIdActivite()).size() > 0) {
 			// "ERR120",
-			// "Impossible de supprimer @ actuellement utilisée par @."
+			// "Impossible de supprimer @ actuellement utilisee par @."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR120", "cette activite", "une fiche emploi"));
 			setFocus(getNOM_EF_DESC_ACTIVITE());
 			return false;
@@ -260,7 +260,7 @@ public class OePOSTEFEActivite extends BasicProcess {
 		if (getVAL_ST_ACTION().equals(ACTION_SUPPRESSION)
 				&& getActiviteFPDao().listerActiviteFPAvecActivite(getActiviteCourante().getIdActivite()).size() > 0) {
 			// "ERR120",
-			// "Impossible de supprimer @ actuellement utilisée par @."
+			// "Impossible de supprimer @ actuellement utilisee par @."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR120", "cette activite", "une fiche de poste"));
 			setFocus(getNOM_EF_DESC_ACTIVITE());
 			return false;
@@ -284,23 +284,23 @@ public class OePOSTEFEActivite extends BasicProcess {
 
 	/**
 	 * @param focus
-	 *            focus à définir.
+	 *            focus Ã  dÃ©finir.
 	 */
 	public void setFocus(String focus) {
 		this.focus = focus;
 	}
 
 	/**
-	 * Retourne le nom de l'écran (notamment pour déterminer les droits
-	 * associés).
+	 * Retourne le nom de l'Ã©cran (notamment pour dÃ©terminer les droits
+	 * associÃ©s).
 	 */
 	public String getNomEcran() {
 		return "ECR-PE-FE-ACTIVITE";
 	}
 
 	/**
-	 * Méthode appelée par la servlet qui aiguille le traitement : en fonction
-	 * du bouton de la JSP Date de création : (04/07/11 16:24:13)
+	 * mÃ©thode appelee par la servlet qui aiguille le traitement : en fonction
+	 * du bouton de la JSP Date de crÃ©ation : (04/07/11 16:24:13)
 	 * 
 	 */
 	public boolean recupererStatut(HttpServletRequest request) throws Exception {
@@ -332,13 +332,13 @@ public class OePOSTEFEActivite extends BasicProcess {
 				return performPB_SUPPRIMER(request);
 			}
 		}
-		// Si TAG INPUT non géré par le process
+		// Si TAG INPUT non gÃ©rÃ© par le process
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
 
 	/**
-	 * Constructeur du process OePOSTEFEActivite. Date de création : (21/10/11
+	 * Constructeur du process OePOSTEFEActivite. Date de crÃ©ation : (21/10/11
 	 * 14:52:03)
 	 * 
 	 */
@@ -347,8 +347,8 @@ public class OePOSTEFEActivite extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la JSP du process Zone à utiliser dans un champ caché
-	 * dans chaque formulaire de la JSP. Date de création : (21/10/11 14:52:03)
+	 * Retourne le nom de la JSP du process Zone a utiliser dans un champ cache
+	 * dans chaque formulaire de la JSP. Date de crÃ©ation : (21/10/11 14:52:03)
 	 * 
 	 */
 	public String getJSP() {
@@ -357,7 +357,7 @@ public class OePOSTEFEActivite extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_ID_ACTI Date de
-	 * création : (21/11/11 09:55:36)
+	 * crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_ST_ID_ACTI(int i) {
@@ -365,8 +365,8 @@ public class OePOSTEFEActivite extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ID_ACTI Date
-	 * de création : (21/11/11 09:55:36)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_ID_ACTI Date
+	 * de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_ST_ID_ACTI(int i) {
@@ -375,7 +375,7 @@ public class OePOSTEFEActivite extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_LIB_ACTI Date de
-	 * création : (21/11/11 09:55:36)
+	 * crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_ST_LIB_ACTI(int i) {
@@ -383,8 +383,8 @@ public class OePOSTEFEActivite extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_LIB_ACTI Date
-	 * de création : (21/11/11 09:55:36)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_LIB_ACTI Date
+	 * de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_ST_LIB_ACTI(int i) {
@@ -392,8 +392,8 @@ public class OePOSTEFEActivite extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la case à cocher sélectionnée pour la JSP :
-	 * CK_SELECT_LIGNE Date de création : (21/11/11 09:55:36)
+	 * Retourne le nom de la case Ã  cocher sÃ©lectionnÃ©e pour la JSP :
+	 * CK_SELECT_LIGNE Date de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_CK_SELECT_LIGNE(int i) {
@@ -401,8 +401,8 @@ public class OePOSTEFEActivite extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur de la case à cocher à afficher par la JSP pour la case
-	 * à cocher : CK_SELECT_LIGNE Date de création : (21/11/11 09:55:36)
+	 * Retourne la valeur de la case Ã  cocher Ã  afficher par la JSP pour la case
+	 * a cocher : CK_SELECT_LIGNE Date de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_CK_SELECT_LIGNE(int i) {
@@ -411,7 +411,7 @@ public class OePOSTEFEActivite extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_DESC_ACTIVITE Date
-	 * de création : (01/07/11 10:39:25)
+	 * de crÃ©ation : (01/07/11 10:39:25)
 	 * 
 	 */
 	public String getNOM_EF_DESC_ACTIVITE() {
@@ -419,8 +419,8 @@ public class OePOSTEFEActivite extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_DESC_ACTIVITE Date de création : (01/07/11 10:39:25)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_DESC_ACTIVITE Date de crÃ©ation : (01/07/11 10:39:25)
 	 * 
 	 */
 	public String getVAL_EF_DESC_ACTIVITE() {
@@ -428,7 +428,7 @@ public class OePOSTEFEActivite extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_AJOUTER Date de création :
+	 * Retourne le nom d'un bouton pour la JSP : PB_AJOUTER Date de crÃ©ation :
 	 * (01/07/11 10:39:25)
 	 * 
 	 */
@@ -437,10 +437,10 @@ public class OePOSTEFEActivite extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (01/07/11 10:39:25)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (01/07/11 10:39:25)
 	 * 
 	 */
 	public boolean performPB_AJOUTER(HttpServletRequest request) throws Exception {
@@ -450,7 +450,7 @@ public class OePOSTEFEActivite extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_MODIFIER Date de création :
+	 * Retourne le nom d'un bouton pour la JSP : PB_MODIFIER Date de crÃ©ation :
 	 * (01/07/11 10:39:25)
 	 * 
 	 */
@@ -459,29 +459,29 @@ public class OePOSTEFEActivite extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (01/07/11 10:39:25)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (01/07/11 10:39:25)
 	 * 
 	 */
 	public boolean performPB_MODIFIER(HttpServletRequest request) throws Exception {
 		boolean auMoinsUneligneSelect = false;
 		Activite acti = null;
 		for (int j = 0; j < getListeActivite().size(); j++) {
-			// on recupère la ligne concernée
+			// on recupere la ligne concernÃ©e
 			acti = (Activite) getListeActivite().get(j);
 			Integer i = acti.getIdActivite();
 			// si l'etat de la ligne n'est pas deja 'affecte' et que la colonne
-			// affecté est cochée
+			// affectÃ© est cochÃ©e
 			if (getVAL_CK_SELECT_LIGNE(i).equals(getCHECKED_ON())) {
 				auMoinsUneligneSelect = true;
 				break;
 			}
 		}
 		if (!auMoinsUneligneSelect) {
-			// "ERR008", Aucun élément n'est sélectionné dans la liste des @.
-			setStatut(STATUT_MEME_PROCESS, true, MessageUtils.getMessage("ERR008", "activités"));
+			// "ERR008", Aucun Ã©lÃ©ment n'est sÃ©lectionnÃ© dans la liste des @.
+			setStatut(STATUT_MEME_PROCESS, true, MessageUtils.getMessage("ERR008", "activitÃ©s"));
 			return false;
 		}
 		setActiviteCourante(acti);
@@ -491,7 +491,7 @@ public class OePOSTEFEActivite extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMER Date de création :
+	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMER Date de crÃ©ation :
 	 * (01/07/11 10:39:25)
 	 * 
 	 */
@@ -500,29 +500,29 @@ public class OePOSTEFEActivite extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (01/07/11 10:39:25)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (01/07/11 10:39:25)
 	 * 
 	 */
 	public boolean performPB_SUPPRIMER(HttpServletRequest request) throws Exception {
 		boolean auMoinsUneligneSelect = false;
 		Activite acti = null;
 		for (int j = 0; j < getListeActivite().size(); j++) {
-			// on recupère la ligne concernée
+			// on recupere la ligne concernÃ©e
 			acti = (Activite) getListeActivite().get(j);
 			Integer i = acti.getIdActivite();
 			// si l'etat de la ligne n'est pas deja 'affecte' et que la colonne
-			// affecté est cochée
+			// affectÃ© est cochÃ©e
 			if (getVAL_CK_SELECT_LIGNE(i).equals(getCHECKED_ON())) {
 				auMoinsUneligneSelect = true;
 				break;
 			}
 		}
 		if (!auMoinsUneligneSelect) {
-			// "ERR008", Aucun élément n'est sélectionné dans la liste des @.
-			setStatut(STATUT_MEME_PROCESS, true, MessageUtils.getMessage("ERR008", "activités"));
+			// "ERR008", Aucun Ã©lÃ©ment n'est sÃ©lectionnÃ© dans la liste des @.
+			setStatut(STATUT_MEME_PROCESS, true, MessageUtils.getMessage("ERR008", "activitÃ©s"));
 			return false;
 		}
 		setActiviteCourante(acti);

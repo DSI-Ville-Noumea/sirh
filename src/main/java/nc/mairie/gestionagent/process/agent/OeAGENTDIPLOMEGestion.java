@@ -63,7 +63,7 @@ import org.springframework.context.ApplicationContext;
 import com.oreilly.servlet.MultipartRequest;
 
 /**
- * Process OeAGENTDIPLOMEGestion Date de création : (11/02/03 14:20:31)
+ * Process OeAGENTDIPLOMEGestion Date de crÃ©ation : (11/02/03 14:20:31)
  * 
  */
 public class OeAGENTDIPLOMEGestion extends BasicProcess {
@@ -80,23 +80,23 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 	private String[] LB_TITRE_PERMIS;
 
-	public String ACTION_SUPPRESSION_DIPLOME = "Suppression d'un diplôme.";
-	public String ACTION_MODIFICATION_DIPLOME = "Modification d'un diplôme.";
-	public String ACTION_CREATION_DIPLOME = "Création d'un diplôme.";
-	public String ACTION_CONSULTATION_DIPLOME = "Consultation d'un diplôme.";
+	public String ACTION_SUPPRESSION_DIPLOME = "Suppression d'un diplÃ´me.";
+	public String ACTION_MODIFICATION_DIPLOME = "Modification d'un diplÃ´me.";
+	public String ACTION_CREATION_DIPLOME = "CrÃ©ation d'un diplÃ´me.";
+	public String ACTION_CONSULTATION_DIPLOME = "Consultation d'un diplÃ´me.";
 
 	public String ACTION_SUPPRESSION_FORMATION = "Suppression d'une formation.";
 	public String ACTION_MODIFICATION_FORMATION = "Modification d'une formation.";
-	public String ACTION_CREATION_FORMATION = "Création d'une formation.";
+	public String ACTION_CREATION_FORMATION = "CrÃ©ation d'une formation.";
 	public String ACTION_CONSULTATION_FORMATION = "Consultation d'une formation.";
 
 	public String ACTION_SUPPRESSION_PERMIS = "Suppression d'un permis.";
 	public String ACTION_MODIFICATION_PERMIS = "Modification d'un permis.";
-	public String ACTION_CREATION_PERMIS = "Création d'un permis.";
+	public String ACTION_CREATION_PERMIS = "CrÃ©ation d'un permis.";
 	public String ACTION_CONSULTATION_PERMIS = "Consultation d'un permis.";
 
 	public String ACTION_DOCUMENT_SUPPRESSION = "Suppression d'un document.";
-	public String ACTION_DOCUMENT_CREATION = "Création d'un document.";
+	public String ACTION_DOCUMENT_CREATION = "CrÃ©ation d'un document.";
 	private ArrayList<Document> listeDocuments;
 	private Document documentCourant;
 	private DocumentAgent lienDocument;
@@ -144,7 +144,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
 	/**
-	 * Insérez la description de la méthode ici. Date de création : (11/02/2003
+	 * InsÃ©rez la description de la mÃ©thode ici. Date de crÃ©ation : (11/02/2003
 	 * 15:15:56)
 	 * 
 	 * @return nc.mairie.metier.agent.Agent
@@ -154,7 +154,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Insérez la description de la méthode ici. Date de création : (13/02/2003
+	 * InsÃ©rez la description de la mÃ©thode ici. Date de crÃ©ation : (13/02/2003
 	 * 11:01:39)
 	 * 
 	 * @return nc.mairie.metier.agent.Contact
@@ -164,7 +164,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Insérez la description de la méthode ici. Date de création : (11/06/2003
+	 * InsÃ©rez la description de la mÃ©thode ici. Date de crÃ©ation : (11/06/2003
 	 * 15:37:08)
 	 * 
 	 * @return Hashtable
@@ -178,7 +178,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 	/**
 	 * Getter de la liste avec un lazy initialize : LB_TITRE_DIPLOME Date de
-	 * création : (11/02/03 14:20:32)
+	 * crÃ©ation : (11/02/03 14:20:32)
 	 * 
 	 */
 	private String[] getLB_TITRE_DIPLOME() {
@@ -188,7 +188,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Insérez la description de la méthode ici. Date de création : (13/02/2003
+	 * InsÃ©rez la description de la mÃ©thode ici. Date de crÃ©ation : (13/02/2003
 	 * 10:38:02)
 	 * 
 	 * @return ArrayList
@@ -201,7 +201,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Insérez la description de la méthode ici. Date de création : (13/02/2003
+	 * InsÃ©rez la description de la mÃ©thode ici. Date de crÃ©ation : (13/02/2003
 	 * 10:47:43)
 	 * 
 	 * @return ArrayList
@@ -215,7 +215,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP :
-	 * EF_DATE_OBTENTION_DIPLOME Date de création : (11/06/03 15:05:22)
+	 * EF_DATE_OBTENTION_DIPLOME Date de crÃ©ation : (11/06/03 15:05:22)
 	 * 
 	 */
 	public String getNOM_EF_DATE_OBTENTION_DIPLOME() {
@@ -223,7 +223,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_DIPLOME Date de création
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_DIPLOME Date de crÃ©ation
 	 * : (11/02/03 14:20:32)
 	 * 
 	 */
@@ -232,8 +232,8 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_DIPLOME_SELECT Date de création : (11/02/03 14:20:32)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_DIPLOME_SELECT Date de crÃ©ation : (11/02/03 14:20:32)
 	 * 
 	 */
 	public String getNOM_LB_DIPLOME_SELECT() {
@@ -242,7 +242,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 	/**
 	 * Retourne le nom de la zone pour la JSP : NOM_LB_TITRE_DIPLOME Date de
-	 * création : (11/02/03 14:20:32)
+	 * crÃ©ation : (11/02/03 14:20:32)
 	 * 
 	 */
 	public String getNOM_LB_TITRE_DIPLOME() {
@@ -250,8 +250,8 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_TITRE_DIPLOME_SELECT Date de création : (11/02/03 14:20:32)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_TITRE_DIPLOME_SELECT Date de crÃ©ation : (11/02/03 14:20:32)
 	 * 
 	 */
 	public String getNOM_LB_TITRE_DIPLOME_SELECT() {
@@ -259,7 +259,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER Date de création :
+	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER Date de crÃ©ation :
 	 * (11/02/03 14:20:31)
 	 * 
 	 */
@@ -268,7 +268,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_CREER Date de création :
+	 * Retourne le nom d'un bouton pour la JSP : PB_CREER Date de crÃ©ation :
 	 * (11/02/03 14:20:31)
 	 * 
 	 */
@@ -277,7 +277,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_DIPLOME Date de création :
+	 * Retourne le nom d'un bouton pour la JSP : PB_DIPLOME Date de crÃ©ation :
 	 * (11/02/03 14:20:31)
 	 * 
 	 */
@@ -286,7 +286,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_RECHERCHER Date de création
+	 * Retourne le nom d'un bouton pour la JSP : PB_RECHERCHER Date de crÃ©ation
 	 * : (11/02/03 14:20:31)
 	 * 
 	 */
@@ -296,7 +296,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_TITRE_DIPLOME Date de
-	 * création : (11/06/03 15:05:22)
+	 * crÃ©ation : (11/06/03 15:05:22)
 	 * 
 	 */
 	public String getNOM_PB_TITRE_DIPLOME() {
@@ -305,7 +305,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER_DIPLOME Date de
-	 * création : (11/02/03 14:20:31)
+	 * crÃ©ation : (11/02/03 14:20:31)
 	 * 
 	 */
 	public String getNOM_PB_VALIDER_DIPLOME() {
@@ -314,7 +314,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_ACTION_DIPLOME Date
-	 * de création : (11/02/03 14:20:31)
+	 * de crÃ©ation : (11/02/03 14:20:31)
 	 * 
 	 */
 	public String getNOM_ST_ACTION_DIPLOME() {
@@ -323,7 +323,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_AGENT Date de
-	 * création : (11/02/03 14:20:31)
+	 * crÃ©ation : (11/02/03 14:20:31)
 	 * 
 	 */
 	public String getNOM_ST_AGENT() {
@@ -332,7 +332,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_DIPLOME Date de
-	 * création : (11/06/03 15:05:22)
+	 * crÃ©ation : (11/06/03 15:05:22)
 	 * 
 	 */
 	public String getNOM_ST_DIPLOME() {
@@ -341,7 +341,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_NIVEAU Date de
-	 * création : (11/06/03 15:05:22)
+	 * crÃ©ation : (11/06/03 15:05:22)
 	 * 
 	 */
 	public String getNOM_ST_NIVEAU() {
@@ -349,7 +349,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Insérez la description de la méthode ici. Date de création : (12/06/2003
+	 * InsÃ©rez la description de la mÃ©thode ici. Date de crÃ©ation : (12/06/2003
 	 * 10:46:00)
 	 * 
 	 * @return nc.mairie.metier.diplome.TitreDiplome
@@ -359,8 +359,8 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_DATE_OBTENTION Date de création : (11/06/03 15:05:22)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_DATE_OBTENTION Date de crÃ©ation : (11/06/03 15:05:22)
 	 * 
 	 */
 	public String getVAL_EF_DATE_OBTENTION_DIPLOME() {
@@ -368,8 +368,8 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_TITRE_DIPLOME Date de création : (11/02/03 14:20:32)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_TITRE_DIPLOME Date de crÃ©ation : (11/02/03 14:20:32)
 	 * 
 	 */
 	public String[] getVAL_LB_TITRE_DIPLOME() {
@@ -377,8 +377,8 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_TITRE_DIPLOME Date de création : (11/02/03 14:20:32)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_TITRE_DIPLOME Date de crÃ©ation : (11/02/03 14:20:32)
 	 * 
 	 */
 	public String getVAL_LB_TITRE_DIPLOME_SELECT() {
@@ -386,8 +386,8 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACTION_DIPLOME
-	 * Date de création : (11/02/03 14:20:31)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_ACTION_DIPLOME
+	 * Date de crÃ©ation : (11/02/03 14:20:31)
 	 * 
 	 */
 	public String getVAL_ST_ACTION_DIPLOME() {
@@ -395,8 +395,8 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_AGENT Date de
-	 * création : (11/02/03 14:20:31)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_AGENT Date de
+	 * crÃ©ation : (11/02/03 14:20:31)
 	 * 
 	 */
 	public String getVAL_ST_AGENT() {
@@ -404,8 +404,8 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DIPLOME Date
-	 * de création : (11/06/03 15:05:22)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_DIPLOME Date
+	 * de crÃ©ation : (11/06/03 15:05:22)
 	 * 
 	 */
 	public String getVAL_ST_DIPLOME() {
@@ -413,8 +413,8 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_NIVEAU Date de
-	 * création : (11/06/03 15:05:22)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_NIVEAU Date de
+	 * crÃ©ation : (11/06/03 15:05:22)
 	 * 
 	 */
 	public String getVAL_ST_NIVEAU() {
@@ -422,10 +422,10 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (11/02/03 14:20:31)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (11/02/03 14:20:31)
 	 * 
 	 */
 	private boolean initialiseDiplomeCourant(HttpServletRequest request) throws Exception {
@@ -456,7 +456,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 	private boolean initialiseDiplomeSuppression(HttpServletRequest request) throws Exception {
 
-		// Récup du Diplome courant
+		// RÃ©cup du Diplome courant
 		DiplomeAgent d = getDiplomeAgentCourant();
 		TitreDiplome t = (TitreDiplome) getHashTitreDiplome().get(d.getIdTitreDiplome());
 		setTitreDiplomeCourant(t);
@@ -556,10 +556,10 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones Ã  afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
-	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
-	 * addZone(getNOMxxx, String); Date de création : (11/02/03 14:20:31)
+	 * doivent avoir les Fields PUBLIC Utilisation de la mÃ©thode
+	 * addZone(getNOMxxx, String); Date de crÃ©ation : (11/02/03 14:20:31)
 	 * 
 	 */
 	public void initialiseZones(HttpServletRequest request) throws Exception {
@@ -569,10 +569,10 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 			addZone(getNOM_ST_ACTION_DIPLOME(), Const.CHAINE_VIDE);
 		}
 
-		// Vérification des droits d'accès.
+		// VÃ©rification des droits d'acces.
 		if (MairieUtils.estInterdit(request, getNomEcran())) {
 			// "ERR190",
-			// "Opération impossible. Vous ne disposez pas des droits d'accès à cette option."
+			// "Operation impossible. Vous ne disposez pas des droits d'acces a cette option."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
@@ -627,7 +627,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 			}
 		}
 
-		// Si liste des spécialités vide
+		// Si liste des spÃ©cialitÃ©s vide
 		if (getLB_SPECIALITE_DIPLOME() == LBVide) {
 			ArrayList<SpecialiteDiplome> a = getSpecialiteDiplomeDao().listerSpecialiteDiplome();
 			setListeSpeDiplome(a);
@@ -698,7 +698,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 			}
 		}
 
-		// Si liste unité durée vide
+		// Si liste unitÃ© durÃ©e vide
 		if (getLB_UNITE_DUREE() == LBVide) {
 			ArrayList<String> listeUniteDuree = new ArrayList<String>();
 			listeUniteDuree.add("heures");
@@ -771,10 +771,10 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (11/02/03 14:20:31)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (11/02/03 14:20:31)
 	 * 
 	 */
 	public boolean performPB_ANNULER_DIPLOME(HttpServletRequest request) throws Exception {
@@ -784,10 +784,10 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (11/02/03 14:20:31)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (11/02/03 14:20:31)
 	 * 
 	 */
 	public boolean performPB_CREER_DIPLOME(HttpServletRequest request) throws Exception {
@@ -812,10 +812,10 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (11/02/03 14:20:31)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (11/02/03 14:20:31)
 	 * 
 	 */
 	public boolean performPB_RECHERCHER(HttpServletRequest request) throws Exception {
@@ -824,15 +824,15 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (11/02/03 14:20:31)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (11/02/03 14:20:31)
 	 * 
 	 */
 	public boolean performPB_TITRE_DIPLOME(HttpServletRequest request) throws Exception {
 
-		// Test si ligne sélectionnée
+		// Test si ligne sÃ©lectionnÃ©e
 		int numligne = (Services.estNumerique(getZone(getNOM_LB_TITRE_DIPLOME_SELECT())) ? Integer
 				.parseInt(getZone(getNOM_LB_TITRE_DIPLOME_SELECT())) : -1);
 		if (numligne == -1 || getListeTitreDiplome().size() == 0 || numligne > getListeTitreDiplome().size()) {
@@ -840,7 +840,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 			return false;
 		}
 
-		// Récup du titre sélectionné
+		// RÃ©cup du titre sÃ©lectionnÃ©
 		TitreDiplome aTitre = (numligne > 0 ? (TitreDiplome) getListeTitreDiplome().get(numligne - 1) : null);
 		setTitreDiplomeCourant(aTitre);
 
@@ -858,10 +858,10 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (11/02/03 14:20:31)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (11/02/03 14:20:31)
 	 * 
 	 */
 	public boolean performPB_VALIDER_DIPLOME(HttpServletRequest request) throws Exception {
@@ -873,7 +873,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 			return false;
 		}
 
-		// Récup des zones saisies
+		// RÃ©cup des zones saisies
 		String newNomEcole = getZone(getNOM_EF_NOM_ECOLE());
 		String newDateObt = Services.formateDate(getZone(getNOM_EF_DATE_OBTENTION_DIPLOME()));
 
@@ -927,11 +927,11 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 			TitreDiplome newTitre = (numligneTitre > 0 ? (TitreDiplome) getListeTitreDiplome().get(numligneTitre - 1)
 					: null);
 
-			// Recup de la spécialité
+			// Recup de la spÃ©cialitÃ©
 			int numligneSpe = (Services.estNumerique(getZone(getNOM_LB_SPECIALITE_DIPLOME_SELECT())) ? Integer
 					.parseInt(getZone(getNOM_LB_SPECIALITE_DIPLOME_SELECT())) : -1);
 			if (numligneSpe == -1 || getListeSpeDiplome().size() == 0 || numligneSpe > getListeSpeDiplome().size()) {
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "Spécialités"));
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "SpÃ©cialitÃ©s"));
 				return false;
 			}
 			SpecialiteDiplome newSpec = (numligneSpe > 0 ? (SpecialiteDiplome) getListeSpeDiplome()
@@ -950,7 +950,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 						getDiplomeAgentCourant().getIdDocument(), getDiplomeAgentCourant().getIdSpecialiteDiplome(),
 						getDiplomeAgentCourant().getDateObtention(), getDiplomeAgentCourant().getNomEcole());
 			} else if (getZone(getNOM_ST_ACTION_DIPLOME()).equals(ACTION_CREATION_DIPLOME)) {
-				// Création
+				// CrÃ©ation
 				getDiplomeAgentDao().creerDiplomeAgent(getDiplomeAgentCourant().getIdTitreDiplome(),
 						getDiplomeAgentCourant().getIdAgent(), getDiplomeAgentCourant().getIdDocument(),
 						getDiplomeAgentCourant().getIdSpecialiteDiplome(), getDiplomeAgentCourant().getDateObtention(),
@@ -967,7 +967,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 			performPB_VALIDER_DOCUMENT_DIPLOME_CREATION(request, getDiplomeAgentCourant().getIdDiplome());
 		}
 
-		// Tout s'est bien passé
+		// Tout s'est bien passÃ©
 		commitTransaction();
 		initialiseListeDiplomesAgent(request);
 		setTitreDiplomeCourant(new TitreDiplome());
@@ -978,7 +978,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	private boolean performControlerRGDiplome(HttpServletRequest request) {
-		// Vérification des contraintes d'unicité du diplome
+		// VÃ©rification des contraintes d'unicitÃ© du diplome
 		if (getZone(getNOM_ST_ACTION_DIPLOME()).equals(ACTION_CREATION_DIPLOME)) {
 			// Recup du titre
 			int numligneTitre = (Services.estNumerique(getZone(getNOM_LB_TITRE_DIPLOME_SELECT())) ? Integer
@@ -991,11 +991,11 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 			TitreDiplome newTitre = (numligneTitre > 0 ? (TitreDiplome) getListeTitreDiplome().get(numligneTitre - 1)
 					: null);
 
-			// Recup de la spécialité
+			// Recup de la spÃ©cialitÃ©
 			int numligneSpe = (Services.estNumerique(getZone(getNOM_LB_SPECIALITE_DIPLOME_SELECT())) ? Integer
 					.parseInt(getZone(getNOM_LB_SPECIALITE_DIPLOME_SELECT())) : -1);
 			if (numligneSpe == -1 || getListeSpeDiplome().size() == 0 || numligneSpe > getListeSpeDiplome().size()) {
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "Spécialités"));
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "SpÃ©cialitÃ©s"));
 				return false;
 			}
 			SpecialiteDiplome newSpec = (numligneSpe > 0 ? (SpecialiteDiplome) getListeSpeDiplome()
@@ -1007,8 +1007,8 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 						&& diplome.getNomEcole().equals(getVAL_EF_NOM_ECOLE().toUpperCase())
 						&& diplome.getIdTitreDiplome() == newTitre.getIdTitreDiplome()) {
 					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "un diplôme", "ces valeurs"));
+					// "Attention, il existe dÃ©jÃ  @ avec @. Veuillez contrÃ´ler."
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "un diplÃ´me", "ces valeurs"));
 					return false;
 				}
 			}
@@ -1017,10 +1017,10 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (11/10/11 08:38:48)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (11/10/11 08:38:48)
 	 * 
 	 * @param idDiplomeAgent
 	 * 
@@ -1033,7 +1033,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 			if (multi.getFile(getNOM_EF_LIENDOCUMENT()) != null) {
 				fichierUpload = multi.getFile(getNOM_EF_LIENDOCUMENT());
 
-				// Contrôle des champs
+				// Controle des champs
 				if (!performControlerSaisieDocument(request))
 					return false;
 
@@ -1064,7 +1064,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 					logger.error("Erreur suppression physique du fichier : " + e.toString());
 				}
 
-				// tout s'est bien passé
+				// tout s'est bien passÃ©
 				commitTransaction();
 
 			}
@@ -1076,7 +1076,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	private boolean creeDocumentDiplome(HttpServletRequest request, Integer idDiplomeAgent) throws Exception {
-		// on crée l'entrée dans la table
+		// on crÃ©e l'entrÃ©e dans la table
 		setDocumentCourant(new Document());
 		// on recupere le fichier mis dans le repertoire temporaire
 		if (fichierUpload == null) {
@@ -1084,7 +1084,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 			return false;
 		}
 
-		// on recupère le type de document
+		// on recupere le type de document
 		String codTypeDoc = "DIP";
 		TypeDocument td = getTypeDocumentDao().chercherTypeDocumentByCod(codTypeDoc);
 		String extension = fichierUpload.getName().substring(fichierUpload.getName().indexOf('.'),
@@ -1102,7 +1102,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 		if (!upload)
 			return false;
 
-		// on crée le document en base de données
+		// on crÃ©e le document en base de donnÃ©es
 		getDocumentCourant().setLienDocument(codTypeDoc + "/" + nom);
 		getDocumentCourant().setIdTypeDocument(td.getIdTypeDocument());
 		getDocumentCourant().setNomOriginal(fichierUpload.getName());
@@ -1122,7 +1122,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 		if (getTransaction().isErreur())
 			return false;
 
-		// Tout s'est bien passé
+		// Tout s'est bien passÃ©
 		commitTransaction();
 		addZone(getNOM_EF_COMMENTAIRE(), Const.CHAINE_VIDE);
 
@@ -1135,7 +1135,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	private boolean creeDocumentFormation(HttpServletRequest request, Integer idFormationAgent) throws Exception {
-		// on crée l'entrée dans la table
+		// on crÃ©e l'entrÃ©e dans la table
 		setDocumentCourant(new Document());
 		// on recupere le fichier mis dans le repertoire temporaire
 		if (fichierUpload == null) {
@@ -1143,7 +1143,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 			return false;
 		}
 
-		// on recupère le type de document
+		// on recupere le type de document
 		String codTypeDoc = "FORM";
 		TypeDocument td = getTypeDocumentDao().chercherTypeDocumentByCod(codTypeDoc);
 		String extension = fichierUpload.getName().substring(fichierUpload.getName().indexOf('.'),
@@ -1161,7 +1161,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 		if (!upload)
 			return false;
 
-		// on crée le document en base de données
+		// on crÃ©e le document en base de donnÃ©es
 		getDocumentCourant().setLienDocument(codTypeDoc + "/" + nom);
 		getDocumentCourant().setIdTypeDocument(td.getIdTypeDocument());
 		getDocumentCourant().setNomOriginal(fichierUpload.getName());
@@ -1181,7 +1181,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 		if (getTransaction().isErreur())
 			return false;
 
-		// Tout s'est bien passé
+		// Tout s'est bien passÃ©
 		commitTransaction();
 		addZone(getNOM_EF_COMMENTAIRE(), Const.CHAINE_VIDE);
 
@@ -1194,7 +1194,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	private boolean creeDocumentPermis(HttpServletRequest request, Integer idPermisAgent) throws Exception {
-		// on crée l'entrée dans la table
+		// on crÃ©e l'entrÃ©e dans la table
 		setDocumentCourant(new Document());
 		// on recupere le fichier mis dans le repertoire temporaire
 		if (fichierUpload == null) {
@@ -1202,7 +1202,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 			return false;
 		}
 
-		// on recupère le type de document
+		// on recupere le type de document
 		String codTypeDoc = "PERM";
 		TypeDocument td = getTypeDocumentDao().chercherTypeDocumentByCod(codTypeDoc);
 		String extension = fichierUpload.getName().substring(fichierUpload.getName().indexOf('.'),
@@ -1220,7 +1220,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 		if (!upload)
 			return false;
 
-		// on crée le document en base de données
+		// on crÃ©e le document en base de donnÃ©es
 		getDocumentCourant().setLienDocument(codTypeDoc + "/" + nom);
 		getDocumentCourant().setIdTypeDocument(td.getIdTypeDocument());
 		getDocumentCourant().setNomOriginal(fichierUpload.getName());
@@ -1240,7 +1240,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 		if (getTransaction().isErreur())
 			return false;
 
-		// Tout s'est bien passé
+		// Tout s'est bien passÃ©
 		commitTransaction();
 		addZone(getNOM_EF_COMMENTAIRE(), Const.CHAINE_VIDE);
 
@@ -1253,29 +1253,29 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Vérifie les règles de gestion de saisie (champs obligatoires, ...)
+	 * VÃ©rifie les regles de gestion de saisie (champs obligatoires, ...)
 	 * 
 	 * @param request
-	 * @return true si les règles de gestion sont respectées. false sinon.
+	 * @return true si les regles de gestion sont respectÃ©es. false sinon.
 	 * @throws Exception
 	 *             RG_AG_DI_C01 RG_AG_DI_C02
 	 */
 	public boolean performControlerChampsDiplome(HttpServletRequest request) throws Exception {
 
-		// titre du diplôme
+		// titre du diplome
 		int indice = (Services.estNumerique(getVAL_LB_TITRE_DIPLOME_SELECT()) ? Integer
 				.parseInt(getVAL_LB_TITRE_DIPLOME_SELECT()) : -1);
 		if (indice < 1) {
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "Titre du diplôme"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "Titre du diplÃ´me"));
 			setFocus(getNOM_LB_TITRE_DIPLOME());
 			return false;
 		}
 
-		// spécialité obligatoire
+		// spÃ©cialitÃ© obligatoire
 		int indiceSpe = (Services.estNumerique(getVAL_LB_SPECIALITE_DIPLOME_SELECT()) ? Integer
 				.parseInt(getVAL_LB_SPECIALITE_DIPLOME_SELECT()) : -1);
 		if (indiceSpe < 1) {
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "Spécialité du diplôme"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "SpÃ©cialitÃ© du diplÃ´me"));
 			setFocus(getNOM_LB_SPECIALITE_DIPLOME());
 			return false;
 		}
@@ -1294,7 +1294,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 				getVAL_EF_DATE_OBTENTION_DIPLOME()) > -1
 				|| Services.compareDates(getVAL_EF_DATE_OBTENTION_DIPLOME(), Services.dateDuJour()) > 0) {
 			// "ERR202",
-			// "La date @ doit être comprise entre la date @ et la date @."
+			// "La date @ doit Ãªtre comprise entre la date @ et la date @."
 			// RG_AG_DI_C01
 			getTransaction().declarerErreur(
 					MessageUtils.getMessage("ERR202", "d'obtention", "de naissance de l'agent", "du jour"));
@@ -1306,7 +1306,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Insérez la description de la méthode ici. Date de création : (11/02/2003
+	 * InsÃ©rez la description de la mÃ©thode ici. Date de crÃ©ation : (11/02/2003
 	 * 15:15:56)
 	 * 
 	 * @param newAgentCourant
@@ -1317,7 +1317,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Insérez la description de la méthode ici. Date de création : (13/02/2003
+	 * InsÃ©rez la description de la mÃ©thode ici. Date de crÃ©ation : (13/02/2003
 	 * 11:01:39)
 	 * 
 	 * @param newContactCourant
@@ -1328,7 +1328,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_TITRE_DIPLOME Date de création : (11/02/03
+	 * Setter de la liste: LB_TITRE_DIPLOME Date de crÃ©ation : (11/02/03
 	 * 14:20:32)
 	 * 
 	 */
@@ -1337,7 +1337,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Insérez la description de la méthode ici. Date de création : (13/02/2003
+	 * InsÃ©rez la description de la mÃ©thode ici. Date de crÃ©ation : (13/02/2003
 	 * 10:38:02)
 	 * 
 	 * @param newListeDiplomesAgent
@@ -1348,7 +1348,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Insérez la description de la méthode ici. Date de création : (13/02/2003
+	 * InsÃ©rez la description de la mÃ©thode ici. Date de crÃ©ation : (13/02/2003
 	 * 10:47:43)
 	 * 
 	 * @param newListeTitreDiplome
@@ -1359,7 +1359,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Insérez la description de la méthode ici. Date de création : (12/06/2003
+	 * InsÃ©rez la description de la mÃ©thode ici. Date de crÃ©ation : (12/06/2003
 	 * 10:46:00)
 	 * 
 	 * @param newTitreDiplomeCourant
@@ -1385,7 +1385,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 	/**
 	 * @param focus
-	 *            focus à définir.
+	 *            focus Ã  dÃ©finir.
 	 */
 	public void setFocus(String focus) {
 		this.focus = focus;
@@ -1393,7 +1393,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_DATEOBT Date de
-	 * création : (29/09/08 10:18:46)
+	 * crÃ©ation : (29/09/08 10:18:46)
 	 * 
 	 */
 	public String getNOM_ST_DATEOBT() {
@@ -1401,8 +1401,8 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATEOBT Date
-	 * de création : (29/09/08 10:18:46)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_DATEOBT Date
+	 * de crÃ©ation : (29/09/08 10:18:46)
 	 * 
 	 */
 	public String getVAL_ST_DATEOBT() {
@@ -1411,7 +1411,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_DATEVAL Date de
-	 * création : (29/09/08 10:18:46)
+	 * crÃ©ation : (29/09/08 10:18:46)
 	 * 
 	 */
 	public String getNOM_ST_DATEVAL() {
@@ -1419,8 +1419,8 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATEVAL Date
-	 * de création : (29/09/08 10:18:46)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_DATEVAL Date
+	 * de crÃ©ation : (29/09/08 10:18:46)
 	 * 
 	 */
 	public String getVAL_ST_DATEVAL() {
@@ -1429,7 +1429,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_TITRE Date de
-	 * création : (29/09/08 10:18:46)
+	 * crÃ©ation : (29/09/08 10:18:46)
 	 * 
 	 */
 	public String getNOM_ST_TITRE() {
@@ -1437,8 +1437,8 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_TITRE Date de
-	 * création : (29/09/08 10:18:46)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_TITRE Date de
+	 * crÃ©ation : (29/09/08 10:18:46)
 	 * 
 	 */
 	public String getVAL_ST_TITRE() {
@@ -1447,7 +1447,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_NOM_ECOLE Date de
-	 * création : (09/05/11 16:27:58)
+	 * crÃ©ation : (09/05/11 16:27:58)
 	 * 
 	 */
 	public String getNOM_EF_NOM_ECOLE() {
@@ -1455,8 +1455,8 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_NOM_ECOLE Date de création : (09/05/11 16:27:58)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_NOM_ECOLE Date de crÃ©ation : (09/05/11 16:27:58)
 	 * 
 	 */
 	public String getVAL_EF_NOM_ECOLE() {
@@ -1465,7 +1465,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_NOM_ECOLE Date de
-	 * création : (10/05/11 14:47:09)
+	 * crÃ©ation : (10/05/11 14:47:09)
 	 * 
 	 */
 	public String getNOM_ST_NOM_ECOLE() {
@@ -1473,8 +1473,8 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_NOM_ECOLE Date
-	 * de création : (10/05/11 14:47:09)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_NOM_ECOLE Date
+	 * de crÃ©ation : (10/05/11 14:47:09)
 	 * 
 	 */
 	public String getVAL_ST_NOM_ECOLE() {
@@ -1482,7 +1482,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la liste des spécialités des diplomes.
+	 * Retourne la liste des spÃ©cialitÃ©s des diplomes.
 	 * 
 	 * @return listeSpeDiplome ArrayList d'objets SpecialiteDiplome
 	 */
@@ -1491,17 +1491,17 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Met à jour la liste des specialites des diplomes
+	 * Met a jour la liste des specialites des diplomes
 	 * 
 	 * @param listeSpeDiplome
-	 *            listeSpeDiplome à définir
+	 *            listeSpeDiplome Ã  dÃ©finir
 	 */
 	private void setListeSpeDiplome(ArrayList<SpecialiteDiplome> listeSpeDiplome) {
 		this.listeSpeDiplome = listeSpeDiplome;
 	}
 
 	/**
-	 * Retourne les specialites dans une table de hashage Date de création :
+	 * Retourne les specialites dans une table de hashage Date de crÃ©ation :
 	 * (11/06/2003 15:37:08)
 	 * 
 	 * @return Hashtable
@@ -1515,7 +1515,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 	/**
 	 * Getter de la liste avec un lazy initialize : LB_SPECIALITE_DIPLOME Date
-	 * de création : (15/06/11 13:49:36)
+	 * de crÃ©ation : (15/06/11 13:49:36)
 	 * 
 	 */
 	private String[] getLB_SPECIALITE_DIPLOME() {
@@ -1525,7 +1525,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_SPECIALITE_DIPLOME Date de création : (15/06/11
+	 * Setter de la liste: LB_SPECIALITE_DIPLOME Date de crÃ©ation : (15/06/11
 	 * 13:49:36)
 	 * 
 	 */
@@ -1535,7 +1535,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 	/**
 	 * Retourne le nom de la zone pour la JSP : NOM_LB_SPECIALITE_DIPLOME Date
-	 * de création : (15/06/11 13:49:36)
+	 * de crÃ©ation : (15/06/11 13:49:36)
 	 * 
 	 */
 	public String getNOM_LB_SPECIALITE_DIPLOME() {
@@ -1543,8 +1543,8 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_SPECIALITE_DIPLOME_SELECT Date de création : (15/06/11 13:49:36)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_SPECIALITE_DIPLOME_SELECT Date de crÃ©ation : (15/06/11 13:49:36)
 	 * 
 	 */
 	public String getNOM_LB_SPECIALITE_DIPLOME_SELECT() {
@@ -1552,8 +1552,8 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_SPECIALITE_DIPLOME Date de création : (15/06/11 13:49:36)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_SPECIALITE_DIPLOME Date de crÃ©ation : (15/06/11 13:49:36)
 	 * 
 	 */
 	public String[] getVAL_LB_SPECIALITE_DIPLOME() {
@@ -1561,8 +1561,8 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_SPECIALITE_DIPLOME Date de création : (15/06/11 13:49:36)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_SPECIALITE_DIPLOME Date de crÃ©ation : (15/06/11 13:49:36)
 	 * 
 	 */
 	public String getVAL_LB_SPECIALITE_DIPLOME_SELECT() {
@@ -1570,7 +1570,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Constructeur du process OeAGENTDIPLOMEGestion. Date de création :
+	 * Constructeur du process OeAGENTDIPLOMEGestion. Date de crÃ©ation :
 	 * (15/06/11 14:04:18)
 	 * 
 	 */
@@ -1580,7 +1580,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_SPECIALITE_DIPLOME
-	 * Date de création : (15/06/11 14:04:19)
+	 * Date de crÃ©ation : (15/06/11 14:04:19)
 	 * 
 	 */
 	public String getNOM_ST_SPECIALITE_DIPLOME() {
@@ -1588,8 +1588,8 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
-	 * ST_SPECIALITE_DIPLOME Date de création : (15/06/11 14:04:19)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone :
+	 * ST_SPECIALITE_DIPLOME Date de crÃ©ation : (15/06/11 14:04:19)
 	 * 
 	 */
 	public String getVAL_ST_SPECIALITE_DIPLOME() {
@@ -1597,8 +1597,8 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Méthode appelée par la servlet qui aiguille le traitement : en fonction
-	 * du bouton de la JSP Date de création : (11/02/03 14:20:31)
+	 * mÃ©thode appelee par la servlet qui aiguille le traitement : en fonction
+	 * du bouton de la JSP Date de crÃ©ation : (11/02/03 14:20:31)
 	 * 
 	 */
 	public boolean recupererStatut(HttpServletRequest request) throws Exception {
@@ -1767,14 +1767,14 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 			}
 
 		}
-		// Si pas de retour définit
-		setStatut(STATUT_MEME_PROCESS, false, "Erreur : TAG INPUT non géré par le process");
+		// Si pas de retour dÃ©finit
+		setStatut(STATUT_MEME_PROCESS, false, "Erreur : TAG INPUT non gÃ©rÃ© par le process");
 		return false;
 	}
 
 	/**
-	 * Retourne le nom de la JSP du process Zone à utiliser dans un champ caché
-	 * dans chaque formulaire de la JSP. Date de création : (17/10/11 10:36:22)
+	 * Retourne le nom de la JSP du process Zone a utiliser dans un champ cache
+	 * dans chaque formulaire de la JSP. Date de crÃ©ation : (17/10/11 10:36:22)
 	 * 
 	 */
 	public String getJSP() {
@@ -1782,8 +1782,8 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de l'écran (notamment pour déterminer les droits
-	 * associés).
+	 * Retourne le nom de l'Ã©cran (notamment pour dÃ©terminer les droits
+	 * associÃ©s).
 	 */
 	public String getNomEcran() {
 		return "ECR-AG-DP-DIPLOMES";
@@ -1791,7 +1791,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le DATE_NAISS de la zone statique : ST_DIPLOME Date
-	 * de création : (18/08/11 10:21:15)
+	 * de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_TITRE_DIPLOME(int i) {
@@ -1799,8 +1799,8 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DIPLOME Date
-	 * de création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_DIPLOME Date
+	 * de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_TITRE_DIPLOME(int i) {
@@ -1809,7 +1809,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le DATE_NAISS de la zone statique : ST_DIPLOME Date
-	 * de création : (18/08/11 10:21:15)
+	 * de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_SPE_DIPLOME(int i) {
@@ -1817,8 +1817,8 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DIPLOME Date
-	 * de création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_DIPLOME Date
+	 * de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_SPE_DIPLOME(int i) {
@@ -1827,7 +1827,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le LIEU_NAISS de la zone statique : ST_NIVEAU Date
-	 * de création : (18/08/11 10:21:15)
+	 * de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_NIVEAU(int i) {
@@ -1835,8 +1835,8 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_NIVEAU Date de
-	 * création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_NIVEAU Date de
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_NIVEAU(int i) {
@@ -1848,10 +1848,10 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (16/08/11 15:48:02)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	public boolean performPB_MODIFIER_DIPLOME(HttpServletRequest request, int indiceEltAModifier) throws Exception {
@@ -1866,7 +1866,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 		addZone(getNOM_ST_ACTION_DIPLOME(), Const.CHAINE_VIDE);
 
-		// Récup du Diplome courant
+		// RÃ©cup du Diplome courant
 		DiplomeAgent d = (DiplomeAgent) getListeDiplomesAgent().get(indiceEltAModifier);
 		setDiplomeAgentCourant(d);
 
@@ -1886,7 +1886,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_VISUALISATION_DIPLOME Date
-	 * de création : (29/09/11 10:03:38)
+	 * de crÃ©ation : (29/09/11 10:03:38)
 	 * 
 	 */
 	public String getNOM_PB_CONSULTER_DIPLOME(int i) {
@@ -1894,10 +1894,10 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (29/09/11 10:03:38)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (29/09/11 10:03:38)
 	 * 
 	 */
 	public boolean performPB_CONSULTER_DIPLOME(HttpServletRequest request, int indiceEltAConsulter) throws Exception {
@@ -1910,7 +1910,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 		addZone(getNOM_ST_ACTION_DIPLOME(), Const.CHAINE_VIDE);
 
-		// Récup du Diplome courant
+		// RÃ©cup du Diplome courant
 		DiplomeAgent d = (DiplomeAgent) getListeDiplomesAgent().get(indiceEltAConsulter);
 		setDiplomeAgentCourant(d);
 
@@ -1930,7 +1930,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMMER_DIPLOME Date de
-	 * création : (05/09/11 11:31:37)
+	 * crÃ©ation : (05/09/11 11:31:37)
 	 * 
 	 */
 	public String getNOM_PB_SUPPRIMER_DIPLOME(int i) {
@@ -1938,10 +1938,10 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (05/09/11 11:31:37)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (05/09/11 11:31:37)
 	 * 
 	 */
 	public boolean performPB_SUPPRIMER_DIPLOME(HttpServletRequest request, int indiceEltASuprimer) throws Exception {
@@ -1955,7 +1955,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 		addZone(getNOM_ST_ACTION_DIPLOME(), Const.CHAINE_VIDE);
 
-		// Récup du Diplome courant
+		// RÃ©cup du Diplome courant
 		DiplomeAgent d = (DiplomeAgent) getListeDiplomesAgent().get(indiceEltASuprimer);
 		setDiplomeAgentCourant(d);
 
@@ -1975,7 +1975,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le DATE_NAISS de la zone statique : ST_FORMATION
-	 * Date de création : (18/08/11 10:21:15)
+	 * Date de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_FORMATION(int i) {
@@ -1983,8 +1983,8 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_FORMATION Date
-	 * de création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_FORMATION Date
+	 * de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_FORMATION(int i) {
@@ -1993,7 +1993,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le DATE_NAISS de la zone statique : ST_ANNEE Date de
-	 * création : (18/08/11 10:21:15)
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_ANNEE(int i) {
@@ -2001,8 +2001,8 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ANNEE Date de
-	 * création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_ANNEE Date de
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_ANNEE(int i) {
@@ -2072,7 +2072,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_CREER Date de création :
+	 * Retourne le nom d'un bouton pour la JSP : PB_CREER Date de crÃ©ation :
 	 * (11/02/03 14:20:31)
 	 * 
 	 */
@@ -2081,10 +2081,10 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (11/02/03 14:20:31)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (11/02/03 14:20:31)
 	 * 
 	 */
 	public boolean performPB_CREER_FORMATION(HttpServletRequest request) throws Exception {
@@ -2110,7 +2110,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_DUREE_FORMATION Date
-	 * de création : (11/02/03 14:20:31)
+	 * de crÃ©ation : (11/02/03 14:20:31)
 	 * 
 	 */
 	public String getNOM_ST_DUREE_FORMATION() {
@@ -2118,8 +2118,8 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
-	 * ST_DUREE_FORMATION Date de création : (11/02/03 14:20:31)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone :
+	 * ST_DUREE_FORMATION Date de crÃ©ation : (11/02/03 14:20:31)
 	 * 
 	 */
 	public String getVAL_ST_DUREE_FORMATION() {
@@ -2128,7 +2128,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_ANNEE_FORMATION Date
-	 * de création : (11/02/03 14:20:31)
+	 * de crÃ©ation : (11/02/03 14:20:31)
 	 * 
 	 */
 	public String getNOM_ST_ANNEE_FORMATION() {
@@ -2136,8 +2136,8 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
-	 * ST_ANNEE_FORMATION Date de création : (11/02/03 14:20:31)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone :
+	 * ST_ANNEE_FORMATION Date de crÃ©ation : (11/02/03 14:20:31)
 	 * 
 	 */
 	public String getVAL_ST_ANNEE_FORMATION() {
@@ -2146,7 +2146,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_ACTION_FORMATION
-	 * Date de création : (11/02/03 14:20:31)
+	 * Date de crÃ©ation : (11/02/03 14:20:31)
 	 * 
 	 */
 	public String getNOM_ST_ACTION_FORMATION() {
@@ -2154,8 +2154,8 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
-	 * ST_ACTION_FORMATION Date de création : (11/02/03 14:20:31)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone :
+	 * ST_ACTION_FORMATION Date de crÃ©ation : (11/02/03 14:20:31)
 	 * 
 	 */
 	public String getVAL_ST_ACTION_FORMATION() {
@@ -2163,7 +2163,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_MODIFIER Date de création :
+	 * Retourne le nom d'un bouton pour la JSP : PB_MODIFIER Date de crÃ©ation :
 	 * (11/02/03 14:20:31)
 	 * 
 	 */
@@ -2172,10 +2172,10 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (16/08/11 15:48:02)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	public boolean performPB_MODIFIER_FORMATION(HttpServletRequest request, int indiceEltAModifier) throws Exception {
@@ -2190,7 +2190,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 		addZone(getNOM_ST_ACTION_FORMATION(), Const.CHAINE_VIDE);
 
-		// Récup de la formation courante
+		// RÃ©cup de la formation courante
 		FormationAgent f = (FormationAgent) getListeFormationsAgent().get(indiceEltAModifier);
 		setFormationAgentCourant(f);
 
@@ -2209,10 +2209,10 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (11/02/03 14:20:31)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (11/02/03 14:20:31)
 	 * 
 	 */
 	private boolean initialiseFormationCourant(HttpServletRequest request) throws Exception {
@@ -2243,7 +2243,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_VISUALISATION_FORMATION Date
-	 * de création : (29/09/11 10:03:38)
+	 * de crÃ©ation : (29/09/11 10:03:38)
 	 * 
 	 */
 	public String getNOM_PB_CONSULTER_FORMATION(int i) {
@@ -2251,10 +2251,10 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (29/09/11 10:03:38)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (29/09/11 10:03:38)
 	 * 
 	 */
 	public boolean performPB_CONSULTER_FORMATION(HttpServletRequest request, int indiceEltAConsulter) throws Exception {
@@ -2267,7 +2267,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 		addZone(getNOM_ST_ACTION_FORMATION(), Const.CHAINE_VIDE);
 
-		// Récup de la formation courante
+		// RÃ©cup de la formation courante
 		FormationAgent f = (FormationAgent) getListeFormationsAgent().get(indiceEltAConsulter);
 		setFormationAgentCourant(f);
 
@@ -2287,7 +2287,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMMER_FORMATION Date de
-	 * création : (05/09/11 11:31:37)
+	 * crÃ©ation : (05/09/11 11:31:37)
 	 * 
 	 */
 	public String getNOM_PB_SUPPRIMER_FORMATION(int i) {
@@ -2295,10 +2295,10 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (05/09/11 11:31:37)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (05/09/11 11:31:37)
 	 * 
 	 */
 	public boolean performPB_SUPPRIMER_FORMATION(HttpServletRequest request, int indiceEltASuprimer) throws Exception {
@@ -2312,7 +2312,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 		addZone(getNOM_ST_ACTION_DIPLOME(), Const.CHAINE_VIDE);
 
-		// Récup de la formation courante
+		// RÃ©cup de la formation courante
 		FormationAgent f = (FormationAgent) getListeFormationsAgent().get(indiceEltASuprimer);
 		setFormationAgentCourant(f);
 
@@ -2332,7 +2332,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER_FORMATION Date de
-	 * création : (11/02/03 14:20:31)
+	 * crÃ©ation : (11/02/03 14:20:31)
 	 * 
 	 */
 	public String getNOM_PB_VALIDER_FORMATION() {
@@ -2340,10 +2340,10 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (11/02/03 14:20:31)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (11/02/03 14:20:31)
 	 * 
 	 */
 	public boolean performPB_VALIDER_FORMATION(HttpServletRequest request) throws Exception {
@@ -2355,7 +2355,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 			return false;
 		}
 
-		// Récup des zones saisies
+		// RÃ©cup des zones saisies
 		String dureeForm = getZone(getNOM_ST_DUREE_FORMATION());
 		String annee = getZone(getNOM_ST_ANNEE_FORMATION());
 
@@ -2407,7 +2407,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 			int numligneUnite = (Services.estNumerique(getZone(getNOM_LB_UNITE_DUREE_SELECT())) ? Integer
 					.parseInt(getZone(getNOM_LB_UNITE_DUREE_SELECT())) : -1);
 			if (numligneUnite == -1) {
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "unité durée"));
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "unitÃ© durÃ©e"));
 				return false;
 			}
 			String uniteDuree = (numligneUnite >= 0 ? (String) getListeUniteDuree().get(numligneUnite) : null);
@@ -2430,7 +2430,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 						getFormationAgentCourant().getAnneeFormation());
 				idFormationAgent = getFormationAgentCourant().getIdFormation();
 			} else if (getZone(getNOM_ST_ACTION_FORMATION()).equals(ACTION_CREATION_FORMATION)) {
-				// Création
+				// CrÃ©ation
 				idFormationAgent = getFormationAgentDao().creerFormationAgent(
 						getFormationAgentCourant().getIdTitreFormation(),
 						getFormationAgentCourant().getIdCentreFormation(), getFormationAgentCourant().getIdAgent(),
@@ -2442,7 +2442,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 			performPB_VALIDER_DOCUMENT_FORMATION_CREATION(request, idFormationAgent);
 		}
 
-		// Tout s'est bien passé
+		// Tout s'est bien passÃ©
 		initialiseListeFormationsAgent(request);
 
 		addZone(getNOM_ST_ACTION_FORMATION(), Const.CHAINE_VIDE);
@@ -2486,7 +2486,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 	private boolean performControlerRGFormation(HttpServletRequest request) throws Exception {
 
-		// Vérification des contraintes d'unicité de la formation
+		// VÃ©rification des contraintes d'unicitÃ© de la formation
 		if (getVAL_ST_ACTION_FORMATION().equals(ACTION_CREATION_FORMATION)) {
 
 			// Recup du titre
@@ -2523,7 +2523,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 			int numligneUnite = (Services.estNumerique(getZone(getNOM_LB_UNITE_DUREE_SELECT())) ? Integer
 					.parseInt(getZone(getNOM_LB_UNITE_DUREE_SELECT())) : -1);
 			if (numligneUnite == -1) {
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "unité durée"));
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "unitÃ© durÃ©e"));
 				return false;
 			}
 			String uniteDuree = (numligneUnite >= 0 ? (String) getListeUniteDuree().get(numligneUnite) : null);
@@ -2537,7 +2537,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 						&& formation.getDureeFormation().toString().equals(getVAL_ST_DUREE_FORMATION())
 						&& formation.getUniteDuree().equals(uniteDuree)) {
 					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
+					// "Attention, il existe dÃ©jÃ  @ avec @. Veuillez contrÃ´ler."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "une formation", "ces valeurs"));
 					return false;
 				}
@@ -2547,10 +2547,10 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (11/10/11 08:38:48)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (11/10/11 08:38:48)
 	 * 
 	 * @param idFormationAgent
 	 * 
@@ -2563,7 +2563,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 			if (multi.getFile(getNOM_EF_LIENDOCUMENT()) != null) {
 				fichierUpload = multi.getFile(getNOM_EF_LIENDOCUMENT());
 
-				// Contrôle des champs
+				// Controle des champs
 				if (!performControlerSaisieDocument(request))
 					return false;
 
@@ -2594,7 +2594,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 					logger.error("Erreur suppression physique du fichier : " + e.toString());
 				}
 
-				// tout s'est bien passé
+				// tout s'est bien passÃ©
 				commitTransaction();
 
 			}
@@ -2606,24 +2606,24 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Vérifie les règles de gestion de saisie (champs obligatoires, ...)
+	 * VÃ©rifie les regles de gestion de saisie (champs obligatoires, ...)
 	 * 
 	 * @param request
-	 * @return true si les règles de gestion sont respectées. false sinon.
+	 * @return true si les regles de gestion sont respectÃ©es. false sinon.
 	 * @throws Exception
 	 */
 	public boolean performControlerChampsFormation(HttpServletRequest request) throws Exception {
 
-		// durée formation
+		// durÃ©e formation
 		if (getZone(getNOM_ST_DUREE_FORMATION()).length() == 0) {
 			// "ERR002", "La zone @ est obligatoire."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "durée de la formation"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "durÃ©e de la formation"));
 			setFocus(getNOM_ST_DUREE_FORMATION());
 			return false;
 		}
 		if (!Services.estNumerique(getVAL_ST_DUREE_FORMATION())) {
-			// "ERR992", "La zone @ doit être numérique."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "durée de la formation"));
+			// "ERR992", "La zone @ doit Ãªtre numÃ©rique."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "durÃ©e de la formation"));
 			setFocus(getNOM_ST_DUREE_FORMATION());
 			return false;
 		}
@@ -2631,13 +2631,13 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 		// annee formation
 		if (getZone(getNOM_ST_ANNEE_FORMATION()).length() == 0) {
 			// "ERR002", "La zone @ est obligatoire."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "année de la formation"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "annÃ©e de la formation"));
 			setFocus(getNOM_ST_ANNEE_FORMATION());
 			return false;
 		}
 		if (!Services.estNumerique(getVAL_ST_ANNEE_FORMATION())) {
-			// "ERR992", "La zone @ doit être numérique."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "année de la formation"));
+			// "ERR992", "La zone @ doit Ãªtre numÃ©rique."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "annÃ©e de la formation"));
 			setFocus(getNOM_ST_ANNEE_FORMATION());
 			return false;
 		}
@@ -2645,7 +2645,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER Date de création :
+	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER Date de crÃ©ation :
 	 * (11/02/03 14:20:31)
 	 * 
 	 */
@@ -2654,10 +2654,10 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (11/02/03 14:20:31)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (11/02/03 14:20:31)
 	 * 
 	 */
 	public boolean performPB_ANNULER_FORMATION(HttpServletRequest request) throws Exception {
@@ -2679,7 +2679,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 	/**
 	 * Getter de la liste avec un lazy initialize : LB_UNITE_DUREE Date de
-	 * création : (28/11/11)
+	 * crÃ©ation : (28/11/11)
 	 * 
 	 */
 	private String[] getLB_UNITE_DUREE() {
@@ -2689,7 +2689,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_UNITE_DUREE Date de création : (28/11/11)
+	 * Setter de la liste: LB_UNITE_DUREE Date de crÃ©ation : (28/11/11)
 	 * 
 	 */
 	private void setLB_UNITE_DUREE(String[] newLB_UNITE_DUREE) {
@@ -2698,7 +2698,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 	/**
 	 * Retourne le nom de la zone pour la JSP : NOM_LB_UNITE_DUREE Date de
-	 * création : (28/11/11)
+	 * crÃ©ation : (28/11/11)
 	 * 
 	 */
 	public String getNOM_LB_UNITE_DUREE() {
@@ -2706,8 +2706,8 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_UNITE_DUREE_SELECT Date de création : (28/11/11)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_UNITE_DUREE_SELECT Date de crÃ©ation : (28/11/11)
 	 * 
 	 */
 	public String getNOM_LB_UNITE_DUREE_SELECT() {
@@ -2715,8 +2715,8 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_UNITE_DUREE Date de création : (28/11/11 09:55:36)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_UNITE_DUREE Date de crÃ©ation : (28/11/11 09:55:36)
 	 * 
 	 */
 	public String[] getVAL_LB_UNITE_DUREE() {
@@ -2724,8 +2724,8 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_UNITE_DUREE Date de création : (28/11/11)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_UNITE_DUREE Date de crÃ©ation : (28/11/11)
 	 * 
 	 */
 	public String getVAL_LB_UNITE_DUREE_SELECT() {
@@ -2770,7 +2770,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 	/**
 	 * Getter de la liste avec un lazy initialize : LB_TITRE_PERMIS Date de
-	 * création : (28/11/11)
+	 * crÃ©ation : (28/11/11)
 	 * 
 	 */
 	private String[] getLB_TITRE_PERMIS() {
@@ -2780,7 +2780,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_TITRE_PERMIS Date de création : (28/11/11)
+	 * Setter de la liste: LB_TITRE_PERMIS Date de crÃ©ation : (28/11/11)
 	 * 
 	 */
 	private void setLB_TITRE_PERMIS(String[] newLB_TITRE_PERMIS) {
@@ -2789,7 +2789,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 	/**
 	 * Retourne le nom de la zone pour la JSP : NOM_LB_TITRE_PERMIS Date de
-	 * création : (28/11/11)
+	 * crÃ©ation : (28/11/11)
 	 * 
 	 */
 	public String getNOM_LB_TITRE_PERMIS() {
@@ -2797,8 +2797,8 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_TITRE_PERMIS_SELECT Date de création : (28/11/11)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_TITRE_PERMIS_SELECT Date de crÃ©ation : (28/11/11)
 	 * 
 	 */
 	public String getNOM_LB_TITRE_PERMIS_SELECT() {
@@ -2806,8 +2806,8 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_TITRE_PERMIS Date de création : (28/11/11 09:55:36)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_TITRE_PERMIS Date de crÃ©ation : (28/11/11 09:55:36)
 	 * 
 	 */
 	public String[] getVAL_LB_TITRE_PERMIS() {
@@ -2815,8 +2815,8 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_TITRE_PERMIS Date de création : (28/11/11)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_TITRE_PERMIS Date de crÃ©ation : (28/11/11)
 	 * 
 	 */
 	public String getVAL_LB_TITRE_PERMIS_SELECT() {
@@ -2841,7 +2841,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_ACTION_PERMIS Date
-	 * de création : (11/02/03 14:20:31)
+	 * de crÃ©ation : (11/02/03 14:20:31)
 	 * 
 	 */
 	public String getNOM_ST_ACTION_PERMIS() {
@@ -2849,8 +2849,8 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACTION_PERMIS
-	 * Date de création : (11/02/03 14:20:31)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_ACTION_PERMIS
+	 * Date de crÃ©ation : (11/02/03 14:20:31)
 	 * 
 	 */
 	public String getVAL_ST_ACTION_PERMIS() {
@@ -2859,7 +2859,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_MODIFIER_PERMIS Date de
-	 * création : (11/02/03 14:20:31)
+	 * crÃ©ation : (11/02/03 14:20:31)
 	 * 
 	 */
 	public String getNOM_PB_MODIFIER_PERMIS(int i) {
@@ -2867,10 +2867,10 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (16/08/11 15:48:02)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	public boolean performPB_MODIFIER_PERMIS(HttpServletRequest request, int indiceEltAModifier) throws Exception {
@@ -2885,7 +2885,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 		addZone(getNOM_ST_ACTION_PERMIS(), Const.CHAINE_VIDE);
 
-		// Récup du permis courant
+		// RÃ©cup du permis courant
 		PermisAgent p = (PermisAgent) getListePermisAgent().get(indiceEltAModifier);
 		setPermisAgentCourant(p);
 
@@ -2904,10 +2904,10 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (11/02/03 14:20:31)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (11/02/03 14:20:31)
 	 * 
 	 */
 	private boolean initialisePermisCourant(HttpServletRequest request) throws Exception {
@@ -2934,7 +2934,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_VISUALISATION_PERMIS Date de
-	 * création : (29/09/11 10:03:38)
+	 * crÃ©ation : (29/09/11 10:03:38)
 	 * 
 	 */
 	public String getNOM_PB_CONSULTER_PERMIS(int i) {
@@ -2942,10 +2942,10 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (29/09/11 10:03:38)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (29/09/11 10:03:38)
 	 * 
 	 */
 	public boolean performPB_CONSULTER_PERMIS(HttpServletRequest request, int indiceEltAConsulter) throws Exception {
@@ -2958,7 +2958,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 		addZone(getNOM_ST_ACTION_PERMIS(), Const.CHAINE_VIDE);
 
-		// Récup du permis courant
+		// RÃ©cup du permis courant
 		PermisAgent p = (PermisAgent) getListePermisAgent().get(indiceEltAConsulter);
 		setPermisAgentCourant(p);
 
@@ -2978,7 +2978,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMMER_PERMIS Date de
-	 * création : (05/09/11 11:31:37)
+	 * crÃ©ation : (05/09/11 11:31:37)
 	 * 
 	 */
 	public String getNOM_PB_SUPPRIMER_PERMIS(int i) {
@@ -2986,10 +2986,10 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (05/09/11 11:31:37)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (05/09/11 11:31:37)
 	 * 
 	 */
 	public boolean performPB_SUPPRIMER_PERMIS(HttpServletRequest request, int indiceEltASuprimer) throws Exception {
@@ -3003,7 +3003,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 		addZone(getNOM_ST_ACTION_DIPLOME(), Const.CHAINE_VIDE);
 
-		// Récup du permis courant
+		// RÃ©cup du permis courant
 		PermisAgent p = (PermisAgent) getListePermisAgent().get(indiceEltASuprimer);
 		setPermisAgentCourant(p);
 
@@ -3023,7 +3023,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER_PERMIS Date de
-	 * création : (11/02/03 14:20:31)
+	 * crÃ©ation : (11/02/03 14:20:31)
 	 * 
 	 */
 	public String getNOM_PB_RESET() {
@@ -3031,10 +3031,10 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones Ã  afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
-	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
-	 * addZone(getNOMxxx, String); Date de création : (11/02/03 14:20:31)
+	 * doivent avoir les Fields PUBLIC Utilisation de la mÃ©thode
+	 * addZone(getNOMxxx, String); Date de crÃ©ation : (11/02/03 14:20:31)
 	 * 
 	 */
 	public boolean performPB_RESET(HttpServletRequest request) throws Exception {
@@ -3069,7 +3069,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER_PERMIS Date de
-	 * création : (11/02/03 14:20:31)
+	 * crÃ©ation : (11/02/03 14:20:31)
 	 * 
 	 */
 	public String getNOM_PB_VALIDER_PERMIS() {
@@ -3077,10 +3077,10 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (11/02/03 14:20:31)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (11/02/03 14:20:31)
 	 * 
 	 */
 	public boolean performPB_VALIDER_PERMIS(HttpServletRequest request) throws Exception {
@@ -3092,7 +3092,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 			return false;
 		}
 
-		// Récup des zones saisies
+		// RÃ©cup des zones saisies
 		String dureePermis = getZone(getNOM_ST_DUREE_PERMIS());
 		String dateObtention = Services.formateDate(getZone(getNOM_EF_DATE_OBTENTION_PERMIS()));
 
@@ -3150,7 +3150,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 			int numligneUnite = (Services.estNumerique(getZone(getNOM_LB_UNITE_DUREE_SELECT())) ? Integer
 					.parseInt(getZone(getNOM_LB_UNITE_DUREE_SELECT())) : -1);
 			if (numligneUnite == -1) {
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "unité durée"));
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "unitÃ© durÃ©e"));
 				return false;
 			}
 			String uniteDuree = (numligneUnite >= 0 ? (String) getListeUniteDuree().get(numligneUnite) : null);
@@ -3173,7 +3173,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 						getPermisAgentCourant().getDateObtention());
 				idPermisAgent = getPermisAgentCourant().getIdPermisAgent();
 			} else if (getZone(getNOM_ST_ACTION_PERMIS()).equals(ACTION_CREATION_PERMIS)) {
-				// Création
+				// CrÃ©ation
 				idPermisAgent = getPermisAgentDao().creerPermisAgent(getPermisAgentCourant().getIdPermis(),
 						getPermisAgentCourant().getIdAgent(), getPermisAgentCourant().getDureePermis(),
 						getPermisAgentCourant().getUniteDuree(), getPermisAgentCourant().getDateObtention());
@@ -3183,7 +3183,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 			performPB_VALIDER_DOCUMENT_PERMIS_CREATION(request, idPermisAgent);
 		}
 
-		// Tout s'est bien passé
+		// Tout s'est bien passÃ©
 		initialiseListePermisAgent(request);
 
 		addZone(getNOM_ST_ACTION_PERMIS(), Const.CHAINE_VIDE);
@@ -3193,7 +3193,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 	private boolean performControlerRGPermis(HttpServletRequest request) throws ParseException {
 
-		// Vérification des contraintes d'unicité de la formation
+		// VÃ©rification des contraintes d'unicitÃ© de la formation
 		if (getVAL_ST_ACTION_PERMIS().equals(ACTION_CREATION_PERMIS)) {
 
 			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
@@ -3214,7 +3214,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 						&& permis.getDateObtention().toString()
 								.equals(sdf.parse(getVAL_EF_DATE_OBTENTION_PERMIS()).toString())) {
 					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
+					// "Attention, il existe dÃ©jÃ  @ avec @. Veuillez contrÃ´ler."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "un permis", "ces valeurs"));
 					return false;
 				}
@@ -3224,27 +3224,27 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Vérifie les règles de gestion de saisie (champs obligatoires, ...)
+	 * VÃ©rifie les regles de gestion de saisie (champs obligatoires, ...)
 	 * 
 	 * @param request
-	 * @return true si les règles de gestion sont respectées. false sinon.
+	 * @return true si les regles de gestion sont respectÃ©es. false sinon.
 	 * @throws Exception
 	 */
 	public boolean performControlerChampsPermis(HttpServletRequest request) throws Exception {
-		// durée permis
+		// durÃ©e permis
 
 		// Recup de l'unite
 		int numligneUnite = (Services.estNumerique(getZone(getNOM_LB_UNITE_DUREE_SELECT())) ? Integer
 				.parseInt(getZone(getNOM_LB_UNITE_DUREE_SELECT())) : -1);
 		if (!getZone(getNOM_ST_DUREE_PERMIS()).equals(Const.CHAINE_VIDE) && numligneUnite == -1) {
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "unité durée"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "unitÃ© durÃ©e"));
 			return false;
 		}
 
 		if (!getZone(getNOM_ST_DUREE_PERMIS()).equals(Const.CHAINE_VIDE)
 				&& !Services.estNumerique(getZone(getNOM_ST_DUREE_PERMIS()))) {
-			// "ERR992", "La zone @ doit être numérique."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "durée de validité"));
+			// "ERR992", "La zone @ doit Ãªtre numÃ©rique."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "durÃ©e de validitÃ©"));
 			setFocus(getNOM_ST_DUREE_FORMATION());
 			return false;
 		}
@@ -3263,7 +3263,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 				getVAL_EF_DATE_OBTENTION_PERMIS()) > -1
 				|| Services.compareDates(getVAL_EF_DATE_OBTENTION_PERMIS(), Services.dateDuJour()) > 0) {
 			// "ERR202",
-			// "La date @ doit être comprise entre la date @ et la date @."
+			// "La date @ doit Ãªtre comprise entre la date @ et la date @."
 			// RG_AG_DI_C01
 			getTransaction().declarerErreur(
 					MessageUtils.getMessage("ERR202", "d'obtention", "de naissance de l'agent", "du jour"));
@@ -3320,7 +3320,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_PERMIS Date de création :
+	 * Retourne le nom d'un bouton pour la JSP : PB_PERMIS Date de crÃ©ation :
 	 * (11/02/03 14:20:31)
 	 * 
 	 */
@@ -3329,10 +3329,10 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (11/02/03 14:20:31)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (11/02/03 14:20:31)
 	 * 
 	 */
 	public boolean performPB_ANNULER_PERMIS(HttpServletRequest request) throws Exception {
@@ -3343,7 +3343,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_CREER Date de création :
+	 * Retourne le nom d'un bouton pour la JSP : PB_CREER Date de crÃ©ation :
 	 * (11/02/03 14:20:31)
 	 * 
 	 */
@@ -3352,10 +3352,10 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (11/02/03 14:20:31)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (11/02/03 14:20:31)
 	 * 
 	 */
 	public boolean performPB_CREER_PERMIS(HttpServletRequest request) throws Exception {
@@ -3378,7 +3378,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le DATE_NAISS de la zone statique : ST_PERMIS Date
-	 * de création : (18/08/11 10:21:15)
+	 * de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_PERMIS(int i) {
@@ -3386,8 +3386,8 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_PERMIS Date de
-	 * création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_PERMIS Date de
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_PERMIS(int i) {
@@ -3396,7 +3396,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le DATE_NAISS de la zone statique : ST_PERMIS Date
-	 * de création : (18/08/11 10:21:15)
+	 * de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_LIMITE_PERMIS(int i) {
@@ -3404,8 +3404,8 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_PERMIS Date de
-	 * création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_PERMIS Date de
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_LIMITE_PERMIS(int i) {
@@ -3414,7 +3414,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_DUREE_PERMIS Date de
-	 * création : (11/02/03 14:20:31)
+	 * crÃ©ation : (11/02/03 14:20:31)
 	 * 
 	 */
 	public String getNOM_ST_DUREE_PERMIS() {
@@ -3422,8 +3422,8 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DUREE_PERMIS
-	 * Date de création : (11/02/03 14:20:31)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_DUREE_PERMIS
+	 * Date de crÃ©ation : (11/02/03 14:20:31)
 	 * 
 	 */
 	public String getVAL_ST_DUREE_PERMIS() {
@@ -3432,7 +3432,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP :
-	 * EF_DATE_OBTENTION_PERMIS Date de création : (11/06/03 15:05:22)
+	 * EF_DATE_OBTENTION_PERMIS Date de crÃ©ation : (11/06/03 15:05:22)
 	 * 
 	 */
 	public String getNOM_EF_DATE_OBTENTION_PERMIS() {
@@ -3440,8 +3440,8 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_DATE_OBTENTION_PERMIS Date de création : (11/06/03 15:05:22)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_DATE_OBTENTION_PERMIS Date de crÃ©ation : (11/06/03 15:05:22)
 	 * 
 	 */
 	public String getVAL_EF_DATE_OBTENTION_PERMIS() {
@@ -3450,7 +3450,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_NOM_DOC Date de
-	 * création : (18/08/11 10:21:15)
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_NOM_DOC(int i) {
@@ -3458,8 +3458,8 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_NOM_DOC Date
-	 * de création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_NOM_DOC Date
+	 * de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_NOM_DOC(int i) {
@@ -3468,7 +3468,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_DATE_DOC Date de
-	 * création : (18/08/11 10:21:15)
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_DATE_DOC(int i) {
@@ -3476,8 +3476,8 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE_DOC Date
-	 * de création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_DATE_DOC Date
+	 * de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_DATE_DOC(int i) {
@@ -3486,7 +3486,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_COMMENTAIRE Date de
-	 * création : (18/08/11 10:21:15)
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_COMMENTAIRE(int i) {
@@ -3494,8 +3494,8 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_COMMENTAIRE
-	 * Date de création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_COMMENTAIRE
+	 * Date de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_COMMENTAIRE(int i) {
@@ -3504,7 +3504,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_CREER_DOC_DIPLOME Date de
-	 * création : (17/10/11 13:46:25)
+	 * crÃ©ation : (17/10/11 13:46:25)
 	 * 
 	 */
 	public String getNOM_PB_CREER_DOC_DIPLOME() {
@@ -3512,10 +3512,10 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (17/10/11 13:46:25)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (17/10/11 13:46:25)
 	 * 
 	 */
 	public boolean performPB_CREER_DOC_DIPLOME(HttpServletRequest request) throws Exception {
@@ -3564,7 +3564,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Met à jour le doc en cours.
+	 * Met a jour le doc en cours.
 	 * 
 	 * @param documentCourant
 	 *            Nouvelle document en cours
@@ -3607,7 +3607,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_LIENDOCUMENT Date
-	 * de création : (11/10/11 08:38:48)
+	 * de crÃ©ation : (11/10/11 08:38:48)
 	 * 
 	 */
 	public String getNOM_EF_LIENDOCUMENT() {
@@ -3615,8 +3615,8 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_LIENDOCUMENT Date de création : (11/10/11 08:38:48)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_LIENDOCUMENT Date de crÃ©ation : (11/10/11 08:38:48)
 	 * 
 	 */
 	public String getVAL_EF_LIENDOCUMENT() {
@@ -3698,7 +3698,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	private void verifieRepertoire(String codTypeDoc) {
-		// on verifie déjà que le repertoire source existe
+		// on verifie dÃ©jÃ  que le repertoire source existe
 		String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ACTES");
 		File dossierParent = new File(repPartage);
 		if (!dossierParent.exists()) {
@@ -3725,7 +3725,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Méthode qui teste si un paramètre se trouve dans le formulaire
+	 * mÃ©thode qui teste si un parametre se trouve dans le formulaire
 	 */
 	public boolean testerParametre(HttpServletRequest request, String param) {
 		return (request.getParameter(param) != null || request.getParameter(param + ".x") != null || (multi != null && multi
@@ -3756,7 +3756,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Insérez la description de la méthode ici. Date de création : (27/03/2003
+	 * InsÃ©rez la description de la mÃ©thode ici. Date de crÃ©ation : (27/03/2003
 	 * 10:55:12)
 	 * 
 	 * @param newListeDocuments
@@ -3868,7 +3868,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_ACTION_DOCUMENT Date
-	 * de création : (05/09/11 11:39:24)
+	 * de crÃ©ation : (05/09/11 11:39:24)
 	 * 
 	 */
 	public String getNOM_ST_ACTION_DOCUMENT() {
@@ -3876,8 +3876,8 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
-	 * ST_ACTION_DOCUMENT Date de création : (05/09/11 11:39:24)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone :
+	 * ST_ACTION_DOCUMENT Date de crÃ©ation : (05/09/11 11:39:24)
 	 * 
 	 */
 	public String getVAL_ST_ACTION_DOCUMENT() {
@@ -3894,7 +3894,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_CONSULTER_DOC Date de
-	 * création : (29/09/11 10:03:38)
+	 * crÃ©ation : (29/09/11 10:03:38)
 	 * 
 	 */
 	public String getNOM_PB_CONSULTER_DOC(int i) {
@@ -3902,10 +3902,10 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (29/09/11 10:03:38)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (29/09/11 10:03:38)
 	 * 
 	 */
 	public boolean performPB_CONSULTER_DOC(HttpServletRequest request, int indiceEltAConsulter) throws Exception {
@@ -3919,7 +3919,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 		String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_LECTURE");
 
-		// Récup du document courant
+		// RÃ©cup du document courant
 		Document d = (Document) getListeDocuments().get(indiceEltAConsulter);
 		// on affiche le document
 		setURLFichier(getScriptOuverture(repertoireStockage + d.getLienDocument()));
@@ -3929,7 +3929,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMMER_DOC Date de
-	 * création : (05/09/11 11:31:37)
+	 * crÃ©ation : (05/09/11 11:31:37)
 	 * 
 	 */
 	public String getNOM_PB_SUPPRIMER_DOC(int i) {
@@ -3937,10 +3937,10 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (05/09/11 11:31:37)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (05/09/11 11:31:37)
 	 * 
 	 */
 	public boolean performPB_SUPPRIMER_DOC(HttpServletRequest request, int indiceEltASuprimer) throws Exception {
@@ -3949,7 +3949,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 		addZone(getNOM_ST_ACTION_DOCUMENT(), Const.CHAINE_VIDE);
 		isImporting = false;
 
-		// Récup du Diplome courant
+		// RÃ©cup du Diplome courant
 		Document d = (Document) getListeDocuments().get(indiceEltASuprimer);
 		setDocumentCourant(d);
 
@@ -3967,7 +3967,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 	private boolean initialiseDocumentSuppression(HttpServletRequest request) throws Exception {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-		// Récup du Diplome courant
+		// RÃ©cup du Diplome courant
 		Document d = getDocumentCourant();
 
 		DocumentAgent lda = getLienDocumentAgentDao().chercherDocumentAgent(getAgentCourant().getIdAgent(),
@@ -3985,7 +3985,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_CREER_DOC_FORMATION Date de
-	 * création : (17/10/11 13:46:25)
+	 * crÃ©ation : (17/10/11 13:46:25)
 	 * 
 	 */
 	public String getNOM_PB_CREER_DOC_FORMATION() {
@@ -3993,10 +3993,10 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (17/10/11 13:46:25)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (17/10/11 13:46:25)
 	 * 
 	 */
 	public boolean performPB_CREER_DOC_FORMATION(HttpServletRequest request) throws Exception {
@@ -4016,7 +4016,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_CREER_DOC_PERMIS Date de
-	 * création : (17/10/11 13:46:25)
+	 * crÃ©ation : (17/10/11 13:46:25)
 	 * 
 	 */
 	public String getNOM_PB_CREER_DOC_PERMIS() {
@@ -4024,10 +4024,10 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (17/10/11 13:46:25)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (17/10/11 13:46:25)
 	 * 
 	 */
 	public boolean performPB_CREER_DOC_PERMIS(HttpServletRequest request) throws Exception {
@@ -4046,10 +4046,10 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (11/10/11 08:38:48)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (11/10/11 08:38:48)
 	 * 
 	 * @param idPermisAgent
 	 * 
@@ -4062,7 +4062,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 			if (multi.getFile(getNOM_EF_LIENDOCUMENT()) != null) {
 				fichierUpload = multi.getFile(getNOM_EF_LIENDOCUMENT());
 
-				// Contrôle des champs
+				// Controle des champs
 				if (!performControlerSaisieDocument(request))
 					return false;
 
@@ -4093,7 +4093,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 					logger.error("Erreur suppression physique du fichier : " + e.toString());
 				}
 
-				// tout s'est bien passé
+				// tout s'est bien passÃ©
 				commitTransaction();
 
 			}
@@ -4106,7 +4106,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_NB_DOC_PERMIS Date
-	 * de création : (18/08/11 10:21:15)
+	 * de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_NB_DOC_PERMIS(int i) {
@@ -4114,8 +4114,8 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_NB_DOC_PERMIS
-	 * Date de création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_NB_DOC_PERMIS
+	 * Date de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_NB_DOC_PERMIS(int i) {
@@ -4124,7 +4124,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_NB_DOC_FORMATION
-	 * Date de création : (18/08/11 10:21:15)
+	 * Date de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_NB_DOC_FORMATION(int i) {
@@ -4132,8 +4132,8 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
-	 * ST_NB_DOC_FORMATION Date de création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone :
+	 * ST_NB_DOC_FORMATION Date de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_NB_DOC_FORMATION(int i) {
@@ -4142,7 +4142,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_NB_DOC_DIPLOME Date
-	 * de création : (18/08/11 10:21:15)
+	 * de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_NB_DOC_DIPLOME(int i) {
@@ -4150,8 +4150,8 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_NB_DOC_DIPLOME
-	 * Date de création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_NB_DOC_DIPLOME
+	 * Date de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_NB_DOC_DIPLOME(int i) {

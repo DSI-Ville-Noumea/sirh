@@ -1,21 +1,21 @@
-<!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@ page contentType="text/html; charset=UTF-8" %> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <HTML>
 <HEAD>
 <META name="GENERATOR" content="IBM WebSphere Page Designer V3.5.3 for Windows">
 <META http-equiv="Content-Style-Type" content="text/css">
 <LINK href="theme/sigp2.css" rel="stylesheet" type="text/css">
-<TITLE>Sélection d'une voie française</TITLE>
+<TITLE>SÃ©lection d'une voie franÃ§aise</TITLE>
 
 <SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT> 
 
 <SCRIPT language="JavaScript">
-//afin de sélectionner un élément dans une liste
+//afin de sÃ©lectionner un Ã©lÃ©ment dans une liste
 function executeBouton(nom)
 {
 document.formu.elements[nom].click();
 }
 
-// afin de mettre le focus sur une zone précise
+// afin de mettre le focus sur une zone prÃ©cise
 function setfocus(nom)
 {
 if (document.formu.elements[nom] != null)
@@ -31,15 +31,15 @@ function SelectLigne(id,tailleTableau)
 }
 
 </SCRIPT>
-<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 </HEAD>
 <jsp:useBean class="nc.mairie.gestionagent.process.OeVOIESelection" id="process" scope="session"></jsp:useBean>
 <BODY bgcolor="#FFFFFF" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" style="tab-interval:35.4pt" onload="return setfocus('<%= process.getFocus() %>')">
 	<%@ include file="BanniereErreur.jsp" %>
 	<FORM name="formu" method="POST" class="sigp2-titre"><BR>
 		<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
-			<legend class="sigp2Legend">Sélection d'une voie</legend>
-			<span class="sigp2">Libellé de la voie :</span>
+			<legend class="sigp2Legend">SÃ©lection d'une voie</legend>
+			<span class="sigp2">LibellÃ© de la voie :</span>
 			<span>
 				<INPUT size="1" type="text" class="sigp2-saisie" maxlength="1" name="ZoneTampon" style="display:none;">
 				<INPUT class="sigp2-saisie" maxlength="60" name="<%= process.getNOM_EF_VOIE() %>" size="20" type="text" value="<%= process.getVAL_EF_VOIE() %>">
@@ -53,7 +53,7 @@ function SelectLigne(id,tailleTableau)
 				<TBODY>
 					<TR>
 						<TD style="position:relative;width:50px;text-align:left;">&nbsp;code</TD>
-						<TD style="position:relative;width:300px;text-align:left;">libellé</TD>
+						<TD style="position:relative;width:300px;text-align:left;">libellÃ©</TD>
 						<TD style="position:relative;text-align:left;">quartier</TD>
 					</TR>
 				</TBODY>

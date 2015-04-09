@@ -1,4 +1,4 @@
-<!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@ page contentType="text/html; charset=UTF-8" %> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <%@page import="java.util.ArrayList"%>
 <%@page import="nc.mairie.utils.MairieUtils"%>
 <%@page import="nc.mairie.enums.EnumTypeDroit"%>
@@ -23,13 +23,13 @@
 		<script type="text/javascript" src="development-bundle/ui/jquery.ui.autocomplete.js"></script>
 		
 		<SCRIPT language="JavaScript">
-		//afin de sélectionner un élément dans une liste
+		//afin de sÃ©lectionner un Ã©lÃ©ment dans une liste
 		function executeBouton(nom)
 		{
 			document.formu.elements[nom].click();
 		}
 
-		// afin de mettre le focus sur une zone précise
+		// afin de mettre le focus sur une zone prÃ©cise
 		function setfocus(nom)
 		{
 		if (document.formu.elements[nom] != null)
@@ -67,7 +67,7 @@
 				});
 			});		
 		</SCRIPT>
-		<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	</HEAD>
 	<BODY bgcolor="#FFFFFF" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="window.parent.frames['refAgent'].location.reload();" >
 	<%@ include file="BanniereErreur.jsp" %>
@@ -85,11 +85,11 @@
 								    <%}%>
 								</td>
 								<td width="45px;" align="center">Code rubrique</td>
-								<td width="300px;">Libellé rubrique</td>
-								<td width="75px;">Ref. arrêté</td>
-								<td width="90px;">Date de l'arrêté</td>
+								<td width="300px;">LibellÃ© rubrique</td>
+								<td width="75px;">Ref. arrÃªtÃ©</td>
+								<td width="90px;">Date de l'arrÃªtÃ©</td>
 								<td width="55px;" align="center">Montant</td>
-								<td width="90px;" align="center">Date début</td>
+								<td width="90px;" align="center">Date dÃ©but</td>
 								<td align="center">Date fin</td>
 							</tr>
 							<%
@@ -142,7 +142,7 @@
 				</tr>
 				<tr>
 					<td>
-						<span class="sigp2">Ref. arrêté :</span>
+						<span class="sigp2">Ref. arrÃªtÃ© :</span>
 					</td>
 					<td>
 						<INPUT class="sigp2-saisie" maxlength="6" name="<%= process.getNOM_EF_REF_ARR() %>" size="6" type="text" value="<%= process.getVAL_EF_REF_ARR() %>">
@@ -150,7 +150,7 @@
 				</tr>
 				<tr>
 					<td>
-						<span class="sigp2">Date d'arrêté :</span>
+						<span class="sigp2">Date d'arrÃªtÃ© :</span>
 					</td>
 					<td>
 						<input id="<%=process.getNOM_EF_DATE_ARR()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DATE_ARR() %>" size="10" type="text"	value="<%= process.getVAL_EF_DATE_ARR() %>">
@@ -167,7 +167,7 @@
 				</tr>
 				<tr>
 					<td>
-						<span class="sigp2Mandatory">Date de début :</span>
+						<span class="sigp2Mandatory">Date de dÃ©but :</span>
 					</td>
 					<td>
 						<input id="<%=process.getNOM_EF_DATE_DEBUT()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DATE_DEBUT() %>" size="10" type="text"	value="<%= process.getVAL_EF_DATE_DEBUT() %>">
@@ -201,7 +201,7 @@
 		    	</tr>
 		    	<tr>
 		    		<td>
-		    			<span class="sigp2">Ref. arrêté : </span>
+		    			<span class="sigp2">Ref. arrÃªtÃ© : </span>
 		    		</td>
 		    		<td>
 						<span class="sigp2-saisie"><%=process.getVAL_EF_REF_ARR()%></span>
@@ -209,7 +209,7 @@
 		    	</tr>
 		    	<tr>
 		    		<td>
-						<span class="sigp2">Date arrêté : </span>
+						<span class="sigp2">Date arrÃªtÃ© : </span>
 		    		</td>
 		    		<td>
 						<span class="sigp2-saisie"><%=process.getVAL_EF_DATE_ARR()%></span>
@@ -225,7 +225,7 @@
 		    	</tr>
 		    	<tr>
 		    		<td>
-						<span class="sigp2">Date de début : </span>
+						<span class="sigp2">Date de dÃ©but : </span>
 		    		</td>
 		    		<td>
 						<span class="sigp2-saisie"><%=process.getVAL_EF_DATE_DEBUT()%></span>

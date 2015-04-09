@@ -28,7 +28,7 @@ import nc.mairie.utils.TreeHierarchy;
 import org.springframework.context.ApplicationContext;
 
 /**
- * Process OeAGENTRecherche Date de création : (01/01/03 09:35:10)
+ * Process OeAGENTRecherche Date de crÃ©ation : (01/01/03 09:35:10)
  * 
  */
 public class OeAGENTRecherche extends BasicProcess {
@@ -50,7 +50,7 @@ public class OeAGENTRecherche extends BasicProcess {
 	private AgentDao agentDao;
 
 	/**
-	 * Insérez la description de la méthode ici. Date de création : (28/03/2003
+	 * InsÃ©rez la description de la mÃ©thode ici. Date de crÃ©ation : (28/03/2003
 	 * 08:50:20)
 	 * 
 	 * @return nc.mairie.metier.agent.Agent
@@ -60,7 +60,7 @@ public class OeAGENTRecherche extends BasicProcess {
 	}
 
 	/**
-	 * Insérez la description de la méthode ici. Date de création : (01/01/2003
+	 * InsÃ©rez la description de la mÃ©thode ici. Date de crÃ©ation : (01/01/2003
 	 * 09:51:40)
 	 * 
 	 * @return ArrayList
@@ -74,7 +74,7 @@ public class OeAGENTRecherche extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_ZONE Date de
-	 * création : (01/01/03 09:35:10)
+	 * crÃ©ation : (01/01/03 09:35:10)
 	 * 
 	 */
 	public String getNOM_EF_ZONE() {
@@ -82,7 +82,7 @@ public class OeAGENTRecherche extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER Date de création :
+	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER Date de crÃ©ation :
 	 * (01/01/03 09:35:10)
 	 * 
 	 */
@@ -91,7 +91,7 @@ public class OeAGENTRecherche extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_RECHERCHER Date de création
+	 * Retourne le nom d'un bouton pour la JSP : PB_RECHERCHER Date de crÃ©ation
 	 * : (01/01/03 09:35:10)
 	 * 
 	 */
@@ -100,8 +100,8 @@ public class OeAGENTRecherche extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie : EF_ZONE
-	 * Date de création : (01/01/03 09:35:10)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie : EF_ZONE
+	 * Date de crÃ©ation : (01/01/03 09:35:10)
 	 * 
 	 */
 	public String getVAL_EF_ZONE() {
@@ -109,25 +109,25 @@ public class OeAGENTRecherche extends BasicProcess {
 	}
 
 	/**
-	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones Ã  afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
-	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
-	 * addZone(getNOMxxx, String); Date de création : (01/01/03 09:35:10)
+	 * doivent avoir les Fields PUBLIC Utilisation de la mÃ©thode
+	 * addZone(getNOMxxx, String); Date de crÃ©ation : (01/01/03 09:35:10)
 	 * 
 	 */
 	public void initialiseZones(HttpServletRequest request) throws Exception {
 
 		// ----------------------------------//
-		// Vérification des droits d'accès. //
+		// VÃ©rification des droits d'acces. //
 		// ----------------------------------//
 		if (MairieUtils.estInterdit(request, getNomEcran())) {
 			// "ERR190",
-			// "Opération impossible. Vous ne disposez pas des droits d'accès à cette option."
+			// "Operation impossible. Vous ne disposez pas des droits d'acces a cette option."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
 		initialiseDao();
-		// Récup de l'agent activité, s'il existe
+		// RÃ©cup de l'agent activitÃ©, s'il existe
 		Agent aAgent = (Agent) VariableActivite.recuperer(this, VariableActivite.ACTIVITE_AGENT_MAIRIE);
 		if (aAgent != null) {
 			setAgentActivite(aAgent);
@@ -159,8 +159,8 @@ public class OeAGENTRecherche extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de l'écran (notamment pour déterminer les droits
-	 * associés).
+	 * Retourne le nom de l'Ã©cran (notamment pour dÃ©terminer les droits
+	 * associÃ©s).
 	 */
 	public String getNomEcran() {
 		return "ECR-AG-RECHERCHE";
@@ -196,7 +196,7 @@ public class OeAGENTRecherche extends BasicProcess {
 					continue;
 				}
 
-				// recherche du supérieur
+				// recherche du supÃ©rieur
 				String codeService = serv.getCodService();
 				while (codeService.endsWith("A")) {
 					codeService = codeService.substring(0, codeService.length() - 1);
@@ -212,10 +212,10 @@ public class OeAGENTRecherche extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (01/01/03 09:35:10)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (01/01/03 09:35:10)
 	 * 
 	 */
 	public boolean performPB_ANNULER(HttpServletRequest request) throws Exception {
@@ -224,10 +224,10 @@ public class OeAGENTRecherche extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (01/01/03 09:35:10)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (01/01/03 09:35:10)
 	 * 
 	 * RG_AG_EC_C01
 	 */
@@ -240,7 +240,7 @@ public class OeAGENTRecherche extends BasicProcess {
 		// Si rien de saisi, recherche de tous les agents
 		if (zone.length() == 0) {
 			aListe = (ArrayList<Agent>) getAgentDao().listerAgent();
-			// Sinon, si numérique on cherche l'agent
+			// Sinon, si numÃ©rique on cherche l'agent
 		} else if (Services.estNumerique(zone)) {
 			if (getVAL_RG_RECHERCHE().equals(getNOM_RB_RECH_CAFAT())) {
 				aListe = getAgentDao().listerAgentAvecCafatCommencant(zone);
@@ -259,7 +259,7 @@ public class OeAGENTRecherche extends BasicProcess {
 			// Sinon, les agents dont le nom commence par
 		} else if (getVAL_RG_RECHERCHE().equals(getNOM_RB_RECH_NOM())) {
 			aListe = getAgentDao().listerAgentAvecNomCommencant(zone);
-			// sinon les agents dont le prénom commence par
+			// sinon les agents dont le prenom commence par
 		} else if (getVAL_RG_RECHERCHE().equals(getNOM_RB_RECH_PRENOM())) {
 			aListe = getAgentDao().listerAgentAvecPrenomCommencant(zone);
 			// sinon les agents dont le numero cafat commence par
@@ -273,7 +273,7 @@ public class OeAGENTRecherche extends BasicProcess {
 			aListe = getAgentDao().listerAgentAvecServiceCommencant(prefixe);
 		}
 
-		// S'il y a un agent en entrée alors on l'enlève de la liste
+		// S'il y a un agent en entrÃ©e alors on l'enleve de la liste
 		if (getAgentActivite() != null && null != getAgentActivite().getNomatr()) {
 			for (int i = 0; i < aListe.size(); i++) {
 				Agent a = (Agent) aListe.get(i);
@@ -311,7 +311,7 @@ public class OeAGENTRecherche extends BasicProcess {
 		// si 1 seul resultat dans la liste alors on selectionne directement
 		// l'agent
 		if (getListeAgent().size() == 1) {
-			// Si agent activité alors on alimente une var d'activité
+			// Si agent activitÃ© alors on alimente une var d'activitÃ©
 			if (getAgentActivite() != null) {
 				VariableActivite.ajouter(this, VariableActivite.ACTIVITE_AGENT_MAIRIE, getListeAgent().get(0));
 			} else {
@@ -348,7 +348,7 @@ public class OeAGENTRecherche extends BasicProcess {
 	}
 
 	/**
-	 * Insérez la description de la méthode ici. Date de création : (28/03/2003
+	 * InsÃ©rez la description de la mÃ©thode ici. Date de crÃ©ation : (28/03/2003
 	 * 08:50:20)
 	 * 
 	 * @param newAgentActivite
@@ -359,7 +359,7 @@ public class OeAGENTRecherche extends BasicProcess {
 	}
 
 	/**
-	 * Insérez la description de la méthode ici. Date de création : (01/01/2003
+	 * InsÃ©rez la description de la mÃ©thode ici. Date de crÃ©ation : (01/01/2003
 	 * 09:51:40)
 	 * 
 	 * @param newListeAgent
@@ -385,15 +385,15 @@ public class OeAGENTRecherche extends BasicProcess {
 
 	/**
 	 * @param focus
-	 *            focus à définir.
+	 *            focus Ã  dÃ©finir.
 	 */
 	public void setFocus(String focus) {
 		this.focus = focus;
 	}
 
 	/**
-	 * Retourne le nom du groupe de radio boutons coché pour la JSP : RG_TRI
-	 * Date de création : (08/10/08 13:07:23)
+	 * Retourne le nom du groupe de radio boutons cochÃ© pour la JSP : RG_TRI
+	 * Date de crÃ©ation : (08/10/08 13:07:23)
 	 * 
 	 */
 	public String getNOM_RG_TRI() {
@@ -401,8 +401,8 @@ public class OeAGENTRecherche extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur du radio bouton (RB_) coché dans la JSP : RG_TRI Date
-	 * de création : (08/10/08 13:07:23)
+	 * Retourne la valeur du radio bouton (RB_) cochÃ© dans la JSP : RG_TRI Date
+	 * de crÃ©ation : (08/10/08 13:07:23)
 	 * 
 	 */
 	public String getVAL_RG_TRI() {
@@ -411,7 +411,7 @@ public class OeAGENTRecherche extends BasicProcess {
 
 	/**
 	 * Retourne le nom du radio bouton pour la JSP : RB_RECH_NOM Date de
-	 * création : (08/10/08 13:07:23)
+	 * crÃ©ation : (08/10/08 13:07:23)
 	 * 
 	 */
 	public String getNOM_RB_RECH_NOM() {
@@ -420,7 +420,7 @@ public class OeAGENTRecherche extends BasicProcess {
 
 	/**
 	 * Retourne le nom du radio bouton pour la JSP : RB_RECH_PRENOM Date de
-	 * création : (08/10/08 13:07:23)
+	 * crÃ©ation : (08/10/08 13:07:23)
 	 * 
 	 */
 	public String getNOM_RB_RECH_PRENOM() {
@@ -429,7 +429,7 @@ public class OeAGENTRecherche extends BasicProcess {
 
 	/**
 	 * Retourne le nom du radio bouton pour la JSP : RB_RECH_CAFAT Date de
-	 * création : (08/10/08 13:07:23)
+	 * crÃ©ation : (08/10/08 13:07:23)
 	 * 
 	 */
 	public String getNOM_RB_RECH_CAFAT() {
@@ -437,7 +437,7 @@ public class OeAGENTRecherche extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom du radio bouton pour la JSP : RB_TRI_NOM Date de création
+	 * Retourne le nom du radio bouton pour la JSP : RB_TRI_NOM Date de crÃ©ation
 	 * : (08/10/08 13:07:23)
 	 * 
 	 */
@@ -447,7 +447,7 @@ public class OeAGENTRecherche extends BasicProcess {
 
 	/**
 	 * Retourne le nom du radio bouton pour la JSP : RB_TRI_NOMATR Date de
-	 * création : (08/10/08 13:07:23)
+	 * crÃ©ation : (08/10/08 13:07:23)
 	 * 
 	 */
 	public String getNOM_RB_TRI_NOMATR() {
@@ -456,7 +456,7 @@ public class OeAGENTRecherche extends BasicProcess {
 
 	/**
 	 * Retourne le nom du radio bouton pour la JSP : RB_TRI_PRENOM Date de
-	 * création : (08/10/08 13:07:23)
+	 * crÃ©ation : (08/10/08 13:07:23)
 	 * 
 	 */
 	public String getNOM_RB_TRI_PRENOM() {
@@ -465,7 +465,7 @@ public class OeAGENTRecherche extends BasicProcess {
 
 	/**
 	 * Retourne le nom du radio bouton pour la JSP : RB_TRI_CAFAT Date de
-	 * création : (08/10/08 13:07:23)
+	 * crÃ©ation : (08/10/08 13:07:23)
 	 * 
 	 */
 	public String getNOM_RB_TRI_CAFAT() {
@@ -474,7 +474,7 @@ public class OeAGENTRecherche extends BasicProcess {
 
 	/**
 	 * Retourne le nom du radio bouton pour la JSP : RB_TRI_RUAMM Date de
-	 * création : (08/10/08 13:07:23)
+	 * crÃ©ation : (08/10/08 13:07:23)
 	 * 
 	 */
 	public String getNOM_RB_TRI_RUAMM() {
@@ -490,7 +490,7 @@ public class OeAGENTRecherche extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_TRI Date de création :
+	 * Retourne le nom d'un bouton pour la JSP : PB_TRI Date de crÃ©ation :
 	 * (08/10/08 14:13:26)
 	 * 
 	 */
@@ -499,10 +499,10 @@ public class OeAGENTRecherche extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (08/10/08 14:13:26)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (08/10/08 14:13:26)
 	 * 
 	 * RG_AG_RE_A01
 	 */
@@ -566,7 +566,7 @@ public class OeAGENTRecherche extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_CODE_SERVICE Date de
-	 * création : (15/09/11 09:37:35)
+	 * crÃ©ation : (15/09/11 09:37:35)
 	 * 
 	 */
 	public String getNOM_ST_CODE_SERVICE() {
@@ -574,8 +574,8 @@ public class OeAGENTRecherche extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_CODE_SERVICE
-	 * Date de création : (15/09/11 09:37:35)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_CODE_SERVICE
+	 * Date de crÃ©ation : (15/09/11 09:37:35)
 	 * 
 	 */
 	public String getVAL_ST_CODE_SERVICE() {
@@ -584,7 +584,7 @@ public class OeAGENTRecherche extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_SERVICE Date de
-	 * création : (15/09/11 09:37:35)
+	 * crÃ©ation : (15/09/11 09:37:35)
 	 * 
 	 */
 	public String getNOM_EF_SERVICE() {
@@ -592,8 +592,8 @@ public class OeAGENTRecherche extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_SERVICE Date de création : (15/09/11 09:37:35)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_SERVICE Date de crÃ©ation : (15/09/11 09:37:35)
 	 * 
 	 */
 	public String getVAL_EF_SERVICE() {
@@ -601,7 +601,7 @@ public class OeAGENTRecherche extends BasicProcess {
 	}
 
 	/**
-	 * Retourne une hashTable de la hiérarchie des Service selon le code
+	 * Retourne une hashTable de la hierarchie des Service selon le code
 	 * Service.
 	 * 
 	 * @return hTree
@@ -611,8 +611,8 @@ public class OeAGENTRecherche extends BasicProcess {
 	}
 
 	/**
-	 * Méthode appelée par la servlet qui aiguille le traitement : en fonction
-	 * du bouton de la JSP Date de création : (01/01/03 09:35:10)
+	 * mÃ©thode appelee par la servlet qui aiguille le traitement : en fonction
+	 * du bouton de la JSP Date de crÃ©ation : (01/01/03 09:35:10)
 	 * 
 	 */
 	public boolean recupererStatut(HttpServletRequest request) throws Exception {
@@ -643,13 +643,13 @@ public class OeAGENTRecherche extends BasicProcess {
 			}
 
 		}
-		// Si pas de retour définit
-		setStatut(STATUT_MEME_PROCESS, false, "Erreur : TAG INPUT non géré par le process");
+		// Si pas de retour dÃ©finit
+		setStatut(STATUT_MEME_PROCESS, false, "Erreur : TAG INPUT non gÃ©rÃ© par le process");
 		return false;
 	}
 
 	/**
-	 * Constructeur du process OeAGENTRecherche. Date de création : (15/09/11
+	 * Constructeur du process OeAGENTRecherche. Date de crÃ©ation : (15/09/11
 	 * 10:51:20)
 	 * 
 	 */
@@ -658,8 +658,8 @@ public class OeAGENTRecherche extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la JSP du process Zone à utiliser dans un champ caché
-	 * dans chaque formulaire de la JSP. Date de création : (15/09/11 10:51:20)
+	 * Retourne le nom de la JSP du process Zone a utiliser dans un champ cache
+	 * dans chaque formulaire de la JSP. Date de crÃ©ation : (15/09/11 10:51:20)
 	 * 
 	 */
 	public String getJSP() {
@@ -667,8 +667,8 @@ public class OeAGENTRecherche extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom du groupe de radio boutons coché pour la JSP :
-	 * RG_RECHERCHE Date de création : (15/09/11 10:51:20)
+	 * Retourne le nom du groupe de radio boutons cochÃ© pour la JSP :
+	 * RG_RECHERCHE Date de crÃ©ation : (15/09/11 10:51:20)
 	 * 
 	 */
 	public String getNOM_RG_RECHERCHE() {
@@ -676,8 +676,8 @@ public class OeAGENTRecherche extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur du radio bouton (RB_) coché dans la JSP : RG_RECHERCHE
-	 * Date de création : (15/09/11 10:51:20)
+	 * Retourne la valeur du radio bouton (RB_) cochÃ© dans la JSP : RG_RECHERCHE
+	 * Date de crÃ©ation : (15/09/11 10:51:20)
 	 * 
 	 */
 	public String getVAL_RG_RECHERCHE() {
@@ -686,7 +686,7 @@ public class OeAGENTRecherche extends BasicProcess {
 
 	/**
 	 * Retourne le nom du radio bouton pour la JSP : RB_RECH_SERVICE Date de
-	 * création : (15/09/11 10:51:20)
+	 * crÃ©ation : (15/09/11 10:51:20)
 	 * 
 	 */
 	public String getNOM_RB_RECH_SERVICE() {
@@ -695,7 +695,7 @@ public class OeAGENTRecherche extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le LIEU_NAISS de la zone statique : ST_MATR Date de
-	 * création : (18/08/11 10:21:15)
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_MATR(int i) {
@@ -703,8 +703,8 @@ public class OeAGENTRecherche extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_MATR Date de
-	 * création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_MATR Date de
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_MATR(int i) {
@@ -713,7 +713,7 @@ public class OeAGENTRecherche extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le LIEU_NAISS de la zone statique : ST_PRENOM Date
-	 * de création : (18/08/11 10:21:15)
+	 * de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_PRENOM(int i) {
@@ -721,8 +721,8 @@ public class OeAGENTRecherche extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_PRENOM Date de
-	 * création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_PRENOM Date de
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_PRENOM(int i) {
@@ -731,7 +731,7 @@ public class OeAGENTRecherche extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le LIEU_NAISS de la zone statique : ST_NOM Date de
-	 * création : (18/08/11 10:21:15)
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_NOM(int i) {
@@ -739,8 +739,8 @@ public class OeAGENTRecherche extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_NOM Date de
-	 * création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_NOM Date de
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_NOM(int i) {
@@ -748,7 +748,7 @@ public class OeAGENTRecherche extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_OK Date de création :
+	 * Retourne le nom d'un bouton pour la JSP : PB_OK Date de crÃ©ation :
 	 * (01/01/03 09:35:10)
 	 * 
 	 */
@@ -757,15 +757,15 @@ public class OeAGENTRecherche extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (01/01/03 09:35:10)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (01/01/03 09:35:10)
 	 * 
 	 */
 	public boolean performPB_OK(HttpServletRequest request, int elemSelection) throws Exception {
 
-		// Si agent activité alors on alimente une var d'activité
+		// Si agent activitÃ© alors on alimente une var d'activitÃ©
 		if (getAgentActivite() != null) {
 			VariableActivite.ajouter(this, VariableActivite.ACTIVITE_AGENT_MAIRIE, getListeAgent().get(elemSelection));
 		} else {

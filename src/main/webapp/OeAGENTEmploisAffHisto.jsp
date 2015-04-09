@@ -1,4 +1,4 @@
-<!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@ page contentType="text/html; charset=UTF-8" %> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <HTML>
 <HEAD>
 <META name="GENERATOR" content="IBM WebSphere Page Designer V3.5.3 for Windows">
@@ -10,7 +10,7 @@
 <SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT> 
 
 <SCRIPT language="JavaScript">
-		//afin de sélectionner un élément dans une liste
+		//afin de sÃ©lectionner un Ã©lÃ©ment dans une liste
 		function executeBouton(nom)
 		{
 		document.formu.elements[nom].click();
@@ -24,7 +24,7 @@
 		 document.getElementById(id).className="selectLigne";
 		}
 </SCRIPT>
-<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 </HEAD>
 <jsp:useBean
  class="nc.mairie.gestionagent.process.agent.OeAGENTEmploisAffHisto"
@@ -40,10 +40,10 @@
 				    <span style="position:relative;width:5px;"></span>
 				    <span style="position:relative;width:60px;text-align:left;">Matricule</span>
 					<span style="position:relative;width:300px;text-align:left;">Service</span>
-					<span style="position:relative;width:75px;text-align: center;">Réf. arrêté</span>
-					<span style="position:relative;width:80px;text-align: center;">Date début</span>
+					<span style="position:relative;width:75px;text-align: center;">RÃ©f. arrÃªtÃ©</span>
+					<span style="position:relative;width:80px;text-align: center;">Date dÃ©but</span>
 					<span style="position:relative;width:85px;text-align: center;">Date fin</span>
-					<span style="position:relative;text-align:left;">Code école</span>
+					<span style="position:relative;text-align:left;">Code Ã©cole</span>
 					<br/>
 				<div style="overflow: auto;height: 250px;width:1000px;margin-right: 0px;margin-left: 0px;">
 						<table class="sigp2NewTab" style="text-align:left;width:980px;">

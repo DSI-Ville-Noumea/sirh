@@ -1,4 +1,4 @@
-<!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@ page contentType="text/html; charset=UTF-8" %> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <%@page import="java.util.ArrayList"%>
 <%@page import="nc.mairie.utils.MairieUtils"%>
 <%@page import="nc.mairie.enums.EnumTypeDroit"%>
@@ -22,13 +22,13 @@
 		<script type="text/javascript" src="development-bundle/ui/jquery.ui.autocomplete.js"></script>
 		
 		<SCRIPT language="JavaScript">
-		//afin de sélectionner un élément dans une liste
+		//afin de sÃ©lectionner un Ã©lÃ©ment dans une liste
 		function executeBouton(nom)
 		{
 			document.formu.elements[nom].click();
 		}
 
-		// afin de mettre le focus sur une zone précise
+		// afin de mettre le focus sur une zone prÃ©cise
 		function setfocus(nom)
 		{
 			if (document.formu.elements[nom] != null)
@@ -70,7 +70,7 @@
    			executeBouton('NOM_PB_SELECT_RUBRIQUE');
 			}	
 		</SCRIPT>
-		<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	</HEAD>
 	<BODY bgcolor="#FFFFFF" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="window.parent.frames['refAgent'].location.reload();" >
 	<%@ include file="BanniereErreur.jsp" %>
@@ -89,12 +89,12 @@
 									<%}%>
 								</td>
 								<td width="45px;" align="center">Code rubrique</td>
-								<td width="250px;">Libellé rubrique</td>
+								<td width="250px;">LibellÃ© rubrique</td>
 								<td width="90px;" align="center">Matr. charge agent</td>
-								<td width="200px;">Libellé charge</td>
+								<td width="200px;">LibellÃ© charge</td>
 								<td width="60px;" align="center">Taux</td>
 								<td width="55px;" align="center">Montant</td>
-								<td width="90px;" align="center">Date début</td>
+								<td width="90px;" align="center">Date dÃ©but</td>
 								<td align="center">Date fin</td>
 							</tr>
 							<%
@@ -129,7 +129,7 @@
 						</table>	
 						</div>	
 				</FIELDSET>
-		<!-- Boutons cachés -->
+		<!-- Boutons cachÃ©s -->
 		<INPUT type="submit" class="sigp2-displayNone" name="<%=process.getNOM_PB_SELECT_RUBRIQUE()%>">	
 		<INPUT type="submit" class="sigp2-displayNone" name="<%=process.getNOM_PB_SELECT_CODE_CHARGE()%>">			
 
@@ -184,7 +184,7 @@
 				<% if (process.showMatriculeCharge){ %>
 				<tr>
 					<td>
-						<span class=<%= process.matriculeChargeObligatoire ? "sigp2Mandatory" : "sigp2" %>>Matricule charge employé :</span>
+						<span class=<%= process.matriculeChargeObligatoire ? "sigp2Mandatory" : "sigp2" %>>Matricule charge employÃ© :</span>
 					</td>
 					<td>
 						<INPUT class="sigp2-saisie" maxlength="15" <%= process.matriculeChargeEditable ? "" : "readonly='readonly'" %>  name="<%= process.getNOM_EF_MAT_CHARGE() %>" size="15" type="text" value="<%= process.getVAL_EF_MAT_CHARGE() %>">
@@ -201,7 +201,7 @@
 				</tr>
 				<tr>
 					<td>
-						<span class="sigp2Mandatory">Date de début :</span>
+						<span class="sigp2Mandatory">Date de dÃ©but :</span>
 					</td>
 					<td>
 						<input id="<%=process.getNOM_EF_DATE_DEBUT()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DATE_DEBUT() %>" size="10" type="text"	value="<%= process.getVAL_EF_DATE_DEBUT() %>">
@@ -235,7 +235,7 @@
 		    	</tr>
 		    	<tr>
 		    		<td>
-		    			<span class="sigp2">Créancier : </span>
+		    			<span class="sigp2">CrÃ©ancier : </span>
 		    		</td>
 		    		<td>
 						<span class="sigp2-saisie"><%=process.getVAL_ST_CREANCIER()%></span>
@@ -259,7 +259,7 @@
 		    	</tr>
 		    	<tr>
 		    		<td>
-						<span class="sigp2">Matricule charge employé : </span>
+						<span class="sigp2">Matricule charge employÃ© : </span>
 		    		</td>
 		    		<td>
 						<span class="sigp2-saisie"><%=process.getVAL_EF_MAT_CHARGE()%></span>
@@ -275,7 +275,7 @@
 		    	</tr>
 		    	<tr>
 		    		<td>
-						<span class="sigp2">Date de début : </span>
+						<span class="sigp2">Date de dÃ©but : </span>
 		    		</td>
 		    		<td>
 						<span class="sigp2-saisie"><%=process.getVAL_EF_DATE_DEBUT()%></span>

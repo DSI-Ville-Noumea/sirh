@@ -39,13 +39,13 @@ public class ServletEtatPayeur extends  javax.servlet.http.HttpServlet {
 			logger.debug(e.getMessage());
 			resp.reset();
 			resp.setContentType("text/html");
-			resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Une erreur est survenue pour afficher l'édition " + nomFichier + ". Merci de contacter votre responsable.");
+			resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Une erreur est survenue pour afficher l'Ã©dition " + nomFichier + ". Merci de contacter votre responsable.");
 			resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		} catch (Exception e) {
 			logger.debug(e.getMessage());
 			resp.reset();
 			resp.setContentType("text/html");
-			resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Une erreur est survenue pour afficher l'édition " + nomFichier + ". Merci de contacter votre responsable.");
+			resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Une erreur est survenue pour afficher l'Ã©dition " + nomFichier + ". Merci de contacter votre responsable.");
 			resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		} finally {
 			os.flush();

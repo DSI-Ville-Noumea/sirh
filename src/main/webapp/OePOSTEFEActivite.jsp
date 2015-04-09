@@ -1,4 +1,4 @@
-<!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@ page contentType="text/html; charset=UTF-8" %> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <%@page import="nc.mairie.metier.poste.Activite"%>
 <%@page import="nc.mairie.utils.MairieUtils"%>
 <%@page import="nc.mairie.enums.EnumTypeDroit"%>
@@ -17,13 +17,13 @@
 <script type="text/javascript" src="js/competence.js"></script>
 <SCRIPT language="JavaScript">
 
-//afin de sélectionner un élément dans une liste
+//afin de sÃ©lectionner un Ã©lÃ©ment dans une liste
 function executeBouton(nom)
 {
 document.formu.elements[nom].click();
 }
 
-// afin de mettre le focus sur une zone précise
+// afin de mettre le focus sur une zone prÃ©cise
 function setfocus(nom)
 {
 if (document.formu.elements[nom] != null)
@@ -31,7 +31,7 @@ document.formu.elements[nom].focus();
 }
 
 </SCRIPT>
-<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <LINK href="theme/sigp2.css" rel="stylesheet" type="text/css">
 </HEAD>
 <jsp:useBean class="nc.mairie.gestionagent.process.poste.OePOSTEFEActivite" id="process" scope="session"></jsp:useBean>
@@ -40,7 +40,7 @@ document.formu.elements[nom].focus();
 	<FORM name="formu" method="POST" class="sigp2-titre">
 		<INPUT name="JSP" type="hidden" value="<%= process.getJSP() %>">
 		<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;height:580px;">
-		    <legend class="sigp2Legend">Liste des activités</legend>
+		    <legend class="sigp2Legend">Liste des activitÃ©s</legend>
 		    <br/>			
 			<BR/>
 			<table class="display" id="tabActi">
@@ -48,7 +48,7 @@ document.formu.elements[nom].focus();
 					<tr>
 						<th>idActi</th>
 						<th width="50" >Selection</th>
-						<th>Libellé</th>
+						<th>LibellÃ©</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -71,9 +71,9 @@ document.formu.elements[nom].focus();
 			</table>
 			<BR/><BR/>
 			<div class=<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>>
-	            <INPUT title="Créer une activité" type="image" src="images/ajout.gif" height="20px" width="20px" name="<%=process.getNOM_PB_AJOUTER()%>">
-	            <INPUT title="Modifier une activité" type="image" src="images/modifier.gif" height="20px" width="20px" name="<%=process.getNOM_PB_MODIFIER()%>">
-	            <INPUT title="Supprimer une activité"  type="image" src="images/suppression.gif" height="20px" width="20px" name="<%=process.getNOM_PB_SUPPRIMER()%>">
+	            <INPUT title="CrÃ©er une activitÃ©" type="image" src="images/ajout.gif" height="20px" width="20px" name="<%=process.getNOM_PB_AJOUTER()%>">
+	            <INPUT title="Modifier une activitÃ©" type="image" src="images/modifier.gif" height="20px" width="20px" name="<%=process.getNOM_PB_MODIFIER()%>">
+	            <INPUT title="Supprimer une activitÃ©"  type="image" src="images/suppression.gif" height="20px" width="20px" name="<%=process.getNOM_PB_SUPPRIMER()%>">
 			</div>
             <br/><br/>
             <% if (process.getVAL_ST_ACTION()=="") {%>
@@ -81,7 +81,7 @@ document.formu.elements[nom].focus();
 			<% } else {%>
 	            <div style="display:block">
 				<% if (!process.ACTION_SUPPRESSION.equals(process.getVAL_ST_ACTION())) { %>
-					<label class="sigp2Mandatory" Style="width:100px">Libellé:</label><br/>
+					<label class="sigp2Mandatory" Style="width:100px">LibellÃ©:</label><br/>
 					<INPUT class="sigp2-saisie" maxlength="255"
 						name="<%= process.getNOM_EF_DESC_ACTIVITE() %>" size="120"
 						type="text" value="<%= process.getVAL_EF_DESC_ACTIVITE() %>" style="margin-right:10px;">
@@ -92,7 +92,7 @@ document.formu.elements[nom].focus();
 						<span class="sigp2"><INPUT type="submit" class="sigp2-Bouton-100" value="Modifier" name="<%=process.getNOM_PB_VALIDER_ACTIVITE()%>"></span>
 					<%}%>
 				<%} else {%>
-					<label class="sigp2Mandatory" Style="width:100px">Libellé:</label><br/>
+					<label class="sigp2Mandatory" Style="width:100px">LibellÃ©:</label><br/>
 					<INPUT class="sigp2-saisie" maxlength="255"
 						name="<%= process.getNOM_EF_DESC_ACTIVITE() %>" size="120" disabled="disabled"
 						type="text" value="<%= process.getVAL_EF_DESC_ACTIVITE() %>" style="margin-right:10px;">

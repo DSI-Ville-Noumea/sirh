@@ -24,7 +24,7 @@ import nc.mairie.utils.VariablesActivite;
 import org.springframework.context.ApplicationContext;
 
 /**
- * Process OeAGENTHomonyme Date de création : (29/09/11 08:36:13)
+ * Process OeAGENTHomonyme Date de crÃ©ation : (29/09/11 08:36:13)
  * 
  */
 public class OeAGENTHomonyme extends BasicProcess {
@@ -42,10 +42,10 @@ public class OeAGENTHomonyme extends BasicProcess {
 	private AgentDao agentDao;
 
 	/**
-	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones Ã  afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
-	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
-	 * addZone(getNOMxxx, String); Date de création : (29/09/11 08:36:13)
+	 * doivent avoir les Fields PUBLIC Utilisation de la mÃ©thode
+	 * addZone(getNOMxxx, String); Date de crÃ©ation : (29/09/11 08:36:13)
 	 * 
 	 */
 	@SuppressWarnings("unchecked")
@@ -95,7 +95,7 @@ public class OeAGENTHomonyme extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER Date de création :
+	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER Date de crÃ©ation :
 	 * (29/09/11 08:36:13)
 	 * 
 	 */
@@ -104,10 +104,10 @@ public class OeAGENTHomonyme extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (29/09/11 08:36:13)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (29/09/11 08:36:13)
 	 * 
 	 */
 	public boolean performPB_ANNULER(HttpServletRequest request) throws Exception {
@@ -118,7 +118,7 @@ public class OeAGENTHomonyme extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_CREER_AGT_HOMONYME Date de
-	 * création : (29/09/11 08:36:13)
+	 * crÃ©ation : (29/09/11 08:36:13)
 	 * 
 	 */
 	public String getNOM_PB_CREER_AGT_HOMONYME() {
@@ -126,14 +126,14 @@ public class OeAGENTHomonyme extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (29/09/11 08:36:13)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (29/09/11 08:36:13)
 	 * 
 	 */
 	public boolean performPB_CREER_AGT_HOMONYME(HttpServletRequest request) throws Exception {
-		// Création de l'agent
+		// CrÃ©ation de l'agent
 		ArrayList<Contact> lContact = getContactDao().listerContactAgent(getAgentCourant().getIdAgent());
 		SituationFamiliale situFam = getSituationFamilialeDao().chercherSituationFamilialeById(
 				getAgentCourant().getIdSituationFamiliale());
@@ -148,11 +148,11 @@ public class OeAGENTHomonyme extends BasicProcess {
 		setProcessAppelant(new PersonnelMain());
 
 		if (isCreation())
-			// "INF001","Agent @ créé"
+			// "INF001","Agent @ crÃ©Ã©"
 			setStatut(STATUT_PROCESS_APPELANT, false,
 					MessageUtils.getMessage("INF001", getAgentCourant().getNomatr().toString()));
 		else
-			// "INF001","Agent @ modifié"
+			// "INF001","Agent @ modifiÃ©"
 			setStatut(STATUT_PROCESS_APPELANT, false,
 					MessageUtils.getMessage("INF002", getAgentCourant().getNomatr().toString()));
 
@@ -161,7 +161,7 @@ public class OeAGENTHomonyme extends BasicProcess {
 
 	/**
 	 * Getter de la liste avec un lazy initialize : LB_AGENT_HOMONYME Date de
-	 * création : (29/09/11 08:36:13)
+	 * crÃ©ation : (29/09/11 08:36:13)
 	 * 
 	 */
 	private String[] getLB_AGENT_HOMONYME() {
@@ -171,7 +171,7 @@ public class OeAGENTHomonyme extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_AGENT_HOMONYME Date de création : (29/09/11
+	 * Setter de la liste: LB_AGENT_HOMONYME Date de crÃ©ation : (29/09/11
 	 * 08:36:13)
 	 * 
 	 */
@@ -181,7 +181,7 @@ public class OeAGENTHomonyme extends BasicProcess {
 
 	/**
 	 * Retourne le nom de la zone pour la JSP : NOM_LB_AGENT_HOMONYME Date de
-	 * création : (29/09/11 08:36:13)
+	 * crÃ©ation : (29/09/11 08:36:13)
 	 * 
 	 */
 	public String getNOM_LB_AGENT_HOMONYME() {
@@ -189,8 +189,8 @@ public class OeAGENTHomonyme extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_AGENT_HOMONYME_SELECT Date de création : (29/09/11 08:36:13)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_AGENT_HOMONYME_SELECT Date de crÃ©ation : (29/09/11 08:36:13)
 	 * 
 	 */
 	public String getNOM_LB_AGENT_HOMONYME_SELECT() {
@@ -198,8 +198,8 @@ public class OeAGENTHomonyme extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_AGENT_HOMONYME Date de création : (29/09/11 08:36:13)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_AGENT_HOMONYME Date de crÃ©ation : (29/09/11 08:36:13)
 	 * 
 	 */
 	public String[] getVAL_LB_AGENT_HOMONYME() {
@@ -207,8 +207,8 @@ public class OeAGENTHomonyme extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_AGENT_HOMONYME Date de création : (29/09/11 08:36:13)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_AGENT_HOMONYME Date de crÃ©ation : (29/09/11 08:36:13)
 	 * 
 	 */
 	public String getVAL_LB_AGENT_HOMONYME_SELECT() {
@@ -225,7 +225,7 @@ public class OeAGENTHomonyme extends BasicProcess {
 	}
 
 	/**
-	 * Met à jour l'agent courant.
+	 * Met a jour l'agent courant.
 	 * 
 	 * @param agentCourant
 	 */
@@ -234,7 +234,7 @@ public class OeAGENTHomonyme extends BasicProcess {
 	}
 
 	/**
-	 * Getter du booléen creation.
+	 * Getter du booleen creation.
 	 * 
 	 * @return creation
 	 */
@@ -243,7 +243,7 @@ public class OeAGENTHomonyme extends BasicProcess {
 	}
 
 	/**
-	 * Setter du booléen creation.
+	 * Setter du booleen creation.
 	 * 
 	 * @param creation
 	 */
@@ -252,8 +252,8 @@ public class OeAGENTHomonyme extends BasicProcess {
 	}
 
 	/**
-	 * Méthode appelée par la servlet qui aiguille le traitement : en fonction
-	 * du bouton de la JSP Date de création : (29/09/11 08:36:13)
+	 * mÃ©thode appelee par la servlet qui aiguille le traitement : en fonction
+	 * du bouton de la JSP Date de crÃ©ation : (29/09/11 08:36:13)
 	 * 
 	 */
 	public boolean recupererStatut(HttpServletRequest request) throws Exception {
@@ -277,13 +277,13 @@ public class OeAGENTHomonyme extends BasicProcess {
 			}
 
 		}
-		// Si TAG INPUT non géré par le process
+		// Si TAG INPUT non gÃ©rÃ© par le process
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
 
 	/**
-	 * Constructeur du process OeAGENTHomonyme. Date de création : (07/11/11
+	 * Constructeur du process OeAGENTHomonyme. Date de crÃ©ation : (07/11/11
 	 * 09:45:21)
 	 * 
 	 */
@@ -292,8 +292,8 @@ public class OeAGENTHomonyme extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la JSP du process Zone à utiliser dans un champ caché
-	 * dans chaque formulaire de la JSP. Date de création : (07/11/11 09:45:21)
+	 * Retourne le nom de la JSP du process Zone a utiliser dans un champ cache
+	 * dans chaque formulaire de la JSP. Date de crÃ©ation : (07/11/11 09:45:21)
 	 * 
 	 */
 	public String getJSP() {
@@ -302,7 +302,7 @@ public class OeAGENTHomonyme extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_RECUP_AGENT_SELECTIONNE Date
-	 * de création : (07/11/11 09:45:21)
+	 * de crÃ©ation : (07/11/11 09:45:21)
 	 * 
 	 */
 	public String getNOM_PB_RECUP_AGENT_SELECTIONNE() {
@@ -310,14 +310,14 @@ public class OeAGENTHomonyme extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (07/11/11 09:45:21)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (07/11/11 09:45:21)
 	 * 
 	 */
 	public boolean performPB_RECUP_AGENT_SELECTIONNE(HttpServletRequest request) throws Exception {
-		// Recup de l'agent sélectionné
+		// Recup de l'agent sÃ©lectionnÃ©
 		int indiceAgt = (Services.estNumerique(getVAL_LB_AGENT_HOMONYME_SELECT()) ? Integer
 				.parseInt(getVAL_LB_AGENT_HOMONYME_SELECT()) : -1);
 		if (indiceAgt == -1 || getListeAgtHomonyme().size() == 0 || indiceAgt > getListeAgtHomonyme().size()) {
@@ -347,7 +347,7 @@ public class OeAGENTHomonyme extends BasicProcess {
 	 * Setter de la liste des agents homonymes.
 	 * 
 	 * @param listeAgtHomonyme
-	 *            listeAgtHomonyme à définir
+	 *            listeAgtHomonyme Ã  dÃ©finir
 	 */
 	private void setListeAgtHomonyme(ArrayList<Agent> listeAgtHomonyme) {
 		this.listeAgtHomonyme = listeAgtHomonyme;

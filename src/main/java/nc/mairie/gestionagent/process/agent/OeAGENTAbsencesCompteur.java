@@ -41,7 +41,7 @@ import org.springframework.context.ApplicationContext;
 import flexjson.JSONSerializer;
 
 /**
- * Process OeAGENTAbsences Date de création : (05/09/11 11:31:37)
+ * Process OeAGENTAbsences Date de crÃ©ation : (05/09/11 11:31:37)
  * 
  */
 public class OeAGENTAbsencesCompteur extends BasicProcess {
@@ -66,14 +66,14 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 	private String[] LB_MOTIF;
 	private ArrayList<MotifCompteurDto> listeMotifCompteur;
 
-	public String ACTION_CREATION_RECUP = "Alimenter le compteur de récupération";
+	public String ACTION_CREATION_RECUP = "Alimenter le compteur de rÃ©cupÃ©ration";
 	public String ACTION_CREATION_REPOS_COMP = "Alimenter le compteur de repos compensateur";
-	public String ACTION_CREATION_CONGE_ANNUEL = "Alimenter le compteur des congés annuels";
+	public String ACTION_CREATION_CONGE_ANNUEL = "Alimenter le compteur des congÃ©s annuels";
 
 	private AgentDao agentDao;
 
 	/**
-	 * Constructeur du process OeAGENTAbsences. Date de création : (05/09/11
+	 * Constructeur du process OeAGENTAbsences. Date de crÃ©ation : (05/09/11
 	 * 11:39:24)
 	 * 
 	 */
@@ -90,10 +90,10 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 	}
 
 	/**
-	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones Ã  afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
-	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
-	 * addZone(getNOMxxx, String); Date de création : (05/09/11 11:39:24)
+	 * doivent avoir les Fields PUBLIC Utilisation de la mÃ©thode
+	 * addZone(getNOMxxx, String); Date de crÃ©ation : (05/09/11 11:39:24)
 	 * 
 	 */
 	public void initialiseZones(HttpServletRequest request) throws Exception {
@@ -104,17 +104,17 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 			addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 		}
 
-		// Vérification des droits d'accès.
+		// VÃ©rification des droits d'acces.
 		if (MairieUtils.estInterdit(request, getNomEcran())) {
 			// "ERR190",
-			// "Opération impossible. Vous ne disposez pas des droits d'accès à cette option."
+			// "Operation impossible. Vous ne disposez pas des droits d'acces a cette option."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
 
 		initialiseDao();
 
-		// Initialisation des listes déroulantes
+		// Initialisation des listes deroulantes
 		initialiseListeDeroulante();
 
 		// Si agentCourant vide
@@ -165,8 +165,8 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 	}
 
 	/**
-	 * Méthode appelée par la servlet qui aiguille le traitement : en fonction
-	 * du bouton de la JSP Date de création : (05/09/11 11:31:37)
+	 * mÃ©thode appelee par la servlet qui aiguille le traitement : en fonction
+	 * du bouton de la JSP Date de crÃ©ation : (05/09/11 11:31:37)
 	 * 
 	 */
 	public boolean recupererStatut(HttpServletRequest request) throws Exception {
@@ -188,14 +188,14 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 			}
 
 		}
-		// Si TAG INPUT non géré par le process
+		// Si TAG INPUT non gÃ©rÃ© par le process
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
 
 	/**
-	 * Retourne le nom de la JSP du process Zone à utiliser dans un champ caché
-	 * dans chaque formulaire de la JSP. Date de création : (29/09/11 10:03:37)
+	 * Retourne le nom de la JSP du process Zone a utiliser dans un champ cache
+	 * dans chaque formulaire de la JSP. Date de crÃ©ation : (29/09/11 10:03:37)
 	 * 
 	 */
 	public String getJSP() {
@@ -324,7 +324,7 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 				|| getTypeAbsenceCourant().getIdRefTypeAbsence().toString()
 						.equals(EnumTypeAbsence.ASA_A49.getCode().toString())) {
 			addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
-			setMessageInfo("Ce type d'absence syndicale ne se gère pas par compteur.");
+			setMessageInfo("Ce type d'absence syndicale ne se gÃ¨re pas par compteur.");
 
 		} else if (getTypeAbsenceCourant().getIdRefTypeAbsence().toString()
 				.equals(EnumTypeAbsence.CONGE.getCode().toString())) {
@@ -335,7 +335,7 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 
 		} else {
 			addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
-			setMessageInfo("Ce type d'absence ne se gère pas par compteur.");
+			setMessageInfo("Ce type d'absence ne se gÃ¨re pas par compteur.");
 		}
 		return true;
 	}
@@ -345,7 +345,7 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 		Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), getAgentCourant());
 		if (getTransaction().isErreur()) {
 			getTransaction().traiterErreur();
-			// "ERR136", "Cet agent n'a aucune carrière active."
+			// "ERR136", "Cet agent n'a aucune carriere active."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR136"));
 			return false;
 		}
@@ -366,7 +366,7 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 			if (carr.getCodeCategorie().equals("9") || carr.getCodeCategorie().equals("10")
 					|| carr.getCodeCategorie().equals("11")) {
 				// "ERR806",
-				// "Cet agent est adjoint, conseiller municipal ou maire, il ne peut avoir de congé annuel."
+				// "Cet agent est adjoint, conseiller municipal ou maire, il ne peut avoir de congÃ© annuel."
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR806"));
 				return false;
 			}
@@ -444,11 +444,11 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 
 	public boolean performPB_VALIDER(HttpServletRequest request) throws Exception {
 
-		// vérification de la validité du formulaire
+		// VÃ©rification de la validitÃ© du formulaire
 		if (!performControlerChamps(request))
 			return false;
 
-		// on recupere l'agent connecté
+		// on recupere l'agent connecte
 		Agent agentConnecte = getAgentConnecte(request);
 		if (agentConnecte == null) {
 			// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
@@ -456,7 +456,7 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 			return false;
 		}
 
-		// on sauvegarde les données
+		// on sauvegarde les donnÃ©es
 		SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
 		ReturnMessageDto message = new ReturnMessageDto();
 
@@ -483,14 +483,14 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 				ajout = false;
 			}
 
-			// verifier nouveau solde pas négatif
+			// verifier nouveau solde pas negatif
 			int dureeTotaleSaisie = (Integer.valueOf(dureeHeure) * 60) + (Integer.valueOf(dureeMin));
 			int ancienSolde = getSoldeCourantMinute();
 			if (ajout) {
 				// cas de l'ajout
 				if (ancienSolde + dureeTotaleSaisie < 0) {
 					// "ERR801",
-					// "Le nouveau solde du compteur ne peut être négatif."
+					// "Le nouveau solde du compteur ne peut Ãªtre negatif."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR801"));
 					return false;
 				}
@@ -498,7 +498,7 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 				// cas du retrait
 				if (ancienSolde - dureeTotaleSaisie < 0) {
 					// "ERR801",
-					// "Le nouveau solde du compteur ne peut être négatif."
+					// "Le nouveau solde du compteur ne peut Ãªtre negatif."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR801"));
 					return false;
 				}
@@ -550,7 +550,7 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 
 			Boolean anneePrec = getZone(getNOM_RG_COMPTEUR()).equals(getNOM_RB_COMPTEUR_ANNEE_PREC());
 
-			// verifier nouveau solde pas négatif
+			// verifier nouveau solde pas negatif
 			int dureeTotaleSaisie = (Integer.valueOf(dureeHeure) * 60) + (Integer.valueOf(dureeMin));
 			int ancienSolde = 0;
 			if (anneePrec) {
@@ -562,7 +562,7 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 				// cas de l'ajout
 				if (ancienSolde + dureeTotaleSaisie < 0) {
 					// "ERR801",
-					// "Le nouveau solde du compteur ne peut être négatif."
+					// "Le nouveau solde du compteur ne peut Ãªtre negatif."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR801"));
 					return false;
 				}
@@ -570,7 +570,7 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 				// cas du retrait
 				if (ancienSolde - dureeTotaleSaisie < 0) {
 					// "ERR801",
-					// "Le nouveau solde du compteur ne peut être négatif."
+					// "Le nouveau solde du compteur ne peut Ãªtre negatif."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR801"));
 					return false;
 				}
@@ -615,7 +615,7 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 
 			Boolean anneePrec = getZone(getNOM_RG_COMPTEUR()).equals(getNOM_RB_COMPTEUR_ANNEE_PREC());
 
-			// verifier nouveau solde pas négatif
+			// verifier nouveau solde pas negatif
 			Double dureeTotaleSaisie = Double.valueOf(dureeJour);
 			Double ancienSolde = 0.0;
 			if (anneePrec) {
@@ -627,7 +627,7 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 				// cas de l'ajout
 				if (ancienSolde + dureeTotaleSaisie < 0) {
 					// "ERR801",
-					// "Le nouveau solde du compteur ne peut être négatif."
+					// "Le nouveau solde du compteur ne peut Ãªtre negatif."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR801"));
 					return false;
 				}
@@ -635,7 +635,7 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 				// cas du retrait
 				if (ancienSolde - dureeTotaleSaisie < 0) {
 					// "ERR801",
-					// "Le nouveau solde du compteur ne peut être négatif."
+					// "Le nouveau solde du compteur ne peut Ãªtre negatif."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR801"));
 					return false;
 				}
@@ -671,7 +671,7 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 			}
 			getTransaction().declarerErreur("ERREUR : " + err);
 		} else {
-			// "INF010", "Le compteur @ a bien été mis à jour."
+			// "INF010", "Le compteur @ a bien Ã©tÃ© mis a jour."
 			setStatut(STATUT_MEME_PROCESS, false,
 					MessageUtils.getMessage("INF010", getTypeAbsenceCourant().getLibelle()));
 		}
@@ -711,15 +711,15 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 		}
 
 		if (getVAL_ST_ACTION().equals(ACTION_CREATION_CONGE_ANNUEL)) {
-			// durée obligatoire (ajout ou retrait)
+			// durÃ©e obligatoire (ajout ou retrait)
 			if (getVAL_ST_DUREE_JOUR_AJOUT().equals(Const.CHAINE_VIDE)
 					&& getVAL_ST_DUREE_JOUR_RETRAIT().equals(Const.CHAINE_VIDE)) {
 				// "ERR002", "La zone @ est obligatoire."
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "durée"));
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "durÃ©e"));
 				return false;
 			}
 
-			// pas 2 durées de saisie
+			// pas 2 durÃ©es de saisie
 			boolean ajoutSaisie = false;
 			if (!getVAL_ST_DUREE_JOUR_AJOUT().equals(Const.CHAINE_VIDE)) {
 				ajoutSaisie = true;
@@ -732,23 +732,23 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 
 			if (ajoutSaisie && retraitSaisie) {
 				// "ERR800",
-				// "Seul un des deux champs durée doit être renseigné."
+				// "Seul un des deux champs durÃ©e doit Ãªtre renseignÃ©."
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR800"));
 				return false;
 			}
 		} else {
 
-			// durée obligatoire (ajout ou retrait)
+			// durÃ©e obligatoire (ajout ou retrait)
 			if (getVAL_ST_DUREE_HEURE_AJOUT().equals(Const.CHAINE_VIDE)
 					&& getVAL_ST_DUREE_MIN_AJOUT().equals(Const.CHAINE_VIDE)
 					&& getVAL_ST_DUREE_HEURE_RETRAIT().equals(Const.CHAINE_VIDE)
 					&& getVAL_ST_DUREE_MIN_RETRAIT().equals(Const.CHAINE_VIDE)) {
 				// "ERR002", "La zone @ est obligatoire."
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "durée"));
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "durÃ©e"));
 				return false;
 			}
 
-			// pas 2 durées de saisie
+			// pas 2 durÃ©es de saisie
 			boolean ajoutSaisie = false;
 			if (!getVAL_ST_DUREE_HEURE_AJOUT().equals(Const.CHAINE_VIDE)
 					|| !getVAL_ST_DUREE_MIN_AJOUT().equals(Const.CHAINE_VIDE)) {
@@ -763,7 +763,7 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 
 			if (ajoutSaisie && retraitSaisie) {
 				// "ERR800",
-				// "Seul un des deux champs durée doit être renseigné."
+				// "Seul un des deux champs durÃ©e doit Ãªtre renseignÃ©."
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR800"));
 				return false;
 			}

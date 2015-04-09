@@ -1,4 +1,4 @@
-// active/Désactive la saisie des champs suivant la validation SEF
+// active/DÃ©sactive la saisie des champs suivant la validation SEF
 function validSEF(indice) {
 	var box = document.formu.elements['NOM_CK_VALID_SEF_' + indice];
 	if (box != null && box.checked) {
@@ -16,7 +16,7 @@ function validSEF(indice) {
 	}
 }
 
-//active/Désactive la case ordre du mérite
+//active/DÃ©sactive la case ordre du mÃ©rite
 function activeOrdreMerite(indice) {
 	if(document.formu.elements['NOM_LB_AVIS_CAP_AD_' + indice].value==1 || document.formu.elements['NOM_LB_AVIS_CAP_AD_' + indice].value==2){
     	document.formu.elements['NOM_EF_ORDRE_MERITE_'+indice].style.visibility = "hidden";
@@ -25,7 +25,7 @@ function activeOrdreMerite(indice) {
 	}	
 }
 
-//active/Désactive toutes les cases à cocher pour l'impression du tableau
+//active/DÃ©sactive toutes les cases Ã  cocher pour l'impression du tableau
 function activeTab(tailleListe) {
 	for (i = 0; i < tailleListe; i++) {
 		var box = document.formu.elements['NOM_CK_TAB_' + i];
@@ -41,7 +41,7 @@ function activeTab(tailleListe) {
 	}
 }
 
-//active/Désactive toutes les cases à cocher pour l'impression du tableau + EAEs
+//active/DÃ©sactive toutes les cases Ã  cocher pour l'impression du tableau + EAEs
 function activeEae(tailleListe) {
 	for (i = 0; i < tailleListe; i++) {
 		var box = document.formu.elements['NOM_CK_EAE_' + i];

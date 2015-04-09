@@ -1,4 +1,4 @@
-<!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@ page contentType="text/html; charset=UTF-8" %> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <%@page import="java.util.ArrayList"%>
 <%@page import="nc.mairie.metier.poste.TitrePoste"%>
 <%@page import="nc.mairie.metier.poste.Service"%>
@@ -10,7 +10,7 @@
 		<META http-equiv="Content-Style-Type" content="text/css">
 		<LINK href="theme/sigp2.css" rel="stylesheet" type="text/css">
 		<lINK rel="stylesheet" href="css/custom-theme/jquery-ui-1.8.16.custom.css" type="text/css">
-		<TITLE>Sélection d'une fiche de poste</TITLE>
+		<TITLE>SÃ©lection d'une fiche de poste</TITLE>
 		
 		<SCRIPT type="text/javascript" src="js/jquery-1.6.2.min.js"></SCRIPT>
 		<script type="text/javascript" src="development-bundle/ui/jquery.ui.core.js"></script>
@@ -21,20 +21,20 @@
 		<SCRIPT language="javascript" src="js/dtree.js"></SCRIPT>
 		
 		<SCRIPT language="JavaScript">
-		//afin de sélectionner un élément dans une liste
+		//afin de sÃ©lectionner un Ã©lÃ©ment dans une liste
 		function executeBouton(nom)
 		{
 		document.formu.elements[nom].click();
 		}
 		
-		// afin de mettre le focus sur une zone précise
+		// afin de mettre le focus sur une zone prÃ©cise
 		function setfocus(nom)
 		{
 		if (document.formu.elements[nom] != null)
 		document.formu.elements[nom].focus();
 		}
 		
-		// afin d'afficher la hiérarchie des services
+		// afin d'afficher la hiÃ©rarchie des services
 		function agrandirHierarchy() {
 		
 			hier = 	document.getElementById('treeHierarchy');
@@ -46,7 +46,7 @@
 			}
 		}
 		
-		// afin de cacher la hiérarchie des services
+		// afin de cacher la hiÃ©rarchie des services
 		function reduireHierarchy() {
 			hier = 	document.getElementById('treeHierarchy');
 			hier.style.display='none';
@@ -82,13 +82,13 @@
 				});
 			});
 		</SCRIPT>
-		<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	</HEAD>
 	<BODY bgcolor="#FFFFFF" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="return setfocus('<%= process.getFocus() %>')">
 		<%@ include file="BanniereErreur.jsp"%>
 		<FORM name="formu" method="POST" class="sigp2-titre">
-			<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;" title="Recherche avancée d'une fiche de poste">
-				<LEGEND class="sigp2Legend">Recherche avancée d'une fiche de poste</LEGEND>
+			<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;" title="Recherche avancÃ©e d'une fiche de poste">
+				<LEGEND class="sigp2Legend">Recherche avancÃ©e d'une fiche de poste</LEGEND>
 				<table>
 					<tr>
 						<td width="60px">
@@ -169,13 +169,13 @@
 				<BR>
 			</FIELDSET>
 			
-			<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;" title="Sélection d'une fiche de poste">
-				<LEGEND class="sigp2Legend">Sélection d'une fiche de poste</LEGEND>
+			<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;" title="SÃ©lection d'une fiche de poste">
+				<LEGEND class="sigp2Legend">SÃ©lection d'une fiche de poste</LEGEND>
             	<%if(process.getListeFP()!= null && process.getListeFP().size()>0){ %>
 				<BR>	            
-	            <span style="margin-left: 0px;">Numéro</span>
+	            <span style="margin-left: 0px;">NumÃ©ro</span>
 				<span style="margin-left: 30px;">Titre</span>
-				<span style="margin-left: 425px;">Agent affecté</span>
+				<span style="margin-left: 425px;">Agent affectÃ©</span>
 				<span style="margin-left: 75px;">Service</span>
 				<BR/>
 				<div style="overflow: auto;height: 250px;width:1000px;margin-right: 0px;margin-left: 0px;">
@@ -215,7 +215,7 @@
 				    <span style="margin-left: 0px;">Direction</span>
 					<span style="margin-left: 0px;">Service/Section/...</span>
 					<span style="margin-left: 155px;">Agent</span>
-					<span style="margin-left: 180px;">Date début</span>
+					<span style="margin-left: 180px;">Date dÃ©but</span>
 					<span style="margin-left: 25px;">Date fin</span>
 					<span style="margin-left: 20px;">Fiche poste</span>
 					<span style="margin-left: 5px;">Titre poste</span>

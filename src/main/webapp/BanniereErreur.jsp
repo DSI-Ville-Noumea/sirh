@@ -1,3 +1,4 @@
+<%@ page contentType="text/html; charset=UTF-8" %> 
 <%@page import="nc.mairie.technique.BasicProcess"%>
 <%BasicProcess processErr = (BasicProcess)request.getSession().getAttribute("process"); 
 

@@ -1,4 +1,4 @@
-<!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@ page contentType="text/html; charset=UTF-8" %> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <%@page import="java.util.ArrayList"%>
 <%@page import="nc.mairie.utils.MairieUtils"%>
 <%@page import="nc.mairie.enums.EnumTypeDroit"%>
@@ -22,13 +22,13 @@
 		<script type="text/javascript" src="development-bundle/ui/jquery.ui.autocomplete.js"></script>
 <SCRIPT language="JavaScript">
 
-//afin de sélectionner un élément dans une liste
+//afin de sÃ©lectionner un Ã©lÃ©ment dans une liste
 function executeBouton(nom)
 {
 document.formu.elements[nom].click();
 }
 
-// afin de mettre le focus sur une zone précise
+// afin de mettre le focus sur une zone prÃ©cise
 function setfocus(nom)
 {
 if (document.formu.elements[nom] != null)
@@ -74,7 +74,7 @@ document.formu.elements[nom].focus();
 				});
 			});
 		</SCRIPT>
-<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <LINK href="theme/sigp2.css" rel="stylesheet" type="text/css">
 </HEAD>
 <BODY bgcolor="#FFFFFF" background="images/fond.jpg" onload="window.parent.frames['refAgent'].location.reload();return setfocus('<%= process.getFocus() %>')">
@@ -85,8 +85,8 @@ document.formu.elements[nom].focus();
 			<span class="sigp2Mandatory"> Recherche par Ref. Mairie : </span>
 			<INPUT class="sigp2-saisiemajuscule" maxlength="8" name="<%= process.getNOM_EF_RECHERCHE_REF_MAIRIE() %>" size="10"	type="text" value="<%= process.getVAL_EF_RECHERCHE_REF_MAIRIE() %>" style="margin-right:10px;">
             <INPUT title="Recherche" type="image" src="images/loupe.gif" height="16px" width="16px" name="<%=process.getNOM_PB_RECHERCHER_FE()%>">
-            <INPUT title="Recherche avancée" type="image" src="images/rechercheAvancee.gif" height="16px" width="16px" name="<%=process.getNOM_PB_RECHERCHE_AVANCEE()%>" >
-            <INPUT title="Créer une FE" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="16px" width="16px" name="<%=process.getNOM_PB_AJOUTER_FE()%>">
+            <INPUT title="Recherche avancÃ©e" type="image" src="images/rechercheAvancee.gif" height="16px" width="16px" name="<%=process.getNOM_PB_RECHERCHE_AVANCEE()%>" >
+            <INPUT title="CrÃ©er une FE" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="16px" width="16px" name="<%=process.getNOM_PB_AJOUTER_FE()%>">
             <INPUT title="Dupliquer une FE" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/dupliquer.gif" height="16px" width="16px" name="<%=process.getNOM_PB_DUPLIQUER_FE()%>">
             <INPUT title="Supprimer une FE" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/suppression.gif" height="16px" width="16px" name="<%=process.getNOM_PB_SUPPRIMER_FE()%>">
 			<br/>
@@ -128,7 +128,7 @@ document.formu.elements[nom].focus();
 								</tr>
 								<tr>
 									<td>
-										<span class="sigp2Mandatory"> Domaine d'activité : </span>
+										<span class="sigp2Mandatory"> Domaine d'activitÃ© : </span>
 									</td>
 									<td>
 										<SELECT style="width: 300px;" class="sigp2-saisie" name="<%= process.getNOM_LB_DOMAINE() %>" disabled="disabled">
@@ -156,7 +156,7 @@ document.formu.elements[nom].focus();
 								</tr>	
 								<tr>
 									<td>
-										<span class="sigp2Mandatory"> Nom du métier / emploi : </span>
+										<span class="sigp2Mandatory"> Nom du mÃ©tier / emploi : </span>
 									</td>
 									<td>
 										<INPUT style="width: 300px;" class="sigp2-saisie" maxlength="100" disabled="disabled"name="<%= process.getNOM_EF_NOM_METIER() %>" type="text" value="<%= process.getVAL_EF_NOM_METIER() %>">
@@ -180,7 +180,7 @@ document.formu.elements[nom].focus();
 								</tr>
 								<tr>
 									<td>
-										<span class="sigp2Mandatory"> Domaine d'activité : </span>
+										<span class="sigp2Mandatory"> Domaine d'activitÃ© : </span>
 									</td>
 									<td>
 										<SELECT style="width: 300px;" class="sigp2-saisie" name="<%= process.getNOM_LB_DOMAINE() %>">
@@ -208,7 +208,7 @@ document.formu.elements[nom].focus();
 								</tr>
 								<tr>
 									<td>
-										<span class="sigp2Mandatory" style="width:150px"> Nom du métier / emploi : </span>
+										<span class="sigp2Mandatory" style="width:150px"> Nom du mÃ©tier / emploi : </span>
 									</td>
 									<td>
 										<INPUT style="width: 300px;" class="sigp2-saisie" maxlength="100" name="<%= process.getNOM_EF_NOM_METIER() %>" type="text" value="<%= process.getVAL_EF_NOM_METIER() %>">
@@ -221,7 +221,7 @@ document.formu.elements[nom].focus();
 							<%} %>
 								<tr>
 									<td>
-										<span class="sigp2"> Autres Appellations <br/> métiers / emplois </span>
+										<span class="sigp2"> Autres Appellations <br/> mÃ©tiers / emplois </span>
 									</td>
 									<td>
 										<INPUT style="width: 260px;" class="sigp2-saisie" maxlength="100"	name="<%= process.getNOM_EF_AUTRE_APPELLATION() %>" type="text" value="<%= process.getVAL_EF_AUTRE_APPELLATION() %>">
@@ -247,7 +247,7 @@ document.formu.elements[nom].focus();
 							<table border="0">
 								<tr>
 									<td width="130px">
-										<span class="sigp2"> Catégorie / classification : </span>
+										<span class="sigp2"> CatÃ©gorie / classification : </span>
 									</td>
 									<td width="280px">
 							            <INPUT type="image" src="images/ajout.gif" height="16px" width="16px" name="<%=process.getNOM_PB_AFFICHER_LISTE_CATEGORIE()%>">
@@ -289,7 +289,7 @@ document.formu.elements[nom].focus();
 								</tr>
 								<tr>
 									<td>
-										<span class="sigp2"> Niveau d'étude : </span>
+										<span class="sigp2"> Niveau d'Ã©tude : </span>
 									</td>
 									<td>				
 							            <INPUT type="image" src="images/ajout.gif" height="16px" width="16px" name="<%=process.getNOM_PB_AFFICHER_LISTE_NIVEAU()%>">
@@ -309,7 +309,7 @@ document.formu.elements[nom].focus();
 								</tr>
 								<tr>
 									<td>
-										<span class="sigp2"> Diplôme(s) : </span>
+										<span class="sigp2"> DiplÃ´me(s) : </span>
 									</td>
 									<td>				
 							            <INPUT type="image" src="images/ajout.gif" height="16px" width="16px" name="<%=process.getNOM_PB_AFFICHER_LISTE_DIPLOME()%>">
@@ -331,7 +331,7 @@ document.formu.elements[nom].focus();
 								</tr>
 								<tr>
 									<td>
-										<span class="sigp2"> Précisions diplomes : </span>
+										<span class="sigp2"> PrÃ©cisions diplomes : </span>
 									</td>
 									<td>
 										<textarea rows="2" cols="50" class="sigp2-saisie" name="<%= process.getNOM_EF_PRECISIONS_DIPLOMES() %>"	style="overflow:hidden;width:300px"><%= process.getVAL_EF_PRECISIONS_DIPLOMES() %></textarea>
@@ -348,14 +348,14 @@ document.formu.elements[nom].focus();
 			</table>	
 		
 		<fieldset class="sigp2Fieldset"  style="text-align: left; margin: 10px; clear: both; width:1030px">
-			<legend class="sigp2Legend"><B>Définition de l'emploi</B></legend>
+			<legend class="sigp2Legend"><B>DÃ©finition de l'emploi</B></legend>
 			<br/>
 			<textarea rows="4" cols="190" class="sigp2-saisie" name="<%= process.getNOM_EF_DEFINITION_EMPLOI() %>"><%= process.getVAL_EF_DEFINITION_EMPLOI() %></textarea>
 			<br/>
 		</fieldset>
 				
 		<fieldset class="sigp2Fieldset"  style="text-align: left; margin: 10px; clear: both; width:1030px">
-			<legend class="sigp2Legend">Activités principales</legend>
+			<legend class="sigp2Legend">ActivitÃ©s principales</legend>
 	        <INPUT type="image" src="images/ajout.gif" height="16px" width="16px" name="<%=process.getNOM_PB_AJOUTER_ACTIVITE_PRINC()%>">
 			<br/>
             <%if(process.getListeActiPrincMulti().size()>0){ %>
@@ -382,7 +382,7 @@ document.formu.elements[nom].focus();
 			<%} %>
 		</fieldset>
 		<fieldset class="sigp2Fieldset"  style="text-align: left; margin: 10px; width:1030px;">
-			<legend class="sigp2Legend">Compétences</legend>
+			<legend class="sigp2Legend">CompÃ©tences</legend>
 			<span class="sigp2Mandatory" style="text-align:center">
 				<INPUT type="radio" <%= process.forRadioHTML(process.getNOM_RG_TYPE_COMPETENCE(),process.getNOM_RB_TYPE_COMPETENCE_S())%> onclick='executeBouton("<%=process.getNOM_PB_CHANGER_TYPE() %>")'>Savoir
 				<span style="width:10px"></span>
@@ -511,7 +511,7 @@ document.formu.elements[nom].focus();
 								</tr>
 								<tr>
 									<td>
-										<span class="sigp2Mandatory"> Domaine d'activité : </span>
+										<span class="sigp2Mandatory"> Domaine d'activitÃ© : </span>
 									</td>
 									<td>
 										<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_DOMAINE() %>" style="width:260px" disabled="disabled">
@@ -539,7 +539,7 @@ document.formu.elements[nom].focus();
 								</tr>
 								<tr>
 									<td>
-										<span class="sigp2Mandatory"> Nom du métier / emploi : </span>
+										<span class="sigp2Mandatory"> Nom du mÃ©tier / emploi : </span>
 									</td>
 									<td>		
 										<INPUT class="sigp2-saisie" maxlength="100" disabled="disabled" name="<%= process.getNOM_EF_NOM_METIER() %>" type="text" value="<%= process.getVAL_EF_NOM_METIER() %>" style="width:260px">					
@@ -551,7 +551,7 @@ document.formu.elements[nom].focus();
 								</tr>
 								<tr>
 									<td>
-										<span class="sigp2"> Autres Appellations <br/> métiers / emplois </span>
+										<span class="sigp2"> Autres Appellations <br/> mÃ©tiers / emplois </span>
 									</td>
 									<td>
 										<SELECT size="2" style="width : 260px;font-family : monospace;" class="sigp2-liste" name="<%=process.getNOM_LB_AUTRE_APPELLATION()%>" disabled="disabled">
@@ -569,7 +569,7 @@ document.formu.elements[nom].focus();
 							<table>
 								<tr>
 									<td width="150px">
-								<span class="sigp2"> Catégorie / classification : </span>
+								<span class="sigp2"> CatÃ©gorie / classification : </span>
 									</td>
 									<td>
 								<INPUT class="sigp2-saisie" disabled="disabled"	name="<%= process.getNOM_EF_CATEGORIE_MULTI() %>" style="width:260px" type="text" value="<%= process.getVAL_EF_CATEGORIE_MULTI() %>">
@@ -595,7 +595,7 @@ document.formu.elements[nom].focus();
 								</tr>
 								<tr>
 									<td>
-										<span class="sigp2"> Niveau d'étude : </span>
+										<span class="sigp2"> Niveau d'Ã©tude : </span>
 									</td>
 									<td>
 										<INPUT class="sigp2-saisie" disabled="disabled" name="<%= process.getNOM_EF_NIVEAU_ETUDE_MULTI() %>" style="width:260px" type="text" value="<%= process.getVAL_EF_NIVEAU_ETUDE_MULTI() %>">
@@ -607,7 +607,7 @@ document.formu.elements[nom].focus();
 								</tr>
 								<tr>
 									<td>
-										<span class="sigp2"> Diplôme(s) : </span>
+										<span class="sigp2"> DiplÃ´me(s) : </span>
 									</td>
 									<td>
 										<SELECT size="3" style="width :260px;font-family : monospace;" class="sigp2-liste" name="<%=process.getNOM_LB_DIPLOME_MULTI()%>" disabled="disabled">
@@ -621,7 +621,7 @@ document.formu.elements[nom].focus();
 								</tr>
 								<tr>
 									<td>
-										<span class="sigp2"> Précisions diplomes : </span>
+										<span class="sigp2"> PrÃ©cisions diplomes : </span>
 									</td>
 									<td>
 										<textarea rows="2" cols="50" class="sigp2-saisie" name="<%= process.getNOM_EF_PRECISIONS_DIPLOMES() %>"	style="overflow:hidden;width:260px" disabled="disabled"><%= process.getVAL_EF_PRECISIONS_DIPLOMES() %></textarea>
@@ -633,15 +633,15 @@ document.formu.elements[nom].focus();
 				</tr>
 			</table>
 		<fieldset class="sigp2Fieldset"  style="text-align: left; margin: 10px; width:1030px">
-			<legend class="sigp2Legend"><B>Définition de l'emploi</B></legend>
+			<legend class="sigp2Legend"><B>DÃ©finition de l'emploi</B></legend>
 			<br/>
 			<textarea rows="4" cols="150" class="sigp2-saisie" name="<%= process.getNOM_EF_DEFINITION_EMPLOI() %>" style="margin-right:10px;" disabled="disabled"><%= process.getVAL_EF_DEFINITION_EMPLOI() %></textarea>
 			<br/>
 		</fieldset>
 		
 		<fieldset class="sigp2Fieldset"  style="text-align: left; margin: 10px; width:1030px">
-			<legend class="sigp2Legend"><B>Activités</B></legend>
-			<span class="sigp2Mandatory" style="width:150px;margin:5px;"> Activités principales</span>
+			<legend class="sigp2Legend"><B>ActivitÃ©s</B></legend>
+			<span class="sigp2Mandatory" style="width:150px;margin:5px;"> ActivitÃ©s principales</span>
             <%if(process.getListeActiPrincMulti().size()>0){ %>
 				<div style="overflow: auto;height: 120px;width:1000px;margin-right: 0px;margin-left: 0px;">
 					<table class="sigp2NewTab" style="text-align:left;width:980px;">
@@ -664,7 +664,7 @@ document.formu.elements[nom].focus();
 		<br/>
 		</fieldset>
 		<fieldset class="sigp2Fieldset"  style="text-align: left; margin: 10px; width:1030px;">
-			<legend class="sigp2Legend">Compétences</legend>
+			<legend class="sigp2Legend">CompÃ©tences</legend>
 			<span class="sigp2Mandatory" style="text-align:center">
 				<INPUT type="radio" <%= process.forRadioHTML(process.getNOM_RG_TYPE_COMPETENCE(),process.getNOM_RB_TYPE_COMPETENCE_S())%> onclick='executeBouton("<%=process.getNOM_PB_CHANGER_TYPE() %>")'>Savoir
 				<span style="width:10px"></span>
@@ -754,7 +754,7 @@ document.formu.elements[nom].focus();
 				<INPUT type="submit" value="Modifier" name="<%=process.getNOM_PB_VALIDER()%>" class="sigp2-Bouton-100">
 				<INPUT type="submit" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>" class="sigp2-Bouton-100">
 			<%} else if(!process.ACTION_RECHERCHE.equals(process.getVAL_ST_ACTION())) {%>
-				<INPUT type="submit" value="Créer" name="<%=process.getNOM_PB_VALIDER()%>" class="sigp2-Bouton-100">
+				<INPUT type="submit" value="CrÃ©er" name="<%=process.getNOM_PB_VALIDER()%>" class="sigp2-Bouton-100">
 				<INPUT type="submit" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>" class="sigp2-Bouton-100">
 			<%} %>
 		</FIELDSET>

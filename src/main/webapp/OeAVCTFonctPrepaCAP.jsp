@@ -1,4 +1,4 @@
-<!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@ page contentType="text/html; charset=UTF-8" %> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <%@page import="nc.mairie.metier.Const"%>
 <%@page import="nc.mairie.metier.avancement.AvancementFonctionnaires"%>
 <%@page import="nc.mairie.utils.MairieUtils"%>
@@ -24,20 +24,20 @@
 <SCRIPT language="javascript" src="js/dtree.js"></SCRIPT>
 
 <SCRIPT language="JavaScript">
-//afin de sélectionner un élément dans une liste
+//afin de sÃ©lectionner un Ã©lÃ©ment dans une liste
 function executeBouton(nom)
 {
   document.formu.elements[nom].click();
 }
 
-// afin de mettre le focus sur une zone précise
+// afin de mettre le focus sur une zone prÃ©cise
 function setfocus(nom)
 {
   if (document.formu.elements[nom] != null)
     document.formu.elements[nom].focus();
 }
 
-//afin d'afficher la hiérarchie des services
+//afin d'afficher la hiÃ©rarchie des services
 function agrandirHierarchy() {
 
 	hier = 	document.getElementById('treeHierarchy');
@@ -49,14 +49,14 @@ function agrandirHierarchy() {
 	}
 }
 
-//afin de cacher la hiérarchie des services
+//afin de cacher la hiÃ©rarchie des services
 function reduireHierarchy() {
 	hier = 	document.getElementById('treeHierarchy');
 	hier.style.display='none';
 }
   
 </SCRIPT>
-<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 </HEAD>
 <jsp:useBean
  class="nc.mairie.gestionagent.process.avancement.OeAVCTFonctPrepaCAP"
@@ -89,12 +89,12 @@ function reduireHierarchy() {
 		<INPUT name="JSP" type="hidden" value="<%= process.getJSP() %>">
 		<BR/>
 	    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
-		    <legend class="sigp2Legend">Tri des avancements à afficher</legend>
-			<span class="sigp2" style="width:75px">Année : </span>
+		    <legend class="sigp2Legend">Tri des avancements Ã  afficher</legend>
+			<span class="sigp2" style="width:75px">AnnÃ©e : </span>
 			<SELECT disabled="disabled" class="sigp2-saisie" name="<%= process.getNOM_LB_ANNEE() %>" style="width=70px;margin-right:20px;">
 				<%=process.forComboHTML(process.getVAL_LB_ANNEE(), process.getVAL_LB_ANNEE_SELECT()) %>
 			</SELECT>
-			<span class="sigp2" style="width:75px">Filière : </span>
+			<span class="sigp2" style="width:75px">FiliÃ¨re : </span>
 			<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_FILIERE() %>" style="width=200px;margin-right:20px;">
 				<%=process.forComboHTML(process.getVAL_LB_FILIERE(), process.getVAL_LB_FILIERE_SELECT()) %>
 			</SELECT>
@@ -148,22 +148,22 @@ function reduireHierarchy() {
 							<th>NumAvct</th>
 							<th>Dir. <br> Sect.</th>
 							<th>Matr</th>
-							<th>Nom <br> Prénom</th>
-							<th>Cat <br> Filière</th>
+							<th>Nom <br> PrÃ©nom</th>
+							<th>Cat <br> FiliÃ¨re</th>
 							<th>PA</th>
 							<th>Code grade <br> Ancien</th>
 							<th>Code grade <br> Nouveau</th>
-							<th>Libellé grade <br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ancien&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br> Nouveau</th>
-							<th>Date début</th>
+							<th>LibellÃ© grade <br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ancien&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br> Nouveau</th>
+							<th>Date dÃ©but</th>
 							<th>Date ancien<br> avct mini</th>
 							<th>Date Avct Mini <br> Moy <br> Maxi</th>	
 							<th>Motif Avct <br> <br> Avis SHD</th>	
-							<th>Durée VDN</th>	
-							<th>Class. Ordre mérite</th>	
+							<th>DurÃ©e VDN</th>	
+							<th>Class. Ordre mÃ©rite</th>	
 							<th>Verif SEF <br> 							
 								<INPUT type="checkbox" name="CHECK_ALL_SEF" onClick='activeSEF()'>
 							</th>
-							<th>Vérifié par</th>
+							<th>VÃ©rifiÃ© par</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -259,7 +259,7 @@ function reduireHierarchy() {
 				<% if (!process.agentEnErreur.equals("")){ %>
 					<span style="color: red;" class="sigp2Mandatory">Agents en anomalies : <%=process.agentEnErreur %></span>
 					<BR/><BR/>
-					<span style="color: red;" class="sigp2Mandatory">Pour ces agents une ligne de carrière n'a pu être crée car il y avait déjà une carrière suivante de saisie. Merci de corriger manuellement les carrières de ces agents.</span>
+					<span style="color: red;" class="sigp2Mandatory">Pour ces agents une ligne de carriÃ¨re n'a pu Ãªtre crÃ©e car il y avait dÃ©jÃ  une carriÃ¨re suivante de saisie. Merci de corriger manuellement les carriÃ¨res de ces agents.</span>
 				<%} %>
 				<script type="text/javascript">
 					$(document).ready(function() {
@@ -286,7 +286,7 @@ function reduireHierarchy() {
 
 		
 	    <FIELDSET class="sigp2Fieldset" style="text-align:left;">
-		    <legend class="sigp2Legend">Impression des tableaux d'avancement différencié et des EAE</legend>
+		    <legend class="sigp2Legend">Impression des tableaux d'avancement diffÃ©renciÃ© et des EAE</legend>
 		    <BR/>
 				<table class="display" id="tabAvctFonctImpr">
 					<thead>
@@ -341,13 +341,13 @@ function reduireHierarchy() {
 					} );
 				</script>
 				<BR/><BR/>
-				<INPUT type="submit" class="sigp2-Bouton-200" value="Envoyer à l'impression" name="<%=process.getNOM_PB_IMPRIMER()%>">
+				<INPUT type="submit" class="sigp2-Bouton-200" value="Envoyer Ã  l'impression" name="<%=process.getNOM_PB_IMPRIMER()%>">
 			<BR/>
 		</FIELDSET>
 		<BR/>
 		<FIELDSET class="sigp2Fieldset" style="text-align:left;">
 		    <legend class="sigp2Legend">Impressions</legend>
-				<INPUT type="submit" class="sigp2-Bouton-100" value="Rafraîchir" name="<%=process.getNOM_PB_RAFRAICHIR_IMPRIMER()%>">
+				<INPUT type="submit" class="sigp2-Bouton-100" value="RafraÃ®chir" name="<%=process.getNOM_PB_RAFRAICHIR_IMPRIMER()%>">
 				<br/>
 		    <BR/>
 				<table class="display" id="tabAvctFonctImprJob">

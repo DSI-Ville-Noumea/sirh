@@ -34,7 +34,7 @@ public class ServletActeursAgent extends javax.servlet.http.HttpServlet {
 			
 			if(null != dto) {
 				for(AgentDto operateur : dto.getListOperateurs()) {
-					result.append("Opérateur : " 
+					result.append("OpÃ©rateur : " 
 							+ operateur.getPrenom() + " " 
 							+ operateur.getNom() + " ("
 							+ new Integer(operateur.getIdAgent() - 9000000).toString() 

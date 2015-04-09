@@ -1,4 +1,4 @@
-<!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@ page contentType="text/html; charset=UTF-8" %> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <%@page import="nc.mairie.utils.MairieUtils"%>
 <%@page import="nc.mairie.enums.EnumTypeDroit"%>
 <HTML>
@@ -12,13 +12,13 @@
 <SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT>
 
 <SCRIPT language="JavaScript">
-		//afin de sélectionner un élément dans une liste
+		//afin de sÃ©lectionner un Ã©lÃ©ment dans une liste
 		function executeBouton(nom)
 		{
 		document.formu.elements[nom].click();
 		}
 		
-		// afin de mettre le focus sur une zone précise
+		// afin de mettre le focus sur une zone prÃ©cise
 		function setfocus(nom)
 		{
 		if (document.formu.elements[nom] != null)
@@ -34,7 +34,7 @@
 		}
 
 </SCRIPT>
-<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 </HEAD>
 <jsp:useBean id="process" class="nc.mairie.gestionagent.process.agent.OeAGENTADMINISTRATIONGestion" scope="session"></jsp:useBean>
 <BODY bgcolor="#FFFFFF" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="window.parent.frames['refAgent'].location.reload();return setfocus('<%= process.getFocus() %>')">
@@ -48,7 +48,7 @@
 				    <span style="margin-left: 5px;"><INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_CREER()%>"></span>
 				    <span style="margin-left: 50px;">Administration</span>
 				    <span style="margin-left: 525px;">Fonctionnaire</span>
-					<span style="margin-left: 15px;">Date d'entrée</span>
+					<span style="margin-left: 15px;">Date d'entrÃ©e</span>
 					<span style="margin-left: 20px;">Date de sortie</span>
 					<br/>
 				<div style="overflow: auto;height: 250px;width:1000px;">
@@ -98,7 +98,7 @@
 				<span style="width:107px">
 			</span>
 			<BR/><BR/>
-			<span class="sigp2Mandatory">Date d'entrée : </span>
+			<span class="sigp2Mandatory">Date d'entrÃ©e : </span>
 			<span style="padding-left:5px;">
 				<INPUT id="<%=process.getNOM_EF_DATE_DEBUT()%>" class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_DATE_DEBUT() %>" size="10" type="text" value="<%= process.getVAL_EF_DATE_DEBUT() %>">
 			</span>
@@ -124,7 +124,7 @@
 			<span class="sigp2">Fonctionnaire</span>
 			<span class="sigp2-saisie" style="margin-left: 10px;"><%=process.getVAL_ST_FONCTIONNAIRE() %></span>
 			<BR/>
-			<span class="sigp2">Date d'entrée</span>
+			<span class="sigp2">Date d'entrÃ©e</span>
 			<span class="sigp2-saisie" style="margin-left: 10px;"><%=process.getVAL_EF_DATE_DEBUT() %></span>
 			<span style="margin-left: 10px;" class="sigp2">Date de sortie</span>
 			<span class="sigp2-saisie"  style="margin-left: 10px;"><%=process.getVAL_EF_DATE_FIN() %></span>

@@ -41,7 +41,7 @@ import nc.mairie.utils.VariablesActivite;
 import org.springframework.context.ApplicationContext;
 
 /**
- * Process OeAVCTSimulation Date de création : (21/11/11 11:11:24)
+ * Process OeAVCTSimulation Date de crÃ©ation : (21/11/11 11:11:24)
  * 
  */
 public class OeAVCTSimulationDetaches extends BasicProcess {
@@ -71,10 +71,10 @@ public class OeAVCTSimulationDetaches extends BasicProcess {
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
 	/**
-	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones Ã  afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
-	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
-	 * addZone(getNOMxxx, String); Date de création : (21/11/11 11:11:24)
+	 * doivent avoir les Fields PUBLIC Utilisation de la mÃ©thode
+	 * addZone(getNOMxxx, String); Date de crÃ©ation : (21/11/11 11:11:24)
 	 * 
 	 */
 	public void initialiseZones(HttpServletRequest request) throws Exception {
@@ -82,11 +82,11 @@ public class OeAVCTSimulationDetaches extends BasicProcess {
 		VariableGlobale.ajouter(request, "PROCESS_MEMORISE", this);
 
 		// ----------------------------------//
-		// Vérification des droits d'accès. //
+		// VÃ©rification des droits d'acces. //
 		// ----------------------------------//
 		if (MairieUtils.estInterdit(request, getNomEcran())) {
 			// "ERR190",
-			// "Opération impossible. Vous ne disposez pas des droits d'accès à cette option."
+			// "Operation impossible. Vous ne disposez pas des droits d'acces a cette option."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
@@ -123,7 +123,7 @@ public class OeAVCTSimulationDetaches extends BasicProcess {
 	}
 
 	/**
-	 * Initialise les listes déroulantes de l'écran.
+	 * Initialise les listes deroulantes de l'Ã©cran.
 	 * 
 	 * @throws Exception
 	 */
@@ -169,7 +169,7 @@ public class OeAVCTSimulationDetaches extends BasicProcess {
 				if (Const.CHAINE_VIDE.equals(serv.getCodService()))
 					continue;
 
-				// recherche du supérieur
+				// recherche du supÃ©rieur
 				String codeService = serv.getCodService();
 				while (codeService.endsWith("A")) {
 					codeService = codeService.substring(0, codeService.length() - 1);
@@ -185,8 +185,8 @@ public class OeAVCTSimulationDetaches extends BasicProcess {
 	}
 
 	/**
-	 * Méthode appelée par la servlet qui aiguille le traitement : en fonction
-	 * du bouton de la JSP Date de création : (21/11/11 11:11:24)
+	 * mÃ©thode appelee par la servlet qui aiguille le traitement : en fonction
+	 * du bouton de la JSP Date de crÃ©ation : (21/11/11 11:11:24)
 	 * 
 	 */
 	public boolean recupererStatut(HttpServletRequest request) throws Exception {
@@ -213,13 +213,13 @@ public class OeAVCTSimulationDetaches extends BasicProcess {
 				return performPB_SUPPRIMER_RECHERCHER_SERVICE(request);
 			}
 		}
-		// Si TAG INPUT non géré par le process
+		// Si TAG INPUT non gÃ©rÃ© par le process
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
 
 	/**
-	 * Constructeur du process OeAVCTSimulation. Date de création : (21/11/11
+	 * Constructeur du process OeAVCTSimulation. Date de crÃ©ation : (21/11/11
 	 * 11:11:24)
 	 * 
 	 */
@@ -228,8 +228,8 @@ public class OeAVCTSimulationDetaches extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la JSP du process Zone à utiliser dans un champ caché
-	 * dans chaque formulaire de la JSP. Date de création : (21/11/11 11:11:24)
+	 * Retourne le nom de la JSP du process Zone a utiliser dans un champ cache
+	 * dans chaque formulaire de la JSP. Date de crÃ©ation : (21/11/11 11:11:24)
 	 * 
 	 */
 	public String getJSP() {
@@ -237,7 +237,7 @@ public class OeAVCTSimulationDetaches extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_LANCER Date de création :
+	 * Retourne le nom d'un bouton pour la JSP : PB_LANCER Date de crÃ©ation :
 	 * (21/11/11 11:11:24)
 	 * 
 	 */
@@ -246,21 +246,21 @@ public class OeAVCTSimulationDetaches extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (21/11/11 11:11:24)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (21/11/11 11:11:24)
 	 * 
 	 */
 	public boolean performPB_LANCER(HttpServletRequest request) throws Exception {
 
-		// Mise à jour de l'action menée
+		// Mise Ã  jour de l'action menee
 		addZone(getNOM_ST_ACTION(), ACTION_CALCUL);
 
 		String an = getListeAnnee()[0];
 
-		// Suppression des avancements à l'état 'Travail' de la catégorie donnée
-		// et de l'année
+		// Suppression des avancements a l'etat 'Travail' de la categorie donnÃ©e
+		// et de l'annÃ©e
 		getAvancementDetachesDao().supprimerAvancementTravailAvecCategorie(Integer.valueOf(an));
 
 		// recuperation agent
@@ -275,14 +275,14 @@ public class OeAVCTSimulationDetaches extends BasicProcess {
 		commitTransaction();
 		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_ANNEE_SIMULATION_AVCT, an);
 
-		// "INF200","Simulation effectuée"
+		// "INF200","Simulation effectuee"
 		setStatut(STATUT_MEME_PROCESS, false, MessageUtils.getMessage("INF200"));
 
 		return true;
 	}
 
 	/**
-	 * Méthode de calcul des avancements Fonctionnaires.
+	 * mÃ©thode de calcul des avancements Fonctionnaires.
 	 * 
 	 * @param codeService
 	 * @param annee
@@ -292,7 +292,7 @@ public class OeAVCTSimulationDetaches extends BasicProcess {
 	private boolean performCalculDetache(String codeService, String annee, Agent agent) throws Exception {
 		ArrayList<Agent> la = new ArrayList<Agent>();
 		if (agent != null) {
-			// il faut regarder si cet agent est de type Fonctionnaire détaché
+			// il faut regarder si cet agent est de type Fonctionnaire dÃ©tachÃ©
 			Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), agent);
 			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
@@ -302,13 +302,13 @@ public class OeAVCTSimulationDetaches extends BasicProcess {
 					|| (!carr.getCodeCategorie().equals("6") && !carr.getCodeCategorie().equals("16")
 							&& !carr.getCodeCategorie().equals("17") && !carr.getCodeCategorie().equals("19"))) {
 				// "ERR181",
-				// "Cet agent n'est pas de type @. Il ne peut pas être soumis à l'avancement @."
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR181", "détaché", "des détachés"));
+				// "Cet agent n'est pas de type @. Il ne peut pas Ãªtre soumis a l'avancement @."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR181", "dÃ©tachÃ©", "des dÃ©tachÃ©s"));
 				return false;
 			}
 			la.add(agent);
 		} else {
-			// Récupération des agents
+			// RÃ©cupÃ©ration des agents
 			// on recupere les sous-service du service selectionne
 
 			ArrayList<String> listeSousService = null;
@@ -317,7 +317,7 @@ public class OeAVCTSimulationDetaches extends BasicProcess {
 				listeSousService = Service.listSousService(getTransaction(), serv.getSigleService());
 			}
 
-			// Récupération des agents
+			// RÃ©cupÃ©ration des agents
 			ArrayList<Carriere> listeCarriereActive = Carriere.listerCarriereActive(getTransaction(), annee, "Detache");
 			String listeNomatrAgent = Const.CHAINE_VIDE;
 			for (Carriere carr : listeCarriereActive) {
@@ -347,7 +347,7 @@ public class OeAVCTSimulationDetaches extends BasicProcess {
 				continue;
 			}
 
-			// Récupération de l'avancement
+			// RÃ©cupÃ©ration de l'avancement
 			try {
 				@SuppressWarnings("unused")
 				AvancementDetaches avct = getAvancementDetachesDao().chercherAvancementAvecAnneeEtAgent(
@@ -365,9 +365,9 @@ public class OeAVCTSimulationDetaches extends BasicProcess {
 					getTransaction().traiterErreur();
 					continue;
 				}
-				// Si pas de grade suivant, agent non éligible
+				// Si pas de grade suivant, agent non eligible
 				if (gradeActuel.getCodeGradeSuivant() != null && gradeActuel.getCodeGradeSuivant().length() != 0) {
-					// Création de l'avancement
+					// CrÃ©ation de l'avancement
 					AvancementDetaches avct = new AvancementDetaches();
 					avct.setIdAgent(a.getIdAgent());
 					avct.setCodeCategorie(Integer.valueOf(carr.getCodeCategorie()));
@@ -377,7 +377,7 @@ public class OeAVCTSimulationDetaches extends BasicProcess {
 					// PA
 					avct.setCodePa(paAgent.getCdpadm());
 
-					// on traite si l'agent est detaché ou non
+					// on traite si l'agent est detachÃ© ou non
 					if (paAgent.getCdpadm().equals("54") || paAgent.getCdpadm().equals("56")
 							|| paAgent.getCdpadm().equals("57") || paAgent.getCdpadm().equals("58")) {
 						avct.setAgentVdn(false);
@@ -410,7 +410,7 @@ public class OeAVCTSimulationDetaches extends BasicProcess {
 							nbJoursBonus = 0;
 						}
 					}
-					// si la date avct moy (année ) sup à l'année choisie pour
+					// si la date avct moy (annÃ©e ) sup a l'annÃ©e choisie pour
 					// la simu alors on sort l'agent du calcul
 					Integer anneeNumerique = avct.getAnnee();
 					Integer anneeDateAvctMoyNumerique = Integer.valueOf(sdf.format(avct.getDateAvctMoy()).substring(6,
@@ -510,7 +510,7 @@ public class OeAVCTSimulationDetaches extends BasicProcess {
 							// avct.setLibelleGrade(grd.getLibGrade());
 
 							// on prend l'id motif de la colonne CDTAVA du grade
-							// si CDTAVA correspond à AVANCEMENT DIFF alors on
+							// si CDTAVA correspond a AVANCEMENT DIFF alors on
 							// calcul les 3 dates sinon on calcul juste la date
 							// moyenne
 							if (grd.getCodeTava() != null && !grd.getCodeTava().equals(Const.CHAINE_VIDE)) {
@@ -543,7 +543,7 @@ public class OeAVCTSimulationDetaches extends BasicProcess {
 					avct.setAccMois(Integer.valueOf(carr.getACCMois()));
 					avct.setAccJour(Integer.valueOf(carr.getACCJour()));
 
-					// on regarde si l'agent a une carriere de simulation dejà
+					// on regarde si l'agent a une carriere de simulation deja
 					// saisie
 					// autrement dis si la carriere actuelle a pour datfin 0
 					if (carr.getDateFin() == null || carr.getDateFin().equals(Const.ZERO)) {
@@ -582,7 +582,7 @@ public class OeAVCTSimulationDetaches extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_CODE_SERVICE Date de
-	 * création : (21/11/11 11:11:24)
+	 * crÃ©ation : (21/11/11 11:11:24)
 	 * 
 	 */
 	public String getNOM_ST_CODE_SERVICE() {
@@ -590,8 +590,8 @@ public class OeAVCTSimulationDetaches extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_CODE_SERVICE
-	 * Date de création : (21/11/11 11:11:24)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_CODE_SERVICE
+	 * Date de crÃ©ation : (21/11/11 11:11:24)
 	 * 
 	 */
 	public String getVAL_ST_CODE_SERVICE() {
@@ -600,7 +600,7 @@ public class OeAVCTSimulationDetaches extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_SERVICE Date de
-	 * création : (21/11/11 11:11:24)
+	 * crÃ©ation : (21/11/11 11:11:24)
 	 * 
 	 */
 	public String getNOM_EF_SERVICE() {
@@ -608,8 +608,8 @@ public class OeAVCTSimulationDetaches extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_SERVICE Date de création : (21/11/11 11:11:24)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_SERVICE Date de crÃ©ation : (21/11/11 11:11:24)
 	 * 
 	 */
 	public String getVAL_EF_SERVICE() {
@@ -617,7 +617,7 @@ public class OeAVCTSimulationDetaches extends BasicProcess {
 	}
 
 	/**
-	 * Getter de la liste avec un lazy initialize : LB_ANNEE Date de création :
+	 * Getter de la liste avec un lazy initialize : LB_ANNEE Date de crÃ©ation :
 	 * (21/11/11 11:11:24)
 	 * 
 	 */
@@ -628,7 +628,7 @@ public class OeAVCTSimulationDetaches extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_ANNEE Date de création : (21/11/11 11:11:24)
+	 * Setter de la liste: LB_ANNEE Date de crÃ©ation : (21/11/11 11:11:24)
 	 * 
 	 */
 	private void setLB_ANNEE(String[] newLB_ANNEE) {
@@ -636,7 +636,7 @@ public class OeAVCTSimulationDetaches extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_ANNEE Date de création :
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_ANNEE Date de crÃ©ation :
 	 * (21/11/11 11:11:24)
 	 * 
 	 */
@@ -645,8 +645,8 @@ public class OeAVCTSimulationDetaches extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_ANNEE_SELECT Date de création : (21/11/11 11:11:24)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_ANNEE_SELECT Date de crÃ©ation : (21/11/11 11:11:24)
 	 * 
 	 */
 	public String getNOM_LB_ANNEE_SELECT() {
@@ -654,8 +654,8 @@ public class OeAVCTSimulationDetaches extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_ANNEE Date de création : (21/11/11 11:11:24)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_ANNEE Date de crÃ©ation : (21/11/11 11:11:24)
 	 * 
 	 */
 	public String[] getVAL_LB_ANNEE() {
@@ -663,8 +663,8 @@ public class OeAVCTSimulationDetaches extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_ANNEE Date de création : (21/11/11 11:11:24)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_ANNEE Date de crÃ©ation : (21/11/11 11:11:24)
 	 * 
 	 */
 	public String getVAL_LB_ANNEE_SELECT() {
@@ -687,7 +687,7 @@ public class OeAVCTSimulationDetaches extends BasicProcess {
 
 	/**
 	 * @param focus
-	 *            focus à définir.
+	 *            focus Ã  dÃ©finir.
 	 */
 	public void setFocus(String focus) {
 		this.focus = focus;
@@ -703,7 +703,7 @@ public class OeAVCTSimulationDetaches extends BasicProcess {
 	}
 
 	/**
-	 * Met à jour la liste des services.
+	 * Met a jour la liste des services.
 	 * 
 	 * @param listeServices
 	 */
@@ -712,7 +712,7 @@ public class OeAVCTSimulationDetaches extends BasicProcess {
 	}
 
 	/**
-	 * Retourne une hashTable de la hiérarchie des Service selon le code
+	 * Retourne une hashTable de la hierarchie des Service selon le code
 	 * Service.
 	 * 
 	 * @return hTree
@@ -722,14 +722,14 @@ public class OeAVCTSimulationDetaches extends BasicProcess {
 	}
 
 	/**
-	 * Getter du nom de l'écran (pour la gestion des droits)
+	 * Getter du nom de l'Ã©cran (pour la gestion des droits)
 	 */
 	public String getNomEcran() {
 		return "ECR-AVCT-SIMULATION-DETACHE";
 	}
 
 	/**
-	 * Getter de la liste des années possibles de simulation.
+	 * Getter de la liste des annÃ©es possibles de simulation.
 	 * 
 	 * @return listeAnnee
 	 */
@@ -738,10 +738,10 @@ public class OeAVCTSimulationDetaches extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste des années possibles de simulation.
+	 * Setter de la liste des annÃ©es possibles de simulation.
 	 * 
 	 * @param listeAnnee
-	 *            listeAnnee à définir
+	 *            listeAnnee Ã  dÃ©finir
 	 */
 	private void setListeAnnee(String[] listeAnnee) {
 		this.listeAnnee = listeAnnee;
@@ -749,7 +749,7 @@ public class OeAVCTSimulationDetaches extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_ACTION Date de
-	 * création : (12/09/11 11:49:01)
+	 * crÃ©ation : (12/09/11 11:49:01)
 	 * 
 	 */
 	public String getNOM_ST_ACTION() {
@@ -757,8 +757,8 @@ public class OeAVCTSimulationDetaches extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACTION Date de
-	 * création : (12/09/11 11:49:01)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_ACTION Date de
+	 * crÃ©ation : (12/09/11 11:49:01)
 	 * 
 	 */
 	public String getVAL_ST_ACTION() {
@@ -767,7 +767,7 @@ public class OeAVCTSimulationDetaches extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_AGENT Date de
-	 * création : (02/08/11 09:40:42)
+	 * crÃ©ation : (02/08/11 09:40:42)
 	 * 
 	 */
 	public String getNOM_ST_AGENT() {
@@ -775,8 +775,8 @@ public class OeAVCTSimulationDetaches extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_AGENT Date de
-	 * création : (02/08/11 09:40:42)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_AGENT Date de
+	 * crÃ©ation : (02/08/11 09:40:42)
 	 * 
 	 */
 	public String getVAL_ST_AGENT() {
@@ -785,7 +785,7 @@ public class OeAVCTSimulationDetaches extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_RECHERCHER_AGENT Date de
-	 * création : (02/08/11 09:42:00)
+	 * crÃ©ation : (02/08/11 09:42:00)
 	 * 
 	 */
 	public String getNOM_PB_RECHERCHER_AGENT() {
@@ -793,15 +793,15 @@ public class OeAVCTSimulationDetaches extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (02/08/11 09:42:00)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (02/08/11 09:42:00)
 	 * 
 	 */
 	public boolean performPB_RECHERCHER_AGENT(HttpServletRequest request) throws Exception {
 
-		// On met l'agent courant en var d'activité
+		// On met l'agent courant en var d'activitÃ©
 		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new Agent());
 
 		setStatut(STATUT_RECHERCHER_AGENT, true);
@@ -810,7 +810,7 @@ public class OeAVCTSimulationDetaches extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMER_RECHERCHER_AGENT
-	 * Date de création : (13/07/11 09:49:02)
+	 * Date de crÃ©ation : (13/07/11 09:49:02)
 	 * 
 	 * 
 	 */
@@ -819,21 +819,21 @@ public class OeAVCTSimulationDetaches extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (25/03/03 15:33:11)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (25/03/03 15:33:11)
 	 * 
 	 */
 	public boolean performPB_SUPPRIMER_RECHERCHER_AGENT(HttpServletRequest request) throws Exception {
-		// On enlève l'agent selectionnée
+		// On enleve l'agent selectionnÃ©e
 		addZone(getNOM_ST_AGENT(), Const.CHAINE_VIDE);
 		return true;
 	}
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMER_RECHERCHER_SERVICE
-	 * Date de création : (13/07/11 09:49:02)
+	 * Date de crÃ©ation : (13/07/11 09:49:02)
 	 * 
 	 * 
 	 */
@@ -842,23 +842,23 @@ public class OeAVCTSimulationDetaches extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (13/07/11 09:49:02)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (13/07/11 09:49:02)
 	 * 
 	 * 
 	 */
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (25/03/03 15:33:11)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (25/03/03 15:33:11)
 	 * 
 	 */
 	public boolean performPB_SUPPRIMER_RECHERCHER_SERVICE(HttpServletRequest request) throws Exception {
-		// On enlève le service selectionnée
+		// On enleve le service selectionnÃ©e
 		addZone(getNOM_ST_CODE_SERVICE(), Const.CHAINE_VIDE);
 		addZone(getNOM_EF_SERVICE(), Const.CHAINE_VIDE);
 		return true;

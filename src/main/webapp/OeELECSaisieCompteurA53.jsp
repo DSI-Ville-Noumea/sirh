@@ -1,4 +1,4 @@
-<!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@ page contentType="text/html; charset=UTF-8" %> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <%@page import="nc.mairie.enums.EnumTypeDroit"%>
 <%@page import="nc.mairie.utils.MairieUtils"%>
 <HTML>
@@ -10,13 +10,13 @@
 <SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT> 
 
 <SCRIPT language="JavaScript">
-//afin de sélectionner un élément dans une liste
+//afin de sÃ©lectionner un Ã©lÃ©ment dans une liste
 function executeBouton(nom)
 {
 document.formu.elements[nom].click();
 }
 
-// afin de mettre le focus sur une zone précise
+// afin de mettre le focus sur une zone prÃ©cise
 function setfocus(nom)
 {
 if (document.formu.elements[nom] != null)
@@ -37,7 +37,7 @@ function testClickEnrigistrer(){
 	}
 }
 </SCRIPT>
-<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 </HEAD>
 <jsp:useBean
  class="nc.mairie.gestionagent.process.election.OeELECSaisieCompteurA53" id="process" scope="session"></jsp:useBean>
@@ -56,7 +56,7 @@ function testClickEnrigistrer(){
 								    <img title="ajouter" border="0" src="images/ajout.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_AJOUTER()%>');" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>">
 								</td>
 								<td width="300px;">Organisation syndicale</td>
-								<td align="center" width="50px;">Année</td>
+								<td align="center" width="50px;">AnnÃ©e</td>
 								<td align="center" width="90px;">Nb jours</td>
 								<td align="center">Motif</td>
 							</tr>
@@ -107,7 +107,7 @@ function testClickEnrigistrer(){
 				</tr>
 				<tr>
 					<td width="70px;">
-						<span class="sigp2Mandatory">Année :</span>
+						<span class="sigp2Mandatory">AnnÃ©e :</span>
 					</td>
 					<td>
 						<%if(process.getVAL_ST_ACTION().equals(process.ACTION_CREATION)){%>
@@ -163,7 +163,7 @@ function testClickEnrigistrer(){
 				</tr>
 				<tr>
 					<td>
-						<span class="sigp2Mandatory">Année :</span>
+						<span class="sigp2Mandatory">AnnÃ©e :</span>
 					</td>
 					<td>
 						<INPUT class="sigp2-saisie" disabled="disabled" maxlength="4" name="<%= process.getNOM_ST_ANNEE() %>" size="4" type="text"  value="<%= process.getVAL_ST_ANNEE() %>">

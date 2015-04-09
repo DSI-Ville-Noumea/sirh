@@ -37,7 +37,7 @@ import nc.mairie.utils.VariablesActivite;
 import org.springframework.context.ApplicationContext;
 
 /**
- * Process OeAVCTSimulation Date de création : (21/11/11 11:11:24)
+ * Process OeAVCTSimulation Date de crÃ©ation : (21/11/11 11:11:24)
  * 
  */
 public class OeAVCTSimulationConvCol extends BasicProcess {
@@ -65,10 +65,10 @@ public class OeAVCTSimulationConvCol extends BasicProcess {
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
 	/**
-	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones Ã  afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
-	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
-	 * addZone(getNOMxxx, String); Date de création : (21/11/11 11:11:24)
+	 * doivent avoir les Fields PUBLIC Utilisation de la mÃ©thode
+	 * addZone(getNOMxxx, String); Date de crÃ©ation : (21/11/11 11:11:24)
 	 * 
 	 */
 	public void initialiseZones(HttpServletRequest request) throws Exception {
@@ -76,11 +76,11 @@ public class OeAVCTSimulationConvCol extends BasicProcess {
 		VariableGlobale.ajouter(request, "PROCESS_MEMORISE", this);
 
 		// ----------------------------------//
-		// Vérification des droits d'accès. //
+		// VÃ©rification des droits d'acces. //
 		// ----------------------------------//
 		if (MairieUtils.estInterdit(request, getNomEcran())) {
 			// "ERR190",
-			// "Opération impossible. Vous ne disposez pas des droits d'accès à cette option."
+			// "Operation impossible. Vous ne disposez pas des droits d'acces a cette option."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
@@ -115,7 +115,7 @@ public class OeAVCTSimulationConvCol extends BasicProcess {
 	}
 
 	/**
-	 * Initialise les listes déroulantes de l'écran.
+	 * Initialise les listes deroulantes de l'Ã©cran.
 	 * 
 	 * @throws Exception
 	 */
@@ -161,7 +161,7 @@ public class OeAVCTSimulationConvCol extends BasicProcess {
 				if (Const.CHAINE_VIDE.equals(serv.getCodService()))
 					continue;
 
-				// recherche du supérieur
+				// recherche du supÃ©rieur
 				String codeService = serv.getCodService();
 				while (codeService.endsWith("A")) {
 					codeService = codeService.substring(0, codeService.length() - 1);
@@ -177,8 +177,8 @@ public class OeAVCTSimulationConvCol extends BasicProcess {
 	}
 
 	/**
-	 * Méthode appelée par la servlet qui aiguille le traitement : en fonction
-	 * du bouton de la JSP Date de création : (21/11/11 11:11:24)
+	 * mÃ©thode appelee par la servlet qui aiguille le traitement : en fonction
+	 * du bouton de la JSP Date de crÃ©ation : (21/11/11 11:11:24)
 	 * 
 	 */
 	public boolean recupererStatut(HttpServletRequest request) throws Exception {
@@ -205,13 +205,13 @@ public class OeAVCTSimulationConvCol extends BasicProcess {
 				return performPB_SUPPRIMER_RECHERCHER_SERVICE(request);
 			}
 		}
-		// Si TAG INPUT non géré par le process
+		// Si TAG INPUT non gÃ©rÃ© par le process
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
 
 	/**
-	 * Constructeur du process OeAVCTSimulation. Date de création : (21/11/11
+	 * Constructeur du process OeAVCTSimulation. Date de crÃ©ation : (21/11/11
 	 * 11:11:24)
 	 * 
 	 */
@@ -220,8 +220,8 @@ public class OeAVCTSimulationConvCol extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la JSP du process Zone à utiliser dans un champ caché
-	 * dans chaque formulaire de la JSP. Date de création : (21/11/11 11:11:24)
+	 * Retourne le nom de la JSP du process Zone a utiliser dans un champ cache
+	 * dans chaque formulaire de la JSP. Date de crÃ©ation : (21/11/11 11:11:24)
 	 * 
 	 */
 	public String getJSP() {
@@ -229,7 +229,7 @@ public class OeAVCTSimulationConvCol extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_LANCER Date de création :
+	 * Retourne le nom d'un bouton pour la JSP : PB_LANCER Date de crÃ©ation :
 	 * (21/11/11 11:11:24)
 	 * 
 	 */
@@ -238,21 +238,21 @@ public class OeAVCTSimulationConvCol extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (21/11/11 11:11:24)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (21/11/11 11:11:24)
 	 * 
 	 */
 	public boolean performPB_LANCER(HttpServletRequest request) throws Exception {
 
-		// Mise à jour de l'action menée
+		// Mise Ã  jour de l'action menee
 		addZone(getNOM_ST_ACTION(), ACTION_CALCUL);
 
 		String an = getListeAnnee()[0];
 
-		// Suppression des avancements à l'état 'Travail' de la catégorie donnée
-		// et de l'année
+		// Suppression des avancements a l'etat 'Travail' de la categorie donnÃ©e
+		// et de l'annÃ©e
 		getAvancementConvColDao().supprimerAvancementConvColTravailAvecAnnee(Integer.valueOf(an));
 
 		// recuperation agent
@@ -267,14 +267,14 @@ public class OeAVCTSimulationConvCol extends BasicProcess {
 		commitTransaction();
 		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_ANNEE_SIMULATION_AVCT, an);
 
-		// "INF200","Simulation effectuée"
+		// "INF200","Simulation effectuee"
 		setStatut(STATUT_MEME_PROCESS, false, MessageUtils.getMessage("INF200"));
 
 		return true;
 	}
 
 	/**
-	 * Méthode de calcul des avancements Conventions collectives.
+	 * mÃ©thode de calcul des avancements Conventions collectives.
 	 * 
 	 * @param codeService
 	 * @param annee
@@ -291,7 +291,7 @@ public class OeAVCTSimulationConvCol extends BasicProcess {
 			}
 			if (carr == null || carr.getCodeCategorie() == null || !carr.getCodeCategorie().equals("7")) {
 				// "ERR181",
-				// "Cet agent n'est pas de type @. Il ne peut pas être soumis à l'avancement @."
+				// "Cet agent n'est pas de type @. Il ne peut pas Ãªtre soumis a l'avancement @."
 				getTransaction().declarerErreur(
 						MessageUtils.getMessage("ERR181", "convention collective", "des conventions collectives"));
 				return false;
@@ -304,7 +304,7 @@ public class OeAVCTSimulationConvCol extends BasicProcess {
 				listeSousService = Service.listSousService(getTransaction(), serv.getSigleService());
 			}
 
-			// Récupération des agents
+			// RÃ©cupÃ©ration des agents
 			ArrayList<Carriere> listeCarriereActive = Carriere.listerCarriereActive(getTransaction(), annee,
 					"Convention collective");
 			String listeNomatrAgent = Const.CHAINE_VIDE;
@@ -333,10 +333,10 @@ public class OeAVCTSimulationConvCol extends BasicProcess {
 				getTransaction().traiterErreur();
 				continue;
 			}
-			// L'agent doit avoir 3 ans d'ancienneté minimum et 30 maximum pour
-			// être éligible.
+			// L'agent doit avoir 3 ans d'anciennete minimum et 30 maximum pour
+			// Ãªtre eligible.
 			// on cherche la carriere consecutive en tant que Convention
-			// collective pour savoir si l'agent repond à la regle de
+			// collective pour savoir si l'agent repond Ã  la regle de
 			// l'anciennete
 			ArrayList<Carriere> listeCarriereConvCol = Carriere.listerCarriereAgentByType(getTransaction(),
 					a.getNomatr(), "CC");
@@ -366,14 +366,14 @@ public class OeAVCTSimulationConvCol extends BasicProcess {
 						&& Services.compareDates(
 								Services.ajouteAnnee(Services.formateDate(plusAnciennCarrConvColl.getDateDebut()), 30),
 								"30/06/" + annee) > 0) {
-					// Récupération de l'avancement
+					// RÃ©cupÃ©ration de l'avancement
 					try {
 						@SuppressWarnings("unused")
 						AvancementConvCol avct = getAvancementConvColDao().chercherAvancementConvColAvecAnneeEtAgent(
 								Integer.valueOf(annee), a.getIdAgent());
 					} catch (Exception e) {
 						getTransaction().traiterErreur();
-						// Création de l'avancement
+						// CrÃ©ation de l'avancement
 						AvancementConvCol avct = new AvancementConvCol();
 						avct.setIdAgent(a.getIdAgent());
 						avct.setAnnee(Integer.valueOf(annee));
@@ -448,7 +448,7 @@ public class OeAVCTSimulationConvCol extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_CODE_SERVICE Date de
-	 * création : (21/11/11 11:11:24)
+	 * crÃ©ation : (21/11/11 11:11:24)
 	 * 
 	 */
 	public String getNOM_ST_CODE_SERVICE() {
@@ -456,8 +456,8 @@ public class OeAVCTSimulationConvCol extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_CODE_SERVICE
-	 * Date de création : (21/11/11 11:11:24)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_CODE_SERVICE
+	 * Date de crÃ©ation : (21/11/11 11:11:24)
 	 * 
 	 */
 	public String getVAL_ST_CODE_SERVICE() {
@@ -466,7 +466,7 @@ public class OeAVCTSimulationConvCol extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_SERVICE Date de
-	 * création : (21/11/11 11:11:24)
+	 * crÃ©ation : (21/11/11 11:11:24)
 	 * 
 	 */
 	public String getNOM_EF_SERVICE() {
@@ -474,8 +474,8 @@ public class OeAVCTSimulationConvCol extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_SERVICE Date de création : (21/11/11 11:11:24)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_SERVICE Date de crÃ©ation : (21/11/11 11:11:24)
 	 * 
 	 */
 	public String getVAL_EF_SERVICE() {
@@ -483,7 +483,7 @@ public class OeAVCTSimulationConvCol extends BasicProcess {
 	}
 
 	/**
-	 * Getter de la liste avec un lazy initialize : LB_ANNEE Date de création :
+	 * Getter de la liste avec un lazy initialize : LB_ANNEE Date de crÃ©ation :
 	 * (21/11/11 11:11:24)
 	 * 
 	 */
@@ -494,7 +494,7 @@ public class OeAVCTSimulationConvCol extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_ANNEE Date de création : (21/11/11 11:11:24)
+	 * Setter de la liste: LB_ANNEE Date de crÃ©ation : (21/11/11 11:11:24)
 	 * 
 	 */
 	private void setLB_ANNEE(String[] newLB_ANNEE) {
@@ -502,7 +502,7 @@ public class OeAVCTSimulationConvCol extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_ANNEE Date de création :
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_ANNEE Date de crÃ©ation :
 	 * (21/11/11 11:11:24)
 	 * 
 	 */
@@ -511,8 +511,8 @@ public class OeAVCTSimulationConvCol extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_ANNEE_SELECT Date de création : (21/11/11 11:11:24)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_ANNEE_SELECT Date de crÃ©ation : (21/11/11 11:11:24)
 	 * 
 	 */
 	public String getNOM_LB_ANNEE_SELECT() {
@@ -520,8 +520,8 @@ public class OeAVCTSimulationConvCol extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_ANNEE Date de création : (21/11/11 11:11:24)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_ANNEE Date de crÃ©ation : (21/11/11 11:11:24)
 	 * 
 	 */
 	public String[] getVAL_LB_ANNEE() {
@@ -529,8 +529,8 @@ public class OeAVCTSimulationConvCol extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_ANNEE Date de création : (21/11/11 11:11:24)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_ANNEE Date de crÃ©ation : (21/11/11 11:11:24)
 	 * 
 	 */
 	public String getVAL_LB_ANNEE_SELECT() {
@@ -553,7 +553,7 @@ public class OeAVCTSimulationConvCol extends BasicProcess {
 
 	/**
 	 * @param focus
-	 *            focus à définir.
+	 *            focus Ã  dÃ©finir.
 	 */
 	public void setFocus(String focus) {
 		this.focus = focus;
@@ -569,7 +569,7 @@ public class OeAVCTSimulationConvCol extends BasicProcess {
 	}
 
 	/**
-	 * Met à jour la liste des services.
+	 * Met a jour la liste des services.
 	 * 
 	 * @param listeServices
 	 */
@@ -578,7 +578,7 @@ public class OeAVCTSimulationConvCol extends BasicProcess {
 	}
 
 	/**
-	 * Retourne une hashTable de la hiérarchie des Service selon le code
+	 * Retourne une hashTable de la hierarchie des Service selon le code
 	 * Service.
 	 * 
 	 * @return hTree
@@ -588,14 +588,14 @@ public class OeAVCTSimulationConvCol extends BasicProcess {
 	}
 
 	/**
-	 * Getter du nom de l'écran (pour la gestion des droits)
+	 * Getter du nom de l'Ã©cran (pour la gestion des droits)
 	 */
 	public String getNomEcran() {
 		return "ECR-AVCT-SIMULATION-CONV";
 	}
 
 	/**
-	 * Getter de la liste des années possibles de simulation.
+	 * Getter de la liste des annÃ©es possibles de simulation.
 	 * 
 	 * @return listeAnnee
 	 */
@@ -604,10 +604,10 @@ public class OeAVCTSimulationConvCol extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste des années possibles de simulation.
+	 * Setter de la liste des annÃ©es possibles de simulation.
 	 * 
 	 * @param listeAnnee
-	 *            listeAnnee à définir
+	 *            listeAnnee Ã  dÃ©finir
 	 */
 	private void setListeAnnee(String[] listeAnnee) {
 		this.listeAnnee = listeAnnee;
@@ -615,7 +615,7 @@ public class OeAVCTSimulationConvCol extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_ACTION Date de
-	 * création : (12/09/11 11:49:01)
+	 * crÃ©ation : (12/09/11 11:49:01)
 	 * 
 	 */
 	public String getNOM_ST_ACTION() {
@@ -623,8 +623,8 @@ public class OeAVCTSimulationConvCol extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACTION Date de
-	 * création : (12/09/11 11:49:01)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_ACTION Date de
+	 * crÃ©ation : (12/09/11 11:49:01)
 	 * 
 	 */
 	public String getVAL_ST_ACTION() {
@@ -633,7 +633,7 @@ public class OeAVCTSimulationConvCol extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_AGENT Date de
-	 * création : (02/08/11 09:40:42)
+	 * crÃ©ation : (02/08/11 09:40:42)
 	 * 
 	 */
 	public String getNOM_ST_AGENT() {
@@ -641,8 +641,8 @@ public class OeAVCTSimulationConvCol extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_AGENT Date de
-	 * création : (02/08/11 09:40:42)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_AGENT Date de
+	 * crÃ©ation : (02/08/11 09:40:42)
 	 * 
 	 */
 	public String getVAL_ST_AGENT() {
@@ -651,7 +651,7 @@ public class OeAVCTSimulationConvCol extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_RECHERCHER_AGENT Date de
-	 * création : (02/08/11 09:42:00)
+	 * crÃ©ation : (02/08/11 09:42:00)
 	 * 
 	 */
 	public String getNOM_PB_RECHERCHER_AGENT() {
@@ -659,15 +659,15 @@ public class OeAVCTSimulationConvCol extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (02/08/11 09:42:00)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (02/08/11 09:42:00)
 	 * 
 	 */
 	public boolean performPB_RECHERCHER_AGENT(HttpServletRequest request) throws Exception {
 
-		// On met l'agent courant en var d'activité
+		// On met l'agent courant en var d'activitÃ©
 		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new Agent());
 
 		setStatut(STATUT_RECHERCHER_AGENT, true);
@@ -676,7 +676,7 @@ public class OeAVCTSimulationConvCol extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMER_RECHERCHER_AGENT
-	 * Date de création : (13/07/11 09:49:02)
+	 * Date de crÃ©ation : (13/07/11 09:49:02)
 	 * 
 	 * 
 	 */
@@ -685,21 +685,21 @@ public class OeAVCTSimulationConvCol extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (25/03/03 15:33:11)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (25/03/03 15:33:11)
 	 * 
 	 */
 	public boolean performPB_SUPPRIMER_RECHERCHER_AGENT(HttpServletRequest request) throws Exception {
-		// On enlève l'agent selectionnée
+		// On enleve l'agent selectionnÃ©e
 		addZone(getNOM_ST_AGENT(), Const.CHAINE_VIDE);
 		return true;
 	}
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMER_RECHERCHER_SERVICE
-	 * Date de création : (13/07/11 09:49:02)
+	 * Date de crÃ©ation : (13/07/11 09:49:02)
 	 * 
 	 * 
 	 */
@@ -708,23 +708,23 @@ public class OeAVCTSimulationConvCol extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (13/07/11 09:49:02)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (13/07/11 09:49:02)
 	 * 
 	 * 
 	 */
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (25/03/03 15:33:11)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (25/03/03 15:33:11)
 	 * 
 	 */
 	public boolean performPB_SUPPRIMER_RECHERCHER_SERVICE(HttpServletRequest request) throws Exception {
-		// On enlève le service selectionnée
+		// On enleve le service selectionnÃ©e
 		addZone(getNOM_ST_CODE_SERVICE(), Const.CHAINE_VIDE);
 		addZone(getNOM_EF_SERVICE(), Const.CHAINE_VIDE);
 		return true;

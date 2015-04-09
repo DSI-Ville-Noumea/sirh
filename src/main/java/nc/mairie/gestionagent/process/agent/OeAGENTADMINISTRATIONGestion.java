@@ -26,7 +26,7 @@ import nc.mairie.utils.MessageUtils;
 import org.springframework.context.ApplicationContext;
 
 /**
- * Process OeAGENTCONTACTGestion Date de création : (11/02/03 14:20:31)
+ * Process OeAGENTCONTACTGestion Date de crÃ©ation : (11/02/03 14:20:31)
  * 
  */
 public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
@@ -40,7 +40,7 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	public String ACTION_SUPPRESSION = "Suppression d'une administration.";
 	public String ACTION_CONSULTATION = "Consultation d'une administration.";
 	private String ACTION_MODIFICATION = "Modification d'une administration.";
-	private String ACTION_CREATION = "Création d'une administration.";
+	private String ACTION_CREATION = "CrÃ©ation d'une administration.";
 
 	private Agent AgentCourant;
 	private Hashtable<Integer, AutreAdministration> hashAdministration;
@@ -57,7 +57,7 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
 	/**
-	 * Constructeur du process OeAGENTCONTACTGestion. Date de création :
+	 * Constructeur du process OeAGENTCONTACTGestion. Date de crÃ©ation :
 	 * (11/02/03 14:20:31)
 	 * 
 	 */
@@ -66,7 +66,7 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	}
 
 	/**
-	 * Insérez la description de la méthode ici. Date de création : (13/02/2003
+	 * InsÃ©rez la description de la mÃ©thode ici. Date de crÃ©ation : (13/02/2003
 	 * 11:01:39)
 	 * 
 	 * @return nc.mairie.metier.agent.AdministrationAgent
@@ -76,7 +76,7 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	}
 
 	/**
-	 * Insérez la description de la méthode ici. Date de création : (11/02/2003
+	 * InsÃ©rez la description de la mÃ©thode ici. Date de crÃ©ation : (11/02/2003
 	 * 15:15:56)
 	 * 
 	 * @return nc.mairie.metier.agent.Agent
@@ -86,7 +86,7 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	}
 
 	/**
-	 * Insérez la description de la méthode ici. Date de création : (13/02/2003
+	 * InsÃ©rez la description de la mÃ©thode ici. Date de crÃ©ation : (13/02/2003
 	 * 10:14:48)
 	 * 
 	 * @return Hashtable
@@ -100,7 +100,7 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 
 	/**
 	 * Getter de la liste avec un lazy initialize : LB_ADMINISTRATION Date de
-	 * création : (11/02/03 14:20:32)
+	 * crÃ©ation : (11/02/03 14:20:32)
 	 * 
 	 */
 	private String[] getLB_ADMINISTRATION() {
@@ -110,7 +110,7 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	}
 
 	/**
-	 * Insérez la description de la méthode ici. Date de création : (13/02/2003
+	 * InsÃ©rez la description de la mÃ©thode ici. Date de crÃ©ation : (13/02/2003
 	 * 10:47:43)
 	 * 
 	 * @return ArrayList
@@ -123,7 +123,7 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	}
 
 	/**
-	 * Insérez la description de la méthode ici. Date de création : (13/02/2003
+	 * InsÃ©rez la description de la mÃ©thode ici. Date de crÃ©ation : (13/02/2003
 	 * 10:38:02)
 	 * 
 	 * @return ArrayList
@@ -137,7 +137,7 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_DATE_DEBUT Date de
-	 * création : (11/02/03 14:20:31)
+	 * crÃ©ation : (11/02/03 14:20:31)
 	 * 
 	 */
 	public String getNOM_EF_DATE_DEBUT() {
@@ -146,7 +146,7 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_DATE_FIN Date de
-	 * création : (11/02/03 14:20:31)
+	 * crÃ©ation : (11/02/03 14:20:31)
 	 * 
 	 */
 	public String getNOM_EF_DATE_FIN() {
@@ -155,7 +155,7 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 
 	/**
 	 * Retourne le nom de la zone pour la JSP : NOM_LB_ADMINISTRATION Date de
-	 * création : (11/02/03 14:20:32)
+	 * crÃ©ation : (11/02/03 14:20:32)
 	 * 
 	 */
 	public String getNOM_LB_ADMINISTRATION() {
@@ -163,8 +163,8 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_ADMINISTRATION_SELECT Date de création : (11/02/03 14:20:32)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_ADMINISTRATION_SELECT Date de crÃ©ation : (11/02/03 14:20:32)
 	 * 
 	 */
 	public String getNOM_LB_ADMINISTRATION_SELECT() {
@@ -173,7 +173,7 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 
 	/**
 	 * Retourne le nom de la zone pour la JSP : NOM_LB_AGENT_ADMINISTRATION Date
-	 * de création : (11/02/03 14:20:32)
+	 * de crÃ©ation : (11/02/03 14:20:32)
 	 * 
 	 */
 	public String getNOM_LB_AGENT_ADMINISTRATION() {
@@ -181,8 +181,8 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_AGENT_ADMINISTRATION_SELECT Date de création : (11/02/03 14:20:32)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_AGENT_ADMINISTRATION_SELECT Date de crÃ©ation : (11/02/03 14:20:32)
 	 * 
 	 */
 	public String getNOM_LB_AGENT_ADMINISTRATION_SELECT() {
@@ -190,7 +190,7 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER Date de création :
+	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER Date de crÃ©ation :
 	 * (11/02/03 14:20:31)
 	 * 
 	 */
@@ -199,7 +199,7 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_CREER Date de création :
+	 * Retourne le nom d'un bouton pour la JSP : PB_CREER Date de crÃ©ation :
 	 * (11/02/03 14:20:31)
 	 * 
 	 */
@@ -208,7 +208,7 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_RECHERCHER Date de création
+	 * Retourne le nom d'un bouton pour la JSP : PB_RECHERCHER Date de crÃ©ation
 	 * : (11/02/03 14:20:31)
 	 * 
 	 */
@@ -217,7 +217,7 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER Date de création :
+	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER Date de crÃ©ation :
 	 * (11/02/03 14:20:31)
 	 * 
 	 */
@@ -227,7 +227,7 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_ACTION Date de
-	 * création : (11/02/03 14:20:31)
+	 * crÃ©ation : (11/02/03 14:20:31)
 	 * 
 	 */
 	public String getNOM_ST_ACTION() {
@@ -236,7 +236,7 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_AGENT Date de
-	 * création : (11/02/03 14:20:31)
+	 * crÃ©ation : (11/02/03 14:20:31)
 	 * 
 	 */
 	public String getNOM_ST_AGENT() {
@@ -244,8 +244,8 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_DATE_DEBUT Date de création : (11/02/03 14:20:31)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_DATE_DEBUT Date de crÃ©ation : (11/02/03 14:20:31)
 	 * 
 	 */
 	public String getVAL_EF_DATE_DEBUT() {
@@ -253,8 +253,8 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_DATE_FIN Date de création : (11/02/03 14:20:31)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_DATE_FIN Date de crÃ©ation : (11/02/03 14:20:31)
 	 * 
 	 */
 	public String getVAL_EF_DATE_FIN() {
@@ -262,8 +262,8 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_ADMINISTRATION Date de création : (11/02/03 14:20:32)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_ADMINISTRATION Date de crÃ©ation : (11/02/03 14:20:32)
 	 * 
 	 */
 	public String[] getVAL_LB_ADMINISTRATION() {
@@ -271,8 +271,8 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_ADMINISTRATION Date de création : (11/02/03 14:20:32)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_ADMINISTRATION Date de crÃ©ation : (11/02/03 14:20:32)
 	 * 
 	 */
 	public String getVAL_LB_ADMINISTRATION_SELECT() {
@@ -280,8 +280,8 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACTION Date de
-	 * création : (11/02/03 14:20:31)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_ACTION Date de
+	 * crÃ©ation : (11/02/03 14:20:31)
 	 * 
 	 */
 	public String getVAL_ST_ACTION() {
@@ -289,8 +289,8 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_AGENT Date de
-	 * création : (11/02/03 14:20:31)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_AGENT Date de
+	 * crÃ©ation : (11/02/03 14:20:31)
 	 * 
 	 */
 	public String getVAL_ST_AGENT() {
@@ -349,10 +349,10 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	}
 
 	/**
-	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones Ã  afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
-	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
-	 * addZone(getNOMxxx, String); Date de création : (11/02/03 14:20:31)
+	 * doivent avoir les Fields PUBLIC Utilisation de la mÃ©thode
+	 * addZone(getNOMxxx, String); Date de crÃ©ation : (11/02/03 14:20:31)
 	 * 
 	 */
 	public void initialiseZones(HttpServletRequest request) throws Exception {
@@ -362,10 +362,10 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 			addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 		}
 
-		// Vérification des droits d'accès.
+		// VÃ©rification des droits d'acces.
 		if (MairieUtils.estInterdit(request, getNomEcran())) {
 			// "ERR190",
-			// "Opération impossible. Vous ne disposez pas des droits d'accès à cette option."
+			// "Operation impossible. Vous ne disposez pas des droits d'acces a cette option."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
@@ -379,7 +379,7 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 				addZone(getNOM_ST_AGENT(), getAgentCourant().getNomatr() + " " + getAgentCourant().getLibCivilite()
 						+ " " + getAgentCourant().getNomAgent() + " " + getAgentCourant().getPrenomAgent());
 
-				// initialisation fenêtre si changement de l'agent
+				// initialisation fenÃªtre si changement de l'agent
 				initialiseFenetre(request);
 			} else {
 				// ERR004 : "Vous devez d'abord rechercher un agent."
@@ -427,10 +427,10 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (11/02/03 14:20:31)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (11/02/03 14:20:31)
 	 * 
 	 */
 	public boolean performPB_ANNULER(HttpServletRequest request) throws Exception {
@@ -443,10 +443,10 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (11/02/03 14:20:31)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (11/02/03 14:20:31)
 	 * 
 	 */
 	public boolean performPB_CREER(HttpServletRequest request) throws Exception {
@@ -470,10 +470,10 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (11/02/03 14:20:31)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (11/02/03 14:20:31)
 	 * 
 	 */
 	public boolean performPB_VALIDER(HttpServletRequest request) throws Exception {
@@ -488,7 +488,7 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 		AutreAdministrationAgent adminAgentDepart = new AutreAdministrationAgent(getAutreAdministrationAgentCourant()
 				.getIdAutreAdmin(), getAutreAdministrationAgentCourant().getIdAgent(),
 				getAutreAdministrationAgentCourant().getDateEntree());
-		// Récup des zones saisies
+		// RÃ©cup des zones saisies
 		String newDateDeb = Services.formateDate(getZone(getNOM_EF_DATE_DEBUT()));
 		String newDateFin = Services.formateDate(getZone(getNOM_EF_DATE_FIN()));
 		if (getVAL_RG_FONCTIONNAIRE().equals(getNOM_RB_FONCTIONNAIRE_N())) {
@@ -534,7 +534,7 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 						getAutreAdministrationAgentCourant().getFonctionnaire());
 
 			} else if (getZone(getNOM_ST_ACTION()).equals(ACTION_CREATION)) {
-				// Création
+				// CrÃ©ation
 				getAutreAdministrationAgentDao().creerAutreAdministrationAgent(
 						getAutreAdministrationAgentCourant().getIdAutreAdmin(),
 						getAutreAdministrationAgentCourant().getIdAgent(),
@@ -546,7 +546,7 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 			if (getTransaction().isErreur())
 				return false;
 		}
-		// Tout s'est bien passé
+		// Tout s'est bien passÃ©
 		commitTransaction();
 		initialiseFenetre(request);
 
@@ -564,30 +564,30 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 		if (!Const.CHAINE_VIDE.equals(getZone(getNOM_EF_DATE_DEBUT()))) {
 			// format de date
 			if (!Services.estUneDate(getZone(getNOM_EF_DATE_DEBUT()))) {
-				// ERR007 : La date @ est incorrecte. Elle doit être au format
+				// ERR007 : La date @ est incorrecte. Elle doit Ãªtre au format
 				// date.
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR007", "d'entrée"));
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR007", "d'entrÃ©e"));
 				setFocus(getNOM_EF_DATE_DEBUT());
 				return false;
 			}
 			if (!Const.CHAINE_VIDE.equals(getZone(getNOM_EF_DATE_FIN()))) {
 				if (!Services.estUneDate(getZone(getNOM_EF_DATE_FIN()))) {
-					// ERR007 : La date @ est incorrecte. Elle doit être au
+					// ERR007 : La date @ est incorrecte. Elle doit Ãªtre au
 					// format date.
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR007", "de sortie"));
 					setFocus(getNOM_EF_DATE_FIN());
 					return false;
 				} else if (Services.compareDates(getZone(getNOM_EF_DATE_DEBUT()), getZone(getNOM_EF_DATE_FIN())) >= 0) {
-					// ERR205 : La date @ doit être supérieure à la date @.
+					// ERR205 : La date @ doit Ãªtre supÃ©rieure Ã  la date @.
 					// RG_AG_AA_C01
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR205", "de sortie", "d'entrée"));
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR205", "de sortie", "d'entrÃ©e"));
 					setFocus(getNOM_EF_DATE_FIN());
 					return false;
 				}
 			}
 		} else {
 			// ERR002 : La zone @ est obligatoire.
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "Date d'entrée"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "Date d'entrÃ©e"));
 			setFocus(getNOM_EF_DATE_DEBUT());
 			return false;
 		}
@@ -612,7 +612,7 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 						&& Services.compareDates(getVAL_EF_DATE_DEBUT(),
 								sdf.format(aAdministrationAgent.getDateSortie())) <= 0) {
 					// "ERR201",
-					// "Opération impossible. La période saisie ne doit pas chevaucher les périodes précédentes."
+					// "Operation impossible. La pÃ©riode saisie ne doit pas chevaucher les pÃ©riodes prÃ©cÃ©dentes."
 					// RG_AG_AA_A02
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR201"));
 					setFocus(getNOM_EF_DATE_DEBUT());
@@ -625,7 +625,7 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	}
 
 	/**
-	 * Insérez la description de la méthode ici. Date de création : (13/02/2003
+	 * InsÃ©rez la description de la mÃ©thode ici. Date de crÃ©ation : (13/02/2003
 	 * 11:01:39)
 	 * 
 	 * @param newAdministrationAgentCourant
@@ -636,7 +636,7 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	}
 
 	/**
-	 * Insérez la description de la méthode ici. Date de création : (11/02/2003
+	 * InsÃ©rez la description de la mÃ©thode ici. Date de crÃ©ation : (11/02/2003
 	 * 15:15:56)
 	 * 
 	 * @param newAgentCourant
@@ -647,7 +647,7 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_ADMINISTRATION Date de création : (11/02/03
+	 * Setter de la liste: LB_ADMINISTRATION Date de crÃ©ation : (11/02/03
 	 * 14:20:32)
 	 * 
 	 */
@@ -656,7 +656,7 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	}
 
 	/**
-	 * Insérez la description de la méthode ici. Date de création : (13/02/2003
+	 * InsÃ©rez la description de la mÃ©thode ici. Date de crÃ©ation : (13/02/2003
 	 * 10:47:43)
 	 * 
 	 * @param newListeAdministrations
@@ -667,7 +667,7 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	}
 
 	/**
-	 * Insérez la description de la méthode ici. Date de création : (13/02/2003
+	 * InsÃ©rez la description de la mÃ©thode ici. Date de crÃ©ation : (13/02/2003
 	 * 10:38:02)
 	 * 
 	 * @param newListeAgentAdministrations
@@ -693,7 +693,7 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 
 	/**
 	 * @param focus
-	 *            focus à définir.
+	 *            focus Ã  dÃ©finir.
 	 */
 	public void setFocus(String focus) {
 		this.focus = focus;
@@ -701,7 +701,7 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_ADMINISTRATION Date
-	 * de création : (29/09/08 10:39:32)
+	 * de crÃ©ation : (29/09/08 10:39:32)
 	 * 
 	 */
 	public String getNOM_ST_ADMINISTRATION() {
@@ -709,8 +709,8 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ADMINISTRATION
-	 * Date de création : (29/09/08 10:39:32)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_ADMINISTRATION
+	 * Date de crÃ©ation : (29/09/08 10:39:32)
 	 * 
 	 */
 	public String getVAL_ST_ADMINISTRATION() {
@@ -719,7 +719,7 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_FONCTIONNAIRE Date
-	 * de création : (29/09/08 10:39:32)
+	 * de crÃ©ation : (29/09/08 10:39:32)
 	 * 
 	 */
 	public String getNOM_ST_FONCTIONNAIRE() {
@@ -727,8 +727,8 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_FONCTIONNAIRE
-	 * Date de création : (29/09/08 10:39:32)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_FONCTIONNAIRE
+	 * Date de crÃ©ation : (29/09/08 10:39:32)
 	 * 
 	 */
 	public String getVAL_ST_FONCTIONNAIRE() {
@@ -737,7 +737,7 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_DEBUT Date de
-	 * création : (29/09/08 10:39:32)
+	 * crÃ©ation : (29/09/08 10:39:32)
 	 * 
 	 */
 	public String getNOM_ST_DEBUT() {
@@ -745,8 +745,8 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DEBUT Date de
-	 * création : (29/09/08 10:39:32)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_DEBUT Date de
+	 * crÃ©ation : (29/09/08 10:39:32)
 	 * 
 	 */
 	public String getVAL_ST_DEBUT() {
@@ -754,7 +754,7 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_FIN Date de création
+	 * Retourne pour la JSP le nom de la zone statique : ST_FIN Date de crÃ©ation
 	 * : (29/09/08 10:39:32)
 	 * 
 	 */
@@ -763,8 +763,8 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_FIN Date de
-	 * création : (29/09/08 10:39:32)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_FIN Date de
+	 * crÃ©ation : (29/09/08 10:39:32)
 	 * 
 	 */
 	public String getVAL_ST_FIN() {
@@ -772,8 +772,8 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom du groupe de radio boutons coché pour la JSP :
-	 * RG_FONCTIONNAIRE Date de création : (25/03/03 15:33:11)
+	 * Retourne le nom du groupe de radio boutons cochÃ© pour la JSP :
+	 * RG_FONCTIONNAIRE Date de crÃ©ation : (25/03/03 15:33:11)
 	 * 
 	 */
 	public String getNOM_RG_FONCTIONNAIRE() {
@@ -781,8 +781,8 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur du radio bouton (RB_) coché dans la JSP :
-	 * RG_FONCTIONNAIRE Date de création : (25/03/03 15:33:11)
+	 * Retourne la valeur du radio bouton (RB_) cochÃ© dans la JSP :
+	 * RG_FONCTIONNAIRE Date de crÃ©ation : (25/03/03 15:33:11)
 	 * 
 	 */
 	public String getVAL_RG_FONCTIONNAIRE() {
@@ -791,7 +791,7 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 
 	/**
 	 * Retourne le nom du radio bouton pour la JSP : RB_FONCTIONNAIRE_N Date de
-	 * création : (25/03/03 15:33:11)
+	 * crÃ©ation : (25/03/03 15:33:11)
 	 * 
 	 */
 	public String getNOM_RB_FONCTIONNAIRE_N() {
@@ -800,7 +800,7 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 
 	/**
 	 * Retourne le nom du radio bouton pour la JSP : RB_FONCTIONNAIRE_O Date de
-	 * création : (25/03/03 15:33:11)
+	 * crÃ©ation : (25/03/03 15:33:11)
 	 * 
 	 */
 	public String getNOM_RB_FONCTIONNAIRE_O() {
@@ -808,7 +808,7 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	}
 
 	/**
-	 * Met à jour l'administration courante
+	 * Met a jour l'administration courante
 	 * 
 	 * @param autreAdministrationCourant
 	 */
@@ -821,8 +821,8 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	}
 
 	/**
-	 * Méthode appelée par la servlet qui aiguille le traitement : en fonction
-	 * du bouton de la JSP Date de création : (11/02/03 14:20:31)
+	 * mÃ©thode appelee par la servlet qui aiguille le traitement : en fonction
+	 * du bouton de la JSP Date de crÃ©ation : (11/02/03 14:20:31)
 	 * 
 	 */
 	public boolean recupererStatut(HttpServletRequest request) throws Exception {
@@ -867,14 +867,14 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 			}
 
 		}
-		// Si pas de retour définit
-		setStatut(STATUT_MEME_PROCESS, false, "Erreur : TAG INPUT non géré par le process");
+		// Si pas de retour dÃ©fini
+		setStatut(STATUT_MEME_PROCESS, false, "Erreur : TAG INPUT non gÃ©rÃ© par le process");
 		return false;
 	}
 
 	/**
-	 * Retourne le nom de la JSP du process Zone à utiliser dans un champ caché
-	 * dans chaque formulaire de la JSP. Date de création : (17/10/11 11:24:24)
+	 * Retourne le nom de la JSP du process Zone a utiliser dans un champ cache
+	 * dans chaque formulaire de la JSP. Date de crÃ©ation : (17/10/11 11:24:24)
 	 * 
 	 */
 	public String getJSP() {
@@ -883,7 +883,7 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le LIEU_NAISS de la zone statique :
-	 * ST_ADMINISTRATION Date de création : (18/08/11 10:21:15)
+	 * ST_ADMINISTRATION Date de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_ADMINISTRATION(int i) {
@@ -891,8 +891,8 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ADMINISTRATION
-	 * Date de création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_ADMINISTRATION
+	 * Date de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_ADMINISTRATION(int i) {
@@ -901,7 +901,7 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_FONCTIONNAIRE Date
-	 * de création : (29/09/08 10:39:32)
+	 * de crÃ©ation : (29/09/08 10:39:32)
 	 * 
 	 */
 	public String getNOM_ST_FONCTIONNAIRE(int i) {
@@ -909,8 +909,8 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_FONCTIONNAIRE
-	 * Date de création : (29/09/08 10:39:32)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_FONCTIONNAIRE
+	 * Date de crÃ©ation : (29/09/08 10:39:32)
 	 * 
 	 */
 	public String getVAL_ST_FONCTIONNAIRE(int i) {
@@ -919,7 +919,7 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le LIEU_NAISS de la zone statique : ST_DATE_ENTREE
-	 * Date de création : (18/08/11 10:21:15)
+	 * Date de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_DATE_ENTREE(int i) {
@@ -927,8 +927,8 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE_ENTREE
-	 * Date de création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_DATE_ENTREE
+	 * Date de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_DATE_ENTREE(int i) {
@@ -937,7 +937,7 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le LIEU_NAISS de la zone statique : ST_DATE_SORTIE
-	 * Date de création : (18/08/11 10:21:15)
+	 * Date de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_DATE_SORTIE(int i) {
@@ -945,8 +945,8 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE_SORTIE
-	 * Date de création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_DATE_SORTIE
+	 * Date de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_DATE_SORTIE(int i) {
@@ -958,10 +958,10 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (16/08/11 15:48:02)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	public boolean performPB_MODIFIER(HttpServletRequest request, int indiceEltAModifier) throws Exception {
@@ -978,7 +978,7 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION(), ACTION_MODIFICATION);
 
-		// Récup du administration courant
+		// RÃ©cup du administration courant
 		AutreAdministrationAgent c = (AutreAdministrationAgent) getListeAgentAdministrations().get(indiceEltAModifier);
 		setAutreAdministrationAgentCourant(c);
 		AutreAdministration t = (AutreAdministration) getHashAdministration().get(c.getIdAutreAdmin());
@@ -997,7 +997,7 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_VISUALISATION Date de
-	 * création : (29/09/11 10:03:38)
+	 * crÃ©ation : (29/09/11 10:03:38)
 	 * 
 	 */
 	public String getNOM_PB_CONSULTER(int i) {
@@ -1005,10 +1005,10 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (29/09/11 10:03:38)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (29/09/11 10:03:38)
 	 * 
 	 */
 	public boolean performPB_CONSULTER(HttpServletRequest request, int indiceEltAConsulter) throws Exception {
@@ -1024,7 +1024,7 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION(), ACTION_CONSULTATION);
 
-		// Récup du administration courant
+		// RÃ©cup du administration courant
 		AutreAdministrationAgent ag = (AutreAdministrationAgent) getListeAgentAdministrations()
 				.get(indiceEltAConsulter);
 		setAutreAdministrationAgentCourant(ag);
@@ -1046,7 +1046,7 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMMER Date de création
+	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMMER Date de crÃ©ation
 	 * : (05/09/11 11:31:37)
 	 * 
 	 */
@@ -1055,10 +1055,10 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (05/09/11 11:31:37)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (05/09/11 11:31:37)
 	 * 
 	 */
 	public boolean performPB_SUPPRIMER(HttpServletRequest request, int indiceEltASuprimer) throws Exception {
@@ -1075,7 +1075,7 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION(), ACTION_SUPPRESSION);
 
-		// Récup du administration courant
+		// RÃ©cup du administration courant
 		AutreAdministrationAgent ag = (AutreAdministrationAgent) getListeAgentAdministrations().get(indiceEltASuprimer);
 		setAutreAdministrationAgentCourant(ag);
 		AutreAdministration aa = (AutreAdministration) getHashAdministration().get(ag.getIdAutreAdmin());

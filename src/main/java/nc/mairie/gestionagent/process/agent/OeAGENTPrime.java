@@ -33,7 +33,7 @@ import com.ibm.as400.access.CharacterDataArea;
 import com.ibm.as400.access.QSYSObjectPathName;
 
 /**
- * Process OeAGENTPrime Date de crÈation : (05/08/11 10:06:07)
+ * Process OeAGENTPrime Date de cr√©ation : (05/08/11 10:06:07)
  * 
  */
 public class OeAGENTPrime extends BasicProcess {
@@ -56,7 +56,7 @@ public class OeAGENTPrime extends BasicProcess {
 	public String ACTION_SUPPRESSION = "Suppression d'une fiche Prime.";
 	public String ACTION_CONSULTATION = "Consultation d'une fiche Prime.";
 	private String ACTION_MODIFICATION = "Modification d'une fiche Prime.";
-	private String ACTION_CREATION = "CrÈation d'une fiche Prime.";
+	private String ACTION_CREATION = "Cr√©ation d'une fiche Prime.";
 
 	private static QSYSObjectPathName CALC_PATH = new QSYSObjectPathName((String) ServletAgent.getMesParametres().get(
 			"DTAARA_SCHEMA"), (String) ServletAgent.getMesParametres().get("DTAARA_NAME"), "DTAARA");
@@ -81,10 +81,10 @@ public class OeAGENTPrime extends BasicProcess {
 	}
 
 	/**
-	 * Initialisation des zones ‡ afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones √† afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
-	 * doivent avoir les Fields PUBLIC Utilisation de la mÈthode
-	 * addZone(getNOMxxx, String); Date de crÈation : (05/08/11 10:06:07)
+	 * doivent avoir les Fields PUBLIC Utilisation de la m√©thode
+	 * addZone(getNOMxxx, String); Date de cr√©ation : (05/08/11 10:06:07)
 	 * 
 	 * RG_AG_PR_C01 RG_AG_PR_C04 RG_AG_PR_C02
 	 */
@@ -95,10 +95,10 @@ public class OeAGENTPrime extends BasicProcess {
 			addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 		}
 
-		// VÈrification des droits d'accËs.
+		// V√©rification des droits d'acces.
 		if (MairieUtils.estInterdit(request, getNomEcran())) {
 			// "ERR190",
-			// "OpÈration impossible. Vous ne disposez pas des droits d'accËs ‡ cette option."
+			// "Operation impossible. Vous ne disposez pas des droits d'acces a cette option."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
@@ -161,7 +161,7 @@ public class OeAGENTPrime extends BasicProcess {
 	}
 
 	/**
-	 * Initialisation de la liste des primes de l'agent courant Date de crÈation
+	 * Initialisation de la liste des primes de l'agent courant Date de cr√©ation
 	 * : (04/08/11)
 	 * 
 	 */
@@ -197,7 +197,7 @@ public class OeAGENTPrime extends BasicProcess {
 	}
 
 	/**
-	 * Constructeur du process OeAGENTPrime. Date de crÈation : (05/08/11
+	 * Constructeur du process OeAGENTPrime. Date de cr√©ation : (05/08/11
 	 * 10:06:07)
 	 * 
 	 */
@@ -206,7 +206,7 @@ public class OeAGENTPrime extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_AJOUTER Date de crÈation :
+	 * Retourne le nom d'un bouton pour la JSP : PB_AJOUTER Date de cr√©ation :
 	 * (05/08/11 10:06:07)
 	 * 
 	 */
@@ -215,10 +215,10 @@ public class OeAGENTPrime extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - ImplÈmente les
-	 * rËgles de gestion du process - Positionne un statut en fonction de ces
-	 * rËgles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de crÈation : (05/08/11 10:06:07)
+	 * - Traite et affecte les zones saisies dans la JSP. - Impl√©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de cr√©ation : (05/08/11 10:06:07)
 	 * 
 	 */
 	public boolean performPB_AJOUTER(HttpServletRequest request) throws Exception {
@@ -241,7 +241,7 @@ public class OeAGENTPrime extends BasicProcess {
 	}
 
 	/**
-	 * RÈinitilise les champs du formulaire de crÈation/modification d'une prime
+	 * R√©initilise les champs du formulaire de cr√©ation/modification d'une prime
 	 * 
 	 */
 	private void videZonesDeSaisie(HttpServletRequest request) throws Exception {
@@ -256,7 +256,7 @@ public class OeAGENTPrime extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER Date de crÈation :
+	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER Date de cr√©ation :
 	 * (05/08/11 10:06:07)
 	 * 
 	 */
@@ -265,10 +265,10 @@ public class OeAGENTPrime extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - ImplÈmente les
-	 * rËgles de gestion du process - Positionne un statut en fonction de ces
-	 * rËgles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de crÈation : (05/08/11 10:06:07)
+	 * - Traite et affecte les zones saisies dans la JSP. - Impl√©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de cr√©ation : (05/08/11 10:06:07)
 	 * 
 	 */
 	public boolean performPB_ANNULER(HttpServletRequest request) throws Exception {
@@ -283,7 +283,7 @@ public class OeAGENTPrime extends BasicProcess {
 
 	/**
 	 * Initilise les zones de saisie du formulaire de modification d'une prime
-	 * Date de crÈation : 11/08/05
+	 * Date de cr√©ation : 11/08/05
 	 * 
 	 */
 	private boolean initialisePrimeCourante(HttpServletRequest request) throws Exception {
@@ -303,7 +303,7 @@ public class OeAGENTPrime extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER Date de crÈation :
+	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER Date de cr√©ation :
 	 * (05/08/11 10:06:07)
 	 * 
 	 */
@@ -312,11 +312,11 @@ public class OeAGENTPrime extends BasicProcess {
 	}
 
 	/**
-	 * VÈrifie les rËgles de gestion de saisie (champs obligatoires, ...) du
+	 * V√©rifie les regles de gestion de saisie (champs obligatoires, ...) du
 	 * formulaire d'accident du travail
 	 * 
 	 * @param request
-	 * @return true si les rËgles de gestion sont respectÈes. false sinon.
+	 * @return true si les regles de gestion sont respect√©es. false sinon.
 	 * @throws Exception
 	 * 
 	 *             RG_AG_PR_A02 RG_AG_PR_C03
@@ -338,14 +338,14 @@ public class OeAGENTPrime extends BasicProcess {
 		// reference arrete
 		if (!(Const.CHAINE_VIDE).equals(getZone(getNOM_EF_REF_ARR()))
 				&& !Services.estNumerique(getZone(getNOM_EF_REF_ARR()))) {
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "Ref. arrÍtÈ"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "Ref. arr√™t√©"));
 			return false;
 		}
 
-		// date de l'arrÍtÈ en format date
+		// date de l'arr√™t√© en format date
 		if (!(Const.CHAINE_VIDE).equals(getZone(getNOM_EF_DATE_ARR()))
 				&& !Services.estUneDate(getZone(getNOM_EF_DATE_ARR()))) {
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR007", "de l'arrÍtÈ"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR007", "de l'arr√™t√©"));
 			return false;
 		}
 
@@ -355,12 +355,12 @@ public class OeAGENTPrime extends BasicProcess {
 			return false;
 		}
 
-		// date de dÈbut de la prime
+		// date de d√©but de la prime
 		if ((Const.CHAINE_VIDE).equals(getZone(getNOM_EF_DATE_DEBUT()))) {
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "date de dÈbut"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "date de d√©but"));
 			return false;
 		} else if (!Services.estUneDate(getZone(getNOM_EF_DATE_DEBUT()))) {
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR007", "de dÈbut"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR007", "de d√©but"));
 			return false;
 		}
 
@@ -371,11 +371,11 @@ public class OeAGENTPrime extends BasicProcess {
 			return false;
 		}
 
-		// date de fin > date de dÈbut
+		// date de fin > date de d√©but
 		// RG_AG_PR_C03
 		if (!(Const.CHAINE_VIDE).equals(getZone(getNOM_EF_DATE_FIN()))
 				&& Services.compareDates(getZone(getNOM_EF_DATE_FIN()), getZone(getNOM_EF_DATE_DEBUT())) <= 0) {
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR205", "de fin", "de dÈbut"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR205", "de fin", "de d√©but"));
 			return false;
 		}
 
@@ -426,7 +426,7 @@ public class OeAGENTPrime extends BasicProcess {
 		// RG_AG_PR_C05
 		if (rubrique.getTyprim().equals("M") || rubrique.getTyprim().equals("E")) {
 			if (!getPrimeCourante().getDatDeb().substring(0, 2).equals("01")) {
-				// Le jour de la date de dÈbut doit etre Ègal au premier jour du
+				// Le jour de la date de d√©but doit etre egal au premier jour du
 				// mois
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR061"));
 				return false;
@@ -439,7 +439,7 @@ public class OeAGENTPrime extends BasicProcess {
 			}
 			if (getPrimeCourante().getDatFin() != null && !getPrimeCourante().getDatFin().equals(Const.CHAINE_VIDE)
 					&& !getPrimeCourante().getDatFin().substring(0, 2).equals("01")) {
-				// Le jour de la date de fin doit etre Ègal au premier jour du
+				// Le jour de la date de fin doit etre egal au premier jour du
 				// mois
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR062"));
 				return false;
@@ -449,7 +449,7 @@ public class OeAGENTPrime extends BasicProcess {
 			 * Services.ajouteJours(getPrimeCourante().getDatFin(), 1) != null
 			 * && !Services.ajouteJours(getPrimeCourante().getDatFin(),
 			 * 1).substring(0, 2).equals("01")) { //Le jour de la date de fin
-			 * doit etre Ègal au dernier jour du mois
+			 * doit etre egal au dernier jour du mois
 			 * getTransaction().declarerErreur
 			 * (MessageUtils.getMessage("ERR062")); return false; }
 			 */
@@ -459,10 +459,10 @@ public class OeAGENTPrime extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - ImplÈmente les
-	 * rËgles de gestion du process - Positionne un statut en fonction de ces
-	 * rËgles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de crÈation : (05/08/11 10:06:07)
+	 * - Traite et affecte les zones saisies dans la JSP. - Impl√©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de cr√©ation : (05/08/11 10:06:07)
 	 * 
 	 * RG_AG_PR_A01
 	 */
@@ -488,12 +488,12 @@ public class OeAGENTPrime extends BasicProcess {
 
 		} else {
 
-			// vÈrification de la validitÈ du formulaire
+			// V√©rification de la validit√© du formulaire
 			if (!performControlerChamps(request)) {
 				return false;
 			}
 
-			// rÈcupÈration des informations remplies dans les zones de saisie
+			// r√©cup√©ration des informations remplies dans les zones de saisie
 			String refArr = getZone(getNOM_EF_REF_ARR());
 			String dateArr = Services.formateDate(getZone(getNOM_EF_DATE_ARR()));
 			String montant = getZone(getNOM_EF_MONTANT());
@@ -505,7 +505,7 @@ public class OeAGENTPrime extends BasicProcess {
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "rubriques"));
 				return false;
 			}
-			// CrÈation de l'objet prime ‡ crÈer/modifier
+			// Cr√©ation de l'objet prime a cr√©er/modifier
 			Agent agentCourant = getAgentCourant();
 			getPrimeCourante().setNoMatr(agentCourant.getNomatr().toString());
 			getPrimeCourante().setNoRubr(r.getNorubr().toString());
@@ -515,7 +515,7 @@ public class OeAGENTPrime extends BasicProcess {
 			getPrimeCourante().setDatDeb(dateDebut);
 			getPrimeCourante().setDatFin(dateFin);
 
-			// rËgles de gestions
+			// regles de gestions
 			if (!checkGestion(r))
 				return false;
 
@@ -527,7 +527,7 @@ public class OeAGENTPrime extends BasicProcess {
 				getHistoPrimeDao().creerHistoPrime(histo, user, EnumTypeHisto.MODIFICATION);
 				getPrimeCourante().modifierPrime(getTransaction(), getAgentCourant(), user);
 			} else if (getZone(getNOM_ST_ACTION()).equals(ACTION_CREATION)) {
-				// CrÈation
+				// Cr√©ation
 				UserAppli user = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
 
 				// RG_AG_PR_A04
@@ -549,7 +549,7 @@ public class OeAGENTPrime extends BasicProcess {
 		// On a fini l'action
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 
-		// Tout s'est bien passÈ
+		// Tout s'est bien pass√©
 		commitTransaction();
 
 		return true;
@@ -557,7 +557,7 @@ public class OeAGENTPrime extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_ACTION Date de
-	 * crÈation : (05/08/11 10:06:07)
+	 * cr√©ation : (05/08/11 10:06:07)
 	 * 
 	 */
 	public String getNOM_ST_ACTION() {
@@ -565,8 +565,8 @@ public class OeAGENTPrime extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur ‡ afficher par la JSP pour la zone : ST_ACTION Date de
-	 * crÈation : (05/08/11 10:06:07)
+	 * Retourne la valeur √† afficher par la JSP pour la zone : ST_ACTION Date de
+	 * cr√©ation : (05/08/11 10:06:07)
 	 * 
 	 */
 	public String getVAL_ST_ACTION() {
@@ -575,7 +575,7 @@ public class OeAGENTPrime extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_RUBRIQUE Date de
-	 * crÈation : (05/08/11 10:06:07)
+	 * cr√©ation : (05/08/11 10:06:07)
 	 * 
 	 */
 	public String getNOM_ST_RUBRIQUE() {
@@ -583,8 +583,8 @@ public class OeAGENTPrime extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur ‡ afficher par la JSP pour la zone : ST_RUBRIQUE Date
-	 * de crÈation : (05/08/11 10:06:07)
+	 * Retourne la valeur √† afficher par la JSP pour la zone : ST_RUBRIQUE Date
+	 * de cr√©ation : (05/08/11 10:06:07)
 	 * 
 	 */
 	public String getVAL_ST_RUBRIQUE() {
@@ -593,7 +593,7 @@ public class OeAGENTPrime extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_DATE_ARR Date de
-	 * crÈation : (05/08/11 10:06:07)
+	 * cr√©ation : (05/08/11 10:06:07)
 	 * 
 	 */
 	public String getNOM_EF_DATE_ARR() {
@@ -601,8 +601,8 @@ public class OeAGENTPrime extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur ‡ afficher par la JSP pour la zone de saisie :
-	 * EF_DATE_ARR Date de crÈation : (05/08/11 10:06:07)
+	 * Retourne la valeur √† afficher par la JSP pour la zone de saisie :
+	 * EF_DATE_ARR Date de cr√©ation : (05/08/11 10:06:07)
 	 * 
 	 */
 	public String getVAL_EF_DATE_ARR() {
@@ -611,7 +611,7 @@ public class OeAGENTPrime extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_DATE_DEBUT Date de
-	 * crÈation : (05/08/11 10:06:07)
+	 * cr√©ation : (05/08/11 10:06:07)
 	 * 
 	 */
 	public String getNOM_EF_DATE_DEBUT() {
@@ -619,8 +619,8 @@ public class OeAGENTPrime extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur ‡ afficher par la JSP pour la zone de saisie :
-	 * EF_DATE_DEBUT Date de crÈation : (05/08/11 10:06:07)
+	 * Retourne la valeur √† afficher par la JSP pour la zone de saisie :
+	 * EF_DATE_DEBUT Date de cr√©ation : (05/08/11 10:06:07)
 	 * 
 	 */
 	public String getVAL_EF_DATE_DEBUT() {
@@ -629,7 +629,7 @@ public class OeAGENTPrime extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_DATE_FIN Date de
-	 * crÈation : (05/08/11 10:06:07)
+	 * cr√©ation : (05/08/11 10:06:07)
 	 * 
 	 */
 	public String getNOM_EF_DATE_FIN() {
@@ -637,8 +637,8 @@ public class OeAGENTPrime extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur ‡ afficher par la JSP pour la zone de saisie :
-	 * EF_DATE_FIN Date de crÈation : (05/08/11 10:06:07)
+	 * Retourne la valeur √† afficher par la JSP pour la zone de saisie :
+	 * EF_DATE_FIN Date de cr√©ation : (05/08/11 10:06:07)
 	 * 
 	 */
 	public String getVAL_EF_DATE_FIN() {
@@ -647,7 +647,7 @@ public class OeAGENTPrime extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_MONTANT Date de
-	 * crÈation : (05/08/11 10:06:07)
+	 * cr√©ation : (05/08/11 10:06:07)
 	 * 
 	 */
 	public String getNOM_EF_MONTANT() {
@@ -655,8 +655,8 @@ public class OeAGENTPrime extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur ‡ afficher par la JSP pour la zone de saisie :
-	 * EF_MONTANT Date de crÈation : (05/08/11 10:06:07)
+	 * Retourne la valeur √† afficher par la JSP pour la zone de saisie :
+	 * EF_MONTANT Date de cr√©ation : (05/08/11 10:06:07)
 	 * 
 	 */
 	public String getVAL_EF_MONTANT() {
@@ -665,7 +665,7 @@ public class OeAGENTPrime extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_REF_ARR Date de
-	 * crÈation : (05/08/11 10:06:07)
+	 * cr√©ation : (05/08/11 10:06:07)
 	 * 
 	 */
 	public String getNOM_EF_REF_ARR() {
@@ -673,8 +673,8 @@ public class OeAGENTPrime extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur ‡ afficher par la JSP pour la zone de saisie :
-	 * EF_REF_ARR Date de crÈation : (05/08/11 10:06:07)
+	 * Retourne la valeur √† afficher par la JSP pour la zone de saisie :
+	 * EF_REF_ARR Date de cr√©ation : (05/08/11 10:06:07)
 	 * 
 	 */
 	public String getVAL_EF_REF_ARR() {
@@ -724,8 +724,8 @@ public class OeAGENTPrime extends BasicProcess {
 	}
 
 	/**
-	 * MÈthode appelÈe par la servlet qui aiguille le traitement : en fonction
-	 * du bouton de la JSP Date de crÈation : (05/08/11 10:06:07)
+	 * m√©thode appelee par la servlet qui aiguille le traitement : en fonction
+	 * du bouton de la JSP Date de cr√©ation : (05/08/11 10:06:07)
 	 * 
 	 */
 	public boolean recupererStatut(HttpServletRequest request) throws Exception {
@@ -770,14 +770,14 @@ public class OeAGENTPrime extends BasicProcess {
 			}
 
 		}
-		// Si TAG INPUT non gÈrÈ par le process
+		// Si TAG INPUT non g√©r√© par le process
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
 
 	/**
-	 * Retourne le nom de la JSP du process Zone ‡ utiliser dans un champ cachÈ
-	 * dans chaque formulaire de la JSP. Date de crÈation : (18/10/11 11:32:27)
+	 * Retourne le nom de la JSP du process Zone a utiliser dans un champ cache
+	 * dans chaque formulaire de la JSP. Date de cr√©ation : (18/10/11 11:32:27)
 	 * 
 	 */
 	public String getJSP() {
@@ -786,7 +786,7 @@ public class OeAGENTPrime extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_RUBRIQUE Date de
-	 * crÈation : (30/08/11 10:25:41)
+	 * cr√©ation : (30/08/11 10:25:41)
 	 * 
 	 */
 	public String getNOM_EF_RUBRIQUE() {
@@ -794,8 +794,8 @@ public class OeAGENTPrime extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur ‡ afficher par la JSP pour la zone de saisie :
-	 * EF_RUBRIQUE Date de crÈation : (30/08/11 10:25:41)
+	 * Retourne la valeur √† afficher par la JSP pour la zone de saisie :
+	 * EF_RUBRIQUE Date de cr√©ation : (30/08/11 10:25:41)
 	 * 
 	 */
 	public String getVAL_EF_RUBRIQUE() {
@@ -803,13 +803,13 @@ public class OeAGENTPrime extends BasicProcess {
 	}
 
 	/**
-	 * RÈcupere la rubrique selectionnÈe
+	 * R√©cupere la rubrique selectionn√©e
 	 * 
 	 * @return Rubrique
 	 * @throws Exception
 	 */
 	private Rubrique getSelectedRubrique() throws Exception {
-		// rÈcupÈration de la rubrique et vÈrification de son existence.
+		// r√©cup√©ration de la rubrique et V√©rification de son existence.
 		Integer idRubrique = null;
 		// pour les rubriques actives
 		for (int i = 0; i < getListeRubriques().size(); i++) {
@@ -838,7 +838,7 @@ public class OeAGENTPrime extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_CODE_RUBR Date de
-	 * crÈation : (18/08/11 10:21:15)
+	 * cr√©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_CODE_RUBR(int i) {
@@ -846,8 +846,8 @@ public class OeAGENTPrime extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur ‡ afficher par la JSP pour la zone : ST_CODE_RUBR Date
-	 * de crÈation : (18/08/11 10:21:15)
+	 * Retourne la valeur √† afficher par la JSP pour la zone : ST_CODE_RUBR Date
+	 * de cr√©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_CODE_RUBR(int i) {
@@ -856,7 +856,7 @@ public class OeAGENTPrime extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_LIB_RUBR Date de
-	 * crÈation : (18/08/11 10:21:15)
+	 * cr√©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_LIB_RUBR(int i) {
@@ -864,8 +864,8 @@ public class OeAGENTPrime extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur ‡ afficher par la JSP pour la zone : ST_LIB_RUBR Date
-	 * de crÈation : (18/08/11 10:21:15)
+	 * Retourne la valeur √† afficher par la JSP pour la zone : ST_LIB_RUBR Date
+	 * de cr√©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_LIB_RUBR(int i) {
@@ -874,7 +874,7 @@ public class OeAGENTPrime extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_REF_ARR Date de
-	 * crÈation : (18/08/11 10:21:15)
+	 * cr√©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_REF_ARR(int i) {
@@ -882,8 +882,8 @@ public class OeAGENTPrime extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur ‡ afficher par la JSP pour la zone : ST_REF_ARR Date
-	 * de crÈation : (18/08/11 10:21:15)
+	 * Retourne la valeur √† afficher par la JSP pour la zone : ST_REF_ARR Date
+	 * de cr√©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_REF_ARR(int i) {
@@ -892,7 +892,7 @@ public class OeAGENTPrime extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_DATE_ARR Date de
-	 * crÈation : (18/08/11 10:21:15)
+	 * cr√©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_DATE_ARR(int i) {
@@ -900,8 +900,8 @@ public class OeAGENTPrime extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur ‡ afficher par la JSP pour la zone : ST_DATE_ARR Date
-	 * de crÈation : (18/08/11 10:21:15)
+	 * Retourne la valeur √† afficher par la JSP pour la zone : ST_DATE_ARR Date
+	 * de cr√©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_DATE_ARR(int i) {
@@ -910,7 +910,7 @@ public class OeAGENTPrime extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_MONTANT Date de
-	 * crÈation : (18/08/11 10:21:15)
+	 * cr√©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_MONTANT(int i) {
@@ -918,8 +918,8 @@ public class OeAGENTPrime extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur ‡ afficher par la JSP pour la zone : ST_MONTANT Date
-	 * de crÈation : (18/08/11 10:21:15)
+	 * Retourne la valeur √† afficher par la JSP pour la zone : ST_MONTANT Date
+	 * de cr√©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_MONTANT(int i) {
@@ -928,7 +928,7 @@ public class OeAGENTPrime extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_DATE_DEBUT Date de
-	 * crÈation : (18/08/11 10:21:15)
+	 * cr√©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_DATE_DEBUT(int i) {
@@ -936,8 +936,8 @@ public class OeAGENTPrime extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur ‡ afficher par la JSP pour la zone : ST_DATE_DEBUT
-	 * Date de crÈation : (18/08/11 10:21:15)
+	 * Retourne la valeur √† afficher par la JSP pour la zone : ST_DATE_DEBUT
+	 * Date de cr√©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_DATE_DEBUT(int i) {
@@ -946,7 +946,7 @@ public class OeAGENTPrime extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_DATE_FIN Date de
-	 * crÈation : (18/08/11 10:21:15)
+	 * cr√©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_DATE_FIN(int i) {
@@ -954,8 +954,8 @@ public class OeAGENTPrime extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur ‡ afficher par la JSP pour la zone : ST_DATE_FIN Date
-	 * de crÈation : (18/08/11 10:21:15)
+	 * Retourne la valeur √† afficher par la JSP pour la zone : ST_DATE_FIN Date
+	 * de cr√©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_DATE_FIN(int i) {
@@ -967,17 +967,17 @@ public class OeAGENTPrime extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - ImplÈmente les
-	 * rËgles de gestion du process - Positionne un statut en fonction de ces
-	 * rËgles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de crÈation : (16/08/11 15:48:02)
+	 * - Traite et affecte les zones saisies dans la JSP. - Impl√©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de cr√©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	public boolean performPB_MODIFIER(HttpServletRequest request, int indiceEltAModifier) throws Exception {
 
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 
-		// RÈcup de la prime courante
+		// R√©cup de la prime courante
 		Prime primeCourante = (Prime) getListePrimes().get(indiceEltAModifier);
 		setPrimeCourante(primeCourante);
 
@@ -995,7 +995,7 @@ public class OeAGENTPrime extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_VISUALISATION Date de
-	 * crÈation : (29/09/11 10:03:38)
+	 * cr√©ation : (29/09/11 10:03:38)
 	 * 
 	 */
 	public String getNOM_PB_CONSULTER(int i) {
@@ -1003,17 +1003,17 @@ public class OeAGENTPrime extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - ImplÈmente les
-	 * rËgles de gestion du process - Positionne un statut en fonction de ces
-	 * rËgles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de crÈation : (29/09/11 10:03:38)
+	 * - Traite et affecte les zones saisies dans la JSP. - Impl√©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de cr√©ation : (29/09/11 10:03:38)
 	 * 
 	 */
 	public boolean performPB_CONSULTER(HttpServletRequest request, int indiceEltAConsulter) throws Exception {
 
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 
-		// RÈcup de la prime courante
+		// R√©cup de la prime courante
 		Prime primeCourante = (Prime) getListePrimes().get(indiceEltAConsulter);
 		setPrimeCourante(primeCourante);
 
@@ -1030,7 +1030,7 @@ public class OeAGENTPrime extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMMER Date de crÈation
+	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMMER Date de cr√©ation
 	 * : (05/09/11 11:31:37)
 	 * 
 	 */
@@ -1039,17 +1039,17 @@ public class OeAGENTPrime extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - ImplÈmente les
-	 * rËgles de gestion du process - Positionne un statut en fonction de ces
-	 * rËgles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de crÈation : (05/09/11 11:31:37)
+	 * - Traite et affecte les zones saisies dans la JSP. - Impl√©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de cr√©ation : (05/09/11 11:31:37)
 	 * 
 	 */
 	public boolean performPB_SUPPRIMER(HttpServletRequest request, int indiceEltASuprimer) throws Exception {
 
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 
-		// RÈcup de la prime courante
+		// R√©cup de la prime courante
 		Prime primeCourante = (Prime) getListePrimes().get(indiceEltASuprimer);
 		setPrimeCourante(primeCourante);
 

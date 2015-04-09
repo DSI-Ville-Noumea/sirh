@@ -1,4 +1,4 @@
-<!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@ page contentType="text/html; charset=UTF-8" %> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <HTML>
 <HEAD>
 <META name="GENERATOR" content="IBM WebSphere Page Designer V3.5.3 for Windows">
@@ -6,18 +6,18 @@
 <LINK rel="stylesheet" href="theme/calendrier-mairie.css" type="text/css">
 <SCRIPT type="text/javascript" src="js/GestionCalendrier.js"></SCRIPT>
 <LINK href="theme/sigp2.css" rel="stylesheet" type="text/css">
-<TITLE>Gestion des spécificités d'une fiche de poste</TITLE>
+<TITLE>Gestion des spÃ©cificitÃ©s d'une fiche de poste</TITLE>
 
 <SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT> 
 
 <SCRIPT language="JavaScript">
-//afin de sélectionner un élément dans une liste
+//afin de sÃ©lectionner un Ã©lÃ©ment dans une liste
 function executeBouton(nom)
 {
 document.formu.elements[nom].click();
 }
 
-// afin de mettre le focus sur une zone précise
+// afin de mettre le focus sur une zone prÃ©cise
 function setfocus(nom)
 {
 if (document.formu.elements[nom] != null)
@@ -25,7 +25,7 @@ document.formu.elements[nom].focus();
 }
 
 </SCRIPT>
-<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 </HEAD>
 <jsp:useBean
  class="nc.mairie.gestionagent.process.poste.OePOSTEFPSpecificites"
@@ -36,7 +36,7 @@ document.formu.elements[nom].focus();
 		<INPUT name="JSP" type="hidden" value="<%= process.getJSP() %>">
 		<BR/>
 	    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
-		    <legend class="sigp2Legend">Gestion des spécificités d'une fiche de poste</legend>
+		    <legend class="sigp2Legend">Gestion des spÃ©cificitÃ©s d'une fiche de poste</legend>
 		    <br/>
 		    <div align="left">
 				<span class="sigp2-RadioBouton">
@@ -44,9 +44,9 @@ document.formu.elements[nom].focus();
 					<span style="width:5px"></span>
 					<INPUT type="radio" <%= process.forRadioHTML(process.getNOM_RG_SPECIFICITE(),process.getNOM_RB_SPECIFICITE_AN())%> onclick='executeBouton("<%=process.getNOM_PB_CHANGER_SPECIFICITE() %>")'>Avantage en nature
 					<span style="width:5px"></span>
-					<INPUT type="radio" <%= process.forRadioHTML(process.getNOM_RG_SPECIFICITE(),process.getNOM_RB_SPECIFICITE_D())%> onclick='executeBouton("<%=process.getNOM_PB_CHANGER_SPECIFICITE() %>")'>Délégation
+					<INPUT type="radio" <%= process.forRadioHTML(process.getNOM_RG_SPECIFICITE(),process.getNOM_RB_SPECIFICITE_D())%> onclick='executeBouton("<%=process.getNOM_PB_CHANGER_SPECIFICITE() %>")'>DÃ©lÃ©gation
 					<span style="width:5px"></span>
-					<INPUT type="radio" <%= process.forRadioHTML(process.getNOM_RG_SPECIFICITE(),process.getNOM_RB_SPECIFICITE_RI())%> onclick='executeBouton("<%=process.getNOM_PB_CHANGER_SPECIFICITE() %>")'>Régime indemnitaire
+					<INPUT type="radio" <%= process.forRadioHTML(process.getNOM_RG_SPECIFICITE(),process.getNOM_RB_SPECIFICITE_RI())%> onclick='executeBouton("<%=process.getNOM_PB_CHANGER_SPECIFICITE() %>")'>RÃ©gime indemnitaire
 					</span>
 				<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_CHANGER_SPECIFICITE()%>" value="OK">
 		    </div>
@@ -70,7 +70,7 @@ document.formu.elements[nom].focus();
 			</div>
 			<%} else if (process.getVAL_RG_SPECIFICITE().equals(process.getNOM_RB_SPECIFICITE_D())){ %>
 			<div align="left" style="float:left;width:100%;">
-				<span class="sigp2" style="text-align:center;">Délégation(s)</span>
+				<span class="sigp2" style="text-align:center;">DÃ©lÃ©gation(s)</span>
 				<br/><br/>
 				<span style="margin-left:5px;position:relative;width:228px;">Type</span>
 				<span style="position:relative;width:720px;">Commentaire</span>
@@ -101,7 +101,7 @@ document.formu.elements[nom].focus();
 			</div>
 			<%} else { %>
 			<div align="left" style="float:left;width:100%;">
-				<span class="sigp2" style="text-align:center;">Régime(s) indemnitaire(s)</span>
+				<span class="sigp2" style="text-align:center;">RÃ©gime(s) indemnitaire(s)</span>
 				<br/><br/>
 				<span style="margin-left:5px;position:relative;width:158px;">Type</span>
 				<span style="position:relative;width:75px;">Forfait</span>

@@ -1,4 +1,4 @@
-<!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@ page contentType="text/html; charset=UTF-8" %> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <%@page import="nc.mairie.utils.MairieUtils"%>
 <%@page import="nc.mairie.enums.EnumTypeDroit"%>
 <%@page import="nc.mairie.enums.EnumTypeCompetence"%>
@@ -13,13 +13,13 @@
 <TITLE>Informations sur l'affectation en cours</TITLE>
 
 <SCRIPT language="JavaScript">
-//afin de sélectionner un élément dans une liste
+//afin de sÃ©lectionner un Ã©lÃ©ment dans une liste
 function executeBouton(nom)
 {
 document.formu.elements[nom].click();
 }
 
-// afin de mettre le focus sur une zone précise
+// afin de mettre le focus sur une zone prÃ©cise
 function setfocus(nom)
 {
 if (document.formu.elements[nom] != null)
@@ -27,7 +27,7 @@ document.formu.elements[nom].focus();
 }
 
 </SCRIPT>
-<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 </HEAD>
 <jsp:useBean class="nc.mairie.gestionagent.process.agent.OeAGENTEmploisPoste" id="process" scope="session"></jsp:useBean>
 <BODY bgcolor="#FFFFFF" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="window.parent.frames['refAgent'].location.reload();return setfocus('<%= process.getFocus() %>')">
@@ -53,13 +53,13 @@ document.formu.elements[nom].focus();
 						<span class="sigp2-statique"><%=process.getVAL_ST_BUDGET()%></span>
 		    		</td>
 		    		<td width="100px;">
-						<span class="sigp2" >Année :</span>
+						<span class="sigp2" >AnnÃ©e :</span>
 		    		</td>
 		    		<td width="160px;">
 						<span class="sigp2-statique"><%=process.getVAL_ST_ANNEE()%></span>
 		    		</td>
 		    		<td width="70px;">
-						<span class="sigp2">Numéro :</span>
+						<span class="sigp2">NumÃ©ro :</span>
 		    		</td>
 		    		<td width="160px;">
 						<span class="sigp2-statique"><%=process.getVAL_ST_NUMERO()%></span>
@@ -79,13 +79,13 @@ document.formu.elements[nom].focus();
 						<span class="sigp2-statique"><%=process.getVAL_ST_OPI()%></span>
 		    		</td>
 		    		<td>
-						<span class="sigp2">Réglementaire :</span>
+						<span class="sigp2">RÃ©glementaire :</span>
 		    		</td>
 		    		<td>
 						<span class="sigp2-statique"><%=process.getVAL_ST_REGLEMENTAIRE()%></span>
 		    		</td>
 		    		<td>
-						<span class="sigp2">Budgété :</span>
+						<span class="sigp2">BudgÃ©tÃ© :</span>
 		    		</td>
 		    		<td>
 						<span class="sigp2-statique"><%=process.getVAL_ST_POURCENT_BUDGETE()%></span>
@@ -140,7 +140,7 @@ document.formu.elements[nom].focus();
 		    	</tr>
 		    	<tr>
 		    		<td>
-						<span class="sigp2"> Responsable hiér. : </span>
+						<span class="sigp2"> Responsable hiÃ©r. : </span>
 		    		</td>
 		    		<td colspan="3">
 						<span class="sigp2-statique" align="left" style="width:500px"><%=process.getVAL_ST_RESPONSABLE()%> - <%= process.getVAL_ST_INFO_RESP()%></span>
@@ -148,7 +148,7 @@ document.formu.elements[nom].focus();
 		    	</tr>
 		    	<tr>
 		    		<td>
-						<span class="sigp2"> Fiche de poste remplacée : </span>
+						<span class="sigp2"> Fiche de poste remplacÃ©e : </span>
 		    		</td>
 		    		<td colspan="3">
 						<span class="sigp2-statique"><%=process.getVAL_ST_REMPLACEMENT()%> - <%=process.getVAL_ST_INFO_REMP()%></span>
@@ -215,7 +215,7 @@ document.formu.elements[nom].focus();
 		    	</tr>
 		    	<tr>
 		    		<td>
-						<span class="sigp2"> Supérieur hiérarchique : </span>
+						<span class="sigp2"> SupÃ©rieur hiÃ©rarchique : </span>
 		    		</td>
 		    		<td>
 						<span class="sigp2-statique"><%=process.getVAL_ST_SUPERIEUR_HIERARCHIQUE()%></span>
@@ -224,7 +224,7 @@ document.formu.elements[nom].focus();
 		    </table>
 		</FIELDSET>
 		<FIELDSET class="sigp2Fieldset" style="text-align:left;margin:10px;width:1030px;">
-			<legend class="sigp2Legend">Activités</legend>			
+			<legend class="sigp2Legend">ActivitÃ©s</legend>			
             <%if(process.getListeActivite()!= null && process.getListeActivite().size()>0){ %>
 			<div align="left">
 				<br/>
@@ -249,7 +249,7 @@ document.formu.elements[nom].focus();
 			<br/>
 		</FIELDSET>
 		<FIELDSET class="sigp2Fieldset" style="text-align:left;margin:10px;width:1030px;">
-			<legend class="sigp2Legend">Compétences</legend>
+			<legend class="sigp2Legend">CompÃ©tences</legend>
             <%if((process.getListeSavoirFaire()!= null || process.getListeSavoir()!= null || process.getListeComportementPro()!= null) && (process.getListeSavoirFaire().size()>0 || process.getListeSavoir().size()>0 || process.getListeComportementPro().size()>0)){ %>
 			<span class="sigp2Mandatory" style="text-align:center">
 				<INPUT type="radio" <%= process.forRadioHTML(process.getNOM_RG_TYPE_COMPETENCE(),process.getNOM_RB_TYPE_COMPETENCE_S())%> onclick='executeBouton("<%=process.getNOM_PB_CHANGER_TYPE() %>")'>Savoir
@@ -325,7 +325,7 @@ document.formu.elements[nom].focus();
 			<br/>
 		</FIELDSET>
 		<FIELDSET class="sigp2Fieldset" style="text-align:left;margin:10px;width:1030px;">
-			<legend class="sigp2Legend">Spécificités</legend>
+			<legend class="sigp2Legend">SpÃ©cificitÃ©s</legend>
 			<BR/>
 			<div align="left" style="float:left">
 				<span class="sigp2" style="text-align:left;width:960;"><u>Avantage(s) en nature</u></span>
@@ -357,7 +357,7 @@ document.formu.elements[nom].focus();
 				<BR/><BR/>
 			</div>
 			<div align="left" style="float:left">
-				<span class="sigp2" style="text-align:left;width:960;"><u>Délégation(s)</u></span>
+				<span class="sigp2" style="text-align:left;width:960;"><u>DÃ©lÃ©gation(s)</u></span>
 				<%if(process.getListeDelegation()!= null && process.getListeDelegation().size()>0){ %>
 				<br/><br/>
 				<span style="margin-left:5px;position:relative;width:250px;">Type</span>
@@ -384,7 +384,7 @@ document.formu.elements[nom].focus();
 				<BR/><BR/>
 			</div>
 			<div align="left" style="float:left">
-				<span class="sigp2" style="text-align:left;width:960;"><u>Régime(s) indemnitaire(s)</u></span>
+				<span class="sigp2" style="text-align:left;width:960;"><u>RÃ©gime(s) indemnitaire(s)</u></span>
 				<%if(process.getListeRegIndemn()!= null && process.getListeRegIndemn().size()>0){ %>
 				<br/><br/>
 				<span style="margin-left:5px;position:relative;width:100px;text-align: left;">Type</span>

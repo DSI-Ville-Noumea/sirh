@@ -42,7 +42,7 @@ public class SirhKiosqueWSConsumer implements ISirhKiosqueWSConsumer {
 		params.put("portSharepoint", (String) ServletAgent.getMesParametres().get("PORT_SHAREPOINT_DROIT_EAE"));
 		params.put("urlDroitEAESharepoint", (String) ServletAgent.getMesParametres().get("URL_DROIT_EAE_SHAREPOINT"));
 
-		logger.debug("Call WS Sharepoint mise à jour droit EAE => with parameters idDocument = {}", idDocument);
+		logger.debug("Call WS Sharepoint mise Ã  jour droit EAE => with parameters idDocument = {}", idDocument);
 
 		HttpResponse res = null;
 		try {

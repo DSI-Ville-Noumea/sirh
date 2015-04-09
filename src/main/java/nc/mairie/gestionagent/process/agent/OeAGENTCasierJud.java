@@ -21,7 +21,7 @@ import nc.mairie.utils.MessageUtils;
 import org.springframework.context.ApplicationContext;
 
 /**
- * Process OeAGENTCasierJud Date de création : (12/05/11 15:48:38)
+ * Process OeAGENTCasierJud Date de crÃ©ation : (12/05/11 15:48:38)
  * 
  */
 public class OeAGENTCasierJud extends BasicProcess {
@@ -35,7 +35,7 @@ public class OeAGENTCasierJud extends BasicProcess {
 	public String ACTION_SUPPRESSION = "Suppression d'un extrait.";
 	public String ACTION_CONSULATION = "Consultation d'un extrait.";
 	private String ACTION_MODIFICATION = "Modification d'un extrait.";
-	private String ACTION_CREATION = "Création d'un extrait.";
+	private String ACTION_CREATION = "CrÃ©ation d'un extrait.";
 
 	private Agent agentCourant;
 	private ArrayList<CasierJudiciaire> listeCasierJud;
@@ -47,10 +47,10 @@ public class OeAGENTCasierJud extends BasicProcess {
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
 	/**
-	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones Ã  afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
-	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
-	 * addZone(getNOMxxx, String); Date de création : (12/05/11 15:48:38)
+	 * doivent avoir les Fields PUBLIC Utilisation de la mÃ©thode
+	 * addZone(getNOMxxx, String); Date de crÃ©ation : (12/05/11 15:48:38)
 	 * 
 	 */
 	public void initialiseZones(HttpServletRequest request) throws Exception {
@@ -60,10 +60,10 @@ public class OeAGENTCasierJud extends BasicProcess {
 			addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 		}
 
-		// Vérification des droits d'accès.
+		// VÃ©rification des droits d'acces.
 		if (MairieUtils.estInterdit(request, getNomEcran())) {
 			// "ERR190",
-			// "Opération impossible. Vous ne disposez pas des droits d'accès à cette option."
+			// "Operation impossible. Vous ne disposez pas des droits d'acces a cette option."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
@@ -80,7 +80,7 @@ public class OeAGENTCasierJud extends BasicProcess {
 						+ getAgentCourant().getLibCivilite() + " " + getAgentCourant().getNomAgent() + " "
 						+ getAgentCourant().getPrenomAgent());
 
-				// initialisation fenêtre si changement de l'agent
+				// initialisation fenÃªtre si changement de l'agent
 				initialiseListeCasierJudAgent(request);
 			} else {
 				// ERR004 : "Vous devez d'abord rechercher un agent."
@@ -137,7 +137,7 @@ public class OeAGENTCasierJud extends BasicProcess {
 	 * 
 	 */
 	private boolean initialiseCasierJudCourant(HttpServletRequest request) throws Exception {
-		// Récup de l'extrait de casier judiciaire courant
+		// RÃ©cup de l'extrait de casier judiciaire courant
 		CasierJudiciaire c = getCasierJudiciaireCourant();
 
 		// Alim zones
@@ -151,7 +151,7 @@ public class OeAGENTCasierJud extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER Date de création :
+	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER Date de crÃ©ation :
 	 * (12/05/11 15:48:38)
 	 * 
 	 */
@@ -160,10 +160,10 @@ public class OeAGENTCasierJud extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (12/05/11 15:48:38)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (12/05/11 15:48:38)
 	 * 
 	 */
 	public boolean performPB_ANNULER(HttpServletRequest request) throws Exception {
@@ -177,7 +177,7 @@ public class OeAGENTCasierJud extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_CREER Date de création :
+	 * Retourne le nom d'un bouton pour la JSP : PB_CREER Date de crÃ©ation :
 	 * (12/05/11 15:48:38)
 	 * 
 	 */
@@ -186,10 +186,10 @@ public class OeAGENTCasierJud extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (12/05/11 15:48:38)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (12/05/11 15:48:38)
 	 * 
 	 * RG_AG_CJ_A01
 	 */
@@ -220,7 +220,7 @@ public class OeAGENTCasierJud extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER Date de création :
+	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER Date de crÃ©ation :
 	 * (12/05/11 15:48:38)
 	 * 
 	 */
@@ -229,10 +229,10 @@ public class OeAGENTCasierJud extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (12/05/11 15:48:38)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (12/05/11 15:48:38)
 	 * 
 	 */
 	public boolean performPB_VALIDER(HttpServletRequest request) throws Exception {
@@ -244,7 +244,7 @@ public class OeAGENTCasierJud extends BasicProcess {
 			return false;
 		}
 
-		// Récup des zones saisies
+		// RÃ©cup des zones saisies
 		String newDateExtrait = Services.formateDate(getZone(getNOM_EF_DATE_EXTRAIT()));
 		String newNumExtrait = getZone(getNOM_EF_NUM_EXTRAIT());
 		String newCommentaire = getZone(getNOM_EF_COMMENTAIRE_EXTRAIT());
@@ -253,7 +253,7 @@ public class OeAGENTCasierJud extends BasicProcess {
 
 		// Si Action Suppression
 		if (getZone(getNOM_ST_ACTION()).equals(ACTION_SUPPRESSION)) {
-			// Test si un des champs a été modifié
+			// Test si un des champs a Ã©tÃ© modifiÃ©
 			if (!newDateExtrait.equals(getCasierJudiciaireCourant().getDateExtrait() == null ? Const.CHAINE_VIDE : sdf
 					.format(getCasierJudiciaireCourant().getDateExtrait()))
 					|| !newNumExtrait.equals(getCasierJudiciaireCourant().getNumExtrait())
@@ -289,7 +289,7 @@ public class OeAGENTCasierJud extends BasicProcess {
 						getCasierJudiciaireCourant().isPrivationDroitsCiv(),
 						getCasierJudiciaireCourant().getCommExtrait());
 			} else if (getZone(getNOM_ST_ACTION()).equals(ACTION_CREATION)) {
-				// Création
+				// CrÃ©ation
 				getCasierJudiciaireDao().creerCasierJudiciaire(getCasierJudiciaireCourant().getIdAgent(),
 						getCasierJudiciaireCourant().getIdDocument(), getCasierJudiciaireCourant().getNumExtrait(),
 						getCasierJudiciaireCourant().getDateExtrait(),
@@ -300,7 +300,7 @@ public class OeAGENTCasierJud extends BasicProcess {
 				return false;
 		}
 
-		// Tout s'est bien passé
+		// Tout s'est bien passÃ©
 		commitTransaction();
 		initialiseListeCasierJudAgent(request);
 
@@ -308,10 +308,10 @@ public class OeAGENTCasierJud extends BasicProcess {
 	}
 
 	/**
-	 * Vérifie les règles de gestion de saisie (champs obligatoires, ...)
+	 * VÃ©rifie les regles de gestion de saisie (champs obligatoires, ...)
 	 * 
 	 * @param request
-	 * @return true si les règles de gestion sont respectées. false sinon.
+	 * @return true si les regles de gestion sont respectÃ©es. false sinon.
 	 * @throws Exception
 	 *             RG_AG_CJ_C01
 	 */
@@ -324,17 +324,17 @@ public class OeAGENTCasierJud extends BasicProcess {
 			setFocus(getNOM_EF_DATE_EXTRAIT());
 			return false;
 		} else
-		// date de l'extrait doit être bien formatée
+		// date de l'extrait doit Ãªtre bien formatÃ©e
 		if (!Services.estUneDate(getZone(getNOM_EF_DATE_EXTRAIT()))) {
 			getTransaction()
 					.declarerErreur(MessageUtils.getMessage("ERR007", "date de l'extrait de casier judiciaire"));
 			setFocus(getNOM_EF_DATE_EXTRAIT());
 			return false;
 		} else {
-			// date de l'extrait doit être inférieure à la date du jour
+			// date de l'extrait doit Ãªtre inferieure Ã  la date du jour
 			// RG_AG_CJ_C01
 			if (Services.compareDates(getZone(getNOM_EF_DATE_EXTRAIT()), Services.dateDuJour()) >= 0) {
-				// ERR204 : La date @ doit être inférieure à la date @.
+				// ERR204 : La date @ doit Ãªtre inferieure Ã  la date @.
 				getTransaction().declarerErreur(
 						MessageUtils.getMessage("ERR204", "d'extrait de casier judiciaire", "du jour"));
 				setFocus(getNOM_EF_DATE_EXTRAIT());
@@ -342,10 +342,10 @@ public class OeAGENTCasierJud extends BasicProcess {
 			}
 		}
 
-		// numéro de l'extrait obligatoire
+		// numÃ©ro de l'extrait obligatoire
 		if ((Const.CHAINE_VIDE).equals(getZone(getNOM_EF_NUM_EXTRAIT()))) {
 			getTransaction().declarerErreur(
-					MessageUtils.getMessage("ERR002", "numéro de l'extrait de casier judiciaire"));
+					MessageUtils.getMessage("ERR002", "numÃ©ro de l'extrait de casier judiciaire"));
 			setFocus(getNOM_EF_NUM_EXTRAIT());
 			return false;
 		}
@@ -355,7 +355,7 @@ public class OeAGENTCasierJud extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_AGENT Date de
-	 * création : (12/05/11 15:48:38)
+	 * crÃ©ation : (12/05/11 15:48:38)
 	 * 
 	 */
 	public String getNOM_ST_AGENT() {
@@ -363,8 +363,8 @@ public class OeAGENTCasierJud extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_AGENT Date de
-	 * création : (12/05/11 15:48:38)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_AGENT Date de
+	 * crÃ©ation : (12/05/11 15:48:38)
 	 * 
 	 */
 	public String getVAL_ST_AGENT() {
@@ -373,7 +373,7 @@ public class OeAGENTCasierJud extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_COMMENTAIRE_EXTRAIT
-	 * Date de création : (12/05/11 15:48:38)
+	 * Date de crÃ©ation : (12/05/11 15:48:38)
 	 * 
 	 */
 	public String getNOM_EF_COMMENTAIRE_EXTRAIT() {
@@ -381,8 +381,8 @@ public class OeAGENTCasierJud extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_COMMENTAIRE_EXTRAIT Date de création : (12/05/11 15:48:38)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_COMMENTAIRE_EXTRAIT Date de crÃ©ation : (12/05/11 15:48:38)
 	 * 
 	 */
 	public String getVAL_EF_COMMENTAIRE_EXTRAIT() {
@@ -391,7 +391,7 @@ public class OeAGENTCasierJud extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_DATE_EXTRAIT Date
-	 * de création : (12/05/11 15:48:38)
+	 * de crÃ©ation : (12/05/11 15:48:38)
 	 * 
 	 */
 	public String getNOM_EF_DATE_EXTRAIT() {
@@ -399,8 +399,8 @@ public class OeAGENTCasierJud extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_DATE_EXTRAIT Date de création : (12/05/11 15:48:38)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_DATE_EXTRAIT Date de crÃ©ation : (12/05/11 15:48:38)
 	 * 
 	 */
 	public String getVAL_EF_DATE_EXTRAIT() {
@@ -409,7 +409,7 @@ public class OeAGENTCasierJud extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_DOCUMENT_ASSOCIE
-	 * Date de création : (12/05/11 15:48:38)
+	 * Date de crÃ©ation : (12/05/11 15:48:38)
 	 * 
 	 */
 	public String getNOM_EF_DOCUMENT_ASSOCIE() {
@@ -417,8 +417,8 @@ public class OeAGENTCasierJud extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_DOCUMENT_ASSOCIE Date de création : (12/05/11 15:48:38)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_DOCUMENT_ASSOCIE Date de crÃ©ation : (12/05/11 15:48:38)
 	 * 
 	 */
 	public String getVAL_EF_DOCUMENT_ASSOCIE() {
@@ -427,7 +427,7 @@ public class OeAGENTCasierJud extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_NUM_EXTRAIT Date de
-	 * création : (12/05/11 15:48:38)
+	 * crÃ©ation : (12/05/11 15:48:38)
 	 * 
 	 */
 	public String getNOM_EF_NUM_EXTRAIT() {
@@ -435,8 +435,8 @@ public class OeAGENTCasierJud extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_NUM_EXTRAIT Date de création : (12/05/11 15:48:38)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_NUM_EXTRAIT Date de crÃ©ation : (12/05/11 15:48:38)
 	 * 
 	 */
 	public String getVAL_EF_NUM_EXTRAIT() {
@@ -444,8 +444,8 @@ public class OeAGENTCasierJud extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom du groupe de radio boutons coché pour la JSP :
-	 * RG_PRIV_DROITS_CIVIQUE Date de création : (12/05/11 15:48:38)
+	 * Retourne le nom du groupe de radio boutons cochÃ© pour la JSP :
+	 * RG_PRIV_DROITS_CIVIQUE Date de crÃ©ation : (12/05/11 15:48:38)
 	 * 
 	 */
 	public String getNOM_RG_PRIV_DROITS_CIVIQUE() {
@@ -453,8 +453,8 @@ public class OeAGENTCasierJud extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur du radio bouton (RB_) coché dans la JSP :
-	 * RG_PRIV_DROITS_CIVIQUE Date de création : (12/05/11 15:48:38)
+	 * Retourne la valeur du radio bouton (RB_) cochÃ© dans la JSP :
+	 * RG_PRIV_DROITS_CIVIQUE Date de crÃ©ation : (12/05/11 15:48:38)
 	 * 
 	 */
 	public String getVAL_RG_PRIV_DROITS_CIVIQUE() {
@@ -463,7 +463,7 @@ public class OeAGENTCasierJud extends BasicProcess {
 
 	/**
 	 * Retourne le nom du radio bouton pour la JSP : RB_PRIV_DROITS_CIVIQUE_N
-	 * Date de création : (12/05/11 15:48:38)
+	 * Date de crÃ©ation : (12/05/11 15:48:38)
 	 * 
 	 */
 	public String getNOM_RB_PRIV_DROITS_CIVIQUE_N() {
@@ -472,7 +472,7 @@ public class OeAGENTCasierJud extends BasicProcess {
 
 	/**
 	 * Retourne le nom du radio bouton pour la JSP : RB_PRIV_DROITS_CIVIQUE_O
-	 * Date de création : (12/05/11 15:48:38)
+	 * Date de crÃ©ation : (12/05/11 15:48:38)
 	 * 
 	 */
 	public String getNOM_RB_PRIV_DROITS_CIVIQUE_O() {
@@ -489,7 +489,7 @@ public class OeAGENTCasierJud extends BasicProcess {
 	}
 
 	/**
-	 * Met à jour l'agent courant.
+	 * Met a jour l'agent courant.
 	 * 
 	 * @param agentCourant
 	 */
@@ -507,7 +507,7 @@ public class OeAGENTCasierJud extends BasicProcess {
 	}
 
 	/**
-	 * Met à jour l'extrait de casier judiciaire courant
+	 * Met a jour l'extrait de casier judiciaire courant
 	 * 
 	 * @param casierJudiciaireCourant
 	 */
@@ -525,7 +525,7 @@ public class OeAGENTCasierJud extends BasicProcess {
 	}
 
 	/**
-	 * Met à jour la liste des extraits de casier judiciaire de l'agent.
+	 * Met a jour la liste des extraits de casier judiciaire de l'agent.
 	 * 
 	 * @param listeCasierJud
 	 */
@@ -535,7 +535,7 @@ public class OeAGENTCasierJud extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_ACTION Date de
-	 * création : (13/05/11 10:14:23)
+	 * crÃ©ation : (13/05/11 10:14:23)
 	 * 
 	 */
 	public String getNOM_ST_ACTION() {
@@ -543,8 +543,8 @@ public class OeAGENTCasierJud extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACTION Date de
-	 * création : (13/05/11 10:14:23)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_ACTION Date de
+	 * crÃ©ation : (13/05/11 10:14:23)
 	 * 
 	 */
 	public String getVAL_ST_ACTION() {
@@ -561,7 +561,7 @@ public class OeAGENTCasierJud extends BasicProcess {
 	}
 
 	/**
-	 * Met à jour le focus
+	 * Met a jour le focus
 	 * 
 	 * @param focus
 	 */
@@ -570,7 +570,7 @@ public class OeAGENTCasierJud extends BasicProcess {
 	}
 
 	/**
-	 * Constructeur du process OeAGENTCasierJud. Date de création : (13/05/11
+	 * Constructeur du process OeAGENTCasierJud. Date de crÃ©ation : (13/05/11
 	 * 11:30:57)
 	 * 
 	 */
@@ -580,7 +580,7 @@ public class OeAGENTCasierJud extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_PRIV_DROITS_CIV Date
-	 * de création : (13/05/11 11:30:57)
+	 * de crÃ©ation : (13/05/11 11:30:57)
 	 * 
 	 */
 	public String getNOM_ST_PRIV_DROITS_CIV() {
@@ -588,8 +588,8 @@ public class OeAGENTCasierJud extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
-	 * ST_PRIV_DROITS_CIV Date de création : (13/05/11 11:30:57)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone :
+	 * ST_PRIV_DROITS_CIV Date de crÃ©ation : (13/05/11 11:30:57)
 	 * 
 	 */
 	public String getVAL_ST_PRIV_DROITS_CIV() {
@@ -597,15 +597,15 @@ public class OeAGENTCasierJud extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de l'ecran utilisé par la gestion des droits
+	 * Retourne le nom de l'ecran utilise par la gestion des droits
 	 */
 	public String getNomEcran() {
 		return "ECR-AG-DP-CASIERJUD";
 	}
 
 	/**
-	 * Méthode d'initialisation de la page, appelée par la servlet qui aiguille
-	 * le traitement : en fonction du bouton de la JSP Date de création :
+	 * mÃ©thode d'initialisation de la page, appelee par la servlet qui aiguille
+	 * le traitement : en fonction du bouton de la JSP Date de crÃ©ation :
 	 * (12/05/11 15:48:38)
 	 * 
 	 */
@@ -651,14 +651,14 @@ public class OeAGENTCasierJud extends BasicProcess {
 			}
 
 		}
-		// Si TAG INPUT non géré par le process
+		// Si TAG INPUT non gÃ©rÃ© par le process
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
 
 	/**
-	 * Retourne le nom de la JSP du process Zone à utiliser dans un champ caché
-	 * dans chaque formulaire de la JSP. Date de création : (17/10/11 13:31:08)
+	 * Retourne le nom de la JSP du process Zone a utiliser dans un champ cache
+	 * dans chaque formulaire de la JSP. Date de crÃ©ation : (17/10/11 13:31:08)
 	 * 
 	 */
 	public String getJSP() {
@@ -667,7 +667,7 @@ public class OeAGENTCasierJud extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le LIEU_NAISS de la zone statique : ST_DATE Date de
-	 * création : (18/08/11 10:21:15)
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_DATE(int i) {
@@ -675,8 +675,8 @@ public class OeAGENTCasierJud extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE Date de
-	 * création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_DATE Date de
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_DATE(int i) {
@@ -685,7 +685,7 @@ public class OeAGENTCasierJud extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le LIEU_NAISS de la zone statique : ST_NUM Date de
-	 * création : (18/08/11 10:21:15)
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_NUM(int i) {
@@ -693,8 +693,8 @@ public class OeAGENTCasierJud extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_NUM Date de
-	 * création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_NUM Date de
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_NUM(int i) {
@@ -703,7 +703,7 @@ public class OeAGENTCasierJud extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le LIEU_NAISS de la zone statique : ST_PRIVATION
-	 * Date de création : (18/08/11 10:21:15)
+	 * Date de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_PRIVATION(int i) {
@@ -711,8 +711,8 @@ public class OeAGENTCasierJud extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_PRIVATION Date
-	 * de création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_PRIVATION Date
+	 * de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_PRIVATION(int i) {
@@ -721,7 +721,7 @@ public class OeAGENTCasierJud extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le LIEU_NAISS de la zone statique : ST_COMMENTAIRE
-	 * Date de création : (18/08/11 10:21:15)
+	 * Date de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_COMMENTAIRE(int i) {
@@ -729,8 +729,8 @@ public class OeAGENTCasierJud extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_COMMENTAIRE
-	 * Date de création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_COMMENTAIRE
+	 * Date de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_COMMENTAIRE(int i) {
@@ -742,10 +742,10 @@ public class OeAGENTCasierJud extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (16/08/11 15:48:02)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	public boolean performPB_MODIFIER(HttpServletRequest request, int indiceEltAModifier) throws Exception {
@@ -758,7 +758,7 @@ public class OeAGENTCasierJud extends BasicProcess {
 
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 
-		// Récup de l'extrait de casier judiciaire courant
+		// RÃ©cup de l'extrait de casier judiciaire courant
 		CasierJudiciaire c = (CasierJudiciaire) getListeCasierJud().get(indiceEltAModifier);
 		setCasierJudiciaireCourant(c);
 
@@ -776,7 +776,7 @@ public class OeAGENTCasierJud extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_VISUALISATION Date de
-	 * création : (29/09/11 10:03:38)
+	 * crÃ©ation : (29/09/11 10:03:38)
 	 * 
 	 */
 	public String getNOM_PB_CONSULTER(int i) {
@@ -784,10 +784,10 @@ public class OeAGENTCasierJud extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (29/09/11 10:03:38)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (29/09/11 10:03:38)
 	 * 
 	 */
 	public boolean performPB_CONSULTER(HttpServletRequest request, int indiceEltAConsulter) throws Exception {
@@ -800,7 +800,7 @@ public class OeAGENTCasierJud extends BasicProcess {
 
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 
-		// Récup de l'extrait de casier judiciaire courant
+		// RÃ©cup de l'extrait de casier judiciaire courant
 		CasierJudiciaire c = (CasierJudiciaire) getListeCasierJud().get(indiceEltAConsulter);
 		setCasierJudiciaireCourant(c);
 
@@ -817,7 +817,7 @@ public class OeAGENTCasierJud extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMMER Date de création
+	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMMER Date de crÃ©ation
 	 * : (05/09/11 11:31:37)
 	 * 
 	 */
@@ -826,10 +826,10 @@ public class OeAGENTCasierJud extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (05/09/11 11:31:37)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (05/09/11 11:31:37)
 	 * 
 	 */
 	public boolean performPB_SUPPRIMER(HttpServletRequest request, int indiceEltASuprimer) throws Exception {
@@ -843,7 +843,7 @@ public class OeAGENTCasierJud extends BasicProcess {
 
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 
-		// Récup de l'extrait de casier judiciaire courant
+		// RÃ©cup de l'extrait de casier judiciaire courant
 		CasierJudiciaire c = (CasierJudiciaire) getListeCasierJud().get(indiceEltASuprimer);
 		setCasierJudiciaireCourant(c);
 

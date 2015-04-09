@@ -143,10 +143,10 @@ public class SirhWSConsumer implements ISirhWSConsumer {
 				}
 			} catch (Exception e) {
 				response = false;
-				logger.error("Erreur dans la connexion à l'url des WS SIRH", e);
+				logger.error("Erreur dans la connexion a l'url des WS SIRH", e);
 			}
 		} catch (Exception e) {
-			logger.error("Erreur dans la connexion à l'url des WS SIRH", e);
+			logger.error("Erreur dans la connexion a l'url des WS SIRH", e);
 		}
 
 		return response;

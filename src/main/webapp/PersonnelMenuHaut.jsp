@@ -1,3 +1,4 @@
+<%@ page contentType="text/html; charset=UTF-8" %> 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <%@page import="nc.mairie.technique.VariableGlobale"%>
 <%@page import="nc.mairie.technique.UserAppli"%>
@@ -5,7 +6,7 @@
 <%@page import="nc.mairie.gestionagent.servlets.ServletAgent"%>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <META name="GENERATOR" content="IBM WebSphere Page Designer V3.5.3 for Windows">
 <META http-equiv="Content-Style-Type" content="text/css">
 <title>Menu Haut</title>
@@ -45,8 +46,8 @@ res+=")</script>";
 
 var menuPosteEtEmploiFE = new MenuHaut("Module_posteEtEmploi_ficheEmploi");
 menuPosteEtEmploiFE.ajouterFils(new Lien("FEGestion", "FICHE EMPLOI", "Gestion des emplois", true, false,"FICHE EMPLOI"));
-menuPosteEtEmploiFE.ajouterFils(new Lien("FEActivite", "ACTIVITE", "Gestion des activités", true, false,"ACTIVITE"));
-menuPosteEtEmploiFE.ajouterFils(new Lien("FECompetence", "COMPETENCE", "Gestion des compétences", true, false,"COMPETENCE"));
+menuPosteEtEmploiFE.ajouterFils(new Lien("FEActivite", "ACTIVITE", "Gestion des activitÃ©s", true, false,"ACTIVITE"));
+menuPosteEtEmploiFE.ajouterFils(new Lien("FECompetence", "COMPETENCE", "Gestion des compÃ©tences", true, false,"COMPETENCE"));
 document.write(menuPosteEtEmploiFE.afficher());
 
 //***************************************************************
@@ -54,9 +55,9 @@ document.write(menuPosteEtEmploiFE.afficher());
 //***************************************************************
 
 var menuAgentDonneesPerso = new MenuHaut("Module_agent_donneesPerso");
-menuAgentDonneesPerso.ajouterFils(new Lien("AgentEtatCivil", "ETAT CIVIL", "Gestion de l'état civil d'un agent", true, false,"ETAT CIVIL"));
+menuAgentDonneesPerso.ajouterFils(new Lien("AgentEtatCivil", "ETAT CIVIL", "Gestion de l'Ã©tat civil d'un agent", true, false,"ETAT CIVIL"));
 menuAgentDonneesPerso.ajouterFils(new Lien("EnfantGestion", "ENFANTS", "Gestion des enfants", true, false,"ENFANTS"));
-menuAgentDonneesPerso.ajouterFils(new Lien("AgentDiplomeGestion", "DIPLOMES", "Gestion des diplômes", true, false,"DIPLOMES"));
+menuAgentDonneesPerso.ajouterFils(new Lien("AgentDiplomeGestion", "DIPLOMES", "Gestion des diplÃ´mes", true, false,"DIPLOMES"));
 menuAgentDonneesPerso.ajouterFils(new Lien("AdministrationGestion", "AUTRES ADMINISTRATIONS", "Gestion des autres administrations", true, false,"AUTRES ADMINISTRATIONS"));
 menuAgentDonneesPerso.ajouterFils(new Lien("AgentContrat", "CONTRAT", "Gestion des contrats", true, false,"CONTRAT"));
 menuAgentDonneesPerso.ajouterFils(new Lien("AgentCasierJud", "CASIER JUDICIAIRE", "Gestion des extraits de casier judiciaire", true, false,"CASIER JUDICIAIRE"));
@@ -64,7 +65,7 @@ menuAgentDonneesPerso.ajouterFils(new Lien("AgentActesDonneesPerso", "ACTES", "G
 document.write(menuAgentDonneesPerso.afficher());
 
 var menuAgentHSCT = new MenuHaut("Module_agent_hsct");
-menuAgentHSCT.ajouterFils(new Lien("VisiteMedicaleGestion", "VISITES MEDICALES", "Gestion des visites médicales d'un agent", true, false,"VISITES MEDICALES"));
+menuAgentHSCT.ajouterFils(new Lien("VisiteMedicaleGestion", "VISITES MEDICALES", "Gestion des visites mÃ©dicales d'un agent", true, false,"VISITES MEDICALES"));
 menuAgentHSCT.ajouterFils(new Lien("AccidentTravailGestion", "ACCIDENTS DU TRAVAIL", "Gestions des accidents du travail d'un agent", true, false,"ACCIDENTS DE TRAVAIL"));
 menuAgentHSCT.ajouterFils(new Lien("HandicapGestion", "HANDICAPS", "Gestion des handicaps pour un agent", true, false,"HANDICAPS"));
 menuAgentHSCT.ajouterFils(new Lien("AgentActesHSCT", "ACTES", "Gestion des documents HSCT d'un agent",true, false,"ACTES"));
@@ -72,12 +73,12 @@ document.write(menuAgentHSCT.afficher());
 
 var menuAgentEmplois = new MenuHaut("Module_agent_emplois");
 menuAgentEmplois.ajouterFils(new Lien("AgtEmploisAffectations", "AFFECTATIONS", "Gestion des affectations de l'agent", true, false,"AFFECTATIONS"));
-menuAgentEmplois.ajouterFils(new Lien("AgtEmploisPoste", "POSTE", "Informations sur le poste occupé", true, false,"POSTE"));
+menuAgentEmplois.ajouterFils(new Lien("AgtEmploisPoste", "POSTE", "Informations sur le poste occupÃ©", true, false,"POSTE"));
 document.write(menuAgentEmplois.afficher());
 
 var menuAgentEltsSalaires = new MenuHaut("Module_agent_eltsSalaires");
 menuAgentEltsSalaires.ajouterFils(new Lien("PAGestion", "PA", "Gestion des P.A", true, false,"PA"));
-menuAgentEltsSalaires.ajouterFils(new Lien("CarriereGestion", "CARRIERES", "Gestion des carrières", true, false,"CARRIERES"));
+menuAgentEltsSalaires.ajouterFils(new Lien("CarriereGestion", "CARRIERES", "Gestion des carriÃ¨res", true, false,"CARRIERES"));
 menuAgentEltsSalaires.ajouterFils(new Lien("ChargeGestion", "CHARGES", "Gestion des charges", true, false,"CHARGES"));
 menuAgentEltsSalaires.ajouterFils(new Lien("PrimeGestion", "PRIMES", "Gestion des primes", true, false,"PRIMES"));
 document.write(menuAgentEltsSalaires.afficher());
@@ -85,7 +86,7 @@ document.write(menuAgentEltsSalaires.afficher());
 var menuAgentAbsence = new MenuHaut("Module_agent_absences");
 menuAgentAbsence.ajouterFils(new Lien("AgtAbsencesSolde", "ABS", "Solde des Absences", true, false,"SOLDE"));
 menuAgentAbsence.ajouterFils(new Lien("AgtAbsencesHisto", "ABS", "Historique des Absences", true, false,"HISTORIQUE"));
-menuAgentAbsence.ajouterFils(new Lien("AgtAbsencesCompteur", "ABS", "Compteur de récupération", true, false,"COMPTEUR"));
+menuAgentAbsence.ajouterFils(new Lien("AgtAbsencesCompteur", "ABS", "Compteur de rÃ©cupÃ©ration", true, false,"COMPTEUR"));
 document.write(menuAgentAbsence.afficher());
 
 var menuAgentEAE = new MenuHaut("Module_agent_eae");
@@ -121,8 +122,8 @@ menuAVCTAvancementContractuels.ajouterFils(new Lien("AVCTContractuels", "CONTRAC
 document.write(menuAVCTAvancementContractuels.afficher());
 
 var menuAVCTAvancementDetaches = new MenuHaut("Module_avct_simulationDetaches");
-menuAVCTAvancementDetaches.ajouterFils(new Lien("AVCTSimulationDetaches", "SIMU DETACHES", "Simulation pour les fonctionnaires détachés", true, false,"SIMULATION"));
-menuAVCTAvancementDetaches.ajouterFils(new Lien("AVCTDetaches", "DETACHES", "Avancement des fonctionnaires détachés", true, false,"DETACHES"));
+menuAVCTAvancementDetaches.ajouterFils(new Lien("AVCTSimulationDetaches", "SIMU DETACHES", "Simulation pour les fonctionnaires dÃ©tachÃ©s", true, false,"SIMULATION"));
+menuAVCTAvancementDetaches.ajouterFils(new Lien("AVCTDetaches", "DETACHES", "Avancement des fonctionnaires dÃ©tachÃ©s", true, false,"DETACHES"));
 document.write(menuAVCTAvancementDetaches.afficher());
 
 var menuAVCTAvancementConvCol = new MenuHaut("Module_avct_simulationConvCol");
@@ -141,15 +142,15 @@ var menuAVCTMasseSalariale = new MenuHaut("Module_avct_simuMasseSalariale");
 menuAVCTMasseSalariale.ajouterFils(new Lien("AVCTMasseSalariale", "SIMU FONCT", "Simulation des fonctionnaires", true, false,"FONCTIONNAIRES"));
 menuAVCTMasseSalariale.ajouterFils(new Lien("AVCTMasseSalarialeContr", "SIMU CONTR", "Simulation des contractuels", true, false,"CONTRACTUELS"));
 menuAVCTMasseSalariale.ajouterFils(new Lien("AVCTMasseSalarialeConv", "SIMU CONV", "Simulation des conventions", true, false,"CONVENTIONS"));
-menuAVCTMasseSalariale.ajouterFils(new Lien("AVCTMasseSalarialeDetaches", "SIMU DETA", "Simulation des détachés", true, false,"DETACHES"));
+menuAVCTMasseSalariale.ajouterFils(new Lien("AVCTMasseSalarialeDetaches", "SIMU DETA", "Simulation des dÃ©tachÃ©s", true, false,"DETACHES"));
 document.write(menuAVCTMasseSalariale.afficher());
 
 //***************************************************************
 //*               Le menu haut Suivi medical
 //***************************************************************
 var menuSMConvocation = new MenuHaut("Module_suiviMed_suiviMed");
-menuSMConvocation.ajouterFils(new Lien("SMConvocation", "CONVOCATION", "Convocation pour le suivi médical", true, false,"CONVOCATION"));
-menuSMConvocation.ajouterFils(new Lien("SMHistorique", "HISTORIQUE", "Historique du suivi médical", true, false,"HISTORIQUE"));
+menuSMConvocation.ajouterFils(new Lien("SMConvocation", "CONVOCATION", "Convocation pour le suivi mÃ©dical", true, false,"CONVOCATION"));
+menuSMConvocation.ajouterFils(new Lien("SMHistorique", "HISTORIQUE", "Historique du suivi mÃ©dical", true, false,"HISTORIQUE"));
 document.write(menuSMConvocation.afficher());
 
 //***************************************************************
@@ -173,49 +174,49 @@ document.write(menuPTGPayeur.afficher());
 //***************************************************************
 var menuElecCompteur = new MenuHaut("Module_election_saisieCompteur");
 menuElecCompteur.ajouterFils(new Lien("ELECSaisieCompteurA48", "COMPTEUR", "Compteur A48", true, false,"Bureau Directeur"));
-menuElecCompteur.ajouterFils(new Lien("ELECSaisieCompteurA54", "COMPTEUR", "Compteur A54", true, false,"Congrès et conseil syndical"));
-menuElecCompteur.ajouterFils(new Lien("ELECSaisieCompteurA55", "COMPTEUR", "Compteur A55", true, false,"Délégation DP"));
+menuElecCompteur.ajouterFils(new Lien("ELECSaisieCompteurA54", "COMPTEUR", "Compteur A54", true, false,"CongrÃ¨s et conseil syndical"));
+menuElecCompteur.ajouterFils(new Lien("ELECSaisieCompteurA55", "COMPTEUR", "Compteur A55", true, false,"DÃ©lÃ©gation DP"));
 menuElecCompteur.ajouterFils(new Lien("ELECSaisieCompteurA53", "COMPTEUR", "Compteur A53", true, false,"Formation Syndicale"));
-menuElecCompteur.ajouterFils(new Lien("ELECSaisieCompteurA52", "COMPTEUR", "Compteur A52", true, false,"Décharge de service CTP"));
+menuElecCompteur.ajouterFils(new Lien("ELECSaisieCompteurA52", "COMPTEUR", "Compteur A52", true, false,"DÃ©charge de service CTP"));
 document.write(menuElecCompteur.afficher());
 
 //***************************************************************
-//*               Le menu haut Paramètres
+//*               Le menu haut ParamÃ¨tres
 //***************************************************************
 var menuParametragePosteEtEmploi = new MenuHaut("Module_parametres_posteEtEmploi");
-menuParametragePosteEtEmploi.ajouterFils(new Lien("ParamFicheEmploi", "FICHE EMPLOI", "Gestion des paramètres des fiches emploi", true, false,"FICHE EMPLOI"));
-menuParametragePosteEtEmploi.ajouterFils(new Lien("ParamFichePoste", "FICHE POSTE", "Gestion des paramètres des fiches de poste", true, false,"FICHE POSTE"));
-menuParametragePosteEtEmploi.ajouterFils(new Lien("ParamRecrutement", "RECRUTEMENT", "Gestion des paramètres des recrutements", true, false,"RECRUTEMENT"));
+menuParametragePosteEtEmploi.ajouterFils(new Lien("ParamFicheEmploi", "FICHE EMPLOI", "Gestion des paramÃ¨tres des fiches emploi", true, false,"FICHE EMPLOI"));
+menuParametragePosteEtEmploi.ajouterFils(new Lien("ParamFichePoste", "FICHE POSTE", "Gestion des paramÃ¨tres des fiches de poste", true, false,"FICHE POSTE"));
+menuParametragePosteEtEmploi.ajouterFils(new Lien("ParamRecrutement", "RECRUTEMENT", "Gestion des paramÃ¨tres des recrutements", true, false,"RECRUTEMENT"));
 document.write(menuParametragePosteEtEmploi.afficher());
 
 
 var menuParametrageAgent = new MenuHaut("Module_parametres_agent");
-menuParametrageAgent.ajouterFils(new Lien("ParamDonneesPerso", "DONNEES PERSONNELLES", "Gestion des paramètres données personnelles", true, false,"DONNEES PERSONNELLES"));
-menuParametrageAgent.ajouterFils(new Lien("ParamHSCT", "HSCT", "Gestion des paramètres HSCT", true, false,"HSCT"));
+menuParametrageAgent.ajouterFils(new Lien("ParamDonneesPerso", "DONNEES PERSONNELLES", "Gestion des paramÃ¨tres donnÃ©es personnelles", true, false,"DONNEES PERSONNELLES"));
+menuParametrageAgent.ajouterFils(new Lien("ParamHSCT", "HSCT", "Gestion des paramÃ¨tres HSCT", true, false,"HSCT"));
 document.write(menuParametrageAgent.afficher());
 
 var menuParametrageGrade = new MenuHaut("Module_parametres_grade");
-menuParametrageGrade.ajouterFils(new Lien("ParamGradeRef", "REFERENCE", "Gestion des paramètres des grades", true, false,"REFERENCE"));
+menuParametrageGrade.ajouterFils(new Lien("ParamGradeRef", "REFERENCE", "Gestion des paramÃ¨tres des grades", true, false,"REFERENCE"));
 menuParametrageGrade.ajouterFils(new Lien("ParamGrade", "GRADES", "Gestion des grades", true, false,"GRADE"));
 document.write(menuParametrageGrade.afficher());
 
 var menuParametrageAvancement = new MenuHaut("Module_parametres_avancement");
-menuParametrageAvancement.ajouterFils(new Lien("ParamAvancement", "AVANCEMENT", "Gestion des paramètres des avancements", true, false,"AVANCEMENT"));
+menuParametrageAvancement.ajouterFils(new Lien("ParamAvancement", "AVANCEMENT", "Gestion des paramÃ¨tres des avancements", true, false,"AVANCEMENT"));
 document.write(menuParametrageAvancement.afficher());
 
 var menuParametrageElemSal = new MenuHaut("Module_parametres_elemSal");
-menuParametrageElemSal.ajouterFils(new Lien("ParamCarriere", "CARRIERE", "Gestion des paramètres des carrières", true, false,"BASE HORAIRE"));
-menuParametrageElemSal.ajouterFils(new Lien("ParamJour", "JOUR", "Gestion des paramètres des jours fériés", true, false,"JOURS FERIES"));
+menuParametrageElemSal.ajouterFils(new Lien("ParamCarriere", "CARRIERE", "Gestion des paramÃ¨tres des carriÃ¨res", true, false,"BASE HORAIRE"));
+menuParametrageElemSal.ajouterFils(new Lien("ParamJour", "JOUR", "Gestion des paramÃ¨tres des jours fÃ©riÃ©s", true, false,"JOURS FERIES"));
 document.write(menuParametrageElemSal.afficher());
 
 var menuParametrageElemAbs = new MenuHaut("Module_parametres_absence");
-menuParametrageElemAbs.ajouterFils(new Lien("ParamAbsMotif", "CARRIERE", "Gestion des paramètres des motifs pour le module absence", true, false,"MOTIFS"));
-menuParametrageElemAbs.ajouterFils(new Lien("ParamAbsCongeExcep", "JOUR", "Gestion des paramètres des type de congés exceptionnels", true, false,"CONGES EXCEPTIONNELS"));
-menuParametrageElemAbs.ajouterFils(new Lien("ParamAbsCongeAnnuel", "ANNUEL", "Gestion des paramètres des type de congés annuels", true, false,"CONGES ANNUELS"));
+menuParametrageElemAbs.ajouterFils(new Lien("ParamAbsMotif", "CARRIERE", "Gestion des paramÃ¨tres des motifs pour le module absence", true, false,"MOTIFS"));
+menuParametrageElemAbs.ajouterFils(new Lien("ParamAbsCongeExcep", "JOUR", "Gestion des paramÃ¨tres des type de congÃ©s exceptionnels", true, false,"CONGES EXCEPTIONNELS"));
+menuParametrageElemAbs.ajouterFils(new Lien("ParamAbsCongeAnnuel", "ANNUEL", "Gestion des paramÃ¨tres des type de congÃ©s annuels", true, false,"CONGES ANNUELS"));
 document.write(menuParametrageElemAbs.afficher());
 
 var menuParametragePointage = new MenuHaut("Module_parametres_pointage");
-menuParametragePointage.ajouterFils(new Lien("ParamPointage", "POINTAGE", "Gestion des paramètres des pointages", true, false,"MOTIFS"));
+menuParametragePointage.ajouterFils(new Lien("ParamPointage", "POINTAGE", "Gestion des paramÃ¨tres des pointages", true, false,"MOTIFS"));
 document.write(menuParametragePointage.afficher());
 
 </script>

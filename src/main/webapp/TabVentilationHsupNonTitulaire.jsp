@@ -1,3 +1,4 @@
+<%@ page contentType="text/html; charset=UTF-8" %> 
 <%@page import="nc.mairie.metier.carriere.BaseHoraire"%>
 <%@page import="nc.mairie.metier.carriere.Carriere"%>
 <%@page import="nc.mairie.gestionagent.process.pointage.OePTGVentilationUtils"%>
@@ -12,8 +13,8 @@
 							<thead>
 								<tr>
 									<th>Matricule Agent</th>
-									<th>Nom prénom</th>
-									<th>Mois- année</th>
+									<th>Nom prÃ©nom</th>
+									<th>Mois- annÃ©e</th>
 									<th>Total Abs</th>
 									<th>Abs Sans Titre</th>
 									<th>Abs</th>
@@ -94,7 +95,7 @@
 									<td><%= OePTGVentilationUtils.getHeureMinute(minutesDJF)%></td>
 									<td><%= OePTGVentilationUtils.getHeureMinute(minutesMai)%></td>
 									<td>
-										<img  src="images/loupe.gif" height="16px" width="16px" title="Voir le détail du mois" onClick="loadVentilationHsupHistory('<%=process.getValHistoryHsup(moisAnneeR,idAgent)%>', '<%=process.getHistoryHsup(moisAnneeR,idAgent)%>')">
+										<img  src="images/loupe.gif" height="16px" width="16px" title="Voir le dÃ©tail du mois" onClick="loadVentilationHsupHistory('<%=process.getValHistoryHsup(moisAnneeR,idAgent)%>', '<%=process.getHistoryHsup(moisAnneeR,idAgent)%>')">
 									</td>			
 								</tr>
 								<% }

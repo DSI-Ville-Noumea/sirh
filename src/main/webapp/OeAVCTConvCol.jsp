@@ -1,4 +1,4 @@
-<!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@ page contentType="text/html; charset=UTF-8" %> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <%@page import="nc.mairie.metier.avancement.AvancementConvCol"%>
 <%@page import="nc.mairie.utils.MairieUtils"%>
 <%@page import="nc.mairie.enums.EnumTypeDroit"%>
@@ -18,20 +18,20 @@
 <SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT> 
 
 <SCRIPT language="JavaScript">
-//afin de sélectionner un élément dans une liste
+//afin de sÃ©lectionner un Ã©lÃ©ment dans une liste
 function executeBouton(nom)
 {
 document.formu.elements[nom].click();
 }
 
-// afin de mettre le focus sur une zone précise
+// afin de mettre le focus sur une zone prÃ©cise
 function setfocus(nom)
 {
 if (document.formu.elements[nom] != null)
 document.formu.elements[nom].focus();
 }
 </SCRIPT>
-<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 </HEAD>
 <jsp:useBean
  class="nc.mairie.gestionagent.process.avancement.OeAVCTConvCol"
@@ -107,8 +107,8 @@ document.formu.elements[nom].focus();
 		<BR/>
 		
 	    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
-		    <legend class="sigp2Legend">Tri des avancements à afficher</legend>
-			<span class="sigp2" style="width:75px">Année : </span>
+		    <legend class="sigp2Legend">Tri des avancements Ã  afficher</legend>
+			<span class="sigp2" style="width:75px">AnnÃ©e : </span>
 			<SELECT disabled="disabled" class="sigp2-saisie" name="<%= process.getNOM_LB_ANNEE() %>" style="width=70px;margin-right:20px;">
 				<%=process.forComboHTML(process.getVAL_LB_ANNEE(), process.getVAL_LB_ANNEE_SELECT()) %>
 			</SELECT>
@@ -124,13 +124,13 @@ document.formu.elements[nom].focus();
 						<th>NumAvct</th>
 						<th>Dir. <br> Sect.</th>
 						<th>Matr</th>
-						<th>Nom <br> Prénom</th>
+						<th>Nom <br> PrÃ©nom</th>
 						<th>Date embauche</th>
 						<th>PA</th>
 						<th>Carr Simu</th>
 						<th>Taux ancien <br> nouveau </th>
 						<th>Grade</th>
-						<th>Libéllé</th>
+						<th>LibÃ©llÃ©</th>
 						<th>Valid. DRH						
 							<INPUT type="checkbox" name="CHECK_ALL_DRH" onClick='activeDRH()'>
 						</th>
@@ -229,7 +229,7 @@ document.formu.elements[nom].focus();
 				<% if (!process.agentEnErreur.equals("")){ %>
 					<span style="color: red;" class="sigp2Mandatory">Agents en anomalies : <%=process.agentEnErreur %></span>
 					<BR/><BR/>
-					<span style="color: red;" class="sigp2Mandatory">Pour ces agents une ligne de prime n'a pu être crée car il y avait déjà une prime pour cette date. Merci de corriger manuellement les primes de ces agents.</span>
+					<span style="color: red;" class="sigp2Mandatory">Pour ces agents une ligne de prime n'a pu Ãªtre crÃ©e car il y avait dÃ©jÃ  une prime pour cette date. Merci de corriger manuellement les primes de ces agents.</span>
 				<%} %>
 			<script type="text/javascript">
 				$(document).ready(function() {
@@ -252,7 +252,7 @@ document.formu.elements[nom].focus();
 
 		<FIELDSET class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "sigp2Fieldset") %>" style="text-align:center;width:1030px;">
 			<INPUT type="submit" class="sigp2-Bouton-100" value="Enregistrer" name="<%=process.getNOM_PB_VALIDER()%>">
-			<INPUT type="submit" class="sigp2-Bouton-100" value="Générer" name="<%=process.getNOM_PB_AFFECTER()%>">
+			<INPUT type="submit" class="sigp2-Bouton-100" value="GÃ©nÃ©rer" name="<%=process.getNOM_PB_AFFECTER()%>">
 			<INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
 		</FIELDSET>
 	</FORM>

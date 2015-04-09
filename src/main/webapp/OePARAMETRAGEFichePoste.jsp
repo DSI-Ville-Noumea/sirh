@@ -1,4 +1,4 @@
-<!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@ page contentType="text/html; charset=UTF-8" %> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <%@page import="nc.mairie.utils.MairieUtils"%>
 <%@page import="nc.mairie.enums.EnumTypeDroit"%>
 <HTML>
@@ -7,18 +7,18 @@
 		<META name="GENERATOR" content="IBM WebSphere Page Designer V3.5.3 for Windows">
 		<META http-equiv="Content-Style-Type" content="text/css">
 		<LINK href="theme/sigp2.css" rel="stylesheet" type="text/css">
-		<TITLE>Gestion des paramètres des fiches de poste</TITLE>
+		<TITLE>Gestion des paramÃ¨tres des fiches de poste</TITLE>
 		<LINK rel="stylesheet" href="theme/calendrier-mairie.css" type="text/css">
 		<SCRIPT type="text/javascript" src="js/GestionCalendrier.js"></SCRIPT> <SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT>
 		
 		<SCRIPT language="JavaScript">
-		//afin de sélectionner un élément dans une liste
+		//afin de sÃ©lectionner un Ã©lÃ©ment dans une liste
 		function executeBouton(nom)
 		{
 			document.formu.elements[nom].click();
 		}
 
-		// afin de mettre le focus sur une zone précise
+		// afin de mettre le focus sur une zone prÃ©cise
 		function setfocus(nom)
 		{
 		if (document.formu.elements[nom] != null)
@@ -27,7 +27,7 @@
 		
 		</SCRIPT>
 		
-		<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	</HEAD>
 	<jsp:useBean class="nc.mairie.gestionagent.process.parametre.OePARAMETRAGEFichePoste" id="process" scope="session"></jsp:useBean>
 	<BODY bgcolor="#FFFFFF" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" class="sigp2-BODY" onload="window.parent.frames['refAgent'].location.reload();return setfocus('<%= process.getFocus() %>')" >
@@ -39,7 +39,7 @@
 				<tr>
 					<td width="500px">
 						<FIELDSET class="sigp2Fieldset"  style="text-align: left;">
-					    	<legend class="sigp2Legend">Entités géographiques</legend>
+					    	<legend class="sigp2Legend">EntitÃ©s gÃ©ographiques</legend>
 							<span class="sigp2-titre" >
 							<SELECT name="<%= process.getNOM_LB_ENTITE_GEO() %>" size="10"
 								style="width:100%;" class="sigp2-liste">
@@ -58,7 +58,7 @@
 								<% if (!process.ACTION_SUPPRESSION.equals(process.getVAL_ST_ACTION_ENTITE_GEO())) { %>
 					            	<tr>
 					            		<td width="50px">
-											<label class="sigp2Mandatory">Libellé:</label>
+											<label class="sigp2Mandatory">LibellÃ©:</label>
 					            		</td>
 					            		<td>
 					            			<INPUT class="sigp2-saisiemajuscule" maxlength="60" name="<%= process.getNOM_EF_ENTITE_GEO() %>" size="35" type="text" value="<%= process.getVAL_EF_ENTITE_GEO() %>">
@@ -87,7 +87,7 @@
 								<%} else {%>
 					            	<tr>
 					            		<td width="50px">
-											<label class="sigp2Mandatory">Libellé:</label>
+											<label class="sigp2Mandatory">LibellÃ©:</label>
 					            		</td>
 					            		<td>
 					            			<INPUT class="sigp2-saisiemajuscule" maxlength="20" readonly="readonly" name="<%= process.getNOM_EF_ENTITE_GEO() %>" size="35" type="text" value="<%= process.getVAL_EF_ENTITE_GEO() %>">
@@ -134,7 +134,7 @@
 								<% if (!process.ACTION_SUPPRESSION.equals(process.getVAL_ST_ACTION_TITRE())) { %>
 					            	<tr>
 					            		<td width="50px">
-											<label class="sigp2Mandatory">Libellé:</label>
+											<label class="sigp2Mandatory">LibellÃ©:</label>
 					            		</td>
 					            		<td>
 					            			<INPUT class="sigp2-saisiemajuscule" maxlength="100" name="<%= process.getNOM_EF_TITRE() %>" size="35" type="text" value="<%= process.getVAL_EF_TITRE() %>">
@@ -151,7 +151,7 @@
 								<%} else {%>
 					            	<tr>
 					            		<td width="50px">
-											<label class="sigp2Mandatory">Libellé:</label>
+											<label class="sigp2Mandatory">LibellÃ©:</label>
 					            		</td>
 					            		<td>
 					            			<INPUT class="sigp2-saisiemajuscule" maxlength="100" readonly="readonly" name="<%= process.getNOM_EF_TITRE() %>" size="35" type="text" value="<%= process.getVAL_EF_TITRE() %>">
@@ -191,7 +191,7 @@
 								<% if (!process.ACTION_SUPPRESSION.equals(process.getVAL_ST_ACTION_TYPE_AVANTAGE())) { %>
 					            	<tr>
 					            		<td width="50px">
-											<label class="sigp2Mandatory">Libellé:</label>
+											<label class="sigp2Mandatory">LibellÃ©:</label>
 					            		</td>
 					            		<td>
 					            			<INPUT class="sigp2-saisiemajuscule" maxlength="50" name="<%= process.getNOM_EF_TYPE_AVANTAGE() %>" size="35" type="text" value="<%= process.getVAL_EF_TYPE_AVANTAGE() %>">
@@ -208,7 +208,7 @@
 								<%} else {%>
 					            	<tr>
 					            		<td width="50px">
-											<label class="sigp2Mandatory">Libellé:</label>
+											<label class="sigp2Mandatory">LibellÃ©:</label>
 					            		</td>
 					            		<td>
 					            			<INPUT class="sigp2-saisiemajuscule" maxlength="50" readonly="readonly" name="<%= process.getNOM_EF_TYPE_AVANTAGE() %>" size="35" type="text" value="<%= process.getVAL_EF_TYPE_AVANTAGE() %>">
@@ -245,7 +245,7 @@
 								<% if (!process.ACTION_SUPPRESSION.equals(process.getVAL_ST_ACTION_NATURE_AVANTAGE())) { %>
 					            	<tr>
 					            		<td width="50px">
-											<label class="sigp2Mandatory">Libellé:</label>
+											<label class="sigp2Mandatory">LibellÃ©:</label>
 					            		</td>
 					            		<td>
 					            			<INPUT class="sigp2-saisiemajuscule" maxlength="50" name="<%= process.getNOM_EF_NATURE_AVANTAGE() %>" size="35" type="text" value="<%= process.getVAL_EF_NATURE_AVANTAGE() %>">
@@ -262,7 +262,7 @@
 								<%} else {%>
 					            	<tr>
 					            		<td width="50px">
-											<label class="sigp2Mandatory">Libellé:</label>
+											<label class="sigp2Mandatory">LibellÃ©:</label>
 					            		</td>
 					            		<td>
 					            			<INPUT class="sigp2-saisiemajuscule" maxlength="50" readonly="readonly" name="<%= process.getNOM_EF_NATURE_AVANTAGE() %>" size="35" type="text" value="<%= process.getVAL_EF_NATURE_AVANTAGE() %>">
@@ -283,7 +283,7 @@
 				<tr>
 					<td>
 						<FIELDSET class="sigp2Fieldset"  style="text-align: left;">
-					    	<legend class="sigp2Legend">Types de délégation</legend>
+					    	<legend class="sigp2Legend">Types de dÃ©lÃ©gation</legend>
 							<span class="sigp2-titre" >
 							<SELECT name="<%= process.getNOM_LB_TYPE_DELEGATION() %>" size="10" style="width:100%;" class="sigp2-liste">
 								<%=process.forComboHTML(process.getVAL_LB_TYPE_DELEGATION(), process.getVAL_LB_TYPE_DELEGATION_SELECT()) %>
@@ -301,7 +301,7 @@
 								<% if (!process.ACTION_SUPPRESSION.equals(process.getVAL_ST_ACTION_TYPE_DELEGATION())) { %>
 					            	<tr>
 					            		<td width="50px">
-											<label class="sigp2Mandatory">Libellé:</label>
+											<label class="sigp2Mandatory">LibellÃ©:</label>
 					            		</td>
 					            		<td>
 					            			<INPUT class="sigp2-saisiemajuscule" maxlength="30" name="<%= process.getNOM_EF_TYPE_DELEGATION() %>" size="35" type="text" value="<%= process.getVAL_EF_TYPE_DELEGATION() %>">
@@ -318,7 +318,7 @@
 								<%} else {%>
 					            	<tr>
 					            		<td width="50px">
-											<label class="sigp2Mandatory">Libellé:</label>
+											<label class="sigp2Mandatory">LibellÃ©:</label>
 					            		</td>
 					            		<td>
 					            			<INPUT class="sigp2-saisiemajuscule" maxlength="30" readonly="readonly" name="<%= process.getNOM_EF_TYPE_DELEGATION() %>" size="35" type="text" value="<%= process.getVAL_EF_TYPE_DELEGATION() %>">
@@ -337,7 +337,7 @@
 					</td>
 					<td>
 						<FIELDSET class="sigp2Fieldset"  style="text-align: left;">
-					    	<legend class="sigp2Legend">Types de régime</legend>
+					    	<legend class="sigp2Legend">Types de rÃ©gime</legend>
 							<span class="sigp2-titre" >
 							<SELECT name="<%= process.getNOM_LB_TYPE_REGIME() %>" size="10" style="width:100%;" class="sigp2-liste">
 								<%=process.forComboHTML(process.getVAL_LB_TYPE_REGIME(), process.getVAL_LB_TYPE_REGIME_SELECT()) %>
@@ -355,7 +355,7 @@
 								<% if (!process.ACTION_SUPPRESSION.equals(process.getVAL_ST_ACTION_TYPE_REGIME())) { %>
 					            	<tr>
 					            		<td width="50px">
-											<label class="sigp2Mandatory">Libellé:</label>
+											<label class="sigp2Mandatory">LibellÃ©:</label>
 					            		</td>
 					            		<td>
 					            			<INPUT class="sigp2-saisiemajuscule" maxlength="20" name="<%= process.getNOM_EF_TYPE_REGIME() %>" size="35" type="text" value="<%= process.getVAL_EF_TYPE_REGIME() %>">
@@ -372,7 +372,7 @@
 								<%} else {%>
 					            	<tr>
 					            		<td width="50px">
-											<label class="sigp2Mandatory">Libellé:</label>
+											<label class="sigp2Mandatory">LibellÃ©:</label>
 					            		</td>
 					            		<td>
 					            			<INPUT class="sigp2-saisiemajuscule" maxlength="20" readonly="readonly" name="<%= process.getNOM_EF_TYPE_REGIME() %>" size="35" type="text" value="<%= process.getVAL_EF_TYPE_REGIME() %>">
@@ -483,7 +483,7 @@
 								<% if (process.ACTION_MODIFICATION.equals(process.getVAL_ST_ACTION_ECOLE())) { %>
 					            	<tr>
 					            		<td width="90px">
-											<label class="sigp2Mandatory">Code école:</label>
+											<label class="sigp2Mandatory">Code Ã©cole:</label>
 					            		</td>
 					            		<td align="left">
 					            			<INPUT class="sigp2-saisiemajuscule" maxlength="2" disabled="disabled" name="<%= process.getNOM_EF_ECOLE_CODE_ECOLE() %>" size="2" type="text" value="<%= process.getVAL_EF_ECOLE_CODE_ECOLE() %>">
@@ -491,7 +491,7 @@
 					            	</tr>
 					            	<tr>
 					            		<td>
-											<label class="sigp2Mandatory">Libellé:</label>
+											<label class="sigp2Mandatory">LibellÃ©:</label>
 					            		</td>
 					            		<td>
 					            			<INPUT class="sigp2-saisiemajuscule" maxlength="40" name="<%= process.getNOM_EF_ECOLE() %>" size="40" type="text" value="<%= process.getVAL_EF_ECOLE() %>">
@@ -506,7 +506,7 @@
 					            <%}else if(process.ACTION_CREATION.equals(process.getVAL_ST_ACTION_ECOLE())) {%> 
 					            	<tr>
 					            		<td width="90px">
-											<label class="sigp2Mandatory">Code école:</label>
+											<label class="sigp2Mandatory">Code Ã©cole:</label>
 					            		</td>
 					            		<td align="left">
 					            			<INPUT class="sigp2-saisiemajuscule" maxlength="2" name="<%= process.getNOM_EF_ECOLE_CODE_ECOLE() %>" size="2" type="text" value="<%= process.getVAL_EF_ECOLE_CODE_ECOLE() %>">
@@ -514,7 +514,7 @@
 					            	</tr>
 					            	<tr>
 					            		<td>
-											<label class="sigp2Mandatory">Libellé:</label>
+											<label class="sigp2Mandatory">LibellÃ©:</label>
 					            		</td>
 					            		<td>
 					            			<INPUT class="sigp2-saisiemajuscule" maxlength="40" name="<%= process.getNOM_EF_ECOLE() %>" size="40" type="text" value="<%= process.getVAL_EF_ECOLE() %>">
@@ -530,7 +530,7 @@
 								<%} else {%>
 					            	<tr>
 					            		<td width="90px">
-											<label class="sigp2Mandatory">Code école:</label>
+											<label class="sigp2Mandatory">Code Ã©cole:</label>
 					            		</td>
 					            		<td>
 					            			<INPUT class="sigp2-saisiemajuscule" maxlength="2" readonly="readonly" name="<%= process.getNOM_EF_ECOLE_CODE_ECOLE() %>" size="2" type="text" value="<%= process.getVAL_EF_ECOLE_CODE_ECOLE() %>">
@@ -538,7 +538,7 @@
 					            	</tr>
 					            	<tr>
 					            		<td align="left">
-											<label class="sigp2Mandatory">Libellé:</label>
+											<label class="sigp2Mandatory">LibellÃ©:</label>
 					            		</td>
 					            		<td>
 					            			<INPUT class="sigp2-saisiemajuscule" maxlength="40" readonly="readonly" name="<%= process.getNOM_EF_ECOLE() %>" size="40" type="text" value="<%= process.getVAL_EF_ECOLE() %>">
@@ -561,7 +561,7 @@
 						<FIELDSET class="sigp2Fieldset"  style="text-align: left;">
 					    	<legend class="sigp2Legend">Liste des bases horaires de pointage</legend>
 							<span class="sigp2-saisie" style="margin-left: 5px;">Code</span>
-							<span class="sigp2-saisie" style="margin-left: 20px;">Libellé</span>
+							<span class="sigp2-saisie" style="margin-left: 20px;">LibellÃ©</span>
 							<SELECT name="<%= process.getNOM_LB_BASE_HORAIRE_POINTAGE() %>" size="10"
 								style="width:100%;" class="sigp2-liste">
 								<%=process.forComboHTML(process.getVAL_LB_BASE_HORAIRE_POINTAGE(), process.getVAL_LB_BASE_HORAIRE_POINTAGE_SELECT()) %>
@@ -578,7 +578,7 @@
 			            	<table>
 								<tr>
 									<td colspan="3">
-											<label class="sigp2Mandatory" style="color: red;">Les heures sont à saisir sous la forme "H.Mn"</label>
+											<label class="sigp2Mandatory" style="color: red;">Les heures sont Ã  saisir sous la forme "H.Mn"</label>
 									</td>
 								</tr>
 			            		<tr>
@@ -589,7 +589,7 @@
 										<INPUT class="sigp2-saisiemajuscule" maxlength="100" name="<%= process.getNOM_EF_CODE_BASE_HORAIRE_POINTAGE() %>" size="5" type="text" value="<%= process.getVAL_EF_CODE_BASE_HORAIRE_POINTAGE() %>">
 			            			</td>
 			            			<td>
-										<label class="sigp2Mandatory">Libellé :</label>
+										<label class="sigp2Mandatory">LibellÃ© :</label>
 			            			</td>
 			            			<td>
 										<INPUT class="sigp2-saisiemajuscule" maxlength="255" name="<%= process.getNOM_EF_LIB_BASE_HORAIRE_POINTAGE() %>" size="20" type="text" value="<%= process.getVAL_EF_LIB_BASE_HORAIRE_POINTAGE() %>">
@@ -659,7 +659,7 @@
 			            		</tr>
 			            		<tr>
 			            			<td colspan="2">
-										<label class="sigp2Mandatory">Base légale hebdomadaire :</label>
+										<label class="sigp2Mandatory">Base lÃ©gale hebdomadaire :</label>
 			            			</td>
 			            			<td>
 										<INPUT class="sigp2-saisiemajuscule" maxlength="2" name="<%= process.getNOM_EF_BASE_HEBDO_LEG_H() %>" size="5" type="text" value="<%= process.getVAL_EF_BASE_HEBDO_LEG_H() %>"><span class="sigp2-saisie">H</span>
@@ -690,7 +690,7 @@
 							<table>
 								<tr>
 									<td colspan="3">
-											<label class="sigp2Mandatory" style="color: red;">Les heures sont à saisir sous la forme "H.Mn"</label>
+											<label class="sigp2Mandatory" style="color: red;">Les heures sont Ã  saisir sous la forme "H.Mn"</label>
 									</td>
 								</tr>
 								<tr>
@@ -701,7 +701,7 @@
 										<INPUT class="sigp2-saisiemajuscule" disabled="disabled" name="<%= process.getNOM_EF_CODE_BASE_HORAIRE_POINTAGE() %>" size="5" type="text" value="<%= process.getVAL_EF_CODE_BASE_HORAIRE_POINTAGE() %>">
 									</td>
 									<td>
-										<label class="sigp2Mandatory">Libellé :</label>
+										<label class="sigp2Mandatory">LibellÃ© :</label>
 									</td>
 									<td>
 										<INPUT class="sigp2-saisiemajuscule" maxlength="255" name="<%= process.getNOM_EF_LIB_BASE_HORAIRE_POINTAGE() %>" size="20" type="text" value="<%= process.getVAL_EF_LIB_BASE_HORAIRE_POINTAGE() %>">
@@ -769,7 +769,7 @@
 								</tr>
 			            		<tr>
 			            			<td colspan="2">
-										<label class="sigp2Mandatory">Base légale hebdomadaire :</label>
+										<label class="sigp2Mandatory">Base lÃ©gale hebdomadaire :</label>
 			            			</td>
 			            			<td>
 										<INPUT class="sigp2-saisiemajuscule" maxlength="2" name="<%= process.getNOM_EF_BASE_HEBDO_LEG_H() %>" size="5" type="text" value="<%= process.getVAL_EF_BASE_HEBDO_LEG_H() %>"><span class="sigp2-saisie">H</span>

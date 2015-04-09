@@ -1,4 +1,4 @@
-<!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@ page contentType="text/html; charset=UTF-8" %> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <%@page import="nc.mairie.gestionagent.pointage.dto.EtatsPayeurDto"%>
 <%@page import="nc.mairie.utils.MairieUtils"%>
 <%@page import="nc.mairie.enums.EnumTypeDroit"%>
@@ -14,7 +14,7 @@
 
 <SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT> 
 <SCRIPT language="JavaScript">
-//afin de sélectionner un élément dans une liste
+//afin de sÃ©lectionner un Ã©lÃ©ment dans une liste
 function executeBouton(nom)
 {
 	document.formu.elements[nom].click();
@@ -28,7 +28,7 @@ function SelectLigne(id,tailleTableau)
     document.getElementById(id).className="selectLigne";
 }
 </SCRIPT>
-		<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	</HEAD>
 	<jsp:useBean class="nc.mairie.gestionagent.process.pointage.OePTGPayeurFonct" id="process" scope="session"></jsp:useBean>
 	<BODY bgcolor="#FFFFFF" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="window.parent.frames['refAgent'].location.reload();" >
@@ -40,13 +40,13 @@ function SelectLigne(id,tailleTableau)
 		<INPUT name="JSP" type="hidden" value="<%= process.getJSP() %>">
 		<span style="color: red; margin-left:5px;">Attention, cette action est irr&eacute;versible !</span>
 		<br />
-		<INPUT type="submit" class="sigp2-Bouton-100" value="Lancer éditions" name="<%=process.getNOM_PB_LANCER_EDITIONS() %>" <%if(!process.isBoutonLancerEditionAffiche()){ %> disabled="disabled"<% } %> />
+		<INPUT type="submit" class="sigp2-Bouton-100" value="Lancer Ã©ditions" name="<%=process.getNOM_PB_LANCER_EDITIONS() %>" <%if(!process.isBoutonLancerEditionAffiche()){ %> disabled="disabled"<% } %> />
 		
 		<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
-		    <legend class="sigp2Legend">Historique des éditions des fonctionnaires</legend>
+		    <legend class="sigp2Legend">Historique des Ã©ditions des fonctionnaires</legend>
 		    <br/>
-		    <span style="position:relative;width:210px;text-align: center;">Imprimé le <br> A <br> PAR</span>
-		    <span style="position:relative;width:290px;text-align: center;">Libellé</span>
+		    <span style="position:relative;width:210px;text-align: center;">ImprimÃ© le <br> A <br> PAR</span>
+		    <span style="position:relative;width:290px;text-align: center;">LibellÃ©</span>
 		    <span style="position:relative;width:150px;text-align: center;">Consulter</span>
 			<br/>
 			

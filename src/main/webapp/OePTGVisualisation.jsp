@@ -1,3 +1,4 @@
+<%@ page contentType="text/html; charset=UTF-8" %> 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <%@page import="nc.mairie.gestionagent.pointage.dto.ConsultPointageDto"%>
 <%@page import="nc.mairie.utils.TreeHierarchy"%>
@@ -109,13 +110,13 @@
                                 "sNext": "",
                                 "sPrevious": ""
                             },
-                            "sZeroRecords": "Aucune information de pointage à afficher",
-                            "sInfo": "Affichage de _START_ à _END_ des _TOTAL_ pointages au total",
-                            "sInfoEmpty": "Aucune information de pointage à afficher",
-                            "sEmptyTable": "Veuillez sélectionner une date de début et une date de fin pour afficher les informations de pointage",
+                            "sZeroRecords": "Aucune information de pointage Ã  afficher",
+                            "sInfo": "Affichage de _START_ Ã  _END_ des _TOTAL_ pointages au total",
+                            "sInfoEmpty": "Aucune information de pointage Ã  afficher",
+                            "sEmptyTable": "Veuillez sÃ©lectionner une date de dÃ©but et une date de fin pour afficher les informations de pointage",
                             "sInfoFiltered": "(filtrage sur _MAX_ pointages au total)",
                             "sLengthMenu": "Affichage de _MENU_ pointages par page",
-                            "sSearch": "Recherche instantanée"
+                            "sSearch": "Recherche instantanÃ©e"
                         },
                         "oTableTools": {
                             "aButtons": [{"sExtends": "xls", "sButtonText": "Export Excel", "mColumns": "visible", "sTitle": "pointageVisu", "sFileName": "*.xls"}], //OU : "mColumns":[0,1,2,3,4]
@@ -139,7 +140,7 @@
 	                		type: "GET",
 	                		url: url,
 	                		dataType : "html",
-	                		//affichage de l'erreur en cas de problème
+	                		//affichage de l'erreur en cas de problÃ¨me
 	                		error:function(msg, string){
 	                				alert( "Error !: " + string );
 	                			},
@@ -204,7 +205,7 @@
                 }
 
             </SCRIPT>		
-            <META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+            <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
         </HEAD>
         <BODY bgcolor="#FFFFFF" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="window.parent.frames['refAgent'].location.reload();return setfocus('<%=process.getFocus()%>')">	
         <%@ include file="BanniereErreur.jsp" %>
@@ -215,7 +216,7 @@
                 <table>
                 	<tr>
                 		<td width="75px">
-               				<span class="sigp2Mandatory">Date début : </span>
+               				<span class="sigp2Mandatory">Date dÃ©but : </span>
                 		</td>
                 		<td width="130px">
 			                <input id="<%=process.getNOM_ST_DATE_MIN()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_MIN()%>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_MIN()%>" >
@@ -338,14 +339,14 @@
                             <th>Matr</th>
                             <th>Agent </th>
                             <th>Type</th>
-                            <th title="R: récupérées, RS: rappel en service." >R</th>
-                            <th title="Numéro de la semaine" >S</th>
+                            <th title="R: rÃ©cupÃ©rÃ©es, RS: rappel en service." >R</th>
+                            <th title="NumÃ©ro de la semaine" >S</th>
                             <th>Date</th>
-                            <th>Début</th>
+                            <th>DÃ©but</th>
                             <th>Fin</th>
-                            <th>Quantité</th>
+                            <th>QuantitÃ©</th>
                             <th>Motif<br>Commentaires</th>
-                            <th>Opérateur</th>
+                            <th>OpÃ©rateur</th>
                             <th>Etat</th>
                             <th>Date de saisie</th>
                             <th align="center">
@@ -421,7 +422,7 @@
                     <% }%>
 
                     <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
-                        <legend class="sigp2Legend">Création d'un pointage
+                        <legend class="sigp2Legend">CrÃ©ation d'un pointage
                         </legend>
                         <span class="sigp2Mandatory" style="width:80px">Date : </span>
                         <input id="<%=process.getNOM_ST_DATE_CREATE()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_CREATE()%>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_CREATE()%>" >

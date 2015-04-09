@@ -27,7 +27,7 @@ import nc.mairie.utils.MessageUtils;
 import org.springframework.context.ApplicationContext;
 
 /**
- * Process OeDROITSGestion Date de création : (10/10/11 14:37:55)
+ * Process OeDROITSGestion Date de crÃ©ation : (10/10/11 14:37:55)
  */
 public class OeDROITSGestion extends BasicProcess {
 
@@ -46,10 +46,10 @@ public class OeDROITSGestion extends BasicProcess {
 	private Hashtable<String, String> hashTypeDroit;
 
 	public String focus = null;
-	public String ACTION_CREATION_GROUPE = "Création d'un groupe.";
+	public String ACTION_CREATION_GROUPE = "CrÃ©ation d'un groupe.";
 	public String ACTION_MODIFICATION_GROUPE = "Modification d'un groupe.";
 	public String ACTION_SUPPRESSION_GROUPE = "Suppression d'un groupe.";
-	public String ACTION_CREATION_ELEMENT = "Création d'un élément.";
+	public String ACTION_CREATION_ELEMENT = "CrÃ©ation d'un Ã©lÃ©ment.";
 
 	private Groupe groupeCourant;
 	private TypeDroitDao typeDroitDao;
@@ -60,7 +60,7 @@ public class OeDROITSGestion extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_AJOUTER_ELEMENT Date de
-	 * création : (10/10/11 14:37:55)
+	 * crÃ©ation : (10/10/11 14:37:55)
 	 * 
 	 * @return String
 	 */
@@ -69,10 +69,10 @@ public class OeDROITSGestion extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (10/10/11 14:37:55)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (10/10/11 14:37:55)
 	 * 
 	 * @param request
 	 *            HttpServletRequest
@@ -88,7 +88,7 @@ public class OeDROITSGestion extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_AJOUTER_GROUPE Date de
-	 * création : (10/10/11 14:37:55)
+	 * crÃ©ation : (10/10/11 14:37:55)
 	 * 
 	 * @return String
 	 */
@@ -97,10 +97,10 @@ public class OeDROITSGestion extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (10/10/11 14:37:55)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (10/10/11 14:37:55)
 	 * 
 	 * @param request
 	 *            HttpServletRequest
@@ -116,7 +116,7 @@ public class OeDROITSGestion extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMER_ELEMENT Date de
-	 * création : (10/10/11 14:37:55)
+	 * crÃ©ation : (10/10/11 14:37:55)
 	 * 
 	 * @return String
 	 */
@@ -125,10 +125,10 @@ public class OeDROITSGestion extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (10/10/11 14:37:55)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (10/10/11 14:37:55)
 	 * 
 	 * @param request
 	 *            HttpServletRequest
@@ -141,10 +141,10 @@ public class OeDROITSGestion extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (10/10/11 14:37:55)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (10/10/11 14:37:55)
 	 * 
 	 * @param request
 	 *            HttpServletRequest
@@ -162,7 +162,7 @@ public class OeDROITSGestion extends BasicProcess {
 	}
 
 	/**
-	 * Getter de la liste des éléments.
+	 * Getter de la liste des Ã©lÃ©ments.
 	 * 
 	 * @return listeElement
 	 */
@@ -171,10 +171,10 @@ public class OeDROITSGestion extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste des éléments.
+	 * Setter de la liste des Ã©lÃ©ments.
 	 * 
 	 * @param listeElement
-	 *            listeElement à définir
+	 *            listeElement Ã  dÃ©finir
 	 */
 	private void setListeElement(ArrayList<Element> listeElement) {
 		this.listeElement = listeElement;
@@ -214,14 +214,14 @@ public class OeDROITSGestion extends BasicProcess {
 
 	/**
 	 * @param focus
-	 *            focus à définir.
+	 *            focus Ã  dÃ©finir.
 	 */
 	public void setFocus(String focus) {
 		this.focus = focus;
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER Date de création :
+	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER Date de crÃ©ation :
 	 * (10/10/11 15:14:20)
 	 * 
 	 * @return String
@@ -231,10 +231,10 @@ public class OeDROITSGestion extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (10/10/11 15:14:20)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (10/10/11 15:14:20)
 	 * 
 	 * @param request
 	 *            HttpServletRequest
@@ -248,7 +248,7 @@ public class OeDROITSGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER Date de création :
+	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER Date de crÃ©ation :
 	 * (10/10/11 15:14:20)
 	 * 
 	 * @return String
@@ -258,10 +258,10 @@ public class OeDROITSGestion extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (10/10/11 15:14:20)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (10/10/11 15:14:20)
 	 * 
 	 * @param request
 	 *            HttpServletRequest
@@ -271,7 +271,7 @@ public class OeDROITSGestion extends BasicProcess {
 	 */
 	public boolean performPB_VALIDER(HttpServletRequest request) throws Exception {
 
-		// Récupération des nouveaux droits
+		// RÃ©cupÃ©ration des nouveaux droits
 		for (int i = 0; i < getListeElement().size(); i++) {
 			Element elt = (Element) getListeElement().get(i);
 			for (int j = 0; j < getListeGroupe().size(); j++) {
@@ -318,24 +318,24 @@ public class OeDROITSGestion extends BasicProcess {
 	}
 
 	/**
-	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones Ã  afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
-	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
-	 * addZone(getNOMxxx, String); Date de création : (10/10/11 16:15:05)
+	 * doivent avoir les Fields PUBLIC Utilisation de la mÃ©thode
+	 * addZone(getNOMxxx, String); Date de crÃ©ation : (10/10/11 16:15:05)
 	 */
 	public void initialiseZones(HttpServletRequest request) throws Exception {
 		// POUR RESTER SUR LA MEME PAGE LORS DE LA RECHERCHE D'UN AGENT
 		VariableGlobale.ajouter(request, "PROCESS_MEMORISE", this);
 
-		// Vérification des droits d'accès.
+		// VÃ©rification des droits d'acces.
 		if (MairieUtils.estInterdit(request, getNomEcran())) {
 			// "ERR190",
-			// "Opération impossible. Vous ne disposez pas des droits d'accès à cette option."
+			// "Operation impossible. Vous ne disposez pas des droits d'acces a cette option."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
 		initialiseDao();
-		// Si liste éléments vide alors affectation
+		// Si liste Ã©lÃ©ments vide alors affectation
 		if (getListeElement() == null || getListeElement().size() == 0) {
 			ArrayList<Element> elt = getElementDao().listerElement();
 			setListeElement(elt);
@@ -379,7 +379,7 @@ public class OeDROITSGestion extends BasicProcess {
 			// dans la liste).
 			for (ListIterator<TypeDroit> list = getListeTypeDroits().listIterator(); list.hasNext();) {
 				TypeDroit aTypeDroit = (TypeDroit) list.next();
-				// indice +1 pour gérer la ligne vide
+				// indice +1 pour gerer la ligne vide
 				getHashTypeDroit().put(aTypeDroit.getIdTypeDroit().toString(),
 						String.valueOf(getListeTypeDroits().indexOf(aTypeDroit) + 1));
 			}
@@ -401,7 +401,7 @@ public class OeDROITSGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de l'ecran utilisé par la gestion des droits
+	 * Retourne le nom de l'ecran utilise par la gestion des droits
 	 * 
 	 * @return String
 	 */
@@ -411,7 +411,7 @@ public class OeDROITSGestion extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_ACTION Date de
-	 * création : (10/10/11 16:15:06)
+	 * crÃ©ation : (10/10/11 16:15:06)
 	 * 
 	 * @return String
 	 * 
@@ -421,8 +421,8 @@ public class OeDROITSGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACTION Date de
-	 * création : (10/10/11 16:15:06)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_ACTION Date de
+	 * crÃ©ation : (10/10/11 16:15:06)
 	 * 
 	 * @return String
 	 * 
@@ -433,7 +433,7 @@ public class OeDROITSGestion extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_NOM_ELEMENT Date de
-	 * création : (10/10/11 16:15:06)
+	 * crÃ©ation : (10/10/11 16:15:06)
 	 * 
 	 * @return String
 	 * 
@@ -443,8 +443,8 @@ public class OeDROITSGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_NOM_ELEMENT Date de création : (10/10/11 16:15:06)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_NOM_ELEMENT Date de crÃ©ation : (10/10/11 16:15:06)
 	 * 
 	 * @return String
 	 * 
@@ -455,7 +455,7 @@ public class OeDROITSGestion extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_NOM_GROUPE Date de
-	 * création : (10/10/11 16:15:06)
+	 * crÃ©ation : (10/10/11 16:15:06)
 	 * 
 	 * @return String
 	 * 
@@ -465,8 +465,8 @@ public class OeDROITSGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_NOM_GROUPE Date de création : (10/10/11 16:15:06)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_NOM_GROUPE Date de crÃ©ation : (10/10/11 16:15:06)
 	 * 
 	 * @return String
 	 * 
@@ -477,7 +477,7 @@ public class OeDROITSGestion extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER_AJOUT Date de
-	 * création : (10/10/11 16:22:57)
+	 * crÃ©ation : (10/10/11 16:22:57)
 	 * 
 	 * @return String
 	 * 
@@ -487,10 +487,10 @@ public class OeDROITSGestion extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (10/10/11 16:22:57)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (10/10/11 16:22:57)
 	 * 
 	 * @param request
 	 *            HttpServletRequest
@@ -544,7 +544,7 @@ public class OeDROITSGestion extends BasicProcess {
 
 	/**
 	 * Getter de la liste avec un lazy initialize : LB_TYPE_DROIT Date de
-	 * création : (11/10/11 11:39:06)
+	 * crÃ©ation : (11/10/11 11:39:06)
 	 * 
 	 * @return String[]
 	 * 
@@ -556,7 +556,7 @@ public class OeDROITSGestion extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_TYPE_DROIT Date de création : (11/10/11 11:39:06)
+	 * Setter de la liste: LB_TYPE_DROIT Date de crÃ©ation : (11/10/11 11:39:06)
 	 * 
 	 */
 	private void setLB_TYPE_DROIT(String[] newLB_TYPE_DROIT) {
@@ -565,7 +565,7 @@ public class OeDROITSGestion extends BasicProcess {
 
 	/**
 	 * Retourne le nom de la zone pour la JSP : NOM_LB_TYPE_DROIT Date de
-	 * création : (11/10/11 11:39:06)
+	 * crÃ©ation : (11/10/11 11:39:06)
 	 * 
 	 * @param i
 	 *            ligne
@@ -579,8 +579,8 @@ public class OeDROITSGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_TYPE_DROIT_SELECT Date de création : (11/10/11 11:39:06)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_TYPE_DROIT_SELECT Date de crÃ©ation : (11/10/11 11:39:06)
 	 * 
 	 * @param i
 	 *            ligne
@@ -594,8 +594,8 @@ public class OeDROITSGestion extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_TYPE_DROIT Date de création : (11/10/11 11:39:06)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_TYPE_DROIT Date de crÃ©ation : (11/10/11 11:39:06)
 	 * 
 	 * @param i
 	 *            ligne
@@ -609,8 +609,8 @@ public class OeDROITSGestion extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_TYPE_DROIT Date de création : (11/10/11 11:39:06)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_TYPE_DROIT Date de crÃ©ation : (11/10/11 11:39:06)
 	 * 
 	 * @param i
 	 *            ligne
@@ -685,7 +685,7 @@ public class OeDROITSGestion extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_MODIFIER_GROUPE Date de
-	 * création : (20/10/11 10:25:32)
+	 * crÃ©ation : (20/10/11 10:25:32)
 	 * 
 	 * @param i
 	 *            id
@@ -697,10 +697,10 @@ public class OeDROITSGestion extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (20/10/11 10:25:32)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (20/10/11 10:25:32)
 	 * 
 	 * @param i
 	 *            id
@@ -720,7 +720,7 @@ public class OeDROITSGestion extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMER_GROUPE Date de
-	 * création : (20/10/11 10:25:32)
+	 * crÃ©ation : (20/10/11 10:25:32)
 	 * 
 	 * @param i
 	 *            id
@@ -732,8 +732,8 @@ public class OeDROITSGestion extends BasicProcess {
 	}
 
 	/**
-	 * Méthode appelée par la servlet qui aiguille le traitement : en fonction
-	 * du bouton de la JSP Date de création : (10/10/11 14:37:55)
+	 * mÃ©thode appelee par la servlet qui aiguille le traitement : en fonction
+	 * du bouton de la JSP Date de crÃ©ation : (10/10/11 14:37:55)
 	 * 
 	 * @param request
 	 *            HttpServletRequest
@@ -802,13 +802,13 @@ public class OeDROITSGestion extends BasicProcess {
 			}
 
 		}
-		// Si TAG INPUT non géré par le process
+		// Si TAG INPUT non gÃ©rÃ© par le process
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
 
 	/**
-	 * Constructeur du process OeDROITSGestion. Date de création : (20/10/11
+	 * Constructeur du process OeDROITSGestion. Date de crÃ©ation : (20/10/11
 	 * 11:05:27)
 	 * 
 	 */
@@ -817,8 +817,8 @@ public class OeDROITSGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la JSP du process Zone à utiliser dans un champ caché
-	 * dans chaque formulaire de la JSP. Date de création : (20/10/11 11:05:27)
+	 * Retourne le nom de la JSP du process Zone a utiliser dans un champ cache
+	 * dans chaque formulaire de la JSP. Date de crÃ©ation : (20/10/11 11:05:27)
 	 * 
 	 */
 	public String getJSP() {
@@ -827,7 +827,7 @@ public class OeDROITSGestion extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER_MODIFICATION_GRPE
-	 * Date de création : (20/10/11 11:05:27)
+	 * Date de crÃ©ation : (20/10/11 11:05:27)
 	 * 
 	 * @return String
 	 * 
@@ -837,10 +837,10 @@ public class OeDROITSGestion extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (20/10/11 11:05:27)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (20/10/11 11:05:27)
 	 * 
 	 * @param request
 	 *            HttpServletRequest
@@ -860,7 +860,7 @@ public class OeDROITSGestion extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER_SUPPRESSION_GRPE
-	 * Date de création : (20/10/11 11:05:27)
+	 * Date de crÃ©ation : (20/10/11 11:05:27)
 	 * 
 	 * @return String
 	 * 
@@ -870,10 +870,10 @@ public class OeDROITSGestion extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (20/10/11 11:05:27)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (20/10/11 11:05:27)
 	 * 
 	 * @param request
 	 *            HttpServletRequest
@@ -885,13 +885,13 @@ public class OeDROITSGestion extends BasicProcess {
 	public boolean performPB_VALIDER_SUPPRESSION_GRPE(HttpServletRequest request) throws Exception {
 		// Suppression des droits en BD
 		getDroitDao().supprimerDroitAvecGroupe(getGroupeCourant().getIdGroupe());
-		// Suppression des liens du groupe supprimé avec les utilisateurs en BD
+		// Suppression des liens du groupe supprimÃ© avec les utilisateurs en BD
 		getGroupeUtilisateurDao().supprimerGroupeUtilisateurAvecGroupe(getGroupeCourant().getIdGroupe());
 		// Suppression du groupe en BD
 		getGroupeDao().supprimerGroupe(getGroupeCourant().getIdGroupe());
 		commitTransaction();
 
-		// Mise à jour de la liste de droits
+		// Mise Ã  jour de la liste de droits
 		ArrayList<Droit> droitsASupprimer = new ArrayList<Droit>();
 		for (int i = 0; i < getListeDroits().size(); i++) {
 			Droit d = (Droit) getListeDroits().get(i);
@@ -900,7 +900,7 @@ public class OeDROITSGestion extends BasicProcess {
 		}
 		getListeDroits().removeAll(droitsASupprimer);
 
-		// Mise à jour de la liste des groupes.
+		// Mise Ã  jour de la liste des groupes.
 		getListeGroupe().remove(getGroupeCourant());
 
 		setGroupeCourant(null);
@@ -921,7 +921,7 @@ public class OeDROITSGestion extends BasicProcess {
 	 * Setter du groupe courant.
 	 * 
 	 * @param groupeCourant
-	 *            groupeCourant à définir
+	 *            groupeCourant Ã  dÃ©finir
 	 */
 	private void setGroupeCourant(Groupe groupeCourant) {
 		this.groupeCourant = groupeCourant;

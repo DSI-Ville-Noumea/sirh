@@ -45,7 +45,7 @@ import org.springframework.context.ApplicationContext;
 import flexjson.JSONSerializer;
 
 /**
- * Process OeAGENTAccidentTravail Date de création : (30/06/11 13:56:32)
+ * Process OeAGENTAccidentTravail Date de crÃ©ation : (30/06/11 13:56:32)
  * 
  */
 public class OePTGVentilationFonct extends BasicProcess {
@@ -87,11 +87,11 @@ public class OePTGVentilationFonct extends BasicProcess {
 		VariableGlobale.ajouter(request, "PROCESS_MEMORISE", this);
 
 		// ----------------------------------//
-		// Vérification des droits d'accès. //
+		// VÃ©rification des droits d'acces. //
 		// ----------------------------------//
 		if (MairieUtils.estInterdit(request, getNomEcran())) {
 			// "ERR190",
-			// "Opération impossible. Vous ne disposez pas des droits d'accès à cette option."
+			// "Operation impossible. Vous ne disposez pas des droits d'acces a cette option."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
@@ -135,7 +135,7 @@ public class OePTGVentilationFonct extends BasicProcess {
 	}
 
 	private void initialiseListeAgent() {
-		// on recupere les agents selectionnées dans l'ecran de
+		// on recupere les agents selectionnÃ©es dans l'ecran de
 		// selection
 		@SuppressWarnings("unchecked")
 		ArrayList<Agent> listeAgentSelect = (ArrayList<Agent>) VariablesActivite.recuperer(this, "AGENTS");
@@ -252,13 +252,13 @@ public class OePTGVentilationFonct extends BasicProcess {
 			}
 
 		}
-		// Si TAG INPUT non géré par le process
+		// Si TAG INPUT non gÃ©rÃ© par le process
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
 
 	/**
-	 * Getter du nom de l'écran (pour la gestion des droits)
+	 * Getter du nom de l'Ã©cran (pour la gestion des droits)
 	 */
 	public String getNomEcran() {
 		return "ECR-PTG-VENT-TITU";
@@ -449,7 +449,7 @@ public class OePTGVentilationFonct extends BasicProcess {
 			idRefTypePointage = String.valueOf(RefTypePointageEnum.H_SUP.getValue());
 		}
 
-		// on recupere l'agent connecté
+		// on recupere l'agent connecte
 		UserAppli u = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
 		Agent agentConnecte = null;
 		// on fait la correspondance entre le login et l'agent via RADI
@@ -477,7 +477,7 @@ public class OePTGVentilationFonct extends BasicProcess {
 		if (!t.startVentilation(agentConnecte.getIdAgent(), dateVentilation, new JSONSerializer().exclude("*.class")
 				.serialize(listeIdAgents), "F", idRefTypePointage)) {
 			// "ERR602",
-			// "La ventilation des @ n'a pu être lancée. Merci de contacter le responsable du projet.");
+			// "La ventilation des @ n'a pu Ãªtre lancee. Merci de contacter le responsable du projet.");
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR602", "fonctionnaires"));
 			return false;
 		}
@@ -509,7 +509,7 @@ public class OePTGVentilationFonct extends BasicProcess {
 		// format date de debut
 		if (!Services.estUneDate(getVAL_EF_DATE_DEBUT())) {
 			// "ERR007",
-			// "La date @ est incorrecte. Elle doit être au format date."
+			// "La date @ est incorrecte. Elle doit Ãªtre au format date."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR007", "de ventilation"));
 			return false;
 		}
@@ -519,7 +519,7 @@ public class OePTGVentilationFonct extends BasicProcess {
 		DateTime givenVentilationDate = new DateTime(dateVentilation);
 		if (givenVentilationDate.dayOfWeek().get() != DateTimeConstants.SUNDAY) {
 			// "ERR600",
-			// "La date de ventilation choisie est un @. Impossible de ventiler les pointages à une date autre qu'un dimanche."
+			// "La date de ventilation choisie est un @. Impossible de ventiler les pointages a une date autre qu'un dimanche."
 			getTransaction().declarerErreur(
 					MessageUtils.getMessage("ERR600", givenVentilationDate.dayOfWeek().getAsText(Locale.FRANCE)));
 			return false;
@@ -544,14 +544,14 @@ public class OePTGVentilationFonct extends BasicProcess {
 	}
 
 	public boolean performPB_RECHERCHER_AGENT_MIN(HttpServletRequest request) throws Exception {
-		// On met l'agent courant en var d'activité
+		// On met l'agent courant en var d'activitÃ©
 		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new Agent());
 		setStatut(STATUT_RECHERCHER_AGENT_MIN, true);
 		return true;
 	}
 
 	public boolean performPB_SUPPRIMER_RECHERCHER_AGENT_MIN(HttpServletRequest request) throws Exception {
-		// On enlève l'agent selectionnée
+		// On enleve l'agent selectionnÃ©e
 		addZone(getNOM_ST_AGENT_MIN(), Const.CHAINE_VIDE);
 		return true;
 	}
@@ -602,7 +602,7 @@ public class OePTGVentilationFonct extends BasicProcess {
 		// on verifie que l'id agent min saisie existe
 		if (!agentMin.equals(Const.CHAINE_VIDE)) {
 			if (!Services.estNumerique(agentMin)) {
-				// "ERR992", "La zone @ doit être numérique.");
+				// "ERR992", "La zone @ doit Ãªtre numÃ©rique.");
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "Agent min"));
 				return false;
 			}
@@ -620,7 +620,7 @@ public class OePTGVentilationFonct extends BasicProcess {
 		// on verifie que l'id agent max saisie existe
 		if (!agentMax.equals(Const.CHAINE_VIDE)) {
 			if (!Services.estNumerique(agentMax)) {
-				// "ERR992", "La zone @ doit être numérique.");
+				// "ERR992", "La zone @ doit Ãªtre numÃ©rique.");
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "Agent max"));
 				return false;
 			}
@@ -655,14 +655,14 @@ public class OePTGVentilationFonct extends BasicProcess {
 	}
 
 	public boolean performPB_RECHERCHER_AGENT_MAX(HttpServletRequest request) throws Exception {
-		// On met l'agent courant en var d'activité
+		// On met l'agent courant en var d'activitÃ©
 		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new Agent());
 		setStatut(STATUT_RECHERCHER_AGENT_MAX, true);
 		return true;
 	}
 
 	public boolean performPB_SUPPRIMER_RECHERCHER_AGENT_MAX(HttpServletRequest request) throws Exception {
-		// On enlève l'agent selectionnée
+		// On enleve l'agent selectionnÃ©e
 		addZone(getNOM_ST_AGENT_MAX(), Const.CHAINE_VIDE);
 		return true;
 	}
@@ -672,7 +672,7 @@ public class OePTGVentilationFonct extends BasicProcess {
 	}
 
 	public boolean performPB_DEVERSER(HttpServletRequest request) throws Exception {
-		// on recupere l'agent connecté
+		// on recupere l'agent connecte
 		UserAppli u = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
 		Agent agentConnecte = null;
 		// on fait la correspondance entre le login et l'agent via RADI
@@ -696,7 +696,7 @@ public class OePTGVentilationFonct extends BasicProcess {
 		SirhPtgWSConsumer t = new SirhPtgWSConsumer();
 		if (!t.startDeversementPaie(agentConnecte.getIdAgent(), "F")) {
 			// "ERR603",
-			// "La déversement dans la paie des @ n'a pu être lancée. Merci de contacter le responsable du projet.");
+			// "La dÃ©versement dans la paie des @ n'a pu Ãªtre lancee. Merci de contacter le responsable du projet.");
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR603", "fonctionnaires"));
 			return false;
 		}
@@ -752,7 +752,7 @@ public class OePTGVentilationFonct extends BasicProcess {
 					isShowAllVentilation());
 			list.put(cle, listVentilAbs);
 		}
-		// on construit la clé
+		// on construit la cle
 		Hashtable<Integer, String> cle = new Hashtable<>();
 		cle.put(idAgent, moisAnnee);
 		// on recupere les valeurs
@@ -851,7 +851,7 @@ public class OePTGVentilationFonct extends BasicProcess {
 					isShowAllVentilation());
 			list.put(cle, listVentilHsup);
 		}
-		// on construit la clé
+		// on construit la cle
 		Hashtable<Integer, String> cle = new Hashtable<>();
 		cle.put(idAgent, moisAnnee);
 		// on recupere les valeurs

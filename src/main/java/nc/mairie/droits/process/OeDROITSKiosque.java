@@ -39,7 +39,7 @@ import org.springframework.context.ApplicationContext;
 import flexjson.JSONSerializer;
 
 /**
- * Process OeDROITSGestion Date de création : (10/10/11 14:37:55)
+ * Process OeDROITSGestion Date de crÃ©ation : (10/10/11 14:37:55)
  */
 public class OeDROITSKiosque extends BasicProcess {
 
@@ -52,7 +52,7 @@ public class OeDROITSKiosque extends BasicProcess {
 	public static final int STATUT_DELEGATAIRE_ABS = 2;
 	public static final int STATUT_DELEGATAIRE_PTG = 3;
 	public static final int STATUT_RECHERCHER_AGENT = 4;
-	public String ACTION_CREATION = "Création d'un approbateur.";
+	public String ACTION_CREATION = "CrÃ©ation d'un approbateur.";
 
 	private ArrayList<ApprobateurDto> listeApprobateurs = new ArrayList<ApprobateurDto>();
 	private ArrayList<ApprobateurDto> listeApprobateursPTG = new ArrayList<ApprobateurDto>();
@@ -84,17 +84,17 @@ public class OeDROITSKiosque extends BasicProcess {
 
 	/**
 	 * @param focus
-	 *            focus à définir.
+	 *            focus Ã  dÃ©finir.
 	 */
 	public void setFocus(String focus) {
 		this.focus = focus;
 	}
 
 	/**
-	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones Ã  afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
-	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
-	 * addZone(getNOMxxx, String); Date de création : (10/10/11 16:15:05)
+	 * doivent avoir les Fields PUBLIC Utilisation de la mÃ©thode
+	 * addZone(getNOMxxx, String); Date de crÃ©ation : (10/10/11 16:15:05)
 	 * 
 	 * @param request
 	 *            HttpServletRequest
@@ -105,10 +105,10 @@ public class OeDROITSKiosque extends BasicProcess {
 		// POUR RESTER SUR LA MEME PAGE LORS DE LA RECHERCHE D'UN AGENT
 		VariableGlobale.ajouter(request, "PROCESS_MEMORISE", this);
 
-		// Vérification des droits d'accès.
+		// VÃ©rification des droits d'acces.
 		if (MairieUtils.estInterdit(request, getNomEcran())) {
 			// "ERR190",
-			// "Opération impossible. Vous ne disposez pas des droits d'accès à cette option."
+			// "Operation impossible. Vous ne disposez pas des droits d'acces a cette option."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
@@ -170,7 +170,7 @@ public class OeDROITSKiosque extends BasicProcess {
 				if (Const.CHAINE_VIDE.equals(serv.getCodService()))
 					continue;
 
-				// recherche du supérieur
+				// recherche du supÃ©rieur
 				String codeService = serv.getCodService();
 				while (codeService.endsWith("A")) {
 					codeService = codeService.substring(0, codeService.length() - 1);
@@ -264,10 +264,10 @@ public class OeDROITSKiosque extends BasicProcess {
 					agentDto.setCodeService(fpCourante.getIdServi());
 					agentDto.setService(serv.getLibService());
 				} catch (Exception e) {
-					// l'agent n'est pas affecté on ne peut donc pas avoir son
+					// l'agent n'est pas affectÃ© on ne peut donc pas avoir son
 					// service
 					agentDto.setCodeService("NA");
-					agentDto.setService("non affecté");
+					agentDto.setService("non affectÃ©");
 				}
 
 				agentDto.setNom(ag.getNomAgent());
@@ -347,7 +347,7 @@ public class OeDROITSKiosque extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de l'ecran utilisé par la gestion des droits
+	 * Retourne le nom de l'ecran utilise par la gestion des droits
 	 * 
 	 * @return String
 	 */
@@ -356,8 +356,8 @@ public class OeDROITSKiosque extends BasicProcess {
 	}
 
 	/**
-	 * Méthode appelée par la servlet qui aiguille le traitement : en fonction
-	 * du bouton de la JSP Date de création : (10/10/11 14:37:55)
+	 * mÃ©thode appelee par la servlet qui aiguille le traitement : en fonction
+	 * du bouton de la JSP Date de crÃ©ation : (10/10/11 14:37:55)
 	 * 
 	 * @param request
 	 *            HttpServletRequest
@@ -459,13 +459,13 @@ public class OeDROITSKiosque extends BasicProcess {
 			}
 
 		}
-		// Si TAG INPUT non géré par le process
+		// Si TAG INPUT non gÃ©rÃ© par le process
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
 
 	/**
-	 * Constructeur du process OeDROITSGestion. Date de création : (20/10/11
+	 * Constructeur du process OeDROITSGestion. Date de crÃ©ation : (20/10/11
 	 * 11:05:27)
 	 * 
 	 */
@@ -474,8 +474,8 @@ public class OeDROITSKiosque extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la JSP du process Zone à utiliser dans un champ caché
-	 * dans chaque formulaire de la JSP. Date de création : (20/10/11 11:05:27)
+	 * Retourne le nom de la JSP du process Zone a utiliser dans un champ cache
+	 * dans chaque formulaire de la JSP. Date de crÃ©ation : (20/10/11 11:05:27)
 	 * 
 	 * @return String
 	 * 
@@ -494,7 +494,7 @@ public class OeDROITSKiosque extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_AGENT Date de
-	 * création : (18/08/11 10:21:15)
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 * @param i
 	 *            id
@@ -506,8 +506,8 @@ public class OeDROITSKiosque extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_AGENT Date de
-	 * création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_AGENT Date de
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 * @param i
 	 *            id
@@ -520,7 +520,7 @@ public class OeDROITSKiosque extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_SERVICE Date de
-	 * création : (18/08/11 10:21:15)
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 * @param i
 	 *            id
@@ -532,8 +532,8 @@ public class OeDROITSKiosque extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_SERVICE Date
-	 * de création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_SERVICE Date
+	 * de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 * @param i
 	 *            id
@@ -546,7 +546,7 @@ public class OeDROITSKiosque extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_ACTION Date de
-	 * création : (05/09/11 11:39:24)
+	 * crÃ©ation : (05/09/11 11:39:24)
 	 * 
 	 * @return String
 	 * 
@@ -556,8 +556,8 @@ public class OeDROITSKiosque extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACTION Date de
-	 * création : (05/09/11 11:39:24)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_ACTION Date de
+	 * crÃ©ation : (05/09/11 11:39:24)
 	 * 
 	 * @return String
 	 * 
@@ -567,7 +567,7 @@ public class OeDROITSKiosque extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_AJOUTER Date de création :
+	 * Retourne le nom d'un bouton pour la JSP : PB_AJOUTER Date de crÃ©ation :
 	 * (05/09/11 11:31:37)
 	 * 
 	 * @return String
@@ -578,10 +578,10 @@ public class OeDROITSKiosque extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (05/09/11 11:31:37)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (05/09/11 11:31:37)
 	 * 
 	 * @param request
 	 *            HttpServletRequest
@@ -599,7 +599,7 @@ public class OeDROITSKiosque extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMMER Date de création
+	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMMER Date de crÃ©ation
 	 * : (05/09/11 11:31:37)
 	 * 
 	 * @param i
@@ -612,10 +612,10 @@ public class OeDROITSKiosque extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (05/09/11 11:31:37)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (05/09/11 11:31:37)
 	 * 
 	 * @param request
 	 *            HttpServletRequest
@@ -1047,7 +1047,7 @@ public class OeDROITSKiosque extends BasicProcess {
 	}
 
 	public boolean performPB_RECHERCHER_AGENT(HttpServletRequest request) throws Exception {
-		// On met l'agent courant en var d'activité
+		// On met l'agent courant en var d'activitÃ©
 		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new Agent());
 
 		setStatut(STATUT_RECHERCHER_AGENT, true);
@@ -1059,7 +1059,7 @@ public class OeDROITSKiosque extends BasicProcess {
 	}
 
 	public boolean performPB_SUPPRIMER_RECHERCHER_AGENT(HttpServletRequest request) throws Exception {
-		// On enlève l'agent selectionnée
+		// On enleve l'agent selectionnÃ©e
 		addZone(getNOM_ST_AGENT(), Const.CHAINE_VIDE);
 		return true;
 	}
@@ -1069,7 +1069,7 @@ public class OeDROITSKiosque extends BasicProcess {
 	}
 
 	public boolean performPB_SUPPRIMER_RECHERCHER_SERVICE(HttpServletRequest request) throws Exception {
-		// On enlève le service selectionnée
+		// On enleve le service selectionnÃ©e
 		addZone(getNOM_ST_CODE_SERVICE(), Const.CHAINE_VIDE);
 		addZone(getNOM_EF_SERVICE(), Const.CHAINE_VIDE);
 		return true;

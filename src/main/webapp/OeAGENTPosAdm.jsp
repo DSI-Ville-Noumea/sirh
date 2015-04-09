@@ -1,4 +1,4 @@
-<!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@ page contentType="text/html; charset=UTF-8" %> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <%@page import="java.util.ArrayList"%>
 <%@page import="nc.mairie.enums.EnumTypeDroit"%>
 <%@page import="nc.mairie.utils.MairieUtils"%>
@@ -23,13 +23,13 @@
 		<script type="text/javascript" src="development-bundle/ui/jquery.ui.autocomplete.js"></script>
 		
 		<SCRIPT language="JavaScript">
-		//afin de sélectionner un élément dans une liste
+		//afin de sÃ©lectionner un Ã©lÃ©ment dans une liste
 		function executeBouton(nom)
 		{
 			document.formu.elements[nom].click();
 		}
 
-		// afin de mettre le focus sur une zone précise
+		// afin de mettre le focus sur une zone prÃ©cise
 		function setfocus(nom)
 		{
 		if (document.formu.elements[nom] != null)
@@ -68,7 +68,7 @@
 			});		
 		</SCRIPT>
 		
-		<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	</HEAD>
 	<BODY bgcolor="#FFFFFF" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="window.parent.frames['refAgent'].location.reload();" >
 	<%@ include file="BanniereErreur.jsp" %>
@@ -86,10 +86,10 @@
 								    <%}%>
 								</td>
 								<td width="45px;" align="center">Code PA</td>
-								<td width="250px;">Libellé PA</td>
-								<td width="75px;" align="center">Ref. arrêté</td>
-								<td width="85px;" align="center">Date de l'arrêté</td>
-								<td width="85px;" align="center">Date de début</td>
+								<td width="250px;">LibellÃ© PA</td>
+								<td width="75px;" align="center">Ref. arrÃªtÃ©</td>
+								<td width="85px;" align="center">Date de l'arrÃªtÃ©</td>
+								<td width="85px;" align="center">Date de dÃ©but</td>
 								<td>Date de fin</td>
 							</tr>
 							<%
@@ -145,18 +145,18 @@
 				</tr>
 				<tr>
 					<td>
-						<span class="sigp2">Ref. arrêté :</span>
+						<span class="sigp2">Ref. arrÃªtÃ© :</span>
 					</td>
 					<td>
 						<INPUT class="sigp2-saisie" maxlength="6" name="<%= process.getNOM_EF_REF_ARR() %>" size="6" type="text" value="<%= process.getVAL_EF_REF_ARR() %>">
-						<span class="sigp2"  style="margin-left:20px;"">Date d'arrêté :</span>
+						<span class="sigp2"  style="margin-left:20px;"">Date d'arrÃªtÃ© :</span>
 						<input id="<%=process.getNOM_EF_DATE_ARR()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DATE_ARR() %>" size="10" type="text"	value="<%= process.getVAL_EF_DATE_ARR() %>">
 						<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_EF_DATE_ARR()%>', 'dd/mm/y');">
 					</td>
 				</tr>
 				<tr>
 					<td>
-						<span class="sigp2Mandatory">Date de début :</span>
+						<span class="sigp2Mandatory">Date de dÃ©but :</span>
 					</td>
 					<td>
 						<input id="<%=process.getNOM_EF_DATE_DEBUT()%>" class="sigp2-saisie" <%= !process.DateDebutEditable ? "disabled='disabled'" : Const.CHAINE_VIDE %> maxlength="10"	name="<%= process.getNOM_EF_DATE_DEBUT() %>" size="10" type="text"	value="<%= process.getVAL_EF_DATE_DEBUT() %>">
@@ -175,13 +175,13 @@
 			    <span class="sigp2" style="width:150px">Position administrative : </span>
 				<span class="sigp2-saisie"><%=process.getVAL_ST_POSA()%></span>
 				<BR/>
-			    <span class="sigp2" style="width:150px">Ref. arrêté : </span>
+			    <span class="sigp2" style="width:150px">Ref. arrÃªtÃ© : </span>
 				<span class="sigp2-saisie"><%=process.getVAL_EF_REF_ARR()%></span>
 				<BR/>
-				<span class="sigp2" style="width:150px">Date arrêté : </span>
+				<span class="sigp2" style="width:150px">Date arrÃªtÃ© : </span>
 				<span class="sigp2-saisie"><%=process.getVAL_EF_DATE_ARR()%></span>
 				<BR/>
-				<span class="sigp2" style="width:150px">Date de début : </span>
+				<span class="sigp2" style="width:150px">Date de dÃ©but : </span>
 				<span class="sigp2-saisie"><%=process.getVAL_EF_DATE_DEBUT()%></span>
 				<BR/>
 				<span class="sigp2" style="width:150px">Date de fin : </span>

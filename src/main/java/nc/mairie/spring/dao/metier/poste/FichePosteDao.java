@@ -535,7 +535,7 @@ public class FichePosteDao extends SirhDao implements FichePosteDaoInterface {
 	@Override
 	public Integer creerFichePoste(FichePoste fp, UserAppli user, HistoFichePosteDao histoDao, Transaction aTransaction)
 			throws Exception {
-		// GÈnÈration du numÈro de fiche de poste
+		// g√©n√©ration du num√©ro de fiche de poste
 		fp.setNumFp(createFichePosteNumber(fp.getAnneeCreation()));
 
 		// Creation de la FichePoste

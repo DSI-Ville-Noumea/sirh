@@ -55,7 +55,7 @@ import com.ibm.as400.access.CharacterDataArea;
 import com.ibm.as400.access.QSYSObjectPathName;
 
 /**
- * Process OeAGENTCarriere Date de création : (05/09/11 11:31:37)
+ * Process OeAGENTCarriere Date de crÃ©ation : (05/09/11 11:31:37)
  * 
  */
 public class OeAGENTCarriere extends BasicProcess {
@@ -89,12 +89,12 @@ public class OeAGENTCarriere extends BasicProcess {
 	private Hashtable<String, MotifCarriere> hashMotifCarriere;
 	private Hashtable<String, BaseHoraire> hashBaseHorairePointage;
 
-	public String ACTION_SUPPRESSION = "Suppression d'une fiche Carrière.";
-	public String ACTION_VISUALISATION = "Consultation d'une fiche Carrière.";
-	public String ACTION_MODIFICATION = "Modification d'une fiche Carrière.";
-	public String ACTION_CREATION = "Création d'une fiche Carrière.";
-	public String ACTION_REOUVERTURE = "Suppression d'une fiche Carrière. Réouverture carrière.";
-	public String ACTION_AVCT_PREV = "Avancement prévisionnel.";
+	public String ACTION_SUPPRESSION = "Suppression d'une fiche CarriÃ¨re.";
+	public String ACTION_VISUALISATION = "Consultation d'une fiche CarriÃ¨re.";
+	public String ACTION_MODIFICATION = "Modification d'une fiche CarriÃ¨re.";
+	public String ACTION_CREATION = "CrÃ©ation d'une fiche CarriÃ¨re.";
+	public String ACTION_REOUVERTURE = "Suppression d'une fiche CarriÃ¨re. RÃ©ouverture carriÃ¨re.";
+	public String ACTION_AVCT_PREV = "Avancement prÃ©visionnel.";
 
 	public boolean gradeObligatoire = false;
 	public boolean showIBA = false;
@@ -120,7 +120,7 @@ public class OeAGENTCarriere extends BasicProcess {
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
 	/**
-	 * Constructeur du process OeAGENTCarriere. Date de création : (05/09/11
+	 * Constructeur du process OeAGENTCarriere. Date de crÃ©ation : (05/09/11
 	 * 11:39:24)
 	 * 
 	 */
@@ -129,10 +129,10 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones Ã  afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
-	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
-	 * addZone(getNOMxxx, String); Date de création : (05/09/11 11:39:24)
+	 * doivent avoir les Fields PUBLIC Utilisation de la mÃ©thode
+	 * addZone(getNOMxxx, String); Date de crÃ©ation : (05/09/11 11:39:24)
 	 * 
 	 */
 	public void initialiseZones(HttpServletRequest request) throws Exception {
@@ -143,10 +143,10 @@ public class OeAGENTCarriere extends BasicProcess {
 			addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 		}
 
-		// Vérification des droits d'accès.
+		// VÃ©rification des droits d'accÃ¨s.
 		if (MairieUtils.estInterdit(request, getNomEcran())) {
 			// "ERR190",
-			// "Opération impossible. Vous ne disposez pas des droits d'accès à cette option."
+			// "Operation impossible. Vous ne disposez pas des droits d'accÃ¨s a cette option."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
@@ -216,7 +216,7 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Initialise les listes déroulantes de l'écran. Date de création :
+	 * Initialise les listes deroulantes de l'Ã©cran. Date de crÃ©ation :
 	 * (16/09/11)
 	 * 
 	 * 
@@ -364,7 +364,7 @@ public class OeAGENTCarriere extends BasicProcess {
 
 	/**
 	 * Initialisation de la liste des carrieres de l'agent courant Date de
-	 * création : (05/09/11)
+	 * crÃ©ation : (05/09/11)
 	 */
 	private void initialiseListeCarrieres(HttpServletRequest request) throws Exception {
 		// Recherche des carrieres de l'agent
@@ -411,7 +411,7 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Réinitilise les champs du formulaire de création/modification d'une
+	 * RÃ©initilise les champs du formulaire de crÃ©ation/modification d'une
 	 * carriere
 	 * 
 	 */
@@ -462,7 +462,7 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_AJOUTER Date de création :
+	 * Retourne le nom d'un bouton pour la JSP : PB_AJOUTER Date de crÃ©ation :
 	 * (05/09/11 11:31:37)
 	 * 
 	 */
@@ -471,10 +471,10 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (05/09/11 11:31:37)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (05/09/11 11:31:37)
 	 * 
 	 * RG_AG_CA_A01 RG_AG_CA_A02
 	 */
@@ -519,7 +519,7 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER Date de création :
+	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER Date de crÃ©ation :
 	 * (05/09/11 11:31:37)
 	 * 
 	 */
@@ -528,10 +528,10 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (05/09/11 11:31:37)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (05/09/11 11:31:37)
 	 * 
 	 */
 	public boolean performPB_ANNULER(HttpServletRequest request) throws Exception {
@@ -542,7 +542,7 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Initilise les zones de la carriere courante Date de création : 20/09/2011
+	 * Initilise les zones de la carriere courante Date de crÃ©ation : 20/09/2011
 	 * 
 	 */
 	private boolean initialiseCarriereCourante(HttpServletRequest request) throws Exception {
@@ -661,7 +661,7 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER Date de création :
+	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER Date de crÃ©ation :
 	 * (05/09/11 11:31:37)
 	 * 
 	 */
@@ -670,10 +670,10 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (05/09/11 11:31:37)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (05/09/11 11:31:37)
 	 * 
 	 * RG_AG_CA_A06 RG_AG_CA_C13 RG_AG_CA_A04
 	 */
@@ -722,7 +722,7 @@ public class OeAGENTCarriere extends BasicProcess {
 		} else if (getZone(getNOM_ST_ACTION()).equals(ACTION_CREATION)
 				|| getZone(getNOM_ST_ACTION()).equals(ACTION_MODIFICATION)) {
 
-			// vérification de la validité du formulaire
+			// VÃ©rification de la validitÃ© du formulaire
 			if (!performControlerChamps(request))
 				return false;
 
@@ -762,7 +762,7 @@ public class OeAGENTCarriere extends BasicProcess {
 				getHistoCarriereDao().creerHistoCarriere(histo, user, EnumTypeHisto.MODIFICATION);
 				getCarriereCourante().modifierCarriere(getTransaction(), getAgentCourant(), user);
 			} else if (getZone(getNOM_ST_ACTION()).equals(ACTION_CREATION)) {
-				// Création
+				// CrÃ©ation
 				// RG_AG_CA_A03
 				HistoCarriere histo = new HistoCarriere(getCarriereCourante());
 				getHistoCarriereDao().creerHistoCarriere(histo, user, EnumTypeHisto.CREATION);
@@ -789,7 +789,7 @@ public class OeAGENTCarriere extends BasicProcess {
 		if (getTransaction().isErreur())
 			return false;
 
-		// Tout s'est bien passé
+		// Tout s'est bien passÃ©
 		commitTransaction();
 		// on regarde sir il y a un changement de statut
 		String messageInf = Const.CHAINE_VIDE;
@@ -797,12 +797,12 @@ public class OeAGENTCarriere extends BasicProcess {
 		if (declarerModifDateFin)
 			messageInf += MessageUtils.getMessage("INF005");
 
-		// on regarde si le motif de la carriere est renseigné
+		// on regarde si le motif de la carriere est renseignÃ©
 		if (getZone(getNOM_ST_ACTION()).equals(ACTION_CREATION)
 				|| getZone(getNOM_ST_ACTION()).equals(ACTION_MODIFICATION)) {
 			if (getCarriereCourante().getIdMotif().equals(Const.ZERO)) {
 				// "INF300",
-				// "Attention, vous n'avez pas saisi de motif pour cette carrière."
+				// "Attention, vous n'avez pas saisi de motif pour cette carriÃ¨re."
 				messageInf += MessageUtils.getMessage("INF300");
 			}
 
@@ -812,7 +812,7 @@ public class OeAGENTCarriere extends BasicProcess {
 				messageInf += MessageUtils.getMessage("INF008");
 			}
 		}
-		// on regarde si l'année de la carriere crée est <=année -1
+		// on regarde si l'annÃ©e de la carriere crÃ©e est <=annÃ©e -1
 		if (getCarriereCourante() != null) {
 			Integer anneeCourante = Integer.parseInt(Services.dateDuJour().substring(6, 10));
 			if (Integer.parseInt(Services.formateDate(getCarriereCourante().getDateDebut()).substring(6, 10)) < anneeCourante - 1) {
@@ -836,7 +836,7 @@ public class OeAGENTCarriere extends BasicProcess {
 			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
 				// "ERR125", "Impossible de trouver @."
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR125", "le barême correspondant"));
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR125", "le barÃªme correspondant"));
 				return false;
 			}
 		}
@@ -846,11 +846,11 @@ public class OeAGENTCarriere extends BasicProcess {
 	/**
 	 * alimente la carriere courante avec le formulaire
 	 * 
-	 * Créée le 22/09/2011
+	 * crÃ©Ã©e le 22/09/2011
 	 */
 	public void alimenterCarriere() throws Exception {
 
-		// récupération des informations remplies dans les zones de saisie
+		// rÃ©cupÃ©ration des informations remplies dans les zones de saisie
 		String dateDebut = Services.formateDate(getVAL_EF_DATE_DEBUT());
 		String dateFin = Services.formateDate(getVAL_EF_DATE_FIN());
 		String dateArrete = Services.formateDate(getVAL_EF_DATE_ARR());
@@ -880,7 +880,7 @@ public class OeAGENTCarriere extends BasicProcess {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "statuts"));
 		StatutCarriere statut = (StatutCarriere) getListeStatut().get(numStatut - 1);
 
-		// Régime
+		// RÃ©gime
 		String regime = getListeRegime().get(Integer.parseInt(getVAL_LB_REGIMES_SELECT()));
 
 		// base horaire
@@ -902,7 +902,7 @@ public class OeAGENTCarriere extends BasicProcess {
 		int numLigneBR = (Services.estNumerique(getZone(getNOM_LB_BASE_REGLEMENT_SELECT())) ? Integer
 				.parseInt(getZone(getNOM_LB_BASE_REGLEMENT_SELECT())) : -1);
 		if (numLigneBR == -1 || getListeBaseReg().size() == 0 || numLigneBR > getListeBaseReg().size())
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "bases règlement"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "bases rÃ©glement"));
 		ModeReglement baseReg = (ModeReglement) getListeBaseReg().get(numLigneBR);
 
 		// motif
@@ -935,7 +935,7 @@ public class OeAGENTCarriere extends BasicProcess {
 				contrat = getContratDao().chercherContratAgentDateComprise(getAgentCourant().getIdAgent(),
 						sdf.parse(dateDebut));
 			} catch (Exception e) {
-				// aucun contrat trouvé
+				// aucun contrat trouvÃ©
 			}
 			if (contrat != null && contrat.getIdTypeContrat() != null) {
 				TypeContrat typeContrat = getTypeContratDao().chercherTypeContrat(contrat.getIdTypeContrat());
@@ -979,11 +979,11 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Vérifie les règles de gestion de saisie (champs obligatoires, ...) du
+	 * VÃ©rifie les regles de gestion de saisie (champs obligatoires, ...) du
 	 * formulaire de carriere
 	 * 
 	 * @param request
-	 * @return true si les règles de gestion sont respectées. false sinon.
+	 * @return true si les regles de gestion sont respectÃ©es. false sinon.
 	 * @throws Exception
 	 * 
 	 *             RG_AG_CA_A05
@@ -1021,63 +1021,63 @@ public class OeAGENTCarriere extends BasicProcess {
 		// date de debut obligatoire
 		if ((Const.CHAINE_VIDE).equals(getVAL_EF_DATE_DEBUT())) {
 			// "ERR002", "La zone @ est obligatoire."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "date de début"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "date de dÃ©but"));
 			return false;
 		}
 
 		// format date de debut
 		if (!Services.estUneDate(getVAL_EF_DATE_DEBUT())) {
 			// "ERR007",
-			// "La date @ est incorrecte. Elle doit être au format date."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR007", "de début"));
+			// "La date @ est incorrecte. Elle doit Ãªtre au format date."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR007", "de dÃ©but"));
 			return false;
 		}
 
 		// format date de fin
 		if (!Const.CHAINE_VIDE.equals(getVAL_EF_DATE_FIN()) && !Services.estUneDate(getVAL_EF_DATE_FIN())) {
 			// "ERR007",
-			// "La date @ est incorrecte. Elle doit être au format date."
+			// "La date @ est incorrecte. Elle doit Ãªtre au format date."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR007", "date de fin"));
 			return false;
 		}
 
 		// format ACC et BM
 		if (!(Const.CHAINE_VIDE).equals(getVAL_EF_ACC_JOURS()) && !Services.estNumerique(getVAL_EF_ACC_JOURS())) {
-			// "ERR992", "La zone @ doit être numérique."
+			// "ERR992", "La zone @ doit Ãªtre numÃ©rique."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "ACC jours"));
 			return false;
 		}
 		if (!(Const.CHAINE_VIDE).equals(getVAL_EF_ACC_MOIS()) && !Services.estNumerique(getVAL_EF_ACC_MOIS())) {
-			// "ERR992", "La zone @ doit être numérique."
+			// "ERR992", "La zone @ doit Ãªtre numÃ©rique."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "ACC mois"));
 			return false;
 		}
 		if (!(Const.CHAINE_VIDE).equals(getVAL_EF_ACC_ANNEES()) && !Services.estNumerique(getVAL_EF_ACC_ANNEES())) {
-			// "ERR992", "La zone @ doit être numérique."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "ACC années"));
+			// "ERR992", "La zone @ doit Ãªtre numÃ©rique."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "ACC annÃ©es"));
 			return false;
 		}
 
 		if (!(Const.CHAINE_VIDE).equals(getVAL_EF_BM_JOURS()) && !Services.estNumerique(getVAL_EF_BM_JOURS())) {
-			// "ERR992", "La zone @ doit être numérique."
+			// "ERR992", "La zone @ doit Ãªtre numÃ©rique."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "BM jours"));
 			return false;
 		}
 		if (!(Const.CHAINE_VIDE).equals(getVAL_EF_BM_MOIS()) && !Services.estNumerique(getVAL_EF_BM_MOIS())) {
-			// "ERR992", "La zone @ doit être numérique."
+			// "ERR992", "La zone @ doit Ãªtre numÃ©rique."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "BM mois"));
 			return false;
 		}
 		if (!(Const.CHAINE_VIDE).equals(getVAL_EF_BM_ANNEES()) && !Services.estNumerique(getVAL_EF_BM_ANNEES())) {
-			// "ERR992", "La zone @ doit être numérique."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "BM années"));
+			// "ERR992", "La zone @ doit Ãªtre numÃ©rique."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "BM annÃ©es"));
 			return false;
 		}
-		// format date arrêté
+		// format date arrÃªtÃ©
 		if ((!(Const.CHAINE_VIDE).equals(getVAL_EF_DATE_ARR())) && !Services.estUneDate(getVAL_EF_DATE_ARR())) {
 			// "ERR007",
-			// "La date @ est incorrecte. Elle doit être au format date."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR007", "d'arrêté"));
+			// "La date @ est incorrecte. Elle doit Ãªtre au format date."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR007", "d'arrÃªtÃ©"));
 			return false;
 		}
 
@@ -1085,10 +1085,10 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Vérifie les règles de gestion du formulaire de carriere
+	 * VÃ©rifie les regles de gestion du formulaire de carriere
 	 * 
 	 * @param request
-	 * @return true si les règles de gestion sont respectées. false sinon.
+	 * @return true si les regles de gestion sont respectÃ©es. false sinon.
 	 * @throws Exception
 	 * 
 	 *             RG_AG_CA_A05
@@ -1097,8 +1097,8 @@ public class OeAGENTCarriere extends BasicProcess {
 		// RG_AG_CA_A05
 		// testdate debut < date fin
 		if (Services.compareDates(getVAL_EF_DATE_DEBUT(), getVAL_EF_DATE_FIN()) >= 0) {
-			// "ERR204", "La date @ doit être inférieure à la date @."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR204", "de début", "de fin"));
+			// "ERR204", "La date @ doit Ãªtre inferieure Ã  la date @."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR204", "de dÃ©but", "de fin"));
 			return false;
 		}
 
@@ -1110,13 +1110,13 @@ public class OeAGENTCarriere extends BasicProcess {
 			PositionAdmAgent posAdmAgtActiveAUneDate = PositionAdmAgent.chercherPositionAdmAgentDateFinExclu(
 					getTransaction(), getAgentCourant().getNomatr(),
 					Services.convertitDate(Services.formateDate(getVAL_EF_DATE_DEBUT()), "dd/MM/yyyy", "yyyyMMdd"));
-			// si PA recupérée est ACTIVE
+			// si PA recupÃ©rÃ©e est ACTIVE
 			if (!posAdmAgtActiveAUneDate.estPAInactive(getTransaction())) {
 				dernierePA = posAdmAgtActiveAUneDate;
 			} else {
 				// si PA recuperre est inactive
 				// "ERR135",
-				// "Il n'y a pas de PA active à cette date de debut de carriere."
+				// "Il n'y a pas de PA active a cette date de debut de carriere."
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR135"));
 				return false;
 			}
@@ -1184,7 +1184,7 @@ public class OeAGENTCarriere extends BasicProcess {
 						if (Services.compareDates(getVAL_EF_DATE_DEBUT(), carrSuiv.getDateDebut()) > 0
 								|| Services.compareDates(getVAL_EF_DATE_FIN(), carrSuiv.getDateDebut()) > 0) {
 							// "ERR134",
-							// "Attention, il existe déjà une carrière sur cette période. Veuillez contrôler.");
+							// "Attention, il existe dÃ©jÃ  une carriÃ¨re sur cette pÃ©riode. Veuillez contrÃ´ler.");
 							getTransaction().declarerErreur(MessageUtils.getMessage("ERR134"));
 							return false;
 						}
@@ -1201,7 +1201,7 @@ public class OeAGENTCarriere extends BasicProcess {
 						// si datdebCarr < datFinCarrPrec alors erreur
 						if (Services.compareDates(getVAL_EF_DATE_DEBUT(), carrPrec.getDateFin()) < 0) {
 							// "ERR134",
-							// "Attention, il existe déjà une carrière sur cette période. Veuillez contrôler.");
+							// "Attention, il existe dÃ©jÃ  une carriÃ¨re sur cette pÃ©riode. Veuillez contrÃ´ler.");
 							getTransaction().declarerErreur(MessageUtils.getMessage("ERR134"));
 							return false;
 						}
@@ -1213,7 +1213,7 @@ public class OeAGENTCarriere extends BasicProcess {
 						if (Services.compareDates(getVAL_EF_DATE_DEBUT(), carrPrec.getDateFin()) < 0
 								|| Services.compareDates(getVAL_EF_DATE_FIN(), carrSuiv.getDateDebut()) > 0) {
 							// "ERR134",
-							// "Attention, il existe déjà une carrière sur cette période. Veuillez contrôler.");
+							// "Attention, il existe dÃ©jÃ  une carriÃ¨re sur cette pÃ©riode. Veuillez contrÃ´ler.");
 							getTransaction().declarerErreur(MessageUtils.getMessage("ERR134"));
 							return false;
 						}
@@ -1242,7 +1242,7 @@ public class OeAGENTCarriere extends BasicProcess {
 						if (Services.compareDates(getVAL_EF_DATE_DEBUT(), carrSuiv.getDateDebut()) > 0
 								|| Services.compareDates(getVAL_EF_DATE_FIN(), carrSuiv.getDateDebut()) > 0) {
 							// "ERR134",
-							// "Attention, il existe déjà une carrière sur cette période. Veuillez contrôler.");
+							// "Attention, il existe dÃ©jÃ  une carriÃ¨re sur cette pÃ©riode. Veuillez contrÃ´ler.");
 							getTransaction().declarerErreur(MessageUtils.getMessage("ERR134"));
 							return false;
 						}
@@ -1259,7 +1259,7 @@ public class OeAGENTCarriere extends BasicProcess {
 						// si datdebCarr < datFinCarrPrec alors erreur
 						if (Services.compareDates(getVAL_EF_DATE_DEBUT(), carrPrec.getDateFin()) < 0) {
 							// "ERR134",
-							// "Attention, il existe déjà une carrière sur cette période. Veuillez contrôler.");
+							// "Attention, il existe dÃ©jÃ  une carriÃ¨re sur cette pÃ©riode. Veuillez contrÃ´ler.");
 							getTransaction().declarerErreur(MessageUtils.getMessage("ERR134"));
 							return false;
 						}
@@ -1271,7 +1271,7 @@ public class OeAGENTCarriere extends BasicProcess {
 						if (Services.compareDates(getVAL_EF_DATE_DEBUT(), carrPrec.getDateFin()) < 0
 								|| Services.compareDates(getVAL_EF_DATE_FIN(), carrSuiv.getDateDebut()) > 0) {
 							// "ERR134",
-							// "Attention, il existe déjà une carrière sur cette période. Veuillez contrôler.");
+							// "Attention, il existe dÃ©jÃ  une carriÃ¨re sur cette pÃ©riode. Veuillez contrÃ´ler.");
 							getTransaction().declarerErreur(MessageUtils.getMessage("ERR134"));
 							return false;
 						}
@@ -1300,7 +1300,7 @@ public class OeAGENTCarriere extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_ACTION Date de
-	 * création : (05/09/11 11:39:24)
+	 * crÃ©ation : (05/09/11 11:39:24)
 	 * 
 	 */
 	public String getNOM_ST_ACTION() {
@@ -1308,8 +1308,8 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACTION Date de
-	 * création : (05/09/11 11:39:24)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_ACTION Date de
+	 * crÃ©ation : (05/09/11 11:39:24)
 	 * 
 	 */
 	public String getVAL_ST_ACTION() {
@@ -1318,7 +1318,7 @@ public class OeAGENTCarriere extends BasicProcess {
 
 	/**
 	 * Getter de la liste avec un lazy initialize : LB_BASE_HORAIRE Date de
-	 * création : (05/09/11 14:28:25)
+	 * crÃ©ation : (05/09/11 14:28:25)
 	 * 
 	 */
 	private String[] getLB_BASE_HORAIRE() {
@@ -1328,7 +1328,7 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_BASE_HORAIRE Date de création : (05/09/11
+	 * Setter de la liste: LB_BASE_HORAIRE Date de crÃ©ation : (05/09/11
 	 * 14:28:25)
 	 * 
 	 */
@@ -1338,7 +1338,7 @@ public class OeAGENTCarriere extends BasicProcess {
 
 	/**
 	 * Retourne le nom de la zone pour la JSP : NOM_LB_BASE_HORAIRE Date de
-	 * création : (05/09/11 14:28:25)
+	 * crÃ©ation : (05/09/11 14:28:25)
 	 * 
 	 */
 	public String getNOM_LB_BASE_HORAIRE() {
@@ -1346,8 +1346,8 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_BASE_HORAIRE_SELECT Date de création : (05/09/11 14:28:25)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_BASE_HORAIRE_SELECT Date de crÃ©ation : (05/09/11 14:28:25)
 	 * 
 	 */
 	public String getNOM_LB_BASE_HORAIRE_SELECT() {
@@ -1355,8 +1355,8 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_BASE_HORAIRE Date de création : (05/09/11 14:28:25)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_BASE_HORAIRE Date de crÃ©ation : (05/09/11 14:28:25)
 	 * 
 	 */
 	public String[] getVAL_LB_BASE_HORAIRE() {
@@ -1364,8 +1364,8 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_BASE_HORAIRE Date de création : (05/09/11 14:28:25)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_BASE_HORAIRE Date de crÃ©ation : (05/09/11 14:28:25)
 	 * 
 	 */
 	public String getVAL_LB_BASE_HORAIRE_SELECT() {
@@ -1374,7 +1374,7 @@ public class OeAGENTCarriere extends BasicProcess {
 
 	/**
 	 * Getter de la liste avec un lazy initialize : LB_BASE_REGLEMENT Date de
-	 * création : (05/09/11 14:28:25)
+	 * crÃ©ation : (05/09/11 14:28:25)
 	 * 
 	 */
 	private String[] getLB_BASE_REGLEMENT() {
@@ -1384,7 +1384,7 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_BASE_REGLEMENT Date de création : (05/09/11
+	 * Setter de la liste: LB_BASE_REGLEMENT Date de crÃ©ation : (05/09/11
 	 * 14:28:25)
 	 * 
 	 */
@@ -1394,7 +1394,7 @@ public class OeAGENTCarriere extends BasicProcess {
 
 	/**
 	 * Retourne le nom de la zone pour la JSP : NOM_LB_BASE_REGLEMENT Date de
-	 * création : (05/09/11 14:28:25)
+	 * crÃ©ation : (05/09/11 14:28:25)
 	 * 
 	 */
 	public String getNOM_LB_BASE_REGLEMENT() {
@@ -1402,8 +1402,8 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_BASE_REGLEMENT_SELECT Date de création : (05/09/11 14:28:25)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_BASE_REGLEMENT_SELECT Date de crÃ©ation : (05/09/11 14:28:25)
 	 * 
 	 */
 	public String getNOM_LB_BASE_REGLEMENT_SELECT() {
@@ -1411,8 +1411,8 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_BASE_REGLEMENT Date de création : (05/09/11 14:28:25)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_BASE_REGLEMENT Date de crÃ©ation : (05/09/11 14:28:25)
 	 * 
 	 */
 	public String[] getVAL_LB_BASE_REGLEMENT() {
@@ -1420,8 +1420,8 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_BASE_REGLEMENT Date de création : (05/09/11 14:28:25)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_BASE_REGLEMENT Date de crÃ©ation : (05/09/11 14:28:25)
 	 * 
 	 */
 	public String getVAL_LB_BASE_REGLEMENT_SELECT() {
@@ -1429,7 +1429,7 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Getter de la liste avec un lazy initialize : LB_REGIMES Date de création
+	 * Getter de la liste avec un lazy initialize : LB_REGIMES Date de crÃ©ation
 	 * : (05/09/11 14:28:25)
 	 * 
 	 */
@@ -1440,7 +1440,7 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_REGIMES Date de création : (05/09/11 14:28:25)
+	 * Setter de la liste: LB_REGIMES Date de crÃ©ation : (05/09/11 14:28:25)
 	 * 
 	 */
 	private void setLB_REGIMES(String[] newLB_REGIMES) {
@@ -1448,7 +1448,7 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_REGIMES Date de création
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_REGIMES Date de crÃ©ation
 	 * : (05/09/11 14:28:25)
 	 * 
 	 */
@@ -1457,8 +1457,8 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_REGIMES_SELECT Date de création : (05/09/11 14:28:25)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_REGIMES_SELECT Date de crÃ©ation : (05/09/11 14:28:25)
 	 * 
 	 */
 	public String getNOM_LB_REGIMES_SELECT() {
@@ -1466,8 +1466,8 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_REGIMES Date de création : (05/09/11 14:28:25)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_REGIMES Date de crÃ©ation : (05/09/11 14:28:25)
 	 * 
 	 */
 	public String[] getVAL_LB_REGIMES() {
@@ -1475,8 +1475,8 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_REGIMES Date de création : (05/09/11 14:28:25)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_REGIMES Date de crÃ©ation : (05/09/11 14:28:25)
 	 * 
 	 */
 	public String getVAL_LB_REGIMES_SELECT() {
@@ -1484,7 +1484,7 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Getter de la liste avec un lazy initialize : LB_STATUTS Date de création
+	 * Getter de la liste avec un lazy initialize : LB_STATUTS Date de crÃ©ation
 	 * : (05/09/11 14:28:25)
 	 * 
 	 */
@@ -1495,7 +1495,7 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_STATUTS Date de création : (05/09/11 14:28:25)
+	 * Setter de la liste: LB_STATUTS Date de crÃ©ation : (05/09/11 14:28:25)
 	 * 
 	 */
 	private void setLB_STATUTS(String[] newLB_STATUTS) {
@@ -1503,7 +1503,7 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_STATUTS Date de création
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_STATUTS Date de crÃ©ation
 	 * : (05/09/11 14:28:25)
 	 * 
 	 */
@@ -1512,8 +1512,8 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_STATUTS_SELECT Date de création : (05/09/11 14:28:25)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_STATUTS_SELECT Date de crÃ©ation : (05/09/11 14:28:25)
 	 * 
 	 */
 	public String getNOM_LB_STATUTS_SELECT() {
@@ -1521,8 +1521,8 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_STATUTS Date de création : (05/09/11 14:28:25)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_STATUTS Date de crÃ©ation : (05/09/11 14:28:25)
 	 * 
 	 */
 	public String[] getVAL_LB_STATUTS() {
@@ -1530,8 +1530,8 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_STATUTS Date de création : (05/09/11 14:28:25)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_STATUTS Date de crÃ©ation : (05/09/11 14:28:25)
 	 * 
 	 */
 	public String getVAL_LB_STATUTS_SELECT() {
@@ -1541,7 +1541,7 @@ public class OeAGENTCarriere extends BasicProcess {
 	private String[] LB_MOTIFS;
 
 	/**
-	 * Getter de la liste avec un lazy initialize : LB_MOTIFS Date de création :
+	 * Getter de la liste avec un lazy initialize : LB_MOTIFS Date de crÃ©ation :
 	 * (05/09/11 14:28:45)
 	 * 
 	 */
@@ -1552,7 +1552,7 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_MOTIFS Date de création : (05/09/11 14:28:45)
+	 * Setter de la liste: LB_MOTIFS Date de crÃ©ation : (05/09/11 14:28:45)
 	 * 
 	 */
 	private void setLB_MOTIFS(String[] newLB_MOTIFS) {
@@ -1560,7 +1560,7 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_MOTIFS Date de création :
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_MOTIFS Date de crÃ©ation :
 	 * (05/09/11 14:28:45)
 	 * 
 	 */
@@ -1569,8 +1569,8 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_MOTIFS_SELECT Date de création : (05/09/11 14:28:45)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_MOTIFS_SELECT Date de crÃ©ation : (05/09/11 14:28:45)
 	 * 
 	 */
 	public String getNOM_LB_MOTIFS_SELECT() {
@@ -1578,8 +1578,8 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_MOTIFS Date de création : (05/09/11 14:28:45)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_MOTIFS Date de crÃ©ation : (05/09/11 14:28:45)
 	 * 
 	 */
 	public String[] getVAL_LB_MOTIFS() {
@@ -1587,8 +1587,8 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_MOTIFS Date de création : (05/09/11 14:28:45)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_MOTIFS Date de crÃ©ation : (05/09/11 14:28:45)
 	 * 
 	 */
 	public String getVAL_LB_MOTIFS_SELECT() {
@@ -1605,7 +1605,7 @@ public class OeAGENTCarriere extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_DATE_DEBUT Date de
-	 * création : (05/09/11 16:01:29)
+	 * crÃ©ation : (05/09/11 16:01:29)
 	 * 
 	 */
 	public String getNOM_EF_DATE_DEBUT() {
@@ -1613,8 +1613,8 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_DATE_DEBUT Date de création : (05/09/11 16:01:29)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_DATE_DEBUT Date de crÃ©ation : (05/09/11 16:01:29)
 	 * 
 	 */
 	public String getVAL_EF_DATE_DEBUT() {
@@ -1623,7 +1623,7 @@ public class OeAGENTCarriere extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_DATE_FIN Date de
-	 * création : (05/09/11 16:01:29)
+	 * crÃ©ation : (05/09/11 16:01:29)
 	 * 
 	 */
 	public String getNOM_EF_DATE_FIN() {
@@ -1631,8 +1631,8 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_DATE_FIN Date de création : (05/09/11 16:01:29)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_DATE_FIN Date de crÃ©ation : (05/09/11 16:01:29)
 	 * 
 	 */
 	public String getVAL_EF_DATE_FIN() {
@@ -1641,7 +1641,7 @@ public class OeAGENTCarriere extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_DATE_ARR Date de
-	 * création : (05/09/11 16:03:53)
+	 * crÃ©ation : (05/09/11 16:03:53)
 	 * 
 	 */
 	public String getNOM_EF_DATE_ARR() {
@@ -1649,8 +1649,8 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_DATE_ARR Date de création : (05/09/11 16:03:53)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_DATE_ARR Date de crÃ©ation : (05/09/11 16:03:53)
 	 * 
 	 */
 	public String getVAL_EF_DATE_ARR() {
@@ -1659,7 +1659,7 @@ public class OeAGENTCarriere extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_ACC_ANNEES Date de
-	 * création : (05/09/11 16:21:49)
+	 * crÃ©ation : (05/09/11 16:21:49)
 	 * 
 	 */
 	public String getNOM_EF_ACC_ANNEES() {
@@ -1667,8 +1667,8 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_ACC_ANNEES Date de création : (05/09/11 16:21:49)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_ACC_ANNEES Date de crÃ©ation : (05/09/11 16:21:49)
 	 * 
 	 */
 	public String getVAL_EF_ACC_ANNEES() {
@@ -1677,7 +1677,7 @@ public class OeAGENTCarriere extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_ACC_JOURS Date de
-	 * création : (05/09/11 16:21:49)
+	 * crÃ©ation : (05/09/11 16:21:49)
 	 * 
 	 */
 	public String getNOM_EF_ACC_JOURS() {
@@ -1685,8 +1685,8 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_ACC_JOURS Date de création : (05/09/11 16:21:49)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_ACC_JOURS Date de crÃ©ation : (05/09/11 16:21:49)
 	 * 
 	 */
 	public String getVAL_EF_ACC_JOURS() {
@@ -1695,7 +1695,7 @@ public class OeAGENTCarriere extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_ACC_MOIS Date de
-	 * création : (05/09/11 16:21:49)
+	 * crÃ©ation : (05/09/11 16:21:49)
 	 * 
 	 */
 	public String getNOM_EF_ACC_MOIS() {
@@ -1703,8 +1703,8 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_ACC_MOIS Date de création : (05/09/11 16:21:49)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_ACC_MOIS Date de crÃ©ation : (05/09/11 16:21:49)
 	 * 
 	 */
 	public String getVAL_EF_ACC_MOIS() {
@@ -1713,7 +1713,7 @@ public class OeAGENTCarriere extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_BM_ANNEES Date de
-	 * création : (05/09/11 16:21:49)
+	 * crÃ©ation : (05/09/11 16:21:49)
 	 * 
 	 */
 	public String getNOM_EF_BM_ANNEES() {
@@ -1721,8 +1721,8 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_BM_ANNEES Date de création : (05/09/11 16:21:49)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_BM_ANNEES Date de crÃ©ation : (05/09/11 16:21:49)
 	 * 
 	 */
 	public String getVAL_EF_BM_ANNEES() {
@@ -1731,7 +1731,7 @@ public class OeAGENTCarriere extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_BM_JOURS Date de
-	 * création : (05/09/11 16:21:49)
+	 * crÃ©ation : (05/09/11 16:21:49)
 	 * 
 	 */
 	public String getNOM_EF_BM_JOURS() {
@@ -1739,8 +1739,8 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_BM_JOURS Date de création : (05/09/11 16:21:49)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_BM_JOURS Date de crÃ©ation : (05/09/11 16:21:49)
 	 * 
 	 */
 	public String getVAL_EF_BM_JOURS() {
@@ -1749,7 +1749,7 @@ public class OeAGENTCarriere extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_BM_MOIS Date de
-	 * création : (05/09/11 16:21:49)
+	 * crÃ©ation : (05/09/11 16:21:49)
 	 * 
 	 */
 	public String getNOM_EF_BM_MOIS() {
@@ -1757,8 +1757,8 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_BM_MOIS Date de création : (05/09/11 16:21:49)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_BM_MOIS Date de crÃ©ation : (05/09/11 16:21:49)
 	 * 
 	 */
 	public String getVAL_EF_BM_MOIS() {
@@ -1767,7 +1767,7 @@ public class OeAGENTCarriere extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_REF_ARR Date de
-	 * création : (05/09/11 16:33:06)
+	 * crÃ©ation : (05/09/11 16:33:06)
 	 * 
 	 */
 	public String getNOM_EF_REF_ARR() {
@@ -1775,8 +1775,8 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_REF_ARR Date de création : (05/09/11 16:33:06)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_REF_ARR Date de crÃ©ation : (05/09/11 16:33:06)
 	 * 
 	 */
 	public String getVAL_EF_REF_ARR() {
@@ -1785,7 +1785,7 @@ public class OeAGENTCarriere extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_CDICDD Date de
-	 * création : (06/09/11 09:41:00)
+	 * crÃ©ation : (06/09/11 09:41:00)
 	 * 
 	 */
 	public String getNOM_ST_CDICDD() {
@@ -1793,8 +1793,8 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_CDICDD Date de
-	 * création : (06/09/11 09:41:00)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_CDICDD Date de
+	 * crÃ©ation : (06/09/11 09:41:00)
 	 * 
 	 */
 	public String getVAL_ST_CDICDD() {
@@ -1803,7 +1803,7 @@ public class OeAGENTCarriere extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_FILIERE Date de
-	 * création : (06/09/11 09:41:00)
+	 * crÃ©ation : (06/09/11 09:41:00)
 	 * 
 	 */
 	public String getNOM_ST_FILIERE() {
@@ -1811,8 +1811,8 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_FILIERE Date
-	 * de création : (06/09/11 09:41:00)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_FILIERE Date
+	 * de crÃ©ation : (06/09/11 09:41:00)
 	 * 
 	 */
 	public String getVAL_ST_FILIERE() {
@@ -1820,7 +1820,7 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_INA Date de création
+	 * Retourne pour la JSP le nom de la zone statique : ST_INA Date de crÃ©ation
 	 * : (06/09/11 09:41:00)
 	 * 
 	 */
@@ -1829,8 +1829,8 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_INA Date de
-	 * création : (06/09/11 09:41:00)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_INA Date de
+	 * crÃ©ation : (06/09/11 09:41:00)
 	 * 
 	 */
 	public String getVAL_ST_INA() {
@@ -1838,7 +1838,7 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_INM Date de création
+	 * Retourne pour la JSP le nom de la zone statique : ST_INM Date de crÃ©ation
 	 * : (06/09/11 09:41:00)
 	 * 
 	 */
@@ -1847,8 +1847,8 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_INM Date de
-	 * création : (06/09/11 09:41:00)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_INM Date de
+	 * crÃ©ation : (06/09/11 09:41:00)
 	 * 
 	 */
 	public String getVAL_ST_INM() {
@@ -1857,7 +1857,7 @@ public class OeAGENTCarriere extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_IBA Date de
-	 * création : (06/09/11 09:41:00)
+	 * crÃ©ation : (06/09/11 09:41:00)
 	 * 
 	 */
 	public String getNOM_EF_IBA() {
@@ -1865,8 +1865,8 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie : EF_IBA
-	 * Date de création : (06/09/11 09:41:00)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie : EF_IBA
+	 * Date de crÃ©ation : (06/09/11 09:41:00)
 	 * 
 	 */
 	public String getVAL_EF_IBA() {
@@ -1945,7 +1945,7 @@ public class OeAGENTCarriere extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_SELECT_GRADE Date de
-	 * création : (23/09/11 09:21:39)
+	 * crÃ©ation : (23/09/11 09:21:39)
 	 * 
 	 */
 	public String getNOM_PB_SELECT_GRADE() {
@@ -1953,10 +1953,10 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (23/09/11 09:21:39)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (23/09/11 09:21:39)
 	 * 
 	 */
 	public boolean performPB_SELECT_GRADE(HttpServletRequest request) throws Exception {
@@ -1971,7 +1971,7 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	private Grade getSelectedGrade() throws Exception {
-		// récupération du grade et vérification de son existence.
+		// rÃ©cupÃ©ration du grade et VÃ©rification de son existence.
 		String idGrade = Const.CHAINE_VIDE;
 		for (int i = 0; i < getListeGrade().size(); i++) {
 			Grade g = (Grade) getListeGrade().get(i);
@@ -1994,7 +1994,7 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * renseigne les champs concernant le barême en fonction du grade et du
+	 * renseigne les champs concernant le barÃªme en fonction du grade et du
 	 * statut
 	 * 
 	 * @param g
@@ -2052,7 +2052,7 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * renseigne les champs concernant la filière en fonction du grade
+	 * renseigne les champs concernant la filiÃ¨re en fonction du grade
 	 * 
 	 * @param g
 	 *            RG_AG_CA_C03
@@ -2081,10 +2081,10 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Détermine si le statut passé en parametre correspond a un fonctionnaire
+	 * DÃ©termine si le statut passÃ© en parametre correspond a un fonctionnaire
 	 * 
 	 * @param statut
-	 *            le statut a tester, si null récupère le statut courant
+	 *            le statut a tester, si null rÃ©cupÃ©re le statut courant
 	 * @return true si fonctionnaire false sinon
 	 */
 	private boolean estFonctionnaire(String codeStatut) {
@@ -2095,7 +2095,7 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Détermine si le statut courant correspond a un contractuel
+	 * DÃ©termine si le statut courant correspond a un contractuel
 	 * 
 	 * @return true si contractuel false sinon
 	 */
@@ -2110,7 +2110,7 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Détermine si le statut courant permet la saiaie de l'IBA
+	 * DÃ©termine si le statut courant permet la saiaie de l'IBA
 	 * 
 	 * @return true si saisie IBA possible false sinon
 	 */
@@ -2128,7 +2128,7 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Détermine si le statut courant correspond a un contractuel
+	 * DÃ©termine si le statut courant correspond a un contractuel
 	 * 
 	 * @return true si contractuel false sinon
 	 */
@@ -2138,7 +2138,7 @@ public class OeAGENTCarriere extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_SELECT_STATUT Date de
-	 * création : (26/09/11 09:04:08)
+	 * crÃ©ation : (26/09/11 09:04:08)
 	 * 
 	 */
 	public String getNOM_PB_SELECT_STATUT() {
@@ -2146,10 +2146,10 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (26/09/11 09:04:08)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (26/09/11 09:04:08)
 	 * 
 	 */
 	public boolean performPB_SELECT_STATUT(HttpServletRequest request) throws Exception {
@@ -2211,7 +2211,7 @@ public class OeAGENTCarriere extends BasicProcess {
 
 	/**
 	 * Getter de la liste avec un lazy initialize : LB_BASE_HORAIRE_POINTAGE
-	 * Date de création : (27/09/11 09:54:11)
+	 * Date de crÃ©ation : (27/09/11 09:54:11)
 	 * 
 	 */
 	private String[] getLB_BASE_HORAIRE_POINTAGE() {
@@ -2221,7 +2221,7 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_BASE_HORAIRE_POINTAGE Date de création : (27/09/11
+	 * Setter de la liste: LB_BASE_HORAIRE_POINTAGE Date de crÃ©ation : (27/09/11
 	 * 09:54:11)
 	 * 
 	 */
@@ -2231,7 +2231,7 @@ public class OeAGENTCarriere extends BasicProcess {
 
 	/**
 	 * Retourne le nom de la zone pour la JSP : NOM_LB_BASE_HORAIRE_POINTAGE
-	 * Date de création : (27/09/11 09:54:11)
+	 * Date de crÃ©ation : (27/09/11 09:54:11)
 	 * 
 	 */
 	public String getNOM_LB_BASE_HORAIRE_POINTAGE() {
@@ -2239,8 +2239,8 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_BASE_HORAIRE_POINTAGE_SELECT Date de création : (27/09/11
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_BASE_HORAIRE_POINTAGE_SELECT Date de crÃ©ation : (27/09/11
 	 * 09:54:11)
 	 * 
 	 */
@@ -2249,8 +2249,8 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_BASE_HORAIRE_POINTAGE Date de création : (27/09/11 09:54:11)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_BASE_HORAIRE_POINTAGE Date de crÃ©ation : (27/09/11 09:54:11)
 	 * 
 	 */
 	public String[] getVAL_LB_BASE_HORAIRE_POINTAGE() {
@@ -2258,8 +2258,8 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_BASE_HORAIRE_POINTAGE Date de création : (27/09/11 09:54:11)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_BASE_HORAIRE_POINTAGE Date de crÃ©ation : (27/09/11 09:54:11)
 	 * 
 	 */
 	public String getVAL_LB_BASE_HORAIRE_POINTAGE_SELECT() {
@@ -2306,7 +2306,7 @@ public class OeAGENTCarriere extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_GRADE Date de
-	 * création : (28/09/11 10:20:42)
+	 * crÃ©ation : (28/09/11 10:20:42)
 	 * 
 	 */
 	public String getNOM_ST_GRADE() {
@@ -2314,8 +2314,8 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_GRADE Date de
-	 * création : (28/09/11 10:20:42)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_GRADE Date de
+	 * crÃ©ation : (28/09/11 10:20:42)
 	 * 
 	 */
 	public String getVAL_ST_GRADE() {
@@ -2324,7 +2324,7 @@ public class OeAGENTCarriere extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_HORAIRE Date de
-	 * création : (28/09/11 10:20:42)
+	 * crÃ©ation : (28/09/11 10:20:42)
 	 * 
 	 */
 	public String getNOM_ST_HORAIRE() {
@@ -2332,8 +2332,8 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_HORAIRE Date
-	 * de création : (28/09/11 10:20:42)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_HORAIRE Date
+	 * de crÃ©ation : (28/09/11 10:20:42)
 	 * 
 	 */
 	public String getVAL_ST_HORAIRE() {
@@ -2342,7 +2342,7 @@ public class OeAGENTCarriere extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_MOTIF Date de
-	 * création : (28/09/11 10:20:42)
+	 * crÃ©ation : (28/09/11 10:20:42)
 	 * 
 	 */
 	public String getNOM_ST_MOTIF() {
@@ -2350,8 +2350,8 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_MOTIF Date de
-	 * création : (28/09/11 10:20:42)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_MOTIF Date de
+	 * crÃ©ation : (28/09/11 10:20:42)
 	 * 
 	 */
 	public String getVAL_ST_MOTIF() {
@@ -2360,7 +2360,7 @@ public class OeAGENTCarriere extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_REGIME Date de
-	 * création : (28/09/11 10:20:42)
+	 * crÃ©ation : (28/09/11 10:20:42)
 	 * 
 	 */
 	public String getNOM_ST_REGIME() {
@@ -2368,8 +2368,8 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_REGIME Date de
-	 * création : (28/09/11 10:20:42)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_REGIME Date de
+	 * crÃ©ation : (28/09/11 10:20:42)
 	 * 
 	 */
 	public String getVAL_ST_REGIME() {
@@ -2378,7 +2378,7 @@ public class OeAGENTCarriere extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_REGLEMENT Date de
-	 * création : (28/09/11 10:20:42)
+	 * crÃ©ation : (28/09/11 10:20:42)
 	 * 
 	 */
 	public String getNOM_ST_REGLEMENT() {
@@ -2386,8 +2386,8 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_REGLEMENT Date
-	 * de création : (28/09/11 10:20:42)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_REGLEMENT Date
+	 * de crÃ©ation : (28/09/11 10:20:42)
 	 * 
 	 */
 	public String getVAL_ST_REGLEMENT() {
@@ -2396,7 +2396,7 @@ public class OeAGENTCarriere extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_STATUT Date de
-	 * création : (28/09/11 10:20:42)
+	 * crÃ©ation : (28/09/11 10:20:42)
 	 * 
 	 */
 	public String getNOM_ST_STATUT() {
@@ -2404,8 +2404,8 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_STATUT Date de
-	 * création : (28/09/11 10:20:42)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_STATUT Date de
+	 * crÃ©ation : (28/09/11 10:20:42)
 	 * 
 	 */
 	public String getVAL_ST_STATUT() {
@@ -2414,7 +2414,7 @@ public class OeAGENTCarriere extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique :
-	 * ST_BASE_HORAIRE_POINTAGE Date de création : (28/09/11 10:30:07)
+	 * ST_BASE_HORAIRE_POINTAGE Date de crÃ©ation : (28/09/11 10:30:07)
 	 * 
 	 */
 	public String getNOM_ST_BASE_HORAIRE_POINTAGE() {
@@ -2422,8 +2422,8 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
-	 * ST_BASE_HORAIRE_POINTAGE Date de création : (28/09/11 10:30:07)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone :
+	 * ST_BASE_HORAIRE_POINTAGE Date de crÃ©ation : (28/09/11 10:30:07)
 	 * 
 	 */
 	public String getVAL_ST_BASE_HORAIRE_POINTAGE() {
@@ -2431,8 +2431,8 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Méthode appelée par la servlet qui aiguille le traitement : en fonction
-	 * du bouton de la JSP Date de création : (05/09/11 11:31:37)
+	 * mÃ©thode appelee par la servlet qui aiguille le traitement : en fonction
+	 * du bouton de la JSP Date de crÃ©ation : (05/09/11 11:31:37)
 	 * 
 	 */
 	public boolean recupererStatut(HttpServletRequest request) throws Exception {
@@ -2497,14 +2497,14 @@ public class OeAGENTCarriere extends BasicProcess {
 			}
 
 		}
-		// Si TAG INPUT non géré par le process
+		// Si TAG INPUT non gÃ©rÃ© par le process
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
 
 	/**
-	 * Retourne le nom de la JSP du process Zone à utiliser dans un champ caché
-	 * dans chaque formulaire de la JSP. Date de création : (29/09/11 10:03:37)
+	 * Retourne le nom de la JSP du process Zone a utiliser dans un champ cache
+	 * dans chaque formulaire de la JSP. Date de crÃ©ation : (29/09/11 10:03:37)
 	 * 
 	 */
 	public String getJSP() {
@@ -2517,7 +2517,7 @@ public class OeAGENTCarriere extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_AVANCEMENT_PREV Date de
-	 * création : (05/09/11 11:31:37)
+	 * crÃ©ation : (05/09/11 11:31:37)
 	 * 
 	 */
 	public String getNOM_PB_AVANCEMENT_PREV() {
@@ -2525,10 +2525,10 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (05/09/11 11:31:37)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (05/09/11 11:31:37)
 	 * 
 	 */
 	public boolean performPB_AVANCEMENT_PREV(HttpServletRequest request) throws Exception {
@@ -2565,7 +2565,7 @@ public class OeAGENTCarriere extends BasicProcess {
 				} else if (carr != null
 						&& (carr.getCodeCategorie().equals("6") || carr.getCodeCategorie().equals("16")
 								|| carr.getCodeCategorie().equals("17") || carr.getCodeCategorie().equals("19"))) {
-					// alors on est dans les détachés
+					// alors on est dans les dÃ©tachÃ©s
 					if (!performCalculFonctionnaire(carr)) {
 						addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 						return false;
@@ -2575,7 +2575,7 @@ public class OeAGENTCarriere extends BasicProcess {
 					// on affiche un message
 					addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 					// "ERR180",
-					// "Cet agent n'est pas fontionnaire, contractuel ou détaché.Il ne peut pas être soumis à l'avancement."
+					// "Cet agent n'est pas fontionnaire, contractuel ou dÃ©tachÃ©.Il ne peut pas Ãªtre soumis a l'avancement."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR180"));
 				}
 			} else {
@@ -2595,7 +2595,7 @@ public class OeAGENTCarriere extends BasicProcess {
 		// on recupere le grade et la filiere du poste
 		Affectation aff = getAffectationDao().chercherAffectationActiveAvecAgent(getAgentCourant().getIdAgent());
 		FichePoste fp = getFichePosteDao().chercherFichePoste(aff.getIdFichePoste());
-		// on cherche à quelle categorie appartient l'agent (A,B,A+..;)
+		// on cherche a quelle categorie appartient l'agent (A,B,A+..;)
 		Grade grade = Grade.chercherGrade(getTransaction(), fp.getCodeGrade());
 		GradeGenerique gg = GradeGenerique.chercherGradeGenerique(getTransaction(), grade.getCodeGradeGenerique());
 		FiliereGrade filiere = null;
@@ -2639,7 +2639,7 @@ public class OeAGENTCarriere extends BasicProcess {
 		addZone(getNOM_ST_INM(), Inm);
 		addZone(getNOM_EF_DATE_DEBUT(), Services.ajouteAnnee(Services.formateDate(carr.getDateDebut()), 2));
 
-		// on indique que les champs des fonctionnaires ne sont pas à afficher
+		// on indique que les champs des fonctionnaires ne sont pas Ã  afficher
 		showAccBM = false;
 	}
 
@@ -2654,7 +2654,7 @@ public class OeAGENTCarriere extends BasicProcess {
 
 		String annee = carr.getDateDebut().substring(6, carr.getDateDebut().length());
 		Grade gradeActuel = Grade.chercherGrade(getTransaction(), carr.getCodeGrade());
-		// Si pas de grade suivant, agent non éligible
+		// Si pas de grade suivant, agent non eligible
 		if (gradeActuel.getCodeGradeSuivant() != null && gradeActuel.getCodeGradeSuivant().length() != 0) {
 			// calcul BM/ACC applicables
 			int nbJoursBM = AvancementFonctionnaires.calculJourBM(gradeActuel, carr);
@@ -2775,7 +2775,7 @@ public class OeAGENTCarriere extends BasicProcess {
 			}
 			addZone(getNOM_ST_TYPE_AVCT(), motif == null ? Const.CHAINE_VIDE : motif.getLibMotifAvct());
 
-			// on indique que les champs des fonctionnaires ne sont pas à
+			// on indique que les champs des fonctionnaires ne sont pas a
 			// afficher
 			showAccBM = true;
 		} else {
@@ -2787,7 +2787,7 @@ public class OeAGENTCarriere extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_NOUV_GRADE Date de
-	 * création : (28/09/11 10:20:42)
+	 * crÃ©ation : (28/09/11 10:20:42)
 	 * 
 	 */
 	public String getNOM_ST_NOUV_GRADE() {
@@ -2795,8 +2795,8 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_NOUV_GRADE
-	 * Date de création : (28/09/11 10:20:42)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_NOUV_GRADE
+	 * Date de crÃ©ation : (28/09/11 10:20:42)
 	 * 
 	 */
 	public String getVAL_ST_NOUV_GRADE() {
@@ -2805,7 +2805,7 @@ public class OeAGENTCarriere extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_NOUV_GRADE_GEN Date
-	 * de création : (28/09/11 10:20:42)
+	 * de crÃ©ation : (28/09/11 10:20:42)
 	 * 
 	 */
 	public String getNOM_ST_NOUV_GRADE_GEN() {
@@ -2813,8 +2813,8 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_NOUV_GRADE_GEN
-	 * Date de création : (28/09/11 10:20:42)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_NOUV_GRADE_GEN
+	 * Date de crÃ©ation : (28/09/11 10:20:42)
 	 * 
 	 */
 	public String getVAL_ST_NOUV_GRADE_GEN() {
@@ -2823,7 +2823,7 @@ public class OeAGENTCarriere extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_NOUV_CLASSE Date de
-	 * création : (28/09/11 10:20:42)
+	 * crÃ©ation : (28/09/11 10:20:42)
 	 * 
 	 */
 	public String getNOM_ST_NOUV_CLASSE() {
@@ -2831,8 +2831,8 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_NOUV_CLASSE
-	 * Date de création : (28/09/11 10:20:42)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_NOUV_CLASSE
+	 * Date de crÃ©ation : (28/09/11 10:20:42)
 	 * 
 	 */
 	public String getVAL_ST_NOUV_CLASSE() {
@@ -2841,7 +2841,7 @@ public class OeAGENTCarriere extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_NOUV_ECHELON Date de
-	 * création : (28/09/11 10:20:42)
+	 * crÃ©ation : (28/09/11 10:20:42)
 	 * 
 	 */
 	public String getNOM_ST_NOUV_ECHELON() {
@@ -2849,8 +2849,8 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_NOUV_ECHELON
-	 * Date de création : (28/09/11 10:20:42)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_NOUV_ECHELON
+	 * Date de crÃ©ation : (28/09/11 10:20:42)
 	 * 
 	 */
 	public String getVAL_ST_NOUV_ECHELON() {
@@ -2891,7 +2891,7 @@ public class OeAGENTCarriere extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_GRADE Date de
-	 * création : (18/08/11 10:21:15)
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_GRADE(int i) {
@@ -2899,8 +2899,8 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_GRADE Date de
-	 * création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_GRADE Date de
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_GRADE(int i) {
@@ -2909,7 +2909,7 @@ public class OeAGENTCarriere extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_TYPE_CONTRAT Date de
-	 * création : (18/08/11 10:21:15)
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_TYPE_CONTRAT(int i) {
@@ -2917,8 +2917,8 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_TYPE_CONTRAT
-	 * Date de création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_TYPE_CONTRAT
+	 * Date de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_TYPE_CONTRAT(int i) {
@@ -2927,7 +2927,7 @@ public class OeAGENTCarriere extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_BASE_HORAIRE Date de
-	 * création : (18/08/11 10:21:15)
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_BASE_HORAIRE(int i) {
@@ -2935,8 +2935,8 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_BASE_HORAIRE
-	 * Date de création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_BASE_HORAIRE
+	 * Date de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_BASE_HORAIRE(int i) {
@@ -2944,7 +2944,7 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_IBA Date de création
+	 * Retourne pour la JSP le nom de la zone statique : ST_IBA Date de crÃ©ation
 	 * : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -2953,8 +2953,8 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_IBA Date de
-	 * création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_IBA Date de
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_IBA(int i) {
@@ -2962,7 +2962,7 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_INA Date de création
+	 * Retourne pour la JSP le nom de la zone statique : ST_INA Date de crÃ©ation
 	 * : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -2971,8 +2971,8 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_INA Date de
-	 * création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_INA Date de
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_INA(int i) {
@@ -2980,7 +2980,7 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_INM Date de création
+	 * Retourne pour la JSP le nom de la zone statique : ST_INM Date de crÃ©ation
 	 * : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -2989,8 +2989,8 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_INM Date de
-	 * création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_INM Date de
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_INM(int i) {
@@ -2999,7 +2999,7 @@ public class OeAGENTCarriere extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_DEBUT Date de
-	 * création : (18/08/11 10:21:15)
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_DEBUT(int i) {
@@ -3007,8 +3007,8 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DEBUT Date de
-	 * création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_DEBUT Date de
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_DEBUT(int i) {
@@ -3016,7 +3016,7 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_FIN Date de création
+	 * Retourne pour la JSP le nom de la zone statique : ST_FIN Date de crÃ©ation
 	 * : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -3025,8 +3025,8 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_FIN Date de
-	 * création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_FIN Date de
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_FIN(int i) {
@@ -3035,7 +3035,7 @@ public class OeAGENTCarriere extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_REF_ARR Date de
-	 * création : (18/08/11 10:21:15)
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_REF_ARR(int i) {
@@ -3043,8 +3043,8 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_REF_ARR Date
-	 * de création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_REF_ARR Date
+	 * de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_REF_ARR(int i) {
@@ -3053,7 +3053,7 @@ public class OeAGENTCarriere extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_STATUT Date de
-	 * création : (18/08/11 10:21:15)
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_STATUT(int i) {
@@ -3061,8 +3061,8 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_STATUT Date de
-	 * création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_STATUT Date de
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_STATUT(int i) {
@@ -3071,7 +3071,7 @@ public class OeAGENTCarriere extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_GRADE Date de
-	 * création : (30/08/11 10:25:41)
+	 * crÃ©ation : (30/08/11 10:25:41)
 	 * 
 	 */
 	public String getNOM_EF_GRADE() {
@@ -3079,8 +3079,8 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_GRADE Date de création : (30/08/11 10:25:41)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_GRADE Date de crÃ©ation : (30/08/11 10:25:41)
 	 * 
 	 */
 	public String getVAL_EF_GRADE() {
@@ -3092,10 +3092,10 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (16/08/11 15:48:02)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 * RG_AG_CA_A07
 	 */
@@ -3129,7 +3129,7 @@ public class OeAGENTCarriere extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_VISUALISATION Date de
-	 * création : (29/09/11 10:03:38)
+	 * crÃ©ation : (29/09/11 10:03:38)
 	 * 
 	 */
 	public String getNOM_PB_VISUALISATION(int i) {
@@ -3137,10 +3137,10 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (29/09/11 10:03:38)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (29/09/11 10:03:38)
 	 * 
 	 */
 	public boolean performPB_VISUALISATION(HttpServletRequest request, int indiceEltAConsulter) throws Exception {
@@ -3163,7 +3163,7 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMMER Date de création
+	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMMER Date de crÃ©ation
 	 * : (05/09/11 11:31:37)
 	 * 
 	 */
@@ -3172,10 +3172,10 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (05/09/11 11:31:37)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (05/09/11 11:31:37)
 	 * 
 	 * RG_AG_CA_A08
 	 */
@@ -3183,10 +3183,10 @@ public class OeAGENTCarriere extends BasicProcess {
 		// RG_AG_CA_A08
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 
-		Carriere carriereSelectionnée = (Carriere) getListeCarriere().get(indiceEltASuprimer);
-		setCarriereCourante(carriereSelectionnée);
+		Carriere carriereSelectionnee = (Carriere) getListeCarriere().get(indiceEltASuprimer);
+		setCarriereCourante(carriereSelectionnee);
 
-		if (!carriereSelectionnée.isActive()) {
+		if (!carriereSelectionnee.isActive()) {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR130"));
 			return false;
 		}
@@ -3204,7 +3204,7 @@ public class OeAGENTCarriere extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_INIT_TYPE_CONTRAT Date de
-	 * création : (17/05/11 16:01:36)
+	 * crÃ©ation : (17/05/11 16:01:36)
 	 * 
 	 */
 	public String getNOM_PB_INIT_TYPE_CONTRAT() {
@@ -3212,8 +3212,8 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	/**
-	 * Initialise le champ de fin de période d'essai à partir de la date de
-	 * début et du type de contrat. Date de création : (17/05/11 16:01:36)
+	 * Initialise le champ de fin de pÃ©riode d'essai a partir de la date de
+	 * dÃ©but et du type de contrat. Date de crÃ©ation : (17/05/11 16:01:36)
 	 * 
 	 * RG_AG_CA_C04
 	 */

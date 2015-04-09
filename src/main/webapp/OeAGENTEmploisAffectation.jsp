@@ -1,3 +1,4 @@
+<%@ page contentType="text/html; charset=UTF-8" %> 
 <!-- Sample JSP file -->
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <%@page import="nc.mairie.metier.Const"%>
@@ -24,12 +25,12 @@
 
 <TITLE>Gestion des affectations d'un agent</TITLE>
 <SCRIPT language="JavaScript">
-            //afin de sélectionner un élément dans une liste
+            //afin de sÃ©lectionner un Ã©lÃ©ment dans une liste
             function executeBouton(nom)
             {
                 document.formu.elements[nom].click();
             }
-    		// afin de mettre le focus sur une zone précise
+    		// afin de mettre le focus sur une zone prÃ©cise
     		function setfocus(nom)
     		{
     		if (document.formu.elements[nom] != null)
@@ -45,7 +46,7 @@
             }
 
         </SCRIPT>
-<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 </HEAD>
 <jsp:useBean
 	class="nc.mairie.gestionagent.process.agent.OeAGENTEmploisAffectation"
@@ -72,7 +73,7 @@
 					 	</td>
 						<td width="50px;">Direction</td>
 						<td width="300px;">Service/Section/...</td>
-						<td width="80px;" align="center">Date début</td>
+						<td width="80px;" align="center">Date dÃ©but</td>
 						<td width="80px;" align="center">Date fin</td>
 						<td width="65px;">Fiche poste</td>
 						<td width="65px;">Titre poste</td>
@@ -134,7 +135,7 @@
 			<div>
 				<FIELDSET class="sigp2Fieldset" style="text-align: left; margin: 10px;">
 					<legend class="sigp2Legend">Fiche de poste</legend>
-					<span class="sigp2Mandatory" style="position: relative; width: 150px;">Réf. fiche de poste : </span> 
+					<span class="sigp2Mandatory" style="position: relative; width: 150px;">RÃ©f. fiche de poste : </span> 
 					<span class="sigp2-statique" style="width: 100px"><%=process.getVAL_ST_NUM_FICHE_POSTE()%></span>
 					<%
 						if (process.getVAL_ST_ACTION().equals(process.ACTION_CREATION)) {
@@ -144,7 +145,7 @@
 					<%
 						}
 					%>
-					<span class="sigp2" style="width: 125px">Temps réglementaire :</span> 
+					<span class="sigp2" style="width: 125px">Temps rÃ©glementaire :</span> 
 					<span class="sigp2-statique" style="width: 170px"><%=process.getVAL_ST_TPS_REG()%></span>
 					<BR /> <BR /> 
 					<span class="sigp2" style="width: 60px">Direction :</span> 
@@ -167,10 +168,10 @@
 				%>
 				<FIELDSET class="sigp2Fieldset" style="text-align: left; margin: 10px;">
 					<legend class="sigp2Legend">Fiche de poste secondaire</legend>
-					<span class="sigp2Mandatory" style="position: relative; width: 150px;">Réf. fiche de poste : </span> 
+					<span class="sigp2Mandatory" style="position: relative; width: 150px;">RÃ©f. fiche de poste : </span> 
 					<span class="sigp2-statique" style="width: 100px"><%=process.getVAL_ST_NUM_FICHE_POSTE_SECONDAIRE()%></span>
 					<INPUT type="image" src="images/loupe.gif" name="<%=process.getNOM_PB_RECHERCHER_FP_SECONDAIRE()%>">
-					<span class="sigp2" style="width: 125px">Temps réglementaire :</span> 
+					<span class="sigp2" style="width: 125px">Temps rÃ©glementaire :</span> 
 					<span class="sigp2-statique" style="width: 170px"><%=process.getVAL_ST_TPS_REG_SECONDAIRE()%></span>
 					<BR /> <BR /> 
 					<span class="sigp2" style="width: 60px">Direction :</span> 
@@ -193,7 +194,7 @@
 				%>
 
 				<FIELDSET class="sigp2Fieldset" style="text-align: left; margin: 10px;">
-					<legend class="sigp2Legend">Spécificités</legend>
+					<legend class="sigp2Legend">SpÃ©cificitÃ©s</legend>
 					<%
 						if (process.getAgentCourant() != null) {
 					%>
@@ -204,9 +205,9 @@
 					    <INPUT tabindex=""	type="radio" 
 						<%=process.forRadioHTML(process.getNOM_RG_SPECIFICITE(), process.getNOM_RB_SPECIFICITE_AN())%> onclick='executeBouton("<%=process.getNOM_PB_CHANGER_SPECIFICITE()%>")'>Avantage en nature <span style="width: 5px"></span> 
 						<INPUT tabindex=""	type="radio"
-						<%=process.forRadioHTML(process.getNOM_RG_SPECIFICITE(), process.getNOM_RB_SPECIFICITE_D())%>	onclick='executeBouton("<%=process.getNOM_PB_CHANGER_SPECIFICITE()%>")'>Délégation	<span style="width: 5px"></span> 
+						<%=process.forRadioHTML(process.getNOM_RG_SPECIFICITE(), process.getNOM_RB_SPECIFICITE_D())%>	onclick='executeBouton("<%=process.getNOM_PB_CHANGER_SPECIFICITE()%>")'>DÃ©lÃ©gation	<span style="width: 5px"></span> 
 						<INPUT type="radio"
-						<%=process.forRadioHTML(process.getNOM_RG_SPECIFICITE(), process.getNOM_RB_SPECIFICITE_RI())%> onclick='executeBouton("<%=process.getNOM_PB_CHANGER_SPECIFICITE()%>")'>Régime indemnitaire <span style="width: 5px"></span>  
+						<%=process.forRadioHTML(process.getNOM_RG_SPECIFICITE(), process.getNOM_RB_SPECIFICITE_RI())%> onclick='executeBouton("<%=process.getNOM_PB_CHANGER_SPECIFICITE()%>")'>RÃ©gime indemnitaire <span style="width: 5px"></span>  
 						<INPUT type="submit" style="visibility: hidden;" name="<%=process.getNOM_PB_CHANGER_SPECIFICITE()%>" value="OK">
 					</div>
 					<%
@@ -725,7 +726,7 @@
 			style="text-align: left; margin: 10px;">
 			<legend class="sigp2Legend">Fiche de poste secondaire</legend>
 			<span class="sigp2Mandatory"
-				style="position: relative; width: 150px;">Réf. fiche de poste
+				style="position: relative; width: 150px;">RÃ©f. fiche de poste
 				: </span> <span class="sigp2-statique" style="width: 100px"><%=process.getVAL_ST_NUM_FICHE_POSTE_SECONDAIRE()%></span>
 			<%
 				if (process.getVAL_ST_ACTION().equals(process.ACTION_CREATION)) {
@@ -735,7 +736,7 @@
 			<%
 				}
 			%>
-			<span class="sigp2" style="width: 125px">Temps réglementaire :</span>
+			<span class="sigp2" style="width: 125px">Temps rÃ©glementaire :</span>
 			<span class="sigp2-statique" style="width: 170px"><%=process.getVAL_ST_TPS_REG_SECONDAIRE()%></span>
 			<BR /> <BR /> <span class="sigp2" style="width: 60px">Direction
 				:</span> <span class="sigp2-statique" style="width: 250px"><%=process.getVAL_ST_DIRECTION_SECONDAIRE()%></span>
@@ -761,14 +762,14 @@
 				if (!process.getVAL_ST_ACTION().equals(process.ACTION_IMPRESSION) && !process.getVAL_ST_ACTION().equals(process.ACTION_SUPPRESSION) && !process.getVAL_ST_ACTION().equals(process.ACTION_CONSULTATION)) {
 			%>
 			<span class="sigp2"
-				style="margin-left: 20px; position: relative; width: 123px;">Réf.
-				Arrêté : </span> 
+				style="margin-left: 20px; position: relative; width: 123px;">RÃ©f.
+				ArrÃªtÃ© : </span> 
 				<INPUT class="sigp2-saisiemajusculenongras" maxlength="6"
 				name="<%=process.getNOM_EF_REF_ARRETE()%>" size="10" type="text"
 				value="<%=process.getVAL_EF_REF_ARRETE()%>"
 				style="margin-right: 60px;"> <span class="sigp2Mandatory"
 				style="margin-left: 20px; position: relative; width: 112px;">Date
-				arrêté : </span> 
+				arrÃªtÃ© : </span> 
 				<INPUT id="<%=process.getNOM_EF_DATE_ARRETE()%>" class="sigp2-saisie" maxlength="10"
 				name="<%=process.getNOM_EF_DATE_ARRETE()%>" size="10" type="text"
 				value="<%=process.getVAL_EF_DATE_ARRETE()%>"> 
@@ -776,7 +777,7 @@
 				onclick="return showCalendar('<%=process.getNOM_EF_DATE_ARRETE()%>', 'dd/mm/y');"
 				hspace="5"> <span class="sigp2Mandatory"
 				style="margin-left: 20px; position: relative; width: 85px;">Date
-				début : </span> 
+				dÃ©but : </span> 
 				<INPUT id="<%=process.getNOM_EF_DATE_DEBUT()%>" class="sigp2-saisie" maxlength="10"
 				name="<%=process.getNOM_EF_DATE_DEBUT()%>" size="10" type="text"
 				value="<%=process.getVAL_EF_DATE_DEBUT()%>"> <IMG
@@ -816,7 +817,7 @@
 				</SELECT>
 				<span class="sigp2Mandatory" style="margin-left: 20px; position: relative; width: 120px;"><%=process.getVAL_EF_INFO_POINTAGE_FDP()%></span> 
 				<BR /> <BR />
-				<span class="sigp2Mandatory" style="margin-left: 20px; position: relative; width: 120px;">Base congé :</span> 
+				<span class="sigp2Mandatory" style="margin-left: 20px; position: relative; width: 120px;">Base congÃ© :</span> 
 				<SELECT class="sigp2-saisie" name="<%=process.getNOM_LB_BASE_HORAIRE_ABSENCE()%>" style="width: 140px;">
 					<%=process.forComboHTML(process.getVAL_LB_BASE_HORAIRE_ABSENCE(), process.getVAL_LB_BASE_HORAIRE_ABSENCE_SELECT())%>
 				</SELECT>
@@ -827,7 +828,7 @@
 			%>
 			<span class="sigp2"
 				style="margin-left: 20px; position: relative; width: 200px;">Choix
-				du document à imprimer :</span> <SELECT class="sigp2-saisie"
+				du document Ã  imprimer :</span> <SELECT class="sigp2-saisie"
 				name="<%=process.getNOM_LB_LISTE_IMPRESSION()%>"
 				style="width: 250px;">
 				<%=process.forComboHTML(process.getVAL_LB_LISTE_IMPRESSION(), process.getVAL_LB_LISTE_IMPRESSION_SELECT())%>
@@ -837,19 +838,19 @@
 				} else {
 			%>
 			<span class="sigp2"
-				style="margin-left: 20px; position: relative; width: 123px;">Réf.
-				Arrêté : </span> <INPUT class="sigp2-saisiemajusculenongras" maxlength="5"
+				style="margin-left: 20px; position: relative; width: 123px;">RÃ©f.
+				ArrÃªtÃ© : </span> <INPUT class="sigp2-saisiemajusculenongras" maxlength="5"
 				name="<%=process.getNOM_EF_REF_ARRETE()%>" size="10" type="text"
 				value="<%=process.getVAL_EF_REF_ARRETE()%>"
 				style="margin-right: 60px;" disabled="disabled"> <span
 				class="sigp2Mandatory"
 				style="margin-left: 20px; position: relative; width: 112px;">Date
-				arrêté : </span> <INPUT class="sigp2-saisie" maxlength="10"
+				arrÃªtÃ© : </span> <INPUT class="sigp2-saisie" maxlength="10"
 				name="<%=process.getNOM_EF_DATE_ARRETE()%>" size="10" type="text"
 				value="<%=process.getVAL_EF_DATE_ARRETE()%>" disabled="disabled">
 			<span class="sigp2Mandatory"
 				style="margin-left: 20px; position: relative; width: 85px;">Date
-				début : </span> <INPUT class="sigp2-saisie" maxlength="10"
+				dÃ©but : </span> <INPUT class="sigp2-saisie" maxlength="10"
 				name="<%=process.getNOM_EF_DATE_DEBUT()%>" size="10" type="text"
 				value="<%=process.getVAL_EF_DATE_DEBUT()%>" disabled="disabled">
 			<span class="sigp2"
@@ -883,7 +884,7 @@
 				</SELECT>
 				<span class="sigp2Mandatory" style="margin-left: 20px; position: relative; width: 120px;"><%=process.getVAL_EF_INFO_POINTAGE_FDP()%></span> 
 				<BR /> <BR />
-				<span class="sigp2Mandatory" style="margin-left: 20px; position: relative; width: 120px;">Base congé :</span> 
+				<span class="sigp2Mandatory" style="margin-left: 20px; position: relative; width: 120px;">Base congÃ© :</span> 
 				<SELECT class="sigp2-saisie" name="<%=process.getNOM_LB_BASE_HORAIRE_ABSENCE()%>" style="width: 140px;" disabled="disabled">
 					<%=process.forComboHTML(process.getVAL_LB_BASE_HORAIRE_ABSENCE(), process.getVAL_LB_BASE_HORAIRE_ABSENCE_SELECT())%>
 				</SELECT>

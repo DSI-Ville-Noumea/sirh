@@ -1,4 +1,4 @@
-<!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@ page contentType="text/html; charset=UTF-8" %> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <%@page import="nc.mairie.utils.MairieUtils"%>
 <HTML>
 	
@@ -10,7 +10,7 @@
 <LINK href="theme/dataTables.css" rel="stylesheet" type="text/css">
 <LINK href="TableTools-2.0.1/media/css/TableTools.css" rel="stylesheet" type="text/css">
 		
-		<TITLE>Historique du suivi médical</TITLE>	
+		<TITLE>Historique du suivi mÃ©dical</TITLE>	
 
 <script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
 <script type="text/javascript" src="js/jquery.dataTables.js"></script>
@@ -18,7 +18,7 @@
 			
 	<SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT> 
 
-		<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	</HEAD>
 	<jsp:useBean class="nc.mairie.gestionagent.process.OeSMHistorique" id="process" scope="session"></jsp:useBean>
 	<BODY bgcolor="#FFFFFF" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="window.parent.frames['refAgent'].location.reload();" >
@@ -27,12 +27,12 @@
 		<INPUT name="JSP" type="hidden" value="<%= process.getJSP() %>">
 		<BR/>
 		<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
-		<legend class="sigp2Legend">Historique des visites médicales du travail</legend>
+		<legend class="sigp2Legend">Historique des visites mÃ©dicales du travail</legend>
 			<span class="sigp2" style="width:35px">Mois : </span>
 			<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_MOIS() %>" style="width=90px;">
 				<%=process.forComboHTML(process.getVAL_LB_MOIS(), process.getVAL_LB_MOIS_SELECT()) %>
 			</SELECT>
-			<span class="sigp2" style="width:45px;margin-left:20px;">Année : </span>
+			<span class="sigp2" style="width:45px;margin-left:20px;">AnnÃ©e : </span>
 			<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_ANNEE() %>" style="width=60px;">
 				<%=process.forComboHTML(process.getVAL_LB_ANNEE(), process.getVAL_LB_ANNEE_SELECT()) %>
 			</SELECT>
@@ -56,7 +56,7 @@
 							<th>Date RDV</th>
 							<th>Heure RDV</th>
 							<th>Avis</th>
-							<th>Effectuée</th>
+							<th>EffectuÃ©e</th>
 						</tr>
 					</thead>
 					<tbody>

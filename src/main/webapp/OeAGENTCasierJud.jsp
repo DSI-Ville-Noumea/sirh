@@ -1,4 +1,4 @@
-<!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@ page contentType="text/html; charset=UTF-8" %> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <%@page import="nc.mairie.utils.MairieUtils"%>
 <%@page import="nc.mairie.enums.EnumTypeDroit"%>
 <HTML>
@@ -13,13 +13,13 @@
 <SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT> 
 
 <SCRIPT language="JavaScript">
-		//afin de sélectionner un élément dans une liste
+		//afin de sÃ©lectionner un Ã©lÃ©ment dans une liste
 		function executeBouton(nom)
 		{
 		document.formu.elements[nom].click();
 		}
 		
-		// afin de mettre le focus sur une zone précise
+		// afin de mettre le focus sur une zone prÃ©cise
 		function setfocus(nom)
 		{
 		if (document.formu.elements[nom] != null)
@@ -35,7 +35,7 @@
 		}
 
 </SCRIPT>
-<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 </HEAD>
 <jsp:useBean
  class="nc.mairie.gestionagent.process.agent.OeAGENTCasierJud" id="process" scope="session"></jsp:useBean>
@@ -49,7 +49,7 @@
 				    <br/>
 				    <span style="margin-left: 5px;"><INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_CREER()%>"></span>
 				    <span style="margin-left: 50px;">Date de l'extrait</span>
-					<span style="margin-left: 5px;">Numéro</span>
+					<span style="margin-left: 5px;">NumÃ©ro</span>
 					<span style="margin-left: 70px;">Privation</span>
 					<span style="margin-left: 10px;">Commentaire</span>
 					<br/>
@@ -99,7 +99,7 @@
 			</tr>
 			<tr>
 				<td>
-					<span class="sigp2Mandatory">Numéro : </span>
+					<span class="sigp2Mandatory">NumÃ©ro : </span>
 				</td>
 				<td>
 					<span>
@@ -147,7 +147,7 @@
 				</tr>
 				<tr>
 					<td width="180px">
-						<span class="sigp2">Numéro : </span>
+						<span class="sigp2">NumÃ©ro : </span>
 					</td>
 					<td>
 						<span class="sigp2-saisie"><%=process.getVAL_EF_NUM_EXTRAIT()%></span>

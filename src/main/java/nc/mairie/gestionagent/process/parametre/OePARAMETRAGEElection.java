@@ -17,7 +17,7 @@ import nc.mairie.utils.MessageUtils;
 import flexjson.JSONSerializer;
 
 /**
- * Process OePARAMETRAGEElection Date de création : (14/09/11 13:52:54)
+ * Process OePARAMETRAGEElection Date de crÃ©ation : (14/09/11 13:52:54)
  * 
  */
 public class OePARAMETRAGEElection extends BasicProcess {
@@ -34,10 +34,10 @@ public class OePARAMETRAGEElection extends BasicProcess {
 	private ArrayList<OrganisationSyndicaleDto> listeOrganisation;
 
 	/**
-	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones Ã  afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
-	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
-	 * addZone(getNOMxxx, String); Date de création : (14/09/11 13:52:54)
+	 * doivent avoir les Fields PUBLIC Utilisation de la mÃ©thode
+	 * addZone(getNOMxxx, String); Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public void initialiseZones(HttpServletRequest request) throws Exception {
@@ -45,11 +45,11 @@ public class OePARAMETRAGEElection extends BasicProcess {
 		VariableGlobale.ajouter(request, "PROCESS_MEMORISE", this);
 
 		// ----------------------------------//
-		// Vérification des droits d'accès. //
+		// VÃ©rification des droits d'acces. //
 		// ----------------------------------//
 		if (MairieUtils.estInterdit(request, getNomEcran())) {
 			// "ERR190",
-			// "Opération impossible. Vous ne disposez pas des droits d'accès à cette option."
+			// "Operation impossible. Vous ne disposez pas des droits d'acces a cette option."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
@@ -83,7 +83,7 @@ public class OePARAMETRAGEElection extends BasicProcess {
 	}
 
 	/**
-	 * Constructeur du process OePARAMETRAGEElection. Date de création :
+	 * Constructeur du process OePARAMETRAGEElection. Date de crÃ©ation :
 	 * (14/09/11 13:52:54)
 	 * 
 	 */
@@ -92,8 +92,8 @@ public class OePARAMETRAGEElection extends BasicProcess {
 	}
 
 	/**
-	 * Méthode appelée par la servlet qui aiguille le traitement : en fonction
-	 * du bouton de la JSP Date de création : (14/09/11 13:52:54)
+	 * mÃ©thode appelee par la servlet qui aiguille le traitement : en fonction
+	 * du bouton de la JSP Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public boolean recupererStatut(HttpServletRequest request) throws Exception {
@@ -121,14 +121,14 @@ public class OePARAMETRAGEElection extends BasicProcess {
 				return performPB_VALIDER_ORGANISATION(request);
 			}
 		}
-		// Si TAG INPUT non géré par le process
+		// Si TAG INPUT non gÃ©rÃ© par le process
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
 
 	/**
-	 * Retourne le nom de la JSP du process Zone à utiliser dans un champ caché
-	 * dans chaque formulaire de la JSP. Date de création : (14/09/11 15:20:21)
+	 * Retourne le nom de la JSP du process Zone a utiliser dans un champ cache
+	 * dans chaque formulaire de la JSP. Date de crÃ©ation : (14/09/11 15:20:21)
 	 * 
 	 */
 	public String getJSP() {
@@ -136,8 +136,8 @@ public class OePARAMETRAGEElection extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de l'écran (notamment pour déterminer les droits
-	 * associés).
+	 * Retourne le nom de l'Ã©cran (notamment pour dÃ©terminer les droits
+	 * associÃ©s).
 	 */
 	public String getNomEcran() {
 		return "ECR-PARAM-ELEC";
@@ -159,7 +159,7 @@ public class OePARAMETRAGEElection extends BasicProcess {
 
 	/**
 	 * @param focus
-	 *            focus à définir.
+	 *            focus Ã  dÃ©finir.
 	 */
 	public void setFocus(String focus) {
 		this.focus = focus;
@@ -298,7 +298,7 @@ public class OePARAMETRAGEElection extends BasicProcess {
 		// Verification libelle not null
 		if (getZone(getNOM_EF_LIB_ORGANISATION()).length() == 0) {
 			// "ERR002","La zone @ est obligatoire."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "libellé"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "libellÃ©"));
 			setFocus(getDefaultFocus());
 			return false;
 		}

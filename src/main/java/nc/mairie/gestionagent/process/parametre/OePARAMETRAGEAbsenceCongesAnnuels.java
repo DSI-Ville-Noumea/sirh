@@ -34,7 +34,7 @@ import org.springframework.context.ApplicationContext;
 import flexjson.JSONSerializer;
 
 /**
- * Process OePARAMETRAGERecrutement Date de création : (14/09/11 13:52:54)
+ * Process OePARAMETRAGERecrutement Date de crÃ©ation : (14/09/11 13:52:54)
  * 
  */
 public class OePARAMETRAGEAbsenceCongesAnnuels extends BasicProcess {
@@ -49,19 +49,19 @@ public class OePARAMETRAGEAbsenceCongesAnnuels extends BasicProcess {
 	private ArrayList<RefAlimCongesAnnuelsDto> listeAlimMensuelle;
 	private RefAlimCongesAnnuelsDto alimCongesAnnuelsCourant;
 
-	public String ACTION_MODIFICATION = "Modification d'un congé annuel :";
-	public String ACTION_VISUALISATION = "Visualisation d'un congé annuel :";
-	public String ACTION_ALIM_MENSUELLE = "Visualisation des alimentations mensuelles d'un congé annuel";
-	public String ACTION_MODIF_ALIM_MENSUELLE = "Modification des alimentations mensuelles d'un congé annuel";
-	public String ACTION_CREATION_ALIM_MENSUELLE = "Création d'une alimentation mensuelle d'un congé annuel";
+	public String ACTION_MODIFICATION = "Modification d'un congÃ© annuel :";
+	public String ACTION_VISUALISATION = "Visualisation d'un congÃ© annuel :";
+	public String ACTION_ALIM_MENSUELLE = "Visualisation des alimentations mensuelles d'un congÃ© annuel";
+	public String ACTION_MODIF_ALIM_MENSUELLE = "Modification des alimentations mensuelles d'un congÃ© annuel";
+	public String ACTION_CREATION_ALIM_MENSUELLE = "CrÃ©ation d'une alimentation mensuelle d'un congÃ© annuel";
 
 	private AgentDao agentDao;
 
 	/**
-	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones Ã  afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
-	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
-	 * addZone(getNOMxxx, String); Date de création : (14/09/11 13:52:54)
+	 * doivent avoir les Fields PUBLIC Utilisation de la mÃ©thode
+	 * addZone(getNOMxxx, String); Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public void initialiseZones(HttpServletRequest request) throws Exception {
@@ -69,11 +69,11 @@ public class OePARAMETRAGEAbsenceCongesAnnuels extends BasicProcess {
 		VariableGlobale.ajouter(request, "PROCESS_MEMORISE", this);
 
 		// ----------------------------------//
-		// Vérification des droits d'accès. //
+		// VÃ©rification des droits d'acces. //
 		// ----------------------------------//
 		if (MairieUtils.estInterdit(request, getNomEcran())) {
 			// "ERR190",
-			// "Opération impossible. Vous ne disposez pas des droits d'accès à cette option."
+			// "Operation impossible. Vous ne disposez pas des droits d'acces a cette option."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
@@ -114,7 +114,7 @@ public class OePARAMETRAGEAbsenceCongesAnnuels extends BasicProcess {
 	}
 
 	/**
-	 * Constructeur du process OePARAMETRAGEAbsence. Date de création :
+	 * Constructeur du process OePARAMETRAGEAbsence. Date de crÃ©ation :
 	 * (14/09/11 13:52:54)
 	 * 
 	 */
@@ -123,8 +123,8 @@ public class OePARAMETRAGEAbsenceCongesAnnuels extends BasicProcess {
 	}
 
 	/**
-	 * Méthode appelée par la servlet qui aiguille le traitement : en fonction
-	 * du bouton de la JSP Date de création : (14/09/11 13:52:54)
+	 * mÃ©thode appelee par la servlet qui aiguille le traitement : en fonction
+	 * du bouton de la JSP Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public boolean recupererStatut(HttpServletRequest request) throws Exception {
@@ -184,14 +184,14 @@ public class OePARAMETRAGEAbsenceCongesAnnuels extends BasicProcess {
 				return performPB_ANNULER_ALIM_MENSUELLE(request);
 			}
 		}
-		// Si TAG INPUT non géré par le process
+		// Si TAG INPUT non gÃ©rÃ© par le process
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
 
 	/**
-	 * Retourne le nom de la JSP du process Zone à utiliser dans un champ caché
-	 * dans chaque formulaire de la JSP. Date de création : (14/09/11 15:20:21)
+	 * Retourne le nom de la JSP du process Zone a utiliser dans un champ cache
+	 * dans chaque formulaire de la JSP. Date de crÃ©ation : (14/09/11 15:20:21)
 	 * 
 	 */
 	public String getJSP() {
@@ -199,8 +199,8 @@ public class OePARAMETRAGEAbsenceCongesAnnuels extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de l'écran (notamment pour déterminer les droits
-	 * associés).
+	 * Retourne le nom de l'Ã©cran (notamment pour dÃ©terminer les droits
+	 * associÃ©s).
 	 */
 	public String getNomEcran() {
 		return "ECR-PARAM-ABS-CONG";
@@ -222,7 +222,7 @@ public class OePARAMETRAGEAbsenceCongesAnnuels extends BasicProcess {
 
 	/**
 	 * @param focus
-	 *            focus à définir.
+	 *            focus Ã  dÃ©finir.
 	 */
 	public void setFocus(String focus) {
 		this.focus = focus;
@@ -322,10 +322,10 @@ public class OePARAMETRAGEAbsenceCongesAnnuels extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (29/09/11 10:03:38)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (29/09/11 10:03:38)
 	 * 
 	 */
 	public boolean performPB_VISUALISATION(HttpServletRequest request, int indiceEltAConsulter) throws Exception {
@@ -434,7 +434,7 @@ public class OePARAMETRAGEAbsenceCongesAnnuels extends BasicProcess {
 		}
 		if (getVAL_ST_ACTION().equals(ACTION_MODIFICATION)) {
 
-			// vérification de la validité du formulaire
+			// VÃ©rification de la validitÃ© du formulaire
 			if (!performControlerChamps(request))
 				return false;
 
@@ -481,7 +481,7 @@ public class OePARAMETRAGEAbsenceCongesAnnuels extends BasicProcess {
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 		viderZoneSaisie(request);
-		// on vide la liste afin qu'elle soit re-affichée
+		// on vide la liste afin qu'elle soit re-affichÃ©e
 		getListeTypeAbsence().clear();
 		return true;
 	}
@@ -491,7 +491,7 @@ public class OePARAMETRAGEAbsenceCongesAnnuels extends BasicProcess {
 		// format QUOTA
 		if (!(Const.CHAINE_VIDE).equals(getVAL_ST_QUOTA_MULTIPLE())
 				&& !Services.estNumerique(getVAL_ST_QUOTA_MULTIPLE())) {
-			// "ERR992", "La zone @ doit être numérique."
+			// "ERR992", "La zone @ doit Ãªtre numÃ©rique."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "quota multiple"));
 			return false;
 		}
@@ -864,7 +864,7 @@ public class OePARAMETRAGEAbsenceCongesAnnuels extends BasicProcess {
 
 	public boolean performPB_VALIDER_ALIM_MENSUELLE(HttpServletRequest request) throws Exception {
 
-		// vérification de la validité du formulaire
+		// VÃ©rification de la validitÃ© du formulaire
 		if (!performControlerChampsAlimMensuelle(request))
 			return false;
 
@@ -932,16 +932,16 @@ public class OePARAMETRAGEAbsenceCongesAnnuels extends BasicProcess {
 	}
 
 	private boolean performControlerChampsAlimMensuelle(HttpServletRequest request) {
-		// Verification année not null
+		// Verification annÃ©e not null
 		if (getZone(getNOM_EF_ANNEE_ALIM()).length() == 0) {
 			// "ERR002","La zone @ est obligatoire."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "année"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "annÃ©e"));
 			return false;
 		}
-		// format année
+		// format annÃ©e
 		if (!Services.estNumerique(getVAL_EF_ANNEE_ALIM())) {
-			// "ERR992", "La zone @ doit être numérique."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "année"));
+			// "ERR992", "La zone @ doit Ãªtre numÃ©rique."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "annÃ©e"));
 			return false;
 		}
 		// Verification janvier not null
@@ -952,20 +952,20 @@ public class OePARAMETRAGEAbsenceCongesAnnuels extends BasicProcess {
 		}
 		// format janvier
 		if (!Services.estFloat(getVAL_EF_JANVIER_ALIM())) {
-			// "ERR992", "La zone @ doit être numérique."
+			// "ERR992", "La zone @ doit Ãªtre numÃ©rique."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "janvier"));
 			return false;
 		}
-		// Verification février not null
+		// Verification fÃ©vrier not null
 		if (getZone(getNOM_EF_FEVRIER_ALIM()).length() == 0) {
 			// "ERR002","La zone @ est obligatoire."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "février"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "fÃ©vrier"));
 			return false;
 		}
-		// format année
+		// format annÃ©e
 		if (!Services.estFloat(getVAL_EF_FEVRIER_ALIM())) {
-			// "ERR992", "La zone @ doit être numérique."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "février"));
+			// "ERR992", "La zone @ doit Ãªtre numÃ©rique."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "fÃ©vrier"));
 			return false;
 		}
 		// Verification mars not null
@@ -974,9 +974,9 @@ public class OePARAMETRAGEAbsenceCongesAnnuels extends BasicProcess {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "mars"));
 			return false;
 		}
-		// format année
+		// format annÃ©e
 		if (!Services.estFloat(getVAL_EF_MARS_ALIM())) {
-			// "ERR992", "La zone @ doit être numérique."
+			// "ERR992", "La zone @ doit Ãªtre numÃ©rique."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "mars"));
 			return false;
 		}
@@ -988,7 +988,7 @@ public class OePARAMETRAGEAbsenceCongesAnnuels extends BasicProcess {
 		}
 		// format avril
 		if (!Services.estFloat(getVAL_EF_AVRIL_ALIM())) {
-			// "ERR992", "La zone @ doit être numérique."
+			// "ERR992", "La zone @ doit Ãªtre numÃ©rique."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "avril"));
 			return false;
 		}
@@ -1000,7 +1000,7 @@ public class OePARAMETRAGEAbsenceCongesAnnuels extends BasicProcess {
 		}
 		// format mai
 		if (!Services.estFloat(getVAL_EF_MAI_ALIM())) {
-			// "ERR992", "La zone @ doit être numérique."
+			// "ERR992", "La zone @ doit Ãªtre numÃ©rique."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "mai"));
 			return false;
 		}
@@ -1012,7 +1012,7 @@ public class OePARAMETRAGEAbsenceCongesAnnuels extends BasicProcess {
 		}
 		// format juin
 		if (!Services.estFloat(getVAL_EF_JUIN_ALIM())) {
-			// "ERR992", "La zone @ doit être numérique."
+			// "ERR992", "La zone @ doit Ãªtre numÃ©rique."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "juin"));
 			return false;
 		}
@@ -1024,7 +1024,7 @@ public class OePARAMETRAGEAbsenceCongesAnnuels extends BasicProcess {
 		}
 		// format juillet
 		if (!Services.estFloat(getVAL_EF_JUILLET_ALIM())) {
-			// "ERR992", "La zone @ doit être numérique."
+			// "ERR992", "La zone @ doit Ãªtre numÃ©rique."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "juillet"));
 			return false;
 		}
@@ -1036,7 +1036,7 @@ public class OePARAMETRAGEAbsenceCongesAnnuels extends BasicProcess {
 		}
 		// format aout
 		if (!Services.estFloat(getVAL_EF_AOUT_ALIM())) {
-			// "ERR992", "La zone @ doit être numérique."
+			// "ERR992", "La zone @ doit Ãªtre numÃ©rique."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "aout"));
 			return false;
 		}
@@ -1048,7 +1048,7 @@ public class OePARAMETRAGEAbsenceCongesAnnuels extends BasicProcess {
 		}
 		// format septembre
 		if (!Services.estFloat(getVAL_EF_SEPTEMBRE_ALIM())) {
-			// "ERR992", "La zone @ doit être numérique."
+			// "ERR992", "La zone @ doit Ãªtre numÃ©rique."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "septembre"));
 			return false;
 		}
@@ -1060,7 +1060,7 @@ public class OePARAMETRAGEAbsenceCongesAnnuels extends BasicProcess {
 		}
 		// format octobre
 		if (!Services.estFloat(getVAL_EF_OCTOBRE_ALIM())) {
-			// "ERR992", "La zone @ doit être numérique."
+			// "ERR992", "La zone @ doit Ãªtre numÃ©rique."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "octobre"));
 			return false;
 		}
@@ -1072,20 +1072,20 @@ public class OePARAMETRAGEAbsenceCongesAnnuels extends BasicProcess {
 		}
 		// format novembre
 		if (!Services.estFloat(getVAL_EF_NOVEMBRE_ALIM())) {
-			// "ERR992", "La zone @ doit être numérique."
+			// "ERR992", "La zone @ doit Ãªtre numÃ©rique."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "novembre"));
 			return false;
 		}
-		// Verification décembre not null
+		// Verification dÃ©cembre not null
 		if (getZone(getNOM_EF_DECEMBRE_ALIM()).length() == 0) {
 			// "ERR002","La zone @ est obligatoire."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "décembre"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "dÃ©cembre"));
 			return false;
 		}
-		// format décembre
+		// format dÃ©cembre
 		if (!Services.estFloat(getVAL_EF_DECEMBRE_ALIM())) {
-			// "ERR992", "La zone @ doit être numérique."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "décembre"));
+			// "ERR992", "La zone @ doit Ãªtre numÃ©rique."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "dÃ©cembre"));
 			return false;
 		}
 

@@ -1,3 +1,4 @@
+<%@ page contentType="text/html; charset=UTF-8" %> 
 <%@page import="nc.mairie.gestionagent.process.pointage.OePTGVentilationUtils"%>
 <%@page import="nc.mairie.gestionagent.pointage.dto.VentilAbsenceDto"%>
 <%@page import="java.util.List"%>
@@ -10,11 +11,11 @@
 							<thead>
 								<tr>
 									<th width="70px">Matricule Agent</th>
-									<th width="150px">Nom prénom</th>
-									<th width="70px">Mois-année</th>
-									<th width="70px">Abs concertées</th>
-									<th width="70px">Abs non concertées</th>
-									<th width="70px">Abs immédiates</th>
+									<th width="150px">Nom prÃ©nom</th>
+									<th width="70px">Mois-annÃ©e</th>
+									<th width="70px">Abs concertÃ©es</th>
+									<th width="70px">Abs non concertÃ©es</th>
+									<th width="70px">Abs immÃ©diates</th>
 									<th width="70px">Total</th>
 									<th width="30px">&nbsp</th>
 								</tr>
@@ -58,7 +59,7 @@
 									<td><%= OePTGVentilationUtils.getHeureMinute(minutesImmediates)%></td>
 									<td><%= OePTGVentilationUtils.getHeureMinute(minutesConcertees + minutesNonConcertees + minutesImmediates)%></td>
 									<td>
-										<img  src="images/loupe.gif" height="16px" width="16px" title="Voir le détail du mois" onClick="loadVentilationAbsHistory('<%=process.getValHistoryAbs(moisAnneeR,idAgent)%>', '<%=process.getHistoryAbs(moisAnneeR,idAgent)%>')">
+										<img  src="images/loupe.gif" height="16px" width="16px" title="Voir le dÃ©tail du mois" onClick="loadVentilationAbsHistory('<%=process.getValHistoryAbs(moisAnneeR,idAgent)%>', '<%=process.getHistoryAbs(moisAnneeR,idAgent)%>')">
 									</td>			
 								</tr>
 								<%} %>

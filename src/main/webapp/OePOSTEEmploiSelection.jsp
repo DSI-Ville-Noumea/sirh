@@ -1,20 +1,20 @@
-<!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@ page contentType="text/html; charset=UTF-8" %> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <HTML>
 <HEAD>
 <META name="GENERATOR" content="IBM WebSphere Page Designer V3.5.3 for Windows">
 <META http-equiv="Content-Style-Type" content="text/css">
 <LINK href="theme/sigp2.css" rel="stylesheet" type="text/css">
-<TITLE>Sélection d'une fiche emploi</TITLE>
+<TITLE>SÃ©lection d'une fiche emploi</TITLE>
 <SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT> 
 <SCRIPT language="javaScript">
 
-//afin de sélectionner un élément dans une liste
+//afin de sÃ©lectionner un Ã©lÃ©ment dans une liste
 function executeBouton(nom)
 {
 document.formu.elements[nom].click();
 }
 
-// afin de mettre le focus sur une zone précise
+// afin de mettre le focus sur une zone prÃ©cise
 function setfocus(nom)
 {
 if (document.formu.elements[nom] != null)
@@ -30,7 +30,7 @@ document.formu.elements[nom].focus();
 		}
 
 </SCRIPT>
-<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 </HEAD>
 <jsp:useBean class="nc.mairie.gestionagent.process.poste.OePOSTEEmploiSelection" id="process" scope="session"></jsp:useBean>
 <BODY bgcolor="#FFFFFF" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" style="tab-interval:35.4pt" onload="return setfocus('<%= process.getFocus() %>')" >
@@ -39,9 +39,9 @@ document.formu.elements[nom].focus();
 	<FORM name="formu" method="POST" class="sigp2-titre">
 		<INPUT name="JSP" type="hidden" value="<%= process.getJSP() %>">
 	    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px">
-		    <legend class="sigp2Legend">Sélection d'une fiche emploi</legend>
+		    <legend class="sigp2Legend">SÃ©lection d'une fiche emploi</legend>
 		    <br/>
-			<span class="sigp2">Ref. mairie commençant par :</span>
+			<span class="sigp2">Ref. mairie commenÃ§ant par :</span>
 			<span>
 				<INPUT class="sigp2-saisiemajuscule" maxlength="60" name="<%= process.getNOM_EF_RECHERCHE() %>" size="20" type="text" value="<%= process.getVAL_EF_RECHERCHE() %>">
 			</span>
@@ -55,7 +55,7 @@ document.formu.elements[nom].focus();
                	<TBODY>
 					<TR class="sigp2">
 						<TD style="position:relative;width:90px;text-align: left;">&nbsp;code</TD>
-						<TD>libellé</TD>
+						<TD>libellÃ©</TD>
 					</TR>
 				</TBODY>
 			</TABLE>

@@ -52,7 +52,7 @@ import org.springframework.context.ApplicationContext;
 import com.oreilly.servlet.MultipartRequest;
 
 /**
- * Process OeAGENTHandicap Date de création : (01/07/11 09:42:08)
+ * Process OeAGENTHandicap Date de crÃ©ation : (01/07/11 09:42:08)
  * 
  */
 public class OeAGENTHandicap extends BasicProcess {
@@ -79,14 +79,14 @@ public class OeAGENTHandicap extends BasicProcess {
 	public String ACTION_SUPPRESSION = "Suppression d'une fiche handicap.";
 	public String ACTION_CONSULTATION = "Consultation d'une fiche handicap.";
 	private String ACTION_MODIFICATION = "Modification d'une fiche handicap.";
-	private String ACTION_CREATION = "Création d'une fiche handicap.";
+	private String ACTION_CREATION = "CrÃ©ation d'une fiche handicap.";
 
 	public boolean showMaladiePro = false;
 	public boolean showNumCarte = false;
 
 	public String ACTION_DOCUMENT = "Documents d'une fiche handicap.";
 	public String ACTION_DOCUMENT_SUPPRESSION = "Suppression d'un document d'une fiche handicap.";
-	public String ACTION_DOCUMENT_CREATION = "Création d'un document d'une fiche handicap.";
+	public String ACTION_DOCUMENT_CREATION = "CrÃ©ation d'un document d'une fiche handicap.";
 	private ArrayList<Document> listeDocuments;
 	private Document documentCourant;
 	private DocumentAgent lienDocumentAgentCourant;
@@ -103,10 +103,10 @@ public class OeAGENTHandicap extends BasicProcess {
 	private DocumentDao documentDao;
 
 	/**
-	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones Ã  afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
-	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
-	 * addZone(getNOMxxx, String); Date de création : (01/07/11 09:42:08)
+	 * doivent avoir les Fields PUBLIC Utilisation de la mÃ©thode
+	 * addZone(getNOMxxx, String); Date de crÃ©ation : (01/07/11 09:42:08)
 	 * 
 	 * RG_AG_HC_C04 RG_AG_HC_C05
 	 */
@@ -120,10 +120,10 @@ public class OeAGENTHandicap extends BasicProcess {
 			isImporting = false;
 		}
 
-		// Vérification des droits d'accès.
+		// VÃ©rification des droits d'acces.
 		if (MairieUtils.estInterdit(request, getNomEcran())) {
 			// "ERR190",
-			// "Opération impossible. Vous ne disposez pas des droits d'accès à cette option."
+			// "Operation impossible. Vous ne disposez pas des droits d'acces a cette option."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
@@ -208,7 +208,7 @@ public class OeAGENTHandicap extends BasicProcess {
 
 	/**
 	 * Initialisation de la liste des handicaps de l'agent courant Date de
-	 * création : (01/07/11)
+	 * crÃ©ation : (01/07/11)
 	 * 
 	 */
 	private void initialiseListeHandicap(HttpServletRequest request) throws Exception {
@@ -251,7 +251,7 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Constructeur du process OeAGENTHandicap. Date de création : (01/07/11
+	 * Constructeur du process OeAGENTHandicap. Date de crÃ©ation : (01/07/11
 	 * 09:42:08)
 	 * 
 	 */
@@ -260,7 +260,7 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER Date de création :
+	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER Date de crÃ©ation :
 	 * (01/07/11 09:42:08)
 	 * 
 	 */
@@ -269,10 +269,10 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (01/07/11 09:42:08)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (01/07/11 09:42:08)
 	 * 
 	 */
 	public boolean performPB_ANNULER(HttpServletRequest request) throws Exception {
@@ -286,7 +286,7 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_CREER Date de création :
+	 * Retourne le nom d'un bouton pour la JSP : PB_CREER Date de crÃ©ation :
 	 * (01/07/11 09:42:08)
 	 * 
 	 */
@@ -295,10 +295,10 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (01/07/11 09:42:08)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (01/07/11 09:42:08)
 	 * 
 	 */
 	public boolean performPB_CREER(HttpServletRequest request) throws Exception {
@@ -321,8 +321,8 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Réinitilise les champs du formulaire de création/modification d'un
-	 * accident de travail Date de création : 01/07/11
+	 * RÃ©initilise les champs du formulaire de crÃ©ation/modification d'un
+	 * accident de travail Date de crÃ©ation : 01/07/11
 	 * 
 	 * RG_AG_HC_C03 RG_AG_HC_C08
 	 */
@@ -347,7 +347,7 @@ public class OeAGENTHandicap extends BasicProcess {
 
 	/**
 	 * Initilise les zones de saisie du formulaire de modification d'un handicap
-	 * Date de création : 11/07/01
+	 * Date de crÃ©ation : 11/07/01
 	 * 
 	 */
 	private boolean initialiseHandicapCourant(HttpServletRequest request) throws Exception {
@@ -407,7 +407,7 @@ public class OeAGENTHandicap extends BasicProcess {
 	 * Initialisation de la suppression d'un handicap
 	 * 
 	 * @param request
-	 * @return true si la suppression peut être effectuée
+	 * @return true si la suppression peut Ãªtre effectuee
 	 * @throws Exception
 	 */
 	private boolean initialiseHandicapSuppression(HttpServletRequest request) throws Exception {
@@ -440,7 +440,7 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER Date de création :
+	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER Date de crÃ©ation :
 	 * (01/07/11 09:42:08)
 	 * 
 	 */
@@ -449,10 +449,10 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (01/07/11 09:42:08)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (01/07/11 09:42:08)
 	 * 
 	 */
 	public boolean performPB_VALIDER(HttpServletRequest request) throws Exception {
@@ -476,12 +476,12 @@ public class OeAGENTHandicap extends BasicProcess {
 
 		} else {
 
-			// vérification de la validité du formulaire
+			// VÃ©rification de la validitÃ© du formulaire
 			if (!performControlerChamps(request)) {
 				return false;
 			}
 
-			// récupération des informations remplies dans les zones de saisie
+			// rÃ©cupÃ©ration des informations remplies dans les zones de saisie
 			int numLigneNom = (Services.estNumerique(getZone(getNOM_LB_NOM_SELECT())) ? Integer
 					.parseInt(getZone(getNOM_LB_NOM_SELECT())) : -1);
 
@@ -523,7 +523,7 @@ public class OeAGENTHandicap extends BasicProcess {
 
 			String commentaire = getZone(getNOM_EF_COMMENTAIRE());
 
-			// Création de l'objet VisiteMedicale à créer/modifier
+			// CrÃ©ation de l'objet VisiteMedicale a crÃ©er/modifier
 			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 			Agent agentCourant = getAgentCourant();
 			getHandicapCourant().setIdAgent(agentCourant.getIdAgent());
@@ -553,7 +553,7 @@ public class OeAGENTHandicap extends BasicProcess {
 						getHandicapCourant().getNumCarteCrdhnc(), getHandicapCourant().isAmenagementPoste(),
 						getHandicapCourant().getCommentaireHandicap(), getHandicapCourant().isRenouvellement());
 			} else if (getZone(getNOM_ST_ACTION()).equals(ACTION_CREATION)) {
-				// Création
+				// CrÃ©ation
 				getHandicapDao().creerHandicap(getHandicapCourant().getIdAgent(),
 						getHandicapCourant().getIdTypeHandicap(), getHandicapCourant().getIdMaladiePro(),
 						getHandicapCourant().getPourcentIncapacite(), getHandicapCourant().isReconnaissanceMp(),
@@ -569,7 +569,7 @@ public class OeAGENTHandicap extends BasicProcess {
 		// On a fini l'action
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 
-		// Tout s'est bien passé
+		// Tout s'est bien passÃ©
 		commitTransaction();
 		initialiseListeHandicap(request);
 
@@ -577,11 +577,11 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Vérifie les règles de gestion de saisie (champs obligatoires, ...) du
+	 * VÃ©rifie les regles de gestion de saisie (champs obligatoires, ...) du
 	 * formulaire de handicap
 	 * 
 	 * @param request
-	 * @return true si les règles de gestion sont respectées. false sinon.
+	 * @return true si les regles de gestion sont respectÃ©es. false sinon.
 	 * @throws Exception
 	 * 
 	 *             RG_AG_HC_C01 RG_AG_HC_C02 RG_AG_HC_C06 RG_AG_HC_C07
@@ -595,23 +595,23 @@ public class OeAGENTHandicap extends BasicProcess {
 			return false;
 		}
 
-		// date de début de handicap
+		// date de dÃ©but de handicap
 		if ((Const.CHAINE_VIDE).equals(getZone(getNOM_EF_DATE_DEBUT()))) {
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "date de début"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "date de dÃ©but"));
 			return false;
 		} else if (!Services.estUneDate(getZone(getNOM_EF_DATE_DEBUT()))) {
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR007", "de début"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR007", "de dÃ©but"));
 			return false;
 		}
 
-		// date de fin > date de début
+		// date de fin > date de dÃ©but
 		// RG_AG_HC_C01
 		if (!(Const.CHAINE_VIDE).equals(getZone(getNOM_EF_DATE_FIN()))) {
 			if (!Services.estUneDate(getZone(getNOM_EF_DATE_FIN()))) {
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR007", "de fin"));
 				return false;
 			} else if (Services.compareDates(getZone(getNOM_EF_DATE_DEBUT()), getZone(getNOM_EF_DATE_FIN())) != -1) {
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR205", "de fin", "de début"));
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR205", "de fin", "de dÃ©but"));
 				return false;
 			}
 		}
@@ -621,13 +621,13 @@ public class OeAGENTHandicap extends BasicProcess {
 		// RG_AG_HC_C02
 		if (!Const.CHAINE_VIDE.equals(getZone(getNOM_EF_INCAPACITE()))) {
 			if (!Services.estNumerique(getZone(getNOM_EF_INCAPACITE()))) {
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "% incapacité"));
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "% incapacitÃ©"));
 				return false;
 			}
 			if (Float.parseFloat(getZone(getNOM_EF_INCAPACITE())) <= 0.0
 					|| Float.parseFloat(getZone(getNOM_EF_INCAPACITE())) > 100.0) {
 				// erreur pourcentage entre 0 et 100
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR981", "% incapacité"));
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR981", "% incapacitÃ©"));
 				return false;
 			}
 		}
@@ -635,12 +635,12 @@ public class OeAGENTHandicap extends BasicProcess {
 		// commentaire longeur <= 100
 		if (!Const.CHAINE_VIDE.equals(getZone(getNOM_EF_COMMENTAIRE()))
 				&& getZone(getNOM_EF_COMMENTAIRE()).length() > 100) {
-			// ERR980 : La zone commentaire ne peut excéder 100 caractères.
+			// ERR980 : La zone commentaire ne peut exceder 100 caracteres.
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR980", "commentaire", "100"));
 			return false;
 		}
 
-		// si reconnu maladie pro, la maladie doit etre préciser
+		// si reconnu maladie pro, la maladie doit etre preciser
 		// RG_AG_HC_C06
 		if (getZone(getNOM_RG_RECO_MP()).equals(getNOM_RB_RECO_MP_OUI())) {
 			int indiceMP = (Services.estNumerique(getVAL_LB_NOM_MP_SELECT()) ? Integer
@@ -651,11 +651,11 @@ public class OeAGENTHandicap extends BasicProcess {
 			}
 		}
 
-		// si maladie CRDHNC le numéro de carte doit etre renseigné
+		// si maladie CRDHNC le numÃ©ro de carte doit etre renseignÃ©
 		// RG_AG_HC_C07
 		if (getZone(getNOM_RG_RECO_CRDHNC()).equals(getNOM_RB_RECO_CRDHNC_OUI())
 				&& Const.CHAINE_VIDE.equals(getZone(getNOM_EF_NUM_CRDHNC()))) {
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "n°carte CRDHNC"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "nÂ° carte CRDHNC"));
 			return false;
 		}
 
@@ -664,7 +664,7 @@ public class OeAGENTHandicap extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_ACTION Date de
-	 * création : (01/07/11 09:42:08)
+	 * crÃ©ation : (01/07/11 09:42:08)
 	 * 
 	 */
 	public String getNOM_ST_ACTION() {
@@ -672,8 +672,8 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACTION Date de
-	 * création : (01/07/11 09:42:08)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_ACTION Date de
+	 * crÃ©ation : (01/07/11 09:42:08)
 	 * 
 	 */
 	public String getVAL_ST_ACTION() {
@@ -682,7 +682,7 @@ public class OeAGENTHandicap extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_COMMENTAIRE Date de
-	 * création : (01/07/11 09:42:08)
+	 * crÃ©ation : (01/07/11 09:42:08)
 	 * 
 	 */
 	public String getNOM_ST_COMMENTAIRE() {
@@ -690,8 +690,8 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_COMMENTAIRE
-	 * Date de création : (01/07/11 09:42:08)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_COMMENTAIRE
+	 * Date de crÃ©ation : (01/07/11 09:42:08)
 	 * 
 	 */
 	public String getVAL_ST_COMMENTAIRE() {
@@ -700,7 +700,7 @@ public class OeAGENTHandicap extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_DATE_DEBUT Date de
-	 * création : (01/07/11 09:42:08)
+	 * crÃ©ation : (01/07/11 09:42:08)
 	 * 
 	 */
 	public String getNOM_ST_DATE_DEBUT() {
@@ -708,8 +708,8 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE_DEBUT
-	 * Date de création : (01/07/11 09:42:08)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_DATE_DEBUT
+	 * Date de crÃ©ation : (01/07/11 09:42:08)
 	 * 
 	 */
 	public String getVAL_ST_DATE_DEBUT() {
@@ -718,7 +718,7 @@ public class OeAGENTHandicap extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_DATE_FIN Date de
-	 * création : (01/07/11 09:42:08)
+	 * crÃ©ation : (01/07/11 09:42:08)
 	 * 
 	 */
 	public String getNOM_ST_DATE_FIN() {
@@ -726,8 +726,8 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE_FIN Date
-	 * de création : (01/07/11 09:42:08)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_DATE_FIN Date
+	 * de crÃ©ation : (01/07/11 09:42:08)
 	 * 
 	 */
 	public String getVAL_ST_DATE_FIN() {
@@ -736,7 +736,7 @@ public class OeAGENTHandicap extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_INCAPACITE Date de
-	 * création : (01/07/11 09:42:08)
+	 * crÃ©ation : (01/07/11 09:42:08)
 	 * 
 	 */
 	public String getNOM_ST_INCAPACITE() {
@@ -744,8 +744,8 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_INCAPACITE
-	 * Date de création : (01/07/11 09:42:08)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_INCAPACITE
+	 * Date de crÃ©ation : (01/07/11 09:42:08)
 	 * 
 	 */
 	public String getVAL_ST_INCAPACITE() {
@@ -753,7 +753,7 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_NOM Date de création
+	 * Retourne pour la JSP le nom de la zone statique : ST_NOM Date de crÃ©ation
 	 * : (01/07/11 09:42:08)
 	 * 
 	 */
@@ -762,8 +762,8 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_NOM Date de
-	 * création : (01/07/11 09:42:08)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_NOM Date de
+	 * crÃ©ation : (01/07/11 09:42:08)
 	 * 
 	 */
 	public String getVAL_ST_NOM() {
@@ -772,7 +772,7 @@ public class OeAGENTHandicap extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_NOM_MP Date de
-	 * création : (01/07/11 09:42:08)
+	 * crÃ©ation : (01/07/11 09:42:08)
 	 * 
 	 */
 	public String getNOM_ST_NOM_MP() {
@@ -780,8 +780,8 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_NOM_MP Date de
-	 * création : (01/07/11 09:42:08)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_NOM_MP Date de
+	 * crÃ©ation : (01/07/11 09:42:08)
 	 * 
 	 */
 	public String getVAL_ST_NOM_MP() {
@@ -790,7 +790,7 @@ public class OeAGENTHandicap extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_NUM_CRDHNC Date de
-	 * création : (01/07/11 09:42:08)
+	 * crÃ©ation : (01/07/11 09:42:08)
 	 * 
 	 */
 	public String getNOM_ST_NUM_CRDHNC() {
@@ -798,8 +798,8 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_NUM_CRDHNC
-	 * Date de création : (01/07/11 09:42:08)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_NUM_CRDHNC
+	 * Date de crÃ©ation : (01/07/11 09:42:08)
 	 * 
 	 */
 	public String getVAL_ST_NUM_CRDHNC() {
@@ -808,7 +808,7 @@ public class OeAGENTHandicap extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_COMMENTAIRE Date de
-	 * création : (01/07/11 09:42:08)
+	 * crÃ©ation : (01/07/11 09:42:08)
 	 * 
 	 */
 	public String getNOM_EF_COMMENTAIRE() {
@@ -816,8 +816,8 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_COMMENTAIRE Date de création : (01/07/11 09:42:08)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_COMMENTAIRE Date de crÃ©ation : (01/07/11 09:42:08)
 	 * 
 	 */
 	public String getVAL_EF_COMMENTAIRE() {
@@ -826,7 +826,7 @@ public class OeAGENTHandicap extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_DATE_DEBUT Date de
-	 * création : (01/07/11 09:42:08)
+	 * crÃ©ation : (01/07/11 09:42:08)
 	 * 
 	 */
 	public String getNOM_EF_DATE_DEBUT() {
@@ -834,8 +834,8 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_DATE_DEBUT Date de création : (01/07/11 09:42:08)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_DATE_DEBUT Date de crÃ©ation : (01/07/11 09:42:08)
 	 * 
 	 */
 	public String getVAL_EF_DATE_DEBUT() {
@@ -844,7 +844,7 @@ public class OeAGENTHandicap extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_DATE_FIN Date de
-	 * création : (01/07/11 09:42:08)
+	 * crÃ©ation : (01/07/11 09:42:08)
 	 * 
 	 */
 	public String getNOM_EF_DATE_FIN() {
@@ -852,8 +852,8 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_DATE_FIN Date de création : (01/07/11 09:42:08)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_DATE_FIN Date de crÃ©ation : (01/07/11 09:42:08)
 	 * 
 	 */
 	public String getVAL_EF_DATE_FIN() {
@@ -862,7 +862,7 @@ public class OeAGENTHandicap extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_INCAPACITE Date de
-	 * création : (01/07/11 09:42:08)
+	 * crÃ©ation : (01/07/11 09:42:08)
 	 * 
 	 */
 	public String getNOM_EF_INCAPACITE() {
@@ -870,8 +870,8 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_INCAPACITE Date de création : (01/07/11 09:42:08)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_INCAPACITE Date de crÃ©ation : (01/07/11 09:42:08)
 	 * 
 	 */
 	public String getVAL_EF_INCAPACITE() {
@@ -880,7 +880,7 @@ public class OeAGENTHandicap extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_NUM_CRDHNC Date de
-	 * création : (01/07/11 09:42:08)
+	 * crÃ©ation : (01/07/11 09:42:08)
 	 * 
 	 */
 	public String getNOM_EF_NUM_CRDHNC() {
@@ -888,8 +888,8 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_NUM_CRDHNC Date de création : (01/07/11 09:42:08)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_NUM_CRDHNC Date de crÃ©ation : (01/07/11 09:42:08)
 	 * 
 	 */
 	public String getVAL_EF_NUM_CRDHNC() {
@@ -897,7 +897,7 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Getter de la liste avec un lazy initialize : LB_NOM Date de création :
+	 * Getter de la liste avec un lazy initialize : LB_NOM Date de crÃ©ation :
 	 * (01/07/11 09:42:08)
 	 * 
 	 */
@@ -908,7 +908,7 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_NOM Date de création : (01/07/11 09:42:08)
+	 * Setter de la liste: LB_NOM Date de crÃ©ation : (01/07/11 09:42:08)
 	 * 
 	 */
 	private void setLB_NOM(String[] newLB_NOM) {
@@ -916,7 +916,7 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_NOM Date de création :
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_NOM Date de crÃ©ation :
 	 * (01/07/11 09:42:08)
 	 * 
 	 */
@@ -925,8 +925,8 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_NOM_SELECT Date de création : (01/07/11 09:42:08)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_NOM_SELECT Date de crÃ©ation : (01/07/11 09:42:08)
 	 * 
 	 */
 	public String getNOM_LB_NOM_SELECT() {
@@ -934,8 +934,8 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_NOM Date de création : (01/07/11 09:42:08)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_NOM Date de crÃ©ation : (01/07/11 09:42:08)
 	 * 
 	 */
 	public String[] getVAL_LB_NOM() {
@@ -943,8 +943,8 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_NOM Date de création : (01/07/11 09:42:08)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_NOM Date de crÃ©ation : (01/07/11 09:42:08)
 	 * 
 	 */
 	public String getVAL_LB_NOM_SELECT() {
@@ -952,7 +952,7 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Getter de la liste avec un lazy initialize : LB_NOM_MP Date de création :
+	 * Getter de la liste avec un lazy initialize : LB_NOM_MP Date de crÃ©ation :
 	 * (01/07/11 09:42:08)
 	 * 
 	 */
@@ -963,7 +963,7 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_NOM_MP Date de création : (01/07/11 09:42:08)
+	 * Setter de la liste: LB_NOM_MP Date de crÃ©ation : (01/07/11 09:42:08)
 	 * 
 	 */
 	private void setLB_NOM_MP(String[] newLB_NOM_MP) {
@@ -971,7 +971,7 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_NOM_MP Date de création :
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_NOM_MP Date de crÃ©ation :
 	 * (01/07/11 09:42:08)
 	 * 
 	 */
@@ -980,8 +980,8 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_NOM_MP_SELECT Date de création : (01/07/11 09:42:08)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_NOM_MP_SELECT Date de crÃ©ation : (01/07/11 09:42:08)
 	 * 
 	 */
 	public String getNOM_LB_NOM_MP_SELECT() {
@@ -989,8 +989,8 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_NOM_MP Date de création : (01/07/11 09:42:08)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_NOM_MP Date de crÃ©ation : (01/07/11 09:42:08)
 	 * 
 	 */
 	public String[] getVAL_LB_NOM_MP() {
@@ -998,8 +998,8 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_NOM_MP Date de création : (01/07/11 09:42:08)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_NOM_MP Date de crÃ©ation : (01/07/11 09:42:08)
 	 * 
 	 */
 	public String getVAL_LB_NOM_MP_SELECT() {
@@ -1007,8 +1007,8 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom du groupe de radio boutons coché pour la JSP :
-	 * RG_AMENAGEMENT Date de création : (01/07/11 09:42:08)
+	 * Retourne le nom du groupe de radio boutons cochÃ© pour la JSP :
+	 * RG_AMENAGEMENT Date de crÃ©ation : (01/07/11 09:42:08)
 	 * 
 	 */
 	public String getNOM_RG_AMENAGEMENT() {
@@ -1016,8 +1016,8 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur du radio bouton (RB_) coché dans la JSP :
-	 * RG_AMENAGEMENT Date de création : (01/07/11 09:42:08)
+	 * Retourne la valeur du radio bouton (RB_) cochÃ© dans la JSP :
+	 * RG_AMENAGEMENT Date de crÃ©ation : (01/07/11 09:42:08)
 	 * 
 	 */
 	public String getVAL_RG_AMENAGEMENT() {
@@ -1025,8 +1025,8 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom du groupe de radio boutons coché pour la JSP :
-	 * RG_RECO_CRDHNC Date de création : (01/07/11 09:42:08)
+	 * Retourne le nom du groupe de radio boutons cochÃ© pour la JSP :
+	 * RG_RECO_CRDHNC Date de crÃ©ation : (01/07/11 09:42:08)
 	 * 
 	 */
 	public String getNOM_RG_RECO_CRDHNC() {
@@ -1034,8 +1034,8 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur du radio bouton (RB_) coché dans la JSP :
-	 * RG_RECO_CRDHNC Date de création : (01/07/11 09:42:08)
+	 * Retourne la valeur du radio bouton (RB_) cochÃ© dans la JSP :
+	 * RG_RECO_CRDHNC Date de crÃ©ation : (01/07/11 09:42:08)
 	 * 
 	 */
 	public String getVAL_RG_RECO_CRDHNC() {
@@ -1043,8 +1043,8 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom du groupe de radio boutons coché pour la JSP : RG_RECO_MP
-	 * Date de création : (01/07/11 09:42:08)
+	 * Retourne le nom du groupe de radio boutons cochÃ© pour la JSP : RG_RECO_MP
+	 * Date de crÃ©ation : (01/07/11 09:42:08)
 	 * 
 	 */
 	public String getNOM_RG_RECO_MP() {
@@ -1052,8 +1052,8 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur du radio bouton (RB_) coché dans la JSP : RG_RECO_MP
-	 * Date de création : (01/07/11 09:42:08)
+	 * Retourne la valeur du radio bouton (RB_) cochÃ© dans la JSP : RG_RECO_MP
+	 * Date de crÃ©ation : (01/07/11 09:42:08)
 	 * 
 	 */
 	public String getVAL_RG_RECO_MP() {
@@ -1062,7 +1062,7 @@ public class OeAGENTHandicap extends BasicProcess {
 
 	/**
 	 * Retourne le nom du radio bouton pour la JSP : RB_AMENAGEMENT_NON Date de
-	 * création : (01/07/11 09:42:08)
+	 * crÃ©ation : (01/07/11 09:42:08)
 	 * 
 	 */
 	public String getNOM_RB_AMENAGEMENT_NON() {
@@ -1071,7 +1071,7 @@ public class OeAGENTHandicap extends BasicProcess {
 
 	/**
 	 * Retourne le nom du radio bouton pour la JSP : RB_AMENAGEMENT_OUI Date de
-	 * création : (01/07/11 09:42:08)
+	 * crÃ©ation : (01/07/11 09:42:08)
 	 * 
 	 */
 	public String getNOM_RB_AMENAGEMENT_OUI() {
@@ -1080,7 +1080,7 @@ public class OeAGENTHandicap extends BasicProcess {
 
 	/**
 	 * Retourne le nom du radio bouton pour la JSP : RB_RECO_CRDHNC_NON Date de
-	 * création : (01/07/11 09:42:08)
+	 * crÃ©ation : (01/07/11 09:42:08)
 	 * 
 	 */
 	public String getNOM_RB_RECO_CRDHNC_NON() {
@@ -1089,7 +1089,7 @@ public class OeAGENTHandicap extends BasicProcess {
 
 	/**
 	 * Retourne le nom du radio bouton pour la JSP : RB_RECO_CRDHNC_OUI Date de
-	 * création : (01/07/11 09:42:08)
+	 * crÃ©ation : (01/07/11 09:42:08)
 	 * 
 	 */
 	public String getNOM_RB_RECO_CRDHNC_OUI() {
@@ -1098,7 +1098,7 @@ public class OeAGENTHandicap extends BasicProcess {
 
 	/**
 	 * Retourne le nom du radio bouton pour la JSP : RB_RECO_MP_NON Date de
-	 * création : (01/07/11 09:42:08)
+	 * crÃ©ation : (01/07/11 09:42:08)
 	 * 
 	 */
 	public String getNOM_RB_RECO_MP_NON() {
@@ -1107,7 +1107,7 @@ public class OeAGENTHandicap extends BasicProcess {
 
 	/**
 	 * Retourne le nom du radio bouton pour la JSP : RB_RECO_MP_OUI Date de
-	 * création : (01/07/11 09:42:08)
+	 * crÃ©ation : (01/07/11 09:42:08)
 	 * 
 	 */
 	public String getNOM_RB_RECO_MP_OUI() {
@@ -1228,7 +1228,7 @@ public class OeAGENTHandicap extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_AMENAGEMENT Date de
-	 * création : (04/07/11 16:06:38)
+	 * crÃ©ation : (04/07/11 16:06:38)
 	 * 
 	 */
 	public String getNOM_ST_AMENAGEMENT() {
@@ -1236,8 +1236,8 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_AMENAGEMENT
-	 * Date de création : (04/07/11 16:06:38)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_AMENAGEMENT
+	 * Date de crÃ©ation : (04/07/11 16:06:38)
 	 * 
 	 */
 	public String getVAL_ST_AMENAGEMENT() {
@@ -1246,7 +1246,7 @@ public class OeAGENTHandicap extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_RECO_CRDHNC Date de
-	 * création : (04/07/11 16:06:38)
+	 * crÃ©ation : (04/07/11 16:06:38)
 	 * 
 	 */
 	public String getNOM_ST_RECO_CRDHNC() {
@@ -1254,8 +1254,8 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_RECO_CRDHNC
-	 * Date de création : (04/07/11 16:06:38)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_RECO_CRDHNC
+	 * Date de crÃ©ation : (04/07/11 16:06:38)
 	 * 
 	 */
 	public String getVAL_ST_RECO_CRDHNC() {
@@ -1264,7 +1264,7 @@ public class OeAGENTHandicap extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_RECO_MP Date de
-	 * création : (04/07/11 16:06:38)
+	 * crÃ©ation : (04/07/11 16:06:38)
 	 * 
 	 */
 	public String getNOM_ST_RECO_MP() {
@@ -1272,8 +1272,8 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_RECO_MP Date
-	 * de création : (04/07/11 16:06:38)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_RECO_MP Date
+	 * de crÃ©ation : (04/07/11 16:06:38)
 	 * 
 	 */
 	public String getVAL_ST_RECO_MP() {
@@ -1285,8 +1285,8 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Méthode appelée par la servlet qui aiguille le traitement : en fonction
-	 * du bouton de la JSP Date de création : (01/07/11 09:42:08)
+	 * mÃ©thode appelee par la servlet qui aiguille le traitement : en fonction
+	 * du bouton de la JSP Date de crÃ©ation : (01/07/11 09:42:08)
 	 * 
 	 */
 	public boolean recupererStatut(HttpServletRequest request) throws Exception {
@@ -1386,14 +1386,14 @@ public class OeAGENTHandicap extends BasicProcess {
 			}
 
 		}
-		// Si TAG INPUT non géré par le process
+		// Si TAG INPUT non gÃ©rÃ© par le process
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
 
 	/**
-	 * Retourne le nom de la JSP du process Zone à utiliser dans un champ caché
-	 * dans chaque formulaire de la JSP. Date de création : (28/10/11 09:51:26)
+	 * Retourne le nom de la JSP du process Zone a utiliser dans un champ cache
+	 * dans chaque formulaire de la JSP. Date de crÃ©ation : (28/10/11 09:51:26)
 	 * 
 	 */
 	public String getJSP() {
@@ -1402,7 +1402,7 @@ public class OeAGENTHandicap extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_SELECT_CRDHNC Date de
-	 * création : (28/10/11 09:51:26)
+	 * crÃ©ation : (28/10/11 09:51:26)
 	 * 
 	 */
 	public String getNOM_PB_SELECT_CRDHNC() {
@@ -1410,10 +1410,10 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (28/10/11 09:51:26)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (28/10/11 09:51:26)
 	 * 
 	 */
 	public boolean performPB_SELECT_CRDHNC(HttpServletRequest request) throws Exception {
@@ -1425,7 +1425,7 @@ public class OeAGENTHandicap extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_SELECT_MALADIE_PRO Date de
-	 * création : (28/10/11 09:51:26)
+	 * crÃ©ation : (28/10/11 09:51:26)
 	 * 
 	 */
 	public String getNOM_PB_SELECT_MALADIE_PRO() {
@@ -1433,10 +1433,10 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (28/10/11 09:51:26)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (28/10/11 09:51:26)
 	 * 
 	 */
 	public boolean performPB_SELECT_MALADIE_PRO(HttpServletRequest request) throws Exception {
@@ -1446,8 +1446,8 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom du groupe de radio boutons coché pour la JSP :
-	 * RG_RENOUV_CRDHNC Date de création : (01/07/11 09:42:08)
+	 * Retourne le nom du groupe de radio boutons cochÃ© pour la JSP :
+	 * RG_RENOUV_CRDHNC Date de crÃ©ation : (01/07/11 09:42:08)
 	 * 
 	 */
 	public String getNOM_RG_RENOUV_CRDHNC() {
@@ -1455,8 +1455,8 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur du radio bouton (RB_) coché dans la JSP :
-	 * RG_RENOUV_CRDHNC Date de création : (01/07/11 09:42:08)
+	 * Retourne la valeur du radio bouton (RB_) cochÃ© dans la JSP :
+	 * RG_RENOUV_CRDHNC Date de crÃ©ation : (01/07/11 09:42:08)
 	 * 
 	 */
 	public String getVAL_RG_RENOUV_CRDHNC() {
@@ -1465,7 +1465,7 @@ public class OeAGENTHandicap extends BasicProcess {
 
 	/**
 	 * Retourne le nom du radio bouton pour la JSP : RB_RENOUV_CRDHNC_NON Date
-	 * de création : (01/07/11 09:42:08)
+	 * de crÃ©ation : (01/07/11 09:42:08)
 	 * 
 	 */
 	public String getNOM_RB_RENOUV_CRDHNC_NON() {
@@ -1474,7 +1474,7 @@ public class OeAGENTHandicap extends BasicProcess {
 
 	/**
 	 * Retourne le nom du radio bouton pour la JSP : RB_RENOUV_CRDHNC_OUI Date
-	 * de création : (01/07/11 09:42:08)
+	 * de crÃ©ation : (01/07/11 09:42:08)
 	 * 
 	 */
 	public String getNOM_RB_RENOUV_CRDHNC_OUI() {
@@ -1483,7 +1483,7 @@ public class OeAGENTHandicap extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_RENOUV_CRDHNC Date
-	 * de création : (04/07/11 16:06:38)
+	 * de crÃ©ation : (04/07/11 16:06:38)
 	 * 
 	 */
 	public String getNOM_ST_RENOUV_CRDHNC() {
@@ -1491,8 +1491,8 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_RENOUV_CRDHNC
-	 * Date de création : (04/07/11 16:06:38)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_RENOUV_CRDHNC
+	 * Date de crÃ©ation : (04/07/11 16:06:38)
 	 * 
 	 */
 	public String getVAL_ST_RENOUV_CRDHNC() {
@@ -1501,7 +1501,7 @@ public class OeAGENTHandicap extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_TYPE TYPE de
-	 * création : (18/08/11 10:21:15)
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_TYPE(int i) {
@@ -1509,8 +1509,8 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_TYPE TYPE de
-	 * création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_TYPE TYPE de
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_TYPE(int i) {
@@ -1519,7 +1519,7 @@ public class OeAGENTHandicap extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_DEBUT DEBUT de
-	 * création : (18/08/11 10:21:15)
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_DEBUT(int i) {
@@ -1527,8 +1527,8 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DEBUT DEBUT de
-	 * création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_DEBUT DEBUT de
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_DEBUT(int i) {
@@ -1536,7 +1536,7 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_FIN FIN de création
+	 * Retourne pour la JSP le nom de la zone statique : ST_FIN FIN de crÃ©ation
 	 * : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -1545,8 +1545,8 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_FIN FIN de
-	 * création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_FIN FIN de
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_FIN(int i) {
@@ -1555,7 +1555,7 @@ public class OeAGENTHandicap extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_INCAPACITE
-	 * INCAPACITE de création : (18/08/11 10:21:15)
+	 * INCAPACITE de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_INCAPACITE(int i) {
@@ -1563,8 +1563,8 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_INCAPACITE
-	 * INCAPACITE de création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_INCAPACITE
+	 * INCAPACITE de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_INCAPACITE(int i) {
@@ -1573,7 +1573,7 @@ public class OeAGENTHandicap extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_MALADIE_PROF
-	 * MALADIE_PROF de création : (18/08/11 10:21:15)
+	 * MALADIE_PROF de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_MALADIE_PROF(int i) {
@@ -1581,8 +1581,8 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_MALADIE_PROF
-	 * MALADIE_PROF de création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_MALADIE_PROF
+	 * MALADIE_PROF de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_MALADIE_PROF(int i) {
@@ -1591,7 +1591,7 @@ public class OeAGENTHandicap extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_CRDHNC CRDHNC de
-	 * création : (18/08/11 10:21:15)
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_CRDHNC(int i) {
@@ -1599,8 +1599,8 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_CRDHNC CRDHNC
-	 * de création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_CRDHNC CRDHNC
+	 * de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_CRDHNC(int i) {
@@ -1609,7 +1609,7 @@ public class OeAGENTHandicap extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_NUM_CARTE NUM_CARTE
-	 * de création : (18/08/11 10:21:15)
+	 * de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_NUM_CARTE(int i) {
@@ -1617,8 +1617,8 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_NUM_CARTE
-	 * NUM_CARTE de création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_NUM_CARTE
+	 * NUM_CARTE de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_NUM_CARTE(int i) {
@@ -1627,7 +1627,7 @@ public class OeAGENTHandicap extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_RENOUVELLEMENT
-	 * RENOUVELLEMENT de création : (18/08/11 10:21:15)
+	 * RENOUVELLEMENT de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_RENOUVELLEMENT(int i) {
@@ -1635,8 +1635,8 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_RENOUVELLEMENT
-	 * RENOUVELLEMENT de création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_RENOUVELLEMENT
+	 * RENOUVELLEMENT de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_RENOUVELLEMENT(int i) {
@@ -1645,7 +1645,7 @@ public class OeAGENTHandicap extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_AMENAGEMENT
-	 * AMENAGEMENT de création : (18/08/11 10:21:15)
+	 * AMENAGEMENT de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_AMENAGEMENT(int i) {
@@ -1653,8 +1653,8 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_AMENAGEMENT
-	 * AMENAGEMENT de création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_AMENAGEMENT
+	 * AMENAGEMENT de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_AMENAGEMENT(int i) {
@@ -1663,7 +1663,7 @@ public class OeAGENTHandicap extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_NB_DOC Date de
-	 * création : (18/08/11 10:21:15)
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_NB_DOC(int i) {
@@ -1671,8 +1671,8 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_NB_DOC Date de
-	 * création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_NB_DOC Date de
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_NB_DOC(int i) {
@@ -1684,17 +1684,17 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (16/08/11 15:48:02)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	public boolean performPB_MODIFIER(HttpServletRequest request, int indiceEltAModifier) throws Exception {
 
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 
-		// Récup du handicap courant
+		// RÃ©cup du handicap courant
 		Handicap handicapCourant = (Handicap) getListeHandicap().get(indiceEltAModifier);
 		setHandicapCourant(handicapCourant);
 
@@ -1712,7 +1712,7 @@ public class OeAGENTHandicap extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_VISUALISATION Date de
-	 * création : (29/09/11 10:03:38)
+	 * crÃ©ation : (29/09/11 10:03:38)
 	 * 
 	 */
 	public String getNOM_PB_CONSULTER(int i) {
@@ -1720,17 +1720,17 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (29/09/11 10:03:38)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (29/09/11 10:03:38)
 	 * 
 	 */
 	public boolean performPB_CONSULTER(HttpServletRequest request, int indiceEltAConsulter) throws Exception {
 
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 
-		// Récup du handicap courant
+		// RÃ©cup du handicap courant
 		Handicap handicapCourant = (Handicap) getListeHandicap().get(indiceEltAConsulter);
 		setHandicapCourant(handicapCourant);
 
@@ -1747,7 +1747,7 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMMER Date de création
+	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMMER Date de crÃ©ation
 	 * : (05/09/11 11:31:37)
 	 * 
 	 */
@@ -1756,17 +1756,17 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (05/09/11 11:31:37)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (05/09/11 11:31:37)
 	 * 
 	 */
 	public boolean performPB_SUPPRIMER(HttpServletRequest request, int indiceEltASuprimer) throws Exception {
 
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 
-		// Récup du handicap courant
+		// RÃ©cup du handicap courant
 		Handicap handicapCourant = (Handicap) getListeHandicap().get(indiceEltASuprimer);
 		setHandicapCourant(handicapCourant);
 
@@ -1783,7 +1783,7 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_DOCUMENT Date de création :
+	 * Retourne le nom d'un bouton pour la JSP : PB_DOCUMENT Date de crÃ©ation :
 	 * (05/09/11 11:31:37)
 	 * 
 	 */
@@ -1792,17 +1792,17 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (05/09/11 11:31:37)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (05/09/11 11:31:37)
 	 * 
 	 */
 	public boolean performPB_DOCUMENT(HttpServletRequest request, int indiceEltDocument) throws Exception {
 
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 
-		// Récup du Handicap courante
+		// RÃ©cup du Handicap courante
 		Handicap handiCourante = (Handicap) getListeHandicap().get(indiceEltDocument);
 		setHandicapCourant(handiCourante);
 
@@ -1822,7 +1822,7 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Insérez la description de la méthode ici. Date de création : (27/03/2003
+	 * InsÃ©rez la description de la mÃ©thode ici. Date de crÃ©ation : (27/03/2003
 	 * 10:55:12)
 	 * 
 	 * @param newListeDocuments
@@ -1873,7 +1873,7 @@ public class OeAGENTHandicap extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_NOM_DOC Date de
-	 * création : (18/08/11 10:21:15)
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_NOM_DOC(int i) {
@@ -1881,8 +1881,8 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_NOM_DOC Date
-	 * de création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_NOM_DOC Date
+	 * de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_NOM_DOC(int i) {
@@ -1891,7 +1891,7 @@ public class OeAGENTHandicap extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_TYPE_DOC Date de
-	 * création : (18/08/11 10:21:15)
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_TYPE_DOC(int i) {
@@ -1899,8 +1899,8 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_TYPE_DOC Date
-	 * de création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_TYPE_DOC Date
+	 * de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_TYPE_DOC(int i) {
@@ -1909,7 +1909,7 @@ public class OeAGENTHandicap extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_DATE_DOC Date de
-	 * création : (18/08/11 10:21:15)
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_DATE_DOC(int i) {
@@ -1917,8 +1917,8 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE_DOC Date
-	 * de création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_DATE_DOC Date
+	 * de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_DATE_DOC(int i) {
@@ -1927,7 +1927,7 @@ public class OeAGENTHandicap extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_COMMENTAIRE_DOCUMENT
-	 * Date de création : (18/08/11 10:21:15)
+	 * Date de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_COMMENTAIRE_DOCUMENT(int i) {
@@ -1935,8 +1935,8 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_COMMENTAIRE
-	 * Date de création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_COMMENTAIRE
+	 * Date de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_COMMENTAIRE_DOCUMENT(int i) {
@@ -1944,7 +1944,7 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_CREER_DOC Date de création :
+	 * Retourne le nom d'un bouton pour la JSP : PB_CREER_DOC Date de crÃ©ation :
 	 * (17/10/11 13:46:25)
 	 * 
 	 */
@@ -1953,10 +1953,10 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (17/10/11 13:46:25)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (17/10/11 13:46:25)
 	 * 
 	 */
 	public boolean performPB_CREER_DOC(HttpServletRequest request) throws Exception {
@@ -1976,7 +1976,7 @@ public class OeAGENTHandicap extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_CONSULTER_DOC Date de
-	 * création : (29/09/11 10:03:38)
+	 * crÃ©ation : (29/09/11 10:03:38)
 	 * 
 	 */
 	public String getNOM_PB_CONSULTER_DOC(int i) {
@@ -1984,10 +1984,10 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (29/09/11 10:03:38)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (29/09/11 10:03:38)
 	 * 
 	 */
 	public boolean performPB_CONSULTER_DOC(HttpServletRequest request, int indiceEltAConsulter) throws Exception {
@@ -2007,7 +2007,7 @@ public class OeAGENTHandicap extends BasicProcess {
 
 		String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_LECTURE");
 
-		// Récup du document courant
+		// RÃ©cup du document courant
 		Document d = (Document) getListeDocuments().get(indiceEltAConsulter);
 		// on affiche le document
 		setURLFichier(getScriptOuverture(repertoireStockage + d.getLienDocument()));
@@ -2040,7 +2040,7 @@ public class OeAGENTHandicap extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMMER_DOC Date de
-	 * création : (05/09/11 11:31:37)
+	 * crÃ©ation : (05/09/11 11:31:37)
 	 * 
 	 */
 	public String getNOM_PB_SUPPRIMER_DOC(int i) {
@@ -2048,10 +2048,10 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (05/09/11 11:31:37)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (05/09/11 11:31:37)
 	 * 
 	 */
 	public boolean performPB_SUPPRIMER_DOC(HttpServletRequest request, int indiceEltASuprimer) throws Exception {
@@ -2059,7 +2059,7 @@ public class OeAGENTHandicap extends BasicProcess {
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 
-		// Récup du Diplome courant
+		// RÃ©cup du Diplome courant
 		Document d = (Document) getListeDocuments().get(indiceEltASuprimer);
 		setDocumentCourant(d);
 
@@ -2077,7 +2077,7 @@ public class OeAGENTHandicap extends BasicProcess {
 
 	private boolean initialiseDocumentSuppression(HttpServletRequest request) throws Exception {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-		// Récup du Diplome courant
+		// RÃ©cup du Diplome courant
 		Document d = getDocumentCourant();
 
 		DocumentAgent lda = getLienDocumentAgentDao().chercherDocumentAgent(getAgentCourant().getIdAgent(),
@@ -2106,7 +2106,7 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Met à jour le doc en cours.
+	 * Met a jour le doc en cours.
 	 * 
 	 * @param documentCourant
 	 *            Nouvelle document en cours
@@ -2120,7 +2120,7 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Met à jour le doc en cours.
+	 * Met a jour le doc en cours.
 	 * 
 	 * @param documentCourant
 	 *            Nouvelle document en cours
@@ -2183,7 +2183,7 @@ public class OeAGENTHandicap extends BasicProcess {
 			logger.error("Erreur suppression physique du fichier : " + e.toString());
 		}
 
-		// tout s'est bien passé
+		// tout s'est bien passÃ©
 		commitTransaction();
 		// Alim zones
 		addZone(getNOM_ST_NOM_DOC(), Const.CHAINE_VIDE);
@@ -2208,7 +2208,7 @@ public class OeAGENTHandicap extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_LIENDOCUMENT Date
-	 * de création : (11/10/11 08:38:48)
+	 * de crÃ©ation : (11/10/11 08:38:48)
 	 * 
 	 */
 	public String getNOM_EF_LIENDOCUMENT() {
@@ -2216,8 +2216,8 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_LIENDOCUMENT Date de création : (11/10/11 08:38:48)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_LIENDOCUMENT Date de crÃ©ation : (11/10/11 08:38:48)
 	 * 
 	 */
 	public String getVAL_EF_LIENDOCUMENT() {
@@ -2229,10 +2229,10 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (11/10/11 08:38:48)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (11/10/11 08:38:48)
 	 * 
 	 */
 	public boolean performPB_VALIDER_DOCUMENT_CREATION(HttpServletRequest request) throws Exception {
@@ -2240,7 +2240,7 @@ public class OeAGENTHandicap extends BasicProcess {
 		if (multi.getFile(getNOM_EF_LIENDOCUMENT()) != null) {
 			fichierUpload = multi.getFile(getNOM_EF_LIENDOCUMENT());
 		}
-		// Contrôle des champs
+		// Controle des champs
 		if (!performControlerSaisieDocument(request))
 			return false;
 
@@ -2249,12 +2249,12 @@ public class OeAGENTHandicap extends BasicProcess {
 		if (getZone(getNOM_ST_WARNING()).equals(Const.CHAINE_VIDE)) {
 			String dateJour = new SimpleDateFormat("ddMMyyyy-hhmm").format(new Date()).toString();
 
-			// on controle si il y a dejà un fichier pour ce handicap
+			// on controle si il y a deja un fichier pour ce handicap
 			if (!performControlerFichier(request, "HANDI_" + handi.getIdHandicap() + "_" + dateJour)) {
 				// alors on affiche un message pour prevenir que l'on va ecraser
 				// le fichier precedent
 				addZone(getNOM_ST_WARNING(),
-						"Attention un fichier du même type existe déjà pour ce handicap. Etes-vous sûr de vouloir écraser la version précédente ?");
+						"Attention un fichier du mÃªme type existe dÃ©jÃ  pour ce handicap. Etes-vous sÃ»r de vouloir Ã©craser la version prÃ©cÃ©dente ?");
 				return true;
 			}
 
@@ -2263,7 +2263,7 @@ public class OeAGENTHandicap extends BasicProcess {
 			}
 
 		} else {
-			// on supprime le document existant dans la base de données
+			// on supprime le document existant dans la base de donnÃ©es
 			Document d = getDocumentDao().chercherDocumentByContainsNom("HANDI_" + handi.getIdHandicap());
 			DocumentAgent l = getLienDocumentAgentDao().chercherDocumentAgent(getAgentCourant().getIdAgent(),
 					d.getIdDocument());
@@ -2285,7 +2285,7 @@ public class OeAGENTHandicap extends BasicProcess {
 		initialiseListeDocuments(request);
 		addZone(getNOM_ST_ACTION(), ACTION_DOCUMENT);
 
-		// on met à jour le tableau des Handicaps pour avoir le nombre de
+		// on met a jour le tableau des Handicaps pour avoir le nombre de
 		// documents
 		initialiseListeHandicap(request);
 
@@ -2293,7 +2293,7 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	private boolean creeDocument(HttpServletRequest request, Handicap handi) throws Exception {
-		// on crée l'entrée dans la table
+		// on crÃ©e l'entrÃ©e dans la table
 		setDocumentCourant(new Document());
 		// on recupere le fichier mis dans le repertoire temporaire
 		if (fichierUpload == null) {
@@ -2301,7 +2301,7 @@ public class OeAGENTHandicap extends BasicProcess {
 			return false;
 		}
 
-		// on recupère le type de document
+		// on recupere le type de document
 		String codTypeDoc = "HANDI";
 		TypeDocument td = getTypeDocumentDao().chercherTypeDocumentByCod(codTypeDoc);
 		String extension = fichierUpload.getName().substring(fichierUpload.getName().indexOf('.'),
@@ -2319,7 +2319,7 @@ public class OeAGENTHandicap extends BasicProcess {
 		if (!upload)
 			return false;
 
-		// on crée le document en base de données
+		// on crÃ©e le document en base de donnÃ©es
 		// String repPartage = (String)
 		// ServletAgent.getMesParametres().get("REPERTOIRE_ACTES");
 		getDocumentCourant().setLienDocument(codTypeDoc + "/" + nom);
@@ -2342,7 +2342,7 @@ public class OeAGENTHandicap extends BasicProcess {
 		if (getTransaction().isErreur())
 			return false;
 
-		// Tout s'est bien passé
+		// Tout s'est bien passÃ©
 		commitTransaction();
 		addZone(getNOM_EF_COMMENTAIRE_DOCUMENT(), Const.CHAINE_VIDE);
 
@@ -2429,7 +2429,7 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	private void verifieRepertoire(String codTypeDoc) {
-		// on verifie déjà que le repertoire source existe
+		// on verifie dÃ©jÃ  que le repertoire source existe
 		String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ACTES");
 		File dossierParent = new File(repPartage);
 		if (!dossierParent.exists()) {
@@ -2457,7 +2457,7 @@ public class OeAGENTHandicap extends BasicProcess {
 
 	private boolean performControlerFichier(HttpServletRequest request, String nomFichier) {
 		boolean result = true;
-		// on regarde dans la liste des document si il y a une entrée avec ce
+		// on regarde dans la liste des document si il y a une entrÃ©e avec ce
 		// nom de contrat
 		for (Iterator<Document> iter = getListeDocuments().iterator(); iter.hasNext();) {
 			Document doc = (Document) iter.next();
@@ -2475,8 +2475,8 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_WARNING Date de création : (16/05/11 09:36:20)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_WARNING Date de crÃ©ation : (16/05/11 09:36:20)
 	 * 
 	 */
 	public String getVAL_ST_WARNING() {
@@ -2484,7 +2484,7 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Méthode qui teste si un paramètre se trouve dans le formulaire
+	 * mÃ©thode qui teste si un parametre se trouve dans le formulaire
 	 */
 	public boolean testerParametre(HttpServletRequest request, String param) {
 		return (request.getParameter(param) != null || request.getParameter(param + ".x") != null || (multi != null && multi

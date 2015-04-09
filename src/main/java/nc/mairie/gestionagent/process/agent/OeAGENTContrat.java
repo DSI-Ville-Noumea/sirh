@@ -45,7 +45,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 
 /**
- * Process OeAGENTContrat Date de création : (16/05/11 09:36:20)
+ * Process OeAGENTContrat Date de crÃ©ation : (16/05/11 09:36:20)
  * 
  */
 public class OeAGENTContrat extends BasicProcess {
@@ -62,7 +62,7 @@ public class OeAGENTContrat extends BasicProcess {
 	public String ACTION_SUPPRESSION = "Suppression d'un contrat.";
 	public String ACTION_CONSULTATION = "Consultation d'un contrat.";
 	public String ACTION_MODIFICATION = "Modification d'un contrat.";
-	public String ACTION_CREATION = "Création d'un contrat.";
+	public String ACTION_CREATION = "CrÃ©ation d'un contrat.";
 	public String ACTION_IMPRESSION = "Impression d'un contrat.";
 
 	public String CHOIX_CONTRAT_O = "Oui";
@@ -92,7 +92,7 @@ public class OeAGENTContrat extends BasicProcess {
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER Date de création :
+	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER Date de crÃ©ation :
 	 * (16/05/11 09:36:20)
 	 * 
 	 */
@@ -101,10 +101,10 @@ public class OeAGENTContrat extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (16/05/11 09:36:20)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (16/05/11 09:36:20)
 	 * 
 	 */
 	public boolean performPB_ANNULER(HttpServletRequest request) throws Exception {
@@ -119,7 +119,7 @@ public class OeAGENTContrat extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_AVENANT Date de création :
+	 * Retourne le nom d'un bouton pour la JSP : PB_AVENANT Date de crÃ©ation :
 	 * (16/05/11 09:36:20)
 	 * 
 	 */
@@ -128,10 +128,10 @@ public class OeAGENTContrat extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (16/05/11 09:36:20)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (16/05/11 09:36:20)
 	 * 
 	 */
 	public boolean performPB_AVENANT(HttpServletRequest request) throws Exception {
@@ -153,7 +153,7 @@ public class OeAGENTContrat extends BasicProcess {
 				int ligneMotif = getListeMotif().indexOf(m);
 				addZone(getNOM_LB_MOTIF_SELECT(), String.valueOf(ligneMotif));
 				addZone(getNOM_EF_JUSTIFICATION(), getContratReference().getJustification());
-				// on met la date de debut du contrat si CDD à datefin
+				// on met la date de debut du contrat si CDD a datefin
 				// contratRef +1
 				if (getTypeContratDao().chercherTypeContrat(getContratReference().getIdTypeContrat())
 						.getLibTypeContrat().equals("CDD")) {
@@ -167,7 +167,7 @@ public class OeAGENTContrat extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_CREER Date de création :
+	 * Retourne le nom d'un bouton pour la JSP : PB_CREER Date de crÃ©ation :
 	 * (16/05/11 09:36:20)
 	 * 
 	 */
@@ -176,10 +176,10 @@ public class OeAGENTContrat extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (16/05/11 09:36:20)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (16/05/11 09:36:20)
 	 * 
 	 */
 	public boolean performPB_CREER(HttpServletRequest request) throws Exception {
@@ -207,7 +207,7 @@ public class OeAGENTContrat extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER Date de création :
+	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER Date de crÃ©ation :
 	 * (16/05/11 09:36:20)
 	 * 
 	 */
@@ -216,10 +216,10 @@ public class OeAGENTContrat extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (16/05/11 09:36:20)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (16/05/11 09:36:20)
 	 * 
 	 * RG_AG_CON_C09
 	 */
@@ -242,7 +242,7 @@ public class OeAGENTContrat extends BasicProcess {
 
 		} else {
 
-			// Récup des zones saisies
+			// RÃ©cup des zones saisies
 			String newIndTypeContrat = getZone(getNOM_LB_TYPE_CONTRAT_SELECT());
 			TypeContrat newTypeContrat = (TypeContrat) getListeTypeContrat().get(Integer.parseInt(newIndTypeContrat));
 			String newIndMotif = getZone(getNOM_LB_MOTIF_SELECT());
@@ -281,7 +281,7 @@ public class OeAGENTContrat extends BasicProcess {
 						getContratCourant().getDateFinPeriodeEss(), getContratCourant().getDateFin(),
 						getContratCourant().getJustification());
 			} else if (getZone(getNOM_ST_ACTION()).equals(ACTION_CREATION)) {
-				// Création
+				// CrÃ©ation
 				// RG_AG_CON_C09
 				String numSeq = getContratDao().getNumContratChrono();
 
@@ -298,8 +298,8 @@ public class OeAGENTContrat extends BasicProcess {
 				return false;
 		}
 
-		// Tout s'est bien passé
-		// Si message informatif déclarer message
+		// Tout s'est bien passÃ©
+		// Si message informatif dÃ©clarer message
 		if (messageInfo != null)
 			getTransaction().declarerErreur(messageInfo);
 		messageInfo = null;
@@ -313,10 +313,10 @@ public class OeAGENTContrat extends BasicProcess {
 	}
 
 	/**
-	 * Vérifie les règles de gestion de saisie (champs obligatoires, ...)
+	 * VÃ©rifie les regles de gestion de saisie (champs obligatoires, ...)
 	 * 
 	 * @param request
-	 * @return true si les règles de gestion sont respectées. false sinon.
+	 * @return true si les regles de gestion sont respectÃ©es. false sinon.
 	 * @throws Exception
 	 */
 	public boolean performControlerChamps(HttpServletRequest request) throws Exception {
@@ -326,41 +326,41 @@ public class OeAGENTContrat extends BasicProcess {
 		messageInfo = null;
 
 		// **********************************************************
-		// RG_AG_CON_C01 : date de début obligatoire et bien formatée
+		// RG_AG_CON_C01 : date de dÃ©but obligatoire et bien formatÃ©e
 		// **********************************************************
 		if ((Const.CHAINE_VIDE).equals(getZone(getNOM_EF_DATE_DEB()))) {
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "Date de début"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "Date de dÃ©but"));
 			return false;
 		}
 
 		if (!Services.estUneDate(getZone(getNOM_EF_DATE_DEB()))) {
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR007", "de début"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR007", "de dÃ©but"));
 			return false;
 		}
 
 		// ****************************************************************************************************************
 		// RG_AG_CON_C01 : Si le contrat n'est pas un avenant, date de fin de
-		// période d'essai obligatoire et bien formatée.
+		// pÃ©riode d'essai obligatoire et bien formatÃ©e.
 		// ****************************************************************************************************************
 		if (!getVAL_RG_AVENANT().equals(getNOM_RB_AVENANT_O())) {
 			if ((Const.CHAINE_VIDE).equals(getZone(getNOM_EF_DATE_FIN_PERIODE_ESSAI()))) {
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "Date de fin de période d'essai"));
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "Date de fin de pÃ©riode d'essai"));
 				setFocus(getNOM_EF_DATE_FIN_PERIODE_ESSAI());
 				return false;
 			}
 			if (!Services.estUneDate(getZone(getNOM_EF_DATE_FIN_PERIODE_ESSAI()))) {
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR007", "de fin de période d'essai"));
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR007", "de fin de pÃ©riode d'essai"));
 				setFocus(getNOM_EF_DATE_FIN_PERIODE_ESSAI());
 				return false;
 			}
 
 			// ******************************************************
-			// RG_AG_CON_C07 : date de fin période essai > date début
+			// RG_AG_CON_C07 : date de fin pÃ©riode essai > date dÃ©but
 			// ******************************************************
 			if (Services.compareDates(getZone(getNOM_EF_DATE_DEB()), getZone(getNOM_EF_DATE_FIN_PERIODE_ESSAI())) >= 0) {
-				// ERR205 : La date @ doit être supérieure à la date @.
+				// ERR205 : La date @ doit Ãªtre supÃ©rieure Ã  la date @.
 				getTransaction().declarerErreur(
-						MessageUtils.getMessage("ERR205", "de fin de période d'essai", "de début"));
+						MessageUtils.getMessage("ERR205", "de fin de pÃ©riode d'essai", "de dÃ©but"));
 				setFocus(getNOM_EF_DATE_FIN_PERIODE_ESSAI());
 				return false;
 			}
@@ -378,7 +378,7 @@ public class OeAGENTContrat extends BasicProcess {
 		}
 
 		// **************************************************
-		// RG_AG_CON_C05 : date de fin > date début si saisie
+		// RG_AG_CON_C05 : date de fin > date dÃ©but si saisie
 		// **************************************************
 		if (!Const.CHAINE_VIDE.equals(getZone(getNOM_EF_DATE_FIN()))) {
 			if (!Services.estUneDate(getZone(getNOM_EF_DATE_FIN()))) {
@@ -388,8 +388,8 @@ public class OeAGENTContrat extends BasicProcess {
 			}
 
 			if (Services.compareDates(getZone(getNOM_EF_DATE_DEB()), getZone(getNOM_EF_DATE_FIN())) >= 0) {
-				// ERR205 : La date @ doit être supérieure à la date @.
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR205", "de fin", "de début"));
+				// ERR205 : La date @ doit Ãªtre supÃ©rieure Ã  la date @.
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR205", "de fin", "de dÃ©but"));
 				setFocus(getNOM_EF_DATE_FIN());
 				return false;
 			}
@@ -407,8 +407,8 @@ public class OeAGENTContrat extends BasicProcess {
 		}
 
 		// ***************************************************************************
-		// RG_AG_CON_C02 : Un agent ne peut avoir qu'un seul contrat à une date
-		// donnée
+		// RG_AG_CON_C02 : Un agent ne peut avoir qu'un seul contrat a une date
+		// donnÃ©e
 		// ***************************************************************************
 		if (!getContratCourant().isAvenant()) {
 
@@ -430,8 +430,8 @@ public class OeAGENTContrat extends BasicProcess {
 			}
 
 			if (!rgOK) {
-				// ERR032:Un agent ne peut avoir qu'un seul contrat à une date
-				// donnée.
+				// ERR032:Un agent ne peut avoir qu'un seul contrat a une date
+				// donnÃ©e.
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR032"));
 				return false;
 			}
@@ -446,10 +446,10 @@ public class OeAGENTContrat extends BasicProcess {
 
 				if (Services.compareDates(sdf.format(getContratCourant().getDatdeb()),
 						sdf.format(getContratReference().getDatdeb())) <= 0) {
-					// "ERR205", "La date @ doit être supérieure à la date @."
+					// "ERR205", "La date @ doit Ãªtre supÃ©rieure Ã  la date @."
 					getTransaction().declarerErreur(
 							MessageUtils
-									.getMessage("ERR205", "de début de contrat", "de début du contrat de référence"));
+									.getMessage("ERR205", "de dÃ©but de contrat", "de dÃ©but du contrat de rÃ©fÃ©rence"));
 					return false;
 				}
 
@@ -459,33 +459,33 @@ public class OeAGENTContrat extends BasicProcess {
 				ArrayList<Contrat> listeAvenant = getContratDao().listerContratAvenantAvecContratReference(
 						getContratReference().getIdContrat());
 				if (listeAvenant.size() == 0) {
-					// 1er Avenant pour ce CDD : on vérifie la date de début
+					// 1er Avenant pour ce CDD : on VÃ©rifie la date de dÃ©but
 					// avec la date de fin du contrat reference
 					if (Services.compareDates(sdf.format(getContratCourant().getDatdeb()),
 							sdf.format(getContratReference().getDateFin())) <= 0) {
 						// "ERR205",
-						// "La date @ doit être supérieure à la date @."
+						// "La date @ doit Ãªtre supÃ©rieure Ã  la date @."
 						getTransaction().declarerErreur(
-								MessageUtils.getMessage("ERR205", "de début de contrat",
-										"de fin du contrat de référence"));
+								MessageUtils.getMessage("ERR205", "de dÃ©but de contrat",
+										"de fin du contrat de rÃ©fÃ©rence"));
 						return false;
 					}
 				} else {
-					// Un ou des evenants pour ce contrat exite déjà : on
+					// Un ou des evenants pour ce contrat exite dÃ©jÃ  : on
 					// verifie la date du debut avec la date de fin du dernier
 					// avenant
 					if (Services.compareDates(sdf.format(getContratCourant().getDatdeb()),
 							sdf.format(listeAvenant.get(listeAvenant.size() - 1).getDateFin())) <= 0) {
 						// "ERR205",
-						// "La date @ doit être supérieure à la date @."
+						// "La date @ doit Ãªtre supÃ©rieure Ã  la date @."
 						getTransaction().declarerErreur(
-								MessageUtils.getMessage("ERR205", "de début de contrat", "de fin du dernier avenant"));
+								MessageUtils.getMessage("ERR205", "de dÃ©but de contrat", "de fin du dernier avenant"));
 						return false;
 					}
 				}
 				if (listeAvenant.size() >= 3) {
 					// "INF007",
-					// "Attention : ce contrat a déjà 3 avenants. Veuillez vérifier son motif."
+					// "Attention : ce contrat a dÃ©jÃ  3 avenants. Veuillez VÃ©rifier son motif."
 					messageInfo = MessageUtils.getMessage("INF007");
 				}
 			}
@@ -495,9 +495,9 @@ public class OeAGENTContrat extends BasicProcess {
 	}
 
 	/**
-	 * Vérifie les règles de gestion spécifiques à la modification
+	 * VÃ©rifie les regles de gestion spÃ©cifiques Ã  la modification
 	 * 
-	 * @return true si les règles de gestion sont respectées. false sinon.
+	 * @return true si les regles de gestion sont respectÃ©es. false sinon.
 	 * @throws Exception
 	 */
 	public boolean performControlerRGModification() throws Exception {
@@ -532,9 +532,9 @@ public class OeAGENTContrat extends BasicProcess {
 	}
 
 	/**
-	 * Vérifie les règles de gestion spécifiques à l'impression
+	 * VÃ©rifie les regles de gestion spÃ©cifiques a l'impression
 	 * 
-	 * @return true si les règles de gestion sont respectées. false sinon.
+	 * @return true si les regles de gestion sont respectÃ©es. false sinon.
 	 * @throws Exception
 	 */
 	public boolean performControlerRGImpression() throws Exception {
@@ -553,22 +553,22 @@ public class OeAGENTContrat extends BasicProcess {
 	}
 
 	/**
-	 * Vérifie si le contrat de référence est saisi dans le cas d'une création
+	 * VÃ©rifie si le contrat de rÃ©fÃ©rence est saisi dans le cas d'une crÃ©ation
 	 * d'avenant.
 	 * 
-	 * @return true si les règles de gestion sont respectées. false sinon.
+	 * @return true si les regles de gestion sont respectÃ©es. false sinon.
 	 * @throws Exception
 	 */
 	public boolean performControlerRGContratRefObligatoire() throws Exception {
 
 		// **********************************************************************
-		// RG_AG_CON_C08 : Num de contrat référence obligatoire si Avenant =
+		// RG_AG_CON_C08 : Num de contrat rÃ©fÃ©rence obligatoire si Avenant =
 		// Oui.
 		// **********************************************************************
 		boolean rgOK = true;
 
 		if (getZone(getNOM_RG_AVENANT()).equals(getNOM_RB_AVENANT_O()) && getContratReference() == null) {
-			// ERR031:Le numéro de contrat de référence est obligatoire dans le
+			// ERR031:Le numÃ©ro de contrat de rÃ©fÃ©rence est obligatoire dans le
 			// cas d'un avenant.
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR031"));
 			return false;
@@ -579,7 +579,7 @@ public class OeAGENTContrat extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_ACTION Date de
-	 * création : (16/05/11 09:36:20)
+	 * crÃ©ation : (16/05/11 09:36:20)
 	 * 
 	 */
 	public String getNOM_ST_ACTION() {
@@ -587,8 +587,8 @@ public class OeAGENTContrat extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACTION Date de
-	 * création : (16/05/11 09:36:20)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_ACTION Date de
+	 * crÃ©ation : (16/05/11 09:36:20)
 	 * 
 	 */
 	public String getVAL_ST_ACTION() {
@@ -597,7 +597,7 @@ public class OeAGENTContrat extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_AGENT Date de
-	 * création : (16/05/11 09:36:20)
+	 * crÃ©ation : (16/05/11 09:36:20)
 	 * 
 	 */
 	public String getNOM_ST_AGENT() {
@@ -605,8 +605,8 @@ public class OeAGENTContrat extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_AGENT Date de
-	 * création : (16/05/11 09:36:20)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_AGENT Date de
+	 * crÃ©ation : (16/05/11 09:36:20)
 	 * 
 	 */
 	public String getVAL_ST_AGENT() {
@@ -615,7 +615,7 @@ public class OeAGENTContrat extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_NUM_CONTRAT Date de
-	 * création : (16/05/11 09:36:20)
+	 * crÃ©ation : (16/05/11 09:36:20)
 	 * 
 	 */
 	public String getNOM_ST_NUM_CONTRAT() {
@@ -623,8 +623,8 @@ public class OeAGENTContrat extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_NUM_CONTRAT
-	 * Date de création : (16/05/11 09:36:20)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_NUM_CONTRAT
+	 * Date de crÃ©ation : (16/05/11 09:36:20)
 	 * 
 	 */
 	public String getVAL_ST_NUM_CONTRAT() {
@@ -633,7 +633,7 @@ public class OeAGENTContrat extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_NUM_CONTRAT_REF Date
-	 * de création : (16/05/11 09:36:20)
+	 * de crÃ©ation : (16/05/11 09:36:20)
 	 * 
 	 */
 	public String getNOM_ST_NUM_CONTRAT_REF() {
@@ -641,8 +641,8 @@ public class OeAGENTContrat extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
-	 * ST_NUM_CONTRAT_REF Date de création : (16/05/11 09:36:20)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone :
+	 * ST_NUM_CONTRAT_REF Date de crÃ©ation : (16/05/11 09:36:20)
 	 * 
 	 */
 	public String getVAL_ST_NUM_CONTRAT_REF() {
@@ -651,7 +651,7 @@ public class OeAGENTContrat extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_DATE_DEB Date de
-	 * création : (16/05/11 09:36:20)
+	 * crÃ©ation : (16/05/11 09:36:20)
 	 * 
 	 */
 	public String getNOM_EF_DATE_DEB() {
@@ -659,8 +659,8 @@ public class OeAGENTContrat extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_DATE_DEB Date de création : (16/05/11 09:36:20)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_DATE_DEB Date de crÃ©ation : (16/05/11 09:36:20)
 	 * 
 	 */
 	public String getVAL_EF_DATE_DEB() {
@@ -669,7 +669,7 @@ public class OeAGENTContrat extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_DATE_FIN Date de
-	 * création : (16/05/11 09:36:20)
+	 * crÃ©ation : (16/05/11 09:36:20)
 	 * 
 	 */
 	public String getNOM_EF_DATE_FIN() {
@@ -677,8 +677,8 @@ public class OeAGENTContrat extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_DATE_FIN Date de création : (16/05/11 09:36:20)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_DATE_FIN Date de crÃ©ation : (16/05/11 09:36:20)
 	 * 
 	 */
 	public String getVAL_EF_DATE_FIN() {
@@ -687,7 +687,7 @@ public class OeAGENTContrat extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP :
-	 * EF_DATE_FIN_PERIODE_ESSAI Date de création : (16/05/11 09:36:20)
+	 * EF_DATE_FIN_PERIODE_ESSAI Date de crÃ©ation : (16/05/11 09:36:20)
 	 * 
 	 */
 	public String getNOM_EF_DATE_FIN_PERIODE_ESSAI() {
@@ -695,8 +695,8 @@ public class OeAGENTContrat extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_DATE_FIN_PERIODE_ESSAI Date de création : (16/05/11 09:36:20)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_DATE_FIN_PERIODE_ESSAI Date de crÃ©ation : (16/05/11 09:36:20)
 	 * 
 	 */
 	public String getVAL_EF_DATE_FIN_PERIODE_ESSAI() {
@@ -705,7 +705,7 @@ public class OeAGENTContrat extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_JUSTIFICATION Date
-	 * de création : (16/05/11 09:36:20)
+	 * de crÃ©ation : (16/05/11 09:36:20)
 	 * 
 	 */
 	public String getNOM_EF_JUSTIFICATION() {
@@ -713,8 +713,8 @@ public class OeAGENTContrat extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_JUSTIFICATION Date de création : (16/05/11 09:36:20)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_JUSTIFICATION Date de crÃ©ation : (16/05/11 09:36:20)
 	 * 
 	 */
 	public String getVAL_EF_JUSTIFICATION() {
@@ -722,7 +722,7 @@ public class OeAGENTContrat extends BasicProcess {
 	}
 
 	/**
-	 * Getter de la liste avec un lazy initialize : LB_MOTIF Date de création :
+	 * Getter de la liste avec un lazy initialize : LB_MOTIF Date de crÃ©ation :
 	 * (16/05/11 09:36:20)
 	 * 
 	 */
@@ -733,7 +733,7 @@ public class OeAGENTContrat extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_MOTIF Date de création : (16/05/11 09:36:20)
+	 * Setter de la liste: LB_MOTIF Date de crÃ©ation : (16/05/11 09:36:20)
 	 * 
 	 */
 	private void setLB_MOTIF(String[] newLB_MOTIF) {
@@ -741,7 +741,7 @@ public class OeAGENTContrat extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_MOTIF Date de création :
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_MOTIF Date de crÃ©ation :
 	 * (16/05/11 09:36:20)
 	 * 
 	 */
@@ -750,8 +750,8 @@ public class OeAGENTContrat extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_MOTIF_SELECT Date de création : (16/05/11 09:36:20)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_MOTIF_SELECT Date de crÃ©ation : (16/05/11 09:36:20)
 	 * 
 	 */
 	public String getNOM_LB_MOTIF_SELECT() {
@@ -759,8 +759,8 @@ public class OeAGENTContrat extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_MOTIF Date de création : (16/05/11 09:36:20)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_MOTIF Date de crÃ©ation : (16/05/11 09:36:20)
 	 * 
 	 */
 	public String[] getVAL_LB_MOTIF() {
@@ -768,8 +768,8 @@ public class OeAGENTContrat extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_MOTIF Date de création : (16/05/11 09:36:20)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_MOTIF Date de crÃ©ation : (16/05/11 09:36:20)
 	 * 
 	 */
 	public String getVAL_LB_MOTIF_SELECT() {
@@ -778,7 +778,7 @@ public class OeAGENTContrat extends BasicProcess {
 
 	/**
 	 * Getter de la liste avec un lazy initialize : LB_TYPE_CONTRAT Date de
-	 * création : (16/05/11 09:36:20)
+	 * crÃ©ation : (16/05/11 09:36:20)
 	 * 
 	 */
 	private String[] getLB_TYPE_CONTRAT() {
@@ -788,7 +788,7 @@ public class OeAGENTContrat extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_TYPE_CONTRAT Date de création : (16/05/11
+	 * Setter de la liste: LB_TYPE_CONTRAT Date de crÃ©ation : (16/05/11
 	 * 09:36:20)
 	 * 
 	 */
@@ -798,7 +798,7 @@ public class OeAGENTContrat extends BasicProcess {
 
 	/**
 	 * Retourne le nom de la zone pour la JSP : NOM_LB_TYPE_CONTRAT Date de
-	 * création : (16/05/11 09:36:20)
+	 * crÃ©ation : (16/05/11 09:36:20)
 	 * 
 	 */
 	public String getNOM_LB_TYPE_CONTRAT() {
@@ -806,8 +806,8 @@ public class OeAGENTContrat extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_TYPE_CONTRAT_SELECT Date de création : (16/05/11 09:36:20)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_TYPE_CONTRAT_SELECT Date de crÃ©ation : (16/05/11 09:36:20)
 	 * 
 	 */
 	public String getNOM_LB_TYPE_CONTRAT_SELECT() {
@@ -815,8 +815,8 @@ public class OeAGENTContrat extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_TYPE_CONTRAT Date de création : (16/05/11 09:36:20)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_TYPE_CONTRAT Date de crÃ©ation : (16/05/11 09:36:20)
 	 * 
 	 */
 	public String[] getVAL_LB_TYPE_CONTRAT() {
@@ -824,8 +824,8 @@ public class OeAGENTContrat extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_TYPE_CONTRAT Date de création : (16/05/11 09:36:20)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_TYPE_CONTRAT Date de crÃ©ation : (16/05/11 09:36:20)
 	 * 
 	 */
 	public String getVAL_LB_TYPE_CONTRAT_SELECT() {
@@ -833,8 +833,8 @@ public class OeAGENTContrat extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom du groupe de radio boutons coché pour la JSP : RG_AVENANT
-	 * Date de création : (16/05/11 09:36:20)
+	 * Retourne le nom du groupe de radio boutons cochÃ© pour la JSP : RG_AVENANT
+	 * Date de crÃ©ation : (16/05/11 09:36:20)
 	 * 
 	 */
 	public String getNOM_RG_AVENANT() {
@@ -842,8 +842,8 @@ public class OeAGENTContrat extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur du radio bouton (RB_) coché dans la JSP : RG_AVENANT
-	 * Date de création : (16/05/11 09:36:20)
+	 * Retourne la valeur du radio bouton (RB_) cochÃ© dans la JSP : RG_AVENANT
+	 * Date de crÃ©ation : (16/05/11 09:36:20)
 	 * 
 	 */
 	public String getVAL_RG_AVENANT() {
@@ -852,7 +852,7 @@ public class OeAGENTContrat extends BasicProcess {
 
 	/**
 	 * Retourne le nom du radio bouton pour la JSP : RB_AVENANT_N Date de
-	 * création : (16/05/11 09:36:20)
+	 * crÃ©ation : (16/05/11 09:36:20)
 	 * 
 	 */
 	public String getNOM_RB_AVENANT_N() {
@@ -861,7 +861,7 @@ public class OeAGENTContrat extends BasicProcess {
 
 	/**
 	 * Retourne le nom du radio bouton pour la JSP : RB_AVENANT_O Date de
-	 * création : (16/05/11 09:36:20)
+	 * crÃ©ation : (16/05/11 09:36:20)
 	 * 
 	 */
 	public String getNOM_RB_AVENANT_O() {
@@ -878,7 +878,7 @@ public class OeAGENTContrat extends BasicProcess {
 	}
 
 	/**
-	 * Met à jour le focus de la JSP.
+	 * Met a jour le focus de la JSP.
 	 * 
 	 * @param focus
 	 */
@@ -907,10 +907,10 @@ public class OeAGENTContrat extends BasicProcess {
 	}
 
 	/**
-	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones Ã  afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
-	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
-	 * addZone(getNOMxxx, String); Date de création : (16/05/11 10:43:24)
+	 * doivent avoir les Fields PUBLIC Utilisation de la mÃ©thode
+	 * addZone(getNOMxxx, String); Date de crÃ©ation : (16/05/11 10:43:24)
 	 * 
 	 */
 	public void initialiseZones(HttpServletRequest request) throws Exception {
@@ -920,10 +920,10 @@ public class OeAGENTContrat extends BasicProcess {
 			addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 		}
 
-		// Vérification des droits d'accès.
+		// VÃ©rification des droits d'acces.
 		if (MairieUtils.estInterdit(request, getNomEcran())) {
 			// "ERR190",
-			// "Opération impossible. Vous ne disposez pas des droits d'accès à cette option."
+			// "Operation impossible. Vous ne disposez pas des droits d'acces a cette option."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
@@ -990,7 +990,7 @@ public class OeAGENTContrat extends BasicProcess {
 	}
 
 	/**
-	 * Initialise à vide les zones du contrat.
+	 * Initialise a vide les zones du contrat.
 	 */
 	public void initialiseContratVide() {
 		addZone(getNOM_ST_NUM_CONTRAT(), Const.CHAINE_VIDE);
@@ -1114,7 +1114,7 @@ public class OeAGENTContrat extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_MOTIF Date de
-	 * création : (16/05/11 10:43:25)
+	 * crÃ©ation : (16/05/11 10:43:25)
 	 * 
 	 */
 	public String getNOM_ST_MOTIF() {
@@ -1122,8 +1122,8 @@ public class OeAGENTContrat extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_MOTIF Date de
-	 * création : (16/05/11 10:43:25)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_MOTIF Date de
+	 * crÃ©ation : (16/05/11 10:43:25)
 	 * 
 	 */
 	public String getVAL_ST_MOTIF() {
@@ -1132,7 +1132,7 @@ public class OeAGENTContrat extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_TYPE_CONTRAT Date de
-	 * création : (16/05/11 10:43:25)
+	 * crÃ©ation : (16/05/11 10:43:25)
 	 * 
 	 */
 	public String getNOM_ST_TYPE_CONTRAT() {
@@ -1140,8 +1140,8 @@ public class OeAGENTContrat extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_TYPE_CONTRAT
-	 * Date de création : (16/05/11 10:43:25)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_TYPE_CONTRAT
+	 * Date de crÃ©ation : (16/05/11 10:43:25)
 	 * 
 	 */
 	public String getVAL_ST_TYPE_CONTRAT() {
@@ -1158,7 +1158,7 @@ public class OeAGENTContrat extends BasicProcess {
 	}
 
 	/**
-	 * Met à jour l'agent courant.
+	 * Met a jour l'agent courant.
 	 * 
 	 * @param agentCourant
 	 */
@@ -1176,7 +1176,7 @@ public class OeAGENTContrat extends BasicProcess {
 	}
 
 	/**
-	 * Met à jour la liste des contrats
+	 * Met a jour la liste des contrats
 	 * 
 	 * @param listeContrat
 	 *            ArrayList
@@ -1195,7 +1195,7 @@ public class OeAGENTContrat extends BasicProcess {
 	}
 
 	/**
-	 * Met à jour le contrat courant.
+	 * Met a jour le contrat courant.
 	 * 
 	 * @param contratCourant
 	 *            Contrat
@@ -1214,7 +1214,7 @@ public class OeAGENTContrat extends BasicProcess {
 	}
 
 	/**
-	 * Met à jour la liste de motifs
+	 * Met a jour la liste de motifs
 	 * 
 	 * @param listeMotif
 	 */
@@ -1276,7 +1276,7 @@ public class OeAGENTContrat extends BasicProcess {
 	}
 
 	/**
-	 * Met à jour le motif courant.
+	 * Met a jour le motif courant.
 	 * 
 	 * @param motifCourant
 	 *            Motif
@@ -1295,7 +1295,7 @@ public class OeAGENTContrat extends BasicProcess {
 	}
 
 	/**
-	 * Met à jour le type de contrat courant.
+	 * Met a jour le type de contrat courant.
 	 * 
 	 * @param typeContratCourant
 	 */
@@ -1305,7 +1305,7 @@ public class OeAGENTContrat extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_INIT_FIN_PERIODE_ESSAI Date
-	 * de création : (17/05/11 16:01:36)
+	 * de crÃ©ation : (17/05/11 16:01:36)
 	 * 
 	 */
 	public String getNOM_PB_INIT_FIN_PERIODE_ESSAI() {
@@ -1313,8 +1313,8 @@ public class OeAGENTContrat extends BasicProcess {
 	}
 
 	/**
-	 * Initialise le champ de fin de période d'essai à partir de la date de
-	 * début et du type de contrat. Date de création : (17/05/11 16:01:36)
+	 * Initialise le champ de fin de pÃ©riode d'essai a partir de la date de
+	 * dÃ©but et du type de contrat. Date de crÃ©ation : (17/05/11 16:01:36)
 	 * 
 	 */
 	public boolean performPB_INIT_FIN_PERIODE_ESSAI(HttpServletRequest request) throws Exception {
@@ -1342,7 +1342,7 @@ public class OeAGENTContrat extends BasicProcess {
 						&& Services.estUneDate(getZone(getNOM_EF_DATE_FIN()))) {
 					// si + de 1an entre les dates alors dateFin = DateDeb+1mois
 					// si entre 6 mois et 1an alors dateFin = DateDeb+14 jours
-					// si inf à 6 mois alors dateFin = DateDeb+1 jours par
+					// si inf a 6 mois alors dateFin = DateDeb+1 jours par
 					// semaine dans limite des 14jours
 					String datedebut = Services.formateDate(getZone(getNOM_EF_DATE_DEB()));
 					String datefin = Services.formateDate(getZone(getNOM_EF_DATE_FIN()));
@@ -1397,7 +1397,7 @@ public class OeAGENTContrat extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_CHOIX_CONTRAT Date
-	 * de création : (23/05/11 10:09:01)
+	 * de crÃ©ation : (23/05/11 10:09:01)
 	 * 
 	 */
 	public String getNOM_ST_CHOIX_CONTRAT() {
@@ -1405,8 +1405,8 @@ public class OeAGENTContrat extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_CHOIX_CONTRAT
-	 * Date de création : (23/05/11 10:09:01)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_CHOIX_CONTRAT
+	 * Date de crÃ©ation : (23/05/11 10:09:01)
 	 * 
 	 */
 	public String getVAL_ST_CHOIX_CONTRAT() {
@@ -1414,7 +1414,7 @@ public class OeAGENTContrat extends BasicProcess {
 	}
 
 	/**
-	 * Constructeur du process OeAGENTContrat. Date de création : (23/05/11
+	 * Constructeur du process OeAGENTContrat. Date de crÃ©ation : (23/05/11
 	 * 10:09:49)
 	 * 
 	 */
@@ -1423,7 +1423,7 @@ public class OeAGENTContrat extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_OK Date de création :
+	 * Retourne le nom d'un bouton pour la JSP : PB_OK Date de crÃ©ation :
 	 * (23/05/11 10:09:49)
 	 * 
 	 */
@@ -1432,15 +1432,15 @@ public class OeAGENTContrat extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (23/05/11 10:09:49)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (23/05/11 10:09:49)
 	 * 
 	 */
 	public boolean performPB_OK(HttpServletRequest request) throws Exception {
 		if (performControlerRGContratRefObligatoire()) {
-			// Type de contrat déjà choisi. Sert à l'affichage des champs à
+			// Type de contrat dÃ©jÃ  choisi. Sert a l'affichage des champs a
 			// saisir dans la JSP
 			addZone(getNOM_ST_CHOIX_CONTRAT(), CHOIX_CONTRAT_N);
 
@@ -1502,7 +1502,7 @@ public class OeAGENTContrat extends BasicProcess {
 		String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ACTES");
 		String destination = "C/C_" + getContratCourant().getIdContrat() + ".doc";
 
-		// si le fichier existe alors on supprime l'entrée où il y a le fichier
+		// si le fichier existe alors on supprime l'entrÃ©e ou il y a le fichier
 		if (verifieExistFichier(getContratCourant().getIdContrat())) {
 			Document d = getDocumentDao().chercherDocumentByContainsNom("C_" + getContratCourant().getIdContrat());
 			DocumentAgent l = getLienDocumentAgentDao().chercherDocumentAgent(getAgentCourant().getIdAgent(),
@@ -1529,19 +1529,19 @@ public class OeAGENTContrat extends BasicProcess {
 
 			if (!saveFileToRemoteFileSystem(fileAsBytes, repPartage, destination)) {
 				// "ERR185",
-				// "Une erreur est survenue dans la génération des documents. Merci de contacter le responsable du projet."
+				// "Une erreur est survenue dans la gÃ©nÃ©ration des documents. Merci de contacter le responsable du projet."
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR185"));
 				return false;
 			}
 
-			// Tout s'est bien passé
-			// on crée le document en base de données
+			// Tout s'est bien passÃ©
+			// on crÃ©e le document en base de donnÃ©es
 			Document d = new Document();
 			d.setIdTypeDocument(2);
 			d.setLienDocument(destination);
 			d.setNomDocument("C_" + getContratCourant().getIdContrat() + ".doc");
 			d.setDateDocument(new Date());
-			d.setCommentaire("Document généré par l'application");
+			d.setCommentaire("Document gÃ©nÃ©rÃ© par l'application");
 			Integer id = getDocumentDao().creerDocument(d.getClasseDocument(), d.getNomDocument(), d.getLienDocument(),
 					d.getDateDocument(), d.getCommentaire(), d.getIdTypeDocument(), d.getNomOriginal());
 
@@ -1561,7 +1561,7 @@ public class OeAGENTContrat extends BasicProcess {
 
 		} catch (Exception e) {
 			// "ERR185",
-			// "Une erreur est survenue dans la génération des documents. Merci de contacter le responsable du projet."
+			// "Une erreur est survenue dans la gÃ©nÃ©ration des documents. Merci de contacter le responsable du projet."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR185"));
 			return false;
 		}
@@ -1621,7 +1621,7 @@ public class OeAGENTContrat extends BasicProcess {
 	}
 
 	private void verifieRepertoire(String codTypeDoc) {
-		// on verifie déjà que le repertoire source existe
+		// on verifie dÃ©jÃ  que le repertoire source existe
 		String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ACTES");
 
 		File dossierParent = new File(repPartage);
@@ -1635,8 +1635,8 @@ public class OeAGENTContrat extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_WARNING Date de création : (16/05/11 09:36:20)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_WARNING Date de crÃ©ation : (16/05/11 09:36:20)
 	 * 
 	 */
 	public String getVAL_ST_WARNING() {
@@ -1645,7 +1645,7 @@ public class OeAGENTContrat extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_WARNING Date de
-	 * création : (16/05/11 09:36:20)
+	 * crÃ©ation : (16/05/11 09:36:20)
 	 * 
 	 */
 	public String getNOM_ST_WARNING() {
@@ -1653,8 +1653,8 @@ public class OeAGENTContrat extends BasicProcess {
 	}
 
 	/**
-	 * Méthode appelée par la servlet qui aiguille le traitement : en fonction
-	 * du bouton de la JSP Date de création : (16/05/11 09:36:20)
+	 * mÃ©thode appelee par la servlet qui aiguille le traitement : en fonction
+	 * du bouton de la JSP Date de crÃ©ation : (16/05/11 09:36:20)
 	 * 
 	 */
 	public boolean recupererStatut(HttpServletRequest request) throws Exception {
@@ -1726,14 +1726,14 @@ public class OeAGENTContrat extends BasicProcess {
 			}
 
 		}
-		// Si TAG INPUT non géré par le process
+		// Si TAG INPUT non gÃ©rÃ© par le process
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
 
 	/**
-	 * Retourne le nom de la JSP du process Zone à utiliser dans un champ caché
-	 * dans chaque formulaire de la JSP. Date de création : (18/10/11 16:08:49)
+	 * Retourne le nom de la JSP du process Zone a utiliser dans un champ cache
+	 * dans chaque formulaire de la JSP. Date de crÃ©ation : (18/10/11 16:08:49)
 	 * 
 	 */
 	public String getJSP() {
@@ -1741,7 +1741,7 @@ public class OeAGENTContrat extends BasicProcess {
 	}
 
 	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_NUM Date de création
+	 * Retourne pour la JSP le nom de la zone statique : ST_NUM Date de crÃ©ation
 	 * : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -1750,8 +1750,8 @@ public class OeAGENTContrat extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_NUM Date de
-	 * création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_NUM Date de
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_NUM(int i) {
@@ -1760,7 +1760,7 @@ public class OeAGENTContrat extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_TYPE Date de
-	 * création : (18/08/11 10:21:15)
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_TYPE(int i) {
@@ -1768,8 +1768,8 @@ public class OeAGENTContrat extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_TYPE Date de
-	 * création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_TYPE Date de
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_TYPE(int i) {
@@ -1778,7 +1778,7 @@ public class OeAGENTContrat extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_AVENANT Date de
-	 * création : (18/08/11 10:21:15)
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_AVENANT(int i) {
@@ -1786,8 +1786,8 @@ public class OeAGENTContrat extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_AVENANT Date
-	 * de création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_AVENANT Date
+	 * de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_AVENANT(int i) {
@@ -1796,7 +1796,7 @@ public class OeAGENTContrat extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_DATE_DEBUT Date de
-	 * création : (18/08/11 10:21:15)
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_DATE_DEBUT(int i) {
@@ -1804,8 +1804,8 @@ public class OeAGENTContrat extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE_DEBUT
-	 * Date de création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_DATE_DEBUT
+	 * Date de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_DATE_DEBUT(int i) {
@@ -1814,7 +1814,7 @@ public class OeAGENTContrat extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_DATE_ESSAI Date de
-	 * création : (18/08/11 10:21:15)
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_DATE_ESSAI(int i) {
@@ -1822,8 +1822,8 @@ public class OeAGENTContrat extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE_ESSAI
-	 * Date de création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_DATE_ESSAI
+	 * Date de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_DATE_ESSAI(int i) {
@@ -1832,7 +1832,7 @@ public class OeAGENTContrat extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_DATE_FIN Date de
-	 * création : (18/08/11 10:21:15)
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_DATE_FIN(int i) {
@@ -1840,8 +1840,8 @@ public class OeAGENTContrat extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE_FIN Date
-	 * de création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_DATE_FIN Date
+	 * de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_DATE_FIN(int i) {
@@ -1850,7 +1850,7 @@ public class OeAGENTContrat extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_MOTIF Date de
-	 * création : (18/08/11 10:21:15)
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_MOTIF(int i) {
@@ -1858,8 +1858,8 @@ public class OeAGENTContrat extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_MOTIF Date de
-	 * création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_MOTIF Date de
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_MOTIF(int i) {
@@ -1868,7 +1868,7 @@ public class OeAGENTContrat extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_JUSTIFICATION Date
-	 * de création : (18/08/11 10:21:15)
+	 * de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_JUSTIFICATION(int i) {
@@ -1876,8 +1876,8 @@ public class OeAGENTContrat extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_JUSTIFICATION
-	 * Date de création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_JUSTIFICATION
+	 * Date de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_JUSTIFICATION(int i) {
@@ -1889,10 +1889,10 @@ public class OeAGENTContrat extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (16/08/11 15:48:02)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	public boolean performPB_MODIFIER(HttpServletRequest request, int indiceEltAModifier) throws Exception {
@@ -1906,7 +1906,7 @@ public class OeAGENTContrat extends BasicProcess {
 		addZone(getNOM_ST_WARNING(), Const.CHAINE_VIDE);
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 
-		// Récup du contrat courant
+		// RÃ©cup du contrat courant
 		Contrat c = (Contrat) getListeContrat().get(indiceEltAModifier);
 		setContratCourant(c);
 
@@ -1932,7 +1932,7 @@ public class OeAGENTContrat extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_VISUALISATION Date de
-	 * création : (29/09/11 10:03:38)
+	 * crÃ©ation : (29/09/11 10:03:38)
 	 * 
 	 */
 	public String getNOM_PB_CONSULTER(int i) {
@@ -1940,10 +1940,10 @@ public class OeAGENTContrat extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (29/09/11 10:03:38)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (29/09/11 10:03:38)
 	 * 
 	 */
 	public boolean performPB_CONSULTER(HttpServletRequest request, int indiceEltAConsulter) throws Exception {
@@ -1957,7 +1957,7 @@ public class OeAGENTContrat extends BasicProcess {
 		addZone(getNOM_ST_WARNING(), Const.CHAINE_VIDE);
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 
-		// Récup du contrat courant
+		// RÃ©cup du contrat courant
 		Contrat c = (Contrat) getListeContrat().get(indiceEltAConsulter);
 		setContratCourant(c);
 
@@ -1974,7 +1974,7 @@ public class OeAGENTContrat extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMMER Date de création
+	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMMER Date de crÃ©ation
 	 * : (05/09/11 11:31:37)
 	 * 
 	 */
@@ -1983,10 +1983,10 @@ public class OeAGENTContrat extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (05/09/11 11:31:37)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (05/09/11 11:31:37)
 	 * 
 	 */
 	public boolean performPB_SUPPRIMER(HttpServletRequest request, int indiceEltASuprimer) throws Exception {
@@ -2001,7 +2001,7 @@ public class OeAGENTContrat extends BasicProcess {
 		addZone(getNOM_ST_WARNING(), Const.CHAINE_VIDE);
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 
-		// Récup du contrat courant
+		// RÃ©cup du contrat courant
 		Contrat c = (Contrat) getListeContrat().get(indiceEltASuprimer);
 		setContratCourant(c);
 
@@ -2015,7 +2015,7 @@ public class OeAGENTContrat extends BasicProcess {
 			addZone(getNOM_ST_WARNING(), "Veuillez valider votre choix.");
 		} else {
 			addZone(getNOM_ST_WARNING(),
-					"Attention : les avenants du contrat seront aussi supprimés. Veuillez valider votre choix.");
+					"Attention : les avenants du contrat seront aussi supprimÃ©s. Veuillez valider votre choix.");
 		}
 
 		// On pose le statut
@@ -2039,7 +2039,7 @@ public class OeAGENTContrat extends BasicProcess {
 			return false;
 		}
 
-		// Récup du contrat courant
+		// RÃ©cup du contrat courant
 		Contrat c = (Contrat) getListeContrat().get(indiceEltAImprimer);
 		setContratCourant(c);
 
@@ -2051,12 +2051,12 @@ public class OeAGENTContrat extends BasicProcess {
 			return false;
 		}
 
-		// on verifie si il existe dejà un fichier pour ce contrat dans la BD
+		// on verifie si il existe deja un fichier pour ce contrat dans la BD
 		if (verifieExistFichier(getContratCourant().getIdContrat())) {
 			// alors on affiche un message
-			// :" Attention un fichier existe déjà pour ce contrat. Etes-vous sûr de vouloir écraser la version précédente ?"
+			// :" Attention un fichier existe dÃ©jÃ  pour ce contrat. Etes-vous sÃ»r de vouloir Ã©craser la version prÃ©cÃ©dente ?"
 			addZone(getNOM_ST_WARNING(),
-					"Attention un fichier existe déjà pour ce contrat. Etes-vous sûr de vouloir écraser la version précédente ?");
+					"Attention un fichier existe dÃ©jÃ  pour ce contrat. Etes-vous sÃ»r de vouloir Ã©craser la version prÃ©cÃ©dente ?");
 			// On nomme l'action
 			addZone(getNOM_ST_ACTION(), ACTION_IMPRESSION);
 		} else {

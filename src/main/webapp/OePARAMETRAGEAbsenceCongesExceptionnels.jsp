@@ -1,4 +1,4 @@
-<!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@ page contentType="text/html; charset=UTF-8" %> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <%@page import="nc.mairie.enums.EnumTypeGroupeAbsence"%>
 <%@page import="nc.mairie.gestionagent.absence.dto.TypeAbsenceDto"%>
 <%@page import="nc.mairie.enums.EnumTypeDroit"%>
@@ -11,7 +11,7 @@
 		<LINK href="theme/sigp2.css" rel="stylesheet" type="text/css">
 		<LINK href="theme/dataTables.css" rel="stylesheet" type="text/css">
 		<LINK href="TableTools-2.0.1/media/css/TableTools.css" rel="stylesheet" type="text/css">
-		<TITLE>Gestion des paramètres des absences</TITLE>
+		<TITLE>Gestion des paramÃ¨tres des absences</TITLE>
 
 
         <SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT> 
@@ -19,13 +19,13 @@
         <script type="text/javascript" src="js/jquery.dataTables.min.js"></script>
             
 		<SCRIPT language="JavaScript">
-		//afin de sélectionner un élément dans une liste
+		//afin de sÃ©lectionner un Ã©lÃ©ment dans une liste
 		function executeBouton(nom)
 		{
 			document.formu.elements[nom].click();
 		}
 
-		// afin de mettre le focus sur une zone précise
+		// afin de mettre le focus sur une zone prÃ©cise
 		function setfocus(nom)
 		{
 		if (document.formu.elements[nom] != null)
@@ -47,7 +47,7 @@
 					} );
 				</script>
 		
-		<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	</HEAD>
 	<jsp:useBean class="nc.mairie.gestionagent.process.parametre.OePARAMETRAGEAbsenceCongesExceptionnels" id="process" scope="session"></jsp:useBean>
 	<BODY bgcolor="#FFFFFF" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" class="sigp2-BODY" onload="window.parent.frames['refAgent'].location.reload();return setfocus('<%= process.getFocus() %>')" >
@@ -55,7 +55,7 @@
 		<FORM name="formu" method="POST" class="sigp2-titre">
 			<INPUT name="JSP" type="hidden" value="<%= process.getJSP() %>">
 						<FIELDSET class="sigp2Fieldset" style="text-align: left;">
-					    	<legend class="sigp2Legend">Gestion des congés exceptionnels</legend>
+					    	<legend class="sigp2Legend">Gestion des congÃ©s exceptionnels</legend>
 							<table cellpadding="0" cellspacing="0" border="0" class="display" id="CongesExcep"> 
 			                    <thead>
 			                        <tr>
@@ -63,7 +63,7 @@
 			                            	<img src="images/ajout.gif" height="16px" width="16px" title="Creer une absence" onClick="executeBouton('<%=process.getNOM_PB_AJOUTER_CONGES()%>')" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>">
 			            				</th>  
 			                            <th>Type</th>
-			                            <th width="80px">Unite de décompte</th>	
+			                            <th width="80px">Unite de dÃ©compte</th>	
 			                            <th>Info</th>	                            
 			                        </tr>
 			                    </thead>
@@ -113,15 +113,15 @@
 		            	</tr>
 		            	<tr>
 		            		<td>
-	                			<span class="sigp2Mandatory">Demi journée debut : </span><span class="sigp2-saisie"><%=process.getVAL_ST_DEBUT_MAM()%></span>
+	                			<span class="sigp2Mandatory">Demi journÃ©e debut : </span><span class="sigp2-saisie"><%=process.getVAL_ST_DEBUT_MAM()%></span>
 		            		</td>
 		            		<td>
-	                			<span class="sigp2Mandatory">Demi journée fin : </span><span class="sigp2-saisie"><%=process.getVAL_ST_FIN_MAM()%></span>
+	                			<span class="sigp2Mandatory">Demi journÃ©e fin : </span><span class="sigp2-saisie"><%=process.getVAL_ST_FIN_MAM()%></span>
 		            		</td>
 		            	</tr>
 		            	<tr>
 		            		<td>
-	                			<span class="sigp2Mandatory">Pièce jointe : </span><span class="sigp2-saisie"><%=process.getVAL_ST_PIECE_JOINTE()%></span>
+	                			<span class="sigp2Mandatory">PiÃ¨ce jointe : </span><span class="sigp2-saisie"><%=process.getVAL_ST_PIECE_JOINTE()%></span>
 		            		</td>
 		            		<td>
 	                			<span class="sigp2Mandatory">Saisie Kiosque : </span><span class="sigp2-saisie"><%=process.getVAL_ST_SAISIE_KIOSQUE()%></span>
@@ -172,14 +172,14 @@
 	            	<legend class="sigp2Legend"><%=process.ACTION_MODIFICATION %> <%=process.getTypeCreation().getLibelle() %></legend>
 				<%}else{ %>
 	            	<legend class="sigp2Legend"><%=process.ACTION_CREATION %> </legend>
-					<span class="sigp2Mandatory">Libellé : </span>
+					<span class="sigp2Mandatory">LibellÃ© : </span>
 					<INPUT class="sigp2-saisie" size="150" name="<%= process.getNOM_ST_LIBELLE() %>" type="text"  value="<%= process.getVAL_ST_LIBELLE() %>">
 					<BR/>
 				<%} %>
 		            <table>
 		            	<tr>
 		            		<td width="500px">
-	                			<span class="sigp2Mandatory">Unité de décompte : </span>
+	                			<span class="sigp2Mandatory">UnitÃ© de dÃ©compte : </span>
 								<span class="sigp2-saisie">
 									<SELECT style="width: 90px;" onchange='executeBouton("<%=process.getNOM_PB_UNITE_DECOMPTE() %>")'  <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> class="sigp2-saisie" name="<%= process.getNOM_LB_UNITE_DECOMPTE() %>">
 										<%=process.forComboHTML(process.getVAL_LB_UNITE_DECOMPTE(), process.getVAL_LB_UNITE_DECOMPTE_SELECT())%>
@@ -219,12 +219,12 @@
 	                	<%if(process.getTypeCreation().getTypeSaisiDto().getUniteDecompte().equals("jours")){ %>
 		            	<tr>
 		            		<td>
-	                			<span class="sigp2Mandatory">Demi-journée debut : </span>
+	                			<span class="sigp2Mandatory">Demi-journÃ©e debut : </span>
 	 							<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_AM_PM_DEBUT(),process.getNOM_RB_AM_PM_DEBUT_OUI())%>><span class="sigp2-saisie">Oui</span>
 			            		<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_AM_PM_DEBUT(),process.getNOM_RB_AM_PM_DEBUT_NON())%>><span class="sigp2-saisie">Non</span>
 			            	</td>
 		            		<td>
-								<span class="sigp2Mandatory">Demi-journée fin : </span>
+								<span class="sigp2Mandatory">Demi-journÃ©e fin : </span>
 		                		<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_AM_PM_FIN(),process.getNOM_RB_AM_PM_FIN_OUI())%>><span class="sigp2-saisie">Oui</span>
 			            		<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_AM_PM_FIN(),process.getNOM_RB_AM_PM_FIN_NON())%>><span class="sigp2-saisie">Non</span>
 							</td>
@@ -240,7 +240,7 @@
 		            	</tr>
 		            	<tr>
 		            		<td>
-	                			<span class="sigp2Mandatory">Pièce jointe : </span>
+	                			<span class="sigp2Mandatory">PiÃ¨ce jointe : </span>
 	 							<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_PIECE_JOINTE(),process.getNOM_RB_PIECE_JOINTE_OUI())%>><span class="sigp2-saisie">Oui</span>
 			            		<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_PIECE_JOINTE(),process.getNOM_RB_PIECE_JOINTE_NON())%>><span class="sigp2-saisie">Non</span>
 			            	</td>
@@ -272,7 +272,7 @@
 		            	</tr>
 		            	<tr>
 		            		<td>
-								<span class="sigp2Mandatory">Quota pour calcul dépassement : </span>
+								<span class="sigp2Mandatory">Quota pour calcul dÃ©passement : </span>
 								<INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_QUOTA() %>" type="text"  value="<%= process.getVAL_ST_QUOTA() %>">
 		            		</td>
 		            		<td>
@@ -304,7 +304,7 @@
             	</FIELDSET>  
             <%} else if(process.getVAL_ST_ACTION().equals(process.ACTION_SUPPRESSION)){%>
             	<div>
-					<FONT color='red'>Etes-vous sûr de vouloir supprimer : <%=process.getTypeCreation().getLibelle() %></FONT>
+					<FONT color='red'>Etes-vous sÃ»r de vouloir supprimer : <%=process.getTypeCreation().getLibelle() %></FONT>
 			        <BR/><BR/>
 	                <INPUT type="submit" class="sigp2-Bouton-100" value="Supprimer" name="<%=process.getNOM_PB_VALIDER_CONGES()%>" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>">
 	                <INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">

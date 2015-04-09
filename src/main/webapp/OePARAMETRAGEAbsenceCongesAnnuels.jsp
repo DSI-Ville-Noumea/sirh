@@ -1,4 +1,4 @@
-<!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@ page contentType="text/html; charset=UTF-8" %> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <%@page import="java.util.Date"%>
 <%@page import="nc.mairie.gestionagent.absence.dto.RefAlimCongesAnnuelsDto"%>
 <%@page import="nc.mairie.gestionagent.absence.dto.RefTypeSaisiCongeAnnuelDto"%>
@@ -12,7 +12,7 @@
 		<LINK href="theme/sigp2.css" rel="stylesheet" type="text/css">
 		<LINK href="theme/dataTables.css" rel="stylesheet" type="text/css">
 		<LINK href="TableTools-2.0.1/media/css/TableTools.css" rel="stylesheet" type="text/css">
-		<TITLE>Gestion des paramètres des absences</TITLE>
+		<TITLE>Gestion des paramÃ¨tres des absences</TITLE>
 
 
         <SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT> 
@@ -20,13 +20,13 @@
         <script type="text/javascript" src="js/jquery.dataTables.min.js"></script>
             
 		<SCRIPT language="JavaScript">
-		//afin de sélectionner un élément dans une liste
+		//afin de sÃ©lectionner un Ã©lÃ©ment dans une liste
 		function executeBouton(nom)
 		{
 			document.formu.elements[nom].click();
 		}
 
-		// afin de mettre le focus sur une zone précise
+		// afin de mettre le focus sur une zone prÃ©cise
 		function setfocus(nom)
 		{
 		if (document.formu.elements[nom] != null)
@@ -60,7 +60,7 @@
 					} );
 				</script>
 		
-		<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	</HEAD>
 	<jsp:useBean class="nc.mairie.gestionagent.process.parametre.OePARAMETRAGEAbsenceCongesAnnuels" id="process" scope="session"></jsp:useBean>
 	<BODY bgcolor="#FFFFFF" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" class="sigp2-BODY" onload="window.parent.frames['refAgent'].location.reload();return setfocus('<%= process.getFocus() %>')" >
@@ -68,7 +68,7 @@
 		<FORM name="formu" method="POST" class="sigp2-titre">
 			<INPUT name="JSP" type="hidden" value="<%= process.getJSP() %>">
 						<FIELDSET class="sigp2Fieldset" style="text-align: left;">
-					    	<legend class="sigp2Legend">Gestion des congés annuels</legend>
+					    	<legend class="sigp2Legend">Gestion des congÃ©s annuels</legend>
 							<table cellpadding="0" cellspacing="0" border="0" class="display" id="CongesAnnuels"> 
 			                    <thead>
 			                        <tr>
@@ -88,7 +88,7 @@
 											<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_VISUALISATION(indiceAbs)%>">
 											<INPUT title="modifier" type="image" src="images/modifier.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_MODIFIER_CONGES(indiceAbs)%>">
                            					<INPUT title="Voir l'alimentaion manuelle" type="image" src="images/ajout-doc.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, "") %>" name="<%=process.getNOM_PB_ALIM_MENSUELLE(indiceAbs)%>">
-											<INPUT title="Gérer l'alimentaion manuelle" type="image" src="images/ajout-doc.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_ALIM_MENSUELLE(indiceAbs)%>">
+											<INPUT title="GÃ©rer l'alimentaion manuelle" type="image" src="images/ajout-doc.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_ALIM_MENSUELLE(indiceAbs)%>">
 											</td>                            
 			                            <td><%=process.getVAL_ST_CODE_CONGE(indiceAbs)%></td> 
 			                            <td><%=process.getVAL_ST_DESCRIPTION(indiceAbs)%></td> 
@@ -122,7 +122,7 @@
 		            			<INPUT disabled="disabled" type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_DATE_DEBUT(),process.getNOM_RB_DATE_DEBUT_OUI())%>><span class="sigp2-saisie">Oui</span>
 		            		</td>
 		            		<td>
-	                			<span class="sigp2Mandatory">Demi-journée : </span>
+	                			<span class="sigp2Mandatory">Demi-journÃ©e : </span>
 	 							<INPUT disabled="disabled" type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_AM_PM(),process.getNOM_RB_AM_PM_OUI())%>><span class="sigp2-saisie">Oui</span>
 			            		<INPUT disabled="disabled" type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_AM_PM(),process.getNOM_RB_AM_PM_NON())%>><span class="sigp2-saisie">Non</span>
 			            	</td>
@@ -141,12 +141,12 @@
 		            	</tr>
 		            	<tr>
 		            		<td>
-	                			<span class="sigp2Mandatory">Décompte samedi : </span>
+	                			<span class="sigp2Mandatory">DÃ©compte samedi : </span>
 	 							<INPUT disabled="disabled" type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_DECOMPTE_SAMEDI(),process.getNOM_RB_DECOMPTE_SAMEDI_OUI())%>><span class="sigp2-saisie">Oui</span>
 			            		<INPUT disabled="disabled" type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_DECOMPTE_SAMEDI(),process.getNOM_RB_DECOMPTE_SAMEDI_NON())%>><span class="sigp2-saisie">Non</span>
 			            	</td>
 		            		<td>
-								<span class="sigp2Mandatory">Consécutif : </span>
+								<span class="sigp2Mandatory">ConsÃ©cutif : </span>
 		                		<INPUT disabled="disabled" type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_CONSECUTIF(),process.getNOM_RB_CONSECUTIF_OUI())%>><span class="sigp2-saisie">Oui</span>
 			            		<INPUT disabled="disabled" type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_CONSECUTIF(),process.getNOM_RB_CONSECUTIF_NON())%>><span class="sigp2-saisie">Non</span>
 							</td>
@@ -180,7 +180,7 @@
 		            			<INPUT disabled="disabled" type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_DATE_DEBUT(),process.getNOM_RB_DATE_DEBUT_OUI())%>><span class="sigp2-saisie">Oui</span>
 		            		</td>
 		            		<td>
-	                			<span class="sigp2Mandatory">Demi-journée : </span>
+	                			<span class="sigp2Mandatory">Demi-journÃ©e : </span>
 	 							<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_AM_PM(),process.getNOM_RB_AM_PM_OUI())%>><span class="sigp2-saisie">Oui</span>
 			            		<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_AM_PM(),process.getNOM_RB_AM_PM_NON())%>><span class="sigp2-saisie">Non</span>
 			            	</td>
@@ -199,12 +199,12 @@
 		            	</tr>
 		            	<tr>
 		            		<td>
-	                			<span class="sigp2Mandatory">Décompte samedi : </span>
+	                			<span class="sigp2Mandatory">DÃ©compte samedi : </span>
 	 							<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_DECOMPTE_SAMEDI(),process.getNOM_RB_DECOMPTE_SAMEDI_OUI())%>><span class="sigp2-saisie">Oui</span>
 			            		<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_DECOMPTE_SAMEDI(),process.getNOM_RB_DECOMPTE_SAMEDI_NON())%>><span class="sigp2-saisie">Non</span>
 			            	</td>
 		            		<td>
-								<span class="sigp2Mandatory">Consécutif : </span>
+								<span class="sigp2Mandatory">ConsÃ©cutif : </span>
 		                		<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_CONSECUTIF(),process.getNOM_RB_CONSECUTIF_OUI())%>><span class="sigp2-saisie">Oui</span>
 			            		<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_CONSECUTIF(),process.getNOM_RB_CONSECUTIF_NON())%>><span class="sigp2-saisie">Non</span>
 							</td>
@@ -218,7 +218,7 @@
             	</FIELDSET>  
             <%}else if(process.getVAL_ST_ACTION().equals(process.ACTION_ALIM_MENSUELLE)){ %>
 						<FIELDSET class="sigp2Fieldset" style="text-align: left;">
-					    	<legend class="sigp2Legend">Gestion de l'alimentation mensuelle des congés annuels de la base <%=process.getTypeAbsenceCourant().getCodeBaseHoraireAbsence() %></legend>
+					    	<legend class="sigp2Legend">Gestion de l'alimentation mensuelle des congÃ©s annuels de la base <%=process.getTypeAbsenceCourant().getCodeBaseHoraireAbsence() %></legend>
 							<br/>
 							<table cellpadding="0" cellspacing="0" border="0"  class="display" id="refAlim"> 
 			                    <thead>
@@ -226,9 +226,9 @@
 			                            <th width="30px">
 											<INPUT type="image" src="images/ajout.gif" height="20px" width="20px" name="<%=process.getNOM_PB_CREER_ALIM_MENSUELLE()%>" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>">
 										</th> 
-			                            <th>Année</th>     
+			                            <th>AnnÃ©e</th>     
 			                            <th>Janvier</th>     
-			                            <th>Février</th>     
+			                            <th>FÃ©vrier</th>     
 			                            <th>Mars</th>     
 			                            <th>Avril</th>     
 			                            <th>Mai</th>     
@@ -238,7 +238,7 @@
 			                            <th>Septembre</th>     
 			                            <th>Octobre</th>     
 			                            <th>Novembre</th>     
-			                            <th>Décembre</th>                           
+			                            <th>DÃ©cembre</th>                           
 			                        </tr>
 			                    </thead>
 			                    <tbody>
@@ -270,16 +270,16 @@
 			                </table>
 			                <%if(process.getVAL_ST_ACTION_ALIM_MANUELLE().equals(process.ACTION_MODIF_ALIM_MENSUELLE)){ %>
 								<FIELDSET class="sigp2Fieldset" style="text-align: left;">
-					    			<legend class="sigp2Legend">Modification de l'alimentation mensuelle des congés annuels de la base <%=process.getTypeAbsenceCourant().getCodeBaseHoraireAbsence() %></legend>
+					    			<legend class="sigp2Legend">Modification de l'alimentation mensuelle des congÃ©s annuels de la base <%=process.getTypeAbsenceCourant().getCodeBaseHoraireAbsence() %></legend>
 					    			<table>
 										<tr>
 											<td colspan="3">
-													<label class="sigp2Mandatory" style="color: red;">Les jours sont à saisir sous la forme "0.0"</label>
+													<label class="sigp2Mandatory" style="color: red;">Les jours sont Ã  saisir sous la forme "0.0"</label>
 											</td>
 										</tr>
 					            		<tr>
 					            			<td colspan="2">
-												<label class="sigp2Mandatory">Année :</label>
+												<label class="sigp2Mandatory">AnnÃ©e :</label>
 					            			</td>
 					            			<td>
 												<INPUT class="sigp2-saisiemajuscule" disabled="disabled" maxlength="4" name="<%= process.getNOM_EF_ANNEE_ALIM() %>" size="5" type="text" value="<%= process.getVAL_EF_ANNEE_ALIM() %>">
@@ -297,7 +297,7 @@
 					            			<%} %>
 											</td>
 					            			<td>
-												<label class="sigp2Mandatory">Février :</label>
+												<label class="sigp2Mandatory">FÃ©vrier :</label>
 					            			</td>
 					            			<td>
 					            			<%if(new Date().getMonth()>=2 ){ %>
@@ -407,7 +407,7 @@
 					            			<%} %>
 											</td>
 					            			<td>
-												<label class="sigp2Mandatory">Décembre :</label>
+												<label class="sigp2Mandatory">DÃ©cembre :</label>
 					            			</td>
 					            			<td>												
 					            			<%if(new Date().getMonth()>=12 ){ %>
@@ -427,16 +427,16 @@
 					    		</FIELDSET>
 			                <%}else if(process.getVAL_ST_ACTION_ALIM_MANUELLE().equals(process.ACTION_CREATION_ALIM_MENSUELLE)){ %>
 								<FIELDSET class="sigp2Fieldset" style="text-align: left;">
-					    			<legend class="sigp2Legend">Création de l'alimentation mensuelle des congés annuels de la base <%=process.getTypeAbsenceCourant().getCodeBaseHoraireAbsence() %></legend>
+					    			<legend class="sigp2Legend">CrÃ©ation de l'alimentation mensuelle des congÃ©s annuels de la base <%=process.getTypeAbsenceCourant().getCodeBaseHoraireAbsence() %></legend>
 					    			<table>
 										<tr>
 											<td colspan="3">
-													<label class="sigp2Mandatory" style="color: red;">Les jours sont à saisir sous la forme "0.0"</label>
+													<label class="sigp2Mandatory" style="color: red;">Les jours sont Ã  saisir sous la forme "0.0"</label>
 											</td>
 										</tr>
 					            		<tr>
 					            			<td colspan="2">
-												<label class="sigp2Mandatory">Année :</label>
+												<label class="sigp2Mandatory">AnnÃ©e :</label>
 					            			</td>
 					            			<td>
 												<INPUT class="sigp2-saisiemajuscule" maxlength="4" name="<%= process.getNOM_EF_ANNEE_ALIM() %>" size="5" type="text" value="<%= process.getVAL_EF_ANNEE_ALIM() %>">
@@ -450,7 +450,7 @@
 												<INPUT class="sigp2-saisiemajuscule" name="<%= process.getNOM_EF_JANVIER_ALIM() %>" size="5" type="text" value="<%= process.getVAL_EF_JANVIER_ALIM() %>">
 					            			</td>
 					            			<td>
-												<label class="sigp2Mandatory">Février :</label>
+												<label class="sigp2Mandatory">FÃ©vrier :</label>
 					            			</td>
 					            			<td>
 												<INPUT class="sigp2-saisiemajuscule" name="<%= process.getNOM_EF_FEVRIER_ALIM() %>" size="5" type="text" value="<%= process.getVAL_EF_FEVRIER_ALIM() %>">
@@ -520,7 +520,7 @@
 												<INPUT class="sigp2-saisiemajuscule" name="<%= process.getNOM_EF_NOVEMBRE_ALIM() %>" size="5" type="text" value="<%= process.getVAL_EF_NOVEMBRE_ALIM() %>">
 											</td>
 					            			<td>
-												<label class="sigp2Mandatory">Décembre :</label>
+												<label class="sigp2Mandatory">DÃ©cembre :</label>
 					            			</td>
 					            			<td>				
 												<INPUT class="sigp2-saisiemajuscule" name="<%= process.getNOM_EF_DECEMBRE_ALIM() %>" size="5" type="text" value="<%= process.getVAL_EF_DECEMBRE_ALIM() %>">

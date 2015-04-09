@@ -1,3 +1,4 @@
+<%@ page contentType="text/html; charset=UTF-8" %> 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <%@page import="nc.mairie.metier.carriere.Grade"%>
 <%@page import="nc.mairie.utils.MairieUtils"%>
@@ -14,13 +15,13 @@
 		<SCRIPT type="text/javascript" src="js/GestionCalendrier.js"></SCRIPT> <SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT>
 		
 		<SCRIPT language="JavaScript">
-		//afin de sélectionner un élément dans une liste
+		//afin de sÃ©lectionner un Ã©lÃ©ment dans une liste
 		function executeBouton(nom)
 		{
 			document.formu.elements[nom].click();
 		}
 
-		// afin de mettre le focus sur une zone précise
+		// afin de mettre le focus sur une zone prÃ©cise
 		function setfocus(nom)
 		{
 		if (document.formu.elements[nom] != null)
@@ -45,7 +46,7 @@
 		
 		</SCRIPT>
 		
-		<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	</HEAD>
 	<jsp:useBean class="nc.mairie.gestionagent.process.parametre.OePARAMETRAGEGrade" id="process" scope="session"></jsp:useBean>
 	<BODY bgcolor="#FFFFFF" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="window.parent.frames['refAgent'].location.reload();">
@@ -58,7 +59,7 @@
 		   	<br/>					
 			<span style="margin-left: 5px;">
 			<%if(process.getCalculPaye().equals("")){ %>
-				<INPUT title="créer" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_CREER_GRILLE()%>">
+				<INPUT title="crÃ©er" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_CREER_GRILLE()%>">
 			<%} %>
 			</span>
 			<span style="margin-left: 30px;">Nom</span>
@@ -103,7 +104,7 @@
 					<table>
 						<tr>
 							<td width="130px">
-								<span class="sigp2Mandatory">Grade générique :</span>
+								<span class="sigp2Mandatory">Grade gÃ©nÃ©rique :</span>
 							</td>
 							<td>
 								<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_GRADE_GENERIQUE() %>" onchange='executeBouton("<%=process.getNOM_PB_SELECT_GRADE_GENERIQUE()%>")'>
@@ -137,7 +138,7 @@
 					<%if(process.getListeGrade().size()!=0){ %>
 					<br/>
 				    <span style="margin-left: 80px;">Code</span>
-					<span style="margin-left: 15px;">Libellé</span>
+					<span style="margin-left: 15px;">LibellÃ©</span>
 					<span style="margin-left: 340px;">IBA</span>
 					<span style="margin-left: 80px;">Grade suivant</span>
 					<br/>
@@ -156,7 +157,7 @@
 											<%if(grade.getCodeActif().equals("A") && process.getCalculPaye().equals("")){ %>
 					    						<INPUT title="modifier" type="image" src="images/modifier.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_MODIFIER_GRADE(indiceGrade)%>">
 						    					<%if(indiceGrade==process.getListeGrade().size()-1){ %>
-												<INPUT title="créer grade suivant" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_GRADE_SUIVANT(indiceGrade)%>">
+												<INPUT title="crÃ©er grade suivant" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_GRADE_SUIVANT(indiceGrade)%>">
 												<%} %>	
 											<%} %>							
 										</td>
@@ -180,7 +181,7 @@
 						<table>
 							<tr>
 								<td width="130px;">
-									<span class="sigp2Mandatory">Grade générique :</span>
+									<span class="sigp2Mandatory">Grade gÃ©nÃ©rique :</span>
 								</td>
 								<td>
 									<SELECT class="sigp2-saisie" disabled="disabled" name="<%= process.getNOM_LB_GRADE_GENERIQUE() %>" >
@@ -299,7 +300,7 @@
 							</tr>
 							<tr>
 								<td>
-									<span class="sigp2Mandatory">Durée min.:</span>
+									<span class="sigp2Mandatory">DurÃ©e min.:</span>
 								</td>
 								<td>
 									<INPUT class="sigp2-saisie" <%=process.ACTION_CONSULTATION_GRADE.equals(process.getVAL_ST_ACTION_GRADE()) ? "disabled='disabled'" : "" %> maxlength="2" name="<%= process.getNOM_EF_DUREE_MIN() %>" size="2" type="text" value="<%= process.getVAL_EF_DUREE_MIN() %>" <%=MairieUtils.getDisabled(request, process.getNomEcran()) %>/>
@@ -307,7 +308,7 @@
 							</tr>
 							<tr>
 								<td>
-									<span class="sigp2Mandatory">Durée moy.:</span>
+									<span class="sigp2Mandatory">DurÃ©e moy.:</span>
 								</td>
 								<td>
 									<INPUT class="sigp2-saisie" maxlength="2" <%=process.ACTION_CONSULTATION_GRADE.equals(process.getVAL_ST_ACTION_GRADE()) ? "disabled='disabled'" : "" %> name="<%= process.getNOM_EF_DUREE_MOY() %>" size="2" type="text" value="<%= process.getVAL_EF_DUREE_MOY() %>" <%=MairieUtils.getDisabled(request, process.getNomEcran()) %>/>
@@ -315,7 +316,7 @@
 							</tr>
 							<tr>
 								<td>
-									<span class="sigp2Mandatory">Durée max.:</span>
+									<span class="sigp2Mandatory">DurÃ©e max.:</span>
 								</td>
 								<td>
 									<INPUT class="sigp2-saisie" maxlength="2" <%=process.ACTION_CONSULTATION_GRADE.equals(process.getVAL_ST_ACTION_GRADE()) ? "disabled='disabled'" : "" %> name="<%= process.getNOM_EF_DUREE_MAX() %>" size="2" type="text" value="<%= process.getVAL_EF_DUREE_MAX() %>" <%=MairieUtils.getDisabled(request, process.getNomEcran()) %>/>

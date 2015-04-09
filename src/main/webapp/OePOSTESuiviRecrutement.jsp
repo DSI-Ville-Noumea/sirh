@@ -1,4 +1,4 @@
-<!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@ page contentType="text/html; charset=UTF-8" %> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <HTML>
 <HEAD>
 <META name="GENERATOR" content="IBM WebSphere Page Designer V3.5.3 for Windows">
@@ -11,13 +11,13 @@
 <SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT> 
 
 <SCRIPT language="JavaScript">
-//afin de sélectionner un élément dans une liste
+//afin de sÃ©lectionner un Ã©lÃ©ment dans une liste
 function executeBouton(nom)
 {
 document.formu.elements[nom].click();
 }
 
-// afin de mettre le focus sur une zone précise
+// afin de mettre le focus sur une zone prÃ©cise
 function setfocus(nom)
 {
 if (document.formu.elements[nom] != null)
@@ -25,7 +25,7 @@ document.formu.elements[nom].focus();
 }
 
 </SCRIPT>
-<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 </HEAD>
 <jsp:useBean
  class="nc.mairie.gestionagent.process.poste.OePOSTESuiviRecrutement"
@@ -38,20 +38,20 @@ document.formu.elements[nom].focus();
 	    <FIELDSET class="sigp2Fieldset" style="text-align: left; margin: 10px;">
 		    <legend class="sigp2Legend">Suivi des recrutements</legend>
 		    <br/>
-			<span style="margin-left:5px;position:relative;width:40px;">Réf. SES</span>
-			<span style="position:relative;width:55px;">Réf. Mairie</span>
-			<span style="position:relative;width:75px;">Réf. DRHFPNC</span>
+			<span style="margin-left:5px;position:relative;width:40px;">RÃ©f. SES</span>
+			<span style="position:relative;width:55px;">RÃ©f. Mairie</span>
+			<span style="position:relative;width:75px;">RÃ©f. DRHFPNC</span>
 			<span style="position:relative;width:70px;">Direction</span>
 			<span style="position:relative;width:60px;">Section</span>
-			<span style="position:relative;width:55px;">Réf. FP</span>
+			<span style="position:relative;width:55px;">RÃ©f. FP</span>
 			<span style="position:relative;width:80px;">Titre poste</span>
 			<span style="position:relative;width:75px;">Date ouverture</span>
-			<span style="position:relative;width:60px;">Date clôture</span>
+			<span style="position:relative;width:60px;">Date clÃ´ture</span>
 			<span style="position:relative;width:75px;">Date validation</span>
 			<span style="position:relative;width:100px;">Date de transmission</span>
-			<span style="position:relative;width:70px;">Date de réponse</span>
+			<span style="position:relative;width:70px;">Date de rÃ©ponse</span>
 			<span style="position:relative;width:75px;">Motif non recrut.</span>
-			<span style="position:relative;width:70px;">Agent recruté</span>
+			<span style="position:relative;width:70px;">Agent recrutÃ©</span>
 		
 			<span class="sigp2-titre">
 				<SELECT class="sigp2-liste" name="<%= process.getNOM_LB_RECRUTEMENT() %>" size="6" style="width:1000px;font-family : monospace;">
@@ -60,7 +60,7 @@ document.formu.elements[nom].focus();
 			</span>
 			<BR/><BR/>
 			<div style="text-align: center;">
-				<INPUT type="submit" class="sigp2-Bouton-100" value="Créer" name="<%=process.getNOM_PB_CREER_RECRUT()%>">
+				<INPUT type="submit" class="sigp2-Bouton-100" value="CrÃ©er" name="<%=process.getNOM_PB_CREER_RECRUT()%>">
 				<INPUT type="submit" class="sigp2-Bouton-100" value="Modifier" name="<%=process.getNOM_PB_MODIFIER_RECRUT()%>">
 				<INPUT type="submit" class="sigp2-Bouton-100" value="Supprimer" name="<%=process.getNOM_PB_SUPPRIMER_RECRUT()%>">
 			</div>
@@ -75,7 +75,7 @@ document.formu.elements[nom].focus();
 		<div>
 		    <FIELDSET class="sigp2Fieldset" style="text-align: left; margin: 10px;">
 			    <legend class="sigp2Legend">Fiche de poste</legend>
-	   			<span class="sigp2Mandatory" style="position:relative;width:180px;">Réf. fiche de poste : </span>
+	   			<span class="sigp2Mandatory" style="position:relative;width:180px;">RÃ©f. fiche de poste : </span>
 				<INPUT type="image" src="images/loupe.gif" name="<%=process.getNOM_PB_RECHERCHER_FP()%>">
 				<BR/>
 				<span class="sigp2" style="width:100px">Direction :</span>
@@ -93,17 +93,17 @@ document.formu.elements[nom].focus();
 				<span class="sigp2-statique" style="width:80px"><%=process.getVAL_ST_GRADE()%></span>
 				<BR/>
 			</FIELDSET>
-			<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:100px;">Réf. SES : </span>
+			<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:100px;">RÃ©f. SES : </span>
 			<INPUT class="sigp2-saisiemajusculenongras" maxlength="5" name="<%= process.getNOM_ST_REF_SES() %>" size="10"
 				type="text" value="<%= process.getVAL_ST_REF_SES() %>">
-			<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:100px;">Réf. Mairie : </span>
+			<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:100px;">RÃ©f. Mairie : </span>
 			<INPUT class="sigp2-saisiemajusculenongras" maxlength="5" name="<%= process.getNOM_EF_REF_MAIRIE() %>" size="10"
 				type="text" value="<%= process.getVAL_EF_REF_MAIRIE() %>">
-			<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:100px;">Réf. DRHFPNC : </span>
+			<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:100px;">RÃ©f. DRHFPNC : </span>
 			<INPUT class="sigp2-saisiemajusculenongras" maxlength="5" name="<%= process.getNOM_EF_REF_DRHFPNC() %>" size="10"
 				type="text" value="<%= process.getVAL_EF_REF_DRHFPNC() %>">
 			<BR/><BR/>
-   			<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:100px;">agent remplacé : </span>
+   			<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:100px;">agent remplacÃ© : </span>
 			<INPUT type="image" src="images/loupe.gif" name="<%=process.getNOM_PB_RECHERCHER_FP()%>">
 			<span class="sigp2Mandatory" style="width:150px">Motif de recrutement :</span>
 			<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_MOTIF_RECRUTEMENT() %>" style="width:150px;margin-right:30px;">
@@ -120,7 +120,7 @@ document.formu.elements[nom].focus();
 				<INPUT id="<%=process.getNOM_EF_DATE_VALIDATION()%>" class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_DATE_VALIDATION() %>" size="10" type="text" value="<%= process.getVAL_EF_DATE_VALIDATION() %>">
 				<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%= process.getNOM_EF_DATE_VALIDATION() %>', 'dd/mm/y');">
 			</span>
-			<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:100px;">Date clôture : </span>
+			<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:100px;">Date clÃ´ture : </span>
 		    <span>
 				<INPUT id="<%=process.getNOM_EF_DATE_CLOTURE()%>" class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_DATE_CLOTURE() %>" size="10" type="text" value="<%= process.getVAL_EF_DATE_CLOTURE() %>">
 				<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%= process.getNOM_EF_DATE_CLOTURE() %>', 'dd/mm/y');">
@@ -131,10 +131,10 @@ document.formu.elements[nom].focus();
 				<INPUT id="<%=process.getNOM_EF_DATE_TRANSMISSION()%>" class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_DATE_TRANSMISSION() %>" size="10" type="text" value="<%= process.getVAL_EF_DATE_TRANSMISSION() %>">
 				<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%= process.getNOM_EF_DATE_TRANSMISSION() %>', 'dd/mm/y');">
 			</span>
-			<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:180px;">Nb candidatures reçues : </span>
+			<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:180px;">Nb candidatures reÃ§ues : </span>
 			<INPUT class="sigp2-saisiemajusculenongras" maxlength="5" name="<%= process.getNOM_EF_NB_CAND_RECUES() %>" size="10" style="margin-right:38px"
 				type="text" value="<%= process.getVAL_EF_NB_CAND_RECUES() %>">
-			<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:100px;">Date réponse : </span>
+			<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:100px;">Date rÃ©ponse : </span>
 		    <span>
 				<INPUT id="<%=process.getNOM_EF_DATE_REPONSE_CAND()%>" class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_DATE_REPONSE_CAND() %>" size="10" type="text" value="<%= process.getVAL_EF_DATE_REPONSE_CAND() %>">
 				<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%= process.getNOM_EF_DATE_REPONSE_CAND() %>', 'dd/mm/y');">
@@ -144,7 +144,7 @@ document.formu.elements[nom].focus();
 			<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_MOTIF_NON_RECRUTEMENT() %>" style="width:150px;">
 				<%=process.forComboHTML(process.getVAL_LB_MOTIF_NON_RECRUTEMENT(), process.getVAL_LB_MOTIF_NON_RECRUTEMENT_SELECT())%>
 			</SELECT>
-			<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:160px;">Nom de l'agent recruté : </span>
+			<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:160px;">Nom de l'agent recrutÃ© : </span>
 			<INPUT class="sigp2-saisiemajusculenongras" maxlength="100" name="<%= process.getNOM_EF_NOM_AGENT_RECRUT() %>" size="80"
 				type="text" value="<%= process.getVAL_EF_NOM_AGENT_RECRUT() %>">
 			<BR/><BR/>

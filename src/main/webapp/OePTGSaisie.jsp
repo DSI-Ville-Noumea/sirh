@@ -1,3 +1,4 @@
+<%@ page contentType="text/html; charset=UTF-8" %> 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <%@page import="nc.mairie.enums.EnumTypeDroit" %>
 <%@page import="nc.mairie.utils.MairieUtils" %>
@@ -47,7 +48,7 @@
                     document.formu.elements[nom].focus();
             }
         </SCRIPT>		
-        <META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
     </HEAD>
     <BODY bgcolor="#FFFFFF" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="return setfocus('<%=process.getFocus()%>')">
         <%@ include file="BanniereErreur.jsp" %>
@@ -55,8 +56,8 @@
             <INPUT name="JSP" type="hidden" value="<%= process.getJSP()%>">
             <FIELDSET class="sigp2Fieldset" style="text-align:left;">
                 <legend class="sigp2Legend" style="font-size: 11px;"> Saisie des pointages pour l'agent <%=process.getIdAgent()%> semaine <%=process.getWeekYear()%>
-                    <img onkeydown="" onkeypress="" onkeyup="" src="images/annuler.png" height="16px" width="55px" title="Retourner à l'écran de visualisation" onClick="executeBouton('<%=process.getNOM_PB_BACK()%>')" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>">	
-               		<INPUT height="16px" width="68px" type="submit" title="Enregister et Retourner à l'écran de visualisation"  value="Enregistrer" name="<%=process.getNOM_PB_VALIDATION()%>" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>">	
+                    <img onkeydown="" onkeypress="" onkeyup="" src="images/annuler.png" height="16px" width="55px" title="Retourner Ã  l'Ã©cran de visualisation" onClick="executeBouton('<%=process.getNOM_PB_BACK()%>')" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>">	
+               		<INPUT height="16px" width="68px" type="submit" title="Enregister et Retourner Ã  l'Ã©cran de visualisation"  value="Enregistrer" name="<%=process.getNOM_PB_VALIDATION()%>" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>">	
                  </legend>
                  <BR/>
                 <table cellpadding="0" cellspacing="0" border="0" class="display" id="SaisiePointageList"> 
@@ -116,10 +117,10 @@
 													<td>
 												<%	switch (TypeSaisieEnum.valueOf(pl.get(i).getTypeSaisie())) {
 														case CASE_A_COCHER: %>
-															<INPUT type="checkbox" <%= process.forCheckBoxHTML("NOM_CK_"+id, checked)%>> accordée
+															<INPUT type="checkbox" <%= process.forCheckBoxHTML("NOM_CK_"+id, checked)%>> accordÃ©e
 													<%		break;
 														case NB_INDEMNITES: %>
-															Nbre d'indemnités
+															Nbre d'indemnitÃ©s
 															<input type="text" size="4" name="NOM_nbr_<%=id %>" value="<%=qte %>">
 														<%	process.addZone("nbr_" + id, "" + qte);
 															break;
@@ -133,7 +134,7 @@
 														<%	 process.addZone("nbr_" + id, "" + nbr);
 															break;
 														case PERIODE_HEURES: %>
-															Heure début  -->  Heure fin <br>
+															Heure dÃ©but  -->  Heure fin <br>
 															<select name='NOM_time_<%=id %>_D' ><%=process.getTimeCombo(pl.get(i).getHeureDebut()) %></select>  / 
 															<select name='NOM_time_<%=id %>_F'><%=process.getTimeFinCombo(pl.get(i).getHeureFin()) %></select>
 														<%	break;
@@ -167,7 +168,7 @@
      <!-- --------------------------------------- HEURES SUPPLEMENTAIRES ----------------------------------------------------------------- -->
                         <tr bgcolor="#009ACD">
 							<TD colspan="8" align="center">
-								<b><H4>Heures Supplémentaires</H4></b>
+								<b><H4>Heures SupplÃ©mentaires</H4></b>
 							</TD>
 						</tr>
 					    <%
@@ -223,14 +224,14 @@
 										</tr>
 										<tr bgcolor="#BFEFFF">
 											<td> 
-												Heure début  -->  Heure fin <br />
+												Heure dÃ©but  -->  Heure fin <br />
 												<select name="NOM_time_<%=id %>_D"><%=process.getTimeCombo(heureDebut) %></select>  /  
 												<select name="NOM_time_<%=id %>_F"><%=process.getTimeFinCombo(heureFin) %></select>
 											</td>
 										</tr>
 										<tr bgcolor="#BFEFFF">
 											<td>
-												<input type="checkbox"  <% if(process.isDPM() || process.isINASuperieur315()){ %> disabled="disabled" <% } %> name="NOM_CK_RECUP_<%=id %>" <% if(checkedRecupere){ %> checked="checked" <% } %> /> A récupérer
+												<input type="checkbox"  <% if(process.isDPM() || process.isINASuperieur315()){ %> disabled="disabled" <% } %> name="NOM_CK_RECUP_<%=id %>" <% if(checkedRecupere){ %> checked="checked" <% } %> /> A rÃ©cupÃ©rer
 											</td>
 										</tr>
 										<%if(process.isDPM()){ %>
@@ -315,7 +316,7 @@
 											</TD>
 										</tr>
 										<tr bgcolor="#BFEFFF">
-											<td> Heure début  -->  Heure fin <br />
+											<td> Heure dÃ©but  -->  Heure fin <br />
 												<select name="NOM_time_<%=id %>_D"><%=process.getTimeCombo(heureDebut) %></select>  /  
 												<select name="NOM_time_<%=id %>_F"><%=process.getTimeFinCombo(heureFin) %></select>
 											</td>
@@ -347,8 +348,8 @@
                     </tbody>
                 </table>
                 <BR/>
-               <img onkeydown="" onkeypress="" onkeyup="" src="images/annuler.png" height="16px" width="55px" title="Retourner à l'écran de visualisation" onClick="executeBouton('<%=process.getNOM_PB_BACK()%>')" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>">	
-               <INPUT height="16px" width="68px" type="submit" title="Enregister et Retourner à l'écran de visualisation"  value="Enregistrer" name="<%=process.getNOM_PB_VALIDATION()%>" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>">	
+               <img onkeydown="" onkeypress="" onkeyup="" src="images/annuler.png" height="16px" width="55px" title="Retourner Ã  l'Ã©cran de visualisation" onClick="executeBouton('<%=process.getNOM_PB_BACK()%>')" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>">	
+               <INPUT height="16px" width="68px" type="submit" title="Enregister et Retourner Ã  l'Ã©cran de visualisation"  value="Enregistrer" name="<%=process.getNOM_PB_VALIDATION()%>" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>">	
                  	
         	</FIELDSET>
         	<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_BACK()%>" value="BACK">

@@ -1,4 +1,4 @@
-<!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@ page contentType="text/html; charset=UTF-8" %> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <%@page import="nc.mairie.utils.MairieUtils"%>
 <%@page import="nc.mairie.enums.EnumTypeDroit"%>
 <HTML>
@@ -6,18 +6,18 @@
 		<META name="GENERATOR" content="IBM WebSphere Page Designer V3.5.3 for Windows">
 		<META http-equiv="Content-Style-Type" content="text/css">
 		<LINK href="theme/sigp2.css" rel="stylesheet" type="text/css">
-		<TITLE>Gestion des paramètres des données personnelles</TITLE>
+		<TITLE>Gestion des paramÃ¨tres des donnÃ©es personnelles</TITLE>
 		<LINK rel="stylesheet" href="theme/calendrier-mairie.css" type="text/css">
 		<SCRIPT type="text/javascript" src="js/GestionCalendrier.js"></SCRIPT> <SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT>
 		
 		<SCRIPT language="JavaScript">
-		//afin de sélectionner un élément dans une liste
+		//afin de sÃ©lectionner un Ã©lÃ©ment dans une liste
 		function executeBouton(nom)
 		{
 			document.formu.elements[nom].click();
 		}
 
-		// afin de mettre le focus sur une zone précise
+		// afin de mettre le focus sur une zone prÃ©cise
 		function setfocus(nom)
 		{
 		if (document.formu.elements[nom] != null)
@@ -26,7 +26,7 @@
 		
 		</SCRIPT>
 		
-		<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	</HEAD>
 	<jsp:useBean class="nc.mairie.gestionagent.process.parametre.OePARAMETRAGEHSCT" id="process" scope="session"></jsp:useBean>
 	<BODY bgcolor="#FFFFFF" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" class="sigp2-BODY" onload="window.parent.frames['refAgent'].location.reload();">
@@ -38,7 +38,7 @@
 				<tr>
 					<td width="300px">
 						<FIELDSET class="sigp2Fieldset"  style="text-align: left;">
-					    	<legend class="sigp2Legend">Médecins</legend>
+					    	<legend class="sigp2Legend">MÃ©decins</legend>
 							<span class="sigp2-titre">
 							<SELECT name="<%= process.getNOM_LB_MEDECIN() %>" size="10" class="sigp2-liste">
 								<%=process.forComboHTML(process.getVAL_LB_MEDECIN(), process.getVAL_LB_MEDECIN_SELECT()) %>
@@ -63,7 +63,7 @@
 					            	</tr>	
 					            	<tr>
 					            		<td>
-											<label class="sigp2Mandatory">Prénom:</label>
+											<label class="sigp2Mandatory">PrÃ©nom:</label>
 					            		</td>
 					            		<td>
 					            			<INPUT class="sigp2-saisiemajuscule" maxlength="50" name="<%= process.getNOM_EF_PRENOM_MEDECIN() %>" size="35" type="text" value="<%= process.getVAL_EF_PRENOM_MEDECIN() %>">
@@ -96,7 +96,7 @@
 					            	</tr>
 					            	<tr>
 					            		<td>
-											<label class="sigp2Mandatory">Prénom:</label>
+											<label class="sigp2Mandatory">PrÃ©nom:</label>
 					            		</td>
 					            		<td>
 					            			<INPUT class="sigp2-saisiemajuscule" maxlength="50" readonly="readonly" name="<%= process.getNOM_EF_PRENOM_MEDECIN() %>" size="35" type="text" value="<%= process.getVAL_EF_PRENOM_MEDECIN() %>">
@@ -289,7 +289,7 @@
 				<tr>
 					<td>
 						<FIELDSET class="sigp2Fieldset"  style="text-align: left;">
-					    	<legend class="sigp2Legend">Sièges lésions</legend>
+					    	<legend class="sigp2Legend">SiÃ¨ges lÃ©sions</legend>
 							<span class="sigp2-titre">
 							<SELECT name="<%= process.getNOM_LB_LESION() %>" size="10" class="sigp2-liste">
 								<%=process.forComboHTML(process.getVAL_LB_LESION(), process.getVAL_LB_LESION_SELECT()) %>
@@ -367,7 +367,7 @@
 					            	</tr>	
 					            	<tr>
 					            		<td>
-											<label class="sigp2Mandatory">Libellé:</label>
+											<label class="sigp2Mandatory">LibellÃ©:</label>
 					            		</td>
 					            		<td>
 					            			<INPUT class="sigp2-saisiemajuscule" maxlength="255" name="<%= process.getNOM_EF_LIBELLE_MALADIE() %>" size="65" type="text" value="<%= process.getVAL_EF_LIBELLE_MALADIE() %>">
@@ -392,7 +392,7 @@
 					            	</tr>
 					            	<tr>
 					            		<td>
-											<label class="sigp2Mandatory">Libellé:</label>
+											<label class="sigp2Mandatory">LibellÃ©:</label>
 					            		</td>
 					            		<td>
 					            			<INPUT class="sigp2-saisiemajuscule" maxlength="255" readonly="readonly" name="<%= process.getNOM_EF_LIBELLE_MALADIE() %>" size="35" type="text" value="<%= process.getVAL_EF_LIBELLE_MALADIE() %>">
@@ -431,7 +431,7 @@
 								<% if (!process.ACTION_SUPPRESSION.equals(process.getVAL_ST_ACTION_TYPE_DOCUMENT())) { %>
 					            	<tr>
 					            		<td width="50px">
-											<label class="sigp2Mandatory">Libellé:</label>
+											<label class="sigp2Mandatory">LibellÃ©:</label>
 					            		</td>
 					            		<td>
 					            			<INPUT class="sigp2-saisiemajuscule" maxlength="30" name="<%= process.getNOM_EF_TYPE_DOCUMENT() %>" size="30" type="text" value="<%= process.getVAL_EF_TYPE_DOCUMENT() %>">
@@ -456,7 +456,7 @@
 								<%} else {%>
 					            	<tr>
 					            		<td width="50px">
-											<label class="sigp2Mandatory">Libellé:</label>
+											<label class="sigp2Mandatory">LibellÃ©:</label>
 					            		</td>
 					            		<td>
 					            			<INPUT class="sigp2-saisiemajuscule" maxlength="30" readonly="readonly" name="<%= process.getNOM_EF_TYPE_DOCUMENT() %>" size="30" type="text" value="<%= process.getVAL_EF_TYPE_DOCUMENT() %>">

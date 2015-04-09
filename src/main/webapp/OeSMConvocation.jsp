@@ -1,4 +1,4 @@
-<!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@ page contentType="text/html; charset=UTF-8" %> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <%@page import="nc.mairie.metier.suiviMedical.SuiviMedical"%>
 <%@page import="nc.mairie.enums.EnumEtatSuiviMed"%>
 <%@page import="nc.mairie.utils.MairieUtils"%>
@@ -18,7 +18,7 @@
 <LINK rel="stylesheet" href="theme/calendrier-mairie.css" type="text/css">
 <SCRIPT type="text/javascript" src="js/GestionCalendrier.js"></SCRIPT> 
 
-		<TITLE>Convocation pour le suivi médical</TITLE>		
+		<TITLE>Convocation pour le suivi mÃ©dical</TITLE>		
 
 <script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
 <script type="text/javascript" src="js/jquery.dataTables.js"></script>
@@ -26,13 +26,13 @@
 <SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT> 
 <SCRIPT language="javascript" src="js/dtree.js"></SCRIPT>
 <SCRIPT language="JavaScript">
-		//afin de sélectionner un élément dans une liste
+		//afin de sÃ©lectionner un Ã©lÃ©ment dans une liste
 		function executeBouton(nom)
 		{
 			document.formu.elements[nom].click();
 		}
 
-		// afin de mettre le focus sur une zone précise
+		// afin de mettre le focus sur une zone prÃ©cise
 		function setfocus(nom)
 		{
 			if (document.formu.elements[nom] != null)
@@ -47,7 +47,7 @@
 		 document.getElementById(id).className="selectLigne";
 		}
 
-		// afin d'afficher la hiérarchie des services
+		// afin d'afficher la hiÃ©rarchie des services
 		function agrandirHierarchy() {
 
 			hier = 	document.getElementById('treeHierarchy');
@@ -59,14 +59,14 @@
 			}
 		}
 
-		// afin de cacher la hiérarchie des services
+		// afin de cacher la hiÃ©rarchie des services
 		function reduireHierarchy() {
 			hier = 	document.getElementById('treeHierarchy');
 			hier.style.display='none';
 		}
 		
 		</SCRIPT>		
-		<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	</HEAD>
 	<jsp:useBean class="nc.mairie.gestionagent.process.OeSMConvocation" id="process" scope="session"></jsp:useBean>
 	<BODY bgcolor="#FFFFFF" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="window.parent.frames['refAgent'].location.reload();" >
@@ -120,7 +120,7 @@
 		 		<td valign="middle" class="sigp2-titre">
 		 			<span class="sigp2Mandatory">Agents en anomalies : <%=process.convocationsEnErreur %></span>
 					<BR/>
-					<span class="sigp2Mandatory">Ces agents ne sont ni fonctionnaire ni convention collective. Merci de corriger manuellement les carrières de ces agents.</span>
+					<span class="sigp2Mandatory">Ces agents ne sont ni fonctionnaire ni convention collective. Merci de corriger manuellement les carriÃ¨res de ces agents.</span>
 		 		</td>
 		 	</TR>
 		 	</TBODY>					
@@ -130,8 +130,8 @@
 		<BR/>
 		<%} %>
 		<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
-		<legend class="sigp2Legend">Prévisions des visites médicales du travail</legend>
-			<span class="sigp2" style="width:75px">Mois - Année : </span>
+		<legend class="sigp2Legend">PrÃ©visions des visites mÃ©dicales du travail</legend>
+			<span class="sigp2" style="width:75px">Mois - AnnÃ©e : </span>
 			<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_MOIS() %>" style="width=140px;margin-right:20px;">
 				<%=process.forComboHTML(process.getVAL_LB_MOIS(), process.getVAL_LB_MOIS_SELECT()) %>
 			</SELECT>
@@ -173,7 +173,7 @@
 					</script>
 				</div>
           	<br/><br/>
-          	<span class="sigp2" style="width:75px">Relancés : </span>
+          	<span class="sigp2" style="width:75px">RelancÃ©s : </span>
 			<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_RELANCE() %>" style="width=50px;margin-right:10px;">
 				<%=process.forComboHTML(process.getVAL_LB_RELANCE(), process.getVAL_LB_RELANCE_SELECT()) %>
 			</SELECT>			
@@ -192,14 +192,14 @@
 			<BR/><BR/>
           	
           	<INPUT type="submit" class="sigp2-Bouton-100" value="Filtrer" name="<%=process.getNOM_PB_RECHERCHER()%>">
-			<INPUT type="submit" class="sigp2-Bouton-250" value="Calculer pour le mois sélectionné" name="<%=process.getNOM_PB_CALCULER()%>">
+			<INPUT type="submit" class="sigp2-Bouton-250" value="Calculer pour le mois sÃ©lectionnÃ©" name="<%=process.getNOM_PB_CALCULER()%>">
 		</FIELDSET>
 		<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;height:530px;">
 		    <BR/>
-			<legend class="sigp2Legend">Gestion des prévisions</legend>
+			<legend class="sigp2Legend">Gestion des prÃ©visions</legend>
 			<INPUT type="submit" class="sigp2-Bouton-100" value="Enregistrer" name="<%=process.getNOM_PB_VALIDER()%>">
-			<INPUT type="submit" class="sigp2-Bouton-200" value="Générer les convocations" name="<%=process.getNOM_PB_IMPRIMER_CONVOCATIONS()%>">
-			<INPUT type="submit" class="sigp2-Bouton-250" value="Générer les lettres d'accompagnement" name="<%=process.getNOM_PB_IMPRIMER_LETTRES_ACCOMPAGNEMENTS()%>">
+			<INPUT type="submit" class="sigp2-Bouton-200" value="GÃ©nÃ©rer les convocations" name="<%=process.getNOM_PB_IMPRIMER_CONVOCATIONS()%>">
+			<INPUT type="submit" class="sigp2-Bouton-250" value="GÃ©nÃ©rer les lettres d'accompagnement" name="<%=process.getNOM_PB_IMPRIMER_LETTRES_ACCOMPAGNEMENTS()%>">
 			<BR/><BR/>
 			<div>
 				<table class="display" id="tabSuiviMed">
@@ -212,9 +212,9 @@
 							<th>Statut</th>
 							<th>Serv.</th>
 							<th>Date derniere visite</th>
-							<th>Prévision de visite</th>
+							<th>PrÃ©vision de visite</th>
 							<th>Motif</th>
-							<th>Nb visites ratées</th>
+							<th>Nb visites ratÃ©es</th>
 							<th>Actions</th>
 							<th>Medecin</th>
 							<th>Date prochain RDV</th>
@@ -315,7 +315,7 @@
 		</FIELDSET>
 
 		<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
-		<legend class="sigp2Legend">Documents générés pour le mois sélectionné</legend>	
+		<legend class="sigp2Legend">Documents gÃ©nÃ©rÃ©s pour le mois sÃ©lectionnÃ©</legend>	
 		<br/>
 			<span style="position:relative;width:35px;"></span>
 			<span style="position:relative;text-align: left;">Nom Document</span>

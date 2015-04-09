@@ -1,4 +1,4 @@
-<!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@ page contentType="text/html; charset=UTF-8" %> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <%@page import="nc.mairie.metier.agent.Document"%>
 <%@page import="nc.mairie.technique.VariableGlobale"%>
 <%@page import="nc.mairie.technique.UserAppli"%>
@@ -23,13 +23,13 @@
 		<SCRIPT language="javascript" src="js/GestionOnglet.js"></SCRIPT>
 		
 		<SCRIPT language="JavaScript">
-		//afin de sélectionner un élément dans une liste
+		//afin de sÃ©lectionner un Ã©lÃ©ment dans une liste
 		function executeBouton(nom)
 		{
 			document.formu.elements[nom].click();
 		}
 
-		// afin de mettre le focus sur une zone précise
+		// afin de mettre le focus sur une zone prÃ©cise
 		function setfocus(nom)
 		{
 			if (document.formu.elements[nom] != null)
@@ -46,7 +46,7 @@
 		
 		</SCRIPT>		
 		
-		<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	</HEAD>
 	<jsp:useBean class="nc.mairie.gestionagent.process.agent.OeAGENTEae" id="process" scope="session"></jsp:useBean>
 	<BODY bgcolor="#FFFFFF" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="window.parent.frames['refAgent'].location.reload();">
@@ -55,12 +55,12 @@
 	<FORM name="formu" <%=process.isImporting ? "ENCTYPE=\"multipart/form-data\"" : ""%>  method="POST" class="sigp2-titre">
 		<INPUT name="JSP" type="hidden" value="<%= process.getJSP() %>">				
 				<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
-				    <legend class="sigp2Legend">Gestion des entretiens annuels d'évaluation de l'agent</legend>
+				    <legend class="sigp2Legend">Gestion des entretiens annuels d'Ã©valuation de l'agent</legend>
 				<div style="overflow: auto;height: 250px;width:1000px;margin-right: 0px;margin-left: 0px;">
 						<table class="sigp2NewTab" style="text-align:left;width:980px;">
 						<tr bgcolor="#EFEFEF">
 							<td width="70px;"></td>
-							<td width="45px;" align="center">Année</td>
+							<td width="45px;" align="center">AnnÃ©e</td>
 							<td width="250px;" align="center">Evaluateur</td>
 							<td width="90px;" align="center">Date de l'entretien</td>
 							<td width="300px;" align="center">Service</td>
@@ -107,7 +107,7 @@
 				</FIELDSET>			
 				<%if (! "".equals(process.getVAL_ST_ACTION()) && !process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT_CREATION_ANCIEN_EAE) ) {%>
 					<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
-						<legend class="sigp2Legend">Détail de l'entretien annuel d'évaluation</legend>
+						<legend class="sigp2Legend">DÃ©tail de l'entretien annuel d'Ã©valuation</legend>
 						<%if(process.getVAL_ST_ACTION().equals(process.ACTION_CONSULTATION) ){ %>
 						<div style="margin-left:10px;text-align:left;width:980px" align="left">
 							<% if (process.onglet.equals("ONGLET1")) {%>
@@ -131,9 +131,9 @@
 								<span id="titreOngletEvolution" class="OngletInactif" onclick="afficheOnglet('ONGLET5');">&nbsp;Evolution&nbsp;</span>&nbsp;&nbsp;
 							<% } %>
 							<% if (process.onglet.equals("ONGLET6")) {%>
-								<span id="titreOngletDeveloppement" class="OngletActif" onclick="afficheOnglet('ONGLET6');">&nbsp;Développement&nbsp;</span>&nbsp;&nbsp;
+								<span id="titreOngletDeveloppement" class="OngletActif" onclick="afficheOnglet('ONGLET6');">&nbsp;DÃ©veloppement&nbsp;</span>&nbsp;&nbsp;
 							<% }else {%>
-								<span id="titreOngletDeveloppement" class="OngletInactif" onclick="afficheOnglet('ONGLET6');">&nbsp;Développement&nbsp;</span>&nbsp;&nbsp;
+								<span id="titreOngletDeveloppement" class="OngletInactif" onclick="afficheOnglet('ONGLET6');">&nbsp;DÃ©veloppement&nbsp;</span>&nbsp;&nbsp;
 							<% } %>
 						</div>
 						
@@ -177,19 +177,19 @@
 							<% }else {%>
 								<div id="corpsOngletEvaluation" title="Evaluation" class="OngletCorps" style="display:none;margin-right:10px;width:960px;">
 							<% } %>
-								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Commentaire de l'évaluateur : </span>
+								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Commentaire de l'Ã©valuateur : </span>
 								<span class="sigp2-saisie"><%=process.getVAL_ST_COMMENTAIRE_EVALUATEUR()%></span>
 								<BR/><BR/>
 								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Niveau : </span>
 								<span class="sigp2-saisie"><%=process.getVAL_ST_NIVEAU()%></span>
 								<BR/><BR/>
-								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Note de l'année : </span>
+								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Note de l'annÃ©e : </span>
 								<span class="sigp2-saisie"><%=process.getVAL_ST_NOTE()%></span>
 								<BR/><BR/>
 								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Avis Evaluateur : </span>
 								<span class="sigp2-saisie"><%=process.getVAL_ST_AVIS_SHD()%></span>
 								<BR/><BR/>
-								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Avancement différencié : </span>
+								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Avancement diffÃ©renciÃ© : </span>
 								<span class="sigp2-saisie"><%=process.getVAL_ST_AVCT_DIFF()%></span>
 								<BR/><BR/>
 								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Changement de classe : </span>
@@ -198,7 +198,7 @@
 								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Avis revalorisation : </span>
 								<span class="sigp2-saisie"><%=process.getVAL_ST_AVIS_REVALO()%></span>
 								<BR/><BR/>
-								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Rapport Circonstancié : </span>
+								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Rapport CirconstanciÃ© : </span>
 								<span class="sigp2-saisie"><%=process.getVAL_ST_RAPPORT_CIRCON()%></span>
 								<BR/><BR/>
 							</div>
@@ -261,31 +261,31 @@
 							<% }else {%>
 								<div id="corpsOngletEvolution" title="Evolution" class="OngletCorps" style="display:none;margin-right:10px;width:960px;">
 							<% } %>
-								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Mobilité géographique : </span>
+								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">MobilitÃ© gÃ©ographique : </span>
 								<span class="sigp2-saisie"><%=process.getVAL_ST_MOB_GEO()%></span>
 								<BR/><BR/>
-								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Mobilité fonctionnelle : </span>
+								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">MobilitÃ© fonctionnelle : </span>
 								<span class="sigp2-saisie"><%=process.getVAL_ST_MOB_FONCT()%></span>
 								<BR/><BR/>
-								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Changement de métier : </span>
+								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Changement de mÃ©tier : </span>
 								<span class="sigp2-saisie"><%=process.getVAL_ST_CHANGEMENT_METIER()%></span>
 								<BR/><BR/>
-								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Délai envisagé : </span>
+								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">DÃ©lai envisagÃ© : </span>
 								<span class="sigp2-saisie"><%=process.getVAL_ST_DELAI()%></span>
 								<BR/><BR/>
-								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Mobilité service : </span>
+								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">MobilitÃ© service : </span>
 								<span class="sigp2-saisie"><%=process.getVAL_ST_MOB_SERV()%></span>
 								<BR/><BR/>
-								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Mobilité direction : </span>
+								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">MobilitÃ© direction : </span>
 								<span class="sigp2-saisie"><%=process.getVAL_ST_MOB_DIR()%></span>
 								<BR/><BR/>
-								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Mobilité collectivité : </span>
+								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">MobilitÃ© collectivitÃ© : </span>
 								<span class="sigp2-saisie"><%=process.getVAL_ST_MOB_COLL()%></span>
 								<BR/><BR/>
-								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Nom collectivité : </span>
+								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Nom collectivitÃ© : </span>
 								<span class="sigp2-saisie"><%=process.getVAL_ST_NOM_COLL()%></span>
 								<BR/><BR/>
-								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Mobilité autre : </span>
+								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">MobilitÃ© autre : </span>
 								<span class="sigp2-saisie"><%=process.getVAL_ST_MOB_AUTRE()%></span>
 								<BR/><BR/>
 								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Concours : </span>
@@ -306,7 +306,7 @@
 								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Pourcentage temps partiel : </span>
 								<span class="sigp2-saisie"><%=process.getVAL_ST_POURC_TPS_PARTIEL()%></span>
 								<BR/><BR/>
-								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Retraite prévue : </span>
+								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Retraite prÃ©vue : </span>
 								<span class="sigp2-saisie"><%=process.getVAL_ST_RETRAITE()%></span>
 								<BR/><BR/>
 								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Date retraite : </span>
@@ -315,7 +315,7 @@
 								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Autre perspective : </span>
 								<span class="sigp2-saisie"><%=process.getVAL_ST_AUTRE_PERSP()%></span>
 								<BR/><BR/>
-								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Libellé autre perspective : </span>
+								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">LibellÃ© autre perspective : </span>
 								<span class="sigp2-saisie"><%=process.getVAL_ST_LIB_AUTRE_PERSP()%></span>
 								<BR/><BR/>
 								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Commentaire : </span>
@@ -328,13 +328,13 @@
 							<% }else {%>
 								<div id="corpsOngletDeveloppement" title="Developpement" class="OngletCorps" style="display:none;margin-right:10px;width:960px;">
 							<% } %>
-							<span class="sigp2Mandatory" style="text-decoration: underline;margin-left:20px;position:relative;width:200px;">Développements : </span>
+							<span class="sigp2Mandatory" style="text-decoration: underline;margin-left:20px;position:relative;width:200px;">DÃ©veloppements : </span>
 								<br/><br/>
 								<%if(process.getListeDeveloppement().size()>0){ %>
 								<span style="margin-left:25px;position:relative;width:120px;text-align: left;">Type</span>
-								<span style="position:relative;width:400px;text-align: left;">Libellé</span>
-								<span style="position:relative;width:90px;text-align: center;">Echéance</span>
-								<span style="position:relative;text-align: center;">Priorité</span>
+								<span style="position:relative;width:400px;text-align: left;">LibellÃ©</span>
+								<span style="position:relative;width:90px;text-align: center;">EchÃ©ance</span>
+								<span style="position:relative;text-align: center;">PrioritÃ©</span>
 								<br/>
 								<div style="overflow: auto;height: 150px;width:900px;margin-left: 20px;">
 									<table class="sigp2NewTab" style="text-align:left;width:680px;">
@@ -379,9 +379,9 @@
 								<span id="titreOngletEvolution" class="OngletInactif" onclick="afficheOnglet('ONGLET5');">&nbsp;Evolution&nbsp;</span>&nbsp;&nbsp;
 							<% } %>
 							<% if (process.onglet.equals("ONGLET6")) {%>
-								<span id="titreOngletDeveloppement" class="OngletActif" onclick="afficheOnglet('ONGLET6');">&nbsp;Développement&nbsp;</span>&nbsp;&nbsp;
+								<span id="titreOngletDeveloppement" class="OngletActif" onclick="afficheOnglet('ONGLET6');">&nbsp;DÃ©veloppement&nbsp;</span>&nbsp;&nbsp;
 							<% }else {%>
-								<span id="titreOngletDeveloppement" class="OngletInactif" onclick="afficheOnglet('ONGLET6');">&nbsp;Développement&nbsp;</span>&nbsp;&nbsp;
+								<span id="titreOngletDeveloppement" class="OngletInactif" onclick="afficheOnglet('ONGLET6');">&nbsp;DÃ©veloppement&nbsp;</span>&nbsp;&nbsp;
 							<% } %>
 						</div>
 						
@@ -425,16 +425,16 @@
 							<% }else {%>
 								<div id="corpsOngletEvaluation" title="Evaluation" class="OngletCorps" style="display:none;margin-right:10px;width:960px;">
 							<% } %>
-								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Commentaire de l'évaluateur : </span>
+								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Commentaire de l'Ã©valuateur : </span>
 								<textarea class="sigp2-saisie" rows="3" maxlength="3900" style="position:relative;width:600px" name="<%= process.getNOM_ST_COMMENTAIRE_EVALUATEUR() %>" ><%= process.getVAL_ST_COMMENTAIRE_EVALUATEUR() %></textarea>
 								<BR/><BR/>
 								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Niveau : </span>
 								<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_NIVEAU(),process.getNOM_RB_NIVEAU_EXCEL())%>>Excellent
 								<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_NIVEAU(),process.getNOM_RB_NIVEAU_SATIS())%>>Satisfaisant
-								<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_NIVEAU(),process.getNOM_RB_NIVEAU_PROGR())%>>Nécéssitant des progrès
+								<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_NIVEAU(),process.getNOM_RB_NIVEAU_PROGR())%>>NÃ©cÃ©ssitant des progrÃ¨s
 								<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_NIVEAU(),process.getNOM_RB_NIVEAU_INSU())%>>Insuffisant
 								<BR/><BR/>
-								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Note de l'année : </span>
+								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Note de l'annÃ©e : </span>
 								<INPUT class="sigp2-saisie" maxlength="5" name="<%= process.getNOM_ST_NOTE() %>" size="5" type="text"  value="<%= process.getVAL_ST_NOTE() %>">
 								<BR/><BR/>
 								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Avis Evaluateur : </span>
@@ -442,22 +442,22 @@
 								<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_SHD(),process.getNOM_RB_SHD_MOY())%>>Moyenne
 								<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_SHD(),process.getNOM_RB_SHD_MAX())%>>Maximale
 								<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_SHD(),process.getNOM_RB_SHD_FAV())%>>Favorable
-								<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_SHD(),process.getNOM_RB_SHD_DEFAV())%>>Défavorable
+								<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_SHD(),process.getNOM_RB_SHD_DEFAV())%>>DÃ©favorable
 								<BR/><BR/>
-								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Avancement différencié : </span>
+								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Avancement diffÃ©renciÃ© : </span>
 								<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_AD(),process.getNOM_RB_AD_MIN())%>>Minimale
 								<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_AD(),process.getNOM_RB_AD_MOY())%>>Moyenne
 								<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_AD(),process.getNOM_RB_AD_MAX())%>>Maximale
 								<BR/><BR/>
 								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Changement de classe : </span>
 								<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_CHGT(),process.getNOM_RB_CHGT_FAV())%>>Favorable
-								<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_CHGT(),process.getNOM_RB_CHGT_DEF())%>>Défavorable
+								<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_CHGT(),process.getNOM_RB_CHGT_DEF())%>>DÃ©favorable
 								<BR/><BR/>
 								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Avis revalorisation : </span>
 								<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_REVA(),process.getNOM_RB_REVA_FAV())%>>Favorable
-								<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_REVA(),process.getNOM_RB_REVA_DEF())%>>Défavorable
+								<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_REVA(),process.getNOM_RB_REVA_DEF())%>>DÃ©favorable
 								<BR/><BR/>
-								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Rapport Circonstancié : </span>
+								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Rapport CirconstanciÃ© : </span>
 								<textarea class="sigp2-saisie" rows="3" maxlength="3900" style="position:relative;width:600px" name="<%= process.getNOM_ST_RAPPORT_CIRCON() %>" ><%= process.getVAL_ST_RAPPORT_CIRCON() %></textarea>
 								<BR/><BR/>
 							</div>
@@ -499,7 +499,7 @@
 								
 								<%if(process.getVAL_ST_ACTION().equals(process.ACTION_AJOUT_OBJ_PRO)) {%>	
 								<div>
-									<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:50px;">Libellé :</span>
+									<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:50px;">LibellÃ© :</span>
 									<INPUT class="sigp2-saisie" maxlength="1000" name="<%= process.getNOM_ST_LIB_OBJ_PRO() %>" size="70" type="text" value="<%= process.getVAL_ST_LIB_OBJ_PRO() %>">
 									<BR/>	
 									<span class="sigp2" style="margin-left:20px;position:relative;width:50px;">Mesure :</span>
@@ -510,7 +510,7 @@
 								<%} %>
 								<%if(process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION_OBJ_PRO)) {%>	
 								<div>
-									<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:50px;">Libellé :</span>
+									<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:50px;">LibellÃ© :</span>
 									<INPUT class="sigp2-saisie" maxlength="1000" name="<%= process.getNOM_ST_LIB_OBJ_PRO() %>" size="70" type="text" value="<%= process.getVAL_ST_LIB_OBJ_PRO() %>">	
 									<BR/>	
 									<span class="sigp2" style="margin-left:20px;position:relative;width:50px;">Mesure :</span>
@@ -521,7 +521,7 @@
 								<%} %>
 								<%if(process.getVAL_ST_ACTION().equals(process.ACTION_SUPPRESSION_OBJ_PRO)) {%>	
 								<div>
-									<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:50px;">Libellé :</span>
+									<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:50px;">LibellÃ© :</span>
 									<INPUT class="sigp2-saisie" maxlength="1000" disabled="disabled" name="<%= process.getNOM_ST_LIB_OBJ_PRO() %>" size="70" type="text" value="<%= process.getVAL_ST_LIB_OBJ_PRO() %>">
 									<BR/>	
 									<span class="sigp2" style="margin-left:20px;position:relative;width:50px;">Mesure :</span>
@@ -560,7 +560,7 @@
 								</div>	
 								<%if(process.getVAL_ST_ACTION().equals(process.ACTION_AJOUT_OBJ_INDI)) {%>	
 								<div>
-									<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:50px;">Libellé :</span>
+									<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:50px;">LibellÃ© :</span>
 									<INPUT class="sigp2-saisie" maxlength="1000" name="<%= process.getNOM_ST_LIB_OBJ_INDI() %>" size="70" type="text" value="<%= process.getVAL_ST_LIB_OBJ_INDI() %>">				
 									<INPUT type="submit" class="sigp2-Bouton-100" value="Ajouter" name="<%=process.getNOM_PB_VALIDER_OBJ_INDI()%>">
 									<INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER_OBJ_INDI()%>">	
@@ -568,7 +568,7 @@
 								<%} %>
 								<%if(process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION_OBJ_INDI)) {%>	
 								<div>
-									<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:50px;">Libellé :</span>
+									<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:50px;">LibellÃ© :</span>
 									<INPUT class="sigp2-saisie" maxlength="1000" name="<%= process.getNOM_ST_LIB_OBJ_INDI() %>" size="70" type="text" value="<%= process.getVAL_ST_LIB_OBJ_INDI() %>">				
 									<INPUT type="submit" class="sigp2-Bouton-100" value="Modifier" name="<%=process.getNOM_PB_VALIDER_OBJ_INDI()%>">
 									<INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER_OBJ_INDI()%>">	
@@ -576,7 +576,7 @@
 								<%} %>
 								<%if(process.getVAL_ST_ACTION().equals(process.ACTION_SUPPRESSION_OBJ_INDI)) {%>	
 								<div>
-									<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:50px;">Libellé :</span>
+									<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:50px;">LibellÃ© :</span>
 									<INPUT class="sigp2-saisie" maxlength="1000" disabled="disabled" name="<%= process.getNOM_ST_LIB_OBJ_INDI() %>" size="70" type="text" value="<%= process.getVAL_ST_LIB_OBJ_INDI() %>">				
 									<INPUT type="submit" class="sigp2-Bouton-100" value="Supprimer" name="<%=process.getNOM_PB_VALIDER_OBJ_INDI()%>">
 									<INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER_OBJ_INDI()%>">	
@@ -590,39 +590,39 @@
 							<% }else {%>
 								<div id="corpsOngletEvolution" title="Evolution" class="OngletCorps" style="display:none;margin-right:10px;width:960px;">
 							<% } %>
-								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Mobilité géographique : </span>
+								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">MobilitÃ© gÃ©ographique : </span>
 								<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_MOB_GEO(),process.getNOM_RB_MOB_GEO_OUI())%>>Oui
 								<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_MOB_GEO(),process.getNOM_RB_MOB_GEO_NON())%>>Non
 								<BR/><BR/>
-								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Mobilité fonctionnelle : </span>
+								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">MobilitÃ© fonctionnelle : </span>
 								<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_MOB_FONCT(),process.getNOM_RB_MOB_FONCT_OUI())%>>Oui
 								<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_MOB_FONCT(),process.getNOM_RB_MOB_FONCT_NON())%>>Non
 								<BR/><BR/>
-								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Changement de métier : </span>
+								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Changement de mÃ©tier : </span>
 								<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_METIER(),process.getNOM_RB_METIER_OUI())%>>Oui
 								<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_METIER(),process.getNOM_RB_METIER_NON())%>>Non
 								<BR/><BR/>
-								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Délai envisagé : </span>
-								<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_DELAI(),process.getNOM_RB_DELAI_1())%>>Inférieur à 1 an
+								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">DÃ©lai envisagÃ© : </span>
+								<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_DELAI(),process.getNOM_RB_DELAI_1())%>>InfÃ©rieur Ã  1 an
 								<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_DELAI(),process.getNOM_RB_DELAI_2())%>>Entre 1 et 2 ans
 								<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_DELAI(),process.getNOM_RB_DELAI_4())%>>Entre 2 et 4 ans
 								<BR/><BR/>
-								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Mobilité service : </span>
+								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">MobilitÃ© service : </span>
 								<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_MOB_SERV(),process.getNOM_RB_MOB_SERV_OUI())%>>Oui
 								<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_MOB_SERV(),process.getNOM_RB_MOB_SERV_NON())%>>Non
 								<BR/><BR/>
-								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Mobilité direction : </span>
+								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">MobilitÃ© direction : </span>
 								<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_MOB_DIR(),process.getNOM_RB_MOB_DIR_OUI())%>>Oui
 								<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_MOB_DIR(),process.getNOM_RB_MOB_DIR_NON())%>>Non
 								<BR/><BR/>
-								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Mobilité collectivité : </span>
+								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">MobilitÃ© collectivitÃ© : </span>
 								<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_MOB_COLL(),process.getNOM_RB_MOB_COLL_OUI())%>>Oui
 								<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_MOB_COLL(),process.getNOM_RB_MOB_COLL_NON())%>>Non
 								<BR/><BR/>
-								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Nom collectivité : </span>
+								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Nom collectivitÃ© : </span>
 								<INPUT class="sigp2-saisie" maxlength="100" name="<%= process.getNOM_ST_NOM_COLL() %>" size="70" type="text"  value="<%= process.getVAL_ST_NOM_COLL() %>">
 								<BR/><BR/>
-								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Mobilité autre : </span>
+								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">MobilitÃ© autre : </span>
 								<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_MOB_AUTRE(),process.getNOM_RB_MOB_AUTRE_OUI())%>>Oui
 								<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_MOB_AUTRE(),process.getNOM_RB_MOB_AUTRE_NON())%>>Non
 								<BR/><BR/>
@@ -649,7 +649,7 @@
 									<%=process.forComboHTML(process.getVAL_LB_BASE_HORAIRE(), process.getVAL_LB_BASE_HORAIRE_SELECT()) %>
 								</SELECT>
 								<BR/><BR/>
-								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Retraite prévue : </span>
+								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Retraite prÃ©vue : </span>
 								<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_RETRAITE(),process.getNOM_RB_RETRAITE_OUI())%>>Oui
 								<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_RETRAITE(),process.getNOM_RB_RETRAITE_NON())%>>Non
 								<BR/><BR/>
@@ -661,7 +661,7 @@
 								<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_AUTRE_PERSP(),process.getNOM_RB_AUTRE_PERSP_OUI())%>>Oui
 								<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_AUTRE_PERSP(),process.getNOM_RB_AUTRE_PERSP_NON())%>>Non
 								<BR/><BR/>
-								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Libellé autre perspective : </span>
+								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">LibellÃ© autre perspective : </span>
 								<INPUT class="sigp2-saisie" maxlength="255" name="<%= process.getNOM_ST_LIB_AUTRE_PERSP() %>" size="70" type="text"  value="<%= process.getVAL_ST_LIB_AUTRE_PERSP() %>">
 								<BR/><BR/>
 								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Commentaire : </span>
@@ -674,16 +674,16 @@
 							<% }else {%>
 								<div id="corpsOngletDeveloppement" title="Developpement" class="OngletCorps" style="display:none;margin-right:10px;width:960px;">
 							<% } %>
-							<span class="sigp2Mandatory" style="text-decoration: underline;margin-left:20px;position:relative;width:200px;">Développements : </span>
+							<span class="sigp2Mandatory" style="text-decoration: underline;margin-left:20px;position:relative;width:200px;">DÃ©veloppements : </span>
 								<br/><br/>
 								<span style="margin-left:20px;position:relative;width:9px;"></span>
 				    			<span style="position:relative;width:40px;">
 									<INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_AJOUTER_DEV()%>">
 								</span>
 				    			<span style="position:relative;width:120px;text-align: left;">Type</span>
-								<span style="position:relative;width:400px;text-align: left;">Libellé</span>
-								<span style="position:relative;width:90px;text-align: center;">Echéance</span>
-								<span style="position:relative;text-align: center;">Priorité</span>
+								<span style="position:relative;width:400px;text-align: left;">LibellÃ©</span>
+								<span style="position:relative;width:90px;text-align: center;">EchÃ©ance</span>
+								<span style="position:relative;text-align: center;">PrioritÃ©</span>
 								<br/>
 								<div style="overflow: auto;height: 150px;width:900px;margin-left: 20px;">
 									<table class="sigp2NewTab" style="text-align:left;width:880px;">
@@ -713,13 +713,13 @@
 										<%=process.forComboHTML(process.getVAL_LB_TYPE_DEV(), process.getVAL_LB_TYPE_DEV_SELECT()) %>
 									</SELECT>
 									<BR/>
-									<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:80px;">Libellé :</span>
+									<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:80px;">LibellÃ© :</span>
 									<INPUT class="sigp2-saisie" maxlength="1000" name="<%= process.getNOM_ST_LIB_DEV() %>" size="70" type="text" value="<%= process.getVAL_ST_LIB_DEV() %>">
 									<BR/>
 									<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:80px;">Priorisation :</span>
 									<INPUT class="sigp2-saisie" maxlength="2" name="<%= process.getNOM_ST_PRIO_DEV() %>" size="5" type="text" value="<%= process.getVAL_ST_PRIO_DEV() %>">
 									<BR/>
-									<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:80px;">Echéance :</span>
+									<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:80px;">EchÃ©ance :</span>
 									<input id="<%=process.getNOM_ST_DATE_DEV()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_DEV() %>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_DEV() %>">
 									<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_DEV()%>', 'dd/mm/y');">
 								
@@ -734,13 +734,13 @@
 										<%=process.forComboHTML(process.getVAL_LB_TYPE_DEV(), process.getVAL_LB_TYPE_DEV_SELECT()) %>
 									</SELECT>
 									<BR/>
-									<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:80px;">Libellé :</span>
+									<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:80px;">LibellÃ© :</span>
 									<INPUT class="sigp2-saisie" maxlength="1000" name="<%= process.getNOM_ST_LIB_DEV() %>" size="70" type="text" value="<%= process.getVAL_ST_LIB_DEV() %>">				
 									<BR/>
 									<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:80px;">Priorisation :</span>
 									<INPUT class="sigp2-saisie" maxlength="2" name="<%= process.getNOM_ST_PRIO_DEV() %>" size="5" type="text" value="<%= process.getVAL_ST_PRIO_DEV() %>">
 									<BR/>
-									<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:80px;">Echéance :</span>
+									<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:80px;">EchÃ©ance :</span>
 									<input id="<%=process.getNOM_ST_DATE_DEV()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_DEV() %>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_DEV() %>">
 									<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_DEV()%>', 'dd/mm/y');">
 								
@@ -755,13 +755,13 @@
 										<%=process.forComboHTML(process.getVAL_LB_TYPE_DEV(), process.getVAL_LB_TYPE_DEV_SELECT()) %>
 									</SELECT>
 									<BR/>
-									<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:80px;">Libellé :</span>
+									<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:80px;">LibellÃ© :</span>
 									<INPUT class="sigp2-saisie" maxlength="1000" disabled="disabled" name="<%= process.getNOM_ST_LIB_DEV() %>" size="70" type="text" value="<%= process.getVAL_ST_LIB_DEV() %>">				
 									<BR/>
 									<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:80px;">Priorisation :</span>
 									<INPUT class="sigp2-saisie" disabled="disabled" name="<%= process.getNOM_ST_PRIO_DEV() %>" size="5" type="text" value="<%= process.getVAL_ST_PRIO_DEV() %>">
 									<BR/>
-									<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:80px;">Echéance :</span>
+									<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:80px;">EchÃ©ance :</span>
 									<input class="sigp2-saisie" disabled="disabled"	name="<%= process.getNOM_ST_DATE_DEV() %>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_DEV() %>">
 									
 									<INPUT type="submit" class="sigp2-Bouton-100" value="Supprimer" name="<%=process.getNOM_PB_VALIDER_DEV()%>">
@@ -818,7 +818,7 @@
 									</div>
 									<div style="text-align: left">
 										<BR/><BR/>
-										<span class="sigp2Mandatory" >Une fois la validation terminée, il faut attendre environ 3min que le document soit bien téléchargé. Si passez ce délai, et après rafraichissement de la page, le document n'apparait pas, merci de contacter le chef de projet.</span>
+										<span class="sigp2Mandatory" >Une fois la validation terminÃ©e, il faut attendre environ 3min que le document soit bien tÃ©lÃ©chargÃ©. Si passez ce dÃ©lai, et aprÃ¨s rafraichissement de la page, le document n'apparait pas, merci de contacter le chef de projet.</span>
 									</div>
 									<div style="text-align: center">
 										<BR/><BR/>
@@ -887,7 +887,7 @@
 				</tr>
 				<tr>
 					<td>
-						<span class="sigp2Mandatory">Année :</span>
+						<span class="sigp2Mandatory">AnnÃ©e :</span>
 					</td>
 					<td>
 						<INPUT class="sigp2-saisie" maxlength="4" name="<%= process.getNOM_EF_ANNEE_ANCIEN_EAE() %>" size="5" type="text" value="<%= process.getVAL_EF_ANNEE_ANCIEN_EAE() %>">

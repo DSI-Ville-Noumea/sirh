@@ -71,7 +71,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 
 /**
- * Process OeAVCTFonctionnaires Date de création : (21/11/11 09:55:36)
+ * Process OeAVCTFonctionnaires Date de crÃ©ation : (21/11/11 09:55:36)
  * 
  */
 public class OeAVCTFonctPrepaCAP extends BasicProcess {
@@ -127,28 +127,28 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	private SimpleDateFormat sdfFormatDate = new SimpleDateFormat("dd/MM/yyyy");
 
 	/**
-	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones Ã  afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
-	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
-	 * addZone(getNOMxxx, String); Date de création : (21/11/11 09:55:36)
+	 * doivent avoir les Fields PUBLIC Utilisation de la mÃ©thode
+	 * addZone(getNOMxxx, String); Date de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public void initialiseZones(HttpServletRequest request) throws Exception {
 		// POUR RESTER SUR LA MEME PAGE LORS DE LA RECHERCHE D'UN AGENT
 		VariableGlobale.ajouter(request, "PROCESS_MEMORISE", this);
 		// ----------------------------------//
-		// Vérification des droits d'accès. //
+		// VÃ©rification des droits d'acces. //
 		// ----------------------------------//
 		if (MairieUtils.estInterdit(request, getNomEcran())) {
 			// "ERR190",
-			// "Opération impossible. Vous ne disposez pas des droits d'accès à cette option."
+			// "Operation impossible. Vous ne disposez pas des droits d'acces a cette option."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
 
 		initialiseDao();
 
-		// Initialisation des listes déroulantes
+		// Initialisation des listes deroulantes
 		initialiseListeDeroulante();
 
 		initialiseListeService();
@@ -256,7 +256,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 					}
 				}
 			} catch (Exception e) {
-				// pas de campagne pour cette année
+				// pas de campagne pour cette annÃ©e
 			}
 			// motif Avct
 			if (av.getIdMotifAvct() != null) {
@@ -292,7 +292,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 				}
 
 			} else {
-				// si la SEF a deja coché
+				// si la SEF a deja coche
 				if (av.getEtat().equals(EnumEtatAvancement.SEF.getValue())) {
 					addZone(getNOM_LB_AVIS_CAP_AD_SELECT(i),
 							av.getIdAvisCap() == null ? Const.CHAINE_VIDE : String.valueOf(getListeAvisCAPMinMoyMax()
@@ -357,7 +357,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 				if (Const.CHAINE_VIDE.equals(serv.getCodService()))
 					continue;
 
-				// recherche du supérieur
+				// recherche du supÃ©rieur
 				String codeService = serv.getCodService();
 				while (codeService.endsWith("A")) {
 					codeService = codeService.substring(0, codeService.length() - 1);
@@ -495,7 +495,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	}
 
 	/**
-	 * Initialisation des liste déroulantes de l'écran Avancement des
+	 * Initialisation des liste deroulantes de l'Ã©cran Avancement des
 	 * fonctionnaires.
 	 */
 	private void initialiseListeDeroulante() throws Exception {
@@ -574,8 +574,8 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	}
 
 	/**
-	 * Méthode appelée par la servlet qui aiguille le traitement : en fonction
-	 * du bouton de la JSP Date de création : (21/11/11 09:55:36)
+	 * mÃ©thode appelee par la servlet qui aiguille le traitement : en fonction
+	 * du bouton de la JSP Date de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public boolean recupererStatut(HttpServletRequest request) throws Exception {
@@ -641,13 +641,13 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 			}
 
 		}
-		// Si TAG INPUT non géré par le process
+		// Si TAG INPUT non gÃ©rÃ© par le process
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
 
 	/**
-	 * Constructeur du process OeAVCTFonctionnaires. Date de création :
+	 * Constructeur du process OeAVCTFonctionnaires. Date de crÃ©ation :
 	 * (21/11/11 09:55:36)
 	 * 
 	 */
@@ -656,8 +656,8 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la JSP du process Zone à utiliser dans un champ caché
-	 * dans chaque formulaire de la JSP. Date de création : (21/11/11 09:55:36)
+	 * Retourne le nom de la JSP du process Zone a utiliser dans un champ cache
+	 * dans chaque formulaire de la JSP. Date de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getJSP() {
@@ -665,7 +665,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER Date de création :
+	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER Date de crÃ©ation :
 	 * (21/11/11 09:55:36)
 	 * 
 	 */
@@ -674,10 +674,10 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (21/11/11 09:55:36)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public boolean performPB_ANNULER(HttpServletRequest request) throws Exception {
@@ -685,7 +685,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_FILTRER Date de création :
+	 * Retourne le nom d'un bouton pour la JSP : PB_FILTRER Date de crÃ©ation :
 	 * (21/11/11 09:55:36)
 	 * 
 	 */
@@ -694,10 +694,10 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (21/11/11 09:55:36)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public boolean performPB_FILTRER(HttpServletRequest request) throws Exception {
@@ -739,7 +739,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_IMPRIMER Date de création :
+	 * Retourne le nom d'un bouton pour la JSP : PB_IMPRIMER Date de crÃ©ation :
 	 * (21/11/11 09:55:36)
 	 * 
 	 */
@@ -748,10 +748,10 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (21/11/11 09:55:36)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public boolean performPB_IMPRIMER(HttpServletRequest request) throws Exception {
@@ -773,14 +773,14 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 				try {
 					Cap cap = getCapDao().chercherCapByCodeCap(getVAL_ST_CODE_CAP(i));
 					CadreEmploi cadre = getCadreEmploiDao().chercherCadreEmploiByLib(getVAL_ST_CADRE_EMPLOI(i));
-					// on crée l'entrée dans la table du job
+					// on crÃ©e l'entrÃ©e dans la table du job
 					getAvancementCapPrintJobDao().creerAvancementCapPrintJob(agent.getIdAgent(), user.getUserName(),
 							cap.getIdCap(), cap.getCodeCap(), cadre.getIdCadreEmploi(), cadre.getLibCadreEmploi(),
 							false, true);
 				} catch (Exception e) {
 					getTransaction().traiterErreur();
 					// "ERR182",
-					// "Une erreur est survenue dans la génération du tableau. Merci de contacter le responsable du projet."
+					// "Une erreur est survenue dans la gÃ©nÃ©ration du tableau. Merci de contacter le responsable du projet."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR182"));
 					return false;
 				}
@@ -790,13 +790,13 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 				try {
 					Cap cap = getCapDao().chercherCapByCodeCap(getVAL_ST_CODE_CAP(i));
 					CadreEmploi cadre = getCadreEmploiDao().chercherCadreEmploiByLib(getVAL_ST_CADRE_EMPLOI(i));
-					// on crée l'entrée dans la table du job
+					// on crÃ©e l'entrÃ©e dans la table du job
 					getAvancementCapPrintJobDao().creerAvancementCapPrintJob(agent.getIdAgent(), user.getUserName(),
 							cap.getIdCap(), cap.getCodeCap(), cadre.getIdCadreEmploi(), cadre.getLibCadreEmploi(),
 							true, true);
 				} catch (Exception e) {
 					// "ERR182",
-					// "Une erreur est survenue dans la génération du tableau. Merci de contacter le responsable du projet."
+					// "Une erreur est survenue dans la gÃ©nÃ©ration du tableau. Merci de contacter le responsable du projet."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR182"));
 					return false;
 				}
@@ -806,13 +806,13 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 				try {
 					Cap cap = getCapDao().chercherCapByCodeCap(getVAL_ST_CODE_CAP(i));
 					CadreEmploi cadre = getCadreEmploiDao().chercherCadreEmploiByLib(getVAL_ST_CADRE_EMPLOI(i));
-					// on crée l'entrée dans la table du job
+					// on crÃ©e l'entrÃ©e dans la table du job
 					getAvancementCapPrintJobDao().creerAvancementCapPrintJob(agent.getIdAgent(), user.getUserName(),
 							cap.getIdCap(), cap.getCodeCap(), cadre.getIdCadreEmploi(), cadre.getLibCadreEmploi(),
 							false, false);
 				} catch (Exception e) {
 					// "ERR182",
-					// "Une erreur est survenue dans la génération du tableau. Merci de contacter le responsable du projet."
+					// "Une erreur est survenue dans la gÃ©nÃ©ration du tableau. Merci de contacter le responsable du projet."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR182"));
 					return false;
 				}
@@ -822,13 +822,13 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 				try {
 					Cap cap = getCapDao().chercherCapByCodeCap(getVAL_ST_CODE_CAP(i));
 					CadreEmploi cadre = getCadreEmploiDao().chercherCadreEmploiByLib(getVAL_ST_CADRE_EMPLOI(i));
-					// on crée l'entrée dans la table du job
+					// on crÃ©e l'entrÃ©e dans la table du job
 					getAvancementCapPrintJobDao().creerAvancementCapPrintJob(agent.getIdAgent(), user.getUserName(),
 							cap.getIdCap(), cap.getCodeCap(), cadre.getIdCadreEmploi(), cadre.getLibCadreEmploi(),
 							true, false);
 				} catch (Exception e) {
 					// "ERR182",
-					// "Une erreur est survenue dans la génération du tableau. Merci de contacter le responsable du projet."
+					// "Une erreur est survenue dans la gÃ©nÃ©ration du tableau. Merci de contacter le responsable du projet."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR182"));
 					return false;
 				}
@@ -839,7 +839,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER Date de création :
+	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER Date de crÃ©ation :
 	 * (21/11/11 09:55:36)
 	 * 
 	 */
@@ -848,28 +848,28 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (21/11/11 09:55:36)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public boolean performPB_VALIDER(HttpServletRequest request) throws Exception {
 		UserAppli user = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
 		SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
 		String heureAction = sdf.format(new Date());
-		// on sauvegarde l'état du tableau
+		// on sauvegarde l'etat du tableau
 		for (int j = 0; j < getListeAvct().size(); j++) {
-			// on recupère la ligne concernée
+			// on recupere la ligne concernÃ©e
 			AvancementFonctionnaires avct = (AvancementFonctionnaires) getListeAvct().get(j);
 			Integer idAvct = avct.getIdAvct();
 			// on fait les modifications
 			// on traite l'etat
 			if (getVAL_CK_VALID_SEF(idAvct).equals(getCHECKED_ON())) {
-				// si la ligne est cochée
+				// si la ligne est cochÃ©e
 				// on regarde si l'etat est deja SEF
 				// --> oui on ne modifie pas le user
-				// --> non on passe l'etat à SEF et on met à jour le user
+				// --> non on passe l'etat a SEF et on met a jour le user
 				if (avct.getEtat().equals(EnumEtatAvancement.SGC.getValue())) {
 					// on sauvegarde qui a fait l'action
 					avct.setUserVerifSef(user.getUserName());
@@ -877,8 +877,8 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 					avct.setHeureVerifSef(heureAction);
 					avct.setEtat(EnumEtatAvancement.SEF.getValue());
 				}
-				// on met egalement a jour la CAP à laquelle appartient l'agent
-				// on recupere la catégorie de l'agent
+				// on met egalement a jour la CAP Ã  laquelle appartient l'agent
+				// on recupere la categorie de l'agent
 				String type = avct.getCodeCategorie() == 1 || avct.getCodeCategorie() == 2 ? "COMMUNAL" : (avct
 						.getCodeCategorie() == 18 || avct.getCodeCategorie() == 20) ? "TERRITORIAL" : null;
 				if (type != null) {
@@ -890,14 +890,14 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 							avct.setIdCap(capAgent.getIdCap());
 						}
 					} catch (Exception e) {
-						// aucune CAP trouvée
+						// aucune CAP trouvÃ©e
 					}
 				}
 
 			} else {
-				// si la ligne n'est pas cochée
+				// si la ligne n'est pas cochÃ©e
 				// on regarde quel etat son etat
-				// --> si SEF alors on met à jour le user
+				// --> si SEF alors on met a jour le user
 				if (avct.getEtat().equals(EnumEtatAvancement.SEF.getValue())) {
 					// on sauvegarde qui a fait l'action
 					avct.setUserVerifSef(user.getUserName());
@@ -917,9 +917,9 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 								.getIdAvisCap();
 						avct.setIdAvisCap(idAvisCap);
 						// on traite l'odre de merite
-						// on test si "moyenne" choisi alors on remete à vide
+						// on test si "moyenne" choisi alors on remete a vide
 						// ordre du
-						// mérite
+						// mÃ©rite
 						if (indiceAvisCapMinMoyMax == 0) {
 							String ordre = getVAL_EF_ORDRE_MERITE(idAvct);
 							if (!ordre.equals(Const.CHAINE_VIDE)) {
@@ -970,14 +970,14 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 		}
 		// on enregistre
 		commitTransaction();
-		// on remet la liste à vide afin qu'elle soit de nouveau initialisée
+		// on remet la liste a vide afin qu'elle soit de nouveau initialisee
 		performPB_FILTRER(request);
 		return true;
 	}
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_AGENT Date de
-	 * création : (21/11/11 09:55:36)
+	 * crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_ST_AGENT(int i) {
@@ -985,8 +985,8 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_AGENT Date de
-	 * création : (21/11/11 09:55:36)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_AGENT Date de
+	 * crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_ST_AGENT(int i) {
@@ -995,7 +995,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_CATEGORIE Date de
-	 * création : (21/11/11 09:55:36)
+	 * crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_ST_CATEGORIE(int i) {
@@ -1003,8 +1003,8 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_CATEGORIE Date
-	 * de création : (21/11/11 09:55:36)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_CATEGORIE Date
+	 * de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_ST_CATEGORIE(int i) {
@@ -1013,7 +1013,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_DATE_AVCT Date de
-	 * création : (21/11/11 09:55:36)
+	 * crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_ST_DATE_AVCT(int i) {
@@ -1021,8 +1021,8 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE_AVCT Date
-	 * de création : (21/11/11 09:55:36)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_DATE_AVCT Date
+	 * de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_ST_DATE_AVCT(int i) {
@@ -1031,7 +1031,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_DATE_DEBUT Date de
-	 * création : (21/11/11 09:55:36)
+	 * crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_ST_DATE_DEBUT(int i) {
@@ -1039,8 +1039,8 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE_DEBUT
-	 * Date de création : (21/11/11 09:55:36)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_DATE_DEBUT
+	 * Date de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_ST_DATE_DEBUT(int i) {
@@ -1049,7 +1049,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_DIRECTION Date de
-	 * création : (21/11/11 09:55:36)
+	 * crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_ST_DIRECTION(int i) {
@@ -1057,8 +1057,8 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DIRECTION Date
-	 * de création : (21/11/11 09:55:36)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_DIRECTION Date
+	 * de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_ST_DIRECTION(int i) {
@@ -1067,7 +1067,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_GRADE_LIB Date de
-	 * création : (21/11/11 09:55:36)
+	 * crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_ST_GRADE_LIB(int i) {
@@ -1075,8 +1075,8 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_GRADE_LIB Date
-	 * de création : (21/11/11 09:55:36)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_GRADE_LIB Date
+	 * de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_ST_GRADE_LIB(int i) {
@@ -1085,7 +1085,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_NUM_AVCT Date de
-	 * création : (21/11/11 09:55:36)
+	 * crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_ST_NUM_AVCT(int i) {
@@ -1093,8 +1093,8 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_NUM_AVCT Date
-	 * de création : (21/11/11 09:55:36)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_NUM_AVCT Date
+	 * de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_ST_NUM_AVCT(int i) {
@@ -1103,7 +1103,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_ETAT Date de
-	 * création : (21/11/11 09:55:36)
+	 * crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_ST_ETAT(int i) {
@@ -1111,8 +1111,8 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ETAT Date de
-	 * création : (21/11/11 09:55:36)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_ETAT Date de
+	 * crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_ST_ETAT(int i) {
@@ -1138,14 +1138,14 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	}
 
 	/**
-	 * Getter du nom de l'écran (pour la gestion des droits)
+	 * Getter du nom de l'Ã©cran (pour la gestion des droits)
 	 */
 	public String getNomEcran() {
 		return "ECR-AVCT-FONCT-PREPA-CAP";
 	}
 
 	/**
-	 * Getter de la liste avec un lazy initialize : LB_ANNEE Date de création :
+	 * Getter de la liste avec un lazy initialize : LB_ANNEE Date de crÃ©ation :
 	 * (28/11/11)
 	 * 
 	 */
@@ -1156,7 +1156,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_ANNEE Date de création : (28/11/11)
+	 * Setter de la liste: LB_ANNEE Date de crÃ©ation : (28/11/11)
 	 * 
 	 */
 	private void setLB_ANNEE(String[] newLB_ANNEE) {
@@ -1164,7 +1164,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_ANNEE Date de création :
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_ANNEE Date de crÃ©ation :
 	 * (28/11/11)
 	 * 
 	 */
@@ -1173,8 +1173,8 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_ANNEE_SELECT Date de création : (28/11/11)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_ANNEE_SELECT Date de crÃ©ation : (28/11/11)
 	 * 
 	 */
 	public String getNOM_LB_ANNEE_SELECT() {
@@ -1182,8 +1182,8 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_ANNEE Date de création : (28/11/11 09:55:36)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_ANNEE Date de crÃ©ation : (28/11/11 09:55:36)
 	 * 
 	 */
 	public String[] getVAL_LB_ANNEE() {
@@ -1191,8 +1191,8 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_ANNEE Date de création : (28/11/11)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_ANNEE Date de crÃ©ation : (28/11/11)
 	 * 
 	 */
 	public String getVAL_LB_ANNEE_SELECT() {
@@ -1200,7 +1200,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	}
 
 	/**
-	 * Getter de la liste des années possibles.
+	 * Getter de la liste des annÃ©es possibles.
 	 * 
 	 * @return listeAnnee
 	 */
@@ -1209,7 +1209,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste des années possibles.
+	 * Setter de la liste des annÃ©es possibles.
 	 * 
 	 * @param listeAnnee
 	 */
@@ -1218,7 +1218,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	}
 
 	/**
-	 * Getter de l'annee sélectionnée.
+	 * Getter de l'annee sÃ©lectionnÃ©e.
 	 * 
 	 * @return anneeSelect
 	 */
@@ -1227,7 +1227,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	}
 
 	/**
-	 * Setter de l'année sélectionnée
+	 * Setter de l'annÃ©e sÃ©lectionnÃ©e
 	 * 
 	 * @param newAnneeSelect
 	 */
@@ -1236,8 +1236,8 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la case à cocher sélectionnée pour la JSP :
-	 * CK_VALID_SEF Date de création : (21/11/11 09:55:36)
+	 * Retourne le nom de la case Ã  cocher sÃ©lectionnÃ©e pour la JSP :
+	 * CK_VALID_SEF Date de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_CK_VALID_SEF(int i) {
@@ -1245,8 +1245,8 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur de la case à cocher à afficher par la JSP pour la case
-	 * à cocher : CK_VALID_SEF Date de création : (21/11/11 09:55:36)
+	 * Retourne la valeur de la case Ã  cocher Ã  afficher par la JSP pour la case
+	 * a cocher : CK_VALID_SEF Date de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_CK_VALID_SEF(int i) {
@@ -1255,7 +1255,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_USER_VALID_SEF Date
-	 * de création : (21/11/11 09:55:36)
+	 * de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_ST_USER_VALID_SEF(int i) {
@@ -1263,8 +1263,8 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_USER_VALID_SEF
-	 * Date de création : (21/11/11 09:55:36)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_USER_VALID_SEF
+	 * Date de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_ST_USER_VALID_SEF(int i) {
@@ -1272,7 +1272,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	}
 
 	/**
-	 * Getter de la liste avec un lazy initialize : LB_AVIS_CAP Date de création
+	 * Getter de la liste avec un lazy initialize : LB_AVIS_CAP Date de crÃ©ation
 	 * : (21/11/11 09:55:36)
 	 * 
 	 */
@@ -1283,7 +1283,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_AVIS_CAP_AD Date de création : (21/11/11 09:55:36)
+	 * Setter de la liste: LB_AVIS_CAP_AD Date de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	private void setLB_AVIS_CAP_AD(String[] newLB_AVIS_CAP_AD) {
@@ -1302,8 +1302,8 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_AVIS_CAP_AD_SELECT Date de création : (21/11/11 09:55:36)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_AVIS_CAP_AD_SELECT Date de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_LB_AVIS_CAP_AD_SELECT(int i) {
@@ -1311,8 +1311,8 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_AVIS_CAP Date de création : (21/11/11 09:55:36)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_AVIS_CAP Date de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_LB_AVIS_CAP_AD_SELECT(int i) {
@@ -1320,7 +1320,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_AVIS_CAP Date de création
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_AVIS_CAP Date de crÃ©ation
 	 * : (21/11/11 09:55:36)
 	 * 
 	 */
@@ -1329,8 +1329,8 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_AVIS_CAP Date de création : (21/11/11 09:55:36)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_AVIS_CAP Date de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String[] getVAL_LB_AVIS_CAP_AD(int i) {
@@ -1339,7 +1339,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_ORDRE_MERITE Date
-	 * de création : (05/09/11 16:21:49)
+	 * de crÃ©ation : (05/09/11 16:21:49)
 	 * 
 	 */
 	public String getNOM_EF_ORDRE_MERITE(int i) {
@@ -1347,8 +1347,8 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_ORDRE_MERITE Date de création : (05/09/11 16:21:49)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_ORDRE_MERITE Date de crÃ©ation : (05/09/11 16:21:49)
 	 * 
 	 */
 	public String getVAL_EF_ORDRE_MERITE(int i) {
@@ -1357,7 +1357,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_MOTIF_AVCT Date de
-	 * création : (21/11/11 09:55:36)
+	 * crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_ST_MOTIF_AVCT(int i) {
@@ -1365,8 +1365,8 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_MOTIF_AVCT
-	 * Date de création : (21/11/11 09:55:36)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_MOTIF_AVCT
+	 * Date de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_ST_MOTIF_AVCT(int i) {
@@ -1414,8 +1414,8 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la case à cocher sélectionnée pour la JSP : CK_TAB
-	 * Date de création : (21/11/11 09:55:36)
+	 * Retourne le nom de la case Ã  cocher sÃ©lectionnÃ©e pour la JSP : CK_TAB
+	 * Date de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_CK_TAB_SHD(int i) {
@@ -1423,8 +1423,8 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur de la case à cocher à afficher par la JSP pour la case
-	 * à cocher : CK_TAB Date de création : (21/11/11 09:55:36)
+	 * Retourne la valeur de la case Ã  cocher Ã  afficher par la JSP pour la case
+	 * a cocher : CK_TAB Date de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_CK_TAB_SHD(int i) {
@@ -1432,8 +1432,8 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la case à cocher sélectionnée pour la JSP : CK_EAE
-	 * Date de création : (21/11/11 09:55:36)
+	 * Retourne le nom de la case Ã  cocher sÃ©lectionnÃ©e pour la JSP : CK_EAE
+	 * Date de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_CK_EAE_SHD(int i) {
@@ -1441,8 +1441,8 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur de la case à cocher à afficher par la JSP pour la case
-	 * à cocher : CK_EAE Date de création : (21/11/11 09:55:36)
+	 * Retourne la valeur de la case Ã  cocher Ã  afficher par la JSP pour la case
+	 * a cocher : CK_EAE Date de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_CK_EAE_SHD(int i) {
@@ -1451,7 +1451,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_CODE_CAP Date de
-	 * création : (21/11/11 09:55:36)
+	 * crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_ST_CODE_CAP(int i) {
@@ -1459,8 +1459,8 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_CODE_CAP Date
-	 * de création : (21/11/11 09:55:36)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_CODE_CAP Date
+	 * de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_ST_CODE_CAP(int i) {
@@ -1469,7 +1469,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_CADRE_EMPLOI Date de
-	 * création : (21/11/11 09:55:36)
+	 * crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_ST_CADRE_EMPLOI(int i) {
@@ -1477,8 +1477,8 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_CADRE_EMPLOI
-	 * Date de création : (21/11/11 09:55:36)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_CADRE_EMPLOI
+	 * Date de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_ST_CADRE_EMPLOI(int i) {
@@ -1486,7 +1486,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	}
 
 	private void verifieRepertoire(String codTypeDoc) {
-		// on verifie déjà que le repertoire source existe
+		// on verifie dÃ©jÃ  que le repertoire source existe
 		String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ACTES");
 
 		File dossierParent = new File(repPartage);
@@ -1508,7 +1508,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_CONSULTER_TABLEAU Date de
-	 * création : (21/11/11 09:55:36)
+	 * crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_PB_CONSULTER_TABLEAU(int i, String indiceCap, String indiceCadreEmp) {
@@ -1516,10 +1516,10 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (21/11/11 09:55:36)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public boolean performPB_CONSULTER_TABLEAU(HttpServletRequest request, String indiceCap, String indiceCadreEmploi)
@@ -1537,13 +1537,13 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 					cadre.getIdCadreEmploi(), false, "PDF");
 			if (!saveFileToRemoteFileSystem(fileAsBytes, repPartage, destination)) {
 				// "ERR182",
-				// "Une erreur est survenue dans la génération du tableau. Merci de contacter le responsable du projet."
+				// "Une erreur est survenue dans la gÃ©nÃ©ration du tableau. Merci de contacter le responsable du projet."
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR182"));
 				return false;
 			}
 		} catch (Exception e) {
 			// "ERR182",
-			// "Une erreur est survenue dans la génération du tableau. Merci de contacter le responsable du projet."
+			// "Une erreur est survenue dans la gÃ©nÃ©ration du tableau. Merci de contacter le responsable du projet."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR182"));
 			return false;
 		}
@@ -1616,8 +1616,8 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_AVIS_CAP_CLASSE_SELECT Date de création : (21/11/11 09:55:36)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_AVIS_CAP_CLASSE_SELECT Date de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_LB_AVIS_CAP_CLASSE_SELECT(int i) {
@@ -1625,8 +1625,8 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_AVIS_CAP Date de création : (21/11/11 09:55:36)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_AVIS_CAP Date de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_LB_AVIS_CAP_CLASSE_SELECT(int i) {
@@ -1634,7 +1634,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_AVIS_CAP Date de création
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_AVIS_CAP Date de crÃ©ation
 	 * : (21/11/11 09:55:36)
 	 * 
 	 */
@@ -1643,8 +1643,8 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_AVIS_CAP Date de création : (21/11/11 09:55:36)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_AVIS_CAP Date de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String[] getVAL_LB_AVIS_CAP_CLASSE(int i) {
@@ -1652,7 +1652,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	}
 
 	/**
-	 * Getter de la liste avec un lazy initialize : LB_AVIS_CAP Date de création
+	 * Getter de la liste avec un lazy initialize : LB_AVIS_CAP Date de crÃ©ation
 	 * : (21/11/11 09:55:36)
 	 * 
 	 */
@@ -1663,7 +1663,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_AVIS_CAP_CLASSE Date de création : (21/11/11
+	 * Setter de la liste: LB_AVIS_CAP_CLASSE Date de crÃ©ation : (21/11/11
 	 * 09:55:36)
 	 * 
 	 */
@@ -1672,7 +1672,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	}
 
 	/**
-	 * Getter de la liste avec un lazy initialize : LB_FILIERE Date de création
+	 * Getter de la liste avec un lazy initialize : LB_FILIERE Date de crÃ©ation
 	 * : (28/11/11)
 	 * 
 	 */
@@ -1683,7 +1683,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_FILIERE Date de création : (28/11/11)
+	 * Setter de la liste: LB_FILIERE Date de crÃ©ation : (28/11/11)
 	 * 
 	 */
 	private void setLB_FILIERE(String[] newLB_FILIERE) {
@@ -1691,7 +1691,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_FILIERE Date de création
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_FILIERE Date de crÃ©ation
 	 * : (28/11/11)
 	 * 
 	 */
@@ -1700,8 +1700,8 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_FILIERE_SELECT Date de création : (28/11/11)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_FILIERE_SELECT Date de crÃ©ation : (28/11/11)
 	 * 
 	 */
 	public String getNOM_LB_FILIERE_SELECT() {
@@ -1709,8 +1709,8 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_FILIERE Date de création : (28/11/11 09:55:36)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_FILIERE Date de crÃ©ation : (28/11/11 09:55:36)
 	 * 
 	 */
 	public String[] getVAL_LB_FILIERE() {
@@ -1718,8 +1718,8 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_FILIERE Date de création : (28/11/11)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_FILIERE Date de crÃ©ation : (28/11/11)
 	 * 
 	 */
 	public String getVAL_LB_FILIERE_SELECT() {
@@ -1752,7 +1752,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_AGENT Date de
-	 * création : (02/08/11 09:40:42)
+	 * crÃ©ation : (02/08/11 09:40:42)
 	 * 
 	 */
 	public String getNOM_ST_AGENT() {
@@ -1760,8 +1760,8 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_AGENT Date de
-	 * création : (02/08/11 09:40:42)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_AGENT Date de
+	 * crÃ©ation : (02/08/11 09:40:42)
 	 * 
 	 */
 	public String getVAL_ST_AGENT() {
@@ -1770,7 +1770,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_RECHERCHER_AGENT Date de
-	 * création : (02/08/11 09:42:00)
+	 * crÃ©ation : (02/08/11 09:42:00)
 	 * 
 	 */
 	public String getNOM_PB_RECHERCHER_AGENT() {
@@ -1778,14 +1778,14 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (02/08/11 09:42:00)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (02/08/11 09:42:00)
 	 * 
 	 */
 	public boolean performPB_RECHERCHER_AGENT(HttpServletRequest request) throws Exception {
-		// On met l'agent courant en var d'activité
+		// On met l'agent courant en var d'activitÃ©
 		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new Agent());
 
 		setStatut(STATUT_RECHERCHER_AGENT, true);
@@ -1794,7 +1794,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMER_RECHERCHER_AGENT
-	 * Date de création : (13/07/11 09:49:02)
+	 * Date de crÃ©ation : (13/07/11 09:49:02)
 	 * 
 	 * 
 	 */
@@ -1803,21 +1803,21 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (25/03/03 15:33:11)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (25/03/03 15:33:11)
 	 * 
 	 */
 	public boolean performPB_SUPPRIMER_RECHERCHER_AGENT(HttpServletRequest request) throws Exception {
-		// On enlève l'agent selectionnée
+		// On enleve l'agent selectionnÃ©e
 		addZone(getNOM_ST_AGENT(), Const.CHAINE_VIDE);
 		return true;
 	}
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_SERVICE Date de
-	 * création : (13/09/11 11:47:15)
+	 * crÃ©ation : (13/09/11 11:47:15)
 	 * 
 	 */
 	public String getNOM_EF_SERVICE() {
@@ -1825,8 +1825,8 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_SERVICE Date de création : (13/09/11 11:47:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_SERVICE Date de crÃ©ation : (13/09/11 11:47:15)
 	 * 
 	 */
 	public String getVAL_EF_SERVICE() {
@@ -1835,7 +1835,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMER_RECHERCHER_SERVICE
-	 * Date de création : (13/07/11 09:49:02)
+	 * Date de crÃ©ation : (13/07/11 09:49:02)
 	 * 
 	 * 
 	 */
@@ -1844,23 +1844,23 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (13/07/11 09:49:02)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (13/07/11 09:49:02)
 	 * 
 	 * 
 	 */
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (25/03/03 15:33:11)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (25/03/03 15:33:11)
 	 * 
 	 */
 	public boolean performPB_SUPPRIMER_RECHERCHER_SERVICE(HttpServletRequest request) throws Exception {
-		// On enlève le service selectionnée
+		// On enleve le service selectionnÃ©e
 		addZone(getNOM_ST_CODE_SERVICE(), Const.CHAINE_VIDE);
 		addZone(getNOM_EF_SERVICE(), Const.CHAINE_VIDE);
 		return true;
@@ -1868,7 +1868,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_CODE_SERVICE Date de
-	 * création : (13/09/11 08:45:29)
+	 * crÃ©ation : (13/09/11 08:45:29)
 	 * 
 	 */
 	public String getNOM_ST_CODE_SERVICE() {
@@ -1876,8 +1876,8 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_CODE_SERVICE
-	 * Date de création : (13/09/11 08:45:29)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_CODE_SERVICE
+	 * Date de crÃ©ation : (13/09/11 08:45:29)
 	 * 
 	 */
 	public String getVAL_ST_CODE_SERVICE() {
@@ -1894,7 +1894,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	}
 
 	/**
-	 * Met à jour la liste des services.
+	 * Met a jour la liste des services.
 	 * 
 	 * @param listeServices
 	 */
@@ -1903,7 +1903,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	}
 
 	/**
-	 * Retourne une hashTable de la hiérarchie des Service selon le code
+	 * Retourne une hashTable de la hierarchie des Service selon le code
 	 * Service.
 	 * 
 	 * @return hTree
@@ -1930,7 +1930,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_CODE_CAP_JOB Date de
-	 * création : (21/11/11 09:55:36)
+	 * crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_ST_CODE_CAP_JOB(int i) {
@@ -1938,8 +1938,8 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_CODE_CAP_JOB
-	 * Date de création : (21/11/11 09:55:36)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_CODE_CAP_JOB
+	 * Date de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_ST_CODE_CAP_JOB(int i) {
@@ -1948,7 +1948,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_CADRE_EMPLOI_JOB
-	 * Date de création : (21/11/11 09:55:36)
+	 * Date de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_ST_CADRE_EMPLOI_JOB(int i) {
@@ -1956,8 +1956,8 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
-	 * ST_CADRE_EMPLOI_JOB Date de création : (21/11/11 09:55:36)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone :
+	 * ST_CADRE_EMPLOI_JOB Date de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_ST_CADRE_EMPLOI_JOB(int i) {
@@ -1966,7 +1966,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_USER_JOB Date de
-	 * création : (21/11/11 09:55:36)
+	 * crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_ST_USER_JOB(int i) {
@@ -1974,8 +1974,8 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_USER_JOB Date
-	 * de création : (21/11/11 09:55:36)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_USER_JOB Date
+	 * de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_ST_USER_JOB(int i) {
@@ -1984,7 +1984,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_DATE_JOB Date de
-	 * création : (21/11/11 09:55:36)
+	 * crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_ST_DATE_JOB(int i) {
@@ -1992,8 +1992,8 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE_JOB Date
-	 * de création : (21/11/11 09:55:36)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_DATE_JOB Date
+	 * de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_ST_DATE_JOB(int i) {
@@ -2002,7 +2002,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_ETAT_JOB Date de
-	 * création : (21/11/11 09:55:36)
+	 * crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_ST_ETAT_JOB(int i) {
@@ -2010,8 +2010,8 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ETAT_JOB Date
-	 * de création : (21/11/11 09:55:36)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_ETAT_JOB Date
+	 * de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_ST_ETAT_JOB(int i) {
@@ -2020,7 +2020,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_TYPE_JOB Date de
-	 * création : (21/11/11 09:55:36)
+	 * crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_ST_TYPE_JOB(int i) {
@@ -2028,8 +2028,8 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_TYPE_JOB Date
-	 * de création : (21/11/11 09:55:36)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_TYPE_JOB Date
+	 * de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_ST_TYPE_JOB(int i) {
@@ -2038,7 +2038,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_TYPE_JOB Date de
-	 * création : (21/11/11 09:55:36)
+	 * crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_ST_JOB_ID(int i) {
@@ -2046,8 +2046,8 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_TYPE_JOB Date
-	 * de création : (21/11/11 09:55:36)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_TYPE_JOB Date
+	 * de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_ST_JOB_ID(int i) {
@@ -2083,13 +2083,13 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 					cadre.getIdCadreEmploi(), true, "PDF");
 			if (!saveFileToRemoteFileSystem(fileAsBytes, repPartage, destination)) {
 				// "ERR182",
-				// "Une erreur est survenue dans la génération du tableau. Merci de contacter le responsable du projet."
+				// "Une erreur est survenue dans la gÃ©nÃ©ration du tableau. Merci de contacter le responsable du projet."
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR182"));
 				return false;
 			}
 		} catch (Exception e) {
 			// "ERR182",
-			// "Une erreur est survenue dans la génération du tableau. Merci de contacter le responsable du projet."
+			// "Une erreur est survenue dans la gÃ©nÃ©ration du tableau. Merci de contacter le responsable du projet."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR182"));
 			return false;
 		}
@@ -2097,8 +2097,8 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la case à cocher sélectionnée pour la JSP : CK_TAB
-	 * Date de création : (21/11/11 09:55:36)
+	 * Retourne le nom de la case Ã  cocher sÃ©lectionnÃ©e pour la JSP : CK_TAB
+	 * Date de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_CK_TAB_VDN(int i) {
@@ -2106,8 +2106,8 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur de la case à cocher à afficher par la JSP pour la case
-	 * à cocher : CK_TAB Date de création : (21/11/11 09:55:36)
+	 * Retourne la valeur de la case Ã  cocher Ã  afficher par la JSP pour la case
+	 * a cocher : CK_TAB Date de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_CK_TAB_VDN(int i) {
@@ -2115,8 +2115,8 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la case à cocher sélectionnée pour la JSP : CK_EAE
-	 * Date de création : (21/11/11 09:55:36)
+	 * Retourne le nom de la case Ã  cocher sÃ©lectionnÃ©e pour la JSP : CK_EAE
+	 * Date de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_CK_EAE_VDN(int i) {
@@ -2124,8 +2124,8 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur de la case à cocher à afficher par la JSP pour la case
-	 * à cocher : CK_EAE Date de création : (21/11/11 09:55:36)
+	 * Retourne la valeur de la case Ã  cocher Ã  afficher par la JSP pour la case
+	 * a cocher : CK_EAE Date de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_CK_EAE_VDN(int i) {

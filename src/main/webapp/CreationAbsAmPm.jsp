@@ -1,7 +1,8 @@
+<%@ page contentType="text/html; charset=UTF-8" %> 
 					<table>
 	            		<tr>
 	            			<td width="80px">
-                        		<span class="sigp2Mandatory">Date début : </span>
+                        		<span class="sigp2Mandatory">Date dÃ©but : </span>
 	            			</td>
 	            			<td>
 		                        <input id="<%=process.getNOM_ST_DATE_DEBUT()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_DEBUT()%>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_DEBUT()%>" >

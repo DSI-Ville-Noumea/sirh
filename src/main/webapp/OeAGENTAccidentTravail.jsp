@@ -1,4 +1,4 @@
-<!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@ page contentType="text/html; charset=UTF-8" %> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <%@page import="nc.mairie.utils.MairieUtils"%>
 <%@page import="nc.mairie.enums.EnumTypeDroit"%>
 <HTML>
@@ -12,13 +12,13 @@
 		<SCRIPT type="text/javascript" src="js/GestionCalendrier.js"></SCRIPT> <SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT>
 		
 		<SCRIPT language="JavaScript">
-		//afin de sélectionner un élément dans une liste
+		//afin de sÃ©lectionner un Ã©lÃ©ment dans une liste
 		function executeBouton(nom)
 		{
 			document.formu.elements[nom].click();
 		}
 
-		// afin de mettre le focus sur une zone précise
+		// afin de mettre le focus sur une zone prÃ©cise
 		function setfocus(nom)
 		{
 		if (document.formu.elements[nom] != null)
@@ -43,7 +43,7 @@
 		
 		</SCRIPT>
 		
-		<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	</HEAD>
 	<jsp:useBean class="nc.mairie.gestionagent.process.agent.OeAGENTAccidentTravail" id="process" scope="session"></jsp:useBean>
 	<BODY bgcolor="#FFFFFF" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="window.parent.frames['refAgent'].location.reload();" >
@@ -64,7 +64,7 @@
 								<td align="center">Date de rechute</td>
 								<td align="center">Nbr jour(s) IIT</td>
 								<td align="left">Type</td>
-								<td align="left">Siège des lésions</td>
+								<td align="left">SiÃ¨ge des lÃ©sions</td>
 								<td align="center">Nb docs</td>
 							</tr>
 							<%
@@ -119,7 +119,7 @@
 				</tr>
 				<tr>
 					<td>
-						<span class="sigp2">Durée ITT (jours) :</span>
+						<span class="sigp2">DurÃ©e ITT (jours) :</span>
 					</td>
 					<td>
 						<INPUT class="sigp2-saisie" maxlength="5" name="<%= process.getNOM_EF_NB_JOUR_IIT() %>" size="5" type="text" value="<%= process.getVAL_EF_NB_JOUR_IIT() %>">
@@ -137,7 +137,7 @@
 				</tr>
 				<tr>
 					<td>
-						<span class="sigp2Mandatory">Siège des lésions :</span> 
+						<span class="sigp2Mandatory">SiÃ¨ge des lÃ©sions :</span> 
 					</td>
 					<td>
 						<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_SIEGE_LESION() %>">
@@ -254,13 +254,13 @@
 		    <span class="sigp2" style="width:150px">Date de rechute : </span>
 			<span class="sigp2-saisie"><%=process.getVAL_EF_DATE_INITIALE()%></span>
 			<BR/>
-			<span class="sigp2" style="width:150px">Durée ITT(jours) : </span>
+			<span class="sigp2" style="width:150px">DurÃ©e ITT(jours) : </span>
 			<span class="sigp2-saisie"><%=process.getVAL_EF_NB_JOUR_IIT()%></span>
 			<BR/>
 			<span class="sigp2" style="width:150px">Type : </span>
 			<span class="sigp2-saisie"><%=process.getVAL_ST_TYPE()%></span>
 			<BR/>
-			<span class="sigp2" style="width:150px">Siège des lésions : </span>
+			<span class="sigp2" style="width:150px">SiÃ¨ge des lÃ©sions : </span>
 			<span class="sigp2-saisie"><%=process.getVAL_ST_SIEGE_LESION()%></span>
 		</div>
 		<%} %>

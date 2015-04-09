@@ -59,7 +59,7 @@ import org.springframework.context.ApplicationContext;
 import flexjson.JSONSerializer;
 
 /**
- * Process OeAGENTAccidentTravail Date de création : (30/06/11 13:56:32)
+ * Process OeAGENTAccidentTravail Date de crÃ©ation : (30/06/11 13:56:32)
  * 
  */
 public class OeABSVisualisation extends BasicProcess {
@@ -137,18 +137,18 @@ public class OeABSVisualisation extends BasicProcess {
 		VariableGlobale.ajouter(request, "PROCESS_MEMORISE", this);
 
 		// ----------------------------------//
-		// Vérification des droits d'accès. //
+		// VÃ©rification des droits d'acces. //
 		// ----------------------------------//
 		if (MairieUtils.estInterdit(request, getNomEcran())) {
 			// "ERR190",
-			// "Opération impossible. Vous ne disposez pas des droits d'accès à cette option."
+			// "Operation impossible. Vous ne disposez pas des droits d'acces a cette option."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
 
 		initialiseDao();
 
-		// Initialisation des listes déroulantes
+		// Initialisation des listes deroulantes
 		initialiseListeDeroulante();
 
 		if (etatStatut() == STATUT_RECHERCHER_AGENT_DEMANDE) {
@@ -270,7 +270,7 @@ public class OeABSVisualisation extends BasicProcess {
 					continue;
 				}
 
-				// recherche du supérieur
+				// recherche du supÃ©rieur
 				String codeService = serv.getCodService();
 				while (codeService.endsWith("A")) {
 					codeService = codeService.substring(0, codeService.length() - 1);
@@ -289,7 +289,7 @@ public class OeABSVisualisation extends BasicProcess {
 			setListeHeure(new ArrayList<String>());
 			int heureDeb = 6; // heures depart
 			int minuteDeb = 0; // minutes debut
-			int diffFinDeb = 14 * 60; // différence en minute entre le début et
+			int diffFinDeb = 14 * 60; // difference en minute entre le dÃ©but et
 										// la
 										// fin
 			int interval = 15; // interval en minute
@@ -447,7 +447,7 @@ public class OeABSVisualisation extends BasicProcess {
 				return performPB_VALIDER_MOTIF_EN_ATTENTE(request);
 			}
 		}
-		// Si TAG INPUT non géré par le process
+		// Si TAG INPUT non gÃ©rÃ© par le process
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
@@ -469,7 +469,7 @@ public class OeABSVisualisation extends BasicProcess {
 	}
 
 	public boolean performPB_RECHERCHER_AGENT_DEMANDE(HttpServletRequest request) throws Exception {
-		// On met l'agent courant en var d'activité
+		// On met l'agent courant en var d'activitÃ©
 		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new Agent());
 		setStatut(STATUT_RECHERCHER_AGENT_DEMANDE, true);
 		return true;
@@ -480,7 +480,7 @@ public class OeABSVisualisation extends BasicProcess {
 	}
 
 	public boolean performPB_SUPPRIMER_RECHERCHER_AGENT_DEMANDE(HttpServletRequest request) throws Exception {
-		// On enlève l'agent selectionnée
+		// On enleve l'agent selectionnÃ©e
 		addZone(getNOM_ST_AGENT_DEMANDE(), Const.CHAINE_VIDE);
 		return true;
 	}
@@ -506,7 +506,7 @@ public class OeABSVisualisation extends BasicProcess {
 	}
 
 	public boolean performPB_SUPPRIMER_RECHERCHER_SERVICE(HttpServletRequest request) throws Exception {
-		// On enlève le service selectionnée
+		// On enleve le service selectionnÃ©e
 		addZone(getNOM_ST_CODE_SERVICE(), Const.CHAINE_VIDE);
 		addZone(getNOM_EF_SERVICE(), Const.CHAINE_VIDE);
 		return true;
@@ -627,10 +627,10 @@ public class OeABSVisualisation extends BasicProcess {
 		List<String> idAgentService = new ArrayList<>();
 		String sigleService = getVAL_EF_SERVICE().toUpperCase();
 		if (!sigleService.equals(Const.CHAINE_VIDE) && null == idAgentDemande) {
-			// on cherche le code service associé
+			// on cherche le code service associÃ©
 			Service siserv = Service.chercherServiceBySigle(getTransaction(), sigleService);
 			String codeService = siserv.getCodService();
-			// Récupération des agents
+			// RÃ©cupÃ©ration des agents
 			// on recupere les sous-service du service selectionne
 			ArrayList<String> listeSousService = null;
 			if (!codeService.equals(Const.CHAINE_VIDE)) {
@@ -654,7 +654,7 @@ public class OeABSVisualisation extends BasicProcess {
 
 		if (idAgentService.size() >= 1000) {
 			// "ERR501",
-			// "La sélection des filtres engendre plus de 1000 agents. Merci de réduire la sélection."
+			// "La sÃ©lection des filtres engendre plus de 1000 agents. Merci de reduire la sÃ©lection."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR501"));
 			return false;
 		}
@@ -676,10 +676,10 @@ public class OeABSVisualisation extends BasicProcess {
 				return false;
 			}
 			if (null == listServiceRH || listServiceRH.isEmpty()) {
-				getTransaction().declarerErreur("Le gestionnaire saisi n'est pas un référent RH.");
+				getTransaction().declarerErreur("Le gestionnaire saisi n'est pas un rÃ©fÃ©rent RH.");
 				return false;
 			}
-			// Récupération des agents
+			// RÃ©cupÃ©ration des agents
 			// on recupere les sous-service du service selectionne
 			List<String> listeService = new ArrayList<String>();
 			for (ReferentRh service : listServiceRH) {
@@ -721,7 +721,7 @@ public class OeABSVisualisation extends BasicProcess {
 		afficheListeAbsence();
 		if (299 < listeDemande.size()) {
 			getTransaction().declarerErreur(
-					"Attention, les demandes sont limitées à 300 résultats. Utiliser les filtres.");
+					"Attention, les demandes sont limitÃ©es a 300 rÃ©sultats. Utiliser les filtres.");
 		}
 		setTypeFiltre("GLOBAL");
 
@@ -829,12 +829,12 @@ public class OeABSVisualisation extends BasicProcess {
 		// on controle que le service saisie est bien un service
 		String sigleService = getVAL_EF_SERVICE().toUpperCase();
 		if (!sigleService.equals(Const.CHAINE_VIDE)) {
-			// on cherche le code service associé
+			// on cherche le code service associÃ©
 			Service siserv = Service.chercherServiceBySigle(getTransaction(), sigleService);
 			if (getTransaction().isErreur() || siserv == null || siserv.getCodService() == null) {
 				getTransaction().traiterErreur();
 				// ERR502", "Le sigle service saisie ne permet pas de trouver le
-				// service associé."
+				// service associÃ©."
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR502"));
 				return false;
 
@@ -933,7 +933,7 @@ public class OeABSVisualisation extends BasicProcess {
 
 	public boolean performPB_RECHERCHER_AGENT_CREATION(HttpServletRequest request) throws Exception {
 
-		// On met l'agent courant en var d'activité
+		// On met l'agent courant en var d'activitÃ©
 		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new Agent());
 		setStatut(STATUT_RECHERCHER_AGENT_CREATION, true);
 		return true;
@@ -998,7 +998,7 @@ public class OeABSVisualisation extends BasicProcess {
 
 			addZone(getNOM_ST_ACTION(), ACTION_CREATION_DEMANDE);
 		} else {
-			getTransaction().declarerErreur("Cette famille ne peut être saisie dans SIRH.");
+			getTransaction().declarerErreur("Cette famille ne peut Ãªtre saisie dans SIRH.");
 		}
 
 		setStatut(STATUT_MEME_PROCESS);
@@ -1475,7 +1475,7 @@ public class OeABSVisualisation extends BasicProcess {
 		// on recupere la demande
 		DemandeDto dem = getListeAbsence().get(idDemande);
 		Agent ag = getAgentDao().chercherAgent(dem.getAgentWithServiceDto().getIdAgent());
-		// Si ASA ou CONGES_EXCEP et etat=validé ou prise,
+		// Si ASA ou CONGES_EXCEP et etat=validÃ© ou prise,
 		// alors un motif est obligatoire
 		if (((dem.getGroupeAbsence().getIdRefGroupeAbsence() == EnumTypeGroupeAbsence.AS.getValue() || dem
 				.getGroupeAbsence().getIdRefGroupeAbsence() == EnumTypeGroupeAbsence.CONGES_EXCEP.getValue()) && (dem
@@ -1498,7 +1498,7 @@ public class OeABSVisualisation extends BasicProcess {
 			addZone(getNOM_ST_ACTION(), ACTION_MOTIF_EN_ATTENTE);
 			return false;
 		} else {
-			getTransaction().declarerErreur("Cette demande ne peut être mise en attente.");
+			getTransaction().declarerErreur("Cette demande ne peut Ãªtre mise en attente.");
 			return false;
 		}
 	}
@@ -1840,7 +1840,7 @@ public class OeABSVisualisation extends BasicProcess {
 						.parseInt(getVAL_LB_HEURE_DEBUT_SELECT()) : -1);
 				if (indiceHeureDebut < 0) {
 					// "ERR002", "La zone @ est obligatoire."
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "heure de début"));
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "heure de dÃ©but"));
 					return false;
 				}
 				String heureDebut = getListeHeure().get(Integer.valueOf(getVAL_LB_HEURE_DEBUT_SELECT()));
@@ -1850,7 +1850,7 @@ public class OeABSVisualisation extends BasicProcess {
 			// /////////////// RADIO BOUTON DEBUT ////////////////////
 			if (type.getTypeSaisiDto().isChkDateDebut()) {
 				if (null == getVAL_RG_DEBUT_MAM() || Const.CHAINE_VIDE.equals(getVAL_RG_DEBUT_MAM())) {
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "matin ou après-midi"));
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "matin ou aprÃ¨s-midi"));
 					return false;
 				}
 				dto.setDateDebutAM(getZone(getNOM_RG_DEBUT_MAM()).equals(getNOM_RB_M()));
@@ -1861,7 +1861,7 @@ public class OeABSVisualisation extends BasicProcess {
 				if (getVAL_ST_DUREE().equals(Const.CHAINE_VIDE)
 						&& getVAL_ST_DUREE_MIN().equals(Const.CHAINE_VIDE)) {
 					// "ERR002","La zone @ est obligatoire."
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "durée"));
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "durÃ©e"));
 					return false;
 				}
 				String dureeHeure = null != getVAL_ST_DUREE() ? getVAL_ST_DUREE() : "0";
@@ -1895,7 +1895,7 @@ public class OeABSVisualisation extends BasicProcess {
 			// /////////////// RADIO BOUTON FIN ////////////////////
 			if (type.getTypeSaisiDto().isChkDateFin()) {
 				if (null == getVAL_RG_FIN_MAM() || Const.CHAINE_VIDE.equals(getVAL_RG_FIN_MAM())) {
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "matin ou après-midi"));
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "matin ou aprÃ¨s-midi"));
 					return false;
 				}
 				dto.setDateFinAM(getZone(getNOM_RG_FIN_MAM()).equals(getNOM_RB_M()));
@@ -1940,7 +1940,7 @@ public class OeABSVisualisation extends BasicProcess {
 			// /////////////// RADIO BOUTON DEBUT ////////////////////
 			if (type.getTypeSaisiCongeAnnuelDto().isChkDateDebut()) {
 				if (null == getVAL_RG_DEBUT_MAM() || Const.CHAINE_VIDE.equals(getVAL_RG_DEBUT_MAM())) {
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "matin ou après-midi"));
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "matin ou aprÃ¨s-midi"));
 					return false;
 				}
 				dto.setDateDebutAM(getZone(getNOM_RG_DEBUT_MAM()).equals(getNOM_RB_M()));
@@ -1958,7 +1958,7 @@ public class OeABSVisualisation extends BasicProcess {
 			// /////////////// RADIO BOUTON FIN ////////////////////
 			if (type.getTypeSaisiCongeAnnuelDto().isChkDateFin()) {
 				if (null == getVAL_RG_FIN_MAM() || Const.CHAINE_VIDE.equals(getVAL_RG_FIN_MAM())) {
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "matin ou après-midi"));
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "matin ou aprÃ¨s-midi"));
 					return false;
 				}
 				dto.setDateFinAM(getZone(getNOM_RG_FIN_MAM()).equals(getNOM_RB_M()));
@@ -2179,10 +2179,10 @@ public class OeABSVisualisation extends BasicProcess {
 				return false;
 			}
 			if (null == listServiceRH || listServiceRH.isEmpty()) {
-				getTransaction().declarerErreur("Le gestionnaire saisi n'est pas un référent RH.");
+				getTransaction().declarerErreur("Le gestionnaire saisi n'est pas un rÃ©fÃ©rent RH.");
 				return false;
 			}
-			// Récupération des agents
+			// RÃ©cupÃ©ration des agents
 			// on recupere les sous-service du service selectionne
 			List<String> listeService = new ArrayList<String>();
 			for (ReferentRh service : listServiceRH) {

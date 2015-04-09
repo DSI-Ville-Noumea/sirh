@@ -23,7 +23,7 @@ import nc.mairie.utils.MessageUtils;
 import org.springframework.context.ApplicationContext;
 
 /**
- * Process OePARAMETRAGERecrutement Date de création : (14/09/11 13:52:54)
+ * Process OePARAMETRAGERecrutement Date de crÃ©ation : (14/09/11 13:52:54)
  * 
  */
 public class OePARAMETRAGEJour extends BasicProcess {
@@ -33,9 +33,9 @@ public class OePARAMETRAGEJour extends BasicProcess {
 	private static final long serialVersionUID = 1L;
 
 	public String focus = null;
-	public String ACTION_VISUALISATION = "Consultation d'une année.";
-	public String ACTION_MODIFICATION = "Modification d'une année.";
-	public String ACTION_CREATION_JOUR = "Création d'un jour.";
+	public String ACTION_VISUALISATION = "Consultation d'une annÃ©e.";
+	public String ACTION_MODIFICATION = "Modification d'une annÃ©e.";
+	public String ACTION_CREATION_JOUR = "CrÃ©ation d'un jour.";
 	public String ACTION_MODIFICATION_JOUR = "Modification d'un jour.";
 	public String ACTION_SUPPRESSION_JOUR = "Suppression d'un jour.";
 
@@ -52,10 +52,10 @@ public class OePARAMETRAGEJour extends BasicProcess {
 	private TypeJourFerieDao typeJourFerieDao;
 
 	/**
-	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones Ã  afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
-	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
-	 * addZone(getNOMxxx, String); Date de création : (14/09/11 13:52:54)
+	 * doivent avoir les Fields PUBLIC Utilisation de la mÃ©thode
+	 * addZone(getNOMxxx, String); Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public void initialiseZones(HttpServletRequest request) throws Exception {
@@ -63,11 +63,11 @@ public class OePARAMETRAGEJour extends BasicProcess {
 		VariableGlobale.ajouter(request, "PROCESS_MEMORISE", this);
 
 		// ----------------------------------//
-		// Vérification des droits d'accès. //
+		// VÃ©rification des droits d'acces. //
 		// ----------------------------------//
 		if (MairieUtils.estInterdit(request, getNomEcran())) {
 			// "ERR190",
-			// "Opération impossible. Vous ne disposez pas des droits d'accès à cette option."
+			// "Operation impossible. Vous ne disposez pas des droits d'acces a cette option."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
@@ -126,7 +126,7 @@ public class OePARAMETRAGEJour extends BasicProcess {
 	}
 
 	/**
-	 * Constructeur du process OePARAMETRAGEAvancement. Date de création :
+	 * Constructeur du process OePARAMETRAGEAvancement. Date de crÃ©ation :
 	 * (14/09/11 13:52:54)
 	 * 
 	 */
@@ -135,8 +135,8 @@ public class OePARAMETRAGEJour extends BasicProcess {
 	}
 
 	/**
-	 * Méthode appelée par la servlet qui aiguille le traitement : en fonction
-	 * du bouton de la JSP Date de création : (14/09/11 13:52:54)
+	 * mÃ©thode appelee par la servlet qui aiguille le traitement : en fonction
+	 * du bouton de la JSP Date de crÃ©ation : (14/09/11 13:52:54)
 	 * 
 	 */
 	public boolean recupererStatut(HttpServletRequest request) throws Exception {
@@ -193,14 +193,14 @@ public class OePARAMETRAGEJour extends BasicProcess {
 			}
 
 		}
-		// Si TAG INPUT non géré par le process
+		// Si TAG INPUT non gÃ©rÃ© par le process
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
 
 	/**
-	 * Retourne le nom de la JSP du process Zone à utiliser dans un champ caché
-	 * dans chaque formulaire de la JSP. Date de création : (14/09/11 15:20:21)
+	 * Retourne le nom de la JSP du process Zone a utiliser dans un champ cache
+	 * dans chaque formulaire de la JSP. Date de crÃ©ation : (14/09/11 15:20:21)
 	 * 
 	 */
 	public String getJSP() {
@@ -208,8 +208,8 @@ public class OePARAMETRAGEJour extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de l'écran (notamment pour déterminer les droits
-	 * associés).
+	 * Retourne le nom de l'Ã©cran (notamment pour dÃ©terminer les droits
+	 * associÃ©s).
 	 */
 	public String getNomEcran() {
 		return "ECR-PARAM-JOUR";
@@ -231,7 +231,7 @@ public class OePARAMETRAGEJour extends BasicProcess {
 
 	/**
 	 * @param focus
-	 *            focus à définir.
+	 *            focus Ã  dÃ©finir.
 	 */
 	public void setFocus(String focus) {
 		this.focus = focus;
@@ -255,7 +255,7 @@ public class OePARAMETRAGEJour extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_ANNEE Date de
-	 * création : (18/08/11 10:21:15)
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_ANNEE(int i) {
@@ -263,8 +263,8 @@ public class OePARAMETRAGEJour extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ANNEE Date de
-	 * création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_ANNEE Date de
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_ANNEE(int i) {
@@ -273,7 +273,7 @@ public class OePARAMETRAGEJour extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_VISUALISATION Date de
-	 * création : (29/09/11 10:03:38)
+	 * crÃ©ation : (29/09/11 10:03:38)
 	 * 
 	 */
 	public String getNOM_PB_VISUALISATION(int i) {
@@ -281,10 +281,10 @@ public class OePARAMETRAGEJour extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (29/09/11 10:03:38)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (29/09/11 10:03:38)
 	 * 
 	 */
 	public boolean performPB_VISUALISATION(HttpServletRequest request, int indiceEltAConsulter) throws Exception {
@@ -313,7 +313,7 @@ public class OePARAMETRAGEJour extends BasicProcess {
 		for (int i = 0; i < getListeJourFerie().size(); i++) {
 			JourFerie jour = getListeJourFerie().get(i);
 			addZone(getNOM_ST_DATE_JOUR(i), sdf.format(jour.getDateJour()));
-			addZone(getNOM_ST_TYPE_JOUR(i), jour.getIdTypeJour().toString().equals("1") ? "Férié" : "Chômé");
+			addZone(getNOM_ST_TYPE_JOUR(i), jour.getIdTypeJour().toString().equals("1") ? "FÃ©riÃ©" : "chÃ´mÃ©");
 			addZone(getNOM_ST_DESCRIPTION_JOUR(i), jour.getDescription());
 		}
 		return true;
@@ -324,10 +324,10 @@ public class OePARAMETRAGEJour extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (16/08/11 15:48:02)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	public boolean performPB_MODIFIER(HttpServletRequest request, int indiceEltAModifier) throws Exception {
@@ -357,19 +357,19 @@ public class OePARAMETRAGEJour extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (16/08/11 15:48:02)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	public boolean performPB_CREER_ANNEE(HttpServletRequest request) throws Exception {
-		// on duplique tous les jours fériés pour l'année suivante
-		// on recupere la derniere année
+		// on duplique tous les jours fÃ©riÃ©s pour l'annÃ©e suivante
+		// on recupere la derniere annÃ©e
 		String annee = getListeAnnee().get(0);
 
-		// on cherche tous les jours fériés de cette année là
-		TypeJourFerie typeJour = getTypeJourFerieDao().chercherTypeJourByLibelle("Férié");
+		// on cherche tous les jours fÃ©riÃ©s de cette annÃ©e la
+		TypeJourFerie typeJour = getTypeJourFerieDao().chercherTypeJourByLibelle("FÃ©riÃ©");
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		ArrayList<JourFerie> listeExistante = getJourFerieDao().listerJourByAnneeWithType(annee,
 				typeJour.getIdTypeJourFerie());
@@ -390,7 +390,7 @@ public class OePARAMETRAGEJour extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_ACTION Date de
-	 * création : (05/09/11 11:39:24)
+	 * crÃ©ation : (05/09/11 11:39:24)
 	 * 
 	 */
 	public String getNOM_ST_ACTION() {
@@ -398,8 +398,8 @@ public class OePARAMETRAGEJour extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACTION Date de
-	 * création : (05/09/11 11:39:24)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_ACTION Date de
+	 * crÃ©ation : (05/09/11 11:39:24)
 	 * 
 	 */
 	public String getVAL_ST_ACTION() {
@@ -416,7 +416,7 @@ public class OePARAMETRAGEJour extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_DATE_JOUR Date de
-	 * création : (18/08/11 10:21:15)
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_DATE_JOUR(int i) {
@@ -424,8 +424,8 @@ public class OePARAMETRAGEJour extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE_JOUR Date
-	 * de création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_DATE_JOUR Date
+	 * de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_DATE_JOUR(int i) {
@@ -434,7 +434,7 @@ public class OePARAMETRAGEJour extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_TYPE_JOUR Date de
-	 * création : (18/08/11 10:21:15)
+	 * crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_TYPE_JOUR(int i) {
@@ -442,8 +442,8 @@ public class OePARAMETRAGEJour extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_TYPE_JOUR Date
-	 * de création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_TYPE_JOUR Date
+	 * de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_TYPE_JOUR(int i) {
@@ -452,7 +452,7 @@ public class OePARAMETRAGEJour extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_DESCRIPTION_JOUR
-	 * Date de création : (18/08/11 10:21:15)
+	 * Date de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getNOM_ST_DESCRIPTION_JOUR(int i) {
@@ -460,8 +460,8 @@ public class OePARAMETRAGEJour extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
-	 * ST_DESCRIPTION_JOUR Date de création : (18/08/11 10:21:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone :
+	 * ST_DESCRIPTION_JOUR Date de crÃ©ation : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_DESCRIPTION_JOUR(int i) {
@@ -473,10 +473,10 @@ public class OePARAMETRAGEJour extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (16/08/11 15:48:02)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	public boolean performPB_MODIFIER_JOUR(HttpServletRequest request, int indiceEltAModifier) throws Exception {
@@ -510,10 +510,10 @@ public class OePARAMETRAGEJour extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (16/08/11 15:48:02)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	public boolean performPB_ANNULER(HttpServletRequest request) throws Exception {
@@ -529,7 +529,7 @@ public class OePARAMETRAGEJour extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : ST_DATE_JOUR Date de
-	 * création : (05/09/11 16:01:29)
+	 * crÃ©ation : (05/09/11 16:01:29)
 	 * 
 	 */
 	public String getNOM_ST_DATE_JOUR() {
@@ -537,8 +537,8 @@ public class OePARAMETRAGEJour extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * ST_DATE_JOUR Date de création : (05/09/11 16:01:29)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * ST_DATE_JOUR Date de crÃ©ation : (05/09/11 16:01:29)
 	 * 
 	 */
 	public String getVAL_ST_DATE_JOUR() {
@@ -547,7 +547,7 @@ public class OePARAMETRAGEJour extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : ST_DESCRIPTION Date de
-	 * création : (05/09/11 16:01:29)
+	 * crÃ©ation : (05/09/11 16:01:29)
 	 * 
 	 */
 	public String getNOM_ST_DESCRIPTION() {
@@ -555,8 +555,8 @@ public class OePARAMETRAGEJour extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * ST_DESCRIPTION Date de création : (05/09/11 16:01:29)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * ST_DESCRIPTION Date de crÃ©ation : (05/09/11 16:01:29)
 	 * 
 	 */
 	public String getVAL_ST_DESCRIPTION() {
@@ -565,7 +565,7 @@ public class OePARAMETRAGEJour extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_ACTION_JOUR Date de
-	 * création : (05/09/11 11:39:24)
+	 * crÃ©ation : (05/09/11 11:39:24)
 	 * 
 	 */
 	public String getNOM_ST_ACTION_JOUR() {
@@ -573,8 +573,8 @@ public class OePARAMETRAGEJour extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACTION_JOUR
-	 * Date de création : (05/09/11 11:39:24)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_ACTION_JOUR
+	 * Date de crÃ©ation : (05/09/11 11:39:24)
 	 * 
 	 */
 	public String getVAL_ST_ACTION_JOUR() {
@@ -586,10 +586,10 @@ public class OePARAMETRAGEJour extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (16/08/11 15:48:02)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	public boolean performPB_SUPPRIMER_JOUR(HttpServletRequest request, int indiceEltASupprimer) throws Exception {
@@ -623,10 +623,10 @@ public class OePARAMETRAGEJour extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (16/08/11 15:48:02)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (16/08/11 15:48:02)
 	 * 
 	 */
 	public boolean performPB_VALIDER(HttpServletRequest request) throws Exception {
@@ -654,7 +654,7 @@ public class OePARAMETRAGEJour extends BasicProcess {
 				return false;
 			}
 
-			// vérification de la validité du formulaire
+			// VÃ©rification de la validitÃ© du formulaire
 			if (!performControlerChamps(request))
 				return false;
 
@@ -675,7 +675,7 @@ public class OePARAMETRAGEJour extends BasicProcess {
 		} else if (getZone(getNOM_ST_ACTION_JOUR()).equals(ACTION_CREATION_JOUR)) {
 			setJourFerieCourant(new JourFerie());
 
-			// vérification de la validité du formulaire
+			// VÃ©rification de la validitÃ© du formulaire
 			if (!performControlerChamps(request))
 				return false;
 
@@ -718,7 +718,7 @@ public class OePARAMETRAGEJour extends BasicProcess {
 		// format date de debut
 		if (!Services.estUneDate(getVAL_ST_DATE_JOUR())) {
 			// "ERR007",
-			// "La date @ est incorrecte. Elle doit être au format date."
+			// "La date @ est incorrecte. Elle doit Ãªtre au format date."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR007", "du jour"));
 			return false;
 		}
@@ -757,7 +757,7 @@ public class OePARAMETRAGEJour extends BasicProcess {
 
 	/**
 	 * Getter de la liste avec un lazy initialize : LB_TYPE_JOUR Date de
-	 * création : (05/09/11 14:28:45)
+	 * crÃ©ation : (05/09/11 14:28:45)
 	 * 
 	 */
 	private String[] getLB_TYPE_JOUR() {
@@ -767,7 +767,7 @@ public class OePARAMETRAGEJour extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_TYPE_JOUR Date de création : (05/09/11 14:28:45)
+	 * Setter de la liste: LB_TYPE_JOUR Date de crÃ©ation : (05/09/11 14:28:45)
 	 * 
 	 */
 	private void setLB_TYPE_JOUR(String[] newLB_TYPE_JOUR) {
@@ -776,7 +776,7 @@ public class OePARAMETRAGEJour extends BasicProcess {
 
 	/**
 	 * Retourne le nom de la zone pour la JSP : NOM_LB_TYPE_JOUR Date de
-	 * création : (05/09/11 14:28:45)
+	 * crÃ©ation : (05/09/11 14:28:45)
 	 * 
 	 */
 	public String getNOM_LB_TYPE_JOUR() {
@@ -784,8 +784,8 @@ public class OePARAMETRAGEJour extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_TYPE_JOUR_SELECT Date de création : (05/09/11 14:28:45)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_TYPE_JOUR_SELECT Date de crÃ©ation : (05/09/11 14:28:45)
 	 * 
 	 */
 	public String getNOM_LB_TYPE_JOUR_SELECT() {
@@ -793,8 +793,8 @@ public class OePARAMETRAGEJour extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_TYPE_JOUR Date de création : (05/09/11 14:28:45)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_TYPE_JOUR Date de crÃ©ation : (05/09/11 14:28:45)
 	 * 
 	 */
 	public String[] getVAL_LB_TYPE_JOUR() {
@@ -802,8 +802,8 @@ public class OePARAMETRAGEJour extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_TYPE_JOUR Date de création : (05/09/11 14:28:45)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_TYPE_JOUR Date de crÃ©ation : (05/09/11 14:28:45)
 	 * 
 	 */
 	public String getVAL_LB_TYPE_JOUR_SELECT() {
@@ -812,7 +812,7 @@ public class OePARAMETRAGEJour extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_AJOUTER_JOUR Date de
-	 * création : (05/09/11 11:31:37)
+	 * crÃ©ation : (05/09/11 11:31:37)
 	 * 
 	 */
 	public String getNOM_PB_AJOUTER_JOUR() {
@@ -820,10 +820,10 @@ public class OePARAMETRAGEJour extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (05/09/11 11:31:37)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (05/09/11 11:31:37)
 	 * 
 	 */
 	public boolean performPB_AJOUTER_JOUR(HttpServletRequest request) throws Exception {

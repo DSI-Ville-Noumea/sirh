@@ -1,4 +1,4 @@
-<!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@ page contentType="text/html; charset=UTF-8" %> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <%@page import="nc.mairie.utils.MairieUtils"%>
 <%@page import="nc.mairie.enums.EnumTypeDroit"%>
 <HTML>
@@ -13,13 +13,13 @@
 		<SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT>
 		
 		<SCRIPT language="JavaScript">
-		//afin de sélectionner un élément dans une liste
+		//afin de sÃ©lectionner un Ã©lÃ©ment dans une liste
 		function executeBouton(nom)
 		{
 			document.formu.elements[nom].click();
 		}
 
-		// afin de mettre le focus sur une zone précise
+		// afin de mettre le focus sur une zone prÃ©cise
 		function setfocus(nom)
 		{
 		if (document.formu.elements[nom] != null)
@@ -44,7 +44,7 @@
 		
 		</SCRIPT>
 		
-		<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	</HEAD>
 	<jsp:useBean class="nc.mairie.gestionagent.process.agent.OeAGENTHandicap" id="process" scope="session"></jsp:useBean>
 	<BODY bgcolor="#FFFFFF" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="window.parent.frames['refAgent'].location.reload();" >
@@ -62,12 +62,12 @@
 									<INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_CREER()%>">
 								</td>
 								<td align="left">Type</td>
-								<td align="center">Début</td>
+								<td align="center">DÃ©but</td>
 								<td align="center">Fin</td>
-								<td align="center">% incapacité</td>
+								<td align="center">% incapacitÃ©</td>
 								<td align="center">Reconnaissance maladie prof.</td>
 								<td align="center">Handicap reconnu CRDHNC</td>
-								<td align="center">N° de carte CRDHNC</td>
+								<td align="center">NÂ° de carte CRDHNC</td>
 								<td align="center">CRDHNC en cours renouvellement</td>
 								<td align="center">Amenagement</td>
 								<td align="center">Nb docs</td>
@@ -137,7 +137,7 @@
 				</tr>
 				<tr>
 					<td>
-						<span class="sigp2Mandatory">Date de début :</span>
+						<span class="sigp2Mandatory">Date de dÃ©but :</span>
 					</td>
 					<td>
 						<input id="<%=process.getNOM_EF_DATE_DEBUT()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DATE_DEBUT() %>" size="10" type="text"	value="<%= process.getVAL_EF_DATE_DEBUT() %>" />
@@ -158,7 +158,7 @@
 						<span class="sigp2Mandatory">Handicap CRDHNC :</span> 
 						<%if(process.showNumCarte){ %>
 							<br/>
-							<span class="sigp2" style="visibility:<%= process.showNumCarte ? "visible" : "hidden" %>;">N° carte CRDHNC :</span>
+							<span class="sigp2" style="visibility:<%= process.showNumCarte ? "visible" : "hidden" %>;">NÂ° carte CRDHNC :</span>
 							<br/>
 							<span class="sigp2" style="visibility:<%= process.showNumCarte ? "visible" : "hidden" %>;">En cours de renouvellement :</span>
 						<%} %>
@@ -177,7 +177,7 @@
 				</tr>
 				<tr>
 					<td>
-						<span class="sigp2">% Incapacité :</span>
+						<span class="sigp2">% IncapacitÃ© :</span>
 					</td>
 					<td>
 						<INPUT class="sigp2-saisie" maxlength="5" name="<%= process.getNOM_EF_INCAPACITE() %>" size="5" type="text" value="<%= process.getVAL_EF_INCAPACITE() %>" />
@@ -306,7 +306,7 @@
 				<span class="sigp2-saisie"><%=process.getVAL_ST_NOM()%></span>
 				<BR/>
 				<BR/>
-				<span class="sigp2" style="width:150px">Date de début : </span>
+				<span class="sigp2" style="width:150px">Date de dÃ©but : </span>
 				<span class="sigp2-saisie"><%=process.getVAL_ST_DATE_DEBUT()%></span>
 				<BR/>
 				<BR/>
@@ -314,7 +314,7 @@
 				<span class="sigp2-saisie"><%=process.getVAL_ST_DATE_FIN()%></span>
 				<BR/>
 				<BR/>
-				<span class="sigp2" style="width:150px">% Incapacité : </span>
+				<span class="sigp2" style="width:150px">% IncapacitÃ© : </span>
 				<span class="sigp2-saisie"><%=process.getVAL_ST_INCAPACITE()%></span>
 			</span>
 			<span style="width:49%">
@@ -328,7 +328,7 @@
 				<span class="sigp2" style="width:150px">Handicap CRDHNC : </span>
 				<span class="sigp2-saisie"><%=process.getVAL_ST_RECO_CRDHNC()%></span>
 				<BR/>
-				<span class="sigp2" style="width:150px">N° carte CRDHNC : </span>
+				<span class="sigp2" style="width:150px">NÂ° carte CRDHNC : </span>
 				<span class="sigp2-saisie"><%=process.getVAL_ST_NUM_CRDHNC()%></span>
 				<BR/>
 				<span class="sigp2" style="width:150px">Carte en cours renouvellement : </span>

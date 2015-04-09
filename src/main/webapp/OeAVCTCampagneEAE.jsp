@@ -1,4 +1,4 @@
-<!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@ page contentType="text/html; charset=UTF-8" %> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <%@page import="nc.mairie.technique.Services"%>
 <%@page import="nc.mairie.metier.eae.CampagneEAE"%>
 <%@page import="nc.mairie.utils.MairieUtils"%>
@@ -21,13 +21,13 @@
 		<script type="text/javascript" src="development-bundle/ui/jquery.ui.autocomplete.js"></script>
 
 <SCRIPT language="JavaScript">
-//afin de sélectionner un élément dans une liste
+//afin de sÃ©lectionner un Ã©lÃ©ment dans une liste
 function executeBouton(nom)
 {
 document.formu.elements[nom].click();
 }
 
-// afin de mettre le focus sur une zone précise
+// afin de mettre le focus sur une zone prÃ©cise
 function setfocus(nom)
 {
 if (document.formu.elements[nom] != null)
@@ -51,7 +51,7 @@ function SelectLigneTabDoc(id,tailleTableau)
  document.getElementById("doc"+id).className="selectLigne";
 }
 </SCRIPT>
-<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 </HEAD>
 <jsp:useBean
  class="nc.mairie.gestionagent.process.avancement.OeAVCTCampagneEAE" id="process" scope="session"></jsp:useBean>
@@ -70,10 +70,10 @@ function SelectLigneTabDoc(id,tailleTableau)
 								<INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_AJOUTER()%>">
 							</td>
 							<td width="45px;" align="center">Docs joint</td>
-							<td width="45px;" align="center">Année</td>
-							<td width="90px;" align="center">Date début</td>
+							<td width="45px;" align="center">AnnÃ©e</td>
+							<td width="90px;" align="center">Date dÃ©but</td>
 							<td width="90px;" align="center">Date fin</td>
-							<td width="90px;" align="center">Date début Kiosque</td>
+							<td width="90px;" align="center">Date dÃ©but Kiosque</td>
 							<td width="90px;" align="center">Date fin Kiosque</td>
 							<td width="110px;" align="center">Kiosque</td>
 							<td width="110px;" align="center">Kiosque</td>
@@ -125,7 +125,7 @@ function SelectLigneTabDoc(id,tailleTableau)
 			<table>
 				<tr>
 					<td width="70px">
-						<span class="sigp2Mandatory">Année :</span>
+						<span class="sigp2Mandatory">AnnÃ©e :</span>
 					</td>
 					<td>
 						<INPUT <%=process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION) ? "disabled='disabled'" : "" %> class="sigp2-saisie" maxlength="4" name="<%= process.getNOM_ST_ANNEE() %>" size="4" type="text" value="<%= process.getVAL_ST_ANNEE() %>">
@@ -135,7 +135,7 @@ function SelectLigneTabDoc(id,tailleTableau)
 				<%if(process.getVAL_ST_ACTION().equals(process.ACTION_CREATION)|| process.dateDebutModifiable){%>
 				<tr>
 					<td>
-						<span class="sigp2Mandatory">Date début :</span>
+						<span class="sigp2Mandatory">Date dÃ©but :</span>
 					</td>
 					<td>
 						<input id="<%=process.getNOM_ST_DATE_DEBUT()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_DEBUT() %>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_DEBUT() %>">
@@ -258,7 +258,7 @@ function SelectLigneTabDoc(id,tailleTableau)
 			<table>
 				<tr>
 					<td width="70px;">
-		    			<span class="sigp2">Année : </span>
+		    			<span class="sigp2">AnnÃ©e : </span>
 					</td>
 					<td>
 						<span class="sigp2-saisie"><%=process.getVAL_ST_ANNEE()%></span>
@@ -266,7 +266,7 @@ function SelectLigneTabDoc(id,tailleTableau)
 				</tr>
 				<tr>
 					<td>
-						<span class="sigp2">Date début: </span>
+						<span class="sigp2">Date dÃ©but: </span>
 					</td>
 					<td>
 						<span class="sigp2-saisie"><%=process.getVAL_ST_DATE_DEBUT()%></span>

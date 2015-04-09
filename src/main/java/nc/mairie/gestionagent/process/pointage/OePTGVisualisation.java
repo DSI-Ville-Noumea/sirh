@@ -49,7 +49,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 
 /**
- * Process OeAGENTAccidentTravail Date de création : (30/06/11 13:56:32)
+ * Process OeAGENTAccidentTravail Date de crÃ©ation : (30/06/11 13:56:32)
  * 
  */
 public class OePTGVisualisation extends BasicProcess {
@@ -129,12 +129,12 @@ public class OePTGVisualisation extends BasicProcess {
 					+ opPtg.getIdAgent().toString().substring(3, opPtg.getIdAgent().toString().length()) + ")");
 
 			addZone(getNOM_ST_ETAT(i), EtatPointageEnum.getEtatPointageEnum(ptg.getIdRefEtat()).name());
-			addZone(getNOM_ST_DATE_SAISIE(i), sdf.format(ptg.getDateSaisie()) + " à " + hrs.format(ptg.getDateSaisie()));
+			addZone(getNOM_ST_DATE_SAISIE(i), sdf.format(ptg.getDateSaisie()) + " a " + hrs.format(ptg.getDateSaisie()));
 		}
 	}
 
 	/**
-	 * Retourne une hashTable de la hiérarchie des Service selon le code
+	 * Retourne une hashTable de la hierarchie des Service selon le code
 	 * Service.
 	 * 
 	 * @return hTree
@@ -164,7 +164,7 @@ public class OePTGVisualisation extends BasicProcess {
 	}
 
 	/**
-	 * Getter de la liste avec un lazy initialize : LB_ETAT Date de création :
+	 * Getter de la liste avec un lazy initialize : LB_ETAT Date de crÃ©ation :
 	 * (28/11/11)
 	 * 
 	 */
@@ -176,7 +176,7 @@ public class OePTGVisualisation extends BasicProcess {
 	}
 
 	/**
-	 * Getter de la liste avec un lazy initialize : LB_TYPE Date de création :
+	 * Getter de la liste avec un lazy initialize : LB_TYPE Date de crÃ©ation :
 	 * (28/11/11)
 	 * 
 	 */
@@ -217,7 +217,7 @@ public class OePTGVisualisation extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_SERVICE Date de
-	 * création : (13/09/11 11:47:15)
+	 * crÃ©ation : (13/09/11 11:47:15)
 	 * 
 	 */
 	public String getNOM_EF_SERVICE() {
@@ -225,7 +225,7 @@ public class OePTGVisualisation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_ETAT Date de création :
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_ETAT Date de crÃ©ation :
 	 * (28/11/11)
 	 * 
 	 */
@@ -234,8 +234,8 @@ public class OePTGVisualisation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_ETAT_SELECT Date de création : (28/11/11)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_ETAT_SELECT Date de crÃ©ation : (28/11/11)
 	 * 
 	 */
 	public String getNOM_LB_ETAT_SELECT() {
@@ -243,7 +243,7 @@ public class OePTGVisualisation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_TYPE Date de création :
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_TYPE Date de crÃ©ation :
 	 * (28/11/11)
 	 * 
 	 */
@@ -256,8 +256,8 @@ public class OePTGVisualisation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_TYPE_SELECT Date de création : (28/11/11)
+	 * Retourne le nom de la zone de la ligne sÃ©lectionnÃ©e pour la JSP :
+	 * NOM_LB_TYPE_SELECT Date de crÃ©ation : (28/11/11)
 	 * 
 	 */
 	public String getNOM_LB_TYPE_SELECT() {
@@ -298,7 +298,7 @@ public class OePTGVisualisation extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_RECHERCHER_AGENT_MAX Date de
-	 * création : (02/08/11 09:42:00)
+	 * crÃ©ation : (02/08/11 09:42:00)
 	 * 
 	 */
 	public String getNOM_PB_RECHERCHER_AGENT_MAX() {
@@ -307,7 +307,7 @@ public class OePTGVisualisation extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_RECHERCHER_AGENT_MIN Date de
-	 * création : (02/08/11 09:42:00)
+	 * crÃ©ation : (02/08/11 09:42:00)
 	 * 
 	 */
 	public String getNOM_PB_RECHERCHER_AGENT_MIN() {
@@ -316,7 +316,7 @@ public class OePTGVisualisation extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP :
-	 * PB_SUPPRIMER_RECHERCHER_AGENT_MAX Date de création : (13/07/11 09:49:02)
+	 * PB_SUPPRIMER_RECHERCHER_AGENT_MAX Date de crÃ©ation : (13/07/11 09:49:02)
 	 * 
 	 * 
 	 */
@@ -330,7 +330,7 @@ public class OePTGVisualisation extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP :
-	 * PB_SUPPRIMER_RECHERCHER_AGENT_MIN Date de création : (13/07/11 09:49:02)
+	 * PB_SUPPRIMER_RECHERCHER_AGENT_MIN Date de crÃ©ation : (13/07/11 09:49:02)
 	 * 
 	 * 
 	 */
@@ -340,7 +340,7 @@ public class OePTGVisualisation extends BasicProcess {
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMER_RECHERCHER_SERVICE
-	 * Date de création : (13/07/11 09:49:02)
+	 * Date de crÃ©ation : (13/07/11 09:49:02)
 	 * 
 	 * 
 	 */
@@ -350,7 +350,7 @@ public class OePTGVisualisation extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_AGENT Date de
-	 * création : (21/11/11 09:55:36)
+	 * crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_ST_AGENT(int i) {
@@ -363,7 +363,7 @@ public class OePTGVisualisation extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_AGENT_MAX Date de
-	 * création : (02/08/11 09:40:42)
+	 * crÃ©ation : (02/08/11 09:40:42)
 	 * 
 	 */
 	public String getNOM_ST_AGENT_MAX() {
@@ -372,7 +372,7 @@ public class OePTGVisualisation extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_AGENT_MIN Date de
-	 * création : (02/08/11 09:40:42)
+	 * crÃ©ation : (02/08/11 09:40:42)
 	 * 
 	 */
 	public String getNOM_ST_AGENT_MIN() {
@@ -381,7 +381,7 @@ public class OePTGVisualisation extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_CODE_SERVICE Date de
-	 * création : (13/09/11 08:45:29)
+	 * crÃ©ation : (13/09/11 08:45:29)
 	 * 
 	 */
 	public String getNOM_ST_CODE_SERVICE() {
@@ -390,7 +390,7 @@ public class OePTGVisualisation extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_DATE Date de
-	 * création : (21/11/11 09:55:36)
+	 * crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_ST_DATE(int i) {
@@ -399,7 +399,7 @@ public class OePTGVisualisation extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_DATE_CAP Date de
-	 * création : (21/11/11 09:55:36)
+	 * crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_ST_DATE_DEB(int i) {
@@ -416,7 +416,7 @@ public class OePTGVisualisation extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_DATE_CAP Date de
-	 * création : (21/11/11 09:55:36)
+	 * crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_ST_DATE_MAX() {
@@ -425,7 +425,7 @@ public class OePTGVisualisation extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_DATE_CAP Date de
-	 * création : (21/11/11 09:55:36)
+	 * crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_ST_DATE_MIN() {
@@ -466,7 +466,7 @@ public class OePTGVisualisation extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_TYPE Date de
-	 * création : (21/11/11 09:55:36)
+	 * crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_ST_TYPE(int i) {
@@ -478,7 +478,7 @@ public class OePTGVisualisation extends BasicProcess {
 	}
 
 	/**
-	 * Getter du nom de l'écran (pour la gestion des droits)
+	 * Getter du nom de l'Ã©cran (pour la gestion des droits)
 	 */
 	public String getNomEcran() {
 		return "ECR-PTG-VISU";
@@ -489,10 +489,10 @@ public class OePTGVisualisation extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (13/07/11 09:49:02)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (13/07/11 09:49:02)
 	 * 
 	 * 
 	 */
@@ -509,8 +509,8 @@ public class OePTGVisualisation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_SERVICE Date de création : (13/09/11 11:47:15)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone de saisie :
+	 * EF_SERVICE Date de crÃ©ation : (13/09/11 11:47:15)
 	 * 
 	 */
 	public String getVAL_EF_SERVICE() {
@@ -518,8 +518,8 @@ public class OePTGVisualisation extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_ETAT Date de création : (28/11/11 09:55:36)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_ETAT Date de crÃ©ation : (28/11/11 09:55:36)
 	 * 
 	 */
 	public String[] getVAL_LB_ETAT() {
@@ -527,8 +527,8 @@ public class OePTGVisualisation extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_ETAT Date de création : (28/11/11)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_ETAT Date de crÃ©ation : (28/11/11)
 	 * 
 	 */
 	public String getVAL_LB_ETAT_SELECT() {
@@ -536,8 +536,8 @@ public class OePTGVisualisation extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_TYPE Date de création : (28/11/11 09:55:36)
+	 * MÃ©thode Ã  personnaliser Retourne la valeur Ã  afficher pour la zone de la
+	 * JSP : LB_TYPE Date de crÃ©ation : (28/11/11 09:55:36)
 	 * 
 	 */
 	public String[] getVAL_LB_TYPE() {
@@ -549,8 +549,8 @@ public class OePTGVisualisation extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_TYPE Date de création : (28/11/11)
+	 * MÃ©thode Ã  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_TYPE Date de crÃ©ation : (28/11/11)
 	 * 
 	 */
 	public String getVAL_LB_TYPE_SELECT() {
@@ -562,8 +562,8 @@ public class OePTGVisualisation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_AGENT Date de
-	 * création : (21/11/11 09:55:36)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_AGENT Date de
+	 * crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_ST_AGENT(int i) {
@@ -582,8 +582,8 @@ public class OePTGVisualisation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_AGENT_MAX Date
-	 * de création : (02/08/11 09:40:42)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_AGENT_MAX Date
+	 * de crÃ©ation : (02/08/11 09:40:42)
 	 * 
 	 */
 	public String getVAL_ST_AGENT_MAX() {
@@ -591,8 +591,8 @@ public class OePTGVisualisation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_AGENT_MIN Date
-	 * de création : (02/08/11 09:40:42)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_AGENT_MIN Date
+	 * de crÃ©ation : (02/08/11 09:40:42)
 	 * 
 	 */
 	public String getVAL_ST_AGENT_MIN() {
@@ -600,8 +600,8 @@ public class OePTGVisualisation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_CODE_SERVICE
-	 * Date de création : (13/09/11 08:45:29)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_CODE_SERVICE
+	 * Date de crÃ©ation : (13/09/11 08:45:29)
 	 * 
 	 */
 	public String getVAL_ST_CODE_SERVICE() {
@@ -609,8 +609,8 @@ public class OePTGVisualisation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE Date de
-	 * création : (21/11/11 09:55:36)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_DATE Date de
+	 * crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_ST_DATE(int i) {
@@ -618,7 +618,7 @@ public class OePTGVisualisation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone
 	 * 
 	 */
 	public String getVAL_ST_DATE_DEB(int i) {
@@ -626,7 +626,7 @@ public class OePTGVisualisation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone
 	 * 
 	 */
 	public String getVAL_ST_DATE_FIN(int i) {
@@ -634,8 +634,8 @@ public class OePTGVisualisation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE_CAP Date
-	 * de création : (21/11/11 09:55:36)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_DATE_CAP Date
+	 * de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_ST_DATE_MAX() {
@@ -643,8 +643,8 @@ public class OePTGVisualisation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE_CAP Date
-	 * de création : (21/11/11 09:55:36)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_DATE_CAP Date
+	 * de crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_ST_DATE_MIN() {
@@ -652,7 +652,7 @@ public class OePTGVisualisation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone
 	 * 
 	 */
 	public String getVAL_ST_DATE_SAISIE(int i) {
@@ -660,7 +660,7 @@ public class OePTGVisualisation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone
 	 * 
 	 */
 	public String getVAL_ST_DUREE(int i) {
@@ -668,7 +668,7 @@ public class OePTGVisualisation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone
 	 * 
 	 */
 	public String getVAL_ST_ETAT(int i) {
@@ -676,7 +676,7 @@ public class OePTGVisualisation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone
 	 * 
 	 */
 	public String getVAL_ST_MOTIF(int i) {
@@ -684,8 +684,8 @@ public class OePTGVisualisation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_TYPE Date de
-	 * création : (21/11/11 09:55:36)
+	 * Retourne la valeur Ã  afficher par la JSP pour la zone : ST_TYPE Date de
+	 * crÃ©ation : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_ST_TYPE(int i) {
@@ -709,8 +709,8 @@ public class OePTGVisualisation extends BasicProcess {
 	}
 
 	/**
-	 * Initialisation des liste déroulantes de l'écran convocation du suivi
-	 * médical.
+	 * Initialisation des liste deroulantes de l'Ã©cran convocation du suivi
+	 * mÃ©dical.
 	 */
 	private void initialiseListeDeroulante() throws Exception {
 		SirhPtgWSConsumer t = new SirhPtgWSConsumer();
@@ -746,8 +746,8 @@ public class OePTGVisualisation extends BasicProcess {
 		// Si liste type vide alors affectation
 		if (getLB_TYPE_HS() == LBVide) {
 			ArrayList<String> listeTypeHS = new ArrayList<String>();
-			listeTypeHS.add("Payées");
-			listeTypeHS.add("Récupérées");
+			listeTypeHS.add("PayÃ©es");
+			listeTypeHS.add("RÃ©cupÃ©rÃ©es");
 			listeTypeHS.add("Rappel en service");
 			setListeTypeHS(listeTypeHS);
 
@@ -803,7 +803,7 @@ public class OePTGVisualisation extends BasicProcess {
 					continue;
 				}
 
-				// recherche du supérieur
+				// recherche du supÃ©rieur
 				String codeService = serv.getCodService();
 				while (codeService.endsWith("A")) {
 					codeService = codeService.substring(0, codeService.length() - 1);
@@ -825,17 +825,17 @@ public class OePTGVisualisation extends BasicProcess {
 		VariableGlobale.ajouter(request, "PROCESS_MEMORISE", this);
 
 		// ----------------------------------//
-		// Vérification des droits d'accès. //
+		// VÃ©rification des droits d'acces. //
 		// ----------------------------------//
 		if (MairieUtils.estInterdit(request, getNomEcran())) {
 			// "ERR190",
-			// "Opération impossible. Vous ne disposez pas des droits d'accès à cette option."
+			// "Operation impossible. Vous ne disposez pas des droits d'acces a cette option."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
 		initialiseDao();
 
-		// Initialisation des listes déroulantes
+		// Initialisation des listes deroulantes
 		initialiseListeDeroulante();
 
 		// Initialisation des infos sur la ventilation
@@ -905,7 +905,7 @@ public class OePTGVisualisation extends BasicProcess {
 		String dateDeb = getVAL_ST_DATE_MIN();
 		if (dateDeb.equals(Const.CHAINE_VIDE)) {
 			// "ERR500",
-			// "Le champ date de début est obligatoire."
+			// "Le champ date de dÃ©but est obligatoire."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR500"));
 			return false;
 		}
@@ -913,12 +913,12 @@ public class OePTGVisualisation extends BasicProcess {
 		// on controle que le service saisie est bien un service
 		String sigleService = getVAL_EF_SERVICE().toUpperCase();
 		if (!sigleService.equals(Const.CHAINE_VIDE)) {
-			// on cherche le code service associé
+			// on cherche le code service associÃ©
 			Service siserv = Service.chercherServiceBySigle(getTransaction(), sigleService);
 			if (getTransaction().isErreur() || siserv == null || siserv.getCodService() == null) {
 				getTransaction().traiterErreur();
 				// ERR502", "Le sigle service saisie ne permet pas de trouver le
-				// service associé."
+				// service associÃ©."
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR502"));
 				return false;
 
@@ -929,10 +929,10 @@ public class OePTGVisualisation extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (05/09/11 11:31:37)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (05/09/11 11:31:37)
 	 * 
 	 */
 	@SuppressWarnings("unchecked")
@@ -974,11 +974,11 @@ public class OePTGVisualisation extends BasicProcess {
 		String typeHS = null;
 		if (numTypeHS != -1 && numTypeHS != 0) {
 			String libTypeHS = getListeTypeHS().get(numTypeHS - 1);
-			if (libTypeHS.equals("Récupérées")) {
+			if (libTypeHS.equals("RÃ©cupÃ©rÃ©es")) {
 				typeHS = "R";
 			} else if (libTypeHS.equals("Rappel en service")) {
 				typeHS = "RS";
-			} else if (libTypeHS.equals("Payées")) {
+			} else if (libTypeHS.equals("PayÃ©es")) {
 				typeHS = "AUTRE";
 			}
 		}
@@ -995,7 +995,7 @@ public class OePTGVisualisation extends BasicProcess {
 		Integer idAgentMax = getVAL_ST_AGENT_MAX().equals(Const.CHAINE_VIDE) ? null : Integer.valueOf("900"
 				+ getVAL_ST_AGENT_MAX());
 
-		// si superieur à 1000 alors on bloque
+		// si superieur a 1000 alors on bloque
 		boolean filtreAgent = false;
 
 		Collection<String> idAgentPopulation = new ArrayList<>();
@@ -1043,10 +1043,10 @@ public class OePTGVisualisation extends BasicProcess {
 		String sigleService = getVAL_EF_SERVICE().toUpperCase();
 		if (!sigleService.equals(Const.CHAINE_VIDE)) {
 			filtreAgent = true;
-			// on cherche le code service associé
+			// on cherche le code service associÃ©
 			Service siserv = Service.chercherServiceBySigle(getTransaction(), sigleService);
 			String codeService = siserv.getCodService();
-			// Récupération des agents
+			// RÃ©cupÃ©ration des agents
 			// on recupere les sous-service du service selectionne
 			ArrayList<String> listeSousService = null;
 			if (!codeService.equals(Const.CHAINE_VIDE)) {
@@ -1101,7 +1101,7 @@ public class OePTGVisualisation extends BasicProcess {
 			}
 		} else if (intersectionCollection.size() >= 1000) {
 			// "ERR501",
-			// "La sélection des filtres engendre plus de 1000 agents. Merci de réduire la sélection."
+			// "La sÃ©lection des filtres engendre plus de 1000 agents. Merci de reduire la sÃ©lection."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR501"));
 			return false;
 		}
@@ -1185,7 +1185,7 @@ public class OePTGVisualisation extends BasicProcess {
 	private boolean verifieDroitAgents(HttpServletRequest request) throws Exception {
 
 		if(null == loggedAgent) {
-			// on recupere l'agent connecté
+			// on recupere l'agent connecte
 			UserAppli uUser = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
 			// on fait la correspondance entre le login et l'agent via RADI
 			RadiWSConsumer radiConsu = new RadiWSConsumer();
@@ -1210,15 +1210,15 @@ public class OePTGVisualisation extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (02/08/11 09:42:00)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (02/08/11 09:42:00)
 	 * 
 	 */
 	public boolean performPB_RECHERCHER_AGENT_MAX(HttpServletRequest request) throws Exception {
 
-		// On met l'agent courant en var d'activité
+		// On met l'agent courant en var d'activitÃ©
 		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new Agent());
 		setStatut(STATUT_RECHERCHER_AGENT_MAX, true);
 		return true;
@@ -1226,61 +1226,61 @@ public class OePTGVisualisation extends BasicProcess {
 
 	public boolean performPB_RECHERCHER_AGENT_CREATE(HttpServletRequest request) throws Exception {
 
-		// On met l'agent courant en var d'activité
+		// On met l'agent courant en var d'activitÃ©
 		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new Agent());
 		setStatut(STATUT_RECHERCHER_AGENT_CREATE, true);
 		return true;
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (02/08/11 09:42:00)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (02/08/11 09:42:00)
 	 * 
 	 */
 	public boolean performPB_RECHERCHER_AGENT_MIN(HttpServletRequest request) throws Exception {
-		// On met l'agent courant en var d'activité
+		// On met l'agent courant en var d'activitÃ©
 		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new Agent());
 		setStatut(STATUT_RECHERCHER_AGENT_MIN, true);
 		return true;
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (25/03/03 15:33:11)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (25/03/03 15:33:11)
 	 * 
 	 */
 	public boolean performPB_SUPPRIMER_RECHERCHER_AGENT_MAX(HttpServletRequest request) throws Exception {
-		// On enlève l'agent selectionnée
+		// On enleve l'agent selectionnÃ©e
 		addZone(getNOM_ST_AGENT_MAX(), Const.CHAINE_VIDE);
 		return true;
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (25/03/03 15:33:11)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (25/03/03 15:33:11)
 	 * 
 	 */
 	public boolean performPB_SUPPRIMER_RECHERCHER_AGENT_MIN(HttpServletRequest request) throws Exception {
-		// On enlève l'agent selectionnée
+		// On enleve l'agent selectionnÃ©e
 		addZone(getNOM_ST_AGENT_MIN(), Const.CHAINE_VIDE);
 		return true;
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (25/03/03 15:33:11)
+	 * - Traite et affecte les zones saisies dans la JSP. - ImplÃ©mente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de crÃ©ation : (25/03/03 15:33:11)
 	 * 
 	 */
 	public boolean performPB_SUPPRIMER_RECHERCHER_SERVICE(HttpServletRequest request) throws Exception {
-		// On enlève le service selectionnée
+		// On enleve le service selectionnÃ©e
 		addZone(getNOM_ST_CODE_SERVICE(), Const.CHAINE_VIDE);
 		addZone(getNOM_EF_SERVICE(), Const.CHAINE_VIDE);
 		return true;
@@ -1367,7 +1367,7 @@ public class OePTGVisualisation extends BasicProcess {
 			}
 
 			if (testerParametre(request, getNOM_PB_CREATE())) {
-				// on verifie que l'agent exist et qu'il est affecté
+				// on verifie que l'agent exist et qu'il est affectÃ©
 				if (!performControlerSaisie(getVAL_ST_DATE_CREATE(), getVAL_ST_AGENT_CREATE())) {
 					return false;
 				}
@@ -1387,7 +1387,7 @@ public class OePTGVisualisation extends BasicProcess {
 				return true;
 			}
 		}
-		// Si TAG INPUT non géré par le process
+		// Si TAG INPUT non gÃ©rÃ© par le process
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
@@ -1426,7 +1426,7 @@ public class OePTGVisualisation extends BasicProcess {
 					Integer.valueOf("900" + idAgent), sdf.parse(dateCreation));
 		} catch (Exception e) {
 			// "ERR504",
-			// "L'agent @ n'est affecté à aucun poste le @. Aucun pointage ne peut être saisi pour cette date."
+			// "L'agent @ n'est affectÃ© a aucun poste le @. Aucun pointage ne peut Ãªtre saisi pour cette date."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR504", idAgent, dateCreation));
 			return false;
 		}
@@ -1434,7 +1434,7 @@ public class OePTGVisualisation extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_ETAT Date de création : (28/11/11)
+	 * Setter de la liste: LB_ETAT Date de crÃ©ation : (28/11/11)
 	 * 
 	 */
 	private void setLB_ETAT(String[] newLB_ETAT) {
@@ -1442,7 +1442,7 @@ public class OePTGVisualisation extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste: LB_TYPE Date de création : (28/11/11)
+	 * Setter de la liste: LB_TYPE Date de crÃ©ation : (28/11/11)
 	 * 
 	 */
 	private void setLB_TYPE(String[] newLB_TYPE) {
@@ -1465,7 +1465,7 @@ public class OePTGVisualisation extends BasicProcess {
 	}
 
 	/**
-	 * Met à jour la liste des services.
+	 * Met a jour la liste des services.
 	 * 
 	 * @param listeServices
 	 */
@@ -1522,7 +1522,7 @@ public class OePTGVisualisation extends BasicProcess {
 			ret[index][5] = opPtg.getNom() + " " + opPtg.getPrenom() + " ("
 					+ opPtg.getIdAgent().toString().substring(3, opPtg.getIdAgent().toString().length()) + ")";
 			ret[index][6] = EtatPointageEnum.getEtatPointageEnum(p.getIdRefEtat()).name();
-			ret[index][7] = formatDate(p.getDateSaisie()) + " à " + formatHeure(p.getDateSaisie());
+			ret[index][7] = formatDate(p.getDateSaisie()) + " a " + formatHeure(p.getDateSaisie());
 			index++;
 		}
 
