@@ -65,7 +65,7 @@
 	</issueManagement>
 
 	<properties>
-		<project.build.sourceEncoding>Cp1252</project.build.sourceEncoding>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
 		<spring.version>4.0.6.RELEASE</spring.version>
 	</properties>
