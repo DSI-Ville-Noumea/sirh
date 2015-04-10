@@ -154,10 +154,10 @@
                     return 0;
                 }
 
-                function loadActeursAgent(nomatr, id) {     
+                function loadActeursAgent(nomatr, id, typeDemande) {     
           			
                 	if(''==document.getElementById('ActeursAgent'+id).title) {
-              		  	var url = "ActeursAgentAbsence?nomatr=" + nomatr;
+              		  	var url = "ActeursAgentAbsence?nomatr=" + nomatr + "&typeDemande=" + typeDemande;
 	          
 	                	$.ajax({
 	                		type: "GET",
@@ -400,7 +400,7 @@
                             </td>                            
                             <td width="30px"><%=process.getVAL_ST_MATRICULE(indiceAbs)%></td> 
                             <td width="150px"><a id="ActeursAgent<%=indiceAbs %>" style="hover:cursor:pointer;" 
-                            	onmouseover="loadActeursAgent('<%=process.getVAL_ST_MATRICULE(indiceAbs)%>','<%=indiceAbs %>')" >
+                            	onmouseover="loadActeursAgent('<%=process.getVAL_ST_MATRICULE(indiceAbs)%>','<%=indiceAbs %>', '<%=abs.getIdTypeDemande() %>')" >
                             	<%=process.getVAL_ST_AGENT(indiceAbs)%></a></td> 
                             <td width="40px"><%=process.getVAL_ST_INFO_AGENT(indiceAbs)%></td>  
                             <td width="150px"><%=process.getVAL_ST_TYPE(indiceAbs)%></td>

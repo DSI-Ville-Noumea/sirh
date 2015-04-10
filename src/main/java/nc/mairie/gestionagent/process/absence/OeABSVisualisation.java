@@ -746,9 +746,10 @@ public class OeABSVisualisation extends BasicProcess {
 				TypeAbsenceDto type = getListeFamilleAbsenceCreation().get(getListeFamilleAbsenceCreation().indexOf(t));
 
 				addZone(getNOM_ST_MATRICULE(i), null != ag ? ag.getNomatr().toString() : "");
-				addZone(getNOM_ST_AGENT(i), ag.getNomAgent() + " " + ag.getPrenomAgent());
+				addZone(getNOM_ST_AGENT(i), ag.getNomAgent() + " " + ag.getPrenomAgent() + " (" + abs.getAgentWithServiceDto().getSigleService() + ")");
 				addZone(getNOM_ST_INFO_AGENT(i), "<br/>" + statut);
-				addZone(getNOM_ST_TYPE(i), type.getLibelle() + "<br/>" + sdf.format(abs.getDateDemande()));
+				String baseConges = null != abs.getTypeSaisiCongeAnnuel() ? " (Base congé : " + abs.getTypeSaisiCongeAnnuel().getCodeBaseHoraireAbsence() + ")" : "";
+				addZone(getNOM_ST_TYPE(i), type.getLibelle() + baseConges + "<br/>" + sdf.format(abs.getDateDemande()));
 
 				String debutMAM = abs.isDateDebutAM() ? "M" : abs.isDateDebutPM() ? "A" : Const.CHAINE_VIDE;
 				addZone(getNOM_ST_DATE_DEB(i),
@@ -773,8 +774,15 @@ public class OeABSVisualisation extends BasicProcess {
 						|| abs.getIdTypeDemande() == EnumTypeAbsence.ASA_A50.getCode()
 						|| abs.getIdTypeDemande() == EnumTypeAbsence.CONGE.getCode()) {
 					if (abs.getIdTypeDemande() == EnumTypeAbsence.CONGE.getCode()) {
+						
+						Double nombreGarde = (null != abs.getTypeSaisiCongeAnnuel() 
+								&& null != abs.getTypeSaisiCongeAnnuel().getQuotaMultiple()
+								&& 0 != abs.getTypeSaisiCongeAnnuel().getQuotaMultiple()
+								? abs.getDuree() / abs.getTypeSaisiCongeAnnuel().getQuotaMultiple() : 0);
+						String nombreGardeStr = 0 == nombreGarde ? "" :
+							(1 == nombreGarde ? " (" + nombreGarde.toString() + " garde)" : " (" + nombreGarde.toString() + " gardes)");
 						addZone(getNOM_ST_DUREE(i), abs.getDuree() == null ? "&nbsp;" : abs.getDuree().toString() + "j"
-								+ (abs.isSamediOffert() ? " +S" : ""));
+								+ (abs.isSamediOffert() ? " +S" : "") + nombreGardeStr);
 					} else {
 						addZone(getNOM_ST_DUREE(i), abs.getDuree() == null ? "&nbsp;" : abs.getDuree().toString() + "j");
 					}
