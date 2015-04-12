@@ -25,7 +25,7 @@ public interface ISirhAbsWSConsumer {
 	List<UnitePeriodeQuotaDto> getUnitePeriodeQuota();
 
 	// Approbateurs / Droits
-	List<ApprobateurDto> getApprobateurs(String codeService,Integer idAgent);
+	List<ApprobateurDto> getApprobateurs(String codeService, Integer idAgent);
 
 	ReturnMessageDto setApprobateur(String json);
 
@@ -97,9 +97,9 @@ public interface ISirhAbsWSConsumer {
 
 	// demandes
 	List<DemandeDto> getListeDemandesAgent(Integer idAgent, String onglet, String dateDebut, String dateFin,
-			String dateDemande, Integer idRefEtat, Integer idRefType, Integer idRefGroupeAbsence);
+			String dateDemande, String listIdRefEtat, Integer idRefType, Integer idRefGroupeAbsence);
 
-	List<DemandeDto> getListeDemandes(String dateDebut, String dateFin, Integer idRefEtat, Integer idRefType,
+	List<DemandeDto> getListeDemandes(String dateDebut, String dateFin, String listIdRefEtat, Integer idRefType,
 			Integer idAgentRecherche, Integer idRefGroupe, boolean aValider, List<String> idAgentsService);
 
 	List<DemandeDto> getVisualisationHistory(Integer absId);
@@ -124,7 +124,7 @@ public interface ISirhAbsWSConsumer {
 	RestitutionMassiveDto getDetailsHistoRestitutionMassive(Integer idAgent, RestitutionMassiveDto dto);
 
 	ReturnMessageDto saveRefAlimMensuelle(Integer idAgent, String json);
-	
+
 	ActeursDto getListeActeurs(Integer idAgent);
 
 }

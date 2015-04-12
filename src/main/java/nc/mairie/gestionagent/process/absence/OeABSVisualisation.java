@@ -605,6 +605,9 @@ public class OeABSVisualisation extends BasicProcess {
 		if (numEtat != -1 && numEtat != 0) {
 			etat = (EnumEtatAbsence) getListeEtats().get(numEtat - 1);
 		}
+		List<Integer> listeEtat = new ArrayList<Integer>();
+		if (etat != null)
+			listeEtat.add(etat.getCode());
 		// famille
 		int numType = (Services.estNumerique(getZone(getNOM_LB_FAMILLE_SELECT())) ? Integer
 				.parseInt(getZone(getNOM_LB_FAMILLE_SELECT())) : -1);
@@ -707,7 +710,8 @@ public class OeABSVisualisation extends BasicProcess {
 		}
 
 		SirhAbsWSConsumer t = new SirhAbsWSConsumer();
-		List<DemandeDto> listeDemande = t.getListeDemandes(dateMin, dateMax, etat == null ? null : etat.getCode(),
+		List<DemandeDto> listeDemande = t.getListeDemandes(dateMin, dateMax, listeEtat.size() == 0 ? null : listeEtat
+				.toString().replace("[", "").replace("]", "").replace(" ", ""),
 				type == null ? null : type.getIdRefTypeAbsence(),
 				idAgentDemande == null ? null : Integer.valueOf(idAgentDemande),
 				groupe == null ? null : groupe.getIdRefGroupeAbsence(), false, idAgentService);
@@ -746,9 +750,11 @@ public class OeABSVisualisation extends BasicProcess {
 				TypeAbsenceDto type = getListeFamilleAbsenceCreation().get(getListeFamilleAbsenceCreation().indexOf(t));
 
 				addZone(getNOM_ST_MATRICULE(i), null != ag ? ag.getNomatr().toString() : "");
-				addZone(getNOM_ST_AGENT(i), ag.getNomAgent() + " " + ag.getPrenomAgent() + " (" + abs.getAgentWithServiceDto().getSigleService() + ")");
+				addZone(getNOM_ST_AGENT(i), ag.getNomAgent() + " " + ag.getPrenomAgent() + " ("
+						+ abs.getAgentWithServiceDto().getSigleService() + ")");
 				addZone(getNOM_ST_INFO_AGENT(i), "<br/>" + statut);
-				String baseConges = null != abs.getTypeSaisiCongeAnnuel() ? " (Base congé : " + abs.getTypeSaisiCongeAnnuel().getCodeBaseHoraireAbsence() + ")" : "";
+				String baseConges = null != abs.getTypeSaisiCongeAnnuel() ? " (Base congé : "
+						+ abs.getTypeSaisiCongeAnnuel().getCodeBaseHoraireAbsence() + ")" : "";
 				addZone(getNOM_ST_TYPE(i), type.getLibelle() + baseConges + "<br/>" + sdf.format(abs.getDateDemande()));
 
 				String debutMAM = abs.isDateDebutAM() ? "M" : abs.isDateDebutPM() ? "A" : Const.CHAINE_VIDE;
@@ -774,13 +780,13 @@ public class OeABSVisualisation extends BasicProcess {
 						|| abs.getIdTypeDemande() == EnumTypeAbsence.ASA_A50.getCode()
 						|| abs.getIdTypeDemande() == EnumTypeAbsence.CONGE.getCode()) {
 					if (abs.getIdTypeDemande() == EnumTypeAbsence.CONGE.getCode()) {
-						
-						Double nombreGarde = (null != abs.getTypeSaisiCongeAnnuel() 
+
+						Double nombreGarde = (null != abs.getTypeSaisiCongeAnnuel()
 								&& null != abs.getTypeSaisiCongeAnnuel().getQuotaMultiple()
-								&& 0 != abs.getTypeSaisiCongeAnnuel().getQuotaMultiple()
-								? abs.getDuree() / abs.getTypeSaisiCongeAnnuel().getQuotaMultiple() : 0);
-						String nombreGardeStr = 0 == nombreGarde ? "" :
-							(1 == nombreGarde ? " (" + nombreGarde.toString() + " garde)" : " (" + nombreGarde.toString() + " gardes)");
+								&& 0 != abs.getTypeSaisiCongeAnnuel().getQuotaMultiple() ? abs.getDuree()
+								/ abs.getTypeSaisiCongeAnnuel().getQuotaMultiple() : 0);
+						String nombreGardeStr = 0 == nombreGarde ? "" : (1 == nombreGarde ? " ("
+								+ nombreGarde.toString() + " garde)" : " (" + nombreGarde.toString() + " gardes)");
 						addZone(getNOM_ST_DUREE(i), abs.getDuree() == null ? "&nbsp;" : abs.getDuree().toString() + "j"
 								+ (abs.isSamediOffert() ? " +S" : "") + nombreGardeStr);
 					} else {
@@ -1248,7 +1254,7 @@ public class OeABSVisualisation extends BasicProcess {
 	}
 
 	public String getHistory(int absId, int idDemande) {
-		
+
 		SirhAbsWSConsumer t = new SirhAbsWSConsumer();
 		history.put(absId, t.getVisualisationHistory(idDemande));
 
@@ -1291,9 +1297,9 @@ public class OeABSVisualisation extends BasicProcess {
 			ret[index][3] = duree;
 			ret[index][4] = p.getMotif() == null ? "&nbsp;" : p.getMotif();
 			ret[index][5] = EnumEtatAbsence.getValueEnumEtatAbsence(p.getIdRefEtat());
-			ret[index][6] = formatDate(p.getDateSaisie()) + " " + formatHeure(p.getDateSaisie()) 
-					+ "<br/>" + p.getAgentWithServiceDto().getPrenom() + " " + p.getAgentWithServiceDto().getNom() 
-					+ " (" + new Integer(p.getAgentWithServiceDto().getIdAgent()-9000000).toString() + ")";
+			ret[index][6] = formatDate(p.getDateSaisie()) + " " + formatHeure(p.getDateSaisie()) + "<br/>"
+					+ p.getAgentWithServiceDto().getPrenom() + " " + p.getAgentWithServiceDto().getNom() + " ("
+					+ new Integer(p.getAgentWithServiceDto().getIdAgent() - 9000000).toString() + ")";
 			index++;
 		}
 
@@ -1403,8 +1409,10 @@ public class OeABSVisualisation extends BasicProcess {
 
 		// /////////////// DUREE ////////////////////
 		if (null != type.getTypeSaisiDto() && type.getTypeSaisiDto().isDuree()) {
-			String dureeHeures = (dem.getDuree() / 60) == 0 ? Const.CHAINE_VIDE : new Double(dem.getDuree()/ 60).intValue() + Const.CHAINE_VIDE;
-			String dureeMinutes = (dem.getDuree() % 60) == 0 ? Const.CHAINE_VIDE : new Double(dem.getDuree()% 60).intValue() + Const.CHAINE_VIDE;
+			String dureeHeures = (dem.getDuree() / 60) == 0 ? Const.CHAINE_VIDE : new Double(dem.getDuree() / 60)
+					.intValue() + Const.CHAINE_VIDE;
+			String dureeMinutes = (dem.getDuree() % 60) == 0 ? Const.CHAINE_VIDE : new Double(dem.getDuree() % 60)
+					.intValue() + Const.CHAINE_VIDE;
 			addZone(getNOM_ST_DUREE(), dureeHeures);
 			addZone(getNOM_ST_DUREE_MIN(), dureeMinutes);
 		} else if (null != type.getTypeSaisiCongeAnnuelDto()) {
@@ -1487,9 +1495,11 @@ public class OeABSVisualisation extends BasicProcess {
 		// alors un motif est obligatoire
 		if (((dem.getGroupeAbsence().getIdRefGroupeAbsence() == EnumTypeGroupeAbsence.AS.getValue() || dem
 				.getGroupeAbsence().getIdRefGroupeAbsence() == EnumTypeGroupeAbsence.CONGES_EXCEP.getValue()) && (dem
-				.getIdRefEtat() == EnumEtatAbsence.APPROUVE.getCode() 
-				// #14696 ajout de l etat A VALIDER car erreur lors de la reprise de donnees des conges exceptionnels mis  l etat A VALIDER au lieu de SAISI ou APPROUVE
-				|| dem.getIdRefEtat() == EnumEtatAbsence.A_VALIDER.getCode()))
+				.getIdRefEtat() == EnumEtatAbsence.APPROUVE.getCode()
+		// #14696 ajout de l etat A VALIDER car erreur lors de la reprise de
+		// donnees des conges exceptionnels mis l etat A VALIDER au lieu de
+		// SAISI ou APPROUVE
+		|| dem.getIdRefEtat() == EnumEtatAbsence.A_VALIDER.getCode()))
 				|| (dem.getGroupeAbsence().getIdRefGroupeAbsence() == EnumTypeGroupeAbsence.CONGES_ANNUELS.getValue())
 				&& dem.getIdRefEtat() == EnumEtatAbsence.A_VALIDER.getCode()) {
 			// "ERR803",
@@ -1866,15 +1876,15 @@ public class OeABSVisualisation extends BasicProcess {
 			}
 			// /////////////// DUREE ////////////////////
 			if (type.getTypeSaisiDto().isDuree()) {
-				if (getVAL_ST_DUREE().equals(Const.CHAINE_VIDE)
-						&& getVAL_ST_DUREE_MIN().equals(Const.CHAINE_VIDE)) {
+				if (getVAL_ST_DUREE().equals(Const.CHAINE_VIDE) && getVAL_ST_DUREE_MIN().equals(Const.CHAINE_VIDE)) {
 					// "ERR002","La zone @ est obligatoire."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "durée"));
 					return false;
 				}
 				String dureeHeure = null != getVAL_ST_DUREE() ? getVAL_ST_DUREE() : "0";
-				String dureeMinutes = null != getVAL_ST_DUREE_MIN() ? 1 == getVAL_ST_DUREE_MIN().length() ? "0"+getVAL_ST_DUREE_MIN() : getVAL_ST_DUREE_MIN() : "00";
-				
+				String dureeMinutes = null != getVAL_ST_DUREE_MIN() ? 1 == getVAL_ST_DUREE_MIN().length() ? "0"
+						+ getVAL_ST_DUREE_MIN() : getVAL_ST_DUREE_MIN() : "00";
+
 				dto.setDuree(Double.valueOf(dureeHeure + "." + dureeMinutes));
 			}
 			// /////////////// DATE FIN ////////////////////
@@ -2216,7 +2226,7 @@ public class OeABSVisualisation extends BasicProcess {
 				}
 			}
 		}
-		
+
 		SirhAbsWSConsumer t = new SirhAbsWSConsumer();
 		List<DemandeDto> listeDemande = t.getListeDemandes(null, null, null, null, null, null, true, idAgentService);
 		logger.debug("Taille liste absences : " + listeDemande.size());

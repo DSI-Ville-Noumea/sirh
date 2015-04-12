@@ -2,6 +2,7 @@ package nc.mairie.gestionagent.process.agent;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.ListIterator;
 
 import javax.servlet.http.HttpServletRequest;
@@ -181,13 +182,14 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 	}
 
 	private void initialiseHistoAgentToutes(HttpServletRequest request, String dateDebut, String dateFin,
-			String dateDemande, Integer idRefEtat, Integer idRefGroupeAbsence) {
+			String dateDemande, List<Integer> listeIdRefEtat, Integer idRefGroupeAbsence) {
 		SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
 
 		// Recherche des absences non prises de l'agent
 		ArrayList<DemandeDto> a = (ArrayList<DemandeDto>) consuAbs.getListeDemandesAgent(
-				getAgentCourant().getIdAgent(), "TOUTES", dateDebut, dateFin, dateDemande, idRefEtat, null,
-				idRefGroupeAbsence);
+				getAgentCourant().getIdAgent(), "TOUTES", dateDebut, dateFin, dateDemande,
+				listeIdRefEtat == null || listeIdRefEtat.size() == 0 ? null : listeIdRefEtat.toString()
+						.replace("[", "").replace("]", "").replace(" ", ""), null, idRefGroupeAbsence);
 		setListeToutesDemandes(a);
 
 		SimpleDateFormat sdfDate = new SimpleDateFormat("dd/MM/yyyy");
@@ -209,7 +211,7 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 			} else if (dto.getTypeSaisi() != null && "jours".equals(dto.getTypeSaisi().getUniteDecompte())) {
 				dateDebAff += dto.isDateDebutAM() ? " - M" : dto.isDateDebutPM() ? " - A" : "&nbsp;";
 				dateFinAff += dto.isDateFinAM() ? " - M" : dto.isDateFinPM() ? " - A" : "&nbsp;";
-			}else if(dto.getTypeSaisiCongeAnnuel()!=null){
+			} else if (dto.getTypeSaisiCongeAnnuel() != null) {
 				dateDebAff += dto.isDateDebutAM() ? " - M" : dto.isDateDebutPM() ? " - A" : "&nbsp;";
 				dateFinAff += dto.isDateFinAM() ? " - M" : dto.isDateFinPM() ? " - A" : "&nbsp;";
 			}
@@ -264,13 +266,14 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 	}
 
 	private void initialiseHistoAgentEnCours(HttpServletRequest request, String dateDebut, String dateFin,
-			String dateDemande, Integer idRefEtat, Integer idRefGroupeAbsence) {
+			String dateDemande, List<Integer> listeIdRefEtat, Integer idRefGroupeAbsence) {
 		SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
 
 		// Recherche des absences non prises de l'agent
 		ArrayList<DemandeDto> a = (ArrayList<DemandeDto>) consuAbs.getListeDemandesAgent(
-				getAgentCourant().getIdAgent(), "EN_COURS", dateDebut, dateFin, dateDemande, idRefEtat, null,
-				idRefGroupeAbsence);
+				getAgentCourant().getIdAgent(), "EN_COURS", dateDebut, dateFin, dateDemande,
+				listeIdRefEtat == null || listeIdRefEtat.size() == 0 ? null : listeIdRefEtat.toString()
+						.replace("[", "").replace("]", "").replace(" ", ""), null, idRefGroupeAbsence);
 		setListeDemandeEnCours(a);
 
 		SimpleDateFormat sdfDate = new SimpleDateFormat("dd/MM/yyyy");
@@ -292,7 +295,7 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 			} else if (dto.getTypeSaisi() != null && "jours".equals(dto.getTypeSaisi().getUniteDecompte())) {
 				dateDebAff += dto.isDateDebutAM() ? " - M" : dto.isDateDebutPM() ? " - A" : "&nbsp;";
 				dateFinAff += dto.isDateFinAM() ? " - M" : dto.isDateFinPM() ? " - A" : "&nbsp;";
-			}else if(dto.getTypeSaisiCongeAnnuel()!=null){
+			} else if (dto.getTypeSaisiCongeAnnuel() != null) {
 				dateDebAff += dto.isDateDebutAM() ? " - M" : dto.isDateDebutPM() ? " - A" : "&nbsp;";
 				dateFinAff += dto.isDateFinAM() ? " - M" : dto.isDateFinPM() ? " - A" : "&nbsp;";
 			}
@@ -348,13 +351,14 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 	}
 
 	private void initialiseHistoAgentNonPrises(HttpServletRequest request, String dateDebut, String dateFin,
-			String dateDemande, Integer idRefEtat, Integer idRefGroupeAbsence) {
+			String dateDemande, List<Integer> listeIdRefEtat, Integer idRefGroupeAbsence) {
 		SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
 
 		// Recherche des absences non prises de l'agent
 		ArrayList<DemandeDto> a = (ArrayList<DemandeDto>) consuAbs.getListeDemandesAgent(
-				getAgentCourant().getIdAgent(), "NON_PRISES", dateDebut, dateFin, dateDemande, idRefEtat, null,
-				idRefGroupeAbsence);
+				getAgentCourant().getIdAgent(), "NON_PRISES", dateDebut, dateFin, dateDemande,
+				listeIdRefEtat == null || listeIdRefEtat.size() == 0 ? null : listeIdRefEtat.toString()
+						.replace("[", "").replace("]", "").replace(" ", ""), null, idRefGroupeAbsence);
 		setListeDemandeNonPrises(a);
 
 		SimpleDateFormat sdfDate = new SimpleDateFormat("dd/MM/yyyy");
@@ -376,7 +380,7 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 			} else if (dto.getTypeSaisi() != null && "jours".equals(dto.getTypeSaisi().getUniteDecompte())) {
 				dateDebAff += dto.isDateDebutAM() ? " - M" : dto.isDateDebutPM() ? " - A" : "&nbsp;";
 				dateFinAff += dto.isDateFinAM() ? " - M" : dto.isDateFinPM() ? " - A" : "&nbsp;";
-			}else if(dto.getTypeSaisiCongeAnnuel()!=null){
+			} else if (dto.getTypeSaisiCongeAnnuel() != null) {
 				dateDebAff += dto.isDateDebutAM() ? " - M" : dto.isDateDebutPM() ? " - A" : "&nbsp;";
 				dateFinAff += dto.isDateFinAM() ? " - M" : dto.isDateFinPM() ? " - A" : "&nbsp;";
 			}
@@ -752,6 +756,9 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 		if (indiceEtatAbsence > 0) {
 			etatAbsence = (EnumEtatAbsence) getListeEtatAbsenceEC().get(indiceEtatAbsence - 1);
 		}
+		List<Integer> listeEtat = new ArrayList<Integer>();
+		if (etatAbsence != null)
+			listeEtat.add(etatAbsence.getCode());
 
 		// Recuperation des dates
 		String dateDebut = null;
@@ -767,9 +774,8 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 			dateDemande = Services.convertitDate(getVAL_ST_DATE_DEMANDE_EC(), "dd/MM/yyyy", "yyyyMMdd");
 		}
 
-		initialiseHistoAgentEnCours(request, dateDebut, dateFin, dateDemande,
-				etatAbsence == null ? null : etatAbsence.getCode(),
-				groupeAbsence == null ? null : groupeAbsence.getIdRefGroupeAbsence());
+		initialiseHistoAgentEnCours(request, dateDebut, dateFin, dateDemande, listeEtat, groupeAbsence == null ? null
+				: groupeAbsence.getIdRefGroupeAbsence());
 		return true;
 	}
 
@@ -794,6 +800,9 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 		if (indiceEtatAbsence > 0) {
 			etatAbsence = (EnumEtatAbsence) getListeEtatAbsenceNP().get(indiceEtatAbsence - 1);
 		}
+		List<Integer> listeEtat = new ArrayList<Integer>();
+		if (etatAbsence != null)
+			listeEtat.add(etatAbsence.getCode());
 
 		// Recuperation des dates
 		String dateDebut = null;
@@ -809,8 +818,8 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 			dateDemande = Services.convertitDate(getVAL_ST_DATE_DEMANDE_NP(), "dd/MM/yyyy", "yyyyMMdd");
 		}
 
-		initialiseHistoAgentNonPrises(request, dateDebut, dateFin, dateDemande, etatAbsence == null ? null
-				: etatAbsence.getCode(), groupeAbsence == null ? null : groupeAbsence.getIdRefGroupeAbsence());
+		initialiseHistoAgentNonPrises(request, dateDebut, dateFin, dateDemande, listeEtat, groupeAbsence == null ? null
+				: groupeAbsence.getIdRefGroupeAbsence());
 		return true;
 	}
 
@@ -835,6 +844,9 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 		if (indiceEtatAbsence > 0) {
 			etatAbsence = (EnumEtatAbsence) getListeEtatAbsenceTT().get(indiceEtatAbsence - 1);
 		}
+		List<Integer> listeEtat = new ArrayList<Integer>();
+		if (etatAbsence != null)
+			listeEtat.add(etatAbsence.getCode());
 
 		// Recuperation des dates
 		String dateDebut = null;
@@ -850,9 +862,8 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 			dateDemande = Services.convertitDate(getVAL_ST_DATE_DEMANDE_TT(), "dd/MM/yyyy", "yyyyMMdd");
 		}
 
-		initialiseHistoAgentToutes(request, dateDebut, dateFin, dateDemande,
-				etatAbsence == null ? null : etatAbsence.getCode(),
-				groupeAbsence == null ? null : groupeAbsence.getIdRefGroupeAbsence());
+		initialiseHistoAgentToutes(request, dateDebut, dateFin, dateDemande, listeEtat, groupeAbsence == null ? null
+				: groupeAbsence.getIdRefGroupeAbsence());
 		return true;
 	}
 

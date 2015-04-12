@@ -103,14 +103,14 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	private Logger logger = LoggerFactory.getLogger(SirhAbsWSConsumer.class);
 
 	@Override
-	public List<ApprobateurDto> getApprobateurs(String codeService,Integer idAgent) {
+	public List<ApprobateurDto> getApprobateurs(String codeService, Integer idAgent) {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
 		String url = urlWS + sirhAbsAgentsApprobateurs;
 		HashMap<String, String> params = new HashMap<>();
-		if(idAgent!=null){
+		if (idAgent != null) {
 			params.put("idAgent", idAgent.toString());
 		}
-		if(codeService!=null){
+		if (codeService != null) {
 			params.put("codeService", codeService);
 		}
 		ClientResponse res = createAndFireRequest(params, url);
@@ -268,7 +268,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 
 	@Override
 	public List<DemandeDto> getListeDemandesAgent(Integer idAgent, String onglet, String dateDebut, String dateFin,
-			String dateDemande, Integer idRefEtat, Integer idRefType, Integer idRefGroupeAbsence) {
+			String dateDemande, String listIdRefEtat, Integer idRefType, Integer idRefGroupeAbsence) {
 
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
 		String url = urlWS + sirhAbsDemandesAgent;
@@ -281,15 +281,15 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 			params.put("to", dateFin);
 		if (dateDemande != null)
 			params.put("dateDemande", dateDemande);
-		if (idRefEtat != null)
-			params.put("etat", idRefEtat.toString());
+		if (listIdRefEtat != null)
+			params.put("etat", listIdRefEtat);
 		if (idRefType != null)
 			params.put("type", idRefType.toString());
 		if (idRefGroupeAbsence != null)
 			params.put("groupe", idRefGroupeAbsence.toString());
 
 		logger.debug("Call " + url + " with idAgent : " + idAgent + ",ongletDemande : " + onglet + ",from : "
-				+ dateDebut + ",to : " + dateFin + ",dateDemande : " + dateDemande + ",etat : " + idRefEtat
+				+ dateDebut + ",to : " + dateFin + ",dateDemande : " + dateDemande + ",etat : " + listIdRefEtat
 				+ ",type : " + idRefType);
 		ClientResponse res = createAndFireRequest(params, url);
 		return readResponseAsList(DemandeDto.class, res, url);
@@ -411,7 +411,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	}
 
 	@Override
-	public List<DemandeDto> getListeDemandes(String dateDebut, String dateFin, Integer idRefEtat, Integer idRefType,
+	public List<DemandeDto> getListeDemandes(String dateDebut, String dateFin, String listIdRefEtat, Integer idRefType,
 			Integer idAgentRecherche, Integer idRefGroupe, boolean aValider, List<String> idAgentsService) {
 
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
@@ -423,8 +423,8 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 			params.put("from", dateDebut);
 		if (dateFin != null)
 			params.put("to", dateFin);
-		if (idRefEtat != null)
-			params.put("etat", idRefEtat.toString());
+		if (listIdRefEtat != null)
+			params.put("etat", listIdRefEtat);
 		if (idRefType != null)
 			params.put("type", idRefType.toString());
 		if (idAgentRecherche != null)
@@ -443,7 +443,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 			params.put("idAgents", csvId);
 		}
 
-		logger.debug("Call " + url + " with from : " + dateDebut + ",to : " + dateFin + ",etat : " + idRefEtat
+		logger.debug("Call " + url + " with from : " + dateDebut + ",to : " + dateFin + ",etat : " + listIdRefEtat
 				+ ",type : " + idRefType + ",idAgentRecherche : " + idAgentRecherche + ",groupe : " + idRefGroupe
 				+ ",aValider : " + aValider + ", idAgents : " + idAgentsService);
 
