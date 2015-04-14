@@ -1,3 +1,4 @@
+<%@page import="nc.mairie.gestionagent.absence.dto.MoisAlimAutoCongesAnnuelsDto"%>
 <%@ page contentType="text/html; charset=UTF-8" %> 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <%@page import="nc.mairie.utils.MairieUtils"%>
@@ -45,15 +46,15 @@
 						<table class="sigp2NewTab" width="1000px">
 							<%
 								for (int i = 0;i<process.getListeAlimAuto().size();i++){
-									Integer indice = process.getListeAlimAuto().get(i).getAgent().getIdAgent();
-							%>
+									MoisAlimAutoCongesAnnuelsDto histo = process.getListeAlimAuto().get(i);
+									if (histo.getAgent() != null && histo.getAgent().getIdAgent() != null) {
+									%>
 							<tr>
-								<td class="sigp2NewTab-liste" align="left" style="width:50px;"><%=process.getVAL_ST_NOMATR_AGENT(indice)%></td>
-								<td class="sigp2NewTab-liste" align="left" style="width:150px;"><%=process.getVAL_ST_LIB_AGENT(indice)%></td>
-								<td class="sigp2NewTab-liste" align="left"><%=process.getVAL_ST_STATUT(indice)%></td>
+								<td class="sigp2NewTab-liste" align="left" style="width:50px;"><%=process.getVAL_ST_NOMATR_AGENT(i)%></td>
+								<td class="sigp2NewTab-liste" align="left" style="width:150px;"><%=process.getVAL_ST_LIB_AGENT(i)%></td>
+								<td class="sigp2NewTab-liste" align="left"><%=process.getVAL_ST_STATUT(i)%></td>
 							</tr>
-							<%
-							indice++;										
+									<%}																	
 							}%>
 						</table>         
 				

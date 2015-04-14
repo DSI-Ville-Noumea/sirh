@@ -173,16 +173,19 @@ public class OeABSAlimentationMensuelle extends BasicProcess {
 	}
 
 	private void afficheAlimAuto() {
-		for (MoisAlimAutoCongesAnnuelsDto histo : getListeAlimAuto()) {
-			if (histo.getAgent() == null || histo.getAgent().getIdAgent() == null) {
-				break;
+		for (int j = 0; j < getListeAlimAuto().size(); j++) {
+			MoisAlimAutoCongesAnnuelsDto histo = getListeAlimAuto().get(j);
+			if (histo.getAgent() != null && histo.getAgent().getIdAgent() != null) {
+				addZone(getNOM_ST_NOMATR_AGENT(j),
+						histo.getAgent().getIdAgent().toString()
+								.substring(3, histo.getAgent().getIdAgent().toString().length()));
+				addZone(getNOM_ST_LIB_AGENT(j), histo.getAgent().getNom() + " " + histo.getAgent().getPrenom());
+				if (histo.getStatus().length() > 150) {
+					addZone(getNOM_ST_STATUT(j), histo.getStatus().substring(0, 150));
+				} else {
+					addZone(getNOM_ST_STATUT(j), histo.getStatus());
+				}
 			}
-			Integer i = histo.getAgent().getIdAgent();
-			addZone(getNOM_ST_NOMATR_AGENT(i),
-					histo.getAgent().getIdAgent().toString()
-							.substring(3, histo.getAgent().getIdAgent().toString().length()));
-			addZone(getNOM_ST_LIB_AGENT(i), histo.getAgent().getNom() + " " + histo.getAgent().getPrenom());
-			addZone(getNOM_ST_STATUT(i), histo.getStatus());
 		}
 	}
 
