@@ -1,4 +1,5 @@
-<%@ page contentType="text/html; charset=UTF-8" %> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@ page contentType="text/html; charset=UTF-8" %> 
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <%@page import="java.util.ArrayList"%>
 <%@page import="nc.mairie.enums.EnumTypeDroit"%>
 <%@page import="nc.mairie.utils.MairieUtils"%>
@@ -11,19 +12,20 @@
 		<META name="GENERATOR" content="IBM WebSphere Page Designer V3.5.3 for Windows">
 		<META http-equiv="Content-Style-Type" content="text/css">
 		<LINK href="theme/sigp2.css" rel="stylesheet" type="text/css">
+		<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		<TITLE>Gestion des carrières</TITLE>
 		<LINK rel="stylesheet" href="theme/calendrier-mairie.css" type="text/css">
 		<SCRIPT type="text/javascript" src="js/GestionCalendrier.js"></SCRIPT> 
 		<SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT>
 		
-		<link rel="stylesheet" href="css/custom-theme/jquery-ui-1.8.16.custom.css" type="text/css">
-		<script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
-		<script type="text/javascript" src="development-bundle/ui/jquery.ui.core.js"></script>
-		<script type="text/javascript" src="development-bundle/ui/jquery.ui.widget.js"></script>
-		<script type="text/javascript" src="development-bundle/ui/jquery.ui.position.js"></script>
-		<script type="text/javascript" src="development-bundle/ui/jquery.ui.autocomplete.js"></script>
+		<link rel="stylesheet" href="css/custom-theme/jquery-ui-1.8.16.custom.css" charset="utf-8" type="text/css">
+		<script type="text/javascript" src="js/jquery-1.6.2.min.js" charset="utf-8"></script>
+		<script type="text/javascript" src="development-bundle/ui/jquery.ui.core.js" charset="utf-8"></script>
+		<script type="text/javascript" src="development-bundle/ui/jquery.ui.widget.js" charset="utf-8"></script>
+		<script type="text/javascript" src="development-bundle/ui/jquery.ui.position.js" charset="utf-8"></script>
+		<script type="text/javascript" src="development-bundle/ui/jquery.ui.autocomplete.js" charset="utf-8"></script>
 		
-		<SCRIPT language="JavaScript">
+		<SCRIPT language="JavaScript" charset="utf-8">
 		//afin de sélectionner un élément dans une liste
 		function executeBouton(nom)
 		{
@@ -49,7 +51,7 @@
 		<%
 		ArrayList<Grade> listeGrades = process.getListeGrade();
 		
-		String res = 	"<script language=\"javascript\">\n"+
+		String res = 	"<script language=\"javascript\" charset=\"utf-8\">\n"+
 				"var availableGrades = new Array(\n";
 		
 		for (int i = 0; i < listeGrades.size(); i++){
@@ -69,7 +71,7 @@
 		res+=")</script>";
 		%>
 		<%=res%>
-		<SCRIPT type="text/javascript">
+		<SCRIPT type="text/javascript" charset="utf-8">
 			$(document).ready(function(){
 				$("#listeGrades").autocomplete({source:availableGrades
 				},{select: function(event, ui) { test(ui); }});
@@ -79,7 +81,6 @@
    			executeBouton('NOM_PB_SELECT_GRADE');
 			}	
 		</SCRIPT>
-		<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	</HEAD>
 	<BODY bgcolor="#FFFFFF" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="window.parent.frames['refAgent'].location.reload();">
 	<%@ include file="BanniereErreur.jsp" %>
