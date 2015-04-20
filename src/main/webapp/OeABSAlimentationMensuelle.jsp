@@ -34,7 +34,7 @@
             <INPUT name="JSP" type="hidden" value="<%= process.getJSP()%>">
             <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
                 <legend class="sigp2Legend">Alimentation mensuelle des congés annuels</legend>   
-				<span class="sigp2Mandatory">Retrouver ici toutes les alimenations automatiques de congés annuels.</span>      
+				<span class="sigp2Mandatory">Retrouver ici toutes les alimentations automatiques de congés annuels.</span>      
 				<br/><br/>   
 				<span class="sigp2" style="width:100px">Choisissez le mois à afficher : </span>
 				<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_MOIS_ALIM_AUTO() %>" style="width:100px;">

@@ -983,8 +983,17 @@ public class OeABSVisualisation extends BasicProcess {
 			type = (TypeAbsenceDto) getListeFamilleAbsenceCreation().get(numType);
 			if (type.getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.CONGE.getCode().toString())) {
 				// on cherche la base horaire absence de l'agent
-				Affectation aff = getAffectationDao().chercherAffectationActiveAvecAgent(
-						getAgentCreation().getIdAgent());
+				// #15000 : si on le trouve pas alors on prend la derniere
+				Affectation aff = null;
+				try {
+					aff = getAffectationDao().chercherAffectationActiveAvecAgent(getAgentCreation().getIdAgent());
+				} catch (Exception e) {
+					List<Affectation> listAffAutre = getAffectationDao().listerAffectationAvecAgent(
+							getAgentCreation().getIdAgent());
+					if (listAffAutre.size() > 0) {
+						aff = listAffAutre.get(listAffAutre.size() - 1);
+					}
+				}
 				if (aff == null || aff.getIdBaseHoraireAbsence() == null) {
 					// "ERR805",
 					// "L'agent @ n'a pas de base horaire d'absence. Merci de la renseigner dans l'affectation de l'agent."
