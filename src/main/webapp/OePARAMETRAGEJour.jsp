@@ -70,7 +70,7 @@
 				
 		<%if (! "".equals(process.getVAL_ST_ACTION()) ) {%>
 
-		<FIELDSET class="sigp2Fieldset" style="text-align: left; width:1030px;">
+		<FIELDSET class="sigp2Fieldset" style="text-align: left; width:1030px;" id="idAction">
 			<legend class="sigp2Legend"><%=process.getVAL_ST_ACTION()%></legend>
 			<%if(process.getVAL_ST_ACTION().equals(process.ACTION_VISUALISATION)||process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION)){ %>
 					<%if(process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION)){ %>
@@ -173,6 +173,10 @@
 					</table>	
 					<%} %>
 			<%} %>
+			
+			<SCRIPT type="text/javascript">
+            	window.location.hash = '#idAction';
+            </SCRIPT>
 		</FIELDSET>
 		<%} %>
 				
