@@ -45,6 +45,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	private static final String sirhAbsListOrganisationSyndicale = "organisation/listOrganisation";
 	private static final String sirhAbsOrganisationSyndicaleSauvegarde = "organisation/addOS";
 	private static final String sirhAbsAddRepresentantAsaA52 = "asaA52/saveRepresentant";
+	private static final String sirhAbsListOrganisationActif = "organisation/listOrganisationActif";
 
 	private static final String sirhAbsAgentsApprobateurs = "droits/approbateurs";
 	private static final String sirhAbsDeleteApprobateurs = "droits/deleteApprobateurs";
@@ -388,6 +389,17 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
 		String url = urlWS + sirhAbsListOrganisationSyndicale;
 		HashMap<String, String> params = new HashMap<>();
+		ClientResponse res = createAndFireRequest(params, url);
+		return readResponseAsList(OrganisationSyndicaleDto.class, res, url);
+	}
+
+	@Override
+	public List<OrganisationSyndicaleDto> getListeOrganisationSyndicaleActiveByAgent(Integer idAgent, Integer idRefTypeAbsence) {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
+		String url = urlWS + sirhAbsListOrganisationActif;
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idAgent", idAgent.toString());
+		params.put("idRefTypeAbsence", idRefTypeAbsence.toString());
 		ClientResponse res = createAndFireRequest(params, url);
 		return readResponseAsList(OrganisationSyndicaleDto.class, res, url);
 	}

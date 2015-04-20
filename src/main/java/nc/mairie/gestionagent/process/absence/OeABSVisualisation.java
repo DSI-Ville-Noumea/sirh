@@ -1018,7 +1018,25 @@ public class OeABSVisualisation extends BasicProcess {
 				|| (type != null && type.getGroupeAbsence() != null && (type.getGroupeAbsence().getIdRefGroupeAbsence() == EnumTypeGroupeAbsence.CONGES_EXCEP
 						.getValue() || type.getGroupeAbsence().getIdRefGroupeAbsence() == EnumTypeGroupeAbsence.CONGES_ANNUELS
 						.getValue()))) {
-
+			
+			SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
+			ArrayList<OrganisationSyndicaleDto> listeOrga = new ArrayList<OrganisationSyndicaleDto>();
+			if(type.getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.ASA_A52.getCode().toString())) {
+				listeOrga = (ArrayList<OrganisationSyndicaleDto>) consuAbs
+						.getListeOrganisationSyndicaleActiveByAgent(new Integer(idAgent), type.getIdRefTypeAbsence());
+				if(null == listeOrga 
+						|| listeOrga.isEmpty()) {
+					getTransaction().declarerErreur("L'agent ne fait parti d'aucun syndicat.");
+					return false;
+				}
+			}else{
+				listeOrga = (ArrayList<OrganisationSyndicaleDto>) consuAbs
+						.getListeOrganisationSyndicale();
+			}
+			
+			setListeOrganisationSyndicale(listeOrga);
+			formatterOS(listeOrga);
+			
 			addZone(getNOM_ST_ACTION(), ACTION_CREATION_DEMANDE);
 		} else {
 			getTransaction().declarerErreur("Cette famille ne peut être saisie dans SIRH.");
@@ -1026,6 +1044,18 @@ public class OeABSVisualisation extends BasicProcess {
 
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
+	}
+	
+	private void formatterOS(ArrayList<OrganisationSyndicaleDto> listeOrga) {
+		
+		int[] tailles = { 50 };
+		FormateListe aFormat = new FormateListe(tailles);
+		for (OrganisationSyndicaleDto os : listeOrga) {
+			String ligne[] = { os.getLibelle() };
+			aFormat.ajouteLigne(ligne);
+		}
+		setLB_OS(aFormat.getListeFormatee(false));
+		addZone(getNOM_LB_OS_SELECT(), Const.ZERO);
 	}
 
 	public String getNOM_PB_ANNULER() {

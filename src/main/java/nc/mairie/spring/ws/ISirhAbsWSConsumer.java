@@ -127,4 +127,7 @@ public interface ISirhAbsWSConsumer {
 
 	ActeursDto getListeActeurs(Integer idAgent);
 
+	List<OrganisationSyndicaleDto> getListeOrganisationSyndicaleActiveByAgent(
+			Integer idAgent, Integer idRefTypeAbsence);
+
 }
