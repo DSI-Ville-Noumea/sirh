@@ -1018,25 +1018,23 @@ public class OeABSVisualisation extends BasicProcess {
 				|| (type != null && type.getGroupeAbsence() != null && (type.getGroupeAbsence().getIdRefGroupeAbsence() == EnumTypeGroupeAbsence.CONGES_EXCEP
 						.getValue() || type.getGroupeAbsence().getIdRefGroupeAbsence() == EnumTypeGroupeAbsence.CONGES_ANNUELS
 						.getValue()))) {
-			
+
 			SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
 			ArrayList<OrganisationSyndicaleDto> listeOrga = new ArrayList<OrganisationSyndicaleDto>();
-			if(type.getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.ASA_A52.getCode().toString())) {
-				listeOrga = (ArrayList<OrganisationSyndicaleDto>) consuAbs
-						.getListeOrganisationSyndicaleActiveByAgent(new Integer(idAgent), type.getIdRefTypeAbsence());
-				if(null == listeOrga 
-						|| listeOrga.isEmpty()) {
+			if (type.getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.ASA_A52.getCode().toString())) {
+				listeOrga = (ArrayList<OrganisationSyndicaleDto>) consuAbs.getListeOrganisationSyndicaleActiveByAgent(
+						new Integer(idAgent), type.getIdRefTypeAbsence());
+				if (null == listeOrga || listeOrga.isEmpty()) {
 					getTransaction().declarerErreur("L'agent ne fait parti d'aucun syndicat.");
 					return false;
 				}
-			}else{
-				listeOrga = (ArrayList<OrganisationSyndicaleDto>) consuAbs
-						.getListeOrganisationSyndicale();
+			} else {
+				listeOrga = (ArrayList<OrganisationSyndicaleDto>) consuAbs.getListeOrganisationSyndicale();
 			}
-			
+
 			setListeOrganisationSyndicale(listeOrga);
 			formatterOS(listeOrga);
-			
+
 			addZone(getNOM_ST_ACTION(), ACTION_CREATION_DEMANDE);
 		} else {
 			getTransaction().declarerErreur("Cette famille ne peut être saisie dans SIRH.");
@@ -1045,9 +1043,9 @@ public class OeABSVisualisation extends BasicProcess {
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
-	
+
 	private void formatterOS(ArrayList<OrganisationSyndicaleDto> listeOrga) {
-		
+
 		int[] tailles = { 50 };
 		FormateListe aFormat = new FormateListe(tailles);
 		for (OrganisationSyndicaleDto os : listeOrga) {
@@ -2219,6 +2217,44 @@ public class OeABSVisualisation extends BasicProcess {
 
 	public boolean performPB_FILTRER_DEMANDE_A_VALIDER(HttpServletRequest request) throws Exception {
 
+
+		String dateDeb = getVAL_ST_DATE_MIN();
+		String dateMin = dateDeb.equals(Const.CHAINE_VIDE) ? null : Services.convertitDate(dateDeb, "dd/MM/yyyy",
+				"yyyyMMdd");
+
+		String dateFin = getVAL_ST_DATE_MAX();
+		String dateMax = dateFin.equals(Const.CHAINE_VIDE) ? null : Services.convertitDate(dateFin, "dd/MM/yyyy",
+				"yyyyMMdd");
+
+		// etat
+		int numEtat = (Services.estNumerique(getZone(getNOM_LB_ETAT_SELECT())) ? Integer
+				.parseInt(getZone(getNOM_LB_ETAT_SELECT())) : -1);
+		EnumEtatAbsence etat = null;
+		if (numEtat != -1 && numEtat != 0) {
+			etat = (EnumEtatAbsence) getListeEtats().get(numEtat - 1);
+		}
+		List<Integer> listeEtat = new ArrayList<Integer>();
+		if (etat != null)
+			listeEtat.add(etat.getCode());
+
+		// famille
+		int numType = (Services.estNumerique(getZone(getNOM_LB_FAMILLE_SELECT())) ? Integer
+				.parseInt(getZone(getNOM_LB_FAMILLE_SELECT())) : -1);
+		TypeAbsenceDto type = null;
+		if (numType != -1 && numType != 0) {
+			type = (TypeAbsenceDto) getListeFamilleAbsenceCreation().get(numType - 1);
+		}
+		// groupe
+		int numGroupe = (Services.estNumerique(getZone(getNOM_LB_GROUPE_SELECT())) ? Integer
+				.parseInt(getZone(getNOM_LB_GROUPE_SELECT())) : -1);
+		RefGroupeAbsenceDto groupe = null;
+		if (numGroupe != -1 && numGroupe != 0) {
+			groupe = (RefGroupeAbsenceDto) getListeGroupeAbsence().get(numGroupe - 1);
+		}
+
+		String idAgentDemande = getVAL_ST_AGENT_DEMANDE().equals(Const.CHAINE_VIDE) ? null : "900"
+				+ getVAL_ST_AGENT_DEMANDE();
+		
 		// GESTIONNAIRE
 		int numGestionnaire = (Services.estNumerique(getZone(getNOM_LB_GESTIONNAIRE_SELECT())) ? Integer
 				.parseInt(getZone(getNOM_LB_GESTIONNAIRE_SELECT())) : -1);
@@ -2267,7 +2303,12 @@ public class OeABSVisualisation extends BasicProcess {
 		}
 
 		SirhAbsWSConsumer t = new SirhAbsWSConsumer();
-		List<DemandeDto> listeDemande = t.getListeDemandes(null, null, null, null, null, null, true, idAgentService);
+		List<DemandeDto> listeDemande = t.getListeDemandes(dateMin, dateMax, listeEtat.size() == 0 ? null : listeEtat
+				.toString().replace("[", "").replace("]", "").replace(" ", ""),
+				type == null ? null : type.getIdRefTypeAbsence(),
+				idAgentDemande == null ? null : Integer.valueOf(idAgentDemande),
+				groupe == null ? null : groupe.getIdRefGroupeAbsence(), true, idAgentService);
+
 		logger.debug("Taille liste absences : " + listeDemande.size());
 
 		setListeAbsence((ArrayList<DemandeDto>) listeDemande);
