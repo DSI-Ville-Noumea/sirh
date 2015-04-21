@@ -117,6 +117,8 @@ public interface ISirhAbsWSConsumer {
 
 	List<MoisAlimAutoCongesAnnuelsDto> getListeAlimAutoCongeAnnuel(MoisAlimAutoCongesAnnuelsDto moisChoisi);
 
+	List<MoisAlimAutoCongesAnnuelsDto> getHistoriqueAlimAutoAgent(Integer idAgent);
+
 	List<RefAlimCongesAnnuelsDto> getListeRefAlimCongesAnnuels(Integer idRefTypeSaisiCongeAnnuel);
 
 	List<RestitutionMassiveDto> getHistoRestitutionMassive(Integer idAgent);
@@ -127,7 +129,6 @@ public interface ISirhAbsWSConsumer {
 
 	ActeursDto getListeActeurs(Integer idAgent);
 
-	List<OrganisationSyndicaleDto> getListeOrganisationSyndicaleActiveByAgent(
-			Integer idAgent, Integer idRefTypeAbsence);
+	List<OrganisationSyndicaleDto> getListeOrganisationSyndicaleActiveByAgent(Integer idAgent, Integer idRefTypeAbsence);
 
 }

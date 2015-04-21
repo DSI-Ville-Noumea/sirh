@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import nc.mairie.gestionagent.absence.dto.ActeursDto;
 import nc.mairie.gestionagent.absence.dto.FiltreSoldeDto;
 import nc.mairie.gestionagent.absence.dto.HistoriqueSoldeDto;
+import nc.mairie.gestionagent.absence.dto.MoisAlimAutoCongesAnnuelsDto;
 import nc.mairie.gestionagent.absence.dto.OrganisationSyndicaleDto;
 import nc.mairie.gestionagent.absence.dto.SoldeDto;
 import nc.mairie.gestionagent.absence.dto.SoldeMonthDto;
@@ -53,6 +54,8 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 	private Agent agentCourant;
 	private ArrayList<TypeAbsenceDto> listeTypeAbsence;
 	private ArrayList<HistoriqueSoldeDto> listeHistorique;
+	private ArrayList<MoisAlimAutoCongesAnnuelsDto> listeHistoriqueAlimAuto;
+
 	private ArrayList<SoldeMonthDto> listeSoldeA55;
 	private ArrayList<SoldeMonthDto> listeSoldeA52;
 	private boolean afficheSoldeAsaA52;
@@ -272,11 +275,11 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 			addZone(getNOM_ST_TYPE_CONGES_EXCEP(i), soldeSpecifiqueDto.getLibelle());
 		}
 	}
-	
+
 	private void initialiseActeursAbsenceAgent(HttpServletRequest request) {
 		SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
 		ActeursDto acteursDto = consuAbs.getListeActeurs(getAgentCourant().getIdAgent());
-		
+
 		setActeursDto(acteursDto);
 	}
 
@@ -485,6 +488,20 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 
 		}
 
+		// #15146 : dans les congés annuels, on charge aussi l'historique des
+		// alim auto de fin de mois
+		// Liste depuis SIRH-ABS-WS
+		ArrayList<MoisAlimAutoCongesAnnuelsDto> listeHistoriqueAlimAuto = (ArrayList<MoisAlimAutoCongesAnnuelsDto>) consuAbs
+				.getHistoriqueAlimAutoAgent(getAgentCourant().getIdAgent());
+		setListeHistoriqueAlimAuto(listeHistoriqueAlimAuto);
+
+		for (int i = 0; i < getListeHistoriqueAlimAuto().size(); i++) {
+			MoisAlimAutoCongesAnnuelsDto histo = (MoisAlimAutoCongesAnnuelsDto) getListeHistoriqueAlimAuto().get(i);
+
+			addZone(getNOM_ST_MOIS(i), sdfDate.format(histo.getDateMois()));
+			addZone(getNOM_ST_NB_JOUR(i), histo.getNbJours().toString());
+
+		}
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION(), ACTION_VISUALISATION);
 		setFocus(getNOM_PB_ANNULER());
@@ -737,6 +754,31 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 
 	public void setActeursDto(ActeursDto acteursDto) {
 		this.acteursDto = acteursDto;
+	}
+
+	public ArrayList<MoisAlimAutoCongesAnnuelsDto> getListeHistoriqueAlimAuto() {
+		return listeHistoriqueAlimAuto == null ? new ArrayList<MoisAlimAutoCongesAnnuelsDto>()
+				: listeHistoriqueAlimAuto;
+	}
+
+	public void setListeHistoriqueAlimAuto(ArrayList<MoisAlimAutoCongesAnnuelsDto> listeHistoriqueAlimAuto) {
+		this.listeHistoriqueAlimAuto = listeHistoriqueAlimAuto;
+	}
+
+	public String getNOM_ST_MOIS(int i) {
+		return "NOM_ST_MOIS" + i;
+	}
+
+	public String getVAL_ST_MOIS(int i) {
+		return getZone(getNOM_ST_MOIS(i));
+	}
+
+	public String getNOM_ST_NB_JOUR(int i) {
+		return "NOM_ST_NB_JOUR" + i;
+	}
+
+	public String getVAL_ST_NB_JOUR(int i) {
+		return getZone(getNOM_ST_NB_JOUR(i));
 	}
 
 }

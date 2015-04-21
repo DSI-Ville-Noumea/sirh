@@ -98,6 +98,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 
 	private static final String sirhAbsMoisAlimAutoUrl = "congeannuel/getListeMoisAlimAutoCongeAnnuel";
 	private static final String sirhAbsAlimAutoUrl = "congeannuel/getListeAlimAutoCongeAnnuel";
+	private static final String sirhAbsHistoAlimAutoUrl = "congeannuel/getHistoAlimAutoCongeAnnuel";
 	private static final String sirhAbsListRefAlimUrl = "congeannuel/getListRefAlimCongeAnnuel";
 	private static final String sirhAbsRefAlimCongeAnnuelSauvegarde = "congeannuel/setRefAlimCongeAnnuel";
 
@@ -394,7 +395,8 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	}
 
 	@Override
-	public List<OrganisationSyndicaleDto> getListeOrganisationSyndicaleActiveByAgent(Integer idAgent, Integer idRefTypeAbsence) {
+	public List<OrganisationSyndicaleDto> getListeOrganisationSyndicaleActiveByAgent(Integer idAgent,
+			Integer idRefTypeAbsence) {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
 		String url = urlWS + sirhAbsListOrganisationActif;
 		HashMap<String, String> params = new HashMap<>();
@@ -767,6 +769,17 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 		logger.debug("Call " + url + " with idAgent : " + idAgent);
 		ClientResponse res = createAndFireRequest(params, url);
 		return readResponse(ActeursDto.class, res, url);
+	}
+
+	@Override
+	public List<MoisAlimAutoCongesAnnuelsDto> getHistoriqueAlimAutoAgent(Integer idAgent) {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
+		String url = urlWS + sirhAbsHistoAlimAutoUrl;
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idAgent", idAgent.toString());
+		logger.debug("Call " + url + " with idAgent : " + idAgent);
+		ClientResponse res = createAndFireRequest(params, url);
+		return readResponseAsList(MoisAlimAutoCongesAnnuelsDto.class, res, url);
 	}
 
 }

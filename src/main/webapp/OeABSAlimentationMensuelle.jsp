@@ -9,11 +9,16 @@
         <META http-equiv="Content-Style-Type" content="text/css">
         <LINK href="theme/sigp2.css" rel="stylesheet" type="text/css">
 		<LINK rel="stylesheet" href="theme/calendrier-mairie.css" type="text/css">
+		<LINK href="theme/dataTables.css" rel="stylesheet" type="text/css">
+		<LINK href="TableTools-2.0.1/media/css/TableTools.css" rel="stylesheet" type="text/css">
         <jsp:useBean class="nc.mairie.gestionagent.process.absence.OeABSAlimentationMensuelle" id="process" scope="session"></jsp:useBean>
             <TITLE>Alimentation mensuelle des congés annuels</TITLE>		
 
 
             <SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT> 
+			<script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
+			<script type="text/javascript" src="js/jquery.dataTables.js"></script>
+			<script type="text/javascript" src="TableTools-2.0.1/media/js/TableTools.min.js"></script>
 
             <SCRIPT type="text/javascript">
                 function executeBouton(nom)
@@ -42,21 +47,47 @@
 				</SELECT>  
 	            <BR/><BR/>
 				<INPUT type="submit" class="sigp2-Bouton-100" value="Afficher" name="<%=process.getNOM_PB_AFFICHER()%>">   
-	            <BR/><BR/>				
-						<table class="sigp2NewTab" width="1000px">
+	            <BR/><BR/>		 
+						<table class="display" id="tabAlimHisto">
+							<thead>
+								<tr>
+									<th>Matricule</th>
+									<th>Agent</th>
+									<th>Erreur</th>
+									<th>Info</th>			
+								</tr>
+							</thead>
+							<tbody>
 							<%
 								for (int i = 0;i<process.getListeAlimAuto().size();i++){
 									MoisAlimAutoCongesAnnuelsDto histo = process.getListeAlimAuto().get(i);
-									if (histo.getAgent() != null && histo.getAgent().getIdAgent() != null) {
-									%>
-							<tr>
-								<td class="sigp2NewTab-liste" align="left" style="width:50px;"><%=process.getVAL_ST_NOMATR_AGENT(i)%></td>
-								<td class="sigp2NewTab-liste" align="left" style="width:150px;"><%=process.getVAL_ST_LIB_AGENT(i)%></td>
-								<td class="sigp2NewTab-liste" align="left"><%=process.getVAL_ST_STATUT(i)%></td>
-							</tr>
-									<%}																	
-							}%>
-						</table>         
+							%>
+									<tr>
+										<td><%=process.getVAL_ST_NOMATR_AGENT(i)%></td>
+										<td><%=process.getVAL_ST_LIB_AGENT(i)%></td>
+										<td><%=process.getVAL_ST_STATUT(i)%></td>
+										<td><%=process.getVAL_ST_INFO(i)%></td>								
+									</tr>
+							<%
+								}
+							%>
+							</tbody>
+						</table>
+				<script type="text/javascript">
+					$(document).ready(function() {
+					    $('#tabAlimHisto').dataTable({
+							"oLanguage": {"sUrl": "media/dataTables/language/fr_FR.txt"},
+							"aoColumns": [null,null,null,null],
+							"sDom": '<"H"fl>t<"F"iT>',
+							"sScrollY": "375px",
+							"bPaginate": false,
+							"oTableTools": {
+								"aButtons": [{"sExtends":"xls","sButtonText":"Export Excel","mColumns":"visible","sTitle":"alimAuto","sFileName":"*.xls"}], //OU : "mColumns":[0,1,2,3,4]
+								"sSwfPath": "TableTools-2.0.1/media/swf/copy_cvs_xls_pdf.swf"
+							}
+					    });
+					} );
+				</script>       
 				
              </FIELDSET>             
             

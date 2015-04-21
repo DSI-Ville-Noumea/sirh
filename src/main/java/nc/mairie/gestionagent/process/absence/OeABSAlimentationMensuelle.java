@@ -180,11 +180,8 @@ public class OeABSAlimentationMensuelle extends BasicProcess {
 						histo.getAgent().getIdAgent().toString()
 								.substring(3, histo.getAgent().getIdAgent().toString().length()));
 				addZone(getNOM_ST_LIB_AGENT(j), histo.getAgent().getNom() + " " + histo.getAgent().getPrenom());
-				if (histo.getStatus().length() > 150) {
-					addZone(getNOM_ST_STATUT(j), histo.getStatus().substring(0, 150));
-				} else {
-					addZone(getNOM_ST_STATUT(j), histo.getStatus());
-				}
+				addZone(getNOM_ST_STATUT(j), histo.getStatus());
+				addZone(getNOM_ST_INFO(j), histo.getInfos());
 			}
 		}
 	}
@@ -235,5 +232,13 @@ public class OeABSAlimentationMensuelle extends BasicProcess {
 
 	public String getVAL_ST_STATUT(int i) {
 		return getZone(getNOM_ST_STATUT(i));
+	}
+
+	public String getNOM_ST_INFO(int i) {
+		return "NOM_ST_INFO" + i;
+	}
+
+	public String getVAL_ST_INFO(int i) {
+		return getZone(getNOM_ST_INFO(i));
 	}
 }
