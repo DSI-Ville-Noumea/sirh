@@ -730,6 +730,8 @@ public class RobotAgent extends Robot {
 				OeAGENTRecherche.class.getName());
 		navigation.put(OePTGPayeurContractuels.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
 				OeAGENTRecherche.class.getName());
+		navigation.put(OePTGSaisie.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
+				OeAGENTRecherche.class.getName());
 
 		// ABSENCE
 		navigation.put(OeABSVisualisation.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,

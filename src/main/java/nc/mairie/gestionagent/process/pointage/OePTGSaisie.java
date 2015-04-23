@@ -55,6 +55,9 @@ public class OePTGSaisie extends BasicProcess {
      *
      */
 	private static final long serialVersionUID = 1L;
+
+	public static final int STATUT_RECHERCHER_AGENT = 1;
+
 	private Integer idAgent = null;
 	private Date dateLundi = new Date();
 	private boolean isDPM;
@@ -71,7 +74,7 @@ public class OePTGSaisie extends BasicProcess {
 	private AffectationDao affectationDao;
 	private AgentDao agentDao;
 	public String focus = null;
-	
+
 	private List<MotifHeureSupDto> listMotifHsup;
 
 	@Override
@@ -96,7 +99,7 @@ public class OePTGSaisie extends BasicProcess {
 		setListeFichePointage(dto);
 
 		setListMotifHsup(t.getListeMotifHeureSup());
-		
+
 		setINASuperieur315(dto.isINASuperieur315());
 		setDPM(dto.isDPM());
 	}
@@ -641,7 +644,7 @@ public class OePTGSaisie extends BasicProcess {
 		}
 		return ret.toString();
 	}
-	
+
 	public String getMotifHsup(Integer idMotifHsup) {
 
 		Integer selected = 0;
@@ -654,8 +657,8 @@ public class OePTGSaisie extends BasicProcess {
 
 		for (MotifHeureSupDto motif : getListMotifHsup()) {
 			ret.append("<option value='" + motif.getIdMotifHsup() + "'"
-					+ (selected == motif.getIdMotifHsup() ? "selected" : "") + " title='"+motif.getLibelle()+"' >" + motif.getLibelle()
-					+ "</option>");
+					+ (selected == motif.getIdMotifHsup() ? "selected" : "") + " title='" + motif.getLibelle() + "' >"
+					+ motif.getLibelle() + "</option>");
 
 		}
 		return ret.toString();
