@@ -35,7 +35,7 @@ public interface ISirhPtgWSConsumer {
 			String agentsJson, boolean allVentilation);
 
 	<T> List<T> getVentilationsHistory(Class<T> targetClass, Integer mois, Integer annee, Integer idRefTypePointage,
-			Integer idAgent, boolean allVentilation);
+			Integer idAgent, boolean allVentilation, Integer idVentilDate);
 
 	boolean isVentilAvailable(String agentStatus);
 

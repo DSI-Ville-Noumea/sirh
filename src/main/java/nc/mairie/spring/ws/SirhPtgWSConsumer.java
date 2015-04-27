@@ -431,7 +431,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 
 	@Override
 	public <T> List<T> getVentilationsHistory(Class<T> targetClass, Integer mois, Integer annee,
-			Integer idRefTypePointage, Integer idAgent, boolean allVentilation) {
+			Integer idRefTypePointage, Integer idAgent, boolean allVentilation, Integer idVentilDate) {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS_URL");
 		String url = urlWS + sirhPtgVentilationsHistory;
 		Map<String, String> parameters = new HashMap<String, String>();
@@ -440,6 +440,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 		parameters.put("typePointage", idRefTypePointage.toString());
 		parameters.put("idAgent", idAgent.toString());
 		parameters.put("allVentilation", String.valueOf(allVentilation));
+		parameters.put("idVentilDate", String.valueOf(idVentilDate));
 		ClientResponse res = createAndFireRequest(parameters, url);
 		return readResponseAsList(targetClass, res, url);
 	}

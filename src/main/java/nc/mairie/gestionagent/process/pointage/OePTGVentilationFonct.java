@@ -749,7 +749,7 @@ public class OePTGVentilationFonct extends BasicProcess {
 			List<VentilAbsenceDto> listVentilAbs = consum.getVentilationsHistory(VentilAbsenceDto.class,
 					Integer.valueOf(moisFormat.format(abs.getDateLundi())),
 					Integer.valueOf(anneeFormat.format(abs.getDateLundi())), 1, abs.getId_agent(),
-					isShowAllVentilation());
+					isShowAllVentilation(), abs.getIdVentilDate());
 			list.put(cle, listVentilAbs);
 		}
 		// on construit la cle
@@ -810,7 +810,7 @@ public class OePTGVentilationFonct extends BasicProcess {
 			List<VentilAbsenceDto> listVentilAbs = consum.getVentilationsHistory(VentilAbsenceDto.class,
 					Integer.valueOf(mois.format(abs.getDateLundi())),
 					Integer.valueOf(annee.format(abs.getDateLundi())), typePointage, abs.getId_agent(),
-					isShowAllVentilation());
+					isShowAllVentilation(), abs.getIdVentilDate());
 			hashVentilAbs.put(cle, listVentilAbs);
 		}
 		setHashVentilAbs(hashVentilAbs);
@@ -848,7 +848,7 @@ public class OePTGVentilationFonct extends BasicProcess {
 			List<VentilHSupDto> listVentilHsup = consum.getVentilationsHistory(VentilHSupDto.class,
 					Integer.valueOf(moisFormat.format(hsup.getDateLundi())),
 					Integer.valueOf(anneeFormat.format(hsup.getDateLundi())), 2, hsup.getId_agent(),
-					isShowAllVentilation());
+					isShowAllVentilation(), hsup.getIdVentilDate());
 			list.put(cle, listVentilHsup);
 		}
 		// on construit la cle
@@ -934,7 +934,7 @@ public class OePTGVentilationFonct extends BasicProcess {
 			List<VentilHSupDto> listVentilHsup = consum.getVentilationsHistory(VentilHSupDto.class,
 					Integer.valueOf(mois.format(abs.getDateLundi())),
 					Integer.valueOf(annee.format(abs.getDateLundi())), typePointage, abs.getId_agent(),
-					isShowAllVentilation());
+					isShowAllVentilation(), abs.getIdVentilDate());
 			hashVentilHsup.put(cle, listVentilHsup);
 		}
 		setHashVentilHsup(hashVentilHsup);
