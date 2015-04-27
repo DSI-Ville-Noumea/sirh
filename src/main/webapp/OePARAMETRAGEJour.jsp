@@ -1,3 +1,9 @@
+<%@page import="nc.mairie.metier.parametrage.JourFerie"%>
+<%@page import="java.util.Calendar"%>
+<%@page import="org.joda.time.DateTimeConstants"%>
+<%@page import="org.joda.time.DateTimeField"%>
+<%@page import="org.joda.time.DateTime"%>
+<%@page import="java.util.Date"%>
 <%@ page contentType="text/html; charset=UTF-8" %> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <%@page import="nc.mairie.enums.EnumTypeDroit"%>
 <%@page import="nc.mairie.utils.MairieUtils"%>
@@ -44,12 +50,18 @@
 						<table class="sigp2NewTab" style="text-align:left;width:980px;">
 							<%
 							int indiceAnnee = 0;
+							Calendar cal = Calendar.getInstance();
+							cal.setTime(new Date());
+							Integer anneeEnCours = cal.get(Calendar.YEAR);
 								for (int i = 0;i<process.getListeAnnee().size();i++){
+									String annee= process.getListeAnnee().get(i);
 							%>
 									<tr>
 										<td class="sigp2NewTab-liste" style="position:relative;width:70px;" align="center">
 											<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, "") %>" name="<%=process.getNOM_PB_VISUALISATION(indiceAnnee)%>">
+											<%if(Integer.valueOf(annee)>= anneeEnCours){ %>
 											<INPUT title="modifier" type="image" src="images/modifier.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_MODIFIER(indiceAnnee)%>">
+											<%} %>
 				    						<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_VISUALISATION(indiceAnnee)%>">				    						
 				    					</td>
 										<td class="sigp2NewTab-liste" style="position:relative;">&nbsp;<%=process.getVAL_ST_ANNEE(indiceAnnee)%></td>
@@ -72,6 +84,16 @@
 
 		<FIELDSET class="sigp2Fieldset" style="text-align: left; width:1030px;" id="idAction">
 			<legend class="sigp2Legend"><%=process.getVAL_ST_ACTION()%></legend>
+			<%if(process.getVAL_ST_ACTION().equals(process.ACTION_CREATION)){ %>
+				<span style="color: red;margin-left:10px;" class="sigp2Mandatory">Attention, en validant votre demande, vous allez effectuer les actions suivantes :</span>
+				<ul  style="color: red;">
+					<li> Duplication des jours fériés de l'année précédente.</li>
+					<li> Création du paramétrage des bases congés (cf écran PARAMETRES/Absences).</li>
+				</ul>
+			
+				<INPUT type="submit" class="sigp2-Bouton-100" value="Valider" name="<%=process.getNOM_PB_VALIDER_CREER_ANNEE()%>">
+				<INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
+			<%} %>
 			<%if(process.getVAL_ST_ACTION().equals(process.ACTION_VISUALISATION)||process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION)){ %>
 					<%if(process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION)){ %>
 				    <INPUT style="margin-left: 5px;" title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_AJOUTER_JOUR()%>">
@@ -84,10 +106,10 @@
 						<table class="sigp2NewTab" style="text-align:left;width:980px;">
 							<%
 								for (int j = 0;j<process.getListeJourFerie().size();j++){
-							%>
+									JourFerie jour = process.getListeJourFerie().get(j);							%>
 									<tr>
 										<td class="sigp2NewTab-liste" style="position:relative;width:50px;" align="center">&nbsp;
-											<%if(process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION)){ %>
+											<%if(process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION) && jour.getDateJour().compareTo(new Date())>0){ %>
 											<INPUT title="modifier" type="image" src="images/modifier.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_MODIFIER_JOUR(j)%>">
 											<INPUT title="supprimer" type="image" src="images/suppression.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_SUPPRIMER_JOUR(j)%>">
 											<%} %>

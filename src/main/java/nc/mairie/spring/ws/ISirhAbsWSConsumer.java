@@ -131,4 +131,7 @@ public interface ISirhAbsWSConsumer {
 
 	List<OrganisationSyndicaleDto> getListeOrganisationSyndicaleActiveByAgent(Integer idAgent, Integer idRefTypeAbsence);
 
+	// bases congés
+	ReturnMessageDto createNouvelleAnneeBaseConges(Integer anneeCreation);
+
 }

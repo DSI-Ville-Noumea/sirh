@@ -101,6 +101,8 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	private static final String sirhAbsHistoAlimAutoUrl = "congeannuel/getHistoAlimAutoCongeAnnuel";
 	private static final String sirhAbsListRefAlimUrl = "congeannuel/getListRefAlimCongeAnnuel";
 	private static final String sirhAbsRefAlimCongeAnnuelSauvegarde = "congeannuel/setRefAlimCongeAnnuel";
+	private static final String sirhAbsCreateBaseConge = "congeannuel/createRefAlimCongeAnnuelAnnee";
+	
 
 	private Logger logger = LoggerFactory.getLogger(SirhAbsWSConsumer.class);
 
@@ -780,6 +782,17 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 		logger.debug("Call " + url + " with idAgent : " + idAgent);
 		ClientResponse res = createAndFireRequest(params, url);
 		return readResponseAsList(MoisAlimAutoCongesAnnuelsDto.class, res, url);
+	}
+
+	@Override
+	public ReturnMessageDto createNouvelleAnneeBaseConges(Integer anneeCreation) {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
+		String url = urlWS + sirhAbsCreateBaseConge;
+		HashMap<String, String> params = new HashMap<>();
+		params.put("annee", anneeCreation.toString());
+		logger.debug("Call " + url + " with annee : " + anneeCreation);
+		ClientResponse res = createAndFireRequest(params, url);
+		return readResponse(ReturnMessageDto.class, res, url);
 	}
 
 }

@@ -1,11 +1,14 @@
 package nc.mairie.gestionagent.process.parametre;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Hashtable;
 
 import javax.servlet.http.HttpServletRequest;
 
+import nc.mairie.gestionagent.dto.ReturnMessageDto;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.parametrage.JourFerie;
 import nc.mairie.metier.parametrage.TypeJourFerie;
@@ -13,6 +16,7 @@ import nc.mairie.spring.dao.metier.parametrage.JourFerieDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeJourFerieDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
+import nc.mairie.spring.ws.SirhAbsWSConsumer;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
@@ -35,6 +39,7 @@ public class OePARAMETRAGEJour extends BasicProcess {
 	public String focus = null;
 	public String ACTION_VISUALISATION = "Consultation d'une année.";
 	public String ACTION_MODIFICATION = "Modification d'une année.";
+	public String ACTION_CREATION = "Création d'une nouvelle année.";
 	public String ACTION_CREATION_JOUR = "Création d'un jour.";
 	public String ACTION_MODIFICATION_JOUR = "Modification d'un jour.";
 	public String ACTION_SUPPRESSION_JOUR = "Suppression d'un jour.";
@@ -161,6 +166,11 @@ public class OePARAMETRAGEJour extends BasicProcess {
 			// Si clic sur le bouton PB_CREER_ANNEE
 			if (testerParametre(request, getNOM_PB_CREER_ANNEE())) {
 				return performPB_CREER_ANNEE(request);
+			}
+
+			// Si clic sur le bouton PB_VALIDER_CREER_ANNEE
+			if (testerParametre(request, getNOM_PB_VALIDER_CREER_ANNEE())) {
+				return performPB_VALIDER_CREER_ANNEE(request);
 			}
 
 			// Si clic sur le bouton PB_ANNULER
@@ -356,6 +366,19 @@ public class OePARAMETRAGEJour extends BasicProcess {
 		return "NOM_PB_CREER_ANNEE";
 	}
 
+	public boolean performPB_CREER_ANNEE(HttpServletRequest request) throws Exception {
+
+		// On nomme l'action
+		addZone(getNOM_ST_ACTION(), ACTION_CREATION);
+
+		setStatut(STATUT_MEME_PROCESS);
+		return true;
+	}
+
+	public String getNOM_PB_VALIDER_CREER_ANNEE() {
+		return "NOM_PB_VALIDER_CREER_ANNEE";
+	}
+
 	/**
 	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
 	 * regles de gestion du process - Positionne un statut en fonction de ces
@@ -363,7 +386,7 @@ public class OePARAMETRAGEJour extends BasicProcess {
 	 * setStatut(STATUT,Message d'erreur) Date de création : (16/08/11 15:48:02)
 	 * 
 	 */
-	public boolean performPB_CREER_ANNEE(HttpServletRequest request) throws Exception {
+	public boolean performPB_VALIDER_CREER_ANNEE(HttpServletRequest request) throws Exception {
 		// on duplique tous les jours fériés pour l'année suivante
 		// on recupere la derniere année
 		String annee = getListeAnnee().get(0);
@@ -379,6 +402,25 @@ public class OePARAMETRAGEJour extends BasicProcess {
 			newJour.setDescription(jour.getDescription());
 			newJour.setDateJour(sdf.parse(Services.ajouteAnnee(sdf.format(jour.getDateJour()), 1)));
 			getJourFerieDao().creerJourFerie(newJour.getIdTypeJour(), newJour.getDateJour(), newJour.getDescription());
+		}
+
+		// #15284 : on crée aussi les bases congés pour l'année choisie
+		SirhAbsWSConsumer consu = new SirhAbsWSConsumer();
+		ReturnMessageDto result = consu.createNouvelleAnneeBaseConges(Integer.valueOf(annee) + 1);
+
+		if (result.getErrors().size() > 0) {
+			String err = Const.CHAINE_VIDE;
+			for (String erreur : result.getErrors()) {
+				err += " " + erreur;
+			}
+			getTransaction().declarerErreur("ERREUR : " + err);
+		}
+		if (result.getInfos().size() > 0) {
+			String inf = Const.CHAINE_VIDE;
+			for (String info : result.getInfos()) {
+				inf += " " + info;
+			}
+			getTransaction().declarerErreur(inf);
 		}
 
 		// on re initialise l'affichage du tableau
@@ -695,18 +737,17 @@ public class OePARAMETRAGEJour extends BasicProcess {
 
 		}
 
-
 		setListeJourFerie(getJourFerieDao().listerJourByAnnee(getAnneeCourante()));
 		// init du calendrier courant
 		if (!afficheCalendrier(request))
 			return false;
-		
+
 		addZone(getNOM_ST_ACTION_JOUR(), Const.CHAINE_VIDE);
 		setJourFerieCourant(null);
 		return true;
 	}
 
-	private boolean performControlerChamps(HttpServletRequest request) {
+	private boolean performControlerChamps(HttpServletRequest request) throws ParseException {
 
 		// date de debut obligatoire
 		if ((Const.CHAINE_VIDE).equals(getVAL_ST_DATE_JOUR())) {
@@ -720,6 +761,13 @@ public class OePARAMETRAGEJour extends BasicProcess {
 			// "ERR007",
 			// "La date @ est incorrecte. Elle doit être au format date."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR007", "du jour"));
+			return false;
+		}
+
+		Date dateSaisie = new SimpleDateFormat("dd/MM/yyyy").parse(getVAL_ST_DATE_JOUR());
+		if (dateSaisie.compareTo(new Date()) <= 0) {
+			// "ERR148", "La date doit être supérieure à la date du jour."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR148"));
 			return false;
 		}
 		return true;
