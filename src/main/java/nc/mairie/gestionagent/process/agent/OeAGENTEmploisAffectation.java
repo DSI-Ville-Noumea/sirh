@@ -2858,8 +2858,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 					try {
 						RefPrimeDto rubr = t.getPrimeDetail(prime.getNumRubrique());
 						if (rubr != null && rubr.getNumRubrique() != null)
-							addZone(getNOM_ST_LST_PRIME_POINTAGE_RUBRIQUE(indicePrime), rubr.getNumRubrique()
-									+ " : " + rubr.getLibelle());
+							addZone(getNOM_ST_LST_PRIME_POINTAGE_RUBRIQUE(indicePrime), rubr.getNumRubrique() + " : "
+									+ rubr.getLibelle());
 					} catch (Exception e) {
 						// TODO a supprimer quand les pointages seront en
 						// prod
@@ -4343,7 +4343,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 				getHistoAffectationDao().creerHistoAffectation(histo, user, EnumTypeHisto.MODIFICATION);
 
 				if (!Connecteur.modifierSPMTSR(getTransaction(), getAffectationCourant(),
-						getAgentCourant().getNomatr(), getFichePosteCourant(), oldDateDeb))
+						getAgentCourant().getNomatr(), getFichePosteCourant(), oldDateDeb, true))
 					return false;
 				getAffectationDao().modifierAffectation(getAffectationCourant());
 
@@ -4364,25 +4364,29 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 				// Création Affectation
 				FichePoste fichePoste = getFichePosteDao()
 						.chercherFichePoste(getAffectationCourant().getIdFichePoste());
-				
+
 				// #13805 bug depuis que le schema SIRH en JDBC Template
 				// si une erreur survient, on peut avoir un dephasage entre
-				// SPMTSR et AFFECTATION : comme gerer par 2 transactions disctinctes
+				// SPMTSR et AFFECTATION : comme gerer par 2 transactions
+				// disctinctes
 				// si erreur => rollback sur une seule transaction
-				// solution : on cree en 1er SPMTSR, car si doublon, l AS400 retourne une erreur contrairement a AFFECTATION
+				// solution : on cree en 1er SPMTSR, car si doublon, l AS400
+				// retourne une erreur contrairement a AFFECTATION
 				try {
-				if (!Connecteur.creerSPMTSR(getTransaction(), getAffectationCourant(), getAgentCourant(), fichePoste)) {
+					if (!Connecteur.creerSPMTSR(getTransaction(), getAffectationCourant(), getAgentCourant(),
+							fichePoste)) {
+						getTransaction().declarerErreur("L'affectation est déjà créée.");
+						return false;
+					}
+				} catch (Exception e) {
 					getTransaction().declarerErreur("L'affectation est déjà créée.");
 					return false;
 				}
-				} catch(Exception e) {
-					getTransaction().declarerErreur("L'affectation est déjà créée.");
-					return false;
-				}
-				// dans un 2e temps on verifie qu il n existe pas deja une affeca	tion pour l agent au meme date
+				// dans un 2e temps on verifie qu il n existe pas deja une
+				// affeca tion pour l agent au meme date
 				Affectation affectationExistante = getAffectationDao().chercherAffectationAgentPourDate(
 						getAffectationCourant().getIdAgent(), getAffectationCourant().getDateDebutAff());
-				if(null != affectationExistante
+				if (null != affectationExistante
 						&& affectationExistante.getDateDebutAff().equals(getAffectationCourant().getDateDebutAff())) {
 					return false;
 				}
