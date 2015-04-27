@@ -391,6 +391,19 @@ public class OePARAMETRAGEJour extends BasicProcess {
 		// on recupere la derniere année
 		String annee = getListeAnnee().get(0);
 
+		// #15284 : on crée aussi les bases congés pour l'année choisie
+		SirhAbsWSConsumer consu = new SirhAbsWSConsumer();
+		ReturnMessageDto result = consu.createNouvelleAnneeBaseConges(Integer.valueOf(annee) + 1);
+
+		if (result.getErrors().size() > 0) {
+			String err = Const.CHAINE_VIDE;
+			for (String erreur : result.getErrors()) {
+				err += " " + erreur;
+			}
+			getTransaction().declarerErreur("ERREUR : " + err);
+			return false;
+		}
+
 		// on cherche tous les jours fériés de cette année la
 		TypeJourFerie typeJour = getTypeJourFerieDao().chercherTypeJourByLibelle("Férié");
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
@@ -402,18 +415,6 @@ public class OePARAMETRAGEJour extends BasicProcess {
 			newJour.setDescription(jour.getDescription());
 			newJour.setDateJour(sdf.parse(Services.ajouteAnnee(sdf.format(jour.getDateJour()), 1)));
 			getJourFerieDao().creerJourFerie(newJour.getIdTypeJour(), newJour.getDateJour(), newJour.getDescription());
-		}
-
-		// #15284 : on crée aussi les bases congés pour l'année choisie
-		SirhAbsWSConsumer consu = new SirhAbsWSConsumer();
-		ReturnMessageDto result = consu.createNouvelleAnneeBaseConges(Integer.valueOf(annee) + 1);
-
-		if (result.getErrors().size() > 0) {
-			String err = Const.CHAINE_VIDE;
-			for (String erreur : result.getErrors()) {
-				err += " " + erreur;
-			}
-			getTransaction().declarerErreur("ERREUR : " + err);
 		}
 		if (result.getInfos().size() > 0) {
 			String inf = Const.CHAINE_VIDE;
