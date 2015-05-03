@@ -46,7 +46,8 @@
 					<%=process.forComboHTML(process.getVAL_LB_MOIS_ALIM_AUTO(), process.getVAL_LB_MOIS_ALIM_AUTO_SELECT()) %>
 				</SELECT>  
 	            <BR/><BR/>
-				<INPUT type="submit" class="sigp2-Bouton-100" value="Afficher" name="<%=process.getNOM_PB_AFFICHER()%>">   
+				<INPUT type="submit" class="sigp2-Bouton-100" value="Afficher tout" name="<%=process.getNOM_PB_AFFICHER()%>">  
+				<INPUT type="submit" class="sigp2-Bouton-200" value="Afficher les erreurs" name="<%=process.getNOM_PB_AFFICHER_ERREUR()%>">   
 	            <BR/><BR/>		 
 						<table class="display" id="tabAlimHisto">
 							<thead>

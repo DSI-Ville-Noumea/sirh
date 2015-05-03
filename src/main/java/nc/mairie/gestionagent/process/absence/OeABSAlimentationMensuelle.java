@@ -109,6 +109,10 @@ public class OeABSAlimentationMensuelle extends BasicProcess {
 			if (testerParametre(request, getNOM_PB_AFFICHER())) {
 				return performPB_AFFICHER(request);
 			}
+			// Si clic sur le bouton PB_AFFICHER_ERREUR
+			if (testerParametre(request, getNOM_PB_AFFICHER_ERREUR())) {
+				return performPB_AFFICHER_ERREUR(request);
+			}
 
 		}
 		// Si TAG INPUT non géré par le process
@@ -167,7 +171,7 @@ public class OeABSAlimentationMensuelle extends BasicProcess {
 
 		// Liste des alimentation depuis SIRH-ABS-WS
 		SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
-		setListeAlimAuto(consuAbs.getListeAlimAutoCongeAnnuel(moisChoisi));
+		setListeAlimAuto(consuAbs.getListeAlimAutoCongeAnnuel(moisChoisi, false));
 		afficheAlimAuto();
 		return true;
 	}
@@ -185,7 +189,7 @@ public class OeABSAlimentationMensuelle extends BasicProcess {
 				} else {
 					addZone(getNOM_ST_STATUT(j), histo.getStatus());
 				}
-				if (histo.getInfos().length() > 150) {
+				if (histo.getInfos() != null && histo.getInfos().length() > 150) {
 					addZone(getNOM_ST_INFO(j), histo.getInfos().substring(0, 150));
 				} else {
 					addZone(getNOM_ST_INFO(j), histo.getInfos());
@@ -248,5 +252,31 @@ public class OeABSAlimentationMensuelle extends BasicProcess {
 
 	public String getVAL_ST_INFO(int i) {
 		return getZone(getNOM_ST_INFO(i));
+	}
+
+	public String getNOM_PB_AFFICHER_ERREUR() {
+		return "NOM_PB_AFFICHER_ERREUR";
+	}
+
+	public boolean performPB_AFFICHER_ERREUR(HttpServletRequest request) throws Exception {
+
+		// Recuperation du mois
+		MoisAlimAutoCongesAnnuelsDto moisChoisi = null;
+		int indiceMois = (Services.estNumerique(getVAL_LB_MOIS_ALIM_AUTO_SELECT()) ? Integer
+				.parseInt(getVAL_LB_MOIS_ALIM_AUTO_SELECT()) : -1);
+		if (indiceMois > 0) {
+			moisChoisi = (MoisAlimAutoCongesAnnuelsDto) getListeMois().get(indiceMois - 1);
+			setMoisCourant(moisChoisi);
+		} else {
+			// "ERR002","La zone @ est obligatoire."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "mois"));
+			return false;
+		}
+
+		// Liste des alimentation depuis SIRH-ABS-WS
+		SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
+		setListeAlimAuto(consuAbs.getListeAlimAutoCongeAnnuel(moisChoisi, true));
+		afficheAlimAuto();
+		return true;
 	}
 }

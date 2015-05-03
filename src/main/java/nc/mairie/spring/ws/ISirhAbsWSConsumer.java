@@ -115,7 +115,8 @@ public interface ISirhAbsWSConsumer {
 	// alimentation auto des congés annuels
 	List<MoisAlimAutoCongesAnnuelsDto> getListeMoisALimAUtoCongeAnnuel();
 
-	List<MoisAlimAutoCongesAnnuelsDto> getListeAlimAutoCongeAnnuel(MoisAlimAutoCongesAnnuelsDto moisChoisi);
+	List<MoisAlimAutoCongesAnnuelsDto> getListeAlimAutoCongeAnnuel(MoisAlimAutoCongesAnnuelsDto moisChoisi,
+			boolean onlyErreur);
 
 	List<MoisAlimAutoCongesAnnuelsDto> getHistoriqueAlimAutoAgent(Integer idAgent);
 
