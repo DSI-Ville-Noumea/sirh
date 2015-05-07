@@ -258,7 +258,7 @@ public class OeDROITSKiosque extends BasicProcess {
 			throws Exception {
 
 		if (operateur.getIdAgent().toString().equals(getApprobateurCourant().getIdAgent().toString())) {
-			getTransaction().declarerErreur("ERREUR : Vous ne pouvez être opérateur de vous même.");
+			getTransaction().declarerErreur("ERREUR : L'agent ne peut être opérateur de lui même.");
 			return;
 		}
 
@@ -1193,7 +1193,7 @@ public class OeDROITSKiosque extends BasicProcess {
 			VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
 			if (ag != null && getApprobateurCourant() != null) {
 				if (ag.getIdAgent().toString().equals(getApprobateurCourant().getIdAgent().toString())) {
-					getTransaction().declarerErreur("ERREUR : Vous ne pouvez être délégataire de vous même.");
+					getTransaction().declarerErreur("ERREUR : L'agent ne peut être délégataire de lui même.");
 					return;
 				}
 				AgentDto agInputter = new AgentDto();
@@ -1234,7 +1234,7 @@ public class OeDROITSKiosque extends BasicProcess {
 			VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
 			if (ag != null && getApprobateurCourant() != null) {
 				if (ag.getIdAgent().toString().equals(getApprobateurCourant().getIdAgent().toString())) {
-					getTransaction().declarerErreur("ERREUR : Vous ne pouvez être délégataire de vous même.");
+					getTransaction().declarerErreur("ERREUR : L'agent ne peut être délégataire de lui même.");
 					return;
 				}
 				AgentDto agInputter = new AgentDto();
@@ -1832,8 +1832,8 @@ public class OeDROITSKiosque extends BasicProcess {
 	private void saveOperateurApprobateurPtg(HttpServletRequest request, Agent operateur, boolean suppression)
 			throws Exception {
 
-		if (operateur.getIdAgent().toString().equals(getApprobateurCourant().getIdAgent().toString()) ){
-			getTransaction().declarerErreur("ERREUR : Vous ne pouvez être opérateur de vous même.");
+		if (operateur.getIdAgent().toString().equals(getApprobateurCourant().getIdAgent().toString())) {
+			getTransaction().declarerErreur("ERREUR : L'agent ne peut être opérateur de lui même.");
 			return;
 		}
 
