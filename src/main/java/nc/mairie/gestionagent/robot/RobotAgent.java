@@ -36,6 +36,7 @@ import nc.mairie.gestionagent.process.agent.OeAGENTHomonyme;
 import nc.mairie.gestionagent.process.agent.OeAGENTPosAdm;
 import nc.mairie.gestionagent.process.agent.OeAGENTPrime;
 import nc.mairie.gestionagent.process.agent.OeAGENTRecherche;
+import nc.mairie.gestionagent.process.agent.OeAGENTRechercheDroitKiosque;
 import nc.mairie.gestionagent.process.agent.OeAGENTVisiteMed;
 import nc.mairie.gestionagent.process.avancement.OeAVCTCampagneEAE;
 import nc.mairie.gestionagent.process.avancement.OeAVCTCampagneGestionEAE;
@@ -599,6 +600,12 @@ public class RobotAgent extends Robot {
 				OeAGENTRecherche.class.getName());
 		navigation.put(OeDROITSKiosque.class.getName() + OeDROITSKiosque.STATUT_RECHERCHER_AGENT,
 				OeAGENTRecherche.class.getName());
+		navigation.put(OeDROITSKiosque.class.getName() + OeDROITSKiosque.STATUT_VISEUR_APPROBATEUR_ABS,
+				OeAGENTRechercheDroitKiosque.class.getName());
+		navigation.put(OeDROITSKiosque.class.getName() + OeDROITSKiosque.STATUT_OPE_APPROBATEUR_ABS,
+				OeAGENTRecherche.class.getName());
+		navigation.put(OeDROITSKiosque.class.getName() + OeDROITSKiosque.STATUT_AGENT_APPROBATEUR_ABS,
+				OeAGENTRechercheDroitKiosque.class.getName());
 
 		// //////////////////////////////////////
 		// pour la recherche d'un agent
@@ -730,8 +737,7 @@ public class RobotAgent extends Robot {
 				OeAGENTRecherche.class.getName());
 		navigation.put(OePTGPayeurContractuels.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
 				OeAGENTRecherche.class.getName());
-		navigation.put(OePTGSaisie.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
+		navigation.put(OePTGSaisie.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 
 		// ABSENCE
 		navigation.put(OeABSVisualisation.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,

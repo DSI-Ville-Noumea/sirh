@@ -102,13 +102,15 @@ function reduireHierarchy() {
 		</FIELDSET>
 			
 	    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
-		<legend class="sigp2Legend">Liste des approbateurs des pointages/absences</legend>
+		<legend class="sigp2Legend">Liste des approbateurs des pointages / absences</legend>
 			<div style="overflow: auto;height: 250px;width:1000px;margin-right: 0px;margin-left: 0px;">
 			<table class="sigp2NewTab" style="text-align:left;width:980px;">
 				<tr>
 					<td><INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_AJOUTER()%>"></td>
 					<td><span><INPUT type="radio" onclick='executeBouton("<%=process.getNOM_PB_TRI() %>")'<%= process.forRadioHTML(process.getNOM_RG_TRI(),process.getNOM_RB_TRI_AGENT())%>> Agent</span></td>
 					<td><span><INPUT type="radio" onclick='executeBouton("<%=process.getNOM_PB_TRI() %>")'<%= process.forRadioHTML(process.getNOM_RG_TRI(),process.getNOM_RB_TRI_SERVICE())%>> Service</span></td>
+					<td align="center"><span>Droit <br> PTG</span></td>
+					<td align="center"><span>Droit <br> ABS</span></td>
 					<td align="center"><span>Délég <br> PTG</span></td>
 					<td align="center"><span>Délég <br> ABS</span></td>
 					<td align="center"><span>PTG</span></td>
@@ -124,19 +126,27 @@ function reduireHierarchy() {
 				    	</td>
 						<td class="sigp2NewTab-liste" style="position:relative;width:200px;text-align: left;"><%=process.getVAL_ST_AGENT(i)%></td>
 						<td class="sigp2NewTab-liste" style="position:relative;text-align: left;"><%=process.getVAL_ST_SERVICE(i)%></td>
+						<td class="sigp2NewTab-liste" style="position:relative;text-align: center;">
+							<%if(process.peutModifierDelegatairePTG(i)){ %>
+								<INPUT title="Gérer les droits des pointages" type="image" src="images/ajout-doc.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_GERER_DROIT_PTG(i)%>">
+							<%} %>		    										
+						</td>
+						<td class="sigp2NewTab-liste" style="position:relative;text-align: center;">
+							<%if(process.peutModifierDelegataireABS(i)){ %>
+							<INPUT title="Gérer les droits des absences" type="image" src="images/ajout-doc.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_GERER_DROIT_ABS(i)%>">
+							<%} %>		    										
+						</td>
 						<td class="sigp2NewTab-liste" style="position:relative;text-align: left; min-height:15px;"><%=process.getVAL_ST_DELEGATAIRE_PTG(i)%>
 							<%if(process.peutModifierDelegatairePTG(i)){ %>
 							<INPUT title="modifier" type="image" src="images/modifier.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_MODIFIER_DELEGATAIRE_PTG(i)%>">
 				    		<INPUT title="supprimer" type="image" src="images/suppression.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_SUPPRIMER_DELEGATAIRE_PTG(i)%>">
-				    		<%} %>
-				    		&nbsp;				    										
+				    		<%} %>			    										
 						</td>
 						<td class="sigp2NewTab-liste" style="position:relative;text-align: left; min-height:15px;"><%=process.getVAL_ST_DELEGATAIRE_ABS(i)%>
 							<%if(process.peutModifierDelegataireABS(i)){ %>
 							<INPUT title="modifier" type="image" src="images/modifier.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_MODIFIER_DELEGATAIRE_ABS(i)%>">
 				    		<INPUT title="supprimer" type="image" src="images/suppression.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_SUPPRIMER_DELEGATAIRE_ABS(i)%>">				    										
-							<%} %>
-				    		&nbsp;			    										
+							<%} %>		    										
 						</td>
 						<td class="sigp2NewTab-liste" style="position:relative;width:50px;text-align: center;">
 							<INPUT type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_DROIT_PTG(i),process.getVAL_CK_DROIT_PTG(i))%> onClick='executeBouton("<%=process.getNOM_PB_SET_APPROBATEUR_PTG(i)%>")'>
@@ -151,6 +161,87 @@ function reduireHierarchy() {
 				</table>	
 			</div>	
         </FIELDSET>
+        
+        <%if(process.getVAL_ST_ACTION().equals(process.ACTION_GERER_DROIT_ABS)){ %>
+            <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
+	            <legend class="sigp2Legend"><%=process.ACTION_GERER_DROIT_ABS %> <%=process.getApprobateurCourant().getNom() %></legend>
+		            <fieldset>
+		            	<legend>Agents à approuver par l'approbateur</legend>
+		            	<table class="sigp2NewTab" style="text-align:left;width:980px;">
+							<tr>
+								<td><INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_AJOUTER_AGENT_APPRO_ABS()%>"></td>
+								<td><span>Agent</span></td>										
+							</tr>
+							<%
+							for (int indice = 0;indice<process.getListeAgentsApprobateurAbs().size();indice++){
+								int i = process.getListeAgentsApprobateurAbs().get(indice).getIdAgent();
+							%>
+								<tr>
+									<td class="sigp2NewTab-liste" style="position:relative;width:35px;" align="center">
+							    		<INPUT title="supprimer" type="image" src="images/suppression.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_SUPPRIMER_AGENT_APPRO_ABS(i)%>">
+							    	</td>
+									<td class="sigp2NewTab-liste" style="position:relative;text-align: left;"><%=process.getVAL_ST_AGENT_APPRO(i)%></td>
+								</tr>
+							<%}%>
+						</table>	
+		            </fieldset>
+			        <BR/><BR/>
+		            <fieldset>
+		            	<legend>Opérateurs de l'approbateur</legend>
+		            	<table class="sigp2NewTab" style="text-align:left;width:980px;">
+							<tr>
+								<td><INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_AJOUTER_AGENT_OPE_ABS()%>"></td>
+								<td><span>Agent</span></td>										
+							</tr>
+							<%
+							for (int indice = 0;indice<process.getListeAgentsOperateurAbs().size();indice++){
+								int i = process.getListeAgentsOperateurAbs().get(indice).getIdAgent();
+							%>
+								<tr>
+									<td class="sigp2NewTab-liste" style="position:relative;width:35px;" align="center">
+							    		<INPUT title="supprimer" type="image" src="images/suppression.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_SUPPRIMER_AGENT_OPE_ABS(i)%>">
+							    	</td>
+									<td class="sigp2NewTab-liste" style="position:relative;text-align: left;"><%=process.getVAL_ST_AGENT_OPE(i)%></td>
+								</tr>
+							<%}%>
+						</table>
+		            </fieldset>
+			        <BR/><BR/>
+		            <fieldset>
+		            	<legend>Viseurs de l'approbateur</legend>
+		            	<table class="sigp2NewTab" style="text-align:left;width:980px;">
+							<tr>
+								<td><INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_AJOUTER_AGENT_VISEUR_ABS()%>"></td>
+								<td><span>Agent</span></td>										
+							</tr>
+							<%
+							for (int indice = 0;indice<process.getListeAgentsViseurAbs().size();indice++){
+								int i = process.getListeAgentsViseurAbs().get(indice).getIdAgent();
+							%>
+								<tr>
+									<td class="sigp2NewTab-liste" style="position:relative;width:35px;" align="center">
+							    		<INPUT title="supprimer" type="image" src="images/suppression.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_SUPPRIMER_AGENT_VISEUR_ABS(i)%>">
+							    	</td>
+									<td class="sigp2NewTab-liste" style="position:relative;text-align: left;"><%=process.getVAL_ST_AGENT_VISEUR(i)%></td>
+								</tr>
+							<%}%>
+						</table>
+		            </fieldset>		            
+			        <BR/><BR/>
+                    <div align="center">	 
+	                    <INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
+                    </div>
+	            </FIELDSET>
+        <%} else if(process.getVAL_ST_ACTION().equals(process.ACTION_GERER_DROIT_PTG)){ %>
+            <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
+	            <legend class="sigp2Legend"><%=process.ACTION_GERER_DROIT_PTG %> <%=process.getApprobateurCourant().getNom() %></legend>
+		            
+			        <BR/><BR/>
+                    <div align="center">	 
+	                    <INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
+                    </div>
+	            </FIELDSET>
+        <%} %>
 		<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_TRI()%>" value="TRI">
 		<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_RECHERCHER_AGENT()%>" value="RECHERCHERAGENT">
 		<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT()%>" value="SUPPRECHERCHERAGENT">

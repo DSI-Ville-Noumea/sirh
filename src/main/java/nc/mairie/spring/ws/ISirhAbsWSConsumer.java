@@ -16,8 +16,11 @@ import nc.mairie.gestionagent.absence.dto.RestitutionMassiveDto;
 import nc.mairie.gestionagent.absence.dto.SoldeDto;
 import nc.mairie.gestionagent.absence.dto.TypeAbsenceDto;
 import nc.mairie.gestionagent.absence.dto.UnitePeriodeQuotaDto;
+import nc.mairie.gestionagent.dto.AgentDto;
 import nc.mairie.gestionagent.dto.ApprobateurDto;
+import nc.mairie.gestionagent.dto.InputterDto;
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
+import nc.mairie.gestionagent.dto.ViseursDto;
 
 public interface ISirhAbsWSConsumer {
 
@@ -32,6 +35,18 @@ public interface ISirhAbsWSConsumer {
 	ReturnMessageDto deleteApprobateur(String json);
 
 	ReturnMessageDto setDelegataire(Integer idAgent, String json);
+
+	List<AgentDto> getAgentsApprobateur(Integer idAgentApprobateur);
+
+	ReturnMessageDto saveAgentsApprobateur(Integer idAgent, List<AgentDto> listSelect);
+
+	InputterDto getOperateursDelegataireApprobateur(Integer idAgentApprobateur);
+
+	ReturnMessageDto saveOperateursDelegataireApprobateur(Integer idAgent, InputterDto dto);
+
+	ViseursDto getViseursApprobateur(Integer idAgentApprobateur);
+
+	ReturnMessageDto saveViseursApprobateur(Integer idAgent, ViseursDto dto);
 
 	// OS
 	List<OrganisationSyndicaleDto> getListeOrganisationSyndicale();

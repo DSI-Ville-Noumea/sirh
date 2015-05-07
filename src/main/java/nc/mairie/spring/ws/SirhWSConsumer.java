@@ -5,11 +5,14 @@ import java.io.FileInputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import nc.mairie.gestionagent.absence.dto.RefTypeSaisiCongeAnnuelDto;
+import nc.mairie.gestionagent.dto.AgentDto;
 import nc.mairie.gestionagent.dto.BaseHorairePointageDto;
 import nc.mairie.gestionagent.dto.DateAvctDto;
 import nc.mairie.gestionagent.servlets.ServletAgent;
@@ -46,6 +49,9 @@ public class SirhWSConsumer implements ISirhWSConsumer {
 	private static final String sirhDownloadContratUrl = "contrat/downloadContratSIRH";
 	private static final String sirhBaseHorairePointageUrl = "pointages/baseHoraire";
 
+	// pour la gestion des droits
+	private static final String sirhAgentSubordonnesUrl = "agents/agentsSubordonnes";
+
 	private Logger logger = LoggerFactory.getLogger(SirhWSConsumer.class);
 
 	/**
@@ -67,6 +73,26 @@ public class SirhWSConsumer implements ISirhWSConsumer {
 			throw new SirhAbsWSConsumerException(String.format("An error occured when querying '%s'.", url), ex);
 		}
 		return response;
+	}
+
+	public <T> List<T> readResponseAsList(Class<T> targetClass, ClientResponse response, String url) {
+		List<T> result = null;
+		result = new ArrayList<T>();
+
+		if (response.getStatus() == HttpStatus.NO_CONTENT.value()) {
+			return result;
+		}
+
+		if (response.getStatus() != HttpStatus.OK.value()) {
+			throw new SirhAbsWSConsumerException(String.format(
+					"An error occured when querying '%s'. Return code is : %s", url, response.getStatus()));
+		}
+
+		String output = response.getEntity(String.class);
+		logger.trace("json recu:" + output);
+		result = new JSONDeserializer<List<T>>().use(Date.class, new MSDateTransformer()).use(null, ArrayList.class)
+				.use("values", targetClass).deserialize(output);
+		return result;
 	}
 
 	public <T> T readResponse(Class<T> targetClass, ClientResponse response, String url) {
@@ -295,7 +321,7 @@ public class SirhWSConsumer implements ISirhWSConsumer {
 
 	@Override
 	public BaseHorairePointageDto getBaseHorairePointageAgent(Integer idAgent, Date date) {
-		
+
 		SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd");
 
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_WS_URL");
@@ -304,9 +330,20 @@ public class SirhWSConsumer implements ISirhWSConsumer {
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgent.toString());
 		params.put("date", sf.format(date));
-		
+
 		ClientResponse res = createAndFireRequest(params, url);
 		return readResponse(BaseHorairePointageDto.class, res, url);
+	}
+
+	@Override
+	public List<AgentDto> getAgentsSubordonnes(Integer idAgent) {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_WS_URL");
+		String url = urlWS + sirhAgentSubordonnesUrl;
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idAgent", idAgent.toString());
+
+		ClientResponse res = createAndFireRequest(params, url);
+		return readResponseAsList(AgentDto.class, res, url);
 	}
 
 }

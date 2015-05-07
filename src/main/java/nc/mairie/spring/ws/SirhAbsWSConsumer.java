@@ -20,8 +20,11 @@ import nc.mairie.gestionagent.absence.dto.RestitutionMassiveDto;
 import nc.mairie.gestionagent.absence.dto.SoldeDto;
 import nc.mairie.gestionagent.absence.dto.TypeAbsenceDto;
 import nc.mairie.gestionagent.absence.dto.UnitePeriodeQuotaDto;
+import nc.mairie.gestionagent.dto.AgentDto;
 import nc.mairie.gestionagent.dto.ApprobateurDto;
+import nc.mairie.gestionagent.dto.InputterDto;
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
+import nc.mairie.gestionagent.dto.ViseursDto;
 import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
 
@@ -51,6 +54,9 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	private static final String sirhAbsDeleteApprobateurs = "droits/deleteApprobateurs";
 	private static final String sirhAbsSauvegardeDelegataire = "droits/delegataire";
 	private static final String sirhAbsListeActeurs = "droits/listeActeurs";
+	private static final String sirhAgentApprobateurUrl = "droits/agentsApprouves";
+	private static final String sirhOperateursDelegataireApprobateurUrl = "droits/inputter";
+	private static final String sirhViseursApprobateurUrl = "droits/viseur";
 
 	private static final String sirhAbsSoldeRecupAgent = "solde/soldeAgent";
 	private static final String sirhAbsHistoCompteurAgent = "solde/historiqueSolde";
@@ -796,4 +802,78 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 		return readResponse(ReturnMessageDto.class, res, url);
 	}
 
+	@Override
+	public List<AgentDto> getAgentsApprobateur(Integer idAgentApprobateur) {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
+		String url = urlWS + sirhAgentApprobateurUrl;
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idAgent", idAgentApprobateur.toString());
+
+		ClientResponse res = createAndFireRequest(params, url);
+		return readResponseAsList(AgentDto.class, res, url);
+	}
+
+	@Override
+	public InputterDto getOperateursDelegataireApprobateur(Integer idAgentApprobateur) {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
+		String url = urlWS + sirhOperateursDelegataireApprobateurUrl;
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idAgent", idAgentApprobateur.toString());
+
+		ClientResponse res = createAndFireRequest(params, url);
+		return readResponse(InputterDto.class, res, url);
+	}
+
+	@Override
+	public ViseursDto getViseursApprobateur(Integer idAgentApprobateur) {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
+		String url = urlWS + sirhViseursApprobateurUrl;
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idAgent", idAgentApprobateur.toString());
+
+		ClientResponse res = createAndFireRequest(params, url);
+		return readResponse(ViseursDto.class, res, url);
+	}
+
+	@Override
+	public ReturnMessageDto saveAgentsApprobateur(Integer idAgent, List<AgentDto> listSelect) {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
+		String url = urlWS + sirhAgentApprobateurUrl;
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idAgent", idAgent.toString());
+
+		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class)
+				.deepSerialize(listSelect);
+
+		ClientResponse res = createAndPostRequest(params, url, json);
+		return readResponse(ReturnMessageDto.class, res, url);
+	}
+
+	@Override
+	public ReturnMessageDto saveOperateursDelegataireApprobateur(Integer idAgent, InputterDto dto) {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
+		String url = urlWS + sirhOperateursDelegataireApprobateurUrl;
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idAgent", idAgent.toString());
+
+		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class)
+				.deepSerialize(dto);
+
+		ClientResponse res = createAndPostRequest(params, url, json);
+		return readResponse(ReturnMessageDto.class, res, url);
+	}
+
+	@Override
+	public ReturnMessageDto saveViseursApprobateur(Integer idAgent, ViseursDto dto) {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
+		String url = urlWS + sirhViseursApprobateurUrl;
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idAgent", idAgent.toString());
+
+		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class)
+				.deepSerialize(dto);
+
+		ClientResponse res = createAndPostRequest(params, url, json);
+		return readResponse(ReturnMessageDto.class, res, url);
+	}
 }
