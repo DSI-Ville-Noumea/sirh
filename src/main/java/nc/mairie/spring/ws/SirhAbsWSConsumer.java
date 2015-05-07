@@ -57,6 +57,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	private static final String sirhAgentApprobateurUrl = "droits/agentsApprouves";
 	private static final String sirhOperateursDelegataireApprobateurUrl = "droits/inputter";
 	private static final String sirhViseursApprobateurUrl = "droits/viseur";
+	private static final String sirhAgentsOperatuerOrViseurUrl = "droits/agentsSaisis";
 
 	private static final String sirhAbsSoldeRecupAgent = "solde/soldeAgent";
 	private static final String sirhAbsHistoCompteurAgent = "solde/historiqueSolde";
@@ -872,6 +873,34 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 
 		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class)
 				.deepSerialize(dto);
+
+		ClientResponse res = createAndPostRequest(params, url, json);
+		return readResponse(ReturnMessageDto.class, res, url);
+	}
+
+	@Override
+	public List<AgentDto> getAgentsOperateursOrViseur(Integer idAgentApprobateur, Integer idAgentOperateurOrViseur) {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
+		String url = urlWS + sirhAgentsOperatuerOrViseurUrl;
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idAgent", idAgentApprobateur.toString());
+		params.put("idOperateurOrViseur", idAgentOperateurOrViseur.toString());
+
+		ClientResponse res = createAndFireRequest(params, url);
+		return readResponseAsList(AgentDto.class, res, url);
+	}
+
+	@Override
+	public ReturnMessageDto saveAgentsOperateursOrViseur(Integer idAgentApprobateur, Integer idAgentOperateurOrViseur,
+			List<AgentDto> listSelect) {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
+		String url = urlWS + sirhAgentsOperatuerOrViseurUrl;
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idAgent", idAgentApprobateur.toString());
+		params.put("idOperateurOrViseur", idAgentOperateurOrViseur.toString());
+
+		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class)
+				.deepSerialize(listSelect);
 
 		ClientResponse res = createAndPostRequest(params, url, json);
 		return readResponse(ReturnMessageDto.class, res, url);

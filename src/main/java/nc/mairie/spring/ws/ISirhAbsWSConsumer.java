@@ -48,6 +48,11 @@ public interface ISirhAbsWSConsumer {
 
 	ReturnMessageDto saveViseursApprobateur(Integer idAgent, ViseursDto dto);
 
+	List<AgentDto> getAgentsOperateursOrViseur(Integer idAgentApprobateur, Integer idAgentOperateurOrViseur);
+
+	ReturnMessageDto saveAgentsOperateursOrViseur(Integer idAgentApprobateur, Integer idAgentOperateurOrViseur,
+			List<AgentDto> listSelect);
+
 	// OS
 	List<OrganisationSyndicaleDto> getListeOrganisationSyndicale();
 

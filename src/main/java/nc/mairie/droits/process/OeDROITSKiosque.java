@@ -63,6 +63,9 @@ public class OeDROITSKiosque extends BasicProcess {
 	public static final int STATUT_VISEUR_APPROBATEUR_ABS = 7;
 	public static final int STATUT_AGENT_APPROBATEUR_PTG = 8;
 	public static final int STATUT_OPE_APPROBATEUR_PTG = 9;
+	public static final int STATUT_AGENT_OPE_APPROBATEUR_PTG = 10;
+	public static final int STATUT_AGENT_OPE_APPROBATEUR_ABS = 11;
+	public static final int STATUT_AGENT_VISEUR_APPROBATEUR_ABS = 12;
 
 	private ArrayList<ApprobateurDto> listeApprobateurs = new ArrayList<ApprobateurDto>();
 	private ArrayList<ApprobateurDto> listeApprobateursPTG = new ArrayList<ApprobateurDto>();
@@ -79,6 +82,8 @@ public class OeDROITSKiosque extends BasicProcess {
 
 	private ArrayList<AgentDto> listeAgentsApprobateurPtg = new ArrayList<AgentDto>();
 	private ArrayList<AgentDto> listeAgentsOperateurPtg = new ArrayList<AgentDto>();
+	private AgentDto operateurCourant;
+	private AgentDto viseurCourant;
 
 	private ArrayList<Service> listeServices;
 	public Hashtable<String, TreeHierarchy> hTree = null;
@@ -195,13 +200,94 @@ public class OeDROITSKiosque extends BasicProcess {
 			saveOperateurApprobateurPtg(request, operateur, false);
 		}
 
+		if (etatStatut() == STATUT_AGENT_OPE_APPROBATEUR_PTG) {
+			@SuppressWarnings("unchecked")
+			List<AgentDto> listAgt = (List<AgentDto>) VariablesActivite.recuperer(this,
+					VariablesActivite.ACTIVITE_AGENT_MAIRIE_DROIT);
+			VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE_DROIT);
+			saveAgentApprobateurOperateurPtg(request, listAgt == null ? new ArrayList<AgentDto>() : listAgt);
+		}
+
+		if (etatStatut() == STATUT_AGENT_OPE_APPROBATEUR_ABS) {
+			@SuppressWarnings("unchecked")
+			List<AgentDto> listAgt = (List<AgentDto>) VariablesActivite.recuperer(this,
+					VariablesActivite.ACTIVITE_AGENT_MAIRIE_DROIT);
+			VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE_DROIT);
+			saveAgentApprobateurOperateurAbs(request, listAgt == null ? new ArrayList<AgentDto>() : listAgt);
+		}
+
+		if (etatStatut() == STATUT_AGENT_VISEUR_APPROBATEUR_ABS) {
+			@SuppressWarnings("unchecked")
+			List<AgentDto> listAgt = (List<AgentDto>) VariablesActivite.recuperer(this,
+					VariablesActivite.ACTIVITE_AGENT_MAIRIE_DROIT);
+			VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE_DROIT);
+			saveAgentApprobateurViseurAbs(request, listAgt == null ? new ArrayList<AgentDto>() : listAgt);
+		}
+
 		initialiseListeService();
+
+	}
+
+	private void saveAgentApprobateurViseurAbs(HttpServletRequest request, List<AgentDto> list) {
+		if (getApprobateurCourant() != null && getViseurCourant() != null) {
+
+			ReturnMessageDto result = new SirhAbsWSConsumer().saveAgentsOperateursOrViseur(getApprobateurCourant()
+					.getIdAgent(), getViseurCourant().getIdAgent(), list);
+
+			String err = Const.CHAINE_VIDE;
+			for (String erreur : result.getErrors()) {
+				err += " " + erreur;
+			}
+			if (!err.equals(Const.CHAINE_VIDE))
+				getTransaction().declarerErreur("ERREUR : " + err);
+
+		} else {
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR004"));
+			return;
+		}
+	}
+
+	private void saveAgentApprobateurOperateurAbs(HttpServletRequest request, List<AgentDto> list) {
+		if (getApprobateurCourant() != null && getOperateurCourant() != null) {
+
+			ReturnMessageDto result = new SirhAbsWSConsumer().saveAgentsOperateursOrViseur(getApprobateurCourant()
+					.getIdAgent(), getOperateurCourant().getIdAgent(), list);
+
+			String err = Const.CHAINE_VIDE;
+			for (String erreur : result.getErrors()) {
+				err += " " + erreur;
+			}
+			if (!err.equals(Const.CHAINE_VIDE))
+				getTransaction().declarerErreur("ERREUR : " + err);
+
+		} else {
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR004"));
+			return;
+		}
+	}
+
+	private void saveAgentApprobateurOperateurPtg(HttpServletRequest request, List<AgentDto> list) {
+		if (getApprobateurCourant() != null && getOperateurCourant() != null) {
+
+			ReturnMessageDto result = new SirhPtgWSConsumer().saveAgentsSaisisOperateur(getApprobateurCourant()
+					.getIdAgent(), getOperateurCourant().getIdAgent(), list);
+
+			String err = Const.CHAINE_VIDE;
+			for (String erreur : result.getErrors()) {
+				err += " " + erreur;
+			}
+			if (!err.equals(Const.CHAINE_VIDE))
+				getTransaction().declarerErreur("ERREUR : " + err);
+
+		} else {
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR004"));
+			return;
+		}
 
 	}
 
 	private void saveViseurApprobateurAbs(HttpServletRequest request, List<AgentDto> listAgtAAjouter,
 			boolean suppression) throws Exception {
-
 		if (!suppression) {
 			if (getApprobateurCourant() != null) {
 				for (AgentDto ajout : listAgtAAjouter) {
@@ -256,7 +342,6 @@ public class OeDROITSKiosque extends BasicProcess {
 
 	private void saveOperateurApprobateurAbs(HttpServletRequest request, Agent operateur, boolean suppression)
 			throws Exception {
-
 		if (operateur.getIdAgent().toString().equals(getApprobateurCourant().getIdAgent().toString())) {
 			getTransaction().declarerErreur("ERREUR : L'agent ne peut être opérateur de lui même.");
 			return;
@@ -629,11 +714,17 @@ public class OeDROITSKiosque extends BasicProcess {
 				if (testerParametre(request, getNOM_PB_SUPPRIMER_AGENT_OPE_ABS(i))) {
 					return performPB_SUPPRIMER_AGENT_OPE_ABS(request, i);
 				}
+				if (testerParametre(request, getNOM_PB_GERER_AGENT_OPE_APPRO_ABS(i))) {
+					return performPB_GERER_AGENT_OPE_APPRO_ABS(request, i);
+				}
 			}
 			for (int indice = 0; indice < getListeAgentsViseurAbs().size(); indice++) {
 				int i = getListeAgentsViseurAbs().get(indice).getIdAgent();
 				if (testerParametre(request, getNOM_PB_SUPPRIMER_AGENT_VISEUR_ABS(i))) {
 					return performPB_SUPPRIMER_AGENT_VISEUR_ABS(request, i);
+				}
+				if (testerParametre(request, getNOM_PB_GERER_AGENT_VISEUR_APPRO_ABS(i))) {
+					return performPB_GERER_AGENT_VISEUR_APPRO_ABS(request, i);
 				}
 			}
 
@@ -656,6 +747,9 @@ public class OeDROITSKiosque extends BasicProcess {
 				int i = getListeAgentsOperateurPtg().get(indice).getIdAgent();
 				if (testerParametre(request, getNOM_PB_SUPPRIMER_AGENT_OPE_PTG(i))) {
 					return performPB_SUPPRIMER_AGENT_OPE_PTG(request, i);
+				}
+				if (testerParametre(request, getNOM_PB_GERER_AGENT_OPE_APPRO_PTG(i))) {
+					return performPB_GERER_AGENT_OPE_APPRO_PTG(request, i);
 				}
 			}
 
@@ -1908,5 +2002,75 @@ public class OeDROITSKiosque extends BasicProcess {
 		}
 		// on rafraichi les données
 		performPB_GERER_DROIT_PTG(request, getApprobateurCourant().getIdAgent());
+	}
+
+	public String getNOM_PB_GERER_AGENT_OPE_APPRO_PTG(int i) {
+		return "NOM_PB_GERER_AGENT_OPE_APPRO_PTG" + i;
+	}
+
+	public boolean performPB_GERER_AGENT_OPE_APPRO_PTG(HttpServletRequest request, int indiceEltAGerer)
+			throws Exception {
+		// on recupere l'operateur
+		AgentDto ope = new AgentDto();
+		ope.setIdAgent(indiceEltAGerer);
+		setOperateurCourant(getListeAgentsOperateurPtg().get(getListeAgentsOperateurPtg().indexOf(ope)));
+
+		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE_DROIT, getListeAgentsApprobateurPtg());
+		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE_DROIT_EXIST, new SirhPtgWSConsumer()
+				.getAgentsSaisisOperateur(getApprobateurCourant().getIdAgent(), getOperateurCourant().getIdAgent()));
+		setStatut(STATUT_AGENT_OPE_APPROBATEUR_PTG, true);
+		return true;
+	}
+
+	public AgentDto getOperateurCourant() {
+		return operateurCourant;
+	}
+
+	public void setOperateurCourant(AgentDto operateurCourant) {
+		this.operateurCourant = operateurCourant;
+	}
+
+	public String getNOM_PB_GERER_AGENT_OPE_APPRO_ABS(int i) {
+		return "NOM_PB_GERER_AGENT_OPE_APPRO_ABS" + i;
+	}
+
+	public boolean performPB_GERER_AGENT_OPE_APPRO_ABS(HttpServletRequest request, int indiceEltAGerer)
+			throws Exception {
+		// on recupere l'operateur
+		AgentDto ope = new AgentDto();
+		ope.setIdAgent(indiceEltAGerer);
+		setOperateurCourant(getListeAgentsOperateurAbs().get(getListeAgentsOperateurAbs().indexOf(ope)));
+
+		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE_DROIT, getListeAgentsApprobateurAbs());
+		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE_DROIT_EXIST, new SirhAbsWSConsumer()
+				.getAgentsOperateursOrViseur(getApprobateurCourant().getIdAgent(), getOperateurCourant().getIdAgent()));
+		setStatut(STATUT_AGENT_OPE_APPROBATEUR_ABS, true);
+		return true;
+	}
+
+	public String getNOM_PB_GERER_AGENT_VISEUR_APPRO_ABS(int i) {
+		return "NOM_PB_GERER_AGENT_VISEUR_APPRO_ABS" + i;
+	}
+
+	public boolean performPB_GERER_AGENT_VISEUR_APPRO_ABS(HttpServletRequest request, int indiceEltAGerer)
+			throws Exception {
+		// on recupere l'operateur
+		AgentDto ope = new AgentDto();
+		ope.setIdAgent(indiceEltAGerer);
+		setViseurCourant(getListeAgentsViseurAbs().get(getListeAgentsViseurAbs().indexOf(ope)));
+
+		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE_DROIT, getListeAgentsApprobateurAbs());
+		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE_DROIT_EXIST, new SirhAbsWSConsumer()
+				.getAgentsOperateursOrViseur(getApprobateurCourant().getIdAgent(), getViseurCourant().getIdAgent()));
+		setStatut(STATUT_AGENT_VISEUR_APPROBATEUR_ABS, true);
+		return true;
+	}
+
+	public AgentDto getViseurCourant() {
+		return viseurCourant;
+	}
+
+	public void setViseurCourant(AgentDto viseurCourant) {
+		this.viseurCourant = viseurCourant;
 	}
 }

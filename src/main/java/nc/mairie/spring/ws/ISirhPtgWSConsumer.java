@@ -40,6 +40,10 @@ public interface ISirhPtgWSConsumer {
 
 	ReturnMessageDto saveDelegateAndOperator(Integer idAgent, DelegatorAndOperatorsDto dto);
 
+	List<AgentDto> getAgentsSaisisOperateur(Integer idAgent, Integer idOperateur);
+
+	ReturnMessageDto saveAgentsSaisisOperateur(Integer idAgent, Integer idOperateur, List<AgentDto> listSelect);
+
 	// Ventilation
 	<T> List<T> getVentilations(Class<T> targetClass, Integer idDateVentil, Integer idRefTypePointage,
 			String agentsJson, boolean allVentilation);

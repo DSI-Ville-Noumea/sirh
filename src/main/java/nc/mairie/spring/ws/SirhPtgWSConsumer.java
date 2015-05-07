@@ -50,6 +50,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 	private static final String sirhPtgSauvegardeDelegataire = "droits/delegataire";
 	private static final String ptgDroitsAgentsApprouvesUrl = "droits/agentsApprouves";
 	private static final String ptgDroitsDelegataireOperateursUrl = "droits/delegataireOperateurs";
+	private static final String ptgDroitsAgentsSaisisUrl = "droits/agentsSaisis";
 
 	// Visualisation
 	private static final String sirhPtgVisualisationPointage = "visualisation/pointagesSIRH";
@@ -804,6 +805,41 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 
 		ClientResponse res = createAndPostRequest(params, url, json);
 		return readResponse(ReturnMessageDto.class, res, url);
+	}
+
+	@Override
+	public List<AgentDto> getAgentsSaisisOperateur(Integer idAgent, Integer idOperateur) {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS_URL");
+		String url = urlWS + ptgDroitsAgentsSaisisUrl;
+
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idAgent", idAgent.toString());
+		params.put("idOperateur", idOperateur.toString());
+
+		ClientResponse res = createAndFireRequest(params, url);
+		return readResponseAsList(AgentDto.class, res, url);
+	}
+
+	@Override
+	public ReturnMessageDto saveAgentsSaisisOperateur(Integer idAgent, Integer idOperateur, List<AgentDto> listSelect) {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS_URL");
+		String url = urlWS + ptgDroitsAgentsSaisisUrl;
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idAgent", idAgent.toString());
+		params.put("idOperateur", idOperateur.toString());
+
+		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class)
+				.deepSerialize(listSelect);
+
+		ClientResponse res = createAndPostRequest(params, url, json);
+		ReturnMessageDto dto = new ReturnMessageDto();
+		try {
+			readResponse(res, url);
+		} catch (SirhPtgWSConsumerException e) {
+			dto.setErrors(Arrays.asList("Une erreur est survenue lors de la sauvegarde des agents à approuver."));
+		}
+
+		return dto;
 	}
 
 }

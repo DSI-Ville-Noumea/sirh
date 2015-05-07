@@ -200,6 +200,7 @@ function reduireHierarchy() {
 								<tr>
 									<td class="sigp2NewTab-liste" style="position:relative;width:35px;" align="center">
 							    		<INPUT title="supprimer" type="image" src="images/suppression.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_SUPPRIMER_AGENT_OPE_ABS(i)%>">
+							    		<INPUT title="Gérer les agents de l'opérateur" type="image" src="images/ajout-doc.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_GERER_AGENT_OPE_APPRO_ABS(i)%>">
 							    	</td>
 									<td class="sigp2NewTab-liste" style="position:relative;text-align: left;"><%=process.getVAL_ST_AGENT_OPE(i)%></td>
 								</tr>
@@ -221,6 +222,7 @@ function reduireHierarchy() {
 								<tr>
 									<td class="sigp2NewTab-liste" style="position:relative;width:35px;" align="center">
 							    		<INPUT title="supprimer" type="image" src="images/suppression.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_SUPPRIMER_AGENT_VISEUR_ABS(i)%>">
+							    		<INPUT title="Gérer les agents du viseur" type="image" src="images/ajout-doc.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_GERER_AGENT_VISEUR_APPRO_ABS(i)%>">
 							    	</td>
 									<td class="sigp2NewTab-liste" style="position:relative;text-align: left;"><%=process.getVAL_ST_AGENT_VISEUR(i)%></td>
 								</tr>
@@ -270,6 +272,7 @@ function reduireHierarchy() {
 								<tr>
 									<td class="sigp2NewTab-liste" style="position:relative;width:35px;" align="center">
 							    		<INPUT title="supprimer" type="image" src="images/suppression.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_SUPPRIMER_AGENT_OPE_PTG(i)%>">
+							    		<INPUT title="Gérer les agents de l'opérateur" type="image" src="images/ajout-doc.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_GERER_AGENT_OPE_APPRO_PTG(i)%>">
 							    	</td>
 									<td class="sigp2NewTab-liste" style="position:relative;text-align: left;"><%=process.getVAL_ST_AGENT_OPE(i)%></td>
 								</tr>
