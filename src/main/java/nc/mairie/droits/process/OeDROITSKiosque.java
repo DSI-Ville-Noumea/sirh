@@ -704,7 +704,12 @@ public class OeDROITSKiosque extends BasicProcess {
 						getTransaction().declarerErreur("ERREUR : " + err);
 						return false;
 					} else {
-						getListeApprobateursPTG().remove(approDto);
+						if (suppression) {
+							addZone(getNOM_ST_DELEGATAIRE_PTG(i), Const.CHAINE_VIDE);
+							getListeApprobateursPTG().remove(approDto);
+						} else {
+							getListeApprobateursPTG().add(approDto);
+						}
 					}
 				}
 				if (testerParametre(request, getNOM_PB_SET_APPROBATEUR_ABS(i))) {
@@ -722,7 +727,12 @@ public class OeDROITSKiosque extends BasicProcess {
 						getTransaction().declarerErreur("ERREUR : " + err);
 						return false;
 					} else {
-						getListeApprobateursABS().remove(approDto);
+						if (suppression) {
+							addZone(getNOM_ST_DELEGATAIRE_ABS(i), Const.CHAINE_VIDE);
+							getListeApprobateursABS().remove(approDto);
+						} else {
+							getListeApprobateursABS().add(approDto);
+						}
 					}
 				}
 			}

@@ -109,12 +109,12 @@ function reduireHierarchy() {
 					<td><INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_AJOUTER()%>"></td>
 					<td><span><INPUT type="radio" onclick='executeBouton("<%=process.getNOM_PB_TRI() %>")'<%= process.forRadioHTML(process.getNOM_RG_TRI(),process.getNOM_RB_TRI_AGENT())%>> Agent</span></td>
 					<td><span><INPUT type="radio" onclick='executeBouton("<%=process.getNOM_PB_TRI() %>")'<%= process.forRadioHTML(process.getNOM_RG_TRI(),process.getNOM_RB_TRI_SERVICE())%>> Service</span></td>
-					<td align="center"><span>Droit <br> PTG</span></td>
-					<td align="center"><span>Droit <br> ABS</span></td>
-					<td align="center"><span>Délég <br> PTG</span></td>
-					<td align="center"><span>Délég <br> ABS</span></td>
 					<td align="center"><span>PTG</span></td>
-					<td align="center"><span>ABS</span></td>					
+					<td align="center"><span>Droit <br> PTG</span></td>
+					<td align="center"><span>Délég <br> PTG</span></td>
+					<td align="center"><span>ABS</span></td>
+					<td align="center"><span>Droit <br> ABS</span></td>
+					<td align="center"><span>Délég <br> ABS</span></td>					
 				</tr>
 				<%
 				for (int indice = 0;indice<process.getListeApprobateurs().size();indice++){
@@ -126,35 +126,35 @@ function reduireHierarchy() {
 				    	</td>
 						<td class="sigp2NewTab-liste" style="position:relative;width:200px;text-align: left;"><%=process.getVAL_ST_AGENT(i)%></td>
 						<td class="sigp2NewTab-liste" style="position:relative;text-align: left;"><%=process.getVAL_ST_SERVICE(i)%></td>
+						<td class="sigp2NewTab-liste" style="position:relative;width:50px;text-align: center;">
+							<INPUT type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_DROIT_PTG(i),process.getVAL_CK_DROIT_PTG(i))%> onClick='executeBouton("<%=process.getNOM_PB_SET_APPROBATEUR_PTG(i)%>")'>
+							<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_SET_APPROBATEUR_PTG(i)%>" value="DATE">
+						</td>
 						<td class="sigp2NewTab-liste" style="position:relative;text-align: center;">
 							<%if(process.peutModifierDelegatairePTG(i)){ %>
 								<INPUT title="Gérer les droits des pointages" type="image" src="images/ajout-doc.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_GERER_DROIT_PTG(i)%>">
 							<%} %>		    										
+						</td>
+						<td class="sigp2NewTab-liste" style="position:relative;text-align: center; min-height:15px;"><%=process.getVAL_ST_DELEGATAIRE_PTG(i)%>
+							<%if(process.peutModifierDelegatairePTG(i)){ %>
+							<INPUT title="modifier" type="image" src="images/modifier.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_MODIFIER_DELEGATAIRE_PTG(i)%>">
+				    		<INPUT title="supprimer" type="image" src="images/suppression.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_SUPPRIMER_DELEGATAIRE_PTG(i)%>">
+				    		<%} %>			    										
+						</td>
+						<td class="sigp2NewTab-liste" style="position:relative;width:50px;text-align: center;">
+							<INPUT type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_DROIT_ABS(i),process.getVAL_CK_DROIT_ABS(i))%> onClick='executeBouton("<%=process.getNOM_PB_SET_APPROBATEUR_ABS(i)%>")'>
+							<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_SET_APPROBATEUR_ABS(i)%>" value="DATE">
 						</td>
 						<td class="sigp2NewTab-liste" style="position:relative;text-align: center;">
 							<%if(process.peutModifierDelegataireABS(i)){ %>
 							<INPUT title="Gérer les droits des absences" type="image" src="images/ajout-doc.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_GERER_DROIT_ABS(i)%>">
 							<%} %>		    										
 						</td>
-						<td class="sigp2NewTab-liste" style="position:relative;text-align: left; min-height:15px;"><%=process.getVAL_ST_DELEGATAIRE_PTG(i)%>
-							<%if(process.peutModifierDelegatairePTG(i)){ %>
-							<INPUT title="modifier" type="image" src="images/modifier.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_MODIFIER_DELEGATAIRE_PTG(i)%>">
-				    		<INPUT title="supprimer" type="image" src="images/suppression.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_SUPPRIMER_DELEGATAIRE_PTG(i)%>">
-				    		<%} %>			    										
-						</td>
-						<td class="sigp2NewTab-liste" style="position:relative;text-align: left; min-height:15px;"><%=process.getVAL_ST_DELEGATAIRE_ABS(i)%>
+						<td class="sigp2NewTab-liste" style="position:relative;text-align: center; min-height:15px;"><%=process.getVAL_ST_DELEGATAIRE_ABS(i)%>
 							<%if(process.peutModifierDelegataireABS(i)){ %>
 							<INPUT title="modifier" type="image" src="images/modifier.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_MODIFIER_DELEGATAIRE_ABS(i)%>">
 				    		<INPUT title="supprimer" type="image" src="images/suppression.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_SUPPRIMER_DELEGATAIRE_ABS(i)%>">				    										
 							<%} %>		    										
-						</td>
-						<td class="sigp2NewTab-liste" style="position:relative;width:50px;text-align: center;">
-							<INPUT type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_DROIT_PTG(i),process.getVAL_CK_DROIT_PTG(i))%> onClick='executeBouton("<%=process.getNOM_PB_SET_APPROBATEUR_PTG(i)%>")'>
-							<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_SET_APPROBATEUR_PTG(i)%>" value="DATE">
-						</td>
-						<td class="sigp2NewTab-liste" style="position:relative;width:50px;text-align: center;">
-							<INPUT type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_DROIT_ABS(i),process.getVAL_CK_DROIT_ABS(i))%> onClick='executeBouton("<%=process.getNOM_PB_SET_APPROBATEUR_ABS(i)%>")'>
-							<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_SET_APPROBATEUR_ABS(i)%>" value="DATE">
 						</td>
 					</tr>
 				<%}%>
