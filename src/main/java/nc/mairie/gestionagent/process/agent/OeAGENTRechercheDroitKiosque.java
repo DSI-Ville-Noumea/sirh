@@ -43,8 +43,8 @@ public class OeAGENTRechercheDroitKiosque extends BasicProcess {
 		// Récup des agents dejà affectés
 		@SuppressWarnings("unchecked")
 		List<AgentDto> listAgentExistant = (List<AgentDto>) VariableActivite.recuperer(this,
-				VariablesActivite.ACTIVITE_AGENT_MAIRIE_ABS);
-		VariableActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE_ABS);
+				VariablesActivite.ACTIVITE_AGENT_MAIRIE_DROIT);
+		VariableActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE_DROIT);
 
 		// on charge les sous agents de l'approbateur
 		List<AgentDto> result = new SirhWSConsumer().getAgentsSubordonnes(approbateur.getIdAgent());
@@ -157,7 +157,7 @@ public class OeAGENTRechercheDroitKiosque extends BasicProcess {
 			}
 		}
 
-		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE_ABS, listeRetour);
+		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE_DROIT, listeRetour);
 
 		setStatut(STATUT_PROCESS_APPELANT);
 		return true;

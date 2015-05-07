@@ -2,6 +2,7 @@ package nc.mairie.spring.ws;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.Map;
 import nc.mairie.gestionagent.absence.dto.TypeAbsenceDto;
 import nc.mairie.gestionagent.dto.AgentDto;
 import nc.mairie.gestionagent.dto.ApprobateurDto;
+import nc.mairie.gestionagent.dto.DelegatorAndOperatorsDto;
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
 import nc.mairie.gestionagent.pointage.dto.CanStartVentilationDto;
 import nc.mairie.gestionagent.pointage.dto.CanStartWorkflowPaieActionDto;
@@ -46,6 +48,8 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 	private static final String sirhPtgAgentsApprobateurs = "droits/approbateurs";
 	private static final String sirhPtgDeleteApprobateurs = "droits/deleteApprobateurs";
 	private static final String sirhPtgSauvegardeDelegataire = "droits/delegataire";
+	private static final String ptgDroitsAgentsApprouvesUrl = "droits/agentsApprouves";
+	private static final String ptgDroitsDelegataireOperateursUrl = "droits/delegataireOperateurs";
 
 	// Visualisation
 	private static final String sirhPtgVisualisationPointage = "visualisation/pointagesSIRH";
@@ -208,6 +212,16 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 			throw new SirhPtgWSConsumerException(String.format("An error occured when querying '%s'.", url), ex);
 		}
 		return response;
+	}
+
+	public void readResponse(ClientResponse response, String url) {
+
+		if (response.getStatus() == HttpStatus.OK.value())
+			return;
+
+		throw new SirhPtgWSConsumerException(String.format(
+				"An error occured when querying '%s'. Return code is : %s, content is %s", url, response.getStatus(),
+				response.getEntity(String.class)));
 	}
 
 	public <T> T readResponse(Class<T> targetClass, ClientResponse response, String url) {
@@ -659,7 +673,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 			result = targetClass.newInstance();
 		} catch (Exception ex) {
 			throw new SirhAbsWSConsumerException(
-					"An error occured when instantiating return type when deserializing JSON from SIRH PTG WS request.",
+					"An error occured when instantiating return type when deserializing JSON from SIRH ABS WS request.",
 					ex);
 		}
 
@@ -732,6 +746,64 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 		params.put("idAgent", idAgent.toString());
 		ClientResponse res = createAndPostRequest(params, url, json);
 		return readResponseWithReturnMessageDto(ReturnMessageDto.class, res, url);
+	}
+
+	@Override
+	public List<AgentDto> getApprovedAgents(Integer idAgent) {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS_URL");
+		String url = urlWS + ptgDroitsAgentsApprouvesUrl;
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idAgent", idAgent.toString());
+
+		ClientResponse res = createAndFireRequest(params, url);
+		return readResponseAsList(AgentDto.class, res, url);
+	}
+
+	@Override
+	public DelegatorAndOperatorsDto getDelegateAndOperator(Integer idAgent) {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS_URL");
+		String url = urlWS + ptgDroitsDelegataireOperateursUrl;
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idAgent", idAgent.toString());
+
+		ClientResponse res = createAndFireRequest(params, url);
+		return readResponse(DelegatorAndOperatorsDto.class, res, url);
+	}
+
+	@Override
+	public ReturnMessageDto saveApprovedAgents(Integer idAgent, List<AgentDto> listSelect) {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS_URL");
+		String url = urlWS + ptgDroitsAgentsApprouvesUrl;
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idAgent", idAgent.toString());
+
+		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class)
+				.deepSerialize(listSelect);
+
+		ClientResponse res = createAndPostRequest(params, url, json);
+
+		ReturnMessageDto dto = new ReturnMessageDto();
+		try {
+			readResponse(res, url);
+		} catch (SirhPtgWSConsumerException e) {
+			dto.setErrors(Arrays.asList("Une erreur est survenue lors de la sauvegarde des agents à approuver."));
+		}
+
+		return dto;
+	}
+
+	@Override
+	public ReturnMessageDto saveDelegateAndOperator(Integer idAgent, DelegatorAndOperatorsDto dto) {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS_URL");
+		String url = urlWS + ptgDroitsDelegataireOperateursUrl;
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idAgent", idAgent.toString());
+
+		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class)
+				.deepSerialize(dto);
+
+		ClientResponse res = createAndPostRequest(params, url, json);
+		return readResponse(ReturnMessageDto.class, res, url);
 	}
 
 }

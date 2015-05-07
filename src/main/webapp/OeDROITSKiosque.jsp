@@ -233,9 +233,49 @@ function reduireHierarchy() {
                     </div>
 	            </FIELDSET>
         <%} else if(process.getVAL_ST_ACTION().equals(process.ACTION_GERER_DROIT_PTG)){ %>
-            <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
+             <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
 	            <legend class="sigp2Legend"><%=process.ACTION_GERER_DROIT_PTG %> <%=process.getApprobateurCourant().getNom() %></legend>
-		            
+		            <fieldset>
+		            	<legend>Agents à approuver par l'approbateur</legend>
+		            	<table class="sigp2NewTab" style="text-align:left;width:980px;">
+							<tr>
+								<td><INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_AJOUTER_AGENT_APPRO_PTG()%>"></td>
+								<td><span>Agent</span></td>										
+							</tr>
+							<%
+							for (int indice = 0;indice<process.getListeAgentsApprobateurPtg().size();indice++){
+								int i = process.getListeAgentsApprobateurPtg().get(indice).getIdAgent();
+							%>
+								<tr>
+									<td class="sigp2NewTab-liste" style="position:relative;width:35px;" align="center">
+							    		<INPUT title="supprimer" type="image" src="images/suppression.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_SUPPRIMER_AGENT_APPRO_PTG(i)%>">
+							    	</td>
+									<td class="sigp2NewTab-liste" style="position:relative;text-align: left;"><%=process.getVAL_ST_AGENT_APPRO(i)%></td>
+								</tr>
+							<%}%>
+						</table>	
+		            </fieldset>
+			        <BR/><BR/>
+		            <fieldset>
+		            	<legend>Opérateurs de l'approbateur</legend>
+		            	<table class="sigp2NewTab" style="text-align:left;width:980px;">
+							<tr>
+								<td><INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_AJOUTER_AGENT_OPE_PTG()%>"></td>
+								<td><span>Agent</span></td>										
+							</tr>
+							<%
+							for (int indice = 0;indice<process.getListeAgentsOperateurPtg().size();indice++){
+								int i = process.getListeAgentsOperateurPtg().get(indice).getIdAgent();
+							%>
+								<tr>
+									<td class="sigp2NewTab-liste" style="position:relative;width:35px;" align="center">
+							    		<INPUT title="supprimer" type="image" src="images/suppression.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_SUPPRIMER_AGENT_OPE_PTG(i)%>">
+							    	</td>
+									<td class="sigp2NewTab-liste" style="position:relative;text-align: left;"><%=process.getVAL_ST_AGENT_OPE(i)%></td>
+								</tr>
+							<%}%>
+						</table>
+		            </fieldset>		            
 			        <BR/><BR/>
                     <div align="center">	 
 	                    <INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
