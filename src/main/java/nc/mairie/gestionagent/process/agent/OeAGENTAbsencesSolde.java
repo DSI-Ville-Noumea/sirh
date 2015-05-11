@@ -9,6 +9,7 @@ import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 
+import nc.mairie.enums.EnumTypeAbsence;
 import nc.mairie.gestionagent.absence.dto.ActeursDto;
 import nc.mairie.gestionagent.absence.dto.FiltreSoldeDto;
 import nc.mairie.gestionagent.absence.dto.HistoriqueSoldeDto;
@@ -49,7 +50,7 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 	private static final long serialVersionUID = 1L;
 	public static final int STATUT_RECHERCHER_AGENT = 1;
 
-	public String ACTION_VISUALISATION = "Consultation de l'historique d'un compteur";
+	public String ACTION_VISUALISATION = "Consultation de l'historique du compteur de %s";
 
 	private Agent agentCourant;
 	private ArrayList<TypeAbsenceDto> listeTypeAbsence;
@@ -488,22 +489,29 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 
 		}
 
-		// #15146 : dans les congés annuels, on charge aussi l'historique des
-		// alim auto de fin de mois
-		// Liste depuis SIRH-ABS-WS
-		ArrayList<MoisAlimAutoCongesAnnuelsDto> listeHistoriqueAlimAuto = (ArrayList<MoisAlimAutoCongesAnnuelsDto>) consuAbs
-				.getHistoriqueAlimAutoAgent(getAgentCourant().getIdAgent());
-		setListeHistoriqueAlimAuto(listeHistoriqueAlimAuto);
+		if (EnumTypeAbsence.getRefTypeAbsenceEnum(codeTypeAbsence) == EnumTypeAbsence.CONGE) {
+			// #15146 : dans les congés annuels, on charge aussi l'historique
+			// des
+			// alim auto de fin de mois
+			// Liste depuis SIRH-ABS-WS
+			ArrayList<MoisAlimAutoCongesAnnuelsDto> listeHistoriqueAlimAuto = (ArrayList<MoisAlimAutoCongesAnnuelsDto>) consuAbs
+					.getHistoriqueAlimAutoAgent(getAgentCourant().getIdAgent());
+			setListeHistoriqueAlimAuto(listeHistoriqueAlimAuto);
 
-		for (int i = 0; i < getListeHistoriqueAlimAuto().size(); i++) {
-			MoisAlimAutoCongesAnnuelsDto histo = (MoisAlimAutoCongesAnnuelsDto) getListeHistoriqueAlimAuto().get(i);
+			for (int i = 0; i < getListeHistoriqueAlimAuto().size(); i++) {
+				MoisAlimAutoCongesAnnuelsDto histo = (MoisAlimAutoCongesAnnuelsDto) getListeHistoriqueAlimAuto().get(i);
 
-			addZone(getNOM_ST_MOIS(i), sdfDate.format(histo.getDateMois()));
-			addZone(getNOM_ST_NB_JOUR(i), histo.getNbJours().toString());
+				addZone(getNOM_ST_MOIS(i), sdfDate.format(histo.getDateMois()));
+				addZone(getNOM_ST_NB_JOUR(i), histo.getNbJours().toString());
 
+			}
+		} else {
+			setListeHistoriqueAlimAuto(new ArrayList<MoisAlimAutoCongesAnnuelsDto>());
 		}
+
 		// On nomme l'action
-		addZone(getNOM_ST_ACTION(), ACTION_VISUALISATION);
+		addZone(getNOM_ST_ACTION(),
+				String.format(ACTION_VISUALISATION, EnumTypeAbsence.getRefTypeAbsenceEnum(codeTypeAbsence).getValue()));
 		setFocus(getNOM_PB_ANNULER());
 
 		setStatut(STATUT_MEME_PROCESS);
