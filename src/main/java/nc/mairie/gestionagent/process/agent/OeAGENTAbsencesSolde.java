@@ -50,12 +50,13 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 	private static final long serialVersionUID = 1L;
 	public static final int STATUT_RECHERCHER_AGENT = 1;
 
-	public String ACTION_VISUALISATION = "Consultation de l'historique du compteur de %s";
+	public String ACTION_VISUALISATION = "Consultation de l'historique d'alimentation manuelle du compteur de %s";
 
 	private Agent agentCourant;
 	private ArrayList<TypeAbsenceDto> listeTypeAbsence;
 	private ArrayList<HistoriqueSoldeDto> listeHistorique;
 	private ArrayList<MoisAlimAutoCongesAnnuelsDto> listeHistoriqueAlimAuto;
+	private ArrayList<MoisAlimAutoCongesAnnuelsDto> listeHistoriqueAlimPaie;
 
 	private ArrayList<SoldeMonthDto> listeSoldeA55;
 	private ArrayList<SoldeMonthDto> listeSoldeA52;
@@ -489,13 +490,15 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 
 		}
 
+		setListeHistoriqueAlimAuto(null);
+		setListeHistoriqueAlimPaie(null);
 		if (EnumTypeAbsence.getRefTypeAbsenceEnum(codeTypeAbsence) == EnumTypeAbsence.CONGE) {
 			// #15146 : dans les congés annuels, on charge aussi l'historique
 			// des
 			// alim auto de fin de mois
 			// Liste depuis SIRH-ABS-WS
 			ArrayList<MoisAlimAutoCongesAnnuelsDto> listeHistoriqueAlimAuto = (ArrayList<MoisAlimAutoCongesAnnuelsDto>) consuAbs
-					.getHistoriqueAlimAutoAgent(getAgentCourant().getIdAgent());
+					.getHistoriqueAlimAutoCongeAnnuelAgent(getAgentCourant().getIdAgent());
 			setListeHistoriqueAlimAuto(listeHistoriqueAlimAuto);
 
 			for (int i = 0; i < getListeHistoriqueAlimAuto().size(); i++) {
@@ -505,8 +508,49 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 				addZone(getNOM_ST_NB_JOUR(i), histo.getNbJours().toString());
 
 			}
-		} else {
-			setListeHistoriqueAlimAuto(new ArrayList<MoisAlimAutoCongesAnnuelsDto>());
+		} else if (EnumTypeAbsence.getRefTypeAbsenceEnum(codeTypeAbsence) == EnumTypeAbsence.RECUP) {
+			// #15479 : dans les recups/repos comp, on charge aussi l'historique
+			// des alim auto de la paie
+			// Liste depuis SIRH-ABS-WS
+			ArrayList<MoisAlimAutoCongesAnnuelsDto> listeHistoriqueAlimAuto = (ArrayList<MoisAlimAutoCongesAnnuelsDto>) consuAbs
+					.getHistoriqueAlimAutoRecupAgent(getAgentCourant().getIdAgent());
+			setListeHistoriqueAlimPaie(listeHistoriqueAlimAuto);
+
+			for (int i = 0; i < getListeHistoriqueAlimPaie().size(); i++) {
+				MoisAlimAutoCongesAnnuelsDto histo = (MoisAlimAutoCongesAnnuelsDto) getListeHistoriqueAlimPaie().get(i);
+
+				addZone(getNOM_ST_MOIS(i), sdfDate.format(histo.getDateMois()));
+
+				int soldeRecup = histo.getNbJours().intValue();
+				String soldeRecupHeure = (soldeRecup / 60) == 0 ? Const.CHAINE_VIDE : soldeRecup / 60 + "h ";
+				String soldeRecupMinute = (soldeRecup % 60) == 0 ? Const.CHAINE_VIDE : soldeRecup % 60 + "m";
+				addZone(getNOM_ST_NB_JOUR(i), (soldeRecupHeure + soldeRecupMinute).equals(Const.CHAINE_VIDE) ? "0"
+						: (soldeRecupHeure + soldeRecupMinute));
+
+			}
+		} else if (EnumTypeAbsence.getRefTypeAbsenceEnum(codeTypeAbsence) == EnumTypeAbsence.REPOS_COMP) {
+			// #15479 : dans les recups/repos comp, on charge aussi l'historique
+			// des alim auto de la paie
+			// Liste depuis SIRH-ABS-WS
+			ArrayList<MoisAlimAutoCongesAnnuelsDto> listeHistoriqueAlimAuto = (ArrayList<MoisAlimAutoCongesAnnuelsDto>) consuAbs
+					.getHistoriqueAlimAutoReposCompAgent(getAgentCourant().getIdAgent());
+			setListeHistoriqueAlimPaie(listeHistoriqueAlimAuto);
+
+			for (int i = 0; i < getListeHistoriqueAlimPaie().size(); i++) {
+				MoisAlimAutoCongesAnnuelsDto histo = (MoisAlimAutoCongesAnnuelsDto) getListeHistoriqueAlimPaie().get(i);
+
+				addZone(getNOM_ST_MOIS(i), sdfDate.format(histo.getDateMois()));
+
+				int soldeReposComp = histo.getNbJours().intValue();
+				String soldeReposCompHeure = (soldeReposComp / 60) == 0 ? Const.CHAINE_VIDE : soldeReposComp / 60
+						+ "h ";
+				String soldeReposCompMinute = (soldeReposComp % 60) == 0 ? Const.CHAINE_VIDE : soldeReposComp % 60
+						+ "m";
+				addZone(getNOM_ST_NB_JOUR(i),
+						(soldeReposCompHeure + soldeReposCompMinute).equals(Const.CHAINE_VIDE) ? "0"
+								: (soldeReposCompHeure + soldeReposCompMinute));
+
+			}
 		}
 
 		// On nomme l'action
@@ -787,6 +831,15 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 
 	public String getVAL_ST_NB_JOUR(int i) {
 		return getZone(getNOM_ST_NB_JOUR(i));
+	}
+
+	public ArrayList<MoisAlimAutoCongesAnnuelsDto> getListeHistoriqueAlimPaie() {
+		return listeHistoriqueAlimPaie == null ? new ArrayList<MoisAlimAutoCongesAnnuelsDto>()
+				: listeHistoriqueAlimPaie;
+	}
+
+	public void setListeHistoriqueAlimPaie(ArrayList<MoisAlimAutoCongesAnnuelsDto> listeHistoriqueAlimPaie) {
+		this.listeHistoriqueAlimPaie = listeHistoriqueAlimPaie;
 	}
 
 }

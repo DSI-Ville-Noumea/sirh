@@ -105,10 +105,13 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 
 	private static final String sirhAbsMoisAlimAutoUrl = "congeannuel/getListeMoisAlimAutoCongeAnnuel";
 	private static final String sirhAbsAlimAutoUrl = "congeannuel/getListeAlimAutoCongeAnnuel";
-	private static final String sirhAbsHistoAlimAutoUrl = "congeannuel/getHistoAlimAutoCongeAnnuel";
+	private static final String sirhAbsHistoAlimAutoCongeAnnuelUrl = "congeannuel/getHistoAlimAutoCongeAnnuel";
 	private static final String sirhAbsListRefAlimUrl = "congeannuel/getListRefAlimCongeAnnuel";
 	private static final String sirhAbsRefAlimCongeAnnuelSauvegarde = "congeannuel/setRefAlimCongeAnnuel";
 	private static final String sirhAbsCreateBaseConge = "congeannuel/createRefAlimCongeAnnuelAnnee";
+
+	private static final String sirhAbsHistoAlimAutoRecupUrl = "recuperations/getHistoAlimAutoRecup";
+	private static final String sirhAbsHistoAlimAutoReposCompUrl = "reposcomps/getHistoAlimAutoReposComp";
 
 	private Logger logger = LoggerFactory.getLogger(SirhAbsWSConsumer.class);
 
@@ -782,9 +785,9 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	}
 
 	@Override
-	public List<MoisAlimAutoCongesAnnuelsDto> getHistoriqueAlimAutoAgent(Integer idAgent) {
+	public List<MoisAlimAutoCongesAnnuelsDto> getHistoriqueAlimAutoCongeAnnuelAgent(Integer idAgent) {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
-		String url = urlWS + sirhAbsHistoAlimAutoUrl;
+		String url = urlWS + sirhAbsHistoAlimAutoCongeAnnuelUrl;
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgent.toString());
 		logger.debug("Call " + url + " with idAgent : " + idAgent);
@@ -904,5 +907,27 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 
 		ClientResponse res = createAndPostRequest(params, url, json);
 		return readResponse(ReturnMessageDto.class, res, url);
+	}
+
+	@Override
+	public List<MoisAlimAutoCongesAnnuelsDto> getHistoriqueAlimAutoRecupAgent(Integer idAgent) {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
+		String url = urlWS + sirhAbsHistoAlimAutoRecupUrl;
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idAgent", idAgent.toString());
+		logger.debug("Call " + url + " with idAgent : " + idAgent);
+		ClientResponse res = createAndFireRequest(params, url);
+		return readResponseAsList(MoisAlimAutoCongesAnnuelsDto.class, res, url);
+	}
+
+	@Override
+	public List<MoisAlimAutoCongesAnnuelsDto> getHistoriqueAlimAutoReposCompAgent(Integer idAgent) {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
+		String url = urlWS + sirhAbsHistoAlimAutoReposCompUrl;
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idAgent", idAgent.toString());
+		logger.debug("Call " + url + " with idAgent : " + idAgent);
+		ClientResponse res = createAndFireRequest(params, url);
+		return readResponseAsList(MoisAlimAutoCongesAnnuelsDto.class, res, url);
 	}
 }

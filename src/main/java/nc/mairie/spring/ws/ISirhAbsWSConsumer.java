@@ -138,7 +138,11 @@ public interface ISirhAbsWSConsumer {
 	List<MoisAlimAutoCongesAnnuelsDto> getListeAlimAutoCongeAnnuel(MoisAlimAutoCongesAnnuelsDto moisChoisi,
 			boolean onlyErreur);
 
-	List<MoisAlimAutoCongesAnnuelsDto> getHistoriqueAlimAutoAgent(Integer idAgent);
+	List<MoisAlimAutoCongesAnnuelsDto> getHistoriqueAlimAutoCongeAnnuelAgent(Integer idAgent);
+
+	List<MoisAlimAutoCongesAnnuelsDto> getHistoriqueAlimAutoRecupAgent(Integer idAgent);
+
+	List<MoisAlimAutoCongesAnnuelsDto> getHistoriqueAlimAutoReposCompAgent(Integer idAgent);
 
 	List<RefAlimCongesAnnuelsDto> getListeRefAlimCongesAnnuels(Integer idRefTypeSaisiCongeAnnuel);
 
