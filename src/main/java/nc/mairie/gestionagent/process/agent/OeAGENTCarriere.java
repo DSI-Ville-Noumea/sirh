@@ -16,7 +16,6 @@ import nc.mairie.metier.agent.Contrat;
 import nc.mairie.metier.agent.PositionAdmAgent;
 import nc.mairie.metier.avancement.AvancementFonctionnaires;
 import nc.mairie.metier.carriere.Bareme;
-import nc.mairie.metier.carriere.BaseHoraire;
 import nc.mairie.metier.carriere.Carriere;
 import nc.mairie.metier.carriere.FiliereGrade;
 import nc.mairie.metier.carriere.Grade;
@@ -80,14 +79,12 @@ public class OeAGENTCarriere extends BasicProcess {
 	private ArrayList<String> listeRegime;
 	private ArrayList<ModeReglement> listeBaseReg;
 	private ArrayList<MotifCarriere> listeMotifCarriere;
-	private ArrayList<BaseHoraire> listeBaseHorairePointage;
 
 	private Hashtable<String, StatutCarriere> hashStatut;
 	private Hashtable<String, Grade> hashGrade;
 	private Hashtable<String, Horaire> hashHoraire;
 	private Hashtable<String, ModeReglement> hashModeReglement;
 	private Hashtable<String, MotifCarriere> hashMotifCarriere;
-	private Hashtable<String, BaseHoraire> hashBaseHorairePointage;
 
 	public String ACTION_SUPPRESSION = "Suppression d'une fiche Carrière.";
 	public String ACTION_VISUALISATION = "Consultation d'une fiche Carrière.";
@@ -321,22 +318,6 @@ public class OeAGENTCarriere extends BasicProcess {
 				getHashMotifCarriere().put(m.getIdMotifCarriere().toString(), m);
 
 		}
-
-		// Si liste base horaire pointage vide alors affectation
-		// RG_AG_CA_C06
-		// RG_AG_CA_C12
-		if (getLB_BASE_HORAIRE_POINTAGE() == LBVide) {
-			ArrayList<BaseHoraire> liste = BaseHoraire.listerBaseHoraire(getTransaction());
-			setListeBaseHorairePointage(liste);
-
-			int[] tailles = { 5, 20 };
-			String padding[] = { "G", "G" };
-			String[] champs = { "codBaseHoraire", "libBaseHoraire" };
-			setLB_BASE_HORAIRE_POINTAGE(new FormateListe(tailles, liste, champs, padding, false).getListeFormatee(true));
-
-			for (BaseHoraire bh : liste)
-				getHashBaseHorairePointage().put(bh.getCodBaseHoraire(), bh);
-		}
 	}
 
 	private void afficherListeGrade() {
@@ -428,7 +409,6 @@ public class OeAGENTCarriere extends BasicProcess {
 			}
 
 		addZone(getNOM_LB_MOTIFS_SELECT(), Const.ZERO);
-		addZone(getNOM_LB_BASE_HORAIRE_POINTAGE_SELECT(), Const.ZERO);
 
 		addZone(getNOM_ST_FILIERE(), Const.CHAINE_VIDE);
 		addZone(getNOM_EF_IBA(), Const.CHAINE_VIDE);
@@ -551,7 +531,6 @@ public class OeAGENTCarriere extends BasicProcess {
 		StatutCarriere statut = (StatutCarriere) getHashStatut().get(getCarriereCourante().getCodeCategorie());
 		Grade grade = (Grade) getHashGrade().get(getCarriereCourante().getCodeGrade());
 		Horaire horaire = (Horaire) getHashHoraire().get(getCarriereCourante().getCodeBaseHoraire2());
-		BaseHoraire baseHoraire = (BaseHoraire) getHashBaseHorairePointage().get(getCarriereCourante().getCodeBase());
 		ModeReglement baseReglement = (ModeReglement) getHashModeReglement().get(
 				getCarriereCourante().getModeReglement());
 		MotifCarriere motif = (MotifCarriere) getHashMotifCarriere().get(getCarriereCourante().getIdMotif());
@@ -583,13 +562,6 @@ public class OeAGENTCarriere extends BasicProcess {
 			int ligneHoraire = getListeHoraire().indexOf(horaire);
 			addZone(getNOM_LB_BASE_HORAIRE_SELECT(), String.valueOf(ligneHoraire));
 			addZone(getNOM_ST_HORAIRE(), horaire.getLibHor());
-		}
-
-		if (baseHoraire != null) {
-			int ligneBHP = getListeBaseHorairePointage().indexOf(baseHoraire);
-			addZone(getNOM_LB_BASE_HORAIRE_POINTAGE_SELECT(), String.valueOf(ligneBHP + 1));
-			addZone(getNOM_ST_BASE_HORAIRE_POINTAGE(),
-					baseHoraire.getCodBaseHoraire() + " - " + baseHoraire.getLibBaseHoraire());
 		}
 
 		if (baseReglement != null) {
@@ -890,14 +862,6 @@ public class OeAGENTCarriere extends BasicProcess {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "bases horaire"));
 		Horaire horaire = (Horaire) getListeHoraire().get(numLigneBH);
 
-		// base horaire pointage
-		int numLigneBHP = (Services.estNumerique(getZone(getNOM_LB_BASE_HORAIRE_POINTAGE_SELECT())) ? Integer
-				.parseInt(getZone(getNOM_LB_BASE_HORAIRE_POINTAGE_SELECT())) : -1);
-		if (numLigneBHP == -1 || getListeBaseHorairePointage().size() == 0
-				|| numLigneBHP > getListeBaseHorairePointage().size())
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "base horaire pointage"));
-		BaseHoraire bhp = (BaseHoraire) getListeBaseHorairePointage().get(numLigneBHP - 1);
-
 		// base reglement
 		int numLigneBR = (Services.estNumerique(getZone(getNOM_LB_BASE_REGLEMENT_SELECT())) ? Integer
 				.parseInt(getZone(getNOM_LB_BASE_REGLEMENT_SELECT())) : -1);
@@ -969,7 +933,8 @@ public class OeAGENTCarriere extends BasicProcess {
 		getCarriereCourante().setCodeBaseHoraire2(horaire.getCdtHor());
 
 		// basehoraire pointage
-		getCarriereCourante().setCodeBase(bhp.getCodBaseHoraire());
+		// #13184 : on ne gere plus la base de pointage dans la carriere
+		getCarriereCourante().setCodeBase(Const.CHAINE_VIDE);
 
 		// baseReglement
 		getCarriereCourante().setModeReglement(baseReg.getModReg());
@@ -1007,15 +972,6 @@ public class OeAGENTCarriere extends BasicProcess {
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "grade"));
 				return false;
 			}
-		}
-
-		// base horaire pointage obligatoire
-		int numLigneBHP = (Services.estNumerique(getZone(getNOM_LB_BASE_HORAIRE_POINTAGE_SELECT())) ? Integer
-				.parseInt(getZone(getNOM_LB_BASE_HORAIRE_POINTAGE_SELECT())) : -1);
-		if (numLigneBHP <= 0 || getListeBaseHorairePointage().size() == 0
-				|| numLigneBHP > getListeBaseHorairePointage().size()) {
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "base horaire pointage"));
-			return false;
 		}
 
 		// date de debut obligatoire
@@ -2207,73 +2163,6 @@ public class OeAGENTCarriere extends BasicProcess {
 
 	}
 
-	private String[] LB_BASE_HORAIRE_POINTAGE;
-
-	/**
-	 * Getter de la liste avec un lazy initialize : LB_BASE_HORAIRE_POINTAGE
-	 * Date de création : (27/09/11 09:54:11)
-	 * 
-	 */
-	private String[] getLB_BASE_HORAIRE_POINTAGE() {
-		if (LB_BASE_HORAIRE_POINTAGE == null)
-			LB_BASE_HORAIRE_POINTAGE = initialiseLazyLB();
-		return LB_BASE_HORAIRE_POINTAGE;
-	}
-
-	/**
-	 * Setter de la liste: LB_BASE_HORAIRE_POINTAGE Date de création : (27/09/11
-	 * 09:54:11)
-	 * 
-	 */
-	private void setLB_BASE_HORAIRE_POINTAGE(String[] newLB_BASE_HORAIRE_POINTAGE) {
-		LB_BASE_HORAIRE_POINTAGE = newLB_BASE_HORAIRE_POINTAGE;
-	}
-
-	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_BASE_HORAIRE_POINTAGE
-	 * Date de création : (27/09/11 09:54:11)
-	 * 
-	 */
-	public String getNOM_LB_BASE_HORAIRE_POINTAGE() {
-		return "NOM_LB_BASE_HORAIRE_POINTAGE";
-	}
-
-	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_BASE_HORAIRE_POINTAGE_SELECT Date de création : (27/09/11
-	 * 09:54:11)
-	 * 
-	 */
-	public String getNOM_LB_BASE_HORAIRE_POINTAGE_SELECT() {
-		return "NOM_LB_BASE_HORAIRE_POINTAGE_SELECT";
-	}
-
-	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_BASE_HORAIRE_POINTAGE Date de création : (27/09/11 09:54:11)
-	 * 
-	 */
-	public String[] getVAL_LB_BASE_HORAIRE_POINTAGE() {
-		return getLB_BASE_HORAIRE_POINTAGE();
-	}
-
-	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
-	 * la JSP : LB_BASE_HORAIRE_POINTAGE Date de création : (27/09/11 09:54:11)
-	 * 
-	 */
-	public String getVAL_LB_BASE_HORAIRE_POINTAGE_SELECT() {
-		return getZone(getNOM_LB_BASE_HORAIRE_POINTAGE_SELECT());
-	}
-
-	private ArrayList<BaseHoraire> getListeBaseHorairePointage() {
-		return listeBaseHorairePointage;
-	}
-
-	private void setListeBaseHorairePointage(ArrayList<BaseHoraire> listeBaseHorairePointage) {
-		this.listeBaseHorairePointage = listeBaseHorairePointage;
-	}
-
 	private Hashtable<String, Grade> getHashGrade() {
 		if (hashGrade == null)
 			hashGrade = new Hashtable<String, Grade>();
@@ -2296,12 +2185,6 @@ public class OeAGENTCarriere extends BasicProcess {
 		if (hashMotifCarriere == null)
 			hashMotifCarriere = new Hashtable<String, MotifCarriere>();
 		return hashMotifCarriere;
-	}
-
-	private Hashtable<String, BaseHoraire> getHashBaseHorairePointage() {
-		if (hashBaseHorairePointage == null)
-			hashBaseHorairePointage = new Hashtable<String, BaseHoraire>();
-		return hashBaseHorairePointage;
 	}
 
 	/**
@@ -2410,24 +2293,6 @@ public class OeAGENTCarriere extends BasicProcess {
 	 */
 	public String getVAL_ST_STATUT() {
 		return getZone(getNOM_ST_STATUT());
-	}
-
-	/**
-	 * Retourne pour la JSP le nom de la zone statique :
-	 * ST_BASE_HORAIRE_POINTAGE Date de création : (28/09/11 10:30:07)
-	 * 
-	 */
-	public String getNOM_ST_BASE_HORAIRE_POINTAGE() {
-		return "NOM_ST_BASE_HORAIRE_POINTAGE";
-	}
-
-	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
-	 * ST_BASE_HORAIRE_POINTAGE Date de création : (28/09/11 10:30:07)
-	 * 
-	 */
-	public String getVAL_ST_BASE_HORAIRE_POINTAGE() {
-		return getZone(getNOM_ST_BASE_HORAIRE_POINTAGE());
 	}
 
 	/**

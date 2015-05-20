@@ -157,7 +157,7 @@ var Module_parametres = new Dossier("Module_parametres", "Paramètres","PARAMETR
 <% 
 String affParamElementSalaire =  (String) ServletAgent.getMesParametres().get("AFFICHAGE_PARAM_ELEM_SALAIRE");
 if (affParamElementSalaire.equals("TRUE")){ %>
-Module_parametres.ajouterFils(new Lien("elemSal", "ParamElemSalaire", "Eléments salaire", "Gestion des paramètres des éléments de salaire", true));
+Module_parametres.ajouterFils(new Lien("elemSal", "ParamJour", "Eléments salaire", "Gestion des paramètres des éléments de salaire", true));
 <%}%>
 Module_parametres.ajouterFils(new Lien("absence", "ParamAbsMotif", "Absence", "Gestion des paramètres des absences", true));
 Module_parametres.ajouterFils(new Lien("election", "ParamElec", "Election", "Gestion des paramètres des élections", true));

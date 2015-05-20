@@ -1,5 +1,4 @@
 <%@ page contentType="text/html; charset=UTF-8" %> 
-<%@page import="nc.mairie.metier.carriere.BaseHoraire"%>
 <%@page import="nc.mairie.metier.carriere.Carriere"%>
 <%@page import="nc.mairie.gestionagent.process.pointage.OePTGVentilationUtils"%>
 <%@page import="nc.mairie.gestionagent.pointage.dto.VentilHSupDto"%>

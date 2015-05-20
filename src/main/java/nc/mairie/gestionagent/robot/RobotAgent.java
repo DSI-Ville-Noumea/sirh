@@ -305,9 +305,7 @@ public class RobotAgent extends Robot {
 		else if (activite.equals("ParamAvancement")) {
 			return new OePARAMETRAGEAvancement();
 		} // Module PARAMETRAGE - ELEMENT SALAIRE
-		else if (activite.equals("ParamElemSalaire")) {
-			return new OePARAMETRAGECarriere();
-		} else if (activite.equals("ParamCarriere")) {
+		else if (activite.equals("ParamCarriere")) {
 			return new OePARAMETRAGECarriere();
 		} else if (activite.equals("ParamJour")) {
 			return new OePARAMETRAGEJour();

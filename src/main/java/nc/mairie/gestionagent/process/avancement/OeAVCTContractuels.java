@@ -362,7 +362,7 @@ public class OeAVCTContractuels extends BasicProcess {
 						nouvelleCarriere.setIban(avct.getNouvIban());
 						// champ a remplir pour creer une carriere NB : on
 						// reprend ceux de la carriere precedente
-						nouvelleCarriere.setCodeBase(carr.getCodeBase());
+						nouvelleCarriere.setCodeBase(Const.CHAINE_VIDE);
 						nouvelleCarriere.setCodeTypeEmploi(carr.getCodeTypeEmploi());
 						nouvelleCarriere.setCodeGrade(carr.getCodeGrade());
 						nouvelleCarriere.setCodeBaseHoraire2(carr.getCodeBaseHoraire2());

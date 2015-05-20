@@ -205,8 +205,8 @@ menuParametrageAvancement.ajouterFils(new Lien("ParamAvancement", "AVANCEMENT", 
 document.write(menuParametrageAvancement.afficher());
 
 var menuParametrageElemSal = new MenuHaut("Module_parametres_elemSal");
-menuParametrageElemSal.ajouterFils(new Lien("ParamCarriere", "CARRIERE", "Gestion des paramètres des carrières", true, false,"BASE HORAIRE"));
 menuParametrageElemSal.ajouterFils(new Lien("ParamJour", "JOUR", "Gestion des paramètres des jours fériés", true, false,"JOURS FERIES"));
+menuParametrageElemSal.ajouterFils(new Lien("ParamCarriere", "CARRIERE", "Gestion des paramètres des carrières", true, false,"CARRIERE"));
 document.write(menuParametrageElemSal.afficher());
 
 var menuParametrageElemAbs = new MenuHaut("Module_parametres_absence");

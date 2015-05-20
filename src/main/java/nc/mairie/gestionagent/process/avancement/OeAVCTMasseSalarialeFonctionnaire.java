@@ -1845,7 +1845,7 @@ public class OeAVCTMasseSalarialeFonctionnaire extends BasicProcess {
 
 						// champ a remplir pour creer une carriere NB : on
 						// reprend ceux de la carriere precedente
-						nouvelleCarriere.setCodeBase(carr.getCodeBase());
+						nouvelleCarriere.setCodeBase(Const.CHAINE_VIDE);
 						nouvelleCarriere.setCodeTypeEmploi(carr.getCodeTypeEmploi());
 						nouvelleCarriere.setCodeBaseHoraire2(carr.getCodeBaseHoraire2());
 						nouvelleCarriere.setIdMotif(Const.ZERO);

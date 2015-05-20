@@ -263,16 +263,6 @@
 				</tr>
 				<tr>
 					<td>
-						<span class="sigp2Mandatory">Base horaire pointage :</span>
-					</td>
-					<td>
-						<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_BASE_HORAIRE_POINTAGE() %>">
-							<%=process.forComboHTML(process.getVAL_LB_BASE_HORAIRE_POINTAGE(), process.getVAL_LB_BASE_HORAIRE_POINTAGE_SELECT()) %>
-						</SELECT>
-					</td>
-				</tr>
-				<tr>
-					<td>
 						<span class="sigp2Mandatory">Base règlement :</span>
 					</td>
 					<td>
@@ -424,14 +414,6 @@
 		    			</td>
 		    			<td>
 							<span class="sigp2-saisie"><%=process.getVAL_ST_HORAIRE()%></span>
-		    			</td>
-		    		</tr>
-		    		<tr>
-		    			<td>
-							<span class="sigp2">Base horaire pointage: </span>
-		    			</td>
-		    			<td>
-							<span class="sigp2-saisie"><%=process.getVAL_ST_BASE_HORAIRE_POINTAGE()%></span>
 		    			</td>
 		    		</tr>
 		    		<tr>

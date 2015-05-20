@@ -134,8 +134,7 @@
 		listeDroits.add("ParamDonneesPerso");
 		listeDroits.add("ParamHSCT");
 		listeDroits.add("ParamGrade");
-		listeDroits.add("ParamGradeRef");
-		listeDroits.add("ParamElemSalaire");	
+		listeDroits.add("ParamGradeRef");	
 		listeDroits.add("ParamCarriere");		
 		listeDroits.add("ParamJour");		
 		listeDroits.add("ParamAbsMotif");		
