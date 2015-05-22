@@ -192,6 +192,33 @@
 						</div>
 						<BR/><BR/>
 						<%} %>
+						
+						
+						
+						<%if(!process.getListeHistoriqueRestitutionMassive().isEmpty()){ %>
+						<span>Historique des restitutions massives</span>
+						<BR/><BR/>
+						<div style="overflow: auto;height: 250px;width:1000px;margin-right: 0px;margin-left: 0px;">
+							<table class="sigp2NewTab" style="text-align:left;width:980px;">
+								<tr bgcolor="#EFEFEF">
+									<td align="center" width="90px;">Mois</td>
+									<td align="center" width="90px;">Motif</td>
+									<td>Nb</td>
+								</tr>
+								<%
+								for (int i = 0;i<process.getListeHistoriqueRestitutionMassive().size();i++){
+								%>
+									<tr>
+										<td class="sigp2NewTab-liste" style="text-align: center;"><%=process.getVAL_ST_RESTITUTION_JOURS(i)%></td>
+										<td class="sigp2NewTab-liste"><%=process.getVAL_ST_RESTITUTION_MOTIF(i)%></td>
+										<td class="sigp2NewTab-liste"><%=process.getVAL_ST_RESTITUTION_NB_JOUR(i)%></td>
+									</tr>
+								<%}%>
+							</table>	
+						</div>
+						<BR/><BR/>
+						<%} %>
+						
 						<div style="text-align: center;">
 							<INPUT type="submit" class="sigp2-Bouton-100" value="Fermer" name="<%=process.getNOM_PB_ANNULER()%>">
 						</div>	

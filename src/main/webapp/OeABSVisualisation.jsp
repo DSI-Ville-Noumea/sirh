@@ -123,7 +123,8 @@
                         "oTableTools": {
                             "aButtons": [{"sExtends": "xls", "sButtonText": "Export Excel", "mColumns": "visible", "sTitle": "absenceVisu", "sFileName": "*.xls"}], //OU : "mColumns":[0,1,2,3,4]
                             "sSwfPath": "TableTools-2.0.1/media/swf/copy_cvs_xls_pdf.swf"
-                        }
+                        },
+                        "order": [[ 8, "desc" ]]
 
                     });
                 });
@@ -264,7 +265,7 @@
 			                </SELECT>
                 		</td>
                 		<td width="120px">&nbsp;</td>
-                		<td>&nbsp;</td>
+                		<td>&nbsp;</td>Je vais bientôt 
                 	</tr>
                 	<tr>
                 		<td>
@@ -382,13 +383,16 @@
                             	<img onkeydown="" onkeypress="" onkeyup="" title="dupliquer" type="image" src="images/dupliquer.gif"  height="15px" width="15px" class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_DUPLIQUER(indiceAbs)%>" onclick="executeBouton('<%=process.getNOM_PB_DUPLIQUER(indiceAbs)%>');">
 								<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_DUPLIQUER(indiceAbs)%>" value="">
                             <%} %>
-                            <%if(abs.isAffichageBoutonAnnuler()){ %>                            	
+                            <%if(abs.isAffichageBoutonAnnuler()){ %>
                             	<img onkeydown="" onkeypress="" onkeyup="" title="annuler" type="image" src="images/suppression.gif"  height="15px" width="15px" class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_ANNULER_DEMANDE(indiceAbs)%>" onclick="executeBouton('<%=process.getNOM_PB_ANNULER_DEMANDE(indiceAbs)%>');">
 								<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_ANNULER_DEMANDE(indiceAbs)%>" value="">
                             <%} %>
 							</td>  
                             <td width="30px" align="center">
+                             <% // #15599 
+                             if(abs.isAffichageBoutonHistorique()){ %>
                             	<img onkeydown="" onkeypress="" onkeyup="" src="images/loupe.gif" height="16px" width="16px" title="Voir l'historique de l'absence" onClick="loadAbsenceHistory('<%=indiceAbs %>', '<%=abs.getIdDemande() %>')">
+                            <% } %>
                             </td>
                             <td width="40px" align="center">
                             <%if(abs.isDepassementCompteur()){ %>

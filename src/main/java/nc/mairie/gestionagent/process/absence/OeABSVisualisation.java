@@ -747,7 +747,9 @@ public class OeABSVisualisation extends BasicProcess {
 
 				TypeAbsenceDto t = new TypeAbsenceDto();
 				t.setIdRefTypeAbsence(abs.getIdTypeDemande());
-				TypeAbsenceDto type = getListeFamilleAbsenceCreation().get(getListeFamilleAbsenceCreation().indexOf(t));
+				
+				// #15586 affichage des restitutions massives des CA
+				TypeAbsenceDto type = 0==abs.getIdTypeDemande()?new TypeAbsenceDto():getListeFamilleAbsenceCreation().get(getListeFamilleAbsenceCreation().indexOf(t));
 
 				addZone(getNOM_ST_MATRICULE(i), null != ag ? ag.getNomatr().toString() : "");
 				addZone(getNOM_ST_AGENT(i), ag.getNomAgent() + " " + ag.getPrenomAgent() + " ("
@@ -755,7 +757,13 @@ public class OeABSVisualisation extends BasicProcess {
 				addZone(getNOM_ST_INFO_AGENT(i), "<br/>" + statut);
 				String baseConges = null != abs.getTypeSaisiCongeAnnuel() ? " (Base congé : "
 						+ abs.getTypeSaisiCongeAnnuel().getCodeBaseHoraireAbsence() + ")" : "";
-				addZone(getNOM_ST_TYPE(i), type.getLibelle() + baseConges + "<br/>" + sdf.format(abs.getDateDemande()));
+				
+				// #15586 affichage des restitutions massives des CA
+				String ST_type = 0==abs.getIdTypeDemande() 
+						? abs.getLibelleTypeDemande() + "<br/>" + sdf.format(abs.getDateDemande())
+						: type.getLibelle() + baseConges + "<br/>" + sdf.format(abs.getDateDemande());
+				
+				addZone(getNOM_ST_TYPE(i), ST_type);
 
 				String debutMAM = abs.isDateDebutAM() ? "M" : abs.isDateDebutPM() ? "A" : Const.CHAINE_VIDE;
 				addZone(getNOM_ST_DATE_DEB(i),
@@ -805,6 +813,10 @@ public class OeABSVisualisation extends BasicProcess {
 					} else {
 						addZone(getNOM_ST_DUREE(i), "&nbsp;");
 					}
+
+				// #15586 affichage des restitutions massives des CA
+				} else if(0==abs.getIdTypeDemande()) {
+					addZone(getNOM_ST_DUREE(i), abs.getDuree() == null ? "&nbsp;" : abs.getDuree().toString() + "j");
 				} else {
 					addZone(getNOM_ST_DUREE(i), "&nbsp;");
 				}

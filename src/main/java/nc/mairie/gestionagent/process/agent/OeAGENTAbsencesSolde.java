@@ -15,6 +15,7 @@ import nc.mairie.gestionagent.absence.dto.FiltreSoldeDto;
 import nc.mairie.gestionagent.absence.dto.HistoriqueSoldeDto;
 import nc.mairie.gestionagent.absence.dto.MoisAlimAutoCongesAnnuelsDto;
 import nc.mairie.gestionagent.absence.dto.OrganisationSyndicaleDto;
+import nc.mairie.gestionagent.absence.dto.RestitutionMassiveDto;
 import nc.mairie.gestionagent.absence.dto.SoldeDto;
 import nc.mairie.gestionagent.absence.dto.SoldeMonthDto;
 import nc.mairie.gestionagent.absence.dto.SoldeSpecifiqueDto;
@@ -57,6 +58,7 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 	private ArrayList<HistoriqueSoldeDto> listeHistorique;
 	private ArrayList<MoisAlimAutoCongesAnnuelsDto> listeHistoriqueAlimAuto;
 	private ArrayList<MoisAlimAutoCongesAnnuelsDto> listeHistoriqueAlimPaie;
+	private ArrayList<RestitutionMassiveDto> listeHistoriqueRestitutionMassive;
 
 	private ArrayList<SoldeMonthDto> listeSoldeA55;
 	private ArrayList<SoldeMonthDto> listeSoldeA52;
@@ -508,6 +510,21 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 				addZone(getNOM_ST_NB_JOUR(i), histo.getNbJours().toString());
 
 			}
+			
+			// #15599 : dans les congés annuels, on charge aussi l'historique
+			// des restitutions massives de CA
+			// Liste depuis SIRH-ABS-WS
+			ArrayList<RestitutionMassiveDto> listeHistoriquerestitutionMassive = (ArrayList<RestitutionMassiveDto>) consuAbs
+					.getHistoRestitutionMassiveByIdAgent(getAgentCourant().getIdAgent());
+			setListeHistoriqueRestitutionMassive(listeHistoriquerestitutionMassive);
+
+			for (int i = 0; i < getListeHistoriqueRestitutionMassive().size(); i++) {
+				RestitutionMassiveDto histo = (RestitutionMassiveDto) getListeHistoriqueRestitutionMassive().get(i);
+
+				addZone(getNOM_ST_RESTITUTION_JOURS(i), sdfDate.format(histo.getDateRestitution()));
+				addZone(getNOM_ST_RESTITUTION_MOTIF(i), histo.getMotif());
+				addZone(getNOM_ST_RESTITUTION_NB_JOUR(i), histo.getListHistoAgents().get(0).getJours().toString());
+			}
 		} else if (EnumTypeAbsence.getRefTypeAbsenceEnum(codeTypeAbsence) == EnumTypeAbsence.RECUP) {
 			// #15479 : dans les recups/repos comp, on charge aussi l'historique
 			// des alim auto de la paie
@@ -833,6 +850,30 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 		return getZone(getNOM_ST_NB_JOUR(i));
 	}
 
+	public String getNOM_ST_RESTITUTION_JOURS(int i) {
+		return "NOM_ST_RESTITUTION_JOURS" + i;
+	}
+
+	public String getVAL_ST_RESTITUTION_JOURS(int i) {
+		return getZone(getNOM_ST_RESTITUTION_JOURS(i));
+	}
+
+	public String getNOM_ST_RESTITUTION_MOTIF(int i) {
+		return "NOM_ST_RESTITUTION_MOTIF" + i;
+	}
+
+	public String getVAL_ST_RESTITUTION_MOTIF(int i) {
+		return getZone(getNOM_ST_RESTITUTION_MOTIF(i));
+	}
+
+	public String getNOM_ST_RESTITUTION_NB_JOUR(int i) {
+		return "NOM_ST_RESTITUTION_NB_JOUR" + i;
+	}
+
+	public String getVAL_ST_RESTITUTION_NB_JOUR(int i) {
+		return getZone(getNOM_ST_RESTITUTION_NB_JOUR(i));
+	}
+
 	public ArrayList<MoisAlimAutoCongesAnnuelsDto> getListeHistoriqueAlimPaie() {
 		return listeHistoriqueAlimPaie == null ? new ArrayList<MoisAlimAutoCongesAnnuelsDto>()
 				: listeHistoriqueAlimPaie;
@@ -840,6 +881,15 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 
 	public void setListeHistoriqueAlimPaie(ArrayList<MoisAlimAutoCongesAnnuelsDto> listeHistoriqueAlimPaie) {
 		this.listeHistoriqueAlimPaie = listeHistoriqueAlimPaie;
+	}
+
+	public ArrayList<RestitutionMassiveDto> getListeHistoriqueRestitutionMassive() {
+		return listeHistoriqueRestitutionMassive;
+	}
+
+	public void setListeHistoriqueRestitutionMassive(
+			ArrayList<RestitutionMassiveDto> listeHistoriqueRestitutionMassive) {
+		this.listeHistoriqueRestitutionMassive = listeHistoriqueRestitutionMassive;
 	}
 
 }

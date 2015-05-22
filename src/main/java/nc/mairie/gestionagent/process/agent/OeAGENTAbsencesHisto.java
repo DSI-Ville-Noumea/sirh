@@ -200,7 +200,8 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 
 			TypeAbsenceDto t = new TypeAbsenceDto();
 			t.setIdRefTypeAbsence(dto.getIdTypeDemande());
-			addZone(getNOM_ST_TYPE_DEMANDE_TT(i), getListeTypeAbsence().get(getListeTypeAbsence().indexOf(t))
+			// #15586 affichage des restitutions massives des CA
+			addZone(getNOM_ST_TYPE_DEMANDE_TT(i), 0==t.getIdRefTypeAbsence()?dto.getLibelleTypeDemande():getListeTypeAbsence().get(getListeTypeAbsence().indexOf(t))
 					.getLibelle());
 
 			String dateDebAff = dto.getDateDebut() == null ? "&nbsp;" : sdfDate.format(dto.getDateDebut());
@@ -244,6 +245,9 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 					addZone(getNOM_ST_DUREE_TT(i), dto.getDuree() == null ? "&nbsp;" : getHeureMinute(dto.getDuree()
 							.intValue()));
 				}
+			// #15586 affichage des restitutions massives des CA
+			} else if(0 == dto.getIdTypeDemande()) {
+				addZone(getNOM_ST_DUREE_TT(i), dto.getDuree() + "j");
 			} else {
 				addZone(getNOM_ST_DUREE_TT(i), "&nbsp;");
 			}
@@ -284,7 +288,7 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 
 			TypeAbsenceDto t = new TypeAbsenceDto();
 			t.setIdRefTypeAbsence(dto.getIdTypeDemande());
-			addZone(getNOM_ST_TYPE_DEMANDE_EC(i), getListeTypeAbsence().get(getListeTypeAbsence().indexOf(t))
+			addZone(getNOM_ST_TYPE_DEMANDE_EC(i), 0==t.getIdRefTypeAbsence()?dto.getLibelleTypeDemande():getListeTypeAbsence().get(getListeTypeAbsence().indexOf(t))
 					.getLibelle());
 
 			String dateDebAff = dto.getDateDebut() == null ? "&nbsp;" : sdfDate.format(dto.getDateDebut());
@@ -366,7 +370,7 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 
 		for (int i = 0; i < getListeDemandeNonPrises().size(); i++) {
 			DemandeDto dto = getListeDemandeNonPrises().get(i);
-
+			
 			TypeAbsenceDto t = new TypeAbsenceDto();
 			t.setIdRefTypeAbsence(dto.getIdTypeDemande());
 			addZone(getNOM_ST_TYPE_DEMANDE_NP(i), getListeTypeAbsence().get(getListeTypeAbsence().indexOf(t))

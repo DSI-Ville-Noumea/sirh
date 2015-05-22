@@ -159,4 +159,7 @@ public interface ISirhAbsWSConsumer {
 	// bases congés
 	ReturnMessageDto createNouvelleAnneeBaseConges(Integer anneeCreation);
 
+	List<RestitutionMassiveDto> getHistoRestitutionMassiveByIdAgent(
+			Integer idAgent);
+
 }

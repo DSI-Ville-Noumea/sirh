@@ -52,6 +52,9 @@ public class DemandeDto implements IJSONDeserialize<DemandeDto> {
 
 	private RefTypeSaisiDto typeSaisi;
 	private RefTypeSaisiCongeAnnuelDto typeSaisiCongeAnnuel;
+	
+	// #15586 restitution massive
+	private boolean affichageBoutonHistorique;
 
 	public DemandeDto() {
 	}
@@ -331,6 +334,14 @@ public class DemandeDto implements IJSONDeserialize<DemandeDto> {
 
 	public void setSamediOffert(boolean isSamediOffert) {
 		this.isSamediOffert = isSamediOffert;
+	}
+
+	public boolean isAffichageBoutonHistorique() {
+		return affichageBoutonHistorique;
+	}
+
+	public void setAffichageBoutonHistorique(boolean affichageBoutonHistorique) {
+		this.affichageBoutonHistorique = affichageBoutonHistorique;
 	}
 
 }

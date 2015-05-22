@@ -88,6 +88,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	private static final String sirhAbsRestitutionMassive = "congeannuel/restitutionMassive";
 	private static final String sirhAbsHistoRestitutionMassive = "congeannuel/getHistoRestitutionMassive";
 	private static final String sirhAbsDetailsHistoRestitutionMassive = "congeannuel/getDetailsHistoRestitutionMassive";
+	private static final String sirhAbsHistoRestitutionMassiveByIdAgent = "congeannuel/getHistoRestitutionMassiveByIdAgent";
 	private static final String sirhAbsAddCompteurReposComp = "reposcomps/addManual";
 	private static final String sirhAbsAddCompteurAsaA48 = "asaA48/addManual";
 	private static final String sirhAbsAddCompteurAsaA54 = "asaA54/addManual";
@@ -392,6 +393,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgent.toString());
 		params.put("codeRefTypeAbsence", codeTypeAbsence.toString());
+		params.put("isSIRH", Boolean.TRUE.toString());
 		ClientResponse res = createAndPostRequest(params, url, json);
 		return readResponseAsList(HistoriqueSoldeDto.class, res, url);
 	}
@@ -793,6 +795,17 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 		logger.debug("Call " + url + " with idAgent : " + idAgent);
 		ClientResponse res = createAndFireRequest(params, url);
 		return readResponseAsList(MoisAlimAutoCongesAnnuelsDto.class, res, url);
+	}
+
+	@Override
+	public List<RestitutionMassiveDto> getHistoRestitutionMassiveByIdAgent(Integer idAgent) {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
+		String url = urlWS + sirhAbsHistoRestitutionMassiveByIdAgent;
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idAgent", idAgent.toString());
+		logger.debug("Call " + url + " with idAgent : " + idAgent);
+		ClientResponse res = createAndFireRequest(params, url);
+		return readResponseAsList(RestitutionMassiveDto.class, res, url);
 	}
 
 	@Override

@@ -29,7 +29,8 @@ public class TypeAbsenceDto {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(Object obj) { 
+		
 		return idRefTypeAbsence.toString().equals(((TypeAbsenceDto) obj).getIdRefTypeAbsence().toString());
 	}
 
