@@ -1418,15 +1418,9 @@ public class OePOSTEFichePoste extends BasicProcess {
 		if (getListePrimePointageFP() != null) {
 			for (PrimePointageFP prime : getListePrimePointageFP()) {
 				RefPrimeDto rubr = null;
-				try {
-					rubr = t.getPrimeDetail(prime.getNumRubrique());
-					addZone(getNOM_ST_PP_RUBR(indicePrime), rubr.getNumRubrique() + " - " + rubr.getLibelle());
+				rubr = t.getPrimeDetail(prime.getNumRubrique());
+				addZone(getNOM_ST_PP_RUBR(indicePrime), rubr.getNumRubrique() + " - " + rubr.getLibelle());
 
-				} catch (Exception e) {
-					// TODO a supprimer quand les pointages seront en prod
-					addZone(getNOM_ST_PP_RUBR(indicePrime), "L'application des pointages n'est pas disponible.");
-
-				}
 				indicePrime++;
 			}
 		}
@@ -5175,15 +5169,6 @@ public class OePOSTEFichePoste extends BasicProcess {
 	 * @return afficherModifSpecificites boolean RG_PE_FP_A03
 	 */
 	public boolean isAfficherModifSpecificites() throws Exception {
-		// TODO a supprimer quand les PTG-WS seront en prod
-		SirhPtgWSConsumer t = new SirhPtgWSConsumer();
-		try {
-			List<RefPrimeDto> primes = t.getPrimes();
-		} catch (Exception e) {
-			// TODO A SUPPRIMER QUAND PTG-WS SERA EN PROD
-			return false;
-		}
-
 		// RG_PE_FP_A03
 		if (getFichePosteCourante() != null && getFichePosteCourante().getIdFichePoste() != null
 				&& getListeStatut() != null && getListeStatut().size() != 0) {

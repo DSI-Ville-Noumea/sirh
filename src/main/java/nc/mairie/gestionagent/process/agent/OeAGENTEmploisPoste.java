@@ -507,12 +507,8 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 			setListePrimePointageFP(getPrimePointageFPDao().listerPrimePointageFP(
 					getFichePosteCourant().getIdFichePoste()));
 			for (PrimePointageFP primeFP : getListePrimePointageFP()) {
-				try {
-					RefPrimeDto rubr = t.getPrimeDetail(primeFP.getNumRubrique());
-					listeTotale.add(rubr);
-				} catch (Exception e) {
-					// TODO a supprimer quand les WS de PTG seront en prod
-				}
+				RefPrimeDto rubr = t.getPrimeDetail(primeFP.getNumRubrique());
+				listeTotale.add(rubr);
 			}
 		}
 		int indicePrime = 0;

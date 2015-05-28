@@ -2774,10 +2774,10 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		List<RefPrimeDto> primes = new ArrayList<RefPrimeDto>();
 		if (agentCourant != null) {
 			Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), agentCourant);
-			try {
-				primes = t.getPrimes(Carriere.getStatutCarriere(carr.getCodeCategorie()));
-			} catch (Exception e) {
-				// TODO a supprimer quand les pointages seront en prod
+			if (carr != null && !carr.getCodeCategorie().equals(Const.CHAINE_VIDE)) {
+				String statut = Carriere.getStatutCarriere(carr.getCodeCategorie());
+				if (!statut.equals(Const.CHAINE_VIDE))
+					primes = t.getPrimes();
 			}
 		}
 		return primes;
@@ -2836,16 +2836,10 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			for (int i = 0; i < getListePrimePointageFP().size(); i++) {
 				PrimePointageFP prime = (PrimePointageFP) getListePrimePointageFP().get(i);
 				if (prime != null) {
-					try {
-						RefPrimeDto rubr = t.getPrimeDetail(prime.getNumRubrique());
-						if (rubr != null && rubr.getNumRubrique() != null)
-							addZone(getNOM_ST_LST_PRIME_POINTAGE_RUBRIQUE(indicePrime), rubr.getNumRubrique() + " : "
-									+ rubr.getLibelle());
-					} catch (Exception e) {
-						// TODO a supprimer quand les pointages seront en prod
-						addZone(getNOM_ST_LST_PRIME_POINTAGE_RUBRIQUE(indicePrime),
-								"L'application des pointages n'est pas disponible.");
-					}
+					RefPrimeDto rubr = t.getPrimeDetail(prime.getNumRubrique());
+					if (rubr != null && rubr.getNumRubrique() != null)
+						addZone(getNOM_ST_LST_PRIME_POINTAGE_RUBRIQUE(indicePrime), rubr.getNumRubrique() + " : "
+								+ rubr.getLibelle());
 
 					indicePrime++;
 				}
@@ -2855,17 +2849,11 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			for (int j = 0; j < getListePrimePointageAFF().size(); j++) {
 				PrimePointageAff prime = (PrimePointageAff) getListePrimePointageAFF().get(j);
 				if (prime != null) {
-					try {
-						RefPrimeDto rubr = t.getPrimeDetail(prime.getNumRubrique());
-						if (rubr != null && rubr.getNumRubrique() != null)
-							addZone(getNOM_ST_LST_PRIME_POINTAGE_RUBRIQUE(indicePrime), rubr.getNumRubrique() + " : "
-									+ rubr.getLibelle());
-					} catch (Exception e) {
-						// TODO a supprimer quand les pointages seront en
-						// prod
-						addZone(getNOM_ST_LST_PRIME_POINTAGE_RUBRIQUE(indicePrime),
-								"L'application des pointages n'est pas disponible.");
-					}
+					RefPrimeDto rubr = t.getPrimeDetail(prime.getNumRubrique());
+					if (rubr != null && rubr.getNumRubrique() != null)
+						addZone(getNOM_ST_LST_PRIME_POINTAGE_RUBRIQUE(indicePrime), rubr.getNumRubrique() + " : "
+								+ rubr.getLibelle());
+
 					indicePrime++;
 				}
 			}
@@ -2873,16 +2861,11 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		if (getListePrimePointageAffAAjouter() != null && getListePrimePointageAffAAjouter().size() != 0) {
 			for (PrimePointageAff prime : getListePrimePointageAffAAjouter()) {
 				if (prime != null) {
-					try {
-						RefPrimeDto rubr = t.getPrimeDetail(prime.getNumRubrique());
-						if (rubr != null && rubr.getNumRubrique() != null)
-							addZone(getNOM_ST_LST_PRIME_POINTAGE_RUBRIQUE(indicePrime), rubr.getNumRubrique() + " : "
-									+ rubr.getLibelle());
-					} catch (Exception e) {
-						// TODO a supprimer quand les pointages seront en prod
-						addZone(getNOM_ST_LST_PRIME_POINTAGE_RUBRIQUE(indicePrime),
-								"L'application des pointages n'est pas disponible.");
-					}
+					RefPrimeDto rubr = t.getPrimeDetail(prime.getNumRubrique());
+					if (rubr != null && rubr.getNumRubrique() != null)
+						addZone(getNOM_ST_LST_PRIME_POINTAGE_RUBRIQUE(indicePrime), rubr.getNumRubrique() + " : "
+								+ rubr.getLibelle());
+
 					indicePrime++;
 				}
 			}
@@ -3511,25 +3494,44 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		// **********************
 		// Verification Base horaire de pointage
 		// **********************
-		int numLigneBaseHorairePointage = (Services.estNumerique(getZone(getNOM_LB_BASE_HORAIRE_POINTAGE_SELECT())) ? Integer
-				.parseInt(getZone(getNOM_LB_BASE_HORAIRE_POINTAGE_SELECT())) : -1);
-
-		if (numLigneBaseHorairePointage == 0 || getListeBaseHorairePointage().isEmpty()
-				|| numLigneBaseHorairePointage > getListeBaseHorairePointage().size()) {
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "base horaire de pointage"));
+		// # 15685 : pour les élus, non obligatoire
+		// on cherche la carriere en cours à la date de début de l'affectation
+		Carriere carrEnCours = Carriere.chercherCarriereAgentPrec(getTransaction(), getAgentCourant().getNomatr(),
+				Services.convertitDate(Services.formateDate(getVAL_EF_DATE_DEBUT()), "dd/MM/yyyy", "yyyyMMdd"));
+		if (getTransaction().isErreur()) {
+			getTransaction().traiterErreur();
+			// "ERR086",
+			// "Il n'y a pas de carrière active pour cette date de début d'affectation."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR086"));
 			return false;
+		} else {
+			if (!Carriere.isCarriereConseilMunicipal(carrEnCours.getCodeCategorie())) {
+				int numLigneBaseHorairePointage = (Services
+						.estNumerique(getZone(getNOM_LB_BASE_HORAIRE_POINTAGE_SELECT())) ? Integer
+						.parseInt(getZone(getNOM_LB_BASE_HORAIRE_POINTAGE_SELECT())) : -1);
+
+				if (numLigneBaseHorairePointage == 0 || getListeBaseHorairePointage().isEmpty()
+						|| numLigneBaseHorairePointage > getListeBaseHorairePointage().size()) {
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "base horaire de pointage"));
+					return false;
+				}
+			}
 		}
 
 		// **********************
 		// Verification Base horaire d'absence
 		// **********************
-		int numLigneBaseHoraireAbsence = (Services.estNumerique(getZone(getNOM_LB_BASE_HORAIRE_ABSENCE_SELECT())) ? Integer
-				.parseInt(getZone(getNOM_LB_BASE_HORAIRE_ABSENCE_SELECT())) : -1);
+		// # 15685 : pour les élus, non obligatoire
+		// on cherche la carriere en cours à la date de début de l'affectation
+		if (!Carriere.isCarriereConseilMunicipal(carrEnCours.getCodeCategorie())) {
+			int numLigneBaseHoraireAbsence = (Services.estNumerique(getZone(getNOM_LB_BASE_HORAIRE_ABSENCE_SELECT())) ? Integer
+					.parseInt(getZone(getNOM_LB_BASE_HORAIRE_ABSENCE_SELECT())) : -1);
 
-		if (numLigneBaseHoraireAbsence == 0 || getListeBaseHoraireAbsence().isEmpty()
-				|| numLigneBaseHoraireAbsence > getListeBaseHoraireAbsence().size()) {
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "base de congé"));
-			return false;
+			if (numLigneBaseHoraireAbsence == 0 || getListeBaseHoraireAbsence().isEmpty()
+					|| numLigneBaseHoraireAbsence > getListeBaseHoraireAbsence().size()) {
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "base de congé"));
+				return false;
+			}
 		}
 
 		return true;
@@ -4312,14 +4314,29 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 			if (numLigneBaseHoraireAbsence == 0 || getListeBaseHoraireAbsence().isEmpty()
 					|| numLigneBaseHoraireAbsence > getListeBaseHoraireAbsence().size()) {
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "base de congé"));
-				return false;
+
+				Carriere carrEnCours = Carriere.chercherCarriereAgentPrec(getTransaction(), getAgentCourant()
+						.getNomatr(), Services.convertitDate(Services.formateDate(getVAL_EF_DATE_DEBUT()),
+						"dd/MM/yyyy", "yyyyMMdd"));
+				if (getTransaction().isErreur()) {
+					getTransaction().traiterErreur();
+					// "ERR086",
+					// "Il n'y a pas de carrière active pour cette date de début d'affectation."
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR086"));
+					return false;
+				} else {
+					if (!Carriere.isCarriereConseilMunicipal(carrEnCours.getCodeCategorie())) {
+						getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "base de congé"));
+						return false;
+					}
+				}
 			}
+			if (numLigneBaseHoraireAbsence != 0) {
+				RefTypeSaisiCongeAnnuelDto baseHoraireAbsence = (RefTypeSaisiCongeAnnuelDto) getListeBaseHoraireAbsence()
+						.get(numLigneBaseHoraireAbsence - 1);
 
-			RefTypeSaisiCongeAnnuelDto baseHoraireAbsence = (RefTypeSaisiCongeAnnuelDto) getListeBaseHoraireAbsence()
-					.get(numLigneBaseHoraireAbsence - 1);
-
-			getAffectationCourant().setIdBaseHoraireAbsence(baseHoraireAbsence.getIdRefTypeSaisiCongeAnnuel());
+				getAffectationCourant().setIdBaseHoraireAbsence(baseHoraireAbsence.getIdRefTypeSaisiCongeAnnuel());
+			}
 
 			// Base horaire de pointage
 			int numLigneBaseHorairePointage = (Services.estNumerique(getZone(getNOM_LB_BASE_HORAIRE_POINTAGE_SELECT())) ? Integer
@@ -4327,14 +4344,29 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 			if (numLigneBaseHorairePointage == 0 || getListeBaseHorairePointage().isEmpty()
 					|| numLigneBaseHorairePointage > getListeBaseHorairePointage().size()) {
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "base horaire de pointage"));
-				return false;
+
+				Carriere carrEnCours = Carriere.chercherCarriereAgentPrec(getTransaction(), getAgentCourant()
+						.getNomatr(), Services.convertitDate(Services.formateDate(getVAL_EF_DATE_DEBUT()),
+						"dd/MM/yyyy", "yyyyMMdd"));
+				if (getTransaction().isErreur()) {
+					getTransaction().traiterErreur();
+					// "ERR086",
+					// "Il n'y a pas de carrière active pour cette date de début d'affectation."
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR086"));
+					return false;
+				} else {
+					if (!Carriere.isCarriereConseilMunicipal(carrEnCours.getCodeCategorie())) {
+						getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "base horaire de pointage"));
+						return false;
+					}
+				}
 			}
+			if (numLigneBaseHorairePointage != 0) {
+				BaseHorairePointage baseHorairePointage = (BaseHorairePointage) getListeBaseHorairePointage().get(
+						numLigneBaseHorairePointage - 1);
 
-			BaseHorairePointage baseHorairePointage = (BaseHorairePointage) getListeBaseHorairePointage().get(
-					numLigneBaseHorairePointage - 1);
-
-			getAffectationCourant().setIdBaseHorairePointage(baseHorairePointage.getIdBaseHorairePointage());
+				getAffectationCourant().setIdBaseHorairePointage(baseHorairePointage.getIdBaseHorairePointage());
+			}
 
 			if (getVAL_ST_ACTION().equals(ACTION_MODIFICATION)) {
 				// Modification
@@ -5319,20 +5351,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		addZone(getNOM_LB_RUBRIQUE_AVANTAGE_SELECT(), "0");
 	}
 
-	public boolean isPrimeModifiable() throws Exception {
-		// TODO a supprimer quand les PTG-WS seront en prod
-		SirhPtgWSConsumer t = new SirhPtgWSConsumer();
-		try {
-			List<RefPrimeDto> primes = t.getPrimes();
-		} catch (Exception e) {
-			// TODO A SUPPRIMER QUAND PTG-WS SERA EN PROD
-			return false;
-		}
-		return true;
-	}
-
 	public boolean isPrimeSupprimable(int indiceEltASupprimer) throws Exception {
-		// TODO a supprimer quand les PTG-WS seront en prod
 		SirhPtgWSConsumer t = new SirhPtgWSConsumer();
 
 		PrimePointageAff primePointage = null;
@@ -5352,12 +5371,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		}
 		// on interroge le WS pour savoir si la prime est utilisee sur un
 		// pointage donné.
-		try {
-			return t.isPrimeUtilPointage(primePointage.getNumRubrique(), getAgentCourant().getIdAgent());
-		} catch (Exception e) {
-			// TODO A SUPPRIMER QUAND PTG-WS SERA EN PROD
-			return false;
-		}
+		return t.isPrimeUtilPointage(primePointage.getNumRubrique(), getAgentCourant().getIdAgent());
 
 	}
 

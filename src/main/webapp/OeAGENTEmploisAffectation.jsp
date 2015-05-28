@@ -495,7 +495,7 @@
 					<th width="50px;" align="center" >
 					<%
 						if ((process.getVAL_ST_ACTION().equals(process.ACTION_CREATION) ||
-											process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION)) && process.isPrimeModifiable() ) {
+											process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION))) {
 					%>
 						<INPUT type="image"
 						src="images/ajout.gif"
@@ -523,7 +523,7 @@
 					<td align="center" width="50px;">
 					<%
 						if ((process.getVAL_ST_ACTION().equals(process.ACTION_CREATION) ||
-											process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION)) && process.isPrimeModifiable()) {
+											process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION))) {
 					%>
 						<INPUT style="visibility: visible;"type="checkbox" onClick='executeBouton("<%=process.getNOM_PB_SET_PRIME_POINTAGE(indicePrimePointage)%>")'  >
 						<INPUT type="submit" style="visibility : hidden;width: 5px" name="<%=process.getNOM_PB_SET_PRIME_POINTAGE(indicePrimePointage)%>" value="DATE">
@@ -548,7 +548,7 @@
 					<td align="center" width="50px;">
 					<%
 						if ((process.getVAL_ST_ACTION().equals(process.ACTION_CREATION) || 
-											process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION))  && process.isPrimeModifiable() && process.isPrimeSupprimable(indicePrimePointage)) {
+											process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION))  && process.isPrimeSupprimable(indicePrimePointage)) {
 					%>
 					<INPUT tabindex=""
 						type="image" src="images/suppression.gif"
@@ -574,7 +574,7 @@
 					<td align="center" width="50px;">
 					<%
 						if ((process.getVAL_ST_ACTION().equals(process.ACTION_CREATION) || 
-											process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION)) && process.isPrimeModifiable() && process.isPrimeSupprimable(indicePrimePointage)) {
+											process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION)) && process.isPrimeSupprimable(indicePrimePointage)) {
 					%>
 					<INPUT tabindex=""
 						type="image" src="images/suppression.gif"
