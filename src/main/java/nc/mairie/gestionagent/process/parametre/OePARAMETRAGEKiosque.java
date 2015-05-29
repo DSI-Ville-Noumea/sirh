@@ -706,7 +706,8 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 			return false;
 		}
 		Service serv = Service.chercherService(getTransaction(), codServ);
-		getListeServiceUtilisateur().add(serv);
+		if (!getListeServiceUtilisateur().contains(serv))
+			getListeServiceUtilisateur().add(serv);
 
 		return true;
 	}
@@ -731,7 +732,8 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 		// On ajoute le service et les sous services
 		for (String codeServSele : listeSousServ) {
 			Service sousServ = Service.chercherService(getTransaction(), codeServSele);
-			getListeServiceUtilisateur().add(sousServ);
+			if (!getListeServiceUtilisateur().contains(sousServ))
+				getListeServiceUtilisateur().add(sousServ);
 		}
 
 		return true;
@@ -752,7 +754,8 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 		}
 
 		Service groupe = (Service) getListeServiceUtilisateur().get(numLigne);
-		getListeServiceUtilisateur().remove(groupe);
+		if (getListeServiceUtilisateur().contains(groupe))
+			getListeServiceUtilisateur().remove(groupe);
 
 		return true;
 	}
@@ -762,7 +765,30 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 	}
 
 	public boolean performPB_RETIRER_TOUT(HttpServletRequest request) throws Exception {
-		getListeServiceUtilisateur().clear();
+		// Recup du groupe sélectionné
+		int numLigne = (Services.estNumerique(getZone(getNOM_LB_SERVICE_UTILISATEUR_SELECT())) ? Integer
+				.parseInt(getZone(getNOM_LB_SERVICE_UTILISATEUR_SELECT())) : -1);
+		if (numLigne == -1 || getListeServiceUtilisateur().size() == 0
+				|| numLigne > getListeServiceUtilisateur().size()) {
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "Services de l'utilisateur"));
+			return false;
+		}
+
+		Service groupe = (Service) getListeServiceUtilisateur().get(numLigne);
+
+		// On recupere les sous services
+		Service serv = Service.chercherService(getTransaction(), groupe.getCodService());
+		ArrayList<String> listeSousServ = Service.listSousService(getTransaction(), serv.getSigleService());
+
+		// On ajoute le service et les sous services
+		for (String codeServSele : listeSousServ) {
+			Service sousServ = Service.chercherService(getTransaction(), codeServSele);
+			if (getListeServiceUtilisateur().contains(sousServ))
+				getListeServiceUtilisateur().remove(sousServ);
+		}
+
+		if (getListeServiceUtilisateur().contains(groupe))
+			getListeServiceUtilisateur().remove(groupe);
 
 		return true;
 	}

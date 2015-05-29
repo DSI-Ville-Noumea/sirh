@@ -154,7 +154,7 @@
 														<BR/><BR/>
 														<INPUT title="Retirer le service" type="image" src="images/fleche-gauche.png" height="20px" width="20px" name="<%=process.getNOM_PB_RETIRER_SERVICE()%>">
 														<BR/>
-														<INPUT title="Ajouter tout" type="image" src="images/fleche-double-gauche.png" height="20px" width="20px" name="<%=process.getNOM_PB_RETIRER_TOUT()%>">
+														<INPUT title="Retirer le service et ses sous-services" type="image" src="images/fleche-double-gauche.png" height="20px" width="20px" name="<%=process.getNOM_PB_RETIRER_TOUT()%>">
 										    		</td>
 										    		<td>
 												    	<span style="margin-left:5px;">Services de l'utilisateur</span>
