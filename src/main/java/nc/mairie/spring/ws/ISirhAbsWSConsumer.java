@@ -42,15 +42,19 @@ public interface ISirhAbsWSConsumer {
 
 	InputterDto getOperateursDelegataireApprobateur(Integer idAgentApprobateur);
 
-	ReturnMessageDto saveOperateursDelegataireApprobateur(Integer idAgent, InputterDto dto);
+	ReturnMessageDto saveOperateurApprobateur(Integer idAgent, AgentDto dto);
+
+	ReturnMessageDto deleteOperateurApprobateur(Integer idAgent, AgentDto dto);
 
 	ViseursDto getViseursApprobateur(Integer idAgentApprobateur);
 
-	ReturnMessageDto saveViseursApprobateur(Integer idAgent, ViseursDto dto);
+	ReturnMessageDto saveViseurApprobateur(Integer idAgent, AgentDto dto);
 
-	List<AgentDto> getAgentsOperateursOrViseur(Integer idAgentApprobateur, Integer idAgentOperateurOrViseur);
+	ReturnMessageDto deleteViseurApprobateur(Integer idAgent, AgentDto dto);
 
-	ReturnMessageDto saveAgentsOperateursOrViseur(Integer idAgentApprobateur, Integer idAgentOperateurOrViseur,
+	List<AgentDto> getAgentsOperateur(Integer idAgentApprobateur, Integer idAgentOperateur);
+
+	ReturnMessageDto saveAgentsOperateur(Integer idAgentApprobateur, Integer idAgentOperateur,
 			List<AgentDto> listSelect);
 
 	// OS
@@ -161,5 +165,11 @@ public interface ISirhAbsWSConsumer {
 
 	List<RestitutionMassiveDto> getHistoRestitutionMassiveByIdAgent(
 			Integer idAgent);
+
+	List<AgentDto> getAgentsViseur(Integer idAgentApprobateur,
+			Integer idAgentViseur);
+
+	ReturnMessageDto saveAgentsViseur(Integer idAgentApprobateur,
+			Integer idAgentViseur, List<AgentDto> listSelect);
 
 }

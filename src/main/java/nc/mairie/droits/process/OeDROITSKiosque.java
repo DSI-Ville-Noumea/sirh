@@ -213,7 +213,9 @@ public class OeDROITSKiosque extends BasicProcess {
 			List<AgentDto> listAgt = (List<AgentDto>) VariablesActivite.recuperer(this,
 					VariablesActivite.ACTIVITE_AGENT_MAIRIE_DROIT);
 			VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE_DROIT);
-			saveAgentApprobateurOperateurAbs(request, listAgt == null ? new ArrayList<AgentDto>() : listAgt);
+			if(null != listAgt) {
+				saveAgentApprobateurOperateurAbs(request, listAgt == null ? new ArrayList<AgentDto>() : listAgt);
+			}
 		}
 
 		if (etatStatut() == STATUT_AGENT_VISEUR_APPROBATEUR_ABS) {
@@ -231,7 +233,7 @@ public class OeDROITSKiosque extends BasicProcess {
 	private void saveAgentApprobateurViseurAbs(HttpServletRequest request, List<AgentDto> list) {
 		if (getApprobateurCourant() != null && getViseurCourant() != null) {
 
-			ReturnMessageDto result = new SirhAbsWSConsumer().saveAgentsOperateursOrViseur(getApprobateurCourant()
+			ReturnMessageDto result = new SirhAbsWSConsumer().saveAgentsViseur(getApprobateurCourant()
 					.getIdAgent(), getViseurCourant().getIdAgent(), list);
 
 			String err = Const.CHAINE_VIDE;
@@ -250,7 +252,7 @@ public class OeDROITSKiosque extends BasicProcess {
 	private void saveAgentApprobateurOperateurAbs(HttpServletRequest request, List<AgentDto> list) {
 		if (getApprobateurCourant() != null && getOperateurCourant() != null) {
 
-			ReturnMessageDto result = new SirhAbsWSConsumer().saveAgentsOperateursOrViseur(getApprobateurCourant()
+			ReturnMessageDto result = new SirhAbsWSConsumer().saveAgentsOperateur(getApprobateurCourant()
 					.getIdAgent(), getOperateurCourant().getIdAgent(), list);
 
 			String err = Const.CHAINE_VIDE;
@@ -290,20 +292,22 @@ public class OeDROITSKiosque extends BasicProcess {
 			boolean suppression) throws Exception {
 		if (!suppression) {
 			if (getApprobateurCourant() != null) {
+				// #15731 
+				AgentDto viseurAAjouter = null;
+				String err = Const.CHAINE_VIDE;
 				for (AgentDto ajout : listAgtAAjouter) {
 					if (!getListeAgentsViseurAbs().contains(ajout))
 						getListeAgentsViseurAbs().add(ajout);
-				}
+					viseurAAjouter = ajout;
 
-				ViseursDto dto = new ViseursDto();
-				dto.setViseurs(getListeAgentsViseurAbs());
-				ReturnMessageDto result = new SirhAbsWSConsumer().saveViseursApprobateur(getApprobateurCourant()
-						.getIdAgent(), dto);
+					ReturnMessageDto result = new SirhAbsWSConsumer().saveViseurApprobateur(getApprobateurCourant()
+							.getIdAgent(), viseurAAjouter);
 
-				String err = Const.CHAINE_VIDE;
-				for (String erreur : result.getErrors()) {
-					err += " " + erreur;
+					for (String erreur : result.getErrors()) {
+						err += " " + erreur;
+					}
 				}
+				
 				if (!err.equals(Const.CHAINE_VIDE))
 					getTransaction().declarerErreur("ERREUR : " + err);
 
@@ -313,15 +317,17 @@ public class OeDROITSKiosque extends BasicProcess {
 			}
 		} else {
 			if (getApprobateurCourant() != null) {
-				for (AgentDto ajout : listAgtAAjouter) {
-					if (getListeAgentsViseurAbs().contains(ajout))
-						getListeAgentsViseurAbs().remove(ajout);
+				// #15731 
+				AgentDto viseurASupprimer = null;
+				for (AgentDto delete : listAgtAAjouter) {
+					if (getListeAgentsViseurAbs().contains(delete)){
+						getListeAgentsViseurAbs().remove(delete);
+						viseurASupprimer = delete;
+					}
 				}
 
-				ViseursDto dto = new ViseursDto();
-				dto.setViseurs(getListeAgentsViseurAbs());
-				ReturnMessageDto result = new SirhAbsWSConsumer().saveViseursApprobateur(getApprobateurCourant()
-						.getIdAgent(), dto);
+				ReturnMessageDto result = new SirhAbsWSConsumer().deleteViseurApprobateur(getApprobateurCourant()
+						.getIdAgent(), viseurASupprimer);
 
 				String err = Const.CHAINE_VIDE;
 				for (String erreur : result.getErrors()) {
@@ -335,7 +341,7 @@ public class OeDROITSKiosque extends BasicProcess {
 				return;
 			}
 		}
-		// on rafraichi les données
+		// on rafraichit les données
 		performPB_GERER_DROIT_ABS(request, getApprobateurCourant().getIdAgent());
 
 	}
@@ -349,11 +355,13 @@ public class OeDROITSKiosque extends BasicProcess {
 
 		if (!suppression) {
 			if (getApprobateurCourant() != null) {
+				// #15731 
+				AgentDto ajoutOperateur = null;
 				if (operateur != null) {
-					AgentDto ajout = new AgentDto();
-					ajout.setIdAgent(operateur.getIdAgent());
-					if (!getListeAgentsOperateurAbs().contains(ajout))
-						getListeAgentsOperateurAbs().add(ajout);
+					ajoutOperateur = new AgentDto();
+					ajoutOperateur.setIdAgent(operateur.getIdAgent());
+					if (!getListeAgentsOperateurAbs().contains(ajoutOperateur))
+						getListeAgentsOperateurAbs().add(ajoutOperateur);
 				}
 
 				InputterDto dto = new InputterDto();
@@ -362,8 +370,8 @@ public class OeDROITSKiosque extends BasicProcess {
 				ArrayList<ApprobateurDto> approExistant = (ArrayList<ApprobateurDto>) new SirhAbsWSConsumer()
 						.getApprobateurs(null, getApprobateurCourant().getIdAgent());
 				dto.setDelegataire(approExistant.get(0).getDelegataire());
-				ReturnMessageDto result = new SirhAbsWSConsumer().saveOperateursDelegataireApprobateur(
-						getApprobateurCourant().getIdAgent(), dto);
+				ReturnMessageDto result = new SirhAbsWSConsumer().saveOperateurApprobateur(
+						getApprobateurCourant().getIdAgent(), ajoutOperateur);
 
 				String err = Const.CHAINE_VIDE;
 				for (String erreur : result.getErrors()) {
@@ -378,21 +386,17 @@ public class OeDROITSKiosque extends BasicProcess {
 			}
 		} else {
 			if (getApprobateurCourant() != null) {
+				// #15731 
+				AgentDto deleteOperateur = null;
 				if (operateur != null) {
-					AgentDto ajout = new AgentDto();
-					ajout.setIdAgent(operateur.getIdAgent());
-					if (getListeAgentsOperateurAbs().contains(ajout))
-						getListeAgentsOperateurAbs().remove(ajout);
+					deleteOperateur = new AgentDto();
+					deleteOperateur.setIdAgent(operateur.getIdAgent());
+					if (getListeAgentsOperateurAbs().contains(deleteOperateur))
+						getListeAgentsOperateurAbs().remove(deleteOperateur);
 				}
-
-				InputterDto dto = new InputterDto();
-				dto.setOperateurs(getListeAgentsOperateurAbs());
 				// on recupere le delagataire existant
-				ArrayList<ApprobateurDto> approExistant = (ArrayList<ApprobateurDto>) new SirhAbsWSConsumer()
-						.getApprobateurs(null, getApprobateurCourant().getIdAgent());
-				dto.setDelegataire(approExistant.get(0).getDelegataire());
-				ReturnMessageDto result = new SirhAbsWSConsumer().saveOperateursDelegataireApprobateur(
-						getApprobateurCourant().getIdAgent(), dto);
+				ReturnMessageDto result = new SirhAbsWSConsumer().deleteOperateurApprobateur(
+						getApprobateurCourant().getIdAgent(), deleteOperateur);
 
 				String err = Const.CHAINE_VIDE;
 				for (String erreur : result.getErrors()) {
@@ -2043,7 +2047,7 @@ public class OeDROITSKiosque extends BasicProcess {
 
 		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE_DROIT, getListeAgentsApprobateurAbs());
 		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE_DROIT_EXIST, new SirhAbsWSConsumer()
-				.getAgentsOperateursOrViseur(getApprobateurCourant().getIdAgent(), getOperateurCourant().getIdAgent()));
+				.getAgentsOperateur(getApprobateurCourant().getIdAgent(), getOperateurCourant().getIdAgent()));
 		setStatut(STATUT_AGENT_OPE_APPROBATEUR_ABS, true);
 		return true;
 	}
@@ -2061,7 +2065,7 @@ public class OeDROITSKiosque extends BasicProcess {
 
 		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE_DROIT, getListeAgentsApprobateurAbs());
 		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE_DROIT_EXIST, new SirhAbsWSConsumer()
-				.getAgentsOperateursOrViseur(getApprobateurCourant().getIdAgent(), getViseurCourant().getIdAgent()));
+				.getAgentsViseur(getApprobateurCourant().getIdAgent(), getViseurCourant().getIdAgent()));
 		setStatut(STATUT_AGENT_VISEUR_APPROBATEUR_ABS, true);
 		return true;
 	}

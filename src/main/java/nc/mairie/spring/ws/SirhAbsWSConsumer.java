@@ -56,8 +56,13 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	private static final String sirhAbsListeActeurs = "droits/listeActeurs";
 	private static final String sirhAgentApprobateurUrl = "droits/agentsApprouves";
 	private static final String sirhOperateursDelegataireApprobateurUrl = "droits/inputter";
+	private static final String sirhOperateurApprobateurUrl = "droits/operateurSIRH";
+	private static final String sirhDeleteOperateurApprobateurUrl = "droits/deleteOperateurSIRH";
 	private static final String sirhViseursApprobateurUrl = "droits/viseur";
-	private static final String sirhAgentsOperatuerOrViseurUrl = "droits/agentsSaisis";
+	private static final String sirhViseursApprobateurSIRHUrl = "droits/viseurSIRH";
+	private static final String sirhdeleteViseursApprobateurSIRHUrl = "droits/deleteViseurSIRH";
+	private static final String sirhAgentsOperateurUrl = "droits/agentsSaisisByOperateur";
+	private static final String sirhAgentsViseurUrl = "droits/agentsSaisisByViseur";
 
 	private static final String sirhAbsSoldeRecupAgent = "solde/soldeAgent";
 	private static final String sirhAbsHistoCompteurAgent = "solde/historiqueSolde";
@@ -867,9 +872,9 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	}
 
 	@Override
-	public ReturnMessageDto saveOperateursDelegataireApprobateur(Integer idAgent, InputterDto dto) {
+	public ReturnMessageDto saveOperateurApprobateur(Integer idAgent, AgentDto dto) {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
-		String url = urlWS + sirhOperateursDelegataireApprobateurUrl;
+		String url = urlWS + sirhOperateurApprobateurUrl;
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgent.toString());
 
@@ -881,9 +886,9 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	}
 
 	@Override
-	public ReturnMessageDto saveViseursApprobateur(Integer idAgent, ViseursDto dto) {
+	public ReturnMessageDto deleteOperateurApprobateur(Integer idAgent, AgentDto dto) {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
-		String url = urlWS + sirhViseursApprobateurUrl;
+		String url = urlWS + sirhDeleteOperateurApprobateurUrl;
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgent.toString());
 
@@ -895,25 +900,81 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	}
 
 	@Override
-	public List<AgentDto> getAgentsOperateursOrViseur(Integer idAgentApprobateur, Integer idAgentOperateurOrViseur) {
+	public ReturnMessageDto saveViseurApprobateur(Integer idAgent, AgentDto dto) {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
-		String url = urlWS + sirhAgentsOperatuerOrViseurUrl;
+		String url = urlWS + sirhViseursApprobateurSIRHUrl;
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idAgent", idAgent.toString());
+
+		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class)
+				.deepSerialize(dto);
+
+		ClientResponse res = createAndPostRequest(params, url, json);
+		return readResponse(ReturnMessageDto.class, res, url);
+	}
+
+	@Override
+	public ReturnMessageDto deleteViseurApprobateur(Integer idAgent, AgentDto dto) {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
+		String url = urlWS + sirhdeleteViseursApprobateurSIRHUrl;
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idAgent", idAgent.toString());
+
+		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class)
+				.deepSerialize(dto);
+
+		ClientResponse res = createAndPostRequest(params, url, json);
+		return readResponse(ReturnMessageDto.class, res, url);
+	}
+
+	@Override
+	public List<AgentDto> getAgentsOperateur(Integer idAgentApprobateur, Integer idAgentOperateur) {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
+		String url = urlWS + sirhAgentsOperateurUrl;
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgentApprobateur.toString());
-		params.put("idOperateurOrViseur", idAgentOperateurOrViseur.toString());
+		params.put("idOperateur", idAgentOperateur.toString());
 
 		ClientResponse res = createAndFireRequest(params, url);
 		return readResponseAsList(AgentDto.class, res, url);
 	}
 
 	@Override
-	public ReturnMessageDto saveAgentsOperateursOrViseur(Integer idAgentApprobateur, Integer idAgentOperateurOrViseur,
+	public ReturnMessageDto saveAgentsOperateur(Integer idAgentApprobateur, Integer idAgentOperateur,
 			List<AgentDto> listSelect) {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
-		String url = urlWS + sirhAgentsOperatuerOrViseurUrl;
+		String url = urlWS + sirhAgentsOperateurUrl;
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgentApprobateur.toString());
-		params.put("idOperateurOrViseur", idAgentOperateurOrViseur.toString());
+		params.put("idOperateur", idAgentOperateur.toString());
+
+		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class)
+				.deepSerialize(listSelect);
+
+		ClientResponse res = createAndPostRequest(params, url, json);
+		return readResponse(ReturnMessageDto.class, res, url);
+	}
+
+	@Override
+	public List<AgentDto> getAgentsViseur(Integer idAgentApprobateur, Integer idAgentViseur) {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
+		String url = urlWS + sirhAgentsViseurUrl;
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idAgent", idAgentApprobateur.toString());
+		params.put("idViseur", idAgentViseur.toString());
+
+		ClientResponse res = createAndFireRequest(params, url);
+		return readResponseAsList(AgentDto.class, res, url);
+	}
+
+	@Override
+	public ReturnMessageDto saveAgentsViseur(Integer idAgentApprobateur, Integer idAgentViseur,
+			List<AgentDto> listSelect) {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
+		String url = urlWS + sirhAgentsViseurUrl;
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idAgent", idAgentApprobateur.toString());
+		params.put("idViseur", idAgentViseur.toString());
 
 		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class)
 				.deepSerialize(listSelect);
