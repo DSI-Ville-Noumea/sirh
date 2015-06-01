@@ -196,7 +196,8 @@ public class OeELECSaisieCompteurA53 extends BasicProcess {
 					+ vo.getCompteur().getOrganisationSyndicaleDto().getLibelle());
 			addZone(getNOM_ST_ANNEE(indiceLigne), annee.toString());
 			addZone(getNOM_ST_NB_JOURS(indiceLigne), String.valueOf(vo.getCompteur().getDureeAAjouter().intValue()));
-			addZone(getNOM_ST_MOTIF(indiceLigne), vo.getCompteur().getMotifCompteurDto().getLibelle());
+			addZone(getNOM_ST_MOTIF(indiceLigne),  vo.getCompteur().getMotifCompteurDto() == null ? Const.CHAINE_VIDE
+					:vo.getCompteur().getMotifCompteurDto().getLibelle());
 
 			indiceLigne++;
 			

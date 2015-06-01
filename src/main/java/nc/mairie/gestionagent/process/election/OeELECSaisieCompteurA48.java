@@ -169,16 +169,16 @@ public class OeELECSaisieCompteurA48 extends BasicProcess {
 		setListeCompteur(listeCompteur);
 		// #14737 tri par ordre alpha
 		List<VoAgentCompteur> listCompteurAgent = new ArrayList<VoAgentCompteur>();
-		
+
 		for (CompteurDto dto : listeCompteur) {
 
 			Agent ag = getAgentDao().chercherAgent(dto.getIdAgent());
-			
+
 			VoAgentCompteur voCompteur = new VoAgentCompteur(dto, ag);
 			listCompteurAgent.add(voCompteur);
 		}
 		Collections.sort(listCompteurAgent);
-		
+
 		ArrayList<CompteurDto> listeCompteurTriee = new ArrayList<CompteurDto>();
 		int indiceLigne = 0;
 		for (VoAgentCompteur vo : listCompteurAgent) {
@@ -191,10 +191,11 @@ public class OeELECSaisieCompteurA48 extends BasicProcess {
 			addZone(getNOM_ST_AGENT(indiceLigne), vo.getAgent().getNomAgent() + " " + vo.getAgent().getPrenomAgent());
 			addZone(getNOM_ST_ANNEE(indiceLigne), annee.toString());
 			addZone(getNOM_ST_NB_JOURS(indiceLigne), String.valueOf(vo.getCompteur().getDureeAAjouter().intValue()));
-			addZone(getNOM_ST_MOTIF(indiceLigne), vo.getCompteur().getMotifCompteurDto().getLibelle());
+			addZone(getNOM_ST_MOTIF(indiceLigne), vo.getCompteur().getMotifCompteurDto() == null ? Const.CHAINE_VIDE
+					: vo.getCompteur().getMotifCompteurDto().getLibelle());
 
 			indiceLigne++;
-			
+
 			listeCompteurTriee.add(vo.getCompteur());
 		}
 		setListeCompteur(listeCompteurTriee);
@@ -348,6 +349,7 @@ public class OeELECSaisieCompteurA48 extends BasicProcess {
 				.substring(3, dto.getIdAgent().toString().length()));
 		int ligneMotif = getListeMotifCompteur().indexOf(dto.getMotifCompteurDto());
 		addZone(getNOM_LB_MOTIF_SELECT(), String.valueOf(ligneMotif + 1));
+		
 		return true;
 	}
 
@@ -666,6 +668,5 @@ public class OeELECSaisieCompteurA48 extends BasicProcess {
 	public void setAgentDao(AgentDao agentDao) {
 		this.agentDao = agentDao;
 	}
-	
-	
+
 }
