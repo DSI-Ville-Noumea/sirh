@@ -1,6 +1,8 @@
 package nc.mairie.gestionagent.process.agent;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -46,11 +48,19 @@ public class OeAGENTRechercheDroitKiosqueAgentApprobateur extends BasicProcess {
 		VariableActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE_DROIT);
 
 		setListeAgents(listAgentExistantApprobateur);
-		afficheListe(listAgentExistantOperateur, listAgentExistantApprobateur);
+		// on tri la liste
+		Collections.sort(getListeAgents(), new Comparator<AgentDto>() {
+			@Override
+			public int compare(AgentDto o1, AgentDto o2) {
+				return o1.getNom().compareTo(o2.getNom());
+			}
+
+		});
+		afficheListe(listAgentExistantOperateur);
 
 	}
 
-	private void afficheListe(List<AgentDto> listAgentExistantOperateur, List<AgentDto> listAgentExistantApprobateur) {
+	private void afficheListe(List<AgentDto> listAgentExistantOperateur) {
 		if (getListeAgents() != null) {
 			for (int i = 0; i < getListeAgents().size(); i++) {
 				AgentDto agent = (AgentDto) getListeAgents().get(i);

@@ -1583,16 +1583,40 @@ public class OeDROITSKiosque extends BasicProcess {
 		ArrayList<AgentDto> resultAgeAppro = (ArrayList<AgentDto>) consu.getAgentsApprobateur(getApprobateurCourant()
 				.getIdAgent());
 		setListeAgentsApprobateurAbs(resultAgeAppro);
+		// on tri la liste
+		Collections.sort(getListeAgentsApprobateurAbs(), new Comparator<AgentDto>() {
+			@Override
+			public int compare(AgentDto o1, AgentDto o2) {
+				return o1.getNom().compareTo(o2.getNom());
+			}
+
+		});
 		afficherListeAgentsApprobateurAbs();
 
 		// on recupere les opérateurs de l'approbateur
 		InputterDto resultOperateurs = consu.getOperateursDelegataireApprobateur(getApprobateurCourant().getIdAgent());
 		setListeAgentsOperateurAbs((ArrayList<AgentDto>) resultOperateurs.getOperateurs());
+		// on tri la liste
+		Collections.sort(getListeAgentsOperateurAbs(), new Comparator<AgentDto>() {
+			@Override
+			public int compare(AgentDto o1, AgentDto o2) {
+				return o1.getNom().compareTo(o2.getNom());
+			}
+
+		});
 		afficherListeAgentsOperateurAbs();
 
 		// on recupere les viseurs de l'approbateur
 		ViseursDto resultViseurs = consu.getViseursApprobateur(getApprobateurCourant().getIdAgent());
 		setListeAgentsViseurAbs((ArrayList<AgentDto>) resultViseurs.getViseurs());
+		// on tri la liste
+		Collections.sort(getListeAgentsViseurAbs(), new Comparator<AgentDto>() {
+			@Override
+			public int compare(AgentDto o1, AgentDto o2) {
+				return o1.getNom().compareTo(o2.getNom());
+			}
+
+		});
 		afficherListeAgentsViseurAbs();
 
 		// On nomme l'action
@@ -1629,11 +1653,27 @@ public class OeDROITSKiosque extends BasicProcess {
 		ArrayList<AgentDto> resultAgeAppro = (ArrayList<AgentDto>) consu.getApprovedAgents(getApprobateurCourant()
 				.getIdAgent());
 		setListeAgentsApprobateurPtg(resultAgeAppro);
+		// on tri la liste
+		Collections.sort(getListeAgentsApprobateurPtg(), new Comparator<AgentDto>() {
+			@Override
+			public int compare(AgentDto o1, AgentDto o2) {
+				return o1.getNom().compareTo(o2.getNom());
+			}
+
+		});
 		afficherListeAgentsApprobateurPtg();
 
 		// on recupere les opérateurs de l'approbateur
 		DelegatorAndOperatorsDto resultOperateurs = consu.getDelegateAndOperator(getApprobateurCourant().getIdAgent());
 		setListeAgentsOperateurPtg((ArrayList<AgentDto>) resultOperateurs.getSaisisseurs());
+		// on tri la liste
+		Collections.sort(getListeAgentsOperateurPtg(), new Comparator<AgentDto>() {
+			@Override
+			public int compare(AgentDto o1, AgentDto o2) {
+				return o1.getNom().compareTo(o2.getNom());
+			}
+
+		});
 		afficherListeAgentsOperateurPtg();
 
 		// On nomme l'action
