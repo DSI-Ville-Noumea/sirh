@@ -265,7 +265,7 @@
 			                </SELECT>
                 		</td>
                 		<td width="120px">&nbsp;</td>
-                		<td>&nbsp;</td>Je vais bientôt 
+                		<td>&nbsp;</td>
                 	</tr>
                 	<tr>
                 		<td>
