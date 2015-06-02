@@ -123,8 +123,7 @@
                         "oTableTools": {
                             "aButtons": [{"sExtends": "xls", "sButtonText": "Export Excel", "mColumns": "visible", "sTitle": "absenceVisu", "sFileName": "*.xls"}], //OU : "mColumns":[0,1,2,3,4]
                             "sSwfPath": "TableTools-2.0.1/media/swf/copy_cvs_xls_pdf.swf"
-                        },
-                        "order": [[ 8, "desc" ]]
+                        }
 
                     });
                 });
