@@ -121,7 +121,7 @@ public class OeABSAlimentationMensuelle extends BasicProcess {
 	}
 
 	public String getNomEcran() {
-		return "ECR-ABS-VISU";
+		return "ECR-ABS-ALIM";
 	}
 
 	private String[] getLB_MOIS_ALIM_AUTO() {

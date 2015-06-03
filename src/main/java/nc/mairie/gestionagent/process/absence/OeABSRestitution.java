@@ -126,7 +126,7 @@ public class OeABSRestitution extends BasicProcess {
 	}
 
 	public String getNomEcran() {
-		return "ECR-ABS-VISU";
+		return "ECR-ABS-RESTI";
 	}
 
 	public String getNOM_ST_DATE_RESTITUTION() {
