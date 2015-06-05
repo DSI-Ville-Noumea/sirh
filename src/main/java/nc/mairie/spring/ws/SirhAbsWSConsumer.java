@@ -55,6 +55,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	private static final String sirhAbsSauvegardeDelegataire = "droits/delegataire";
 	private static final String sirhAbsListeActeurs = "droits/listeActeurs";
 	private static final String sirhAgentApprobateurUrl = "droits/agentsApprouves";
+	private static final String sirhAgentApprobateurSIRHUrl = "droits/agentsApprouvesForSIRH";
 	private static final String sirhOperateursDelegataireApprobateurUrl = "droits/inputter";
 	private static final String sirhOperateurApprobateurUrl = "droits/operateurSIRH";
 	private static final String sirhDeleteOperateurApprobateurUrl = "droits/deleteOperateurSIRH";
@@ -827,7 +828,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	@Override
 	public List<AgentDto> getAgentsApprobateur(Integer idAgentApprobateur) {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
-		String url = urlWS + sirhAgentApprobateurUrl;
+		String url = urlWS + sirhAgentApprobateurSIRHUrl;
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgentApprobateur.toString());
 
