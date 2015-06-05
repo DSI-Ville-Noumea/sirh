@@ -169,7 +169,10 @@ function reduireHierarchy() {
 		            	<legend>Agents à approuver par l'approbateur</legend>
 		            	<table class="sigp2NewTab" style="text-align:left;width:980px;">
 							<tr>
-								<td><INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_AJOUTER_AGENT_APPRO_ABS()%>"></td>
+								<td>
+									<INPUT title="Ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_AJOUTER_AGENT_APPRO_ABS()%>">
+									<INPUT title="Agents mairie" type="image" src="images/ajout-doc.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_AJOUTER_AGENT_MAIRIE_APPRO_ABS()%>">
+							    </td>
 								<td><span>Agent</span></td>										
 							</tr>
 							<%
@@ -241,7 +244,10 @@ function reduireHierarchy() {
 		            	<legend>Agents à approuver par l'approbateur</legend>
 		            	<table class="sigp2NewTab" style="text-align:left;width:980px;">
 							<tr>
-								<td><INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_AJOUTER_AGENT_APPRO_PTG()%>"></td>
+								<td>
+									<INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_AJOUTER_AGENT_APPRO_PTG()%>">
+									<INPUT title="Agents mairie" type="image" src="images/ajout-doc.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_AJOUTER_AGENT_MAIRIE_APPRO_PTG()%>">
+								</td>
 								<td><span>Agent</span></td>										
 							</tr>
 							<%
