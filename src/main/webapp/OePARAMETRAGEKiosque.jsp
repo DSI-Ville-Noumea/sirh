@@ -12,6 +12,7 @@
 		<LINK href="theme/sigp2.css" rel="stylesheet" type="text/css">
 		<TITLE>Gestion des paramètres du kiosque</TITLE>
 		
+        <script src="ckeditor/ckeditor.js"></script>
 		<SCRIPT language="JavaScript">
 		//afin de sélectionner un élément dans une liste
 		function executeBouton(nom)
@@ -229,7 +230,12 @@
 									<td width="50px;">
 										<label class="sigp2Mandatory">Texte :</label>
 										<br>
-										<textarea cols="100" rows="10" name="<%=process.getNOM_EF_TEXTE_KIOSQUE()%>" title="Zone de saisie du texte d'accueil"><%=process.getVAL_EF_TEXTE_KIOSQUE().trim() %></textarea>
+										<textarea cols="100" rows="10" id="<%=process.getNOM_EF_TEXTE_KIOSQUE()%>" name="<%=process.getNOM_EF_TEXTE_KIOSQUE()%>" title="Zone de saisie du texte d'accueil"><%=process.getVAL_EF_TEXTE_KIOSQUE().trim() %></textarea>
+										 <script type="text/javascript">
+							                CKEDITOR.replace( '<%=process.getNOM_EF_TEXTE_KIOSQUE()%>', {
+							                    language: 'fr'
+							                });
+							            </script>
 									</td>
 								</tr>
 								<tr>
