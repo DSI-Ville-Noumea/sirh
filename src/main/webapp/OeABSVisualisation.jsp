@@ -621,6 +621,17 @@
 		            			<td><!-- TODO --></td>
 		            		</tr>
 		            		<% } %>
+		            		<% if(!typeCreation.getTypeSaisiDto().isSaisieKiosque()) { %>
+		            		<tr>
+		            			<td>
+	                        		<span class="sigp2Mandatory">Etat :</span>
+		            			</td>
+		            			<td>
+									<INPUT type="radio" <%= process.forRadioHTML(process.getNOM_RG_ETAT(), process.getNOM_RB_ETAT_EN_ATTENTE()) %> ><span class="sigp2Mandatory">En attente</span>
+									<INPUT type="radio" <%= process.forRadioHTML(process.getNOM_RG_ETAT(), process.getNOM_RB_ETAT_VALIDE()) %> ><span class="sigp2Mandatory">Validée</span>
+		            			</td>
+		            		</tr>
+		            		<% } %>
 		            	</table>
 		            	<%}else{ %>
 		            	<table>

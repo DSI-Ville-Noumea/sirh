@@ -27,6 +27,7 @@ import nc.mairie.gestionagent.absence.dto.RefGroupeAbsenceDto;
 import nc.mairie.gestionagent.absence.dto.TypeAbsenceDto;
 import nc.mairie.gestionagent.dto.AgentWithServiceDto;
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
+import nc.mairie.gestionagent.pointage.dto.RefEtatDto;
 import nc.mairie.gestionagent.radi.dto.LightUserDto;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.Agent;
@@ -747,9 +748,10 @@ public class OeABSVisualisation extends BasicProcess {
 
 				TypeAbsenceDto t = new TypeAbsenceDto();
 				t.setIdRefTypeAbsence(abs.getIdTypeDemande());
-				
+
 				// #15586 affichage des restitutions massives des CA
-				TypeAbsenceDto type = 0==abs.getIdTypeDemande()?new TypeAbsenceDto():getListeFamilleAbsenceCreation().get(getListeFamilleAbsenceCreation().indexOf(t));
+				TypeAbsenceDto type = 0 == abs.getIdTypeDemande() ? new TypeAbsenceDto()
+						: getListeFamilleAbsenceCreation().get(getListeFamilleAbsenceCreation().indexOf(t));
 
 				addZone(getNOM_ST_MATRICULE(i), null != ag ? ag.getNomatr().toString() : "");
 				addZone(getNOM_ST_AGENT(i), ag.getNomAgent() + " " + ag.getPrenomAgent() + " ("
@@ -757,12 +759,12 @@ public class OeABSVisualisation extends BasicProcess {
 				addZone(getNOM_ST_INFO_AGENT(i), "<br/>" + statut);
 				String baseConges = null != abs.getTypeSaisiCongeAnnuel() ? " (Base congé : "
 						+ abs.getTypeSaisiCongeAnnuel().getCodeBaseHoraireAbsence() + ")" : "";
-				
+
 				// #15586 affichage des restitutions massives des CA
-				String ST_type = 0==abs.getIdTypeDemande() 
-						? abs.getLibelleTypeDemande() + "<br/>" + sdf.format(abs.getDateDemande())
-						: type.getLibelle() + baseConges + "<br/>" + sdf.format(abs.getDateDemande());
-				
+				String ST_type = 0 == abs.getIdTypeDemande() ? abs.getLibelleTypeDemande() + "<br/>"
+						+ sdf.format(abs.getDateDemande()) : type.getLibelle() + baseConges + "<br/>"
+						+ sdf.format(abs.getDateDemande());
+
 				addZone(getNOM_ST_TYPE(i), ST_type);
 
 				String debutMAM = abs.isDateDebutAM() ? "M" : abs.isDateDebutPM() ? "A" : Const.CHAINE_VIDE;
@@ -814,8 +816,8 @@ public class OeABSVisualisation extends BasicProcess {
 						addZone(getNOM_ST_DUREE(i), "&nbsp;");
 					}
 
-				// #15586 affichage des restitutions massives des CA
-				} else if(0==abs.getIdTypeDemande()) {
+					// #15586 affichage des restitutions massives des CA
+				} else if (0 == abs.getIdTypeDemande()) {
 					addZone(getNOM_ST_DUREE(i), abs.getDuree() == null ? "&nbsp;" : abs.getDuree().toString() + "j");
 				} else {
 					addZone(getNOM_ST_DUREE(i), "&nbsp;");
@@ -1047,6 +1049,8 @@ public class OeABSVisualisation extends BasicProcess {
 			setListeOrganisationSyndicale(listeOrga);
 			formatterOS(listeOrga);
 
+			addZone(getNOM_RG_ETAT(), getNOM_RB_ETAT_VALIDE());
+
 			addZone(getNOM_ST_ACTION(), ACTION_CREATION_DEMANDE);
 		} else {
 			getTransaction().declarerErreur("Cette famille ne peut être saisie dans SIRH.");
@@ -1099,6 +1103,7 @@ public class OeABSVisualisation extends BasicProcess {
 		addZone(getNOM_LB_OS_SELECT(), Const.ZERO);
 		setAgentCreation(null);
 		setTypeCreation(null);
+		addZone(getNOM_RG_ETAT(), getNOM_RB_ETAT_VALIDE());
 	}
 
 	public String getNOM_RG_DEBUT_MAM() {
@@ -1228,7 +1233,7 @@ public class OeABSVisualisation extends BasicProcess {
 			}
 
 		});
-		
+
 		listeAbsence = new TreeMap<>();
 		int i = 0;
 		for (DemandeDto dem : listeAbsenceAjout) {
@@ -2005,6 +2010,21 @@ public class OeABSVisualisation extends BasicProcess {
 			if (type.getTypeSaisiDto().isPieceJointe()) {
 				// TODO
 			}
+
+			// /////////////// RADIO BOUTON ETAT ////////////////////
+			// #15893
+			// on met NULL quand il s'agit de saisie sinon on applique le radio
+			// bouton
+			if (!getTypeCreation().getTypeSaisiDto().isSaisieKiosque()) {
+				if (null == getVAL_RG_ETAT() || Const.CHAINE_VIDE.equals(getVAL_RG_ETAT())) {
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "état"));
+					return false;
+				}
+				RefEtatDto dtoEtat = new RefEtatDto();
+				dtoEtat.setIdRefEtat(getZone(getNOM_RG_ETAT()).equals(getNOM_RB_ETAT_EN_ATTENTE()) ? EnumEtatAbsence.EN_ATTENTE
+						.getCode() : EnumEtatAbsence.VALIDEE.getCode());
+				dto.setEtatDto(dtoEtat);
+			}
 		} else if (type.getTypeSaisiCongeAnnuelDto() != null) {
 			// /////////////// DATE DEBUT ////////////////////
 			if (type.getTypeSaisiCongeAnnuelDto().isCalendarDateDebut()) {
@@ -2240,7 +2260,6 @@ public class OeABSVisualisation extends BasicProcess {
 
 	public boolean performPB_FILTRER_DEMANDE_A_VALIDER(HttpServletRequest request) throws Exception {
 
-
 		String dateDeb = getVAL_ST_DATE_MIN();
 		String dateMin = dateDeb.equals(Const.CHAINE_VIDE) ? null : Services.convertitDate(dateDeb, "dd/MM/yyyy",
 				"yyyyMMdd");
@@ -2277,7 +2296,7 @@ public class OeABSVisualisation extends BasicProcess {
 
 		String idAgentDemande = getVAL_ST_AGENT_DEMANDE().equals(Const.CHAINE_VIDE) ? null : "900"
 				+ getVAL_ST_AGENT_DEMANDE();
-		
+
 		// GESTIONNAIRE
 		int numGestionnaire = (Services.estNumerique(getZone(getNOM_LB_GESTIONNAIRE_SELECT())) ? Integer
 				.parseInt(getZone(getNOM_LB_GESTIONNAIRE_SELECT())) : -1);
@@ -2442,6 +2461,22 @@ public class OeABSVisualisation extends BasicProcess {
 
 	public void setListeGestionnaire(ArrayList<ReferentRh> listeGestionnaire) {
 		this.listeGestionnaire = listeGestionnaire;
+	}
+
+	public String getNOM_RG_ETAT() {
+		return "NOM_RG_ETAT";
+	}
+
+	public String getVAL_RG_ETAT() {
+		return getZone(getNOM_RG_ETAT());
+	}
+
+	public String getNOM_RB_ETAT_EN_ATTENTE() {
+		return "NOM_RB_ETAT_EN_ATTENTE";
+	}
+
+	public String getNOM_RB_ETAT_VALIDE() {
+		return "NOM_RB_ETAT_VALIDE";
 	}
 
 }

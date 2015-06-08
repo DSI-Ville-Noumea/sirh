@@ -4,6 +4,7 @@ import java.util.Date;
 
 import nc.mairie.gestionagent.dto.AgentWithServiceDto;
 import nc.mairie.gestionagent.dto.IJSONDeserialize;
+import nc.mairie.gestionagent.pointage.dto.RefEtatDto;
 import flexjson.JSONDeserializer;
 
 public class DemandeDto implements IJSONDeserialize<DemandeDto> {
@@ -26,6 +27,7 @@ public class DemandeDto implements IJSONDeserialize<DemandeDto> {
 	private boolean isSamediOffert;
 
 	private Integer idRefEtat;
+	private RefEtatDto etatDto;
 	private Date dateSaisie;
 	private String motif;
 
@@ -342,6 +344,14 @@ public class DemandeDto implements IJSONDeserialize<DemandeDto> {
 
 	public void setAffichageBoutonHistorique(boolean affichageBoutonHistorique) {
 		this.affichageBoutonHistorique = affichageBoutonHistorique;
+	}
+
+	public RefEtatDto getEtatDto() {
+		return etatDto;
+	}
+
+	public void setEtatDto(RefEtatDto etatDto) {
+		this.etatDto = etatDto;
 	}
 
 }
