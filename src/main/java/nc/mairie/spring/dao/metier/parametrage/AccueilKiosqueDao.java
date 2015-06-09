@@ -8,6 +8,7 @@ import nc.mairie.spring.dao.utils.SirhDao;
 public class AccueilKiosqueDao extends SirhDao implements AccueilKiosqueDaoInterface {
 
 	public static final String CHAMP_TEXTE_ACCUEIL_KIOSQUE = "TEXTE_ACCUEIL_KIOSQUE";
+	public static final String CHAMP_TITRE = "TITRE";
 
 	public AccueilKiosqueDao(SirhDao sirhDao) {
 		super.dataSource = sirhDao.getDataSource();
@@ -17,9 +18,10 @@ public class AccueilKiosqueDao extends SirhDao implements AccueilKiosqueDaoInter
 	}
 
 	@Override
-	public void creerAccueilKiosque(String texte) throws Exception {
-		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_TEXTE_ACCUEIL_KIOSQUE + ") " + "VALUES (?)";
-		jdbcTemplate.update(sql, new Object[] { texte });
+	public void creerAccueilKiosque(String titre, String texte) throws Exception {
+		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_TITRE + "," + CHAMP_TEXTE_ACCUEIL_KIOSQUE + ") "
+				+ "VALUES (?,?)";
+		jdbcTemplate.update(sql, new Object[] { titre, texte });
 	}
 
 	@Override
@@ -28,9 +30,10 @@ public class AccueilKiosqueDao extends SirhDao implements AccueilKiosqueDaoInter
 	}
 
 	@Override
-	public void modifierAccueilKiosque(Integer idAccueil, String texte) throws Exception {
-		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_TEXTE_ACCUEIL_KIOSQUE + "=? where " + CHAMP_ID + " =?";
-		jdbcTemplate.update(sql, new Object[] { texte, idAccueil });
+	public void modifierAccueilKiosque(Integer idAccueil, String titre, String texte) throws Exception {
+		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_TITRE + "=?," + CHAMP_TEXTE_ACCUEIL_KIOSQUE + "=? where "
+				+ CHAMP_ID + " =?";
+		jdbcTemplate.update(sql, new Object[] { titre, texte, idAccueil });
 	}
 
 	@Override

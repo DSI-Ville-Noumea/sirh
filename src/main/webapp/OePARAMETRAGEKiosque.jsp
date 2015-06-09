@@ -1,3 +1,4 @@
+<%@page import="nc.mairie.metier.parametrage.AccueilKiosque"%>
 <%@ page contentType="text/html; charset=UTF-8" %> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <%@page import="nc.mairie.utils.TreeHierarchy"%>
 <%@page import="nc.mairie.metier.Const"%>
@@ -218,7 +219,7 @@
 							<SELECT name="<%= process.getNOM_LB_TEXTE_KIOSQUE() %>" size="10" style="width:100%;" class="sigp2-liste">
 								<%=process.forComboHTML(process.getVAL_LB_TEXTE_KIOSQUE(), process.getVAL_LB_TEXTE_KIOSQUE_SELECT()) %>
 							</SELECT>
-			
+										
 							<div class=<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>>
 								<INPUT type="image" src="images/ajout.gif" height="20px" width="20px" name="<%=process.getNOM_PB_CREER_TEXTE_KIOSQUE()%>">
 			    	        	<INPUT type="image" src="images/suppression.gif" height="20px" width="20px" name="<%=process.getNOM_PB_SUPPRIMER_TEXTE_KIOSQUE()%>">
@@ -228,6 +229,12 @@
 			            	<% if (process.getVAL_ST_ACTION_TEXTE_KIOSQUE()!= null && !process.getVAL_ST_ACTION_TEXTE_KIOSQUE().equals(Const.CHAINE_VIDE)) {%>				            
 							<% if (!process.ACTION_SUPPRESSION.equals(process.getVAL_ST_ACTION_TEXTE_KIOSQUE())) { %>
 							<table>
+								<tr>
+									<td>
+										<label class="sigp2Mandatory">Titre :</label>
+										<INPUT class="sigp2-saisie" maxlength="255" name="<%= process.getNOM_EF_TITRE_ACCUEIL_KIOSQUE() %>" size="80" type="text" value="<%= process.getVAL_EF_TITRE_ACCUEIL_KIOSQUE() %>">
+									</td>
+								</tr>
 								<tr>
 									<td width="50px;">
 										<label class="sigp2Mandatory">Texte :</label>
@@ -249,6 +256,13 @@
 							</table>
 							<%} else {%>
 							<table>
+								<tr>
+									<td>
+										<label class="sigp2Mandatory">Titre :</label>
+										<br>
+										<label class="sigp2-saisie" ><%= process.getVAL_EF_TITRE_ACCUEIL_KIOSQUE() %></label>
+									</td>
+								</tr>
 								<tr>
 									<td>
 										<label class="sigp2Mandatory">Texte :</label>
@@ -284,6 +298,12 @@
 			            	
 			            	<% if (process.getVAL_ST_ACTION_ALERTE_KIOSQUE()!= null && !process.getVAL_ST_ACTION_ALERTE_KIOSQUE().equals(Const.CHAINE_VIDE)) {%>		
 							<table>
+								<tr>
+									<td>
+										<label class="sigp2Mandatory">Titre :</label>
+										<INPUT class="sigp2-saisie" maxlength="255" name="<%= process.getNOM_EF_TITRE_ALERTE_KIOSQUE() %>" size="80" type="text" value="<%= process.getVAL_EF_TITRE_ALERTE_KIOSQUE() %>">
+									</td>
+								</tr>
 								<tr>
 									<td width="50px;">
 										<label class="sigp2Mandatory">Texte :</label>

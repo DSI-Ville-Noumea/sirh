@@ -212,7 +212,7 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
 			for (ListIterator<AccueilKiosque> list = getListeAccueilKiosque().listIterator(); list.hasNext();) {
 				AccueilKiosque ref = (AccueilKiosque) list.next();
-				String ligne[] = { ref.getTexteAccueilKiosque() };
+				String ligne[] = { ref.getTitre() };
 
 				aFormat.ajouteLigne(ligne);
 			}
@@ -230,7 +230,7 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
 			for (ListIterator<AlerteKiosque> list = getListeAlerteKiosque().listIterator(); list.hasNext();) {
 				AlerteKiosque ref = (AlerteKiosque) list.next();
-				String ligne[] = { ref.getTexteAlerteKiosque() };
+				String ligne[] = { ref.getTitre() };
 
 				aFormat.ajouteLigne(ligne);
 			}
@@ -478,6 +478,7 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 		addZone(getNOM_EF_NUMERO_TELEPHONE(), Const.CHAINE_VIDE);
 		addZone(getNOM_LB_SERVICE_UTILISATEUR_SELECT(), "-1");
 		addZone(getNOM_EF_TEXTE_KIOSQUE(), Const.CHAINE_VIDE);
+		addZone(getNOM_EF_TITRE_ACCUEIL_KIOSQUE(), Const.CHAINE_VIDE);
 
 		setListeServiceUtilisateur(null);
 	}
@@ -935,6 +936,7 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 			AccueilKiosque ref = getListeAccueilKiosque().get(indice);
 			setAccueilKiosqueCourant(ref);
 			addZone(getNOM_EF_TEXTE_KIOSQUE(), getAccueilKiosqueCourant().getTexteAccueilKiosque());
+			addZone(getNOM_EF_TITRE_ACCUEIL_KIOSQUE(), getAccueilKiosqueCourant().getTitre());
 			addZone(getNOM_ST_ACTION_TEXTE_KIOSQUE(), ACTION_MODIFICATION);
 		} else {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "texte d'accueil"));
@@ -956,6 +958,7 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 			AccueilKiosque ref = getListeAccueilKiosque().get(indice);
 			setAccueilKiosqueCourant(ref);
 			addZone(getNOM_EF_TEXTE_KIOSQUE(), getAccueilKiosqueCourant().getTexteAccueilKiosque());
+			addZone(getNOM_EF_TITRE_ACCUEIL_KIOSQUE(), getAccueilKiosqueCourant().getTitre());
 			addZone(getNOM_ST_ACTION_TEXTE_KIOSQUE(), ACTION_SUPPRESSION);
 		} else {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "texte d'accueil"));
@@ -1012,14 +1015,17 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 
 		if (getVAL_ST_ACTION_TEXTE_KIOSQUE() != null && getVAL_ST_ACTION_TEXTE_KIOSQUE() != Const.CHAINE_VIDE) {
 			if (getVAL_ST_ACTION_TEXTE_KIOSQUE().equals(ACTION_CREATION)) {
+				getAccueilKiosqueCourant().setTitre(getVAL_EF_TITRE_ACCUEIL_KIOSQUE());
 				getAccueilKiosqueCourant().setTexteAccueilKiosque(getVAL_EF_TEXTE_KIOSQUE());
-				getAccueilKiosqueDao().creerAccueilKiosque(getAccueilKiosqueCourant().getTexteAccueilKiosque());
+				getAccueilKiosqueDao().creerAccueilKiosque(getAccueilKiosqueCourant().getTitre(),
+						getAccueilKiosqueCourant().getTexteAccueilKiosque());
 			} else if (getVAL_ST_ACTION_TEXTE_KIOSQUE().equals(ACTION_SUPPRESSION)) {
 				getAccueilKiosqueDao().supprimerAccueilKiosque(getAccueilKiosqueCourant().getIdAccueilKiosque());
 			} else if (getVAL_ST_ACTION_TEXTE_KIOSQUE().equals(ACTION_MODIFICATION)) {
+				getAccueilKiosqueCourant().setTitre(getVAL_EF_TITRE_ACCUEIL_KIOSQUE());
 				getAccueilKiosqueCourant().setTexteAccueilKiosque(getVAL_EF_TEXTE_KIOSQUE());
 				getAccueilKiosqueDao().modifierAccueilKiosque(getAccueilKiosqueCourant().getIdAccueilKiosque(),
-						getAccueilKiosqueCourant().getTexteAccueilKiosque());
+						getAccueilKiosqueCourant().getTitre(), getAccueilKiosqueCourant().getTexteAccueilKiosque());
 
 			}
 			initialiseListeAccueilKiosque(request);
@@ -1029,6 +1035,14 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 
 		setFocus(getNOM_PB_ANNULER_TEXTE_KIOSQUE());
 		return true;
+	}
+
+	public String getNOM_EF_TITRE_ACCUEIL_KIOSQUE() {
+		return "NOM_EF_TITRE_ACCUEIL_KIOSQUE";
+	}
+
+	public String getVAL_EF_TITRE_ACCUEIL_KIOSQUE() {
+		return getZone(getNOM_EF_TITRE_ACCUEIL_KIOSQUE());
 	}
 
 	public String getNOM_EF_TEXTE_KIOSQUE() {
@@ -1249,6 +1263,7 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 			AlerteKiosque ref = getListeAlerteKiosque().get(indice);
 			setAlerteKiosqueCourant(ref);
 			addZone(getNOM_EF_ALERTE_KIOSQUE(), getAlerteKiosqueCourant().getTexteAlerteKiosque());
+			addZone(getNOM_EF_TITRE_ALERTE_KIOSQUE(), getAlerteKiosqueCourant().getTitre());
 			addZone(getNOM_CK_AGENT(), getAlerteKiosqueCourant().isAgent() ? getCHECKED_ON() : getCHECKED_OFF());
 			addZone(getNOM_CK_APPRO_ABS(), getAlerteKiosqueCourant().isApprobateurABS() ? getCHECKED_ON()
 					: getCHECKED_OFF());
@@ -1274,6 +1289,7 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 
 	private void viderZoneSaisieAlerte(HttpServletRequest request) {
 		addZone(getNOM_EF_ALERTE_KIOSQUE(), Const.CHAINE_VIDE);
+		addZone(getNOM_EF_TITRE_ALERTE_KIOSQUE(), Const.CHAINE_VIDE);
 		addZone(getNOM_CK_AGENT(), getCHECKED_OFF());
 		addZone(getNOM_CK_APPRO_ABS(), getCHECKED_OFF());
 		addZone(getNOM_CK_APPRO_PTG(), getCHECKED_OFF());
@@ -1282,7 +1298,7 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 		addZone(getNOM_CK_VISEUR_ABS(), getCHECKED_OFF());
 		addZone(getNOM_EF_DATE_DEBUT(), Const.CHAINE_VIDE);
 		addZone(getNOM_EF_DATE_FIN(), Const.CHAINE_VIDE);
-		
+
 	}
 
 	public String getNOM_PB_CREER_ALERTE_KIOSQUE() {
@@ -1337,6 +1353,7 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 
 			// on rempli l'objet
 			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+			getAlerteKiosqueCourant().setTitre(getVAL_EF_TITRE_ALERTE_KIOSQUE());
 			getAlerteKiosqueCourant().setTexteAlerteKiosque(getVAL_EF_ALERTE_KIOSQUE());
 			getAlerteKiosqueCourant().setAgent(getVAL_CK_AGENT().equals(getCHECKED_ON()));
 			getAlerteKiosqueCourant().setApprobateurABS(getVAL_CK_APPRO_ABS().equals(getCHECKED_ON()));
@@ -1364,6 +1381,20 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 	}
 
 	private boolean performControlerChampsAlerte(HttpServletRequest request) {
+
+		// titre obligatoire
+		if ((Const.CHAINE_VIDE).equals(getVAL_EF_TITRE_ALERTE_KIOSQUE())) {
+			// "ERR002", "La zone @ est obligatoire."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "titre"));
+			return false;
+		}
+
+		// texte obligatoire
+		if ((Const.CHAINE_VIDE).equals(getVAL_EF_ALERTE_KIOSQUE())) {
+			// "ERR002", "La zone @ est obligatoire."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "texte"));
+			return false;
+		}
 
 		// date de debut obligatoire
 		if ((Const.CHAINE_VIDE).equals(getVAL_EF_DATE_DEBUT())) {
@@ -1402,6 +1433,14 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 			return false;
 		}
 		return true;
+	}
+
+	public String getNOM_EF_TITRE_ALERTE_KIOSQUE() {
+		return "NOM_EF_TITRE_ALERTE_KIOSQUE";
+	}
+
+	public String getVAL_EF_TITRE_ALERTE_KIOSQUE() {
+		return getZone(getNOM_EF_TITRE_ALERTE_KIOSQUE());
 	}
 
 	public String getNOM_EF_ALERTE_KIOSQUE() {

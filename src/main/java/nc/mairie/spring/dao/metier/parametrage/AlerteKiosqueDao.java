@@ -11,6 +11,7 @@ import nc.mairie.spring.dao.utils.SirhDao;
 public class AlerteKiosqueDao extends SirhDao implements AlerteKiosqueDaoInterface {
 
 	public static final String CHAMP_TEXTE_ALERTE_KIOSQUE = "TEXTE_ALERTE_KIOSQUE";
+	public static final String CHAMP_TITRE = "TITRE";
 	public static final String CHAMP_DATE_DEBUT = "DATE_DEBUT";
 	public static final String CHAMP_DATE_FIN = "DATE_FIN";
 	public static final String CHAMP_AGENT = "AGENT";
@@ -36,6 +37,7 @@ public class AlerteKiosqueDao extends SirhDao implements AlerteKiosqueDaoInterfa
 		for (Map<String, Object> row : rows) {
 			AlerteKiosque a = new AlerteKiosque();
 			a.setIdAlerteKiosque((Integer) row.get(CHAMP_ID));
+			a.setTitre((String) row.get(CHAMP_TITRE));
 			a.setTexteAlerteKiosque((String) row.get(CHAMP_TEXTE_ALERTE_KIOSQUE));
 			a.setAgent(((Integer) row.get(CHAMP_AGENT)) == 1 ? true : false);
 			a.setApprobateurABS(((Integer) row.get(CHAMP_APPRO_ABS)) == 1 ? true : false);
@@ -53,25 +55,27 @@ public class AlerteKiosqueDao extends SirhDao implements AlerteKiosqueDaoInterfa
 
 	@Override
 	public void creerAlerteKiosque(AlerteKiosque alerte) throws Exception {
-		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_TEXTE_ALERTE_KIOSQUE + "," + CHAMP_DATE_DEBUT + ","
-				+ CHAMP_DATE_FIN + "," + CHAMP_AGENT + "," + CHAMP_APPRO_ABS + "," + CHAMP_APPRO_PTG + ","
-				+ CHAMP_OPE_ABS + "," + CHAMP_OPE_PTG + "," + CHAMP_VISEUR_ABS + ") " + "VALUES (?,?,?,?,?,?,?,?,?)";
+		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_TITRE + "," + CHAMP_TEXTE_ALERTE_KIOSQUE + ","
+				+ CHAMP_DATE_DEBUT + "," + CHAMP_DATE_FIN + "," + CHAMP_AGENT + "," + CHAMP_APPRO_ABS + ","
+				+ CHAMP_APPRO_PTG + "," + CHAMP_OPE_ABS + "," + CHAMP_OPE_PTG + "," + CHAMP_VISEUR_ABS + ") "
+				+ "VALUES (?,?,?,?,?,?,?,?,?,?)";
 		jdbcTemplate.update(
 				sql,
-				new Object[] { alerte.getTexteAlerteKiosque(), alerte.getDateDebut(), alerte.getDateFin(),
-						alerte.isAgent(), alerte.isApprobateurABS(), alerte.isApprobateurPTG(),
+				new Object[] { alerte.getTitre(), alerte.getTexteAlerteKiosque(), alerte.getDateDebut(),
+						alerte.getDateFin(), alerte.isAgent(), alerte.isApprobateurABS(), alerte.isApprobateurPTG(),
 						alerte.isOperateurABS(), alerte.isOperateurPTG(), alerte.isViseurABS() });
 	}
 
 	@Override
 	public void modifierAlerteKiosque(Integer idAlerte, AlerteKiosque alerte) throws Exception {
-		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_TEXTE_ALERTE_KIOSQUE + "=?," + CHAMP_DATE_DEBUT + "=?,"
-				+ CHAMP_DATE_FIN + "=?," + CHAMP_AGENT + "=?," + CHAMP_APPRO_ABS + "=?," + CHAMP_APPRO_PTG + "=?,"
-				+ CHAMP_OPE_ABS + "=?," + CHAMP_OPE_PTG + "=?," + CHAMP_VISEUR_ABS + "=? where " + CHAMP_ID + " =?";
+		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_TITRE + "=?," + CHAMP_TEXTE_ALERTE_KIOSQUE + "=?,"
+				+ CHAMP_DATE_DEBUT + "=?," + CHAMP_DATE_FIN + "=?," + CHAMP_AGENT + "=?," + CHAMP_APPRO_ABS + "=?,"
+				+ CHAMP_APPRO_PTG + "=?," + CHAMP_OPE_ABS + "=?," + CHAMP_OPE_PTG + "=?," + CHAMP_VISEUR_ABS
+				+ "=? where " + CHAMP_ID + " =?";
 		jdbcTemplate.update(
 				sql,
-				new Object[] { alerte.getTexteAlerteKiosque(), alerte.getDateDebut(), alerte.getDateFin(),
-						alerte.isAgent(), alerte.isApprobateurABS(), alerte.isApprobateurPTG(),
+				new Object[] { alerte.getTitre(), alerte.getTexteAlerteKiosque(), alerte.getDateDebut(),
+						alerte.getDateFin(), alerte.isAgent(), alerte.isApprobateurABS(), alerte.isApprobateurPTG(),
 						alerte.isOperateurABS(), alerte.isOperateurPTG(), alerte.isViseurABS(), idAlerte });
 	}
 }
