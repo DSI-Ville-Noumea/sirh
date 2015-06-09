@@ -1,6 +1,9 @@
 package nc.mairie.spring.dao.metier.parametrage;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import nc.mairie.metier.parametrage.AlerteKiosque;
 import nc.mairie.spring.dao.utils.SirhDao;
@@ -26,7 +29,26 @@ public class AlerteKiosqueDao extends SirhDao implements AlerteKiosqueDaoInterfa
 
 	@Override
 	public List<AlerteKiosque> getAlerteKiosque() throws Exception {
-		return super.getListe(AlerteKiosque.class);
+		ArrayList<AlerteKiosque> liste = new ArrayList<AlerteKiosque>();
+		String sql = "SELECT * from " + NOM_TABLE;
+
+		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql);
+		for (Map<String, Object> row : rows) {
+			AlerteKiosque a = new AlerteKiosque();
+			a.setIdAlerteKiosque((Integer) row.get(CHAMP_ID));
+			a.setTexteAlerteKiosque((String) row.get(CHAMP_TEXTE_ALERTE_KIOSQUE));
+			a.setAgent(((Integer) row.get(CHAMP_AGENT)) == 1 ? true : false);
+			a.setApprobateurABS(((Integer) row.get(CHAMP_APPRO_ABS)) == 1 ? true : false);
+			a.setApprobateurPTG(((Integer) row.get(CHAMP_APPRO_PTG)) == 1 ? true : false);
+			a.setOperateurABS(((Integer) row.get(CHAMP_OPE_ABS)) == 1 ? true : false);
+			a.setOperateurPTG(((Integer) row.get(CHAMP_OPE_PTG)) == 1 ? true : false);
+			a.setViseurABS(((Integer) row.get(CHAMP_VISEUR_ABS)) == 1 ? true : false);
+			a.setDateDebut((Date) row.get(CHAMP_DATE_DEBUT));
+			a.setDateFin((Date) row.get(CHAMP_DATE_FIN));
+			liste.add(a);
+		}
+
+		return liste;
 	}
 
 	@Override

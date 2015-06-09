@@ -13,6 +13,8 @@
 		<TITLE>Gestion des paramètres du kiosque</TITLE>
 		
         <script src="ckeditor/ckeditor.js"></script>
+		<LINK rel="stylesheet" href="theme/calendrier-mairie.css" type="text/css">
+		<SCRIPT type="text/javascript" src="js/GestionCalendrier.js"></SCRIPT> 
 		<SCRIPT language="JavaScript">
 		//afin de sélectionner un élément dans une liste
 		function executeBouton(nom)
@@ -262,6 +264,66 @@
 								</tr>
 							</table>
 						    <%}%>
+							<% } %>
+					    </FIELDSET>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<FIELDSET class="sigp2Fieldset"  style="text-align: left;">
+					    	<legend class="sigp2Legend">Alertes du kiosque</legend>
+					    	<span class="sigp2-saisie" style="margin-left: 5px;">Texte</span>
+							<SELECT name="<%= process.getNOM_LB_ALERTE_KIOSQUE() %>" size="10" style="width:100%;" class="sigp2-liste">
+								<%=process.forComboHTML(process.getVAL_LB_ALERTE_KIOSQUE(), process.getVAL_LB_ALERTE_KIOSQUE_SELECT()) %>
+							</SELECT>
+			
+							<div class=<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>>
+								<INPUT type="image" src="images/ajout.gif" height="20px" width="20px" name="<%=process.getNOM_PB_CREER_ALERTE_KIOSQUE()%>">
+			    	        	<INPUT type="image" src="images/modifier.gif" height="20px" width="20px" name="<%=process.getNOM_PB_MODIFIER_ALERTE_KIOSQUE()%>">
+			    	        </div>
+			            	
+			            	<% if (process.getVAL_ST_ACTION_ALERTE_KIOSQUE()!= null && !process.getVAL_ST_ACTION_ALERTE_KIOSQUE().equals(Const.CHAINE_VIDE)) {%>		
+							<table>
+								<tr>
+									<td width="50px;">
+										<label class="sigp2Mandatory">Texte :</label>
+										<br>
+										<textarea cols="100" rows="10" id="<%=process.getNOM_EF_ALERTE_KIOSQUE()%>" name="<%=process.getNOM_EF_ALERTE_KIOSQUE()%>" title="Zone de saisie du texte d'alerte"><%=process.getVAL_EF_ALERTE_KIOSQUE().trim() %></textarea>
+										 <script type="text/javascript">
+							                CKEDITOR.replace( '<%=process.getNOM_EF_ALERTE_KIOSQUE()%>', {
+							                    language: 'fr'
+							                });
+							            </script>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<span class="sigp2-saisie">Destinataires de l'alerte : </span>
+										<INPUT type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_AGENT(),process.getVAL_CK_AGENT())%> ><span class="sigp2-saisie">Agent</span>
+										<INPUT type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_APPRO_ABS(),process.getVAL_CK_APPRO_ABS())%> ><span class="sigp2-saisie">Appro ABS</span>
+										<INPUT type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_APPRO_PTG(),process.getVAL_CK_APPRO_PTG())%> ><span class="sigp2-saisie">Appro PTG</span>
+										<INPUT type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_OPE_ABS(),process.getVAL_CK_OPE_ABS())%> ><span class="sigp2-saisie">Opé ABS</span>
+										<INPUT type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_OPE_PTG(),process.getVAL_CK_OPE_PTG())%> ><span class="sigp2-saisie">Opé PTG</span>
+										<INPUT type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_VISEUR_ABS(),process.getVAL_CK_VISEUR_ABS())%> ><span class="sigp2-saisie">Viseur ABS</span>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<span class="sigp2Mandatory">Date de début :</span>
+										<input id="<%=process.getNOM_EF_DATE_DEBUT()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DATE_DEBUT() %>" size="10" type="text"	value="<%= process.getVAL_EF_DATE_DEBUT() %>">
+										<IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_EF_DATE_DEBUT()%>', 'dd/mm/y');">
+										<span class="sigp2Mandatory">Date de fin :</span>	
+										<input id="<%=process.getNOM_EF_DATE_FIN()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DATE_FIN() %>" size="10" type="text"	value="<%= process.getVAL_EF_DATE_FIN() %>">
+										<IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_EF_DATE_FIN()%>', 'dd/mm/y');">						
+									</td>
+								</tr>
+								<tr>
+									<td align="center">
+										<INPUT type="submit" class="sigp2-Bouton-100" value="Valider" name="<%=process.getNOM_PB_VALIDER_ALERTE_KIOSQUE()%>">
+										<INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER_ALERTE_KIOSQUE()%>">
+									</td>
+								</tr>
+							</table>							
 							<% } %>
 					    </FIELDSET>
 					</td>

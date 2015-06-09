@@ -1,5 +1,6 @@
 package nc.mairie.gestionagent.process.parametre;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -11,10 +12,12 @@ import javax.servlet.http.HttpServletRequest;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.Agent;
 import nc.mairie.metier.parametrage.AccueilKiosque;
+import nc.mairie.metier.parametrage.AlerteKiosque;
 import nc.mairie.metier.parametrage.ReferentRh;
 import nc.mairie.metier.poste.Service;
 import nc.mairie.spring.dao.metier.agent.AgentDao;
 import nc.mairie.spring.dao.metier.parametrage.AccueilKiosqueDao;
+import nc.mairie.spring.dao.metier.parametrage.AlerteKiosqueDao;
 import nc.mairie.spring.dao.metier.parametrage.ReferentRhDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
@@ -50,6 +53,7 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 	private String[] LB_REFERENT_RH;
 	private String[] LB_SERVICE_UTILISATEUR;
 	private String[] LB_TEXTE_KIOSQUE;
+	private String[] LB_ALERTE_KIOSQUE;
 
 	public Hashtable<String, TreeHierarchy> hTree = null;
 	private ArrayList<Service> listeServices;
@@ -58,6 +62,7 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 	private ReferentRhDao referentRhDao;
 	private AccueilKiosqueDao accueilKiosqueDao;
 	private AgentDao agentDao;
+	private AlerteKiosqueDao alerteKiosqueDao;
 
 	private ReferentRh referentRhGlobalCourant;
 	private ReferentRh referentRhCourant;
@@ -65,6 +70,9 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 
 	private AccueilKiosque accueilKiosqueCourant;
 	private ArrayList<AccueilKiosque> listeAccueilKiosque;
+
+	private AlerteKiosque alerteKiosqueCourant;
+	private ArrayList<AlerteKiosque> listeAlerteKiosque;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -116,6 +124,9 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 		}
 		if (getListeAccueilKiosque().size() == 0) {
 			initialiseListeAccueilKiosque(request);
+		}
+		if (getListeAlerteKiosque().size() == 0) {
+			initialiseListeAlerteKiosque(request);
 		}
 		// Si la liste des services est nulle
 		if (getListeServices() == null || getListeServices().isEmpty()) {
@@ -211,6 +222,24 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 		}
 	}
 
+	private void initialiseListeAlerteKiosque(HttpServletRequest request) throws Exception {
+		setListeAlerteKiosque((ArrayList<AlerteKiosque>) getAlerteKiosqueDao().getAlerteKiosque());
+		if (getListeAlerteKiosque().size() != 0) {
+			int tailles[] = { 90 };
+			String padding[] = { "G" };
+			FormateListe aFormat = new FormateListe(tailles, padding, false);
+			for (ListIterator<AlerteKiosque> list = getListeAlerteKiosque().listIterator(); list.hasNext();) {
+				AlerteKiosque ref = (AlerteKiosque) list.next();
+				String ligne[] = { ref.getTexteAlerteKiosque() };
+
+				aFormat.ajouteLigne(ligne);
+			}
+			setLB_ALERTE_KIOSQUE(aFormat.getListeFormatee());
+		} else {
+			setLB_ALERTE_KIOSQUE(null);
+		}
+	}
+
 	private void initialiseListeReferentRh(HttpServletRequest request) throws Exception {
 		setListeReferentRh((ArrayList<ReferentRh>) getReferentRhDao().listerDistinctReferentRh());
 		if (getListeReferentRh().size() != 0) {
@@ -241,6 +270,9 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 		}
 		if (getAccueilKiosqueDao() == null) {
 			setAccueilKiosqueDao(new AccueilKiosqueDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getAlerteKiosqueDao() == null) {
+			setAlerteKiosqueDao(new AlerteKiosqueDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -562,6 +594,22 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 			if (testerParametre(request, getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_GLOBAL())) {
 				return performPB_SUPPRIMER_RECHERCHER_AGENT_GLOBAL(request);
 			}
+			// Si clic sur le bouton PB_ANNULER_ALERTE_KIOSQUE
+			if (testerParametre(request, getNOM_PB_ANNULER_ALERTE_KIOSQUE())) {
+				return performPB_ANNULER_ALERTE_KIOSQUE(request);
+			}
+			// Si clic sur le bouton PB_CREER_ALERTE_KIOSQUE
+			if (testerParametre(request, getNOM_PB_CREER_ALERTE_KIOSQUE())) {
+				return performPB_CREER_ALERTE_KIOSQUE(request);
+			}
+			// Si clic sur le bouton PB_MODIFIER_ALERTE_KIOSQUE
+			if (testerParametre(request, getNOM_PB_MODIFIER_ALERTE_KIOSQUE())) {
+				return performPB_MODIFIER_ALERTE_KIOSQUE(request);
+			}
+			// Si clic sur le bouton PB_VALIDER_ALERTE_KIOSQUE
+			if (testerParametre(request, getNOM_PB_VALIDER_ALERTE_KIOSQUE())) {
+				return performPB_VALIDER_ALERTE_KIOSQUE(request);
+			}
 		}
 		// Si TAG INPUT non géré par le process
 		setStatut(STATUT_MEME_PROCESS);
@@ -879,6 +927,7 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 	}
 
 	public boolean performPB_MODIFIER_TEXTE_KIOSQUE(HttpServletRequest request) throws Exception {
+		viderFormulaire();
 
 		int indice = (Services.estNumerique(getVAL_LB_TEXTE_KIOSQUE_SELECT()) ? Integer
 				.parseInt(getVAL_LB_TEXTE_KIOSQUE_SELECT()) : -1);
@@ -900,6 +949,7 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 	}
 
 	public boolean performPB_SUPPRIMER_TEXTE_KIOSQUE(HttpServletRequest request) throws Exception {
+		viderFormulaire();
 		int indice = (Services.estNumerique(getVAL_LB_TEXTE_KIOSQUE_SELECT()) ? Integer
 				.parseInt(getVAL_LB_TEXTE_KIOSQUE_SELECT()) : -1);
 		if (indice != -1 && indice < getListeAccueilKiosque().size()) {
@@ -926,6 +976,7 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 
 		// On vide la zone de saisie
 		setAccueilKiosqueCourant(new AccueilKiosque());
+		viderFormulaire();
 
 		setStatut(STATUT_MEME_PROCESS);
 		setFocus(getNOM_PB_ANNULER_TEXTE_KIOSQUE());
@@ -947,6 +998,7 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 	public boolean performPB_ANNULER_TEXTE_KIOSQUE(HttpServletRequest request) throws Exception {
 		addZone(getNOM_ST_ACTION_TEXTE_KIOSQUE(), Const.CHAINE_VIDE);
 		setAccueilKiosqueCourant(null);
+		viderFormulaire();
 		setStatut(STATUT_MEME_PROCESS);
 		setFocus(getNOM_PB_ANNULER_TEXTE_KIOSQUE());
 		return true;
@@ -1130,5 +1182,297 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 
 	public String getVAL_EF_SERVICE() {
 		return getZone(getNOM_EF_SERVICE());
+	}
+
+	public AlerteKiosque getAlerteKiosqueCourant() {
+		return alerteKiosqueCourant;
+	}
+
+	public void setAlerteKiosqueCourant(AlerteKiosque alerteKiosqueCourant) {
+		this.alerteKiosqueCourant = alerteKiosqueCourant;
+	}
+
+	public ArrayList<AlerteKiosque> getListeAlerteKiosque() {
+		if (listeAlerteKiosque == null)
+			return new ArrayList<AlerteKiosque>();
+		return listeAlerteKiosque;
+	}
+
+	public void setListeAlerteKiosque(ArrayList<AlerteKiosque> listeAlerteKiosque) {
+		this.listeAlerteKiosque = listeAlerteKiosque;
+	}
+
+	public AlerteKiosqueDao getAlerteKiosqueDao() {
+		return alerteKiosqueDao;
+	}
+
+	public void setAlerteKiosqueDao(AlerteKiosqueDao alerteKiosqueDao) {
+		this.alerteKiosqueDao = alerteKiosqueDao;
+	}
+
+	private String[] getLB_ALERTE_KIOSQUE() {
+		if (LB_ALERTE_KIOSQUE == null)
+			LB_ALERTE_KIOSQUE = initialiseLazyLB();
+		return LB_ALERTE_KIOSQUE;
+	}
+
+	private void setLB_ALERTE_KIOSQUE(String[] newLB_ALERTE_KIOSQUE) {
+		LB_ALERTE_KIOSQUE = newLB_ALERTE_KIOSQUE;
+	}
+
+	public String getNOM_LB_ALERTE_KIOSQUE() {
+		return "NOM_LB_ALERTE_KIOSQUE";
+	}
+
+	public String getNOM_LB_ALERTE_KIOSQUE_SELECT() {
+		return "NOM_LB_ALERTE_KIOSQUE_SELECT";
+	}
+
+	public String[] getVAL_LB_ALERTE_KIOSQUE() {
+		return getLB_ALERTE_KIOSQUE();
+	}
+
+	public String getVAL_LB_ALERTE_KIOSQUE_SELECT() {
+		return getZone(getNOM_LB_ALERTE_KIOSQUE_SELECT());
+	}
+
+	public String getNOM_PB_MODIFIER_ALERTE_KIOSQUE() {
+		return "NOM_PB_MODIFIER_ALERTE_KIOSQUE";
+	}
+
+	public boolean performPB_MODIFIER_ALERTE_KIOSQUE(HttpServletRequest request) throws Exception {
+		viderZoneSaisieAlerte(request);
+
+		int indice = (Services.estNumerique(getVAL_LB_ALERTE_KIOSQUE_SELECT()) ? Integer
+				.parseInt(getVAL_LB_ALERTE_KIOSQUE_SELECT()) : -1);
+		if (indice != -1 && indice < getListeAlerteKiosque().size()) {
+			AlerteKiosque ref = getListeAlerteKiosque().get(indice);
+			setAlerteKiosqueCourant(ref);
+			addZone(getNOM_EF_ALERTE_KIOSQUE(), getAlerteKiosqueCourant().getTexteAlerteKiosque());
+			addZone(getNOM_CK_AGENT(), getAlerteKiosqueCourant().isAgent() ? getCHECKED_ON() : getCHECKED_OFF());
+			addZone(getNOM_CK_APPRO_ABS(), getAlerteKiosqueCourant().isApprobateurABS() ? getCHECKED_ON()
+					: getCHECKED_OFF());
+			addZone(getNOM_CK_APPRO_PTG(), getAlerteKiosqueCourant().isApprobateurPTG() ? getCHECKED_ON()
+					: getCHECKED_OFF());
+			addZone(getNOM_CK_OPE_ABS(), getAlerteKiosqueCourant().isOperateurABS() ? getCHECKED_ON()
+					: getCHECKED_OFF());
+			addZone(getNOM_CK_OPE_PTG(), getAlerteKiosqueCourant().isOperateurPTG() ? getCHECKED_ON()
+					: getCHECKED_OFF());
+			addZone(getNOM_CK_VISEUR_ABS(), getAlerteKiosqueCourant().isViseurABS() ? getCHECKED_ON()
+					: getCHECKED_OFF());
+			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+			addZone(getNOM_EF_DATE_DEBUT(), sdf.format(getAlerteKiosqueCourant().getDateDebut()));
+			addZone(getNOM_EF_DATE_FIN(), sdf.format(getAlerteKiosqueCourant().getDateFin()));
+			addZone(getNOM_ST_ACTION_ALERTE_KIOSQUE(), ACTION_MODIFICATION);
+		} else {
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "texte d'alerte"));
+		}
+
+		setFocus(getNOM_PB_ANNULER_ALERTE_KIOSQUE());
+		return true;
+	}
+
+	private void viderZoneSaisieAlerte(HttpServletRequest request) {
+		addZone(getNOM_EF_ALERTE_KIOSQUE(), Const.CHAINE_VIDE);
+		addZone(getNOM_CK_AGENT(), getCHECKED_OFF());
+		addZone(getNOM_CK_APPRO_ABS(), getCHECKED_OFF());
+		addZone(getNOM_CK_APPRO_PTG(), getCHECKED_OFF());
+		addZone(getNOM_CK_OPE_ABS(), getCHECKED_OFF());
+		addZone(getNOM_CK_OPE_PTG(), getCHECKED_OFF());
+		addZone(getNOM_CK_VISEUR_ABS(), getCHECKED_OFF());
+		addZone(getNOM_EF_DATE_DEBUT(), Const.CHAINE_VIDE);
+		addZone(getNOM_EF_DATE_FIN(), Const.CHAINE_VIDE);
+		
+	}
+
+	public String getNOM_PB_CREER_ALERTE_KIOSQUE() {
+		return "NOM_PB_CREER_ALERTE_KIOSQUE";
+	}
+
+	public boolean performPB_CREER_ALERTE_KIOSQUE(HttpServletRequest request) throws Exception {
+		// On nomme l'action
+		addZone(getNOM_ST_ACTION_ALERTE_KIOSQUE(), ACTION_CREATION);
+
+		// On vide la zone de saisie
+		setAlerteKiosqueCourant(new AlerteKiosque());
+		viderZoneSaisieAlerte(request);
+
+		setStatut(STATUT_MEME_PROCESS);
+		setFocus(getNOM_PB_ANNULER_ALERTE_KIOSQUE());
+		return true;
+	}
+
+	public String getNOM_ST_ACTION_ALERTE_KIOSQUE() {
+		return "NOM_ST_ACTION_ALERTE_KIOSQUE";
+	}
+
+	public String getVAL_ST_ACTION_ALERTE_KIOSQUE() {
+		return getZone(getNOM_ST_ACTION_ALERTE_KIOSQUE());
+	}
+
+	public String getNOM_PB_ANNULER_ALERTE_KIOSQUE() {
+		return "NOM_PB_ANNULER_ALERTE_KIOSQUE";
+	}
+
+	public boolean performPB_ANNULER_ALERTE_KIOSQUE(HttpServletRequest request) throws Exception {
+		addZone(getNOM_ST_ACTION_ALERTE_KIOSQUE(), Const.CHAINE_VIDE);
+		setAlerteKiosqueCourant(null);
+		viderZoneSaisieAlerte(request);
+		setStatut(STATUT_MEME_PROCESS);
+		setFocus(getNOM_PB_ANNULER_ALERTE_KIOSQUE());
+		return true;
+	}
+
+	public String getNOM_PB_VALIDER_ALERTE_KIOSQUE() {
+		return "NOM_PB_VALIDER_ALERTE_KIOSQUE";
+	}
+
+	public boolean performPB_VALIDER_ALERTE_KIOSQUE(HttpServletRequest request) throws Exception {
+
+		if (getVAL_ST_ACTION_ALERTE_KIOSQUE() != null && getVAL_ST_ACTION_ALERTE_KIOSQUE() != Const.CHAINE_VIDE) {
+
+			// Vérification de la validité du formulaire
+			if (!performControlerChampsAlerte(request))
+				return false;
+
+			// on rempli l'objet
+			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+			getAlerteKiosqueCourant().setTexteAlerteKiosque(getVAL_EF_ALERTE_KIOSQUE());
+			getAlerteKiosqueCourant().setAgent(getVAL_CK_AGENT().equals(getCHECKED_ON()));
+			getAlerteKiosqueCourant().setApprobateurABS(getVAL_CK_APPRO_ABS().equals(getCHECKED_ON()));
+			getAlerteKiosqueCourant().setApprobateurPTG(getVAL_CK_APPRO_PTG().equals(getCHECKED_ON()));
+			getAlerteKiosqueCourant().setOperateurABS(getVAL_CK_OPE_ABS().equals(getCHECKED_ON()));
+			getAlerteKiosqueCourant().setOperateurPTG(getVAL_CK_OPE_PTG().equals(getCHECKED_ON()));
+			getAlerteKiosqueCourant().setViseurABS(getVAL_CK_VISEUR_ABS().equals(getCHECKED_ON()));
+			getAlerteKiosqueCourant().setDateDebut(sdf.parse(Services.formateDate(getVAL_EF_DATE_DEBUT())));
+			getAlerteKiosqueCourant().setDateFin(sdf.parse(Services.formateDate(getVAL_EF_DATE_FIN())));
+
+			if (getVAL_ST_ACTION_ALERTE_KIOSQUE().equals(ACTION_CREATION)) {
+				getAlerteKiosqueDao().creerAlerteKiosque(getAlerteKiosqueCourant());
+			} else if (getVAL_ST_ACTION_ALERTE_KIOSQUE().equals(ACTION_MODIFICATION)) {
+				getAlerteKiosqueDao().modifierAlerteKiosque(getAlerteKiosqueCourant().getIdAlerteKiosque(),
+						getAlerteKiosqueCourant());
+
+			}
+			initialiseListeAlerteKiosque(request);
+			setAlerteKiosqueCourant(null);
+			addZone(getNOM_ST_ACTION_ALERTE_KIOSQUE(), Const.CHAINE_VIDE);
+		}
+
+		setFocus(getNOM_PB_ANNULER_ALERTE_KIOSQUE());
+		return true;
+	}
+
+	private boolean performControlerChampsAlerte(HttpServletRequest request) {
+
+		// date de debut obligatoire
+		if ((Const.CHAINE_VIDE).equals(getVAL_EF_DATE_DEBUT())) {
+			// "ERR002", "La zone @ est obligatoire."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "date de début"));
+			return false;
+		}
+
+		// format date de debut
+		if (!Services.estUneDate(getVAL_EF_DATE_DEBUT())) {
+			// "ERR007",
+			// "La date @ est incorrecte. Elle doit être au format date."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR007", "de début"));
+			return false;
+		}
+
+		// date de fin obligatoire
+		if ((Const.CHAINE_VIDE).equals(getVAL_EF_DATE_FIN())) {
+			// "ERR002", "La zone @ est obligatoire."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "date de fin"));
+			return false;
+		}
+
+		// format date de fin
+		if (!Const.CHAINE_VIDE.equals(getVAL_EF_DATE_FIN()) && !Services.estUneDate(getVAL_EF_DATE_FIN())) {
+			// "ERR007",
+			// "La date @ est incorrecte. Elle doit être au format date."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR007", "date de fin"));
+			return false;
+		}
+
+		// testdate debut < date fin
+		if (Services.compareDates(getVAL_EF_DATE_DEBUT(), getVAL_EF_DATE_FIN()) >= 0) {
+			// "ERR204", "La date @ doit être inferieure à la date @."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR204", "de début", "de fin"));
+			return false;
+		}
+		return true;
+	}
+
+	public String getNOM_EF_ALERTE_KIOSQUE() {
+		return "NOM_EF_ALERTE_KIOSQUE";
+	}
+
+	public String getVAL_EF_ALERTE_KIOSQUE() {
+		return getZone(getNOM_EF_ALERTE_KIOSQUE());
+	}
+
+	public String getNOM_CK_AGENT() {
+		return "NOM_CK_AGENT";
+	}
+
+	public String getVAL_CK_AGENT() {
+		return getZone(getNOM_CK_AGENT());
+	}
+
+	public String getNOM_CK_APPRO_ABS() {
+		return "NOM_CK_APPRO_ABS";
+	}
+
+	public String getVAL_CK_APPRO_ABS() {
+		return getZone(getNOM_CK_APPRO_ABS());
+	}
+
+	public String getNOM_CK_APPRO_PTG() {
+		return "NOM_CK_APPRO_PTG";
+	}
+
+	public String getVAL_CK_APPRO_PTG() {
+		return getZone(getNOM_CK_APPRO_PTG());
+	}
+
+	public String getNOM_CK_OPE_ABS() {
+		return "NOM_CK_OPE_ABS";
+	}
+
+	public String getVAL_CK_OPE_ABS() {
+		return getZone(getNOM_CK_OPE_ABS());
+	}
+
+	public String getNOM_CK_OPE_PTG() {
+		return "NOM_CK_OPE_PTG";
+	}
+
+	public String getVAL_CK_OPE_PTG() {
+		return getZone(getNOM_CK_OPE_PTG());
+	}
+
+	public String getNOM_CK_VISEUR_ABS() {
+		return "NOM_CK_VISEUR_ABS";
+	}
+
+	public String getVAL_CK_VISEUR_ABS() {
+		return getZone(getNOM_CK_VISEUR_ABS());
+	}
+
+	public String getNOM_EF_DATE_DEBUT() {
+		return "NOM_EF_DATE_DEBUT";
+	}
+
+	public String getVAL_EF_DATE_DEBUT() {
+		return getZone(getNOM_EF_DATE_DEBUT());
+	}
+
+	public String getNOM_EF_DATE_FIN() {
+		return "NOM_EF_DATE_FIN";
+	}
+
+	public String getVAL_EF_DATE_FIN() {
+		return getZone(getNOM_EF_DATE_FIN());
 	}
 }
