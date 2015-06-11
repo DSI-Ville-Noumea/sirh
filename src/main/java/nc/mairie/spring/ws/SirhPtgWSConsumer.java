@@ -49,6 +49,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 	private static final String sirhPtgDeleteApprobateurs = "droits/deleteApprobateurs";
 	private static final String sirhPtgSauvegardeDelegataire = "droits/delegataire";
 	private static final String ptgDroitsAgentsApprouvesUrl = "droits/agentsApprouves";
+	private static final String ptgDroitsAgentsApprouvesSIRHUrl = "droits/agentsApprouvesForSIRH";
 	private static final String ptgDroitsDelegataireOperateursUrl = "droits/delegataireOperateurs";
 	private static final String ptgDroitsAgentsSaisisUrl = "droits/agentsSaisis";
 
@@ -752,7 +753,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 	@Override
 	public List<AgentDto> getApprovedAgents(Integer idAgent) {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS_URL");
-		String url = urlWS + ptgDroitsAgentsApprouvesUrl;
+		String url = urlWS + ptgDroitsAgentsApprouvesSIRHUrl;
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgent.toString());
 
