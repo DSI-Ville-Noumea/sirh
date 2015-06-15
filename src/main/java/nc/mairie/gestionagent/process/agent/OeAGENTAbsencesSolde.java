@@ -510,7 +510,7 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 				addZone(getNOM_ST_NB_JOUR(i), histo.getNbJours().toString());
 
 			}
-			
+
 			// #15599 : dans les congés annuels, on charge aussi l'historique
 			// des restitutions massives de CA
 			// Liste depuis SIRH-ABS-WS
@@ -884,11 +884,11 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 	}
 
 	public ArrayList<RestitutionMassiveDto> getListeHistoriqueRestitutionMassive() {
-		return listeHistoriqueRestitutionMassive;
+		return listeHistoriqueRestitutionMassive == null ? new ArrayList<RestitutionMassiveDto>()
+				: listeHistoriqueRestitutionMassive;
 	}
 
-	public void setListeHistoriqueRestitutionMassive(
-			ArrayList<RestitutionMassiveDto> listeHistoriqueRestitutionMassive) {
+	public void setListeHistoriqueRestitutionMassive(ArrayList<RestitutionMassiveDto> listeHistoriqueRestitutionMassive) {
 		this.listeHistoriqueRestitutionMassive = listeHistoriqueRestitutionMassive;
 	}
 
