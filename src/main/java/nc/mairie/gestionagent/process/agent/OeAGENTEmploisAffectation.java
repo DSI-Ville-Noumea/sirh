@@ -3496,8 +3496,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		// **********************
 		// # 15685 : pour les élus, non obligatoire
 		// on cherche la carriere en cours à la date de début de l'affectation
-		Carriere carrEnCours = Carriere.chercherCarriereAgentPrec(getTransaction(), getAgentCourant().getNomatr(),
-				Services.convertitDate(Services.formateDate(getVAL_EF_DATE_DEBUT()), "dd/MM/yyyy", "yyyyMMdd"));
+		// bug #16097
+		Carriere carrEnCours = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), getAgentCourant());
 		if (getTransaction().isErreur()) {
 			getTransaction().traiterErreur();
 			// "ERR086",
@@ -4315,9 +4315,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			if (numLigneBaseHoraireAbsence == 0 || getListeBaseHoraireAbsence().isEmpty()
 					|| numLigneBaseHoraireAbsence > getListeBaseHoraireAbsence().size()) {
 
-				Carriere carrEnCours = Carriere.chercherCarriereAgentPrec(getTransaction(), getAgentCourant()
-						.getNomatr(), Services.convertitDate(Services.formateDate(getVAL_EF_DATE_DEBUT()),
-						"dd/MM/yyyy", "yyyyMMdd"));
+				// bug #16097
+				Carriere carrEnCours = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), getAgentCourant());
 				if (getTransaction().isErreur()) {
 					getTransaction().traiterErreur();
 					// "ERR086",
@@ -4345,9 +4344,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			if (numLigneBaseHorairePointage == 0 || getListeBaseHorairePointage().isEmpty()
 					|| numLigneBaseHorairePointage > getListeBaseHorairePointage().size()) {
 
-				Carriere carrEnCours = Carriere.chercherCarriereAgentPrec(getTransaction(), getAgentCourant()
-						.getNomatr(), Services.convertitDate(Services.formateDate(getVAL_EF_DATE_DEBUT()),
-						"dd/MM/yyyy", "yyyyMMdd"));
+				// bug #16097
+				Carriere carrEnCours = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), getAgentCourant());
 				if (getTransaction().isErreur()) {
 					getTransaction().traiterErreur();
 					// "ERR086",
