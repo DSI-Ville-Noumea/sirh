@@ -138,4 +138,16 @@ public class EaeEvalueDao extends EaeDao implements EaeEvalueDaoInterface {
 				statutPrecision, durMin, durMoy, durMax, agentAffecte, idEae });
 
 	}
+
+	@Override
+	public void modifierDateEaeEvalue(Integer idEaeEvalue, EaeEvalue evalue) {
+
+		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_DATE_ENTREE_ADMINISTRATION + "=?,"
+				+ CHAMP_DATE_ENTREE_FONCTIONNAIRE + "=? where " + CHAMP_ID + "=?";
+
+		jdbcTemplate
+				.update(sql, new Object[] { evalue.getDateEntreeAdministration(), evalue.getDateEntreeFonctionnaire(),
+						idEaeEvalue });
+	}
+
 }

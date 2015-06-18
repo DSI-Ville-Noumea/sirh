@@ -61,4 +61,14 @@ public class EaeEvaluateurDao extends EaeDao implements EaeEvaluateurDaoInterfac
 		super.supprimerObject(idEvaluateur);
 	}
 
+	@Override
+	public void modifierDateEaeEvaluateur(Integer idEaeEvaluateur, EaeEvaluateur evaluateur) {
+
+		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_DATE_ENTREE_FONCTION + "=?," + CHAMP_DATE_ENTREE_SERVICE
+				+ "=? where " + CHAMP_ID + "=?";
+
+		jdbcTemplate.update(sql, new Object[] { evaluateur.getDateEntreeFonction(), evaluateur.getDateEntreeService(),
+				idEaeEvaluateur });
+	}
+
 }

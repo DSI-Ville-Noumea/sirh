@@ -80,6 +80,7 @@ public class OeAGENTEae extends BasicProcess {
 	public static final int STATUT_RECHERCHER_AGENT = 1;
 
 	public String ACTION_MODIFICATION = "Modification d'un EAE.";
+	public String ACTION_MODIFICATION_DATE = "Modification des dates d'un EAE.";
 	public String ACTION_CONSULTATION = "Consultation d'un EAE.";
 	public String ACTION_AJOUT_OBJ_INDI = "Ajout d'un objectif individuel.";
 	public String ACTION_MODIFICATION_OBJ_INDI = "Modification d'un objectif individuel.";
@@ -410,18 +411,23 @@ public class OeAGENTEae extends BasicProcess {
 				if (testerParametre(request, getNOM_PB_CONSULTER(i))) {
 					return performPB_CONSULTER(request, i);
 				}
-			}
-			// Si clic sur le bouton PB_VISUALISER_DOC
-			for (int i = 0; i < getListeEae().size(); i++) {
+				// Si clic sur le bouton PB_VISUALISER_DOC
 				if (testerParametre(request, getNOM_PB_VISUALISER_DOC(i))) {
 					return performPB_VISUALISER_DOC(request, i);
 				}
-			}
-			// Si clic sur le bouton PB_MODIFIER
-			for (int i = 0; i < getListeEae().size(); i++) {
+				// Si clic sur le bouton PB_MODIFIER
 				if (testerParametre(request, getNOM_PB_MODIFIER(i))) {
 					return performPB_MODIFIER(request, i);
 				}
+				// Si clic sur le bouton PB_MODIFIER_DATE
+				if (testerParametre(request, getNOM_PB_MODIFIER_DATE(i))) {
+					return performPB_MODIFIER_DATE(request, i);
+				}
+			}
+
+			// Si clic sur le bouton PB_VALIDER_DATE
+			if (testerParametre(request, getNOM_PB_VALIDER_DATE())) {
+				return performPB_VALIDER_DATE(request);
 			}
 
 			// Si clic sur le bouton PB_VALIDER
@@ -439,10 +445,7 @@ public class OeAGENTEae extends BasicProcess {
 				if (testerParametre(request, getNOM_PB_MODIFIER_OBJ_INDI(i))) {
 					return performPB_MODIFIER_OBJ_INDI(request, i);
 				}
-			}
-
-			// Si clic sur le bouton PB_SUPPRIMER_OBJ_INDI
-			for (int i = 0; i < getListeObjectifIndi().size(); i++) {
+				// Si clic sur le bouton PB_SUPPRIMER_OBJ_INDI
 				if (testerParametre(request, getNOM_PB_SUPPRIMER_OBJ_INDI(i))) {
 					return performPB_SUPPRIMER_OBJ_INDI(request, i);
 				}
@@ -474,10 +477,7 @@ public class OeAGENTEae extends BasicProcess {
 				if (testerParametre(request, getNOM_PB_MODIFIER_OBJ_PRO(i))) {
 					return performPB_MODIFIER_OBJ_PRO(request, i);
 				}
-			}
-
-			// Si clic sur le bouton PB_SUPPRIMER_OBJ_PRO
-			for (int i = 0; i < getListeObjectifPro().size(); i++) {
+				// Si clic sur le bouton PB_SUPPRIMER_OBJ_PRO
 				if (testerParametre(request, getNOM_PB_SUPPRIMER_OBJ_PRO(i))) {
 					return performPB_SUPPRIMER_OBJ_PRO(request, i);
 				}
@@ -505,10 +505,7 @@ public class OeAGENTEae extends BasicProcess {
 				if (testerParametre(request, getNOM_PB_MODIFIER_DEV(i))) {
 					return performPB_MODIFIER_DEV(request, i);
 				}
-			}
-
-			// Si clic sur le bouton PB_SUPPRIMER_DEV
-			for (int i = 0; i < getListeObjectifIndi().size(); i++) {
+				// Si clic sur le bouton PB_SUPPRIMER_DEV
 				if (testerParametre(request, getNOM_PB_SUPPRIMER_DEV(i))) {
 					return performPB_SUPPRIMER_DEV(request, i);
 				}
@@ -749,6 +746,14 @@ public class OeAGENTEae extends BasicProcess {
 		// Alim zone Informations
 		addZone(getNOM_ST_DATE_ENTRETIEN(),
 				eae.getDateEntretien() == null ? "non renseigné" : sdf.format(eae.getDateEntretien()));
+		// #11505 : on alimente les dates modifiables
+		EaeEvalue evalue = getEaeEvalueDao().chercherEaeEvalue(eae.getIdEae());
+		addZone(getNOM_EF_DATE_FONCTIONNAIRE(),
+				evalue.getDateEntreeFonctionnaire() == null ? "non renseigné" : sdf.format(evalue
+						.getDateEntreeFonctionnaire()));
+		addZone(getNOM_EF_DATE_ADMINISTRATION(),
+				evalue.getDateEntreeAdministration() == null ? "non renseigné" : sdf.format(evalue
+						.getDateEntreeAdministration()));
 		ArrayList<EaeEvaluateur> listeEvaluateur = getEaeEvaluateurDao().listerEvaluateurEAE(eae.getIdEae());
 		setListeEvaluateurEae(listeEvaluateur);
 		for (int j = 0; j < listeEvaluateur.size(); j++) {
@@ -760,6 +765,11 @@ public class OeAGENTEae extends BasicProcess {
 			addZone(getNOM_ST_EVALUATEUR_NOM(j), evaluateur.equals(Const.CHAINE_VIDE) ? "non renseigné" : evaluateur);
 			addZone(getNOM_ST_EVALUATEUR_FONCTION(j), eval.getFonction().equals(Const.CHAINE_VIDE) ? "non renseigné"
 					: eval.getFonction());
+			// #11505 : on alimente les dates modifiables
+			addZone(getNOM_ST_EVALUATEUR_DATE_FONCTION(j),
+					eval.getDateEntreeFonction() == null ? "non renseigné" : sdf.format(eval.getDateEntreeFonction()));
+			addZone(getNOM_ST_EVALUATEUR_DATE_SERVICE(j),
+					eval.getDateEntreeService() == null ? "non renseigné" : sdf.format(eval.getDateEntreeService()));
 		}
 		try {
 			EaeFichePoste eaeFDP = getEaeFichePosteDao().chercherEaeFichePoste(eae.getIdEae(), true);
@@ -768,8 +778,14 @@ public class OeAGENTEae extends BasicProcess {
 			addZone(getNOM_ST_SERVICE(),
 					direction.equals(Const.CHAINE_VIDE) ? serv.equals(Const.CHAINE_VIDE) ? "&nbsp;" : serv : direction
 							+ " / " + serv);
+			// #11505 : on alimente les dates modifiables
+			addZone(getNOM_EF_DATE_FONCTION(),
+					eaeFDP.getDateEntreeFonction() == null ? "non renseigné" : sdf.format(eaeFDP
+							.getDateEntreeFonction()));
 		} catch (Exception e) {
 			addZone(getNOM_ST_SERVICE(), Const.CHAINE_VIDE);
+			// #11505 : on alimente les dates modifiables
+			addZone(getNOM_EF_DATE_FONCTION(), "pas de FDP présente");
 		}
 
 		// Alim zone evaluation
@@ -4720,5 +4736,186 @@ public class OeAGENTEae extends BasicProcess {
 
 	public void setAgentDao(AgentDao agentDao) {
 		this.agentDao = agentDao;
+	}
+
+	public String getNOM_PB_MODIFIER_DATE(int i) {
+		return "NOM_PB_MODIFIER_DATE" + i;
+	}
+
+	public boolean performPB_MODIFIER_DATE(HttpServletRequest request, int indiceEltAModifier) throws Exception {
+		// Si pas d'agent courant alors erreur
+		if (getAgentCourant() == null) {
+			// "ERR004","Vous devez d'abord rechercher un agent"
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR004"));
+			return false;
+		}
+
+		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+
+		// Récup de l'eae courant
+		EAE eaeCourant = (EAE) getListeEae().get(indiceEltAModifier);
+		setEaeCourant(eaeCourant);
+
+		initialiseEae();
+
+		// On nomme l'action
+		addZone(getNOM_ST_ACTION(), ACTION_MODIFICATION_DATE);
+
+		// On pose le statut
+		setStatut(STATUT_MEME_PROCESS);
+		return true;
+	}
+
+	public String getVAL_ST_EVALUATEUR_DATE_FONCTION(int i) {
+		return getZone(getNOM_ST_EVALUATEUR_DATE_FONCTION(i));
+	}
+
+	public String getNOM_ST_EVALUATEUR_DATE_FONCTION(int i) {
+		return "NOM_ST_EVALUATEUR_DATE_FONCTION" + i;
+	}
+
+	public String getVAL_ST_EVALUATEUR_DATE_SERVICE(int i) {
+		return getZone(getNOM_ST_EVALUATEUR_DATE_SERVICE(i));
+	}
+
+	public String getNOM_ST_EVALUATEUR_DATE_SERVICE(int i) {
+		return "NOM_ST_EVALUATEUR_DATE_SERVICE" + i;
+	}
+
+	public String getNOM_EF_DATE_FONCTIONNAIRE() {
+		return "NOM_EF_DATE_FONCTIONNAIRE";
+	}
+
+	public String getVAL_EF_DATE_FONCTIONNAIRE() {
+		return getZone(getNOM_EF_DATE_FONCTIONNAIRE());
+	}
+
+	public String getNOM_EF_DATE_ADMINISTRATION() {
+		return "NOM_EF_DATE_ADMINISTRATION";
+	}
+
+	public String getVAL_EF_DATE_ADMINISTRATION() {
+		return getZone(getNOM_EF_DATE_ADMINISTRATION());
+	}
+
+	public String getNOM_EF_DATE_FONCTION() {
+		return "NOM_EF_DATE_FONCTION";
+	}
+
+	public String getVAL_EF_DATE_FONCTION() {
+		return getZone(getNOM_EF_DATE_FONCTION());
+	}
+
+	public String getNOM_PB_VALIDER_DATE() {
+		return "NOM_PB_VALIDER_DATE";
+	}
+
+	public boolean performPB_VALIDER_DATE(HttpServletRequest request) throws Exception {
+		// Si aucune action en cours
+		if (getZone(getNOM_ST_ACTION()).length() == 0) {
+			// "Vous ne pouvez pas valider, il n'y a pas d'action en cours."
+			setStatut(STATUT_MEME_PROCESS, true, MessageUtils.getMessage("ERR006"));
+			return false;
+		}
+
+		if (getZone(getNOM_ST_ACTION()).equals(ACTION_MODIFICATION_DATE)) {
+			// Vérification de la validité du formulaire
+			if (!performControlerChampsDate(request))
+				return false;
+
+			EAE eae = getEaeCourant();
+			if (eae != null && eae.getIdEae() != null) {
+				if (!performSauvegardeDate(request, eae)) {
+					// "ERR164",
+					// "Une erreur est survenue dans la sauvegarde de l'EAE. Merci de contacter le responsable du projet."
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR164"));
+					return false;
+				}
+
+			} else {
+				// "ERR164",
+				// "Une erreur est survenue dans la sauvegarde de l'EAE. Merci de contacter le responsable du projet."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR164"));
+				return false;
+			}
+
+		}
+
+		// "INF501", "L'EAE a été correctement sauvegardé."
+		setStatut(STATUT_MEME_PROCESS, false, MessageUtils.getMessage("INF501"));
+		return true;
+	}
+
+	private boolean performSauvegardeDate(HttpServletRequest request, EAE eae) throws Exception {
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		// #115005 on sauvegarde les dates
+		EaeEvalue evalue = getEaeEvalueDao().chercherEaeEvalue(eae.getIdEae());
+		evalue.setDateEntreeAdministration(sdf.parse(getVAL_EF_DATE_ADMINISTRATION()));
+		evalue.setDateEntreeFonctionnaire(sdf.parse(getVAL_EF_DATE_FONCTIONNAIRE()));
+		getEaeEvalueDao().modifierDateEaeEvalue(evalue.getIdEaeEvalue(), evalue);
+
+		try {
+			EaeFichePoste eaeFDP = getEaeFichePosteDao().chercherEaeFichePoste(eae.getIdEae(), true);
+			eaeFDP.setDateEntreeFonction(sdf.parse(getVAL_EF_DATE_FONCTION()));
+			getEaeFichePosteDao()
+					.modifierDateEaeFichePoste(eaeFDP.getIdEaeFichePoste(), eaeFDP.getDateEntreeFonction());
+		} catch (Exception e) {
+			// pas de FDP primaire
+		}
+
+		// on sauvegarde les dates de l'evaluateur
+		for (int j = 0; j < getListeEvaluateurEae().size(); j++) {
+			EaeEvaluateur evaluateur = getListeEvaluateurEae().get(j);
+			evaluateur.setDateEntreeFonction(sdf.parse(getVAL_ST_EVALUATEUR_DATE_FONCTION(j)));
+			evaluateur.setDateEntreeService(sdf.parse(getVAL_ST_EVALUATEUR_DATE_SERVICE(j)));
+			getEaeEvaluateurDao().modifierDateEaeEvaluateur(evaluateur.getIdEaeEvaluateur(), evaluateur);
+		}
+		return true;
+	}
+
+	private boolean performControlerChampsDate(HttpServletRequest request) throws Exception {
+		// format date de entrée fonctionnaire
+		if (!Services.estUneDate(getVAL_EF_DATE_FONCTIONNAIRE())) {
+			// "ERR007",
+			// "La date @ est incorrecte. Elle doit être au format date."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR007", "d'entrée en tant que fonctionnaire"));
+			return false;
+		}
+		// format date de entrée administration
+		if (!Services.estUneDate(getVAL_EF_DATE_ADMINISTRATION())) {
+			// "ERR007",
+			// "La date @ est incorrecte. Elle doit être au format date."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR007", "d'entrée dans l'administration"));
+			return false;
+		}
+		// format date de entrée dans la fonction
+		if (!Services.estUneDate(getVAL_EF_DATE_FONCTION())) {
+			// "ERR007",
+			// "La date @ est incorrecte. Elle doit être au format date."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR007", "d'entrée dans la fonction"));
+			return false;
+		}
+		for (int j = 0; j < getListeEvaluateurEae().size(); j++) {
+			Agent agentEvaluateur = getAgentDao().chercherAgent(getListeEvaluateurEae().get(j).getIdAgent());
+			// format date de entrée dans la fonction
+			if (!Services.estUneDate(getVAL_ST_EVALUATEUR_DATE_FONCTION(j))) {
+				// "ERR007",
+				// "La date @ est incorrecte. Elle doit être au format date."
+				getTransaction().declarerErreur(
+						MessageUtils.getMessage("ERR007", "d'entrée dans la fonction de l'evaluateur "
+								+ agentEvaluateur.getNomAgent()));
+				return false;
+			}
+			// format date de entrée dans la fonction
+			if (!Services.estUneDate(getVAL_ST_EVALUATEUR_DATE_SERVICE(j))) {
+				// "ERR007",
+				// "La date @ est incorrecte. Elle doit être au format date."
+				getTransaction().declarerErreur(
+						MessageUtils.getMessage("ERR007",
+								"d'entrée dans le service de l'evaluateur " + agentEvaluateur.getNomAgent()));
+				return false;
+			}
+		}
+		return true;
 	}
 }

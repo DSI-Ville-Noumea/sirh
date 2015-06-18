@@ -7,14 +7,16 @@ import nc.mairie.metier.eae.EaeFichePoste;
 
 public interface EaeFichePosteDaoInterface {
 
-	public void creerEaeFichePoste(Integer id, Integer idEae, Integer idSHD, boolean typeFDP, String direction, String service, String section,
-			String emploi, String fonction, Date dateEntreeFonction, String grade, String localisation, String mission, String fonctionResp,
-			Date dateEntreeServiceResp, Date dateEntreeCollectiviteResp, Date dateEntreeFonctionResp, String codeService, Integer idSirhFichePoste)
+	public void creerEaeFichePoste(Integer id, Integer idEae, Integer idSHD, boolean typeFDP, String direction,
+			String service, String section, String emploi, String fonction, Date dateEntreeFonction, String grade,
+			String localisation, String mission, String fonctionResp, Date dateEntreeServiceResp,
+			Date dateEntreeCollectiviteResp, Date dateEntreeFonctionResp, String codeService, Integer idSirhFichePoste)
 			throws Exception;
 
-	public void modifierEaeFichePoste(Integer idEaeFichePoste, Integer idEae, Integer idSHD, boolean typeFDP, String direction, String service, String section,
-			String emploi, String fonction, Date dateEntreeFonction, String grade, String localisation, String mission, String fonctionResp,
-			Date dateEntreeServiceResp, Date dateEntreeCollectiviteResp, Date dateEntreeFonctionResp, String codeService, Integer idSirhFichePoste)
+	public void modifierEaeFichePoste(Integer idEaeFichePoste, Integer idEae, Integer idSHD, boolean typeFDP,
+			String direction, String service, String section, String emploi, String fonction, Date dateEntreeFonction,
+			String grade, String localisation, String mission, String fonctionResp, Date dateEntreeServiceResp,
+			Date dateEntreeCollectiviteResp, Date dateEntreeFonctionResp, String codeService, Integer idSirhFichePoste)
 			throws Exception;
 
 	public Integer getIdEaeFichePoste() throws Exception;
@@ -23,8 +25,11 @@ public interface EaeFichePosteDaoInterface {
 
 	public void supprimerEaeFichePoste(Integer idEaeFichePoste) throws Exception;
 
-	public ArrayList<EaeFichePoste> listerEaeFichePosteGrouperParDirectionSection(Integer idCampagneEAE) throws Exception;
+	public ArrayList<EaeFichePoste> listerEaeFichePosteGrouperParDirectionSection(Integer idCampagneEAE)
+			throws Exception;
 
 	public ArrayList<EaeFichePoste> chercherEaeFichePosteIdEae(Integer idEAE);
+
+	public void modifierDateEaeFichePoste(Integer idEaeFichePoste, Date dateEntreeFonction);
 
 }

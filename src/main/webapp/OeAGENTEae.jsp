@@ -78,13 +78,11 @@
 										<td class="sigp2NewTab-liste" align="center">&nbsp;
 											<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, "") %>" name="<%=process.getNOM_PB_CONSULTER(indiceEae)%>">
 											<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_CONSULTER(indiceEae)%>">
-					    					<%if((aUser.getUserName().equals("chata73")||aUser.getUserName().equals("nicno85")) && eae.getEtat().equals(EnumEtatEAE.CONTROLE.getCode())){ %>
-												<INPUT title="modifier" type="image" src="images/modifier.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_MODIFIER(indiceEae)%>">
-					    					<%}else{ %>
-												<%if(!process.isCampagneOuverte(eae.getIdCampagneEae()) && eae.getEtat().equals(EnumEtatEAE.CONTROLE.getCode())){ %>
+					    					<%if(!process.isCampagneOuverte(eae.getIdCampagneEae()) && eae.getEtat().equals(EnumEtatEAE.CONTROLE.getCode())){ %>
 													<INPUT title="modifier" type="image" src="images/modifier.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_MODIFIER(indiceEae)%>">
-						    					<%} %>
-					    					<%} %>									
+						    				<%}else if(process.isCampagneOuverte(eae.getIdCampagneEae()) && !(eae.getEtat().equals(EnumEtatEAE.CONTROLE.getCode())||eae.getEtat().equals(EnumEtatEAE.FINALISE.getCode()))){ %>
+						    					<INPUT title="modifier les dates" type="image" src="images/modifier.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_MODIFIER_DATE(indiceEae)%>">
+						    				<%} %>								
 											<INPUT title="documents" type="image" src="images/ajout-doc.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_DOCUMENT(indiceEae)%>">
 										</td>
 										<td class="sigp2NewTab-liste" style="text-align: center;"><%=process.getVAL_ST_ANNEE(indiceEae)%></td>
@@ -826,6 +824,50 @@
 										<INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
 									</div>
 								<%}%>
+						<%}else if (process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION_DATE)){%>
+								<%if(process.getListeEvaluateurEae().size()>0){ %>
+									<table class="sigp2NewTab" style="text-align:left;width:680px;">
+									<tr>
+										<td>Evaluateur</td>
+										<td>Fonction</td>
+										<td>Date entrée fonction</td>
+										<td>Date entrée service</td>
+										
+									</tr>
+									<%
+									int indiceEvaluateur = 0;
+										for (int i = 0;i<process.getListeEvaluateurEae().size();i++){
+											EaeEvaluateur evaluateur = process.getListeEvaluateurEae().get(i);
+									%>
+											<tr>
+												<td class="sigp2NewTab-liste" style="position:relative;width:250px;text-align: center;"><%=process.getVAL_ST_EVALUATEUR_NOM(indiceEvaluateur)%></td>
+												<td class="sigp2NewTab-liste" style="position:relative;;text-align: left;">&nbsp;<%=process.getVAL_ST_EVALUATEUR_FONCTION(indiceEvaluateur)%></td>
+												<td class="sigp2NewTab-liste" style="position:relative;;text-align: left;">
+													<INPUT class="sigp2-saisie" maxlength="10"  name="<%= process.getNOM_ST_EVALUATEUR_DATE_FONCTION(indiceEvaluateur) %>" size="10" type="text" value="<%= process.getVAL_ST_EVALUATEUR_DATE_FONCTION(indiceEvaluateur) %>" >
+												</td>
+												<td class="sigp2NewTab-liste" style="position:relative;;text-align: left;">
+													<INPUT class="sigp2-saisie" maxlength="10"  name="<%= process.getNOM_ST_EVALUATEUR_DATE_SERVICE(indiceEvaluateur) %>" size="10" type="text" value="<%= process.getVAL_ST_EVALUATEUR_DATE_SERVICE(indiceEvaluateur) %>" >
+												</td>
+											</tr>
+											<%
+											indiceEvaluateur++;
+									}%>
+									</table>	
+								<BR/><BR/>
+								<%} %>	
+								<span class="sigp2" style="width:130px;" >Date d'éntrée en qualité de fonctionnaire :</span>
+								<INPUT class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_DATE_FONCTIONNAIRE() %>" size="10" type="text" value="<%= process.getVAL_EF_DATE_FONCTIONNAIRE() %>">
+								<BR/><BR/>
+								<span class="sigp2" style="width:130px;" >Date d'éntrée dans l'administration :</span>
+								<INPUT class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_DATE_ADMINISTRATION() %>" size="10" type="text" value="<%= process.getVAL_EF_DATE_ADMINISTRATION() %>">
+								<BR/><BR/>
+								<span class="sigp2" style="width:130px;" >Date d'éntrée dans la fonction :</span>
+								<INPUT class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_DATE_FONCTION() %>" size="10" type="text" value="<%= process.getVAL_EF_DATE_FONCTION() %>">
+								<BR/><BR/>
+								<div style="text-align: center">
+									<INPUT type="submit" class="sigp2-Bouton-100" value="Valider" name="<%=process.getNOM_PB_VALIDER_DATE()%>">
+									<INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
+								</div>
 						<%} %>						
 						
 					</FIELDSET>

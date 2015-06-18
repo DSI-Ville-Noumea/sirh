@@ -147,4 +147,12 @@ public class EaeFichePosteDao extends EaeDao implements EaeFichePosteDaoInterfac
 	public void supprimerEaeFichePoste(Integer idEaeFichePoste) throws Exception {
 		super.supprimerObject(idEaeFichePoste);
 	}
+
+	@Override
+	public void modifierDateEaeFichePoste(Integer idEaeFichePoste, Date dateEntreeFonction) {
+
+		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_DATE_ENTREE_FONCTION + "=?where " + CHAMP_ID + "=?";
+
+		jdbcTemplate.update(sql, new Object[] { dateEntreeFonction, idEaeFichePoste });
+	}
 }
