@@ -4366,10 +4366,6 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 				Carriere carrEnCours = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), getAgentCourant());
 				if (getTransaction().isErreur()) {
 					getTransaction().traiterErreur();
-					// "ERR086",
-					// "Il n'y a pas de carrière active pour cette date de début d'affectation."
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR086"));
-					return false;
 				}
 				if (carrEnCours != null && carrEnCours.getCodeCategorie() != null) {
 					if (!Carriere.isCarriereConseilMunicipal(carrEnCours.getCodeCategorie())) {
