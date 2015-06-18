@@ -3500,11 +3500,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		Carriere carrEnCours = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), getAgentCourant());
 		if (getTransaction().isErreur()) {
 			getTransaction().traiterErreur();
-			// "ERR086",
-			// "Il n'y a pas de carrière active pour cette date de début d'affectation."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR086"));
-			return false;
-		} else {
+		}
+		if (carrEnCours != null && carrEnCours.getCodeCategorie() != null) {
 			if (!Carriere.isCarriereConseilMunicipal(carrEnCours.getCodeCategorie())) {
 				int numLigneBaseHorairePointage = (Services
 						.estNumerique(getZone(getNOM_LB_BASE_HORAIRE_POINTAGE_SELECT())) ? Integer
@@ -3516,6 +3513,15 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 					return false;
 				}
 			}
+		} else {
+			int numLigneBaseHorairePointage = (Services.estNumerique(getZone(getNOM_LB_BASE_HORAIRE_POINTAGE_SELECT())) ? Integer
+					.parseInt(getZone(getNOM_LB_BASE_HORAIRE_POINTAGE_SELECT())) : -1);
+
+			if (numLigneBaseHorairePointage == 0 || getListeBaseHorairePointage().isEmpty()
+					|| numLigneBaseHorairePointage > getListeBaseHorairePointage().size()) {
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "base horaire de pointage"));
+				return false;
+			}
 		}
 
 		// **********************
@@ -3523,7 +3529,19 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		// **********************
 		// # 15685 : pour les élus, non obligatoire
 		// on cherche la carriere en cours à la date de début de l'affectation
-		if (!Carriere.isCarriereConseilMunicipal(carrEnCours.getCodeCategorie())) {
+		if (carrEnCours != null && carrEnCours.getCodeCategorie() != null) {
+			if (!Carriere.isCarriereConseilMunicipal(carrEnCours.getCodeCategorie())) {
+				int numLigneBaseHoraireAbsence = (Services
+						.estNumerique(getZone(getNOM_LB_BASE_HORAIRE_ABSENCE_SELECT())) ? Integer
+						.parseInt(getZone(getNOM_LB_BASE_HORAIRE_ABSENCE_SELECT())) : -1);
+
+				if (numLigneBaseHoraireAbsence == 0 || getListeBaseHoraireAbsence().isEmpty()
+						|| numLigneBaseHoraireAbsence > getListeBaseHoraireAbsence().size()) {
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "base de congé"));
+					return false;
+				}
+			}
+		} else {
 			int numLigneBaseHoraireAbsence = (Services.estNumerique(getZone(getNOM_LB_BASE_HORAIRE_ABSENCE_SELECT())) ? Integer
 					.parseInt(getZone(getNOM_LB_BASE_HORAIRE_ABSENCE_SELECT())) : -1);
 
@@ -4319,15 +4337,15 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 				Carriere carrEnCours = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), getAgentCourant());
 				if (getTransaction().isErreur()) {
 					getTransaction().traiterErreur();
-					// "ERR086",
-					// "Il n'y a pas de carrière active pour cette date de début d'affectation."
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR086"));
-					return false;
-				} else {
+				}
+				if (carrEnCours != null && carrEnCours.getCodeCategorie() != null) {
 					if (!Carriere.isCarriereConseilMunicipal(carrEnCours.getCodeCategorie())) {
 						getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "base de congé"));
 						return false;
 					}
+				} else {
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "base de congé"));
+					return false;
 				}
 			}
 			if (numLigneBaseHoraireAbsence != 0) {
@@ -4352,11 +4370,15 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 					// "Il n'y a pas de carrière active pour cette date de début d'affectation."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR086"));
 					return false;
-				} else {
+				}
+				if (carrEnCours != null && carrEnCours.getCodeCategorie() != null) {
 					if (!Carriere.isCarriereConseilMunicipal(carrEnCours.getCodeCategorie())) {
 						getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "base horaire de pointage"));
 						return false;
 					}
+				} else {
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "base horaire de pointage"));
+					return false;
 				}
 			}
 			if (numLigneBaseHorairePointage != 0) {
