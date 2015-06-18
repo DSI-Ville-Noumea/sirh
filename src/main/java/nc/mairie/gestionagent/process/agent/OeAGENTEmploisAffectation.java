@@ -3497,7 +3497,10 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		// # 15685 : pour les élus, non obligatoire
 		// on cherche la carriere en cours à la date de début de l'affectation
 		// bug #16097
-		Carriere carrEnCours = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), getAgentCourant());
+		SimpleDateFormat sdfMairie = new SimpleDateFormat("yyyyMMdd");
+		Carriere carrEnCours = Carriere.chercherCarriereEnCoursAvecAgentEtDate(getTransaction(),
+				new Integer(sdfMairie.format(sdf.parse(Services.formateDate(getVAL_EF_DATE_DEBUT())))),
+				getAgentCourant());
 		if (getTransaction().isErreur()) {
 			getTransaction().traiterErreur();
 		}
@@ -4334,7 +4337,9 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 					|| numLigneBaseHoraireAbsence > getListeBaseHoraireAbsence().size()) {
 
 				// bug #16097
-				Carriere carrEnCours = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), getAgentCourant());
+				SimpleDateFormat sdfMairie = new SimpleDateFormat("yyyyMMdd");
+				Carriere carrEnCours = Carriere.chercherCarriereEnCoursAvecAgentEtDate(getTransaction(), new Integer(
+						sdfMairie.format(getAffectationCourant().getDateDebutAff())), getAgentCourant());
 				if (getTransaction().isErreur()) {
 					getTransaction().traiterErreur();
 				}
@@ -4363,7 +4368,9 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 					|| numLigneBaseHorairePointage > getListeBaseHorairePointage().size()) {
 
 				// bug #16097
-				Carriere carrEnCours = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), getAgentCourant());
+				SimpleDateFormat sdfMairie = new SimpleDateFormat("yyyyMMdd");
+				Carriere carrEnCours = Carriere.chercherCarriereEnCoursAvecAgentEtDate(getTransaction(), new Integer(
+						sdfMairie.format(getAffectationCourant().getDateDebutAff())), getAgentCourant());
 				if (getTransaction().isErreur()) {
 					getTransaction().traiterErreur();
 				}
