@@ -5968,6 +5968,11 @@ public class OePOSTEFichePoste extends BasicProcess {
 				return performPB_CONSULTER_REMPLACEMENT(request);
 			}
 
+			// Si clic sur le bouton PB_SUPPRIMER_FP()
+			if (testerParametre(request, getNOM_PB_SUPPRIMER_FP())) {
+				return performPB_SUPPRIMER_FP(request);
+			}
+
 		}
 		// Si TAG INPUT non géré par le process
 		setStatut(STATUT_MEME_PROCESS);
@@ -7112,5 +7117,104 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 	public String getVAL_LB_BASE_HORAIRE_ABSENCE_SELECT() {
 		return getZone(getNOM_LB_BASE_HORAIRE_ABSENCE_SELECT());
+	}
+
+	public String getNOM_PB_SUPPRIMER_FP() {
+		return "NOM_PB_SUPPRIMER_FP";
+	}
+
+	public boolean performPB_SUPPRIMER_FP(HttpServletRequest request) throws Exception {
+
+		if (getFichePosteCourante() != null && getFichePosteCourante().getIdFichePoste() != null) {
+			// #16358 : on verifie qq RG :
+			// - une fiche de poste en statut autre que "en création" ne peut
+			// jamais être supprimée
+			// - une fiche de poste qui a déjà été affectée ne peut pas être
+			// supprimée
+			if (!getFichePosteCourante().getIdStatutFp().toString().equals(EnumStatutFichePoste.EN_CREATION.getId())) {
+				// "ERR1117",
+				// "Une FDP ne peut être supprimée que si son statut est : 'En création'."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR1117"));
+				return false;
+			}
+			if (getAffectationDao().listerAffectationAvecFP(getFichePosteCourante().getIdFichePoste()).size() > 0) {
+				// "ERR1118",
+				// "Une FDP ne peut pas être supprimée si elle a déjà été affectée."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR1117"));
+				return false;
+
+			}
+			UserAppli user = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
+			HistoFichePoste histo = new HistoFichePoste(getFichePosteCourante());
+			// supprimer la FDP en base (dans HISTO on sauvegarde l'action) et
+			// SPPOST
+			// supprimer les actvites, comptences...
+			ArrayList<FEFP> liensA = getFefpDao().listerFEFPAvecFP(getFichePosteCourante().getIdFichePoste());
+			for (FEFP lien : liensA) {
+				getFefpDao().supprimerFEFP(lien.getIdFicheEmploi(), lien.getIdFichePoste(), lien.isFePrimaire());
+			}
+
+			ArrayList<NiveauEtudeFP> niveauFPExistant = getNiveauEtudeFPDao().listerNiveauEtudeFPAvecFP(
+					getFichePosteCourante().getIdFichePoste());
+			for (NiveauEtudeFP lien : niveauFPExistant) {
+				getNiveauEtudeFPDao().supprimerNiveauEtudeFP(lien.getIdNiveauEtude(), lien.getIdFichePoste());
+			}
+
+			ArrayList<ActiviteFP> activiteFPExistant = getActiviteFPDao().listerActiviteFPAvecFP(
+					getFichePosteCourante().getIdFichePoste());
+			for (ActiviteFP lien : activiteFPExistant) {
+				getActiviteFPDao().supprimerActiviteFP(lien.getIdFichePoste(), lien.getIdActivite(),
+						lien.isActivitePrincipale());
+			}
+
+			ArrayList<CompetenceFP> competencesFPExistant = getCompetenceFPDao().listerCompetenceFPAvecFP(
+					getFichePosteCourante().getIdFichePoste());
+			for (CompetenceFP lien : competencesFPExistant) {
+				getCompetenceFPDao().supprimerCompetenceFP(lien.getIdFichePoste(), lien.getIdCompetence());
+			}
+
+			ArrayList<AvantageNatureFP> avantagesFPExistant = getAvantageNatureFPDao().listerAvantageNatureFPAvecFP(
+					getFichePosteCourante().getIdFichePoste());
+			for (AvantageNatureFP lien : avantagesFPExistant) {
+				getAvantageNatureFPDao().supprimerAvantageNatureFP(lien.getIdAvantage(), lien.getIdFichePoste());
+			}
+
+			ArrayList<DelegationFP> delegationFPExistant = getDelegationFPDao().listerDelegationFPAvecFP(
+					getFichePosteCourante().getIdFichePoste());
+			for (DelegationFP lien : delegationFPExistant) {
+				getDelegationFPDao().supprimerDelegationFP(lien.getIdDelegation(), lien.getIdFichePoste());
+			}
+
+			ArrayList<PrimePointageFP> primesPointagesFPExistant = getPrimePointageFPDao().listerPrimePointageFP(
+					getFichePosteCourante().getIdFichePoste());
+			for (PrimePointageFP lien : primesPointagesFPExistant) {
+				getPrimePointageFPDao().supprimerPrimePointageFP(lien.getIdFichePoste(), lien.getNumRubrique());
+			}
+
+			ArrayList<RegIndemFP> regimesFPExistant = getRegIndemnFPDao().listerRegIndemFPFPAvecFP(
+					getFichePosteCourante().getIdFichePoste());
+			for (RegIndemFP lien : regimesFPExistant) {
+				getRegIndemnFPDao().supprimerRegIndemFP(lien.getIdRegIndemn(), lien.getIdFichePoste());
+			}
+
+			// on supprime enfin la FDP
+			getFichePosteDao().supprimerFichePoste(getFichePosteCourante(), getTransaction());
+			// historisation
+			getHistoFichePosteDao().creerHistoFichePoste(histo, user, EnumTypeHisto.SUPPRESSION);
+			commitTransaction();
+
+			viderFichePoste();
+			viderObjetsFichePoste();
+
+			setAfficherListeGrade(false);
+
+			addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+
+			setStatut(STATUT_MEME_PROCESS);
+		} else {
+			getTransaction().declarerErreur(MessageUtils.getMessage("INF107"));
+			return false;
+		}
+		return true;
 	}
 }

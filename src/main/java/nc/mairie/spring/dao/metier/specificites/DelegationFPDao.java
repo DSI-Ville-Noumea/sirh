@@ -1,5 +1,10 @@
 package nc.mairie.spring.dao.metier.specificites;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import nc.mairie.metier.specificites.DelegationFP;
 import nc.mairie.spring.dao.utils.SirhDao;
 
 public class DelegationFPDao extends SirhDao implements DelegationFPDaoInterface {
@@ -26,6 +31,23 @@ public class DelegationFPDao extends SirhDao implements DelegationFPDaoInterface
 		String sql = "DELETE FROM " + NOM_TABLE + "  where " + CHAMP_ID_DELEGATION + "=? and " + CHAMP_ID_FICHE_POSTE
 				+ "=?";
 		jdbcTemplate.update(sql, new Object[] { idDelegation, idFichePoste });
+	}
+
+	@Override
+	public ArrayList<DelegationFP> listerDelegationFPAvecFP(Integer idFichePoste) {
+		String sql = "select f.* from " + NOM_TABLE + " f where " + CHAMP_ID_FICHE_POSTE + "=? ";
+
+		ArrayList<DelegationFP> liste = new ArrayList<DelegationFP>();
+
+		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { idFichePoste });
+		for (Map<String, Object> row : rows) {
+			DelegationFP a = new DelegationFP();
+			a.setIdDelegation((Integer) row.get(CHAMP_ID_DELEGATION));
+			a.setIdFichePoste((Integer) row.get(CHAMP_ID_FICHE_POSTE));
+			liste.add(a);
+		}
+
+		return liste;
 	}
 
 }

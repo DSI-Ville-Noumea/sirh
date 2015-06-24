@@ -46,4 +46,6 @@ public interface FichePosteDaoInterface {
 	public Integer creerFichePoste(FichePoste fp, UserAppli user, HistoFichePosteDao histoDao, Transaction aTransaction)
 			throws Exception;
 
+	public void supprimerFichePoste(FichePoste fp, Transaction aTransaction) throws Exception;
+
 }

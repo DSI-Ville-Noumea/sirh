@@ -593,4 +593,14 @@ public class FichePosteDao extends SirhDao implements FichePosteDaoInterface {
 						fp.getIdBaseHorairePointage(), fp.getIdBaseHoraireAbsence() }, Integer.class);
 		return id;
 	}
+
+	@Override
+	public void supprimerFichePoste(FichePoste fp, Transaction aTransaction) throws Exception {
+		// Suppression de la FichePoste
+		String sql = "DELETE FROM " + NOM_TABLE + "  where " + CHAMP_ID + "=? ";
+		jdbcTemplate.update(sql, new Object[] { fp.getIdFichePoste() });
+
+		Connecteur.supprimerSPPOST(aTransaction, fp);
+
+	}
 }

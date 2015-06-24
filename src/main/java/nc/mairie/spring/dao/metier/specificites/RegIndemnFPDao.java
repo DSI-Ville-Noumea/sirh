@@ -1,5 +1,10 @@
 package nc.mairie.spring.dao.metier.specificites;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import nc.mairie.metier.specificites.RegIndemFP;
 import nc.mairie.spring.dao.utils.SirhDao;
 
 public class RegIndemnFPDao extends SirhDao implements RegIndemnFPDaoInterface {
@@ -26,6 +31,23 @@ public class RegIndemnFPDao extends SirhDao implements RegIndemnFPDaoInterface {
 		String sql = "DELETE FROM " + NOM_TABLE + "  where " + CHAMP_ID_REGIME + "=? and " + CHAMP_ID_FICHE_POSTE
 				+ "=?";
 		jdbcTemplate.update(sql, new Object[] { idRegime, idFichePoste });
+	}
+
+	@Override
+	public ArrayList<RegIndemFP> listerRegIndemFPFPAvecFP(Integer idFichePoste) {
+		String sql = "select f.* from " + NOM_TABLE + " f where " + CHAMP_ID_FICHE_POSTE + "=? ";
+
+		ArrayList<RegIndemFP> liste = new ArrayList<RegIndemFP>();
+
+		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { idFichePoste });
+		for (Map<String, Object> row : rows) {
+			RegIndemFP a = new RegIndemFP();
+			a.setIdRegIndemn((Integer) row.get(CHAMP_ID_REGIME));
+			a.setIdFichePoste((Integer) row.get(CHAMP_ID_FICHE_POSTE));
+			liste.add(a);
+		}
+
+		return liste;
 	}
 
 }

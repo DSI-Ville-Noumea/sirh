@@ -1,5 +1,10 @@
 package nc.mairie.spring.dao.metier.specificites;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import nc.mairie.metier.specificites.AvantageNatureFP;
 import nc.mairie.spring.dao.utils.SirhDao;
 
 public class AvantageNatureFPDao extends SirhDao implements AvantageNatureFPDaoInterface {
@@ -26,6 +31,23 @@ public class AvantageNatureFPDao extends SirhDao implements AvantageNatureFPDaoI
 		String sql = "DELETE FROM " + NOM_TABLE + "  where " + CHAMP_ID_FICHE_POSTE + "=? and " + CHAMP_ID_AVANTAGE
 				+ "=?";
 		jdbcTemplate.update(sql, new Object[] { idFichePoste, idAvantage });
+	}
+
+	@Override
+	public ArrayList<AvantageNatureFP> listerAvantageNatureFPAvecFP(Integer idFichePoste) {
+		String sql = "select f.* from " + NOM_TABLE + " f where " + CHAMP_ID_FICHE_POSTE + "=? ";
+
+		ArrayList<AvantageNatureFP> liste = new ArrayList<AvantageNatureFP>();
+
+		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { idFichePoste });
+		for (Map<String, Object> row : rows) {
+			AvantageNatureFP a = new AvantageNatureFP();
+			a.setIdAvantage((Integer) row.get(CHAMP_ID_AVANTAGE));
+			a.setIdFichePoste((Integer) row.get(CHAMP_ID_FICHE_POSTE));
+			liste.add(a);
+		}
+
+		return liste;
 	}
 
 }
