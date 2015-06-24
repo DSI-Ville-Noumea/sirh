@@ -1799,22 +1799,6 @@ public class OePOSTEFichePoste extends BasicProcess {
 						return false;
 					}
 
-					if (EnumStatutFichePoste.EN_MODIFICATION.getLibLong().equals(statutCourant.getLibStatutFp())
-							&& !(EnumStatutFichePoste.VALIDEE.getLibLong().equals(statutPrecedant.getLibStatutFp())
-									|| EnumStatutFichePoste.TRANSITOIRE.getLibLong().equals(
-											statutPrecedant.getLibStatutFp()) || EnumStatutFichePoste.GELEE
-									.getLibLong().equals(statutPrecedant.getLibStatutFp()))) {
-						// "ERR124",
-						// "Le statut ne peut passer a @ s'il n'est pas @."
-						getTransaction().declarerErreur(
-								MessageUtils.getMessage("ERR124",
-										"'" + EnumStatutFichePoste.EN_MODIFICATION.getLibLong() + "'", "'"
-												+ EnumStatutFichePoste.VALIDEE.getLibLong() + "' ou '"
-												+ EnumStatutFichePoste.TRANSITOIRE.getLibLong() + "' ou '"
-												+ EnumStatutFichePoste.GELEE.getLibLong() + "'"));
-						return false;
-					}
-
 				}
 			}
 		}
