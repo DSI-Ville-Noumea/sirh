@@ -156,14 +156,16 @@
 							<table class="sigp2NewTab" style="text-align:left;width:980px;">
 								<tr bgcolor="#EFEFEF">
 									<td align="center" width="90px;">Mois</td>
-									<td>Nb jours</td>
+									<td align="center" width="50px;">Nb jours</td>
+									<td>Commentaire</td>
 								</tr>
 								<%
 								for (int i = 0;i<process.getListeHistoriqueAlimAuto().size();i++){
 								%>
 									<tr>
 										<td class="sigp2NewTab-liste" style="text-align: center;"><%=process.getVAL_ST_MOIS(i)%></td>
-										<td class="sigp2NewTab-liste"><%=process.getVAL_ST_NB_JOUR(i)%></td>
+										<td class="sigp2NewTab-liste" style="text-align: center;"><%=process.getVAL_ST_NB_JOUR(i)%></td>
+										<td class="sigp2NewTab-liste"><%=process.getVAL_ST_COMMENTAIRE(i)%></td>
 									</tr>
 								<%}%>
 							</table>	
@@ -178,14 +180,16 @@
 							<table class="sigp2NewTab" style="text-align:left;width:980px;">
 								<tr bgcolor="#EFEFEF">
 									<td align="center" width="90px;">Mois</td>
-									<td>Nb</td>
+									<td align="center" width="50px;">Nb</td>
+									<td>Commentaire</td>
 								</tr>
 								<%
 								for (int i = 0;i<process.getListeHistoriqueAlimPaie().size();i++){
 								%>
 									<tr>
 										<td class="sigp2NewTab-liste" style="text-align: center;"><%=process.getVAL_ST_MOIS(i)%></td>
-										<td class="sigp2NewTab-liste"><%=process.getVAL_ST_NB_JOUR(i)%></td>
+										<td class="sigp2NewTab-liste" style="text-align: center;"><%=process.getVAL_ST_NB_JOUR(i)%></td>
+										<td class="sigp2NewTab-liste"><%=process.getVAL_ST_COMMENTAIRE(i)%></td>
 									</tr>
 								<%}%>
 							</table>	

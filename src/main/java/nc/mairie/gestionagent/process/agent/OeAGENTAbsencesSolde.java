@@ -508,6 +508,7 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 
 				addZone(getNOM_ST_MOIS(i), sdfDate.format(histo.getDateMois()));
 				addZone(getNOM_ST_NB_JOUR(i), histo.getNbJours().toString());
+				addZone(getNOM_ST_COMMENTAIRE(i), histo.getStatus());
 
 			}
 
@@ -543,6 +544,7 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 				String soldeRecupMinute = (soldeRecup % 60) == 0 ? Const.CHAINE_VIDE : soldeRecup % 60 + "m";
 				addZone(getNOM_ST_NB_JOUR(i), (soldeRecupHeure + soldeRecupMinute).equals(Const.CHAINE_VIDE) ? "0"
 						: (soldeRecupHeure + soldeRecupMinute));
+				addZone(getNOM_ST_COMMENTAIRE(i), histo.getStatus());
 
 			}
 		} else if (EnumTypeAbsence.getRefTypeAbsenceEnum(codeTypeAbsence) == EnumTypeAbsence.REPOS_COMP) {
@@ -566,6 +568,7 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 				addZone(getNOM_ST_NB_JOUR(i),
 						(soldeReposCompHeure + soldeReposCompMinute).equals(Const.CHAINE_VIDE) ? "0"
 								: (soldeReposCompHeure + soldeReposCompMinute));
+				addZone(getNOM_ST_COMMENTAIRE(i),histo.getStatus());
 
 			}
 		}
@@ -848,6 +851,14 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 
 	public String getVAL_ST_NB_JOUR(int i) {
 		return getZone(getNOM_ST_NB_JOUR(i));
+	}
+
+	public String getNOM_ST_COMMENTAIRE(int i) {
+		return "NOM_ST_COMMENTAIRE" + i;
+	}
+
+	public String getVAL_ST_COMMENTAIRE(int i) {
+		return getZone(getNOM_ST_COMMENTAIRE(i));
 	}
 
 	public String getNOM_ST_RESTITUTION_JOURS(int i) {
