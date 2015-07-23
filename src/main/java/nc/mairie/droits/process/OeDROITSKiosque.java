@@ -366,6 +366,10 @@ public class OeDROITSKiosque extends BasicProcess {
 
 	private void saveOperateurApprobateurAbs(HttpServletRequest request, Agent operateur, boolean suppression)
 			throws Exception {
+
+		if (operateur == null) {
+			return;
+		}
 		if (operateur.getIdAgent().toString().equals(getApprobateurCourant().getIdAgent().toString())) {
 			getTransaction().declarerErreur("ERREUR : L'agent ne peut être opérateur de lui même.");
 			return;
@@ -2005,6 +2009,10 @@ public class OeDROITSKiosque extends BasicProcess {
 
 	private void saveOperateurApprobateurPtg(HttpServletRequest request, Agent operateur, boolean suppression)
 			throws Exception {
+
+		if (operateur == null) {
+			return;
+		}
 
 		if (operateur.getIdAgent().toString().equals(getApprobateurCourant().getIdAgent().toString())) {
 			getTransaction().declarerErreur("ERREUR : L'agent ne peut être opérateur de lui même.");
