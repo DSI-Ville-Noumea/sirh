@@ -516,9 +516,9 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 						return false;
 					}
 				} else if (Services.compareDates(getZone(getNOM_EF_DATE()), sdf.format(at.getDateAt())) == 1) {
-					int resultat = Services.compareDates(
-							Services.ajouteJours(Services.formateDate(sdf.format(at.getDateAt())), at.getNbJoursItt()),
-							getZone(getNOM_EF_DATE()));
+					int resultat = Services.compareDates(Services.ajouteJours(
+							Services.formateDate(sdf.format(at.getDateAt())),
+							at.getNbJoursItt() == null ? 0 : at.getNbJoursItt()), getZone(getNOM_EF_DATE()));
 					if (resultat == 1) {
 						// erreur
 						getTransaction().declarerErreur(MessageUtils.getMessage("ERR050"));
