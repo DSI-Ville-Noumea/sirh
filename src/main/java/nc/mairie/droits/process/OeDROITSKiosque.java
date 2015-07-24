@@ -221,7 +221,9 @@ public class OeDROITSKiosque extends BasicProcess {
 			List<AgentDto> listAgt = (List<AgentDto>) VariablesActivite.recuperer(this,
 					VariablesActivite.ACTIVITE_AGENT_MAIRIE_DROIT);
 			VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE_DROIT);
-			saveAgentApprobateurOperateurPtg(request, listAgt == null ? new ArrayList<AgentDto>() : listAgt);
+			if (null != listAgt) {
+				saveAgentApprobateurOperateurPtg(request, listAgt == null ? new ArrayList<AgentDto>() : listAgt);
+			}
 		}
 
 		if (etatStatut() == STATUT_AGENT_OPE_APPROBATEUR_ABS) {
