@@ -406,7 +406,7 @@ public class OePARAMETRAGERubrique extends BasicProcess {
 	private boolean performControlerRegleGestionRubrique(HttpServletRequest request) throws Exception {
 
 		// verification existance rubrique
-		Rubrique rub = getRubriqueDao().chercherRubrique(new Integer(getVAL_EF_LIB_RUBRIQUE()));
+		Rubrique rub = getRubriqueDao().chercherRubriqueCharge(new Integer(getVAL_EF_LIB_RUBRIQUE()));
 		if (rub == null) {
 			// "ERR149",
 			// "Attention, il n'existe pas de rubrique avec ce numéro."

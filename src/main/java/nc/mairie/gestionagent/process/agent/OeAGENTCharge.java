@@ -17,9 +17,11 @@ import nc.mairie.metier.agent.CodeLogt;
 import nc.mairie.metier.agent.CodeMutu;
 import nc.mairie.metier.agent.Creancier;
 import nc.mairie.metier.agent.HistoCharge;
+import nc.mairie.metier.parametrage.RubriqueCharge;
 import nc.mairie.metier.paye.Matricule;
 import nc.mairie.metier.specificites.Rubrique;
 import nc.mairie.spring.dao.metier.agent.HistoChargeDao;
+import nc.mairie.spring.dao.metier.parametrage.RubriqueChargeDao;
 import nc.mairie.spring.dao.metier.specificites.RubriqueDao;
 import nc.mairie.spring.dao.utils.MairieDao;
 import nc.mairie.spring.dao.utils.SirhDao;
@@ -76,15 +78,6 @@ public class OeAGENTCharge extends BasicProcess {
 	public String ACTION_CREATION = "Création d'une fiche Charge.";
 	public String ACTION_CONSULTATION = "Consultation d'une fiche Charge.";
 
-	public boolean showCodeCharge = false;
-	public boolean showCreancier = false;
-	public boolean showMatriculeCharge = false;
-	public boolean showMontant = false;
-	public boolean matriculeChargeEditable = false;
-	public boolean matriculeChargeObligatoire = false;
-	public boolean showDonneesMutu = false;
-	public boolean montantObligatoire = false;
-
 	private static QSYSObjectPathName CALC_PATH = new QSYSObjectPathName((String) ServletAgent.getMesParametres().get(
 			"DTAARA_SCHEMA"), (String) ServletAgent.getMesParametres().get("DTAARA_NAME"), "DTAARA");
 	public static CharacterDataArea DTAARA_CALC = new CharacterDataArea(new AS400((String) ServletAgent
@@ -93,6 +86,7 @@ public class OeAGENTCharge extends BasicProcess {
 	private String calculPaye;
 
 	private RubriqueDao rubriqueDao;
+	private RubriqueChargeDao rubriqueChargeDao;
 	private HistoChargeDao histoChargeDao;
 
 	/**
@@ -233,6 +227,9 @@ public class OeAGENTCharge extends BasicProcess {
 		if (getHistoChargeDao() == null) {
 			setHistoChargeDao(new HistoChargeDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (getRubriqueChargeDao() == null) {
+			setRubriqueChargeDao(new RubriqueChargeDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	/**
@@ -367,15 +364,6 @@ public class OeAGENTCharge extends BasicProcess {
 	 * 
 	 */
 	private void videZonesDeSaisie(HttpServletRequest request) throws Exception {
-
-		showCreancier = false;
-		showCodeCharge = false;
-		showMatriculeCharge = false;
-		showMontant = false;
-		matriculeChargeEditable = false;
-		matriculeChargeObligatoire = false;
-		montantObligatoire = false;
-
 		// On vide les zone de saisie
 		addZone(getNOM_EF_DATE_FIN(), Const.CHAINE_VIDE);
 		addZone(getNOM_EF_DATE_DEBUT(), Const.CHAINE_VIDE);
@@ -468,7 +456,7 @@ public class OeAGENTCharge extends BasicProcess {
 	 * 
 	 *             RG_AG_CG_A01 RG_AG_CG_C06
 	 */
-	public boolean performControlerChamps(HttpServletRequest request) throws Exception {
+	public boolean performControlerChamps(HttpServletRequest request, RubriqueCharge parametre) throws Exception {
 		// RG_AG_CG_A01
 
 		// taux charge < 10
@@ -500,31 +488,32 @@ public class OeAGENTCharge extends BasicProcess {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR205", "de fin", "de début"));
 			return false;
 		}
+		if (parametre != null) {
+			// montant obligatoire
+			if (parametre.isShowMontant() && Const.CHAINE_VIDE.equals(getVAL_EF_MONTANT())) {
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "montant forfait"));
+				return false;
+			}
 
-		// montant obligatoire
-		if (montantObligatoire && showMontant && Const.CHAINE_VIDE.equals(getVAL_EF_MONTANT())) {
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "montant forfait"));
-			return false;
-		}
+			// montant numrique
+			if (parametre.isShowMontant() && !Services.estNumerique(getVAL_EF_MONTANT())) {
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "montant forfait"));
+				return false;
+			}
 
-		// montant numrique
-		if (montantObligatoire && showMontant && !Services.estNumerique(getVAL_EF_MONTANT())) {
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "montant forfait"));
-			return false;
-		}
+			// créancier obligatoire
+			int indiceCreancier = (Services.estNumerique(getVAL_LB_CREANCIER_SELECT()) ? Integer
+					.parseInt(getVAL_LB_CREANCIER_SELECT()) : -1);
+			if (parametre.isShowCreancier() && indiceCreancier < 1) {
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "créancier"));
+				return false;
+			}
 
-		// créancier obligatoire
-		int indiceCreancier = (Services.estNumerique(getVAL_LB_CREANCIER_SELECT()) ? Integer
-				.parseInt(getVAL_LB_CREANCIER_SELECT()) : -1);
-		if (showCreancier && indiceCreancier < 1) {
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "créancier"));
-			return false;
-		}
-
-		// latricule charge employé
-		if (matriculeChargeObligatoire && Const.CHAINE_VIDE.equals(getVAL_EF_MAT_CHARGE())) {
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "matricule charge employé"));
-			return false;
+			// latricule charge employé
+			if (parametre.isShowMatriculeCharge() && Const.CHAINE_VIDE.equals(getVAL_EF_MAT_CHARGE())) {
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "matricule charge employé"));
+				return false;
+			}
 		}
 
 		return true;
@@ -628,10 +617,6 @@ public class OeAGENTCharge extends BasicProcess {
 
 		Rubrique r = getSelectedRubrique();
 
-		showCreancier = false;
-		showCodeCharge = false;
-		showMontant = false;
-
 		int numLigne = (Services.estNumerique(getVAL_LB_CODE_CHARGE_SELECT()) ? Integer
 				.parseInt(getVAL_LB_CODE_CHARGE_SELECT()) : -1);
 
@@ -718,15 +703,15 @@ public class OeAGENTCharge extends BasicProcess {
 
 		} else {
 
-			// Vérification de la validité du formulaire
-			if (!performControlerChamps(request)) {
-				return false;
-			}
-
 			Rubrique r = getSelectedRubrique();
 
 			if (r == null) {
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "rubriques"));
+				return false;
+			}
+			RubriqueCharge param = getRubriqueChargeDao().chercherObject(RubriqueCharge.class, r.getNorubr());
+			// Vérification de la validité du formulaire
+			if (!performControlerChamps(request, param)) {
 				return false;
 			}
 
@@ -1116,8 +1101,6 @@ public class OeAGENTCharge extends BasicProcess {
 
 		int[] tailles = { 3, 40 };
 
-		showCodeCharge = true;
-
 		switch (codeRubr) {
 			case 2850:
 			case 2900:
@@ -1189,7 +1172,6 @@ public class OeAGENTCharge extends BasicProcess {
 
 				break;
 			default:
-				showCodeCharge = false;
 				break;
 		}
 	}
@@ -1211,6 +1193,66 @@ public class OeAGENTCharge extends BasicProcess {
 		return true;
 	}
 
+	public boolean isCreancier() throws Exception {
+		Rubrique r = getSelectedRubrique();
+		if (r != null) {
+			try {
+				RubriqueCharge param = getRubriqueChargeDao().chercherObject(RubriqueCharge.class, r.getNorubr());
+				if (param != null && param.isShowCreancier()) {
+					return true;
+				}
+			} catch (Exception e) {
+				return false;
+			}
+		}
+		return false;
+	}
+
+	public boolean isCodeCharge() throws Exception {
+		Rubrique r = getSelectedRubrique();
+		if (r != null) {
+			try {
+				RubriqueCharge param = getRubriqueChargeDao().chercherObject(RubriqueCharge.class, r.getNorubr());
+				if (param != null && param.isShowCodeCharge()) {
+					return true;
+				}
+			} catch (Exception e) {
+				return false;
+			}
+		}
+		return false;
+	}
+
+	public boolean isMontant() throws Exception {
+		Rubrique r = getSelectedRubrique();
+		if (r != null) {
+			try {
+				RubriqueCharge param = getRubriqueChargeDao().chercherObject(RubriqueCharge.class, r.getNorubr());
+				if (param != null && param.isShowMontant()) {
+					return true;
+				}
+			} catch (Exception e) {
+				return false;
+			}
+		}
+		return false;
+	}
+
+	public boolean isMatriculeCharge() throws Exception {
+		Rubrique r = getSelectedRubrique();
+		if (r != null) {
+			try {
+				RubriqueCharge param = getRubriqueChargeDao().chercherObject(RubriqueCharge.class, r.getNorubr());
+				if (param != null && param.isShowMatriculeCharge()) {
+					return true;
+				}
+			} catch (Exception e) {
+				return false;
+			}
+		}
+		return false;
+	}
+
 	/**
 	 * 
 	 * @param r
@@ -1218,18 +1260,7 @@ public class OeAGENTCharge extends BasicProcess {
 	 *             RG_AG_CG_C09 RG_AG_CG_C08 RG_AG_CG_C10 RG_AG_CG_C11
 	 */
 	private void initialiseChamp(Rubrique r) throws Exception {
-		// RG_AG_CG_C09
-		// RG_AG_CG_C08
-		// RG_AG_CG_C10
-		// RG_AG_CG_C11
-
-		showCreancier = false;
-		showCodeCharge = false;
-		showMatriculeCharge = false;
-		showMontant = false;
-		matriculeChargeEditable = false;
-		matriculeChargeObligatoire = false;
-		montantObligatoire = false;
+		// #17621 : on rend paramétrable les choses à saisir
 
 		addZone(getNOM_EF_MAT_CHARGE(), Const.CHAINE_VIDE);
 		addZone(getNOM_EF_MONTANT(), Const.CHAINE_VIDE);
@@ -1240,75 +1271,34 @@ public class OeAGENTCharge extends BasicProcess {
 
 			afficheListeCodeCharge(r.getNorubr(), null);
 
-			if (r.getNorubr() == 2400) {
-				matriculeChargeEditable = true;
-				showMatriculeCharge = true;
-				return;
-			}
-
 			if (r.getNorubr() == 2700) {
 				addZone(getNOM_EF_MAT_CHARGE(), getAgentCourant().getNumIrcafex());
-				matriculeChargeEditable = true;
-				showMatriculeCharge = true;
 				return;
 			}
 
 			if (r.getNorubr() == 2800) {
 				addZone(getNOM_EF_MAT_CHARGE(), getAgentCourant().getNumCre());
-				matriculeChargeEditable = true;
-				showMatriculeCharge = true;
 				return;
 			}
 
 			if (r.getNorubr() == 2850) {
 				addZone(getNOM_EF_MAT_CHARGE(), getAgentCourant().getNumRuamm());
-				showMatriculeCharge = true;
-				matriculeChargeEditable = true;
 				return;
 			}
 
 			if (r.getNorubr() == 2900) {
 				addZone(getNOM_EF_MAT_CHARGE(), getAgentCourant().getNumCafat());
-				matriculeChargeEditable = true;
-				showMatriculeCharge = true;
-				matriculeChargeObligatoire = true;
 				return;
 			}
 
 			if (r.getNorubr() == 3000) {
 				addZone(getNOM_EF_MAT_CHARGE(), getAgentCourant().getNumMutuelle());
-				matriculeChargeEditable = true;
-				showMatriculeCharge = true;
 				return;
-			}
-
-			if (r.getNorubr() == 6000) {
-				matriculeChargeEditable = true;
-				showMontant = true;
-				montantObligatoire = true;
-				showMatriculeCharge = true;
-				return;
-			}
-
-			if (r.getNorubr() == 7900) {
-				showCreancier = true;
-				showMontant = true;
-				montantObligatoire = true;
 			}
 
 			if (r.getNorubr() == 1050) {
 				addZone(getNOM_EF_MAT_CHARGE(), getAgentCourant().getNumClr());
-				matriculeChargeEditable = true;
-				showMatriculeCharge = true;
-				showMontant = true;
 				return;
-			}
-
-			if (r.getNorubr() == 2200 || r.getNorubr() == 6000 || r.getNorubr() == 8797 || r.getNorubr() == 8798
-					|| r.getNorubr() == 8799 || r.getNorubr() == 1030 || r.getNorubr() == 1031 || r.getNorubr() == 1035
-					|| r.getNorubr() == 1036) {
-				showMontant = true;
-				montantObligatoire = true;
 			}
 		}
 	}
@@ -1480,14 +1470,6 @@ public class OeAGENTCharge extends BasicProcess {
 		return "OeAGENTCharge.jsp";
 	}
 
-	public boolean isMatriculeChargeEditable() {
-		return matriculeChargeEditable;
-	}
-
-	public void setMatriculeChargeEditable(boolean matriculeChargeEditable) {
-		this.matriculeChargeEditable = matriculeChargeEditable;
-	}
-
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_SELECT_CODE_CHARGE Date de
 	 * création : (10/08/11 14:21:39)
@@ -1516,7 +1498,6 @@ public class OeAGENTCharge extends BasicProcess {
 		// si rubrique 3000 on affiche a cote de la liste deroulante le txsal et
 		// txpat
 		// si rubrique 2900 on affiche a cote de la liste deroulante le txpat
-		showDonneesMutu = false;
 		Rubrique r = getSelectedRubrique();
 		if (r != null) {
 			if (r.getNorubr() == 3000) {
@@ -1528,7 +1509,6 @@ public class OeAGENTCharge extends BasicProcess {
 						Double.parseDouble(g.getTxpat()) * 100).substring(0, 4) : String.valueOf(Double.parseDouble(g
 						.getTxpat()) * 100);
 				addZone(getNOM_ST_INFO_CODE_CHARGE(), "TxSal : " + txSal + "% , TxPat : " + txPat + "%");
-				showDonneesMutu = true;
 			} else if (r.getNorubr() == 2900) {
 				CodeAcci g = (CodeAcci) getListeCodesAcci().get(indiceCodeCharge);
 				String txPat = String.valueOf(Double.parseDouble(g.getTxpat()) * 100).length() > 4 ? String.valueOf(
@@ -1841,5 +1821,13 @@ public class OeAGENTCharge extends BasicProcess {
 
 	public void setHistoChargeDao(HistoChargeDao histoChargeDao) {
 		this.histoChargeDao = histoChargeDao;
+	}
+
+	public RubriqueChargeDao getRubriqueChargeDao() {
+		return rubriqueChargeDao;
+	}
+
+	public void setRubriqueChargeDao(RubriqueChargeDao rubriqueChargeDao) {
+		this.rubriqueChargeDao = rubriqueChargeDao;
 	}
 }

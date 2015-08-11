@@ -146,7 +146,7 @@
 						<INPUT id="listeRubriques" class="sigp2-saisie" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> name="<%= process.getNOM_EF_RUBRIQUE() %>"  style="margin-right:10px;width:450px" type="text" value="<%= process.getVAL_EF_RUBRIQUE() %>">
 					</td>
 				</tr>
-				<% if (process.showCreancier){ %>
+				<% if (process.isCreancier()){ %>
 				<tr>
 					<td>
 						<span class="sigp2Mandatory">Creancier :</span>
@@ -158,7 +158,7 @@
 					</td>
 				</tr>
 				<% } %>
-				<% if (process.showCodeCharge){ %>
+				<% if (process.isCodeCharge()){ %>
 				<tr>
 					<td>
 						<span class="sigp2Mandatory">Charge :</span>
@@ -171,23 +171,23 @@
 					</td>
 				</tr>
 				<% } %>
-				<% if (process.showMontant){ %>				
+				<% if (process.isMontant()){ %>				
 				<tr>
 					<td>
-						<span class="<%= process.montantObligatoire ? "sigp2Mandatory" : "sigp2" %> ">Montant forfait :</span>
+						<span class="sigp2Mandatory">Montant forfait :</span>
 					</td>
 					<td>
 						<INPUT class="sigp2-saisie" maxlength="9" name="<%= process.getNOM_EF_MONTANT() %>" size="9" type="text" value="<%= process.getVAL_EF_MONTANT() %>">
 					</td>
 				</tr>
 				<% } %>				
-				<% if (process.showMatriculeCharge){ %>
+				<% if (process.isMatriculeCharge()){ %>
 				<tr>
 					<td>
-						<span class=<%= process.matriculeChargeObligatoire ? "sigp2Mandatory" : "sigp2" %>>Matricule charge employé :</span>
+						<span class="sigp2Mandatory">Matricule charge employé :</span>
 					</td>
 					<td>
-						<INPUT class="sigp2-saisie" maxlength="15" <%= process.matriculeChargeEditable ? "" : "readonly='readonly'" %>  name="<%= process.getNOM_EF_MAT_CHARGE() %>" size="15" type="text" value="<%= process.getVAL_EF_MAT_CHARGE() %>">
+						<INPUT class="sigp2-saisie" maxlength="15"  name="<%= process.getNOM_EF_MAT_CHARGE() %>" size="15" type="text" value="<%= process.getVAL_EF_MAT_CHARGE() %>">
 					</td>
 				</tr>
 				<% } %>

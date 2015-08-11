@@ -10,6 +10,8 @@ import java.util.Map;
 import nc.mairie.metier.specificites.Rubrique;
 import nc.mairie.spring.dao.utils.MairieDao;
 
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+
 public class RubriqueDao extends MairieDao implements RubriqueDaoInterface {
 
 	public static final String CHAMP_LIRUBR = "LIRUBR";
@@ -125,6 +127,13 @@ public class RubriqueDao extends MairieDao implements RubriqueDaoInterface {
 		}
 
 		return liste;
+	}
+
+	public Rubrique chercherRubriqueCharge(Integer norubrChoisi) {
+		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_TYRUBR + "=?  and " + CHAMP_ID + "=? ";
+		Rubrique aff = (Rubrique) jdbcTemplate.queryForObject(sql, new Object[] { "C", norubrChoisi },
+				new BeanPropertyRowMapper<Rubrique>(Rubrique.class));
+		return aff;
 	}
 
 }

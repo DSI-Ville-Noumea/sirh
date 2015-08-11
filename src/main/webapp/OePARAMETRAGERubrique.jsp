@@ -37,7 +37,7 @@
 				<tr>
 					<td  width="500px;">
 						<FIELDSET class="sigp2Fieldset"  style="text-align: left;">
-					    	<legend class="sigp2Legend">Motifs des carrières</legend>
+					    	<legend class="sigp2Legend">Champs de saisie des charges</legend>
 							<span class="sigp2-saisie" style="margin-left: 5px;">Libellé</span>
 							<SELECT name="<%= process.getNOM_LB_RUBRIQUE() %>" size="10" style="width:100%;" class="sigp2-liste">
 								<%=process.forComboHTML(process.getVAL_LB_RUBRIQUE(), process.getVAL_LB_RUBRIQUE_SELECT()) %>
