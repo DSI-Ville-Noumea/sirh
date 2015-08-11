@@ -29,7 +29,7 @@ public class RubriqueDao extends MairieDao implements RubriqueDaoInterface {
 	}
 
 	@Override
-	public ArrayList<Rubrique> listerRubriqueAvecTypeRubrAvecInactives(String typeRubrique) throws Exception {
+	public ArrayList<Rubrique> listerRubriqueAvecTypeRubrAvecInactives(String typeRubrique) {
 		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_TYRUBR + "=? order by " + CHAMP_LIRUBR;
 
 		ArrayList<Rubrique> liste = new ArrayList<Rubrique>();
@@ -56,13 +56,17 @@ public class RubriqueDao extends MairieDao implements RubriqueDaoInterface {
 	}
 
 	@Override
-	public Rubrique chercherRubrique(Integer norubr) throws Exception {
+	public Rubrique chercherRubrique(Integer norubr) {
 
-		return super.chercherObject(Rubrique.class, norubr);
+		try {
+			return super.chercherObject(Rubrique.class, norubr);
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
 	@Override
-	public ArrayList<Rubrique> listerRubrique7000() throws Exception {
+	public ArrayList<Rubrique> listerRubrique7000() {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 		Integer dateJour = Integer.valueOf(sdf.format(new Date()));
 
@@ -93,7 +97,7 @@ public class RubriqueDao extends MairieDao implements RubriqueDaoInterface {
 	}
 
 	@Override
-	public ArrayList<Rubrique> listerRubriqueAvecTypeRubr(String type) throws Exception {
+	public ArrayList<Rubrique> listerRubriqueAvecTypeRubr(String type) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 		Integer dateJour = Integer.valueOf(sdf.format(new Date()));
 

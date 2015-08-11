@@ -81,6 +81,7 @@ import nc.mairie.gestionagent.process.parametre.OePARAMETRAGEJour;
 import nc.mairie.gestionagent.process.parametre.OePARAMETRAGEKiosque;
 import nc.mairie.gestionagent.process.parametre.OePARAMETRAGEPointage;
 import nc.mairie.gestionagent.process.parametre.OePARAMETRAGERecrutement;
+import nc.mairie.gestionagent.process.parametre.OePARAMETRAGERubrique;
 import nc.mairie.gestionagent.process.pointage.OePTGPayeurContractuels;
 import nc.mairie.gestionagent.process.pointage.OePTGPayeurConvCol;
 import nc.mairie.gestionagent.process.pointage.OePTGPayeurFonct;
@@ -307,6 +308,8 @@ public class RobotAgent extends Robot {
 		} // Module PARAMETRAGE - ELEMENT SALAIRE
 		else if (activite.equals("ParamCarriere")) {
 			return new OePARAMETRAGECarriere();
+		} else if (activite.equals("ParamRubrique")) {
+			return new OePARAMETRAGERubrique();
 		} else if (activite.equals("ParamJour")) {
 			return new OePARAMETRAGEJour();
 		} // Module PARAMETRAGE - ABSENCE
@@ -790,6 +793,8 @@ public class RobotAgent extends Robot {
 		navigation.put(OePARAMETRAGEAvancement.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
 				OeAGENTRecherche.class.getName());
 		navigation.put(OePARAMETRAGECarriere.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
+				OeAGENTRecherche.class.getName());
+		navigation.put(OePARAMETRAGERubrique.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
 				OeAGENTRecherche.class.getName());
 		navigation.put(OePARAMETRAGEJour.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
 				OeAGENTRecherche.class.getName());

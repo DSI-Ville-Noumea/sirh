@@ -135,7 +135,8 @@
 		listeDroits.add("ParamHSCT");
 		listeDroits.add("ParamGrade");
 		listeDroits.add("ParamGradeRef");	
-		listeDroits.add("ParamCarriere");		
+		listeDroits.add("ParamCarriere");
+		listeDroits.add("ParamRubrique");		
 		listeDroits.add("ParamJour");		
 		listeDroits.add("ParamAbsMotif");		
 		listeDroits.add("ParamAbsCongeExcep");	
