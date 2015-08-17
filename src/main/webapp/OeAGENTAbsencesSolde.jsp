@@ -282,18 +282,12 @@
 									<table class="sigp2NewTab" style="text-align:left;width:400px;">
 										<tr bgcolor="#EFEFEF">
 											<td width="150px;" align="center">En cours</td>
-											<td width="90px;" align="center">Début</td>
-											<td width="90px;" align="center">Fin</td>
 											<td>Historique</td>
 										</tr>
-										<% for(int i = 0; i< process.getListeSoldeA55().size();i++){ %>
 										<tr>
-											<td style="text-align: center"><%=process.getVAL_ST_SOLDE_ASA_A55(i)%></td>
-											<td style="text-align: center"><%=process.getVAL_ST_DEBUT_ASA_A55(i)%></td>
-											<td style="text-align: center"><%=process.getVAL_ST_FIN_ASA_A55(i)%></td>
+											<td style="text-align: center"><%=process.getVAL_ST_SOLDE_ASA_A55()%></td>
 											<td style="text-align: center"><INPUT title="historique" type="image" src="images/oeil.gif" height="15px" width="15px" name="<%=process.getNOM_PB_HISTORIQUE(EnumTypeAbsence.ASA_A55.getCode())%>"></td>
 										</tr>
-										<% } %>
 									</table>				    
 							    </FIELDSET>
 							<%}%>

@@ -17,7 +17,6 @@ import nc.mairie.gestionagent.absence.dto.MoisAlimAutoCongesAnnuelsDto;
 import nc.mairie.gestionagent.absence.dto.OrganisationSyndicaleDto;
 import nc.mairie.gestionagent.absence.dto.RestitutionMassiveDto;
 import nc.mairie.gestionagent.absence.dto.SoldeDto;
-import nc.mairie.gestionagent.absence.dto.SoldeMonthDto;
 import nc.mairie.gestionagent.absence.dto.SoldeSpecifiqueDto;
 import nc.mairie.gestionagent.absence.dto.TypeAbsenceDto;
 import nc.mairie.gestionagent.robot.MaClasse;
@@ -60,7 +59,6 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 	private ArrayList<MoisAlimAutoCongesAnnuelsDto> listeHistoriqueAlimPaie;
 	private ArrayList<RestitutionMassiveDto> listeHistoriqueRestitutionMassive;
 
-	private ArrayList<SoldeMonthDto> listeSoldeA55;
 	private boolean afficheSoldeAsaA52;
 	private boolean afficheSoldeAsaA48;
 	private boolean afficheSoldeAsaA54;
@@ -182,7 +180,6 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 	private void initialiseSoldesAgent(HttpServletRequest request, Integer annee) {
 		Date dateDeb = new DateTime(annee, 1, 1, 0, 0, 0).toDate();
 		Date dateFin = new DateTime(annee, 12, 31, 23, 59, 59).toDate();
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		FiltreSoldeDto dto = new FiltreSoldeDto();
 		dto.setDateDebut(dateDeb);
 		dto.setDateFin(dateFin);
@@ -230,16 +227,12 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 
 		// Solde ASA A55
 		setAfficheSoldeAsaA55(soldeGlobal.isAfficheSoldeAsaA55());
-		setListeSoldeA55((ArrayList<SoldeMonthDto>) soldeGlobal.getListeSoldeAsaA55());
-		for (int i = 0; i < getListeSoldeA55().size(); i++) {
-			SoldeMonthDto monthDto = getListeSoldeA55().get(i);
-			String soldeAsaA55Heure = (monthDto.getSoldeAsa() / 60) == 0 ? Const.CHAINE_VIDE : monthDto.getSoldeAsa()
-					/ 60 + "h ";
-			String soldeAsaA55Minute = (monthDto.getSoldeAsa() % 60) == 0 ? "&nbsp;" : monthDto.getSoldeAsa() % 60
-					+ "m";
-			addZone(getNOM_ST_SOLDE_ASA_A55(i), soldeAsaA55Heure + soldeAsaA55Minute);
-			addZone(getNOM_ST_DEBUT_ASA_A55(i), sdf.format(monthDto.getDateDebut()));
-			addZone(getNOM_ST_FIN_ASA_A55(i), sdf.format(monthDto.getDateFin()));
+		if (soldeGlobal != null) {
+			String soldeAsaA55Heure = (soldeGlobal.getSoldeAsaA55() / 60) == 0 ? Const.CHAINE_VIDE : soldeGlobal
+					.getSoldeAsaA55() / 60 + "h ";
+			String soldeAsaA55Minute = (soldeGlobal.getSoldeAsaA55() % 60) == 0 ? "&nbsp;" : soldeGlobal
+					.getSoldeAsaA55() % 60 + "m";
+			addZone(getNOM_ST_SOLDE_ASA_A55(), soldeAsaA55Heure + soldeAsaA55Minute);
 		}
 
 		// Solde ASA A52
@@ -399,28 +392,12 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 		return getZone(getNOM_ST_SOLDE_ASA_A54());
 	}
 
-	public String getNOM_ST_SOLDE_ASA_A55(int i) {
-		return "NOM_ST_SOLDE_ASA_A55_" + i;
+	public String getNOM_ST_SOLDE_ASA_A55() {
+		return "NOM_ST_SOLDE_ASA_A55";
 	}
 
-	public String getVAL_ST_SOLDE_ASA_A55(int i) {
-		return getZone(getNOM_ST_SOLDE_ASA_A55(i));
-	}
-
-	public String getNOM_ST_DEBUT_ASA_A55(int i) {
-		return "NOM_ST_DEBUT_ASA_A55_" + i;
-	}
-
-	public String getVAL_ST_DEBUT_ASA_A55(int i) {
-		return getZone(getNOM_ST_DEBUT_ASA_A55(i));
-	}
-
-	public String getNOM_ST_FIN_ASA_A55(int i) {
-		return "NOM_ST_FIN_ASA_A55_" + i;
-	}
-
-	public String getVAL_ST_FIN_ASA_A55(int i) {
-		return getZone(getNOM_ST_FIN_ASA_A55(i));
+	public String getVAL_ST_SOLDE_ASA_A55() {
+		return getZone(getNOM_ST_SOLDE_ASA_A55());
 	}
 
 	public String getNOM_PB_HISTORIQUE(int i) {
@@ -685,14 +662,6 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 		String annee = getListeAnnee().get(numAnnee);
 		initialiseSoldesAgent(request, Integer.valueOf(annee));
 		return true;
-	}
-
-	public ArrayList<SoldeMonthDto> getListeSoldeA55() {
-		return listeSoldeA55 == null ? new ArrayList<SoldeMonthDto>() : listeSoldeA55;
-	}
-
-	public void setListeSoldeA55(ArrayList<SoldeMonthDto> listeSoldeA55) {
-		this.listeSoldeA55 = listeSoldeA55;
 	}
 
 	public ArrayList<SoldeSpecifiqueDto> getListeSoldeCongesExcep() {
