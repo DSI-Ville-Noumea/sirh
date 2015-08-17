@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import nc.mairie.gestionagent.absence.dto.ActeursDto;
+import nc.mairie.gestionagent.absence.dto.AgentOrganisationSyndicaleDto;
 import nc.mairie.gestionagent.absence.dto.CompteurDto;
 import nc.mairie.gestionagent.absence.dto.DemandeDto;
 import nc.mairie.gestionagent.absence.dto.HistoriqueSoldeDto;
@@ -48,6 +49,9 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	private static final String sirhAbsListOrganisationSyndicale = "organisation/listOrganisation";
 	private static final String sirhAbsOrganisationSyndicaleSauvegarde = "organisation/addOS";
 	private static final String sirhAbsAddRepresentantAsaA52 = "asaA52/saveRepresentant";
+	private static final String sirhAbsListOSA52Url = "asaA52/listeOrganisationSyndicaleA52";
+	private static final String sirhAbsListRepresentantOSA52Url = "asaA52/listeRepresentantA52";
+
 	private static final String sirhAbsListOrganisationActif = "organisation/listOrganisationActif";
 
 	private static final String sirhAbsAgentsApprobateurs = "droits/approbateurs";
@@ -563,10 +567,12 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	}
 
 	@Override
-	public List<CompteurDto> getListeCompteursA52() {
+	public List<CompteurDto> getListeCompteursA52(Integer idOrganisationSyndicale) {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
 		String url = urlWS + sirhAbsListeCompteurA52;
 		HashMap<String, String> params = new HashMap<>();
+		params.put("idOrganisationSyndicale", idOrganisationSyndicale.toString());
+
 		ClientResponse res = createAndFireRequest(params, url);
 		return readResponseAsList(CompteurDto.class, res, url);
 	}
@@ -1003,5 +1009,26 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 		logger.debug("Call " + url + " with idAgent : " + idAgent);
 		ClientResponse res = createAndFireRequest(params, url);
 		return readResponseAsList(MoisAlimAutoCongesAnnuelsDto.class, res, url);
+	}
+
+	@Override
+	public List<OrganisationSyndicaleDto> getListeOSCompteursA52() {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
+		String url = urlWS + sirhAbsListOSA52Url;
+		HashMap<String, String> params = new HashMap<>();
+		logger.debug("Call " + url);
+		ClientResponse res = createAndFireRequest(params, url);
+		return readResponseAsList(OrganisationSyndicaleDto.class, res, url);
+	}
+
+	@Override
+	public List<AgentOrganisationSyndicaleDto> getListeRepresentantA52(Integer idOrganisation) {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
+		String url = urlWS + sirhAbsListRepresentantOSA52Url;
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idOrganisationSyndicale", idOrganisation.toString());
+		logger.debug("Call " + url + " with idOrganisationSyndicale : " + idOrganisation);
+		ClientResponse res = createAndFireRequest(params, url);
+		return readResponseAsList(AgentOrganisationSyndicaleDto.class, res, url);
 	}
 }

@@ -59,48 +59,38 @@ function testClickEnrigistrer(){
 								<td width="50px;">
 									<img title="ajouter" border="0" src="images/ajout.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_AJOUTER()%>');" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>">
 								</td>
-								<td width="300px;">Organisation syndicale</td>
-								<td align="center" width="90px;">Début</td>
-								<td align="center" width="90px;">Fin</td>
-								<td align="center" width="90px;">Nb heures</td>
-								<td align="center" width="90px;">Motif</td>
+								<td width="100px;">Sigle</td>
+								<td width="700px;">Organisation syndicale</td>
 								<td>Représentants</td>
 							</tr>
 							<%
-							if (process.getListeCompteur()!=null){
-								for (int i = 0;i<process.getListeCompteur().size();i++){
+								for (int j = 0;j<process.getListeOrganisationSyndicaleExistante().size();j++){
+									Integer i = process.getListeOrganisationSyndicaleExistante().get(j).getIdOrganisation();
 							%>
-									<tr id="<%=i%>" onmouseover="SelectLigne(<%=i%>,<%=process.getListeCompteur().size()%>)">
+									<tr id="<%=i%>" onmouseover="SelectLigne(<%=i%>,<%=process.getListeOrganisationSyndicaleExistante().size()%>)">
 										<td class="sigp2NewTab-liste" align="center">
 											<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, "") %>" name="<%=process.getNOM_PB_VISUALISATION(i)%>">
 				    						<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_VISUALISATION(i)%>">
-				    						<%if(process.peutModifierCompteur(i)){ %>
-											<INPUT title="modifier" type="image" src="images/modifier.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_MODIFIER(i)%>">
-											<%} %>				
+				    						<INPUT title="modifier" type="image" src="images/modifier.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_MODIFIER(i)%>">
 										</td>
+										<td class="sigp2NewTab-liste"><%=process.getVAL_ST_SIGLE_OS(i)%></td>
 										<td class="sigp2NewTab-liste"><%=process.getVAL_ST_OS(i)%></td>
-										<td class="sigp2NewTab-liste" style="text-align: center;"><%=process.getVAL_ST_DATE_DEBUT(i)%></td>
-										<td class="sigp2NewTab-liste" style="text-align: center;"><%=process.getVAL_ST_DATE_FIN(i)%></td>
-										<td class="sigp2NewTab-liste" style="text-align: center;"><%=process.getVAL_ST_NB_HEURES(i)%></td>
-										<td class="sigp2NewTab-liste"><%=process.getVAL_ST_MOTIF(i)%></td>
 										<td class="sigp2NewTab-liste">										
 											<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, "") %>" name="<%=process.getNOM_PB_VISU_REPRESENTANT(i)%>">
 				    						<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_VISU_REPRESENTANT(i)%>">
-				    						<%if(process.peutModifierCompteur(i)){ %>
-											<INPUT title="modifier" type="image" src="images/modifier.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_MODIFIER_REPRESENTANT(i)%>">
-											<%} %>				
+				    						<INPUT title="modifier" type="image" src="images/modifier.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_MODIFIER_REPRESENTANT(i)%>">
 										</td>
 									</tr>
 									<%
 								}
-							}%>
+							%>
 						</table>	
 				</div>	
 		</FIELDSET>
 		<%if (! "".equals(process.getVAL_ST_ACTION()) ) {%>
 		<FIELDSET class="sigp2Fieldset" style="text-align: left; width:1030px;">
 			<legend class="sigp2Legend"><%=process.getVAL_ST_ACTION()%> <%=process.getOrganisationCourante()==null ? "" : process.getOrganisationCourante().getSigle() %></legend>
-			<%if(process.getVAL_ST_ACTION().equals(process.ACTION_CREATION) || process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION)){ %>
+			<%if(process.getVAL_ST_ACTION().equals(process.ACTION_CREATION)){ %>
 			
 			<table>
 				<tr>
@@ -166,59 +156,113 @@ function testClickEnrigistrer(){
 					</td>
 				</tr>
 			</table>
-			<%}else if(process.getVAL_ST_ACTION().equals(process.ACTION_VISUALISATION)){ %>
+			<%}else if(process.getVAL_ST_ACTION().equals(process.ACTION_VISUALISATION) || process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION)){ %>					
+				<div style="overflow: auto;height: 250px;width:1000px;">
+						<table class="sigp2NewTab" style="text-align:left;width:980px;">
+							<tr bgcolor="#EFEFEF">
+								<td width="50px;"></td>
+								<td align="center" width="90px;">Début</td>
+								<td align="center" width="90px;">Fin</td>
+								<td align="center" width="90px;">Nb heures</td>
+								<td align="left">Motif</td>
+							</tr>
+							<%
+								for (int j = 0;j<process.getListeCompteur().size();j++){
+									Integer i = process.getListeCompteur().get(j).getIdCompteur();
+							%>
+									<tr id="<%=i%>" onmouseover="SelectLigne(<%=i%>,<%=process.getListeCompteur().size()%>)">
+										<td class="sigp2NewTab-liste" align="center">
+											<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, "") %>" name="<%=process.getNOM_PB_VISUALISATION_COMPTEUR(i)%>">
+				    						<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_VISUALISATION_COMPTEUR(i)%>">
+				    						<%if(process.peutModifierCompteur(i)){ %>
+											<INPUT title="modifier" type="image" src="images/modifier.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_MODIFIER_COMPTEUR(i)%>">
+											<%} %>				
+										</td>
+										<td class="sigp2NewTab-liste" style="text-align: center;"><%=process.getVAL_ST_DATE_DEBUT(i)%></td>
+										<td class="sigp2NewTab-liste" style="text-align: center;"><%=process.getVAL_ST_DATE_FIN(i)%></td>
+										<td class="sigp2NewTab-liste" style="text-align: center;"><%=process.getVAL_ST_NB_HEURES(i)%></td>
+										<td class="sigp2NewTab-liste"><%=process.getVAL_ST_MOTIF(i)%></td>
+									</tr>
+									<%
+								}
+							%>
+						</table>	
+				</div>	
+				<%if(process.getVAL_ST_ACTION_COMPTEUR().equals(process.ACTION_VISUALISATION_COMPTEUR) || process.getVAL_ST_ACTION_COMPTEUR().equals(process.ACTION_MODIFIER_COMPTEUR)){ %>			
+					<table>
+						<tr>
+							<td width="135px;">
+								<span class="sigp2Mandatory">Organisation syndicale :</span>
+							</td>
+							<td>
+								<SELECT disabled="disabled" class="sigp2-saisie" name="<%= process.getNOM_LB_OS() %>">
+									<%=process.forComboHTML(process.getVAL_LB_OS(), process.getVAL_LB_OS_SELECT()) %>
+								</SELECT>                        
+		                    </td>
+						</tr>
+						<tr>
+							<td>
+								<span class="sigp2Mandatory">Date de début :</span>
+							</td>
+							<td>
+								<%if(process.getVAL_ST_ACTION_COMPTEUR().equals(process.ACTION_MODIFIER_COMPTEUR)){ %>
+									<input id="<%=process.getNOM_ST_DATE_DEBUT()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_DEBUT() %>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_DEBUT() %>">
+									<IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_DEBUT()%>', 'dd/mm/y');">
+								<%}else{ %>
+									<input disabled="disabled" id="<%=process.getNOM_ST_DATE_DEBUT()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_DEBUT() %>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_DEBUT() %>">
+								<%} %>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<span class="sigp2Mandatory">Date de fin :</span>
+							</td>
+							<td>
+								<%if(process.getVAL_ST_ACTION_COMPTEUR().equals(process.ACTION_MODIFIER_COMPTEUR)){ %>
+									<input id="<%=process.getNOM_ST_DATE_FIN()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_FIN() %>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_FIN() %>">
+									<IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_FIN()%>', 'dd/mm/y');">
+								<%}else{ %>
+									<input disabled="disabled" id="<%=process.getNOM_ST_DATE_FIN()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_FIN() %>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_FIN() %>">
+								<%} %>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<span class="sigp2Mandatory">Nb heures :</span>
+							</td>
+							<td>
+								<%if(process.getVAL_ST_ACTION_COMPTEUR().equals(process.ACTION_MODIFIER_COMPTEUR)){ %>
+									<INPUT class="sigp2-saisie" maxlength="4" name="<%= process.getNOM_ST_NB_HEURES() %>" size="4" type="text"  value="<%= process.getVAL_ST_NB_HEURES() %>">
+								<%}else{%>
+									<INPUT disabled="disabled" class="sigp2-saisie" maxlength="4" name="<%= process.getNOM_ST_NB_HEURES() %>" size="4" type="text"  value="<%= process.getVAL_ST_NB_HEURES() %>">
+								<%} %>								
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<span class="sigp2Mandatory">Motif :</span>
+							</td>
+							<td>
+								<%if(process.getVAL_ST_ACTION_COMPTEUR().equals(process.ACTION_MODIFIER_COMPTEUR)){ %>
+									<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_MOTIF() %>">
+										<%=process.forComboHTML(process.getVAL_LB_MOTIF(), process.getVAL_LB_MOTIF_SELECT()) %>
+									</SELECT>
+								<%}else{%>
+									<SELECT disabled="disabled" class="sigp2-saisie" name="<%= process.getNOM_LB_MOTIF() %>">
+										<%=process.forComboHTML(process.getVAL_LB_MOTIF(), process.getVAL_LB_MOTIF_SELECT()) %>
+									</SELECT>
+								<%} %>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2">
+								<INPUT type="submit" class="sigp2-Bouton-100" value="Modifier" name="<%=process.getNOM_PB_VALIDER()%>">
+		                        <INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">	
+							</td>
+						</tr>
+					</table>
+				<%} %>
 			
-			<table>
-				<tr>
-					<td width="135px;">
-						<span class="sigp2Mandatory">Oragnisation syndicale :</span>
-					</td>
-					<td>
-						<SELECT disabled="disabled" class="sigp2-saisie" name="<%= process.getNOM_LB_OS() %>">
-							<%=process.forComboHTML(process.getVAL_LB_OS(), process.getVAL_LB_OS_SELECT()) %>
-						</SELECT>
-                    </td>
-				</tr>
-				<tr>
-					<td>
-						<span class="sigp2Mandatory">Date de début :</span>
-					</td>
-					<td>
-						<INPUT class="sigp2-saisie" disabled="disabled" name="<%= process.getNOM_ST_DATE_DEBUT() %>" size="10" type="text"  value="<%= process.getVAL_ST_DATE_DEBUT()%>">
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<span class="sigp2Mandatory">Date de fin :</span>
-					</td>
-					<td>
-						<INPUT class="sigp2-saisie" disabled="disabled" name="<%= process.getNOM_ST_DATE_FIN() %>" size="10" type="text"  value="<%= process.getVAL_ST_DATE_FIN() %>">
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<span class="sigp2Mandatory">Nb heures :</span>
-					</td>
-					<td>
-						<INPUT class="sigp2-saisie" disabled="disabled" name="<%= process.getNOM_ST_NB_HEURES() %>" size="10" type="text"  value="<%= process.getVAL_ST_NB_HEURES() %>">
-					</td>
-				</tr>				
-				<tr>
-					<td width="135px;">
-						<span class="sigp2Mandatory">Motif :</span>
-					</td>
-					<td>
-						<SELECT disabled="disabled" class="sigp2-saisie" name="<%= process.getNOM_LB_MOTIF() %>">
-							<%=process.forComboHTML(process.getVAL_LB_MOTIF(), process.getVAL_LB_MOTIF_SELECT()) %>
-						</SELECT>
-                    </td>
-				</tr>
-				<tr>
-					<td colspan="2">
-                        <INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">	
-					</td>
-				</tr>
-			</table>
 			<%}else if(process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION_REPRESENTANT)){ %>			
 					<table class="sigp2NewTab" style="text-align:left;width:980px;">
 							<tr bgcolor="#EFEFEF">

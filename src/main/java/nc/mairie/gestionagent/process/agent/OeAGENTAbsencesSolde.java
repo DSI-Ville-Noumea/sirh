@@ -61,7 +61,6 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 	private ArrayList<RestitutionMassiveDto> listeHistoriqueRestitutionMassive;
 
 	private ArrayList<SoldeMonthDto> listeSoldeA55;
-	private ArrayList<SoldeMonthDto> listeSoldeA52;
 	private boolean afficheSoldeAsaA52;
 	private boolean afficheSoldeAsaA48;
 	private boolean afficheSoldeAsaA54;
@@ -244,20 +243,15 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 		}
 
 		// Solde ASA A52
-		setListeSoldeA52((ArrayList<SoldeMonthDto>) soldeGlobal.getListeSoldeAsaA52());
-		setAfficheSoldeAsaA52(getListeSoldeA52().size() != 0);
-		if (getListeSoldeA52().size() != 0) {
+		setAfficheSoldeAsaA52(soldeGlobal.isAfficheSoldeAsaA52());
+		if (soldeGlobal != null) {
 			setOrganisationAgent(soldeGlobal.getOrganisationA52());
-		}
-		for (int i = 0; i < getListeSoldeA52().size(); i++) {
-			SoldeMonthDto monthDto = getListeSoldeA52().get(i);
-			String soldeAsaA52Heure = (monthDto.getSoldeAsa() / 60) == 0 ? Const.CHAINE_VIDE : monthDto.getSoldeAsa()
-					/ 60 + "h ";
-			String soldeAsaA52Minute = (monthDto.getSoldeAsa() % 60) == 0 ? "&nbsp;" : monthDto.getSoldeAsa() % 60
-					+ "m";
-			addZone(getNOM_ST_SOLDE_ASA_A52(i), soldeAsaA52Heure + soldeAsaA52Minute);
-			addZone(getNOM_ST_DEBUT_ASA_A52(i), sdf.format(monthDto.getDateDebut()));
-			addZone(getNOM_ST_FIN_ASA_A52(i), sdf.format(monthDto.getDateFin()));
+
+			String soldeAsaA52Heure = (soldeGlobal.getSoldeAsaA52() / 60) == 0 ? Const.CHAINE_VIDE : soldeGlobal
+					.getSoldeAsaA52() / 60 + "h ";
+			String soldeAsaA52Minute = (soldeGlobal.getSoldeAsaA52() % 60) == 0 ? "&nbsp;" : soldeGlobal
+					.getSoldeAsaA52() % 60 + "m";
+			addZone(getNOM_ST_SOLDE_ASA_A52(), soldeAsaA52Heure + soldeAsaA52Minute);
 		}
 
 		df.setRoundingMode(RoundingMode.DOWN);
@@ -568,7 +562,7 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 				addZone(getNOM_ST_NB_JOUR(i),
 						(soldeReposCompHeure + soldeReposCompMinute).equals(Const.CHAINE_VIDE) ? "0"
 								: (soldeReposCompHeure + soldeReposCompMinute));
-				addZone(getNOM_ST_COMMENTAIRE(i),histo.getStatus());
+				addZone(getNOM_ST_COMMENTAIRE(i), histo.getStatus());
 
 			}
 		}
@@ -717,36 +711,12 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 		this.agentDao = agentDao;
 	}
 
-	public ArrayList<SoldeMonthDto> getListeSoldeA52() {
-		return listeSoldeA52 == null ? new ArrayList<SoldeMonthDto>() : listeSoldeA52;
+	public String getNOM_ST_SOLDE_ASA_A52() {
+		return "NOM_ST_SOLDE_ASA_A52";
 	}
 
-	public void setListeSoldeA52(ArrayList<SoldeMonthDto> listeSoldeA52) {
-		this.listeSoldeA52 = listeSoldeA52;
-	}
-
-	public String getNOM_ST_SOLDE_ASA_A52(int i) {
-		return "NOM_ST_SOLDE_ASA_A52_" + i;
-	}
-
-	public String getVAL_ST_SOLDE_ASA_A52(int i) {
-		return getZone(getNOM_ST_SOLDE_ASA_A52(i));
-	}
-
-	public String getNOM_ST_DEBUT_ASA_A52(int i) {
-		return "NOM_ST_DEBUT_ASA_A52_" + i;
-	}
-
-	public String getVAL_ST_DEBUT_ASA_A52(int i) {
-		return getZone(getNOM_ST_DEBUT_ASA_A52(i));
-	}
-
-	public String getNOM_ST_FIN_ASA_A52(int i) {
-		return "NOM_ST_FIN_ASA_A52_" + i;
-	}
-
-	public String getVAL_ST_FIN_ASA_A52(int i) {
-		return getZone(getNOM_ST_FIN_ASA_A52(i));
+	public String getVAL_ST_SOLDE_ASA_A52() {
+		return getZone(getNOM_ST_SOLDE_ASA_A52());
 	}
 
 	public boolean isAfficheSoldeAsaA52() {

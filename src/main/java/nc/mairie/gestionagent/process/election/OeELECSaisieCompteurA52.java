@@ -53,10 +53,11 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 	public static final int STATUT_RECHERCHER_AGENT_CREATE = 1;
 	private Logger logger = LoggerFactory.getLogger(OeELECSaisieCompteurA52.class);
 
+	private ArrayList<OrganisationSyndicaleDto> listeOrganisationSyndicaleExistante;
+	private OrganisationSyndicaleDto organisationCourante;
 	private ArrayList<CompteurDto> listeCompteur;
 	private CompteurDto compteurCourant;
 	private ArrayList<OrganisationSyndicaleDto> listeOrganisationSyndicale;
-	private OrganisationSyndicaleDto organisationCourante;
 	private ArrayList<AgentOrganisationSyndicaleDto> listeRepresentant;
 	private String[] LB_OS;
 	private String[] LB_MOTIF;
@@ -69,6 +70,8 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 	public String ACTION_MODIFICATION_REPRESENTANT = "Modification des représentants -";
 	public String ACTION_CREATION_REPRE = "Création d'un représentant -";
 	public String ACTION_MODIFICATION_REPRE = "Modification d'un représentant -";
+	public String ACTION_VISUALISATION_COMPTEUR = "Visu compteur -";
+	public String ACTION_MODIFIER_COMPTEUR = "Modif compteur";
 
 	private AgentDao agentDao;
 
@@ -104,7 +107,7 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 		// Initialisation des listes deroulantes
 		initialiseListeDeroulante();
 
-		initialiseListeCompteur(request);
+		initialiseListeOSExistant(request);
 
 		if (etatStatut() == STATUT_RECHERCHER_AGENT_CREATE) {
 			Agent agt = (Agent) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
@@ -113,6 +116,20 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 				addZone(getNOM_ST_AGENT_CREATE(), agt.getNomatr().toString());
 			}
 		}
+	}
+
+	private void initialiseListeOSExistant(HttpServletRequest request) {
+		SirhAbsWSConsumer consum = new SirhAbsWSConsumer();
+		ArrayList<OrganisationSyndicaleDto> listeOS = (ArrayList<OrganisationSyndicaleDto>) consum
+				.getListeOSCompteursA52();
+		logger.debug("Taille liste des AS ASA A52 : " + listeOS.size());
+
+		for (OrganisationSyndicaleDto vo : listeOS) {
+			Integer indiceLigne = vo.getIdOrganisation();
+			addZone(getNOM_ST_SIGLE_OS(indiceLigne), vo.getSigle());
+			addZone(getNOM_ST_OS(indiceLigne), vo.getLibelle());
+		}
+		setListeOrganisationSyndicaleExistante(listeOS);
 	}
 
 	private void initialiseDao() {
@@ -167,43 +184,6 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 		return getZone(getNOM_ST_ACTION());
 	}
 
-	private void initialiseListeCompteur(HttpServletRequest request) throws Exception {
-		SirhAbsWSConsumer consum = new SirhAbsWSConsumer();
-		ArrayList<CompteurDto> listeCompteur = (ArrayList<CompteurDto>) consum.getListeCompteursA52();
-		logger.debug("Taille liste des compteurs ASA A52 : " + listeCompteur.size());
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-
-		List<VoAgentCompteur> listCompteurAgent = new ArrayList<VoAgentCompteur>();
-		for (CompteurDto dto : listeCompteur) {
-			VoAgentCompteur voCompteur = new VoAgentCompteur(dto, null);
-			voCompteur.setNom(dto.getOrganisationSyndicaleDto().getSigle());
-			listCompteurAgent.add(voCompteur);
-		}
-		Collections.sort(listCompteurAgent);
-		
-		ArrayList<CompteurDto> listeCompteurTriee = new ArrayList<CompteurDto>();
-		int indiceLigne = 0;
-		for (VoAgentCompteur vo : listCompteurAgent) {
-
-			addZone(getNOM_ST_OS(indiceLigne), vo.getCompteur().getOrganisationSyndicaleDto().getSigle() + " - "
-					+ vo.getCompteur().getOrganisationSyndicaleDto().getLibelle());
-			addZone(getNOM_ST_DATE_DEBUT(indiceLigne), sdf.format(vo.getCompteur().getDateDebut()));
-			addZone(getNOM_ST_DATE_FIN(indiceLigne), sdf.format(vo.getCompteur().getDateFin()));
-			String soldeAsaA52Heure = (vo.getCompteur().getDureeAAjouter().intValue() / 60) == 0 ? Const.CHAINE_VIDE : vo.getCompteur()
-					.getDureeAAjouter().intValue() / 60 + "h ";
-			String soldeAsaA52Minute = (vo.getCompteur().getDureeAAjouter().intValue() % 60) == 0 ? "&nbsp;" : vo.getCompteur()
-					.getDureeAAjouter().intValue() % 60 + "m";
-			addZone(getNOM_ST_NB_HEURES(indiceLigne), soldeAsaA52Heure + soldeAsaA52Minute);
-			addZone(getNOM_ST_MOTIF(indiceLigne),  vo.getCompteur().getMotifCompteurDto() == null ? Const.CHAINE_VIDE
-					:vo.getCompteur().getMotifCompteurDto().getLibelle());
-
-			indiceLigne++;
-			
-			listeCompteurTriee.add(vo.getCompteur());
-		}
-		setListeCompteur(listeCompteurTriee);
-	}
-
 	@Override
 	public boolean recupererStatut(HttpServletRequest request) throws Exception {
 
@@ -225,31 +205,35 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 				return performPB_VALIDER(request);
 			}
 
-			// Si clic sur le bouton PB_MODIFIER
-			for (int i = 0; i < getListeCompteur().size(); i++) {
+			for (int j = 0; j < getListeOrganisationSyndicaleExistante().size(); j++) {
+				Integer i = getListeOrganisationSyndicaleExistante().get(j).getIdOrganisation();
+				// Si clic sur le bouton PB_MODIFIER
 				if (testerParametre(request, getNOM_PB_MODIFIER(i))) {
 					return performPB_MODIFIER(request, i);
 				}
-			}
-
-			// Si clic sur le bouton PB_VISUALISER
-			for (int i = 0; i < getListeCompteur().size(); i++) {
+				// Si clic sur le bouton PB_VISUALISER
 				if (testerParametre(request, getNOM_PB_VISUALISATION(i))) {
 					return performPB_VISUALISATION(request, i);
 				}
-			}
-
-			// Si clic sur le bouton PB_VISU_REPRESENTANT
-			for (int i = 0; i < getListeCompteur().size(); i++) {
+				// Si clic sur le bouton PB_VISU_REPRESENTANT
 				if (testerParametre(request, getNOM_PB_VISU_REPRESENTANT(i))) {
 					return performPB_VISU_REPRESENTANT(request, i);
 				}
-			}
-
-			for (int i = 0; i < getListeCompteur().size(); i++) {
 				// Si clic sur le bouton PB_MODIFIER_REPRESENTANT
 				if (testerParametre(request, getNOM_PB_MODIFIER_REPRESENTANT(i))) {
 					return performPB_MODIFIER_REPRESENTANT(request, i);
+				}
+			}
+
+			for (int j = 0; j < getListeCompteur().size(); j++) {
+				Integer i = getListeCompteur().get(j).getIdCompteur();
+				// Si clic sur le bouton PB_MODIFIER_COMPTEUR
+				if (testerParametre(request, getNOM_PB_MODIFIER_COMPTEUR(i))) {
+					return performPB_MODIFIER_COMPTEUR(request, i);
+				}
+				// Si clic sur le bouton PB_VISUALISATION_COMPTEUR
+				if (testerParametre(request, getNOM_PB_VISUALISATION_COMPTEUR(i))) {
+					return performPB_VISUALISATION_COMPTEUR(request, i);
 				}
 			}
 
@@ -290,12 +274,12 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 		return true;
 	}
 
-	public ArrayList<CompteurDto> getListeCompteur() {
-		return listeCompteur == null ? new ArrayList<CompteurDto>() : listeCompteur;
+	public String getNOM_ST_SIGLE_OS(int i) {
+		return "NOM_ST_SIGLE_OS" + i;
 	}
 
-	public void setListeCompteur(ArrayList<CompteurDto> listeCompteur) {
-		this.listeCompteur = listeCompteur;
+	public String getVAL_ST_SIGLE_OS(int i) {
+		return getZone(getNOM_ST_SIGLE_OS(i));
 	}
 
 	public String getNOM_ST_OS(int i) {
@@ -346,7 +330,7 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 		addZone(getNOM_LB_OS_SELECT(), Const.ZERO);
 		addZone(getNOM_ST_AGENT_CREATE(), Const.CHAINE_VIDE);
 		addZone(getNOM_RG_REPRESENTANT_INACTIF(), getNOM_RB_NON());
-		setCompteurCourant(null);
+		setOrganisationCourante(null);
 	}
 
 	public String getNOM_PB_AJOUTER() {
@@ -357,7 +341,6 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION(), ACTION_CREATION);
 		videZonesDeSaisie(request);
-
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
@@ -369,19 +352,20 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 	public boolean performPB_MODIFIER(HttpServletRequest request, int indiceEltAModifier) throws Exception {
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+		addZone(getNOM_ST_ACTION_COMPTEUR(), Const.CHAINE_VIDE);
 		videZonesDeSaisie(request);
 
-		CompteurDto compteurCourant = (CompteurDto) getListeCompteur().get(indiceEltAModifier);
-		setCompteurCourant(compteurCourant);
-		setOrganisationCourante(compteurCourant.getOrganisationSyndicaleDto());
+		OrganisationSyndicaleDto dto = new OrganisationSyndicaleDto();
+		dto.setIdOrganisation(indiceEltAModifier);
 
-		if (!initialiseCompteurCourant(request, compteurCourant))
-			return false;
+		OrganisationSyndicaleDto osCourant = (OrganisationSyndicaleDto) getListeOrganisationSyndicaleExistante().get(
+				getListeOrganisationSyndicaleExistante().indexOf(dto));
+		setOrganisationCourante(osCourant);
 
-		if (getListeRepresentant().size() == 0) {
-			setListeRepresentant((ArrayList<AgentOrganisationSyndicaleDto>) compteurCourant
-					.getOrganisationSyndicaleDto().getListeAgents());
-		}
+		SirhAbsWSConsumer consu = new SirhAbsWSConsumer();
+		setListeCompteur((ArrayList<CompteurDto>) consu.getListeCompteursA52(getOrganisationCourante()
+				.getIdOrganisation()));
+		afficheListeCompteur(request, getListeCompteur());
 
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION(), ACTION_MODIFICATION);
@@ -390,21 +374,20 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 		return true;
 	}
 
-	private boolean initialiseCompteurCourant(HttpServletRequest request, CompteurDto dto) {
+	private void afficheListeCompteur(HttpServletRequest request, List<CompteurDto> listeCompteursA52) {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-
-		int ligneOS = getListeOrganisationSyndicale().indexOf(dto.getOrganisationSyndicaleDto());
-		addZone(getNOM_LB_OS_SELECT(), String.valueOf(ligneOS + 1));
-		int ligneMotif = getListeMotifCompteur().indexOf(dto.getMotifCompteurDto());
-		addZone(getNOM_LB_MOTIF_SELECT(), String.valueOf(ligneMotif + 1));
-		addZone(getNOM_ST_DATE_DEBUT(), sdf.format(dto.getDateDebut()));
-		addZone(getNOM_ST_DATE_FIN(), sdf.format(dto.getDateFin()));
-		String soldeAsaA52Heure = (dto.getDureeAAjouter().intValue() / 60) == 0 ? Const.CHAINE_VIDE : dto
-				.getDureeAAjouter().intValue() / 60 + Const.CHAINE_VIDE;
-		String soldeAsaA52Minute = (dto.getDureeAAjouter().intValue() % 60) == 0 ? Const.CHAINE_VIDE : "."
-				+ dto.getDureeAAjouter().intValue() % 60;
-		addZone(getNOM_ST_NB_HEURES(), soldeAsaA52Heure + soldeAsaA52Minute);
-		return true;
+		for (CompteurDto vo : listeCompteursA52) {
+			Integer indiceLigne = vo.getIdCompteur();
+			addZone(getNOM_ST_DATE_DEBUT(indiceLigne), sdf.format(vo.getDateDebut()));
+			addZone(getNOM_ST_DATE_FIN(indiceLigne), sdf.format(vo.getDateFin()));
+			String soldeAsaA52Heure = (vo.getDureeAAjouter().intValue() / 60) == 0 ? Const.CHAINE_VIDE : vo
+					.getDureeAAjouter().intValue() / 60 + "h ";
+			String soldeAsaA52Minute = (vo.getDureeAAjouter().intValue() % 60) == 0 ? "&nbsp;" : vo.getDureeAAjouter()
+					.intValue() % 60 + "m";
+			addZone(getNOM_ST_NB_HEURES(indiceLigne), soldeAsaA52Heure + soldeAsaA52Minute);
+			addZone(getNOM_ST_MOTIF(indiceLigne), vo.getMotifCompteurDto() == null ? Const.CHAINE_VIDE : vo
+					.getMotifCompteurDto().getLibelle());
+		}
 	}
 
 	public String getNOM_PB_VISUALISATION(int i) {
@@ -414,13 +397,20 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 	public boolean performPB_VISUALISATION(HttpServletRequest request, int indiceEltAConsulter) throws Exception {
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+		addZone(getNOM_ST_ACTION_COMPTEUR(), Const.CHAINE_VIDE);
 		videZonesDeSaisie(request);
 
-		CompteurDto compteurCourant = (CompteurDto) getListeCompteur().get(indiceEltAConsulter);
-		setOrganisationCourante(compteurCourant.getOrganisationSyndicaleDto());
+		OrganisationSyndicaleDto dto = new OrganisationSyndicaleDto();
+		dto.setIdOrganisation(indiceEltAConsulter);
 
-		if (!initialiseCompteurCourant(request, compteurCourant))
-			return false;
+		OrganisationSyndicaleDto osCourant = (OrganisationSyndicaleDto) getListeOrganisationSyndicaleExistante().get(
+				getListeOrganisationSyndicaleExistante().indexOf(dto));
+		setOrganisationCourante(osCourant);
+
+		SirhAbsWSConsumer consu = new SirhAbsWSConsumer();
+		setListeCompteur((ArrayList<CompteurDto>) consu.getListeCompteursA52(getOrganisationCourante()
+				.getIdOrganisation()));
+		afficheListeCompteur(request, getListeCompteur());
 
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION(), ACTION_VISUALISATION);
@@ -606,14 +596,6 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 		return true;
 	}
 
-	public boolean peutModifierCompteur(int i) {
-		CompteurDto compteurCourant = (CompteurDto) getListeCompteur().get(i);
-		if (compteurCourant.getDateFin().compareTo(new Date()) < 0) {
-			return false;
-		}
-		return true;
-	}
-
 	private String[] getLB_MOTIF() {
 		if (LB_MOTIF == null)
 			LB_MOTIF = initialiseLazyLB();
@@ -703,11 +685,19 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 		videZonesDeSaisie(request);
 
-		CompteurDto compteurCourant = (CompteurDto) getListeCompteur().get(indiceEltAConsulter);
-		setOrganisationCourante(compteurCourant.getOrganisationSyndicaleDto());
+		OrganisationSyndicaleDto dto = new OrganisationSyndicaleDto();
+		dto.setIdOrganisation(indiceEltAConsulter);
 
-		setListeRepresentant((ArrayList<AgentOrganisationSyndicaleDto>) compteurCourant.getOrganisationSyndicaleDto()
-				.getListeAgents());
+		OrganisationSyndicaleDto osCourant = (OrganisationSyndicaleDto) getListeOrganisationSyndicaleExistante().get(
+				getListeOrganisationSyndicaleExistante().indexOf(dto));
+		setOrganisationCourante(osCourant);
+
+		SirhAbsWSConsumer consum = new SirhAbsWSConsumer();
+
+		ArrayList<AgentOrganisationSyndicaleDto> listeAgent = (ArrayList<AgentOrganisationSyndicaleDto>) consum
+				.getListeRepresentantA52(getOrganisationCourante().getIdOrganisation());
+
+		setListeRepresentant(listeAgent);
 
 		if (!affichageRepresentant(request))
 			return false;
@@ -728,11 +718,19 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 		videZonesDeSaisie(request);
 
-		CompteurDto compteurCourant = (CompteurDto) getListeCompteur().get(indiceEltAModifier);
-		setOrganisationCourante(compteurCourant.getOrganisationSyndicaleDto());
+		OrganisationSyndicaleDto dto = new OrganisationSyndicaleDto();
+		dto.setIdOrganisation(indiceEltAModifier);
 
-		setListeRepresentant((ArrayList<AgentOrganisationSyndicaleDto>) compteurCourant.getOrganisationSyndicaleDto()
-				.getListeAgents());
+		OrganisationSyndicaleDto osCourant = (OrganisationSyndicaleDto) getListeOrganisationSyndicaleExistante().get(
+				getListeOrganisationSyndicaleExistante().indexOf(dto));
+		setOrganisationCourante(osCourant);
+
+		SirhAbsWSConsumer consum = new SirhAbsWSConsumer();
+
+		ArrayList<AgentOrganisationSyndicaleDto> listeAgent = (ArrayList<AgentOrganisationSyndicaleDto>) consum
+				.getListeRepresentantA52(getOrganisationCourante().getIdOrganisation());
+
+		setListeRepresentant(listeAgent);
 
 		if (!affichageRepresentant(request))
 			return false;
@@ -752,11 +750,13 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 			listeVoAgentCompteur.add(new VoAgentCompteur(dto, agent));
 		}
 		Collections.sort(listeVoAgentCompteur);
-		
+
 		ArrayList<AgentOrganisationSyndicaleDto> listeRepresentantsTriee = new ArrayList<AgentOrganisationSyndicaleDto>();
 		for (VoAgentCompteur vo : listeVoAgentCompteur) {
-			addZone(getNOM_ST_AGENT_REPRESENTANT(vo.getAgentOS().getIdAgent()), vo.getAgent().getNomAgent() + " " + vo.getAgent().getPrenomAgent());
-			addZone(getNOM_ST_AGENT_REPRESENTANT_ACTIF(vo.getAgentOS().getIdAgent()), vo.getAgentOS().isActif() ? "oui" : "non");
+			addZone(getNOM_ST_AGENT_REPRESENTANT(vo.getAgentOS().getIdAgent()), vo.getAgent().getNomAgent() + " "
+					+ vo.getAgent().getPrenomAgent());
+			addZone(getNOM_ST_AGENT_REPRESENTANT_ACTIF(vo.getAgentOS().getIdAgent()), vo.getAgentOS().isActif() ? "oui"
+					: "non");
 			listeRepresentantsTriee.add(vo.getAgentOS());
 		}
 		setListeRepresentant(listeRepresentantsTriee);
@@ -993,11 +993,115 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 		return false;
 	}
 
+	public ArrayList<OrganisationSyndicaleDto> getListeOrganisationSyndicaleExistante() {
+		return listeOrganisationSyndicaleExistante == null ? new ArrayList<OrganisationSyndicaleDto>()
+				: listeOrganisationSyndicaleExistante;
+	}
+
+	public void setListeOrganisationSyndicaleExistante(
+			ArrayList<OrganisationSyndicaleDto> listeOrganisationSyndicaleExistante) {
+		this.listeOrganisationSyndicaleExistante = listeOrganisationSyndicaleExistante;
+	}
+
+	public ArrayList<CompteurDto> getListeCompteur() {
+		return listeCompteur == null ? new ArrayList<CompteurDto>() : listeCompteur;
+	}
+
+	public void setListeCompteur(ArrayList<CompteurDto> listeCompteur) {
+		this.listeCompteur = listeCompteur;
+	}
+
 	public CompteurDto getCompteurCourant() {
 		return compteurCourant;
 	}
 
 	public void setCompteurCourant(CompteurDto compteurCourant) {
 		this.compteurCourant = compteurCourant;
+	}
+
+	public boolean peutModifierCompteur(int i) {
+		CompteurDto dto = new CompteurDto();
+		dto.setIdCompteur(i);
+		CompteurDto compteurCourant = (CompteurDto) getListeCompteur().get(getListeCompteur().indexOf(dto));
+		if (compteurCourant.getDateFin().compareTo(new Date()) < 0) {
+			return false;
+		}
+		return true;
+	}
+
+	public String getNOM_PB_VISUALISATION_COMPTEUR(int i) {
+		return "NOM_PB_VISUALISATION_COMPTEUR" + i;
+	}
+
+	public boolean performPB_VISUALISATION_COMPTEUR(HttpServletRequest request, int indiceEltAConsulter)
+			throws Exception {
+		// On nomme l'action
+		addZone(getNOM_ST_ACTION_COMPTEUR(), Const.CHAINE_VIDE);
+		videZonesDeSaisie(request);
+
+		CompteurDto dto = new CompteurDto();
+		dto.setIdCompteur(indiceEltAConsulter);
+
+		CompteurDto cptCourant = (CompteurDto) getListeCompteur().get(getListeCompteur().indexOf(dto));
+		setCompteurCourant(cptCourant);
+
+		if (!initialiseCompteurCourant(request, getCompteurCourant()))
+			return false;
+
+		// On nomme l'action
+		addZone(getNOM_ST_ACTION_COMPTEUR(), ACTION_VISUALISATION_COMPTEUR);
+
+		setStatut(STATUT_MEME_PROCESS);
+		return true;
+	}
+
+	public String getNOM_PB_MODIFIER_COMPTEUR(int i) {
+		return "NOM_PB_MODIFIER_COMPTEUR" + i;
+	}
+
+	public boolean performPB_MODIFIER_COMPTEUR(HttpServletRequest request, int indiceEltAConsulter) throws Exception {
+		// On nomme l'action
+		addZone(getNOM_ST_ACTION_COMPTEUR(), Const.CHAINE_VIDE);
+		videZonesDeSaisie(request);
+
+		CompteurDto dto = new CompteurDto();
+		dto.setIdCompteur(indiceEltAConsulter);
+
+		CompteurDto cptCourant = (CompteurDto) getListeCompteur().get(getListeCompteur().indexOf(dto));
+		setCompteurCourant(cptCourant);
+
+		if (!initialiseCompteurCourant(request, getCompteurCourant()))
+			return false;
+
+		// On nomme l'action
+		addZone(getNOM_ST_ACTION_COMPTEUR(), ACTION_MODIFIER_COMPTEUR);
+
+		setStatut(STATUT_MEME_PROCESS);
+		return true;
+	}
+
+	private boolean initialiseCompteurCourant(HttpServletRequest request, CompteurDto dto) {
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+
+		int ligneOS = getListeOrganisationSyndicale().indexOf(dto.getOrganisationSyndicaleDto());
+		addZone(getNOM_LB_OS_SELECT(), String.valueOf(ligneOS + 1));
+		int ligneMotif = getListeMotifCompteur().indexOf(dto.getMotifCompteurDto());
+		addZone(getNOM_LB_MOTIF_SELECT(), String.valueOf(ligneMotif + 1));
+		addZone(getNOM_ST_DATE_DEBUT(), sdf.format(dto.getDateDebut()));
+		addZone(getNOM_ST_DATE_FIN(), sdf.format(dto.getDateFin()));
+		String soldeAsaA52Heure = (dto.getDureeAAjouter().intValue() / 60) == 0 ? Const.CHAINE_VIDE : dto
+				.getDureeAAjouter().intValue() / 60 + Const.CHAINE_VIDE;
+		String soldeAsaA52Minute = (dto.getDureeAAjouter().intValue() % 60) == 0 ? Const.CHAINE_VIDE : "."
+				+ dto.getDureeAAjouter().intValue() % 60;
+		addZone(getNOM_ST_NB_HEURES(), soldeAsaA52Heure + soldeAsaA52Minute);
+		return true;
+	}
+
+	public String getNOM_ST_ACTION_COMPTEUR() {
+		return "NOM_ST_ACTION_COMPTEUR";
+	}
+
+	public String getVAL_ST_ACTION_COMPTEUR() {
+		return getZone(getNOM_ST_ACTION_COMPTEUR());
 	}
 }

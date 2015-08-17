@@ -3,6 +3,7 @@ package nc.mairie.spring.ws;
 import java.util.List;
 
 import nc.mairie.gestionagent.absence.dto.ActeursDto;
+import nc.mairie.gestionagent.absence.dto.AgentOrganisationSyndicaleDto;
 import nc.mairie.gestionagent.absence.dto.CompteurDto;
 import nc.mairie.gestionagent.absence.dto.DemandeDto;
 import nc.mairie.gestionagent.absence.dto.HistoriqueSoldeDto;
@@ -54,8 +55,7 @@ public interface ISirhAbsWSConsumer {
 
 	List<AgentDto> getAgentsOperateur(Integer idAgentApprobateur, Integer idAgentOperateur);
 
-	ReturnMessageDto saveAgentsOperateur(Integer idAgentApprobateur, Integer idAgentOperateur,
-			List<AgentDto> listSelect);
+	ReturnMessageDto saveAgentsOperateur(Integer idAgentApprobateur, Integer idAgentOperateur, List<AgentDto> listSelect);
 
 	// OS
 	List<OrganisationSyndicaleDto> getListeOrganisationSyndicale();
@@ -63,6 +63,10 @@ public interface ISirhAbsWSConsumer {
 	ReturnMessageDto saveOrganisationSyndicale(String json);
 
 	ReturnMessageDto saveRepresentantAsaA52(Integer idOrganisationSyndicale, String json);
+
+	List<OrganisationSyndicaleDto> getListeOSCompteursA52();
+
+	List<AgentOrganisationSyndicaleDto> getListeRepresentantA52(Integer idOrganisation);
 
 	// Type d'absences
 	List<RefGroupeAbsenceDto> getRefGroupeAbsence();
@@ -111,7 +115,7 @@ public interface ISirhAbsWSConsumer {
 
 	List<CompteurDto> getListeCompteursA55();
 
-	List<CompteurDto> getListeCompteursA52();
+	List<CompteurDto> getListeCompteursA52(Integer idOrganisation);
 
 	List<CompteurDto> getListeCompteursA53();
 
@@ -163,13 +167,10 @@ public interface ISirhAbsWSConsumer {
 	// bases congés
 	ReturnMessageDto createNouvelleAnneeBaseConges(Integer anneeCreation);
 
-	List<RestitutionMassiveDto> getHistoRestitutionMassiveByIdAgent(
-			Integer idAgent);
+	List<RestitutionMassiveDto> getHistoRestitutionMassiveByIdAgent(Integer idAgent);
 
-	List<AgentDto> getAgentsViseur(Integer idAgentApprobateur,
-			Integer idAgentViseur);
+	List<AgentDto> getAgentsViseur(Integer idAgentApprobateur, Integer idAgentViseur);
 
-	ReturnMessageDto saveAgentsViseur(Integer idAgentApprobateur,
-			Integer idAgentViseur, List<AgentDto> listSelect);
+	ReturnMessageDto saveAgentsViseur(Integer idAgentApprobateur, Integer idAgentViseur, List<AgentDto> listSelect);
 
 }
