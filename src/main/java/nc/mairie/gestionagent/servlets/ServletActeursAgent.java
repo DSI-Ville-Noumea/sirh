@@ -1,6 +1,7 @@
 package nc.mairie.gestionagent.servlets;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -39,6 +40,7 @@ public class ServletActeursAgent extends javax.servlet.http.HttpServlet {
 		try {
 			String nomatr = req.getParameter("nomatr");
 			String typeDemande = req.getParameter("typeDemande");
+			String dateDemande = req.getParameter("dateDemande");
 			ActeursDto dto = consuAbs.getListeActeurs(new Integer(900+nomatr));
 			
 			StringBuffer result = new StringBuffer();
@@ -85,6 +87,7 @@ public class ServletActeursAgent extends javax.servlet.http.HttpServlet {
 				FiltreSoldeDto filtreDto = new FiltreSoldeDto();
 				filtreDto.setDateDebut(dateDeb);
 				filtreDto.setDateFin(dateFin);
+				filtreDto.setDateDemande(dateDemande==null || dateDemande.equals(Const.CHAINE_VIDE)? null : new SimpleDateFormat("dd/MM/yyyy").parse(dateDemande));
 				filtreDto.setTypeDemande(new Integer(typeDemande));
 				String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class)
 						.deepSerialize(filtreDto);

@@ -6,6 +6,7 @@ public class FiltreSoldeDto {
 
 	private Date dateDebut;
 	private Date dateFin;
+	private Date dateDemande;
 	private Integer typeDemande;
 
 	public Date getDateDebut() {
@@ -30,6 +31,14 @@ public class FiltreSoldeDto {
 
 	public void setTypeDemande(Integer typeDemande) {
 		this.typeDemande = typeDemande;
+	}
+
+	public Date getDateDemande() {
+		return dateDemande;
+	}
+
+	public void setDateDemande(Date dateDemande) {
+		this.dateDemande = dateDemande;
 	}
 	
 }

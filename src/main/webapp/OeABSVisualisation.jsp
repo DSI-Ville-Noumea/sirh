@@ -1,3 +1,4 @@
+<%@page import="java.text.SimpleDateFormat"%>
 <%@ page contentType="text/html; charset=UTF-8" %> 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <%@page import="nc.mairie.enums.EnumTypeGroupeAbsence"%>
@@ -154,10 +155,10 @@
                     return 0;
                 }
 
-                function loadActeursAgent(nomatr, id, typeDemande) {     
+                function loadActeursAgent(nomatr, id, typeDemande, dateDemande) {     
           			
                 	if(''==document.getElementById('ActeursAgent'+id).title) {
-              		  	var url = "ActeursAgentAbsence?nomatr=" + nomatr + "&typeDemande=" + typeDemande;
+              		  	var url = "ActeursAgentAbsence?nomatr=" + nomatr + "&typeDemande=" + typeDemande+ "&dateDemande=" + dateDemande;
 	          
 	                	$.ajax({
 	                		type: "GET",
@@ -403,7 +404,7 @@
                             </td>                            
                             <td width="30px"><%=process.getVAL_ST_MATRICULE(indiceAbs)%></td> 
                             <td width="150px"><a id="ActeursAgent<%=indiceAbs %>" style="hover:cursor:pointer;" 
-                            	onmouseover="loadActeursAgent('<%=process.getVAL_ST_MATRICULE(indiceAbs)%>','<%=indiceAbs %>', '<%=abs.getIdTypeDemande() %>')" >
+                            	onmouseover="loadActeursAgent('<%=process.getVAL_ST_MATRICULE(indiceAbs)%>','<%=indiceAbs %>', '<%=abs.getIdTypeDemande() %>', '<%=new SimpleDateFormat("dd/MM/yyyy").format(abs.getDateDebut()) %>')" >
                             	<%=process.getVAL_ST_AGENT(indiceAbs)%></a></td> 
                             <td width="40px"><%=process.getVAL_ST_INFO_AGENT(indiceAbs)%></td>  
                             <td width="150px"><%=process.getVAL_ST_TYPE(indiceAbs)%></td>
