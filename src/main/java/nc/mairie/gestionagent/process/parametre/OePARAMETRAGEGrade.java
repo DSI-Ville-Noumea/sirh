@@ -1016,15 +1016,15 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 			if (Integer.parseInt(getVAL_EF_DUREE_MIN()) > 0) {
 				// "ERR187",
 				// "Si le motif d'avancement est @. Alors @ doit être egal a 0."
-				getTransaction().declarerErreur(
-						MessageUtils.getMessage("ERR187", motifAvct.getCode(), "durée minimum"));
+				getTransaction()
+						.declarerErreur(MessageUtils.getMessage("ERR187", motifAvct.getCode(), "durée minimum"));
 				return false;
 			}
 			if (Integer.parseInt(getVAL_EF_DUREE_MAX()) > 0) {
 				// "ERR187",
 				// "Si le motif d'avancement est @. Alors @ doit être egal a 0."
-				getTransaction().declarerErreur(
-						MessageUtils.getMessage("ERR187", motifAvct.getCode(), "durée maximum"));
+				getTransaction()
+						.declarerErreur(MessageUtils.getMessage("ERR187", motifAvct.getCode(), "durée maximum"));
 				return false;
 			}
 		} else if (motifAvct != null) {
@@ -1041,7 +1041,8 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 
 		Grade gradePrecedant = getGradePrecedant();
 		Grade gradeSuivant = getGradeSuivant();
-		if (gradePrecedant != null && Services.estNumerique(gradePrecedant.getIban())) {
+		if (gradePrecedant != null && Services.estNumerique(gradePrecedant.getIban())
+				&& Services.estNumerique(bareme.getIban())) {
 			if (Integer.parseInt(gradePrecedant.getIban()) >= Integer.parseInt(bareme.getIban())) {
 				// "ERR142",
 				// "L'IBAN doit etre supérieur a l'IBAN du grade précédant."
@@ -1049,7 +1050,8 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 				return false;
 			}
 		}
-		if (gradeSuivant != null && Services.estNumerique(gradeSuivant.getIban())) {
+		if (gradeSuivant != null && Services.estNumerique(gradeSuivant.getIban())
+				&& Services.estNumerique(bareme.getIban())) {
 			if (Integer.parseInt(gradeSuivant.getIban()) <= Integer.parseInt(bareme.getIban())) {
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR143"));
 				return false;
