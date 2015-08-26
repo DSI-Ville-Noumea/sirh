@@ -26,7 +26,7 @@ public class RubriqueChargeDao extends SirhDao implements RubriqueChargeDaoInter
 	@Override
 	public List<RubriqueCharge> getListRubriqueCharge() {
 		ArrayList<RubriqueCharge> liste = new ArrayList<RubriqueCharge>();
-		String sql = "SELECT * from " + NOM_TABLE;
+		String sql = "SELECT * from " + NOM_TABLE + " order by " + CHAMP_ID;
 
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql);
 		for (Map<String, Object> row : rows) {
