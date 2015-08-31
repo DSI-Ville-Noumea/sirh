@@ -330,7 +330,6 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 		addZone(getNOM_LB_OS_SELECT(), Const.ZERO);
 		addZone(getNOM_ST_AGENT_CREATE(), Const.CHAINE_VIDE);
 		addZone(getNOM_RG_REPRESENTANT_INACTIF(), getNOM_RB_NON());
-		setOrganisationCourante(null);
 	}
 
 	public String getNOM_PB_AJOUTER() {
@@ -341,6 +340,7 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION(), ACTION_CREATION);
 		videZonesDeSaisie(request);
+		setOrganisationCourante(null);
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
@@ -354,6 +354,7 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 		addZone(getNOM_ST_ACTION_COMPTEUR(), Const.CHAINE_VIDE);
 		videZonesDeSaisie(request);
+		setOrganisationCourante(null);
 
 		OrganisationSyndicaleDto dto = new OrganisationSyndicaleDto();
 		dto.setIdOrganisation(indiceEltAModifier);
@@ -399,6 +400,7 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 		addZone(getNOM_ST_ACTION_COMPTEUR(), Const.CHAINE_VIDE);
 		videZonesDeSaisie(request);
+		setOrganisationCourante(null);
 
 		OrganisationSyndicaleDto dto = new OrganisationSyndicaleDto();
 		dto.setIdOrganisation(indiceEltAConsulter);
@@ -684,6 +686,7 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 		videZonesDeSaisie(request);
+		setOrganisationCourante(null);
 
 		OrganisationSyndicaleDto dto = new OrganisationSyndicaleDto();
 		dto.setIdOrganisation(indiceEltAConsulter);
@@ -717,6 +720,7 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 		videZonesDeSaisie(request);
+		setOrganisationCourante(null);
 
 		OrganisationSyndicaleDto dto = new OrganisationSyndicaleDto();
 		dto.setIdOrganisation(indiceEltAModifier);
@@ -1038,6 +1042,7 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION_COMPTEUR(), Const.CHAINE_VIDE);
 		videZonesDeSaisie(request);
+		setOrganisationCourante(null);
 
 		CompteurDto dto = new CompteurDto();
 		dto.setIdCompteur(indiceEltAConsulter);
@@ -1063,6 +1068,7 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION_COMPTEUR(), Const.CHAINE_VIDE);
 		videZonesDeSaisie(request);
+		setOrganisationCourante(null);
 
 		CompteurDto dto = new CompteurDto();
 		dto.setIdCompteur(indiceEltAConsulter);
