@@ -709,7 +709,21 @@ public class OeAGENTCharge extends BasicProcess {
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "rubriques"));
 				return false;
 			}
-			RubriqueCharge param = getRubriqueChargeDao().chercherObject(RubriqueCharge.class, r.getNorubr());
+			RubriqueCharge param = null;
+			try {
+				param = getRubriqueChargeDao().chercherObject(RubriqueCharge.class, r.getNorubr());
+			} catch (Exception e) {
+				// "ERR1491",
+				// "Cette rubrique n'est pas paramétrée.Merci de renseigner son paramétrage dans PARAMETRES/Eléments salaire/Rubrique."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR1491"));
+				return false;
+			}
+			if (param == null) {
+				// "ERR1491",
+				// "Cette rubrique n'est pas paramétrée.Merci de renseigner son paramétrage dans PARAMETRES/Eléments salaire/Rubrique."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR1491"));
+				return false;
+			}
 			// Vérification de la validité du formulaire
 			if (!performControlerChamps(request, param)) {
 				return false;

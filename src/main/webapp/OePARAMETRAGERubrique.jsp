@@ -76,7 +76,7 @@
 										<INPUT type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_CREANCIER(),process.getVAL_CK_CREANCIER())%> ><span class="sigp2-saisie">Creancier</span>
 										<INPUT type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_MATRICULE_CHARGE(),process.getVAL_CK_MATRICULE_CHARGE())%> ><span class="sigp2-saisie">Matricule charge</span>
 										<INPUT type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_MONTANT(),process.getVAL_CK_MONTANT())%> ><span class="sigp2-saisie">Montant</span>
-										<INPUT type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_DONNEES_MUTU(),process.getVAL_CK_DONNEES_MUTU())%> ><span class="sigp2-saisie">Donées mutu</span>
+										<INPUT type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_DONNEES_MUTU(),process.getVAL_CK_DONNEES_MUTU())%> ><span class="sigp2-saisie">Données mutu</span>
 									</td>
 								</tr>
 								<% if (process.ACTION_CREATION.equals(process.getVAL_ST_ACTION_RUBRIQUE())) { %>
