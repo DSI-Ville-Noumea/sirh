@@ -121,7 +121,7 @@ public class ActionFdpJobDao extends SirhDao implements ActionFdpJobDaoInterface
 	@Override
 	public List<ActionFdpJob> listerActionFdpJobDuplicationErreur() {
 		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_TYPE_ACTION + "='DUPLICATION' and "
-				+ CHAMP_STATUT + " != 'OK' order by " + CHAMP_ID + " desc ";
+				+ CHAMP_STATUT + " not like 'OK%' order by " + CHAMP_ID + " desc ";
 
 		ArrayList<ActionFdpJob> liste = new ArrayList<ActionFdpJob>();
 
