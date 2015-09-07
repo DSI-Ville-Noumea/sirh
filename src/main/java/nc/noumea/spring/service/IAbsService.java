@@ -3,6 +3,7 @@ package nc.noumea.spring.service;
 import java.util.List;
 
 import nc.mairie.gestionagent.absence.dto.ActeursDto;
+import nc.mairie.gestionagent.absence.dto.AgentOrganisationSyndicaleDto;
 import nc.mairie.gestionagent.absence.dto.CompteurDto;
 import nc.mairie.gestionagent.absence.dto.DemandeDto;
 import nc.mairie.gestionagent.absence.dto.HistoriqueSoldeDto;
@@ -152,4 +153,10 @@ public interface IAbsService {
 	ReturnMessageDto saveOrganisationSyndicale(String json);
 
 	ReturnMessageDto createNouvelleAnneeBaseConges(Integer anneeCreation);
+
+	List<OrganisationSyndicaleDto> getListeOSCompteursA52();
+
+	List<CompteurDto> getListeCompteursA52(Integer idOrganisation);
+
+	List<AgentOrganisationSyndicaleDto> getListeRepresentantA52(Integer idOrganisation);
 }

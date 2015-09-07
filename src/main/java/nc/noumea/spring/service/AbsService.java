@@ -3,6 +3,7 @@ package nc.noumea.spring.service;
 import java.util.List;
 
 import nc.mairie.gestionagent.absence.dto.ActeursDto;
+import nc.mairie.gestionagent.absence.dto.AgentOrganisationSyndicaleDto;
 import nc.mairie.gestionagent.absence.dto.CompteurDto;
 import nc.mairie.gestionagent.absence.dto.DemandeDto;
 import nc.mairie.gestionagent.absence.dto.HistoriqueSoldeDto;
@@ -38,8 +39,7 @@ public class AbsService implements IAbsService {
 	}
 
 	@Override
-	public ReturnMessageDto saveAgentsOperateur(Integer idAgentApprobateur, Integer idAgentOperateur,
-			List<AgentDto> list) {
+	public ReturnMessageDto saveAgentsOperateur(Integer idAgentApprobateur, Integer idAgentOperateur, List<AgentDto> list) {
 		return absConsumer.saveAgentsOperateur(idAgentApprobateur, idAgentOperateur, list);
 	}
 
@@ -119,8 +119,7 @@ public class AbsService implements IAbsService {
 	}
 
 	@Override
-	public List<MoisAlimAutoCongesAnnuelsDto> getListeAlimAutoCongeAnnuel(MoisAlimAutoCongesAnnuelsDto moisChoisi,
-			boolean onlyErreur) {
+	public List<MoisAlimAutoCongesAnnuelsDto> getListeAlimAutoCongeAnnuel(MoisAlimAutoCongesAnnuelsDto moisChoisi, boolean onlyErreur) {
 		return absConsumer.getListeAlimAutoCongeAnnuel(moisChoisi, onlyErreur);
 	}
 
@@ -155,10 +154,9 @@ public class AbsService implements IAbsService {
 	}
 
 	@Override
-	public List<DemandeDto> getListeDemandes(String dateDebut, String dateFin, String listIdRefEtat, Integer idRefType,
-			Integer idAgentRecherche, Integer idRefGroupe, boolean aValider, List<String> idAgentsService) {
-		return absConsumer.getListeDemandes(dateDebut, dateFin, listIdRefEtat, idRefType, idAgentRecherche,
-				idRefGroupe, aValider, idAgentsService);
+	public List<DemandeDto> getListeDemandes(String dateDebut, String dateFin, String listIdRefEtat, Integer idRefType, Integer idAgentRecherche, Integer idRefGroupe, boolean aValider,
+			List<String> idAgentsService) {
+		return absConsumer.getListeDemandes(dateDebut, dateFin, listIdRefEtat, idRefType, idAgentRecherche, idRefGroupe, aValider, idAgentsService);
 	}
 
 	@Override
@@ -167,8 +165,7 @@ public class AbsService implements IAbsService {
 	}
 
 	@Override
-	public List<OrganisationSyndicaleDto> getListeOrganisationSyndicaleActiveByAgent(Integer idAgent,
-			Integer idRefTypeAbsence) {
+	public List<OrganisationSyndicaleDto> getListeOrganisationSyndicaleActiveByAgent(Integer idAgent, Integer idRefTypeAbsence) {
 		return absConsumer.getListeOrganisationSyndicaleActiveByAgent(idAgent, idRefTypeAbsence);
 	}
 
@@ -218,10 +215,9 @@ public class AbsService implements IAbsService {
 	}
 
 	@Override
-	public List<DemandeDto> getListeDemandesAgent(Integer idAgent, String onglet, String dateDebut, String dateFin,
-			String dateDemande, String listIdRefEtat, Integer idRefType, Integer idRefGroupeAbsence) {
-		return absConsumer.getListeDemandesAgent(idAgent, onglet, dateDebut, dateFin, dateDemande, listIdRefEtat,
-				idRefType, idRefGroupeAbsence);
+	public List<DemandeDto> getListeDemandesAgent(Integer idAgent, String onglet, String dateDebut, String dateFin, String dateDemande, String listIdRefEtat, Integer idRefType,
+			Integer idRefGroupeAbsence) {
+		return absConsumer.getListeDemandesAgent(idAgent, onglet, dateDebut, dateFin, dateDemande, listIdRefEtat, idRefType, idRefGroupeAbsence);
 	}
 
 	@Override
@@ -357,6 +353,21 @@ public class AbsService implements IAbsService {
 	@Override
 	public ReturnMessageDto createNouvelleAnneeBaseConges(Integer anneeCreation) {
 		return absConsumer.createNouvelleAnneeBaseConges(anneeCreation);
+	}
+
+	@Override
+	public List<OrganisationSyndicaleDto> getListeOSCompteursA52() {
+		return absConsumer.getListeOSCompteursA52();
+	}
+
+	@Override
+	public List<CompteurDto> getListeCompteursA52(Integer idOrganisation) {
+		return absConsumer.getListeCompteursA52(idOrganisation);
+	}
+
+	@Override
+	public List<AgentOrganisationSyndicaleDto> getListeRepresentantA52(Integer idOrganisation) {
+		return absConsumer.getListeRepresentantA52(idOrganisation);
 	}
 
 }

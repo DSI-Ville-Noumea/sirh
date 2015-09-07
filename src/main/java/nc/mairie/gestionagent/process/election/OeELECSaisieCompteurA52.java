@@ -24,7 +24,6 @@ import nc.mairie.spring.dao.metier.agent.AgentDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.spring.ws.MSDateTransformer;
-import nc.mairie.spring.ws.SirhAbsWSConsumer;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
@@ -125,8 +124,7 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 	}
 
 	private void initialiseListeOSExistant(HttpServletRequest request) {
-		SirhAbsWSConsumer consum = new SirhAbsWSConsumer();
-		ArrayList<OrganisationSyndicaleDto> listeOS = (ArrayList<OrganisationSyndicaleDto>) consum.getListeOSCompteursA52();
+		ArrayList<OrganisationSyndicaleDto> listeOS = (ArrayList<OrganisationSyndicaleDto>) absService.getListeOSCompteursA52();
 		logger.debug("Taille liste des AS ASA A52 : " + listeOS.size());
 
 		for (OrganisationSyndicaleDto vo : listeOS) {
@@ -369,8 +367,7 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 		OrganisationSyndicaleDto osCourant = (OrganisationSyndicaleDto) getListeOrganisationSyndicaleExistante().get(getListeOrganisationSyndicaleExistante().indexOf(dto));
 		setOrganisationCourante(osCourant);
 
-		SirhAbsWSConsumer consu = new SirhAbsWSConsumer();
-		setListeCompteur((ArrayList<CompteurDto>) consu.getListeCompteursA52(getOrganisationCourante().getIdOrganisation()));
+		setListeCompteur((ArrayList<CompteurDto>) absService.getListeCompteursA52(getOrganisationCourante().getIdOrganisation()));
 		afficheListeCompteur(request, getListeCompteur());
 
 		// On nomme l'action
@@ -410,8 +407,7 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 		OrganisationSyndicaleDto osCourant = (OrganisationSyndicaleDto) getListeOrganisationSyndicaleExistante().get(getListeOrganisationSyndicaleExistante().indexOf(dto));
 		setOrganisationCourante(osCourant);
 
-		SirhAbsWSConsumer consu = new SirhAbsWSConsumer();
-		setListeCompteur((ArrayList<CompteurDto>) consu.getListeCompteursA52(getOrganisationCourante().getIdOrganisation()));
+		setListeCompteur((ArrayList<CompteurDto>) absService.getListeCompteursA52(getOrganisationCourante().getIdOrganisation()));
 		afficheListeCompteur(request, getListeCompteur());
 
 		// On nomme l'action
@@ -688,9 +684,8 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 		OrganisationSyndicaleDto osCourant = (OrganisationSyndicaleDto) getListeOrganisationSyndicaleExistante().get(getListeOrganisationSyndicaleExistante().indexOf(dto));
 		setOrganisationCourante(osCourant);
 
-		SirhAbsWSConsumer consum = new SirhAbsWSConsumer();
 
-		ArrayList<AgentOrganisationSyndicaleDto> listeAgent = (ArrayList<AgentOrganisationSyndicaleDto>) consum.getListeRepresentantA52(getOrganisationCourante().getIdOrganisation());
+		ArrayList<AgentOrganisationSyndicaleDto> listeAgent = (ArrayList<AgentOrganisationSyndicaleDto>) absService.getListeRepresentantA52(getOrganisationCourante().getIdOrganisation());
 
 		setListeRepresentant(listeAgent);
 
@@ -720,9 +715,8 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 		OrganisationSyndicaleDto osCourant = (OrganisationSyndicaleDto) getListeOrganisationSyndicaleExistante().get(getListeOrganisationSyndicaleExistante().indexOf(dto));
 		setOrganisationCourante(osCourant);
 
-		SirhAbsWSConsumer consum = new SirhAbsWSConsumer();
 
-		ArrayList<AgentOrganisationSyndicaleDto> listeAgent = (ArrayList<AgentOrganisationSyndicaleDto>) consum.getListeRepresentantA52(getOrganisationCourante().getIdOrganisation());
+		ArrayList<AgentOrganisationSyndicaleDto> listeAgent = (ArrayList<AgentOrganisationSyndicaleDto>) absService.getListeRepresentantA52(getOrganisationCourante().getIdOrganisation());
 
 		setListeRepresentant(listeAgent);
 
