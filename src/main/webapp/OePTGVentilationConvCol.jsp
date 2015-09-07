@@ -541,7 +541,7 @@
 	                	<legend class="sigp2Legend">Validation de la ventilation des pointages des <span style="color: red;">CONVENTIONS COLLECTIVES</span></legend>	
 		              	<span style="color: red;">Attention , cette action est irreversible !</span>    
 		              	<br>  <br>         
-		              	<%if(OePTGVentilationUtils.isVentilationEnCours("CC")){ %>
+		              	<%if(OePTGVentilationUtils.isVentilationEnCours("CC")){ %> 
 		             		<span style="color: red;">Une ventilation est en cours. Vous ne pouvez effectuer de validation.</span>		              	
 		              	<%}else if(OePTGVentilationUtils.canProcessDeversementPaie("CC")){ %>
 		              		<INPUT type="submit" class="sigp2-Bouton-200" value="Deverser dans la paie" name="<%=process.getNOM_PB_DEVERSER()%>">

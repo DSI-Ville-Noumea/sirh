@@ -7,13 +7,15 @@ import javax.servlet.http.HttpServletRequest;
 import nc.mairie.connecteur.metier.Spmtsr;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.Agent;
-import nc.mairie.metier.poste.Service;
 import nc.mairie.spring.dao.metier.poste.FichePosteDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MessageUtils;
+import nc.noumea.mairie.ads.dto.EntiteDto;
+import nc.noumea.spring.service.AdsService;
+import nc.noumea.spring.service.IAdsService;
 
 import org.springframework.context.ApplicationContext;
 
@@ -30,6 +32,8 @@ public class OeAGENTEmploisAffHisto extends BasicProcess {
 	private Agent agentCourant;
 	private ArrayList<Spmtsr> listeHistoAffectation;
 	private FichePosteDao fichePosteDao;
+
+	private IAdsService adsService;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -63,6 +67,9 @@ public class OeAGENTEmploisAffHisto extends BasicProcess {
 		if (getFichePosteDao() == null) {
 			setFichePosteDao(new FichePosteDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (null == adsService) {
+			adsService = (AdsService) context.getBean("adsService");
+		}
 	}
 
 	private void initialiseListeHistoAffectation(HttpServletRequest request) throws Exception {
@@ -73,11 +80,10 @@ public class OeAGENTEmploisAffHisto extends BasicProcess {
 		if (getListeHistoAffectation() != null) {
 			for (int i = 0; i < getListeHistoAffectation().size(); i++) {
 				Spmtsr ah = (Spmtsr) getListeHistoAffectation().get(i);
-				Service service = Service.chercherService(getTransaction(), ah.getServi());
+				EntiteDto service = adsService.getEntiteByCodeServiceSISERV(ah.getServi());
 
 				addZone(getNOM_ST_MATR(indiceHistoAff), ah.getNomatr());
-				addZone(getNOM_ST_SERV(indiceHistoAff), service.getLibService().equals(Const.CHAINE_VIDE) ? "&nbsp;"
-						: service.getLibService());
+				addZone(getNOM_ST_SERV(indiceHistoAff),service==null ? Const.CHAINE_VIDE :  service.getLabel());
 				addZone(getNOM_ST_REF_ARR(indiceHistoAff),
 						ah.getRefarr().equals(Const.CHAINE_VIDE) ? "&nbsp;" : ah.getRefarr());
 				addZone(getNOM_ST_DATE_DEBUT(indiceHistoAff), ah.getDatdeb());

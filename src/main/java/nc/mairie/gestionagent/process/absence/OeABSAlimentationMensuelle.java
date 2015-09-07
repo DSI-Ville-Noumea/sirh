@@ -9,16 +9,18 @@ import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.gestionagent.absence.dto.MoisAlimAutoCongesAnnuelsDto;
 import nc.mairie.metier.Const;
-import nc.mairie.spring.ws.SirhAbsWSConsumer;
+import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
+import nc.noumea.spring.service.IAbsService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
 
 public class OeABSAlimentationMensuelle extends BasicProcess {
 	/**
@@ -34,9 +36,19 @@ public class OeABSAlimentationMensuelle extends BasicProcess {
 	private List<MoisAlimAutoCongesAnnuelsDto> listeAlimAuto;
 	private MoisAlimAutoCongesAnnuelsDto moisCourant;
 
+	private IAbsService absService;
+
 	@Override
 	public String getJSP() {
 		return "OeABSAlimentationMensuelle.jsp";
+	}
+
+	private void initialiseDao() {
+		// on initialise le dao
+		ApplicationContext context = ApplicationContextProvider.getContext();
+		if (null == absService) {
+			absService = (IAbsService) context.getBean("absService");
+		}
 	}
 
 	public void setFocus(String focus) {
@@ -68,7 +80,7 @@ public class OeABSAlimentationMensuelle extends BasicProcess {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
-
+		initialiseDao();
 		initialiseListeMois();
 	}
 
@@ -78,8 +90,7 @@ public class OeABSAlimentationMensuelle extends BasicProcess {
 		if (getListeMois() == null || getListeMois().size() == 0) {
 
 			// on recupere la liste des mois disponible en BD dans SIRH-ABS-WS
-			SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
-			setListeMois(consuAbs.getListeMoisALimAUtoCongeAnnuel());
+			setListeMois(absService.getListeMoisALimAUtoCongeAnnuel());
 			logger.debug("Récupération des mois de la table abs_ca_alim_auto_histo : " + getListeMois().size()
 					+ " enregistrements.");
 
@@ -170,8 +181,7 @@ public class OeABSAlimentationMensuelle extends BasicProcess {
 		}
 
 		// Liste des alimentation depuis SIRH-ABS-WS
-		SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
-		setListeAlimAuto(consuAbs.getListeAlimAutoCongeAnnuel(moisChoisi, false));
+		setListeAlimAuto(absService.getListeAlimAutoCongeAnnuel(moisChoisi, false));
 		afficheAlimAuto();
 		return true;
 	}
@@ -274,8 +284,7 @@ public class OeABSAlimentationMensuelle extends BasicProcess {
 		}
 
 		// Liste des alimentation depuis SIRH-ABS-WS
-		SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
-		setListeAlimAuto(consuAbs.getListeAlimAutoCongeAnnuel(moisChoisi, true));
+		setListeAlimAuto(absService.getListeAlimAutoCongeAnnuel(moisChoisi, true));
 		afficheAlimAuto();
 		return true;
 	}

@@ -410,7 +410,7 @@
 							}else{
 						%>		
 							<%
-										if(OePTGVentilationUtils.isDeversementEnCours("F")){
+										if(OePTGVentilationUtils.isDeversementEnCours("F")){ 
 									%>
 		             			<span style="color: red;">Une validation est en cours. Vous ne pouvez effectuer de ventilation.</span>
 							<%

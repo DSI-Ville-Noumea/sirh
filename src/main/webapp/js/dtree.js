@@ -8,14 +8,14 @@
 |                                                   |
 | Updated: 17.04.2003                               |
 |--------------------------------------------------*/
-//LUC alim de la zonefunction alimZone(id,url, title, nfa, info) {	//alert(p);	d.openTo(id,true);	document.getElementById('service').value = url;	document.getElementById('codeservice').value = title;		if (document.getElementById('infoService') != null)	document.getElementById('infoService').value = title +' - ' +info;		if (document.getElementById('nfa') != null)	document.getElementById('nfa').value = nfa;		agrandirHierarchy();}
+//LUC alim de la zonefunction alimZone(id,url, title, nfa, info, isSelection) {	//alert(p);	d.openTo(id,true);	document.getElementById('service').value = url;	document.getElementById('idServiceADS').value = title;		if (document.getElementById('infoService') != null)		document.getElementById('infoService').value = info;		if (document.getElementById('nfa') != null)		document.getElementById('nfa').value = nfa;		if(isSelection == 'true') {		selectService(id,title);		var boxSelect = document.formu.elements['rbd' + id];		boxSelect.checked = true;	}else{		agrandirHierarchy();	}	document.getElementById('service').focus();}
 // Node object
-function Node(id, pid, name, url, title, nfa, target, icon, iconOpen, open) {
+function Node(id, pid, name, url, title, nfa,style, selection, target, icon, iconOpen, open) {
 	this.id = id;
 	this.pid = pid;
 	this.name = name;
 	this.url = url;
-	this.title = title;	this.nfa = nfa;
+	this.title = title;	this.nfa = nfa;	this.style = style;		this.isSelection = selection
 	this.target = target;
 	this.icon = icon;
 	this.iconOpen = iconOpen;
@@ -66,8 +66,8 @@ function dTree(objName) {
 };
 
 // Adds a new node to the node array
-dTree.prototype.add = function(id, pid, name, url, title, nfa, target, icon, iconOpen, open) {
-	this.aNodes[this.aNodes.length] = new Node(id, pid, name, url, title, nfa, target, icon, iconOpen, open);
+dTree.prototype.add = function(id, pid, name, url, title, nfa, style, selection, target, icon, iconOpen, open) {
+	this.aNodes[this.aNodes.length] = new Node(id, pid, name, url, title, nfa ,style , selection, target, icon, iconOpen, open);
 };
 
 // Open/close all nodes
@@ -130,8 +130,7 @@ dTree.prototype.node = function(node, nodeId) {
 		str += '<img id="i' + this.obj + nodeId + '" src="' + ((node._io) ? node.iconOpen : node.icon) + '" alt="" />';
 	}
 	if (node.url) {
-		//LUCstr += '<a id="s' + this.obj + nodeId + '" class="' + ((this.config.useSelection) ? ((node._is ? 'nodeSel' : 'node')) : 'node') + '" href="' + node.url + '"';		str += '<a id="s' + this.obj + nodeId + '" class="' + ((this.config.useSelection) ? ((node._is ? 'nodeSel' : 'node')) : 'node') + '" onclick="alimZone(\''+node.id+'\',\''+node.url+'\',\''+node.title+'\', \''+node.nfa+'\',\''+node.name+'\')"';		
-		if (node.title) str += ' title="' + node.title + '"';
+		//LUCstr += '<a id="s' + this.obj + nodeId + '" class="' + ((this.config.useSelection) ? ((node._is ? 'nodeSel' : 'node')) : 'node') + '" href="' + node.url + '"';				if(node.isSelection == 'true') {			str += '<a style="'+ node.style +'" id="s' + this.obj + nodeId + '"  class="' + ((this.config.useSelection) ? ((node._is ? 'nodeSel' : 'node')) : 'node') + '" >';			//on ajoute un radioButton			str += '<input type="radio" name="rb' + this.obj + node.id + '" value="\''+node.url+'\'" onclick="alimZone(\''+node.id+'\',\''+node.url+'\',\''+node.title+'\', \''+node.nfa+'\',\''+node.name+'\',\''+node.isSelection+'\')"';		}else{			str += '<a style="'+ node.style +'" id="s' + this.obj + nodeId + '"  class="' + ((this.config.useSelection) ? ((node._is ? 'nodeSel' : 'node')) : 'node') + '" onclick="alimZone(\''+node.id+'\',\''+node.url+'\',\''+node.title+'\', \''+node.nfa+'\', \''+node.name+'\',\''+node.isSelection+'\')"';		}		if (node.title) str += ' title="' + node.title + '"';
 		if (node.target) str += ' target="' + node.target + '"';
 		if (this.config.useStatusText) str += ' onmouseover="window.status=\'' + node.name + '\';return true;" onmouseout="window.status=\'\';return true;" ';
 		if (this.config.useSelection && ((node._hc && this.config.folderLinks) || !node._hc))

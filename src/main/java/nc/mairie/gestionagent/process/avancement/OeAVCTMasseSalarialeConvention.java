@@ -2,9 +2,7 @@ package nc.mairie.gestionagent.process.avancement;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Hashtable;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -22,7 +20,6 @@ import nc.mairie.metier.carriere.Carriere;
 import nc.mairie.metier.carriere.Grade;
 import nc.mairie.metier.poste.Affectation;
 import nc.mairie.metier.poste.FichePoste;
-import nc.mairie.metier.poste.Service;
 import nc.mairie.spring.dao.metier.agent.AgentDao;
 import nc.mairie.spring.dao.metier.agent.HistoPrimeDao;
 import nc.mairie.spring.dao.metier.avancement.AvancementConvColDao;
@@ -36,8 +33,9 @@ import nc.mairie.technique.UserAppli;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
-import nc.mairie.utils.TreeHierarchy;
 import nc.mairie.utils.VariablesActivite;
+import nc.noumea.mairie.ads.dto.EntiteDto;
+import nc.noumea.spring.service.IAdsService;
 
 import org.springframework.context.ApplicationContext;
 
@@ -57,8 +55,6 @@ public class OeAVCTMasseSalarialeConvention extends BasicProcess {
 	private String[] LB_ANNEE;
 
 	private String[] listeAnnee;
-	private ArrayList<Service> listeServices;
-	public Hashtable<String, TreeHierarchy> hTree = null;
 
 	private ArrayList<AvancementConvCol> listeAvct;
 
@@ -69,6 +65,9 @@ public class OeAVCTMasseSalarialeConvention extends BasicProcess {
 	private HistoPrimeDao histoPrimeDao;
 	private AffectationDao affectationDao;
 	private AgentDao agentDao;
+	
+	private IAdsService adsService;
+	
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
 	private void initialiseDao() {
@@ -89,6 +88,9 @@ public class OeAVCTMasseSalarialeConvention extends BasicProcess {
 		}
 		if (getAgentDao() == null) {
 			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if(null == adsService) {
+			adsService = (IAdsService) context.getBean("adsService");
 		}
 	}
 
@@ -135,43 +137,10 @@ public class OeAVCTMasseSalarialeConvention extends BasicProcess {
 			setLB_ANNEE(getListeAnnee());
 			addZone(getNOM_LB_ANNEE_SELECT(), Const.ZERO);
 		}
-		// Si la liste des services est nulle
-		if (getListeServices() == null || getListeServices().size() == 0) {
-			ArrayList<Service> services = Service.listerServiceActif(getTransaction());
-			setListeServices(services);
-
-			// Tri par codeservice
-			Collections.sort(getListeServices(), new Comparator<Object>() {
-				public int compare(Object o1, Object o2) {
-					Service s1 = (Service) o1;
-					Service s2 = (Service) o2;
-					return (s1.getCodService().compareTo(s2.getCodService()));
-				}
-			});
-
-			// alim de la hTree
-			hTree = new Hashtable<String, TreeHierarchy>();
-			TreeHierarchy parent = null;
-			for (int i = 0; i < getListeServices().size(); i++) {
-				Service serv = (Service) getListeServices().get(i);
-
-				if (Const.CHAINE_VIDE.equals(serv.getCodService()))
-					continue;
-
-				// recherche du supérieur
-				String codeService = serv.getCodService();
-				while (codeService.endsWith("A")) {
-					codeService = codeService.substring(0, codeService.length() - 1);
-				}
-				codeService = codeService.substring(0, codeService.length() - 1);
-				codeService = Services.rpad(codeService, 4, "A");
-				parent = hTree.get(codeService);
-				int indexParent = (parent == null ? 0 : parent.getIndex());
-				hTree.put(serv.getCodService(), new TreeHierarchy(serv, i, indexParent));
-
-			}
-		}
-
+	}
+	
+	public String getCurrentWholeTreeJS(String serviceSaisi) {
+		return adsService.getCurrentWholeTreeActifTransitoireJS(null !=serviceSaisi && !"".equals(serviceSaisi) ? serviceSaisi : null, false);
 	}
 
 	/**
@@ -314,8 +283,8 @@ public class OeAVCTMasseSalarialeConvention extends BasicProcess {
 	 * création : (21/11/11 11:11:24)
 	 * 
 	 */
-	public String getNOM_ST_CODE_SERVICE() {
-		return "NOM_ST_CODE_SERVICE";
+	public String getNOM_ST_ID_SERVICE_ADS() {
+		return "NOM_ST_ID_SERVICE_ADS";
 	}
 
 	/**
@@ -323,8 +292,8 @@ public class OeAVCTMasseSalarialeConvention extends BasicProcess {
 	 * Date de création : (21/11/11 11:11:24)
 	 * 
 	 */
-	public String getVAL_ST_CODE_SERVICE() {
-		return getZone(getNOM_ST_CODE_SERVICE());
+	public String getVAL_ST_ID_SERVICE_ADS() {
+		return getZone(getNOM_ST_ID_SERVICE_ADS());
 	}
 
 	/**
@@ -439,7 +408,7 @@ public class OeAVCTMasseSalarialeConvention extends BasicProcess {
 	 */
 	public boolean performPB_SUPPRIMER_RECHERCHER_SERVICE(HttpServletRequest request) throws Exception {
 		// On enleve le service selectionnée
-		addZone(getNOM_ST_CODE_SERVICE(), Const.CHAINE_VIDE);
+		addZone(getNOM_ST_ID_SERVICE_ADS(), Const.CHAINE_VIDE);
 		addZone(getNOM_EF_SERVICE(), Const.CHAINE_VIDE);
 		return true;
 	}
@@ -477,7 +446,7 @@ public class OeAVCTMasseSalarialeConvention extends BasicProcess {
 			agent = getAgentDao().chercherAgentParMatricule(Integer.valueOf(getVAL_ST_AGENT()));
 		}
 
-		if (!performCalculConvCol(getVAL_ST_CODE_SERVICE(), an, agent))
+		if (!performCalculConvCol(getVAL_ST_ID_SERVICE_ADS(), an, agent))
 			return false;
 
 		commitTransaction();
@@ -497,7 +466,7 @@ public class OeAVCTMasseSalarialeConvention extends BasicProcess {
 	 * @param agent
 	 * @throws Exception
 	 */
-	private boolean performCalculConvCol(String codeService, String annee, Agent agent) throws Exception {
+	private boolean performCalculConvCol(String idServiceAds, String annee, Agent agent) throws Exception {
 		ArrayList<Agent> la = new ArrayList<Agent>();
 		if (agent != null) {
 			// il faut regarder si cet agent est de type Convention Collective
@@ -514,10 +483,9 @@ public class OeAVCTMasseSalarialeConvention extends BasicProcess {
 			}
 			la.add(agent);
 		} else {
-			ArrayList<String> listeSousService = null;
-			if (!codeService.equals(Const.CHAINE_VIDE)) {
-				Service serv = Service.chercherService(getTransaction(), codeService);
-				listeSousService = Service.listSousService(getTransaction(), serv.getSigleService());
+			List<Integer> listeSousService = null;
+			if (!idServiceAds.equals(Const.CHAINE_VIDE)) {
+				listeSousService = adsService.getListIdsEntiteWithEnfantsOfEntite(new Integer(idServiceAds));
 			}
 
 			// Récupération des agents
@@ -612,8 +580,8 @@ public class OeAVCTMasseSalarialeConvention extends BasicProcess {
 							continue;
 						}
 						FichePoste fp = getFichePosteDao().chercherFichePoste(aff.getIdFichePoste());
-						Service direction = Service.getDirection(getTransaction(), fp.getIdServi());
-						Service section = Service.getSection(getTransaction(), fp.getIdServi());
+						EntiteDto direction = adsService.getAffichageDirection(fp.getIdServiceAds());
+						EntiteDto section = adsService.getAffichageSection(fp.getIdServiceAds());
 						if (carr != null) {
 							if (carr.getCodeGrade() != null && carr.getCodeGrade().length() != 0) {
 								Grade grd = Grade.chercherGrade(getTransaction(), carr.getCodeGrade());
@@ -621,8 +589,8 @@ public class OeAVCTMasseSalarialeConvention extends BasicProcess {
 								avct.setLibGrade(grd.getLibGrade());
 							}
 						}
-						avct.setDirectionService(direction == null ? Const.CHAINE_VIDE : direction.getSigleService());
-						avct.setSectionService(section == null ? Const.CHAINE_VIDE : section.getSigleService());
+						avct.setDirectionService(direction == null ? Const.CHAINE_VIDE : direction.getSigle());
+						avct.setSectionService(section == null ? Const.CHAINE_VIDE : section.getSigle());
 
 						// On regarde si il y a deja une prime de saisie
 						@SuppressWarnings("unused")
@@ -660,34 +628,6 @@ public class OeAVCTMasseSalarialeConvention extends BasicProcess {
 			}
 		}
 		return true;
-	}
-
-	/**
-	 * Retourne une hashTable de la hierarchie des Service selon le code
-	 * Service.
-	 * 
-	 * @return hTree
-	 */
-	public Hashtable<String, TreeHierarchy> getHTree() {
-		return hTree;
-	}
-
-	/**
-	 * Retourne la liste des services.
-	 * 
-	 * @return listeServices
-	 */
-	public ArrayList<Service> getListeServices() {
-		return listeServices;
-	}
-
-	/**
-	 * Met a jour la liste des services.
-	 * 
-	 * @param listeServices
-	 */
-	private void setListeServices(ArrayList<Service> listeServices) {
-		this.listeServices = listeServices;
 	}
 
 	/**

@@ -15,9 +15,6 @@ public interface AgentDaoInterface {
 
 	public ArrayList<Agent> listerAgentAvecCafatCommencant(String zone) throws Exception;
 
-	public ArrayList<Agent> listerAgentAvecServicesETMatricules(ArrayList<String> codesServices, Integer idAgentMin,
-			Integer idAgentMax) throws Exception;
-
 	public ArrayList<Agent> listerAgentEntreDeuxIdAgent(Integer idAgentMin, Integer idAgentMax) throws Exception;
 
 	public Agent chercherIrcafex(String numIrcafex, Integer idAgent) throws Exception;
@@ -50,13 +47,13 @@ public interface AgentDaoInterface {
 
 	public ArrayList<Agent> listerAgentAvecPrenomCommencant(String debPrenom) throws Exception;
 
-	public ArrayList<Agent> listerAgentAvecServiceCommencant(String debCodeService) throws Exception;
+	public ArrayList<Agent> listerAgentAvecServiceCommencant(List<Integer> listIdServiceADS) throws Exception;
 
 	public ArrayList<Agent> listerAgentAvecNomCommencant(String debNom) throws Exception;
 
 	public Agent chercherAgent(Integer idAgent) throws Exception;
 
-	public ArrayList<Agent> listerAgentEligibleAvct(ArrayList<String> listeSousService, String listeNoMatr)
+	public ArrayList<Agent> listerAgentEligibleAvct(List<Integer> listeSousService, String listeNoMatr)
 			throws Exception;
 
 	public List<Agent> listerAgent() throws Exception;
@@ -66,5 +63,12 @@ public interface AgentDaoInterface {
 
 	public void modifierAgent(Transaction aTransaction, Agent agent, ArrayList<Contact> lContact,
 			SituationFamiliale situFam) throws Exception;
+
+	ArrayList<Agent> listerAgentAvecListeServiceAds(List<Integer> listIdsService)
+			throws Exception;
+
+	ArrayList<Agent> listerAgentAvecServicesETMatricules(
+			List<Integer> listIdsService, Integer idAgentMin, Integer idAgentMax)
+			throws Exception;
 
 }

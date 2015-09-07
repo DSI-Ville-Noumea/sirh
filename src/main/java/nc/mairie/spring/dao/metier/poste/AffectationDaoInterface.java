@@ -9,12 +9,15 @@ public interface AffectationDaoInterface {
 
 	public Affectation chercherAffectationAgentPourDate(Integer idAgent, Date dateCreation) throws Exception;
 
+	public Affectation chercherAffectationAgentAvecDateDebut(Integer idAgent, Date dateDebut) throws Exception;
+
 	public ArrayList<Affectation> listerAffectationAvecFPEtAgent(Integer idFichePoste, Integer idAgent)
 			throws Exception;
 
 	public ArrayList<Affectation> listerAffectationAvecFPOrderDatDeb(Integer idFichePoste) throws Exception;
 
-	public ArrayList<Affectation> listerAffectationAgentAvecService(Integer idAgent, String idServi) throws Exception;
+	public ArrayList<Affectation> listerAffectationAgentAvecService(Integer idAgent, Integer idServiceADS)
+			throws Exception;
 
 	public Affectation chercherAffectationActiveAvecFP(Integer idFichePoste) throws Exception;
 
@@ -27,6 +30,8 @@ public interface AffectationDaoInterface {
 	public ArrayList<Affectation> listerAffectationAvecFPPrimaireOuSecondaire(Integer idFichePoste) throws Exception;
 
 	public ArrayList<Affectation> listerAffectationAvecFP(Integer idFichePoste) throws Exception;
+
+	public ArrayList<Affectation> listerAffectationActiveAvecFP(Integer idFichePoste) throws Exception;
 
 	public ArrayList<Affectation> listerAffectationAvecAgent(Integer idAgent) throws Exception;
 

@@ -20,8 +20,6 @@ import nc.mairie.spring.dao.metier.agent.AgentDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.spring.ws.MSDateTransformer;
-import nc.mairie.spring.ws.RadiWSConsumer;
-import nc.mairie.spring.ws.SirhAbsWSConsumer;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
@@ -30,6 +28,9 @@ import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
 import nc.mairie.utils.VariablesActivite;
+import nc.noumea.spring.service.AbsService;
+import nc.noumea.spring.service.IAbsService;
+import nc.noumea.spring.service.IRadiService;
 
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -62,6 +63,10 @@ public class OeELECSaisieCompteurA54 extends BasicProcess {
 	public String ACTION_VISUALISATION = "Consultation d'un compteur.";
 
 	private AgentDao agentDao;
+	
+	private IRadiService radiService;
+
+	private IAbsService absService;
 
 	@Override
 	public String getJSP() {
@@ -80,6 +85,12 @@ public class OeELECSaisieCompteurA54 extends BasicProcess {
 		ApplicationContext context = ApplicationContextProvider.getContext();
 		if (getAgentDao() == null) {
 			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (null == radiService) {
+			radiService = (IRadiService) context.getBean("radiService");
+		}
+		if (null == absService) {
+			absService = (AbsService) context.getBean("absService");
 		}
 	}
 
@@ -135,8 +146,7 @@ public class OeELECSaisieCompteurA54 extends BasicProcess {
 
 		// Si liste motifs vide alors affectation
 		if (getLB_MOTIF() == LBVide) {
-			SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
-			ArrayList<MotifCompteurDto> listeMotifs = (ArrayList<MotifCompteurDto>) consuAbs
+			ArrayList<MotifCompteurDto> listeMotifs = (ArrayList<MotifCompteurDto>) absService
 					.getListeMotifCompteur(EnumTypeAbsence.ASA_A54.getCode());
 			setListeMotifCompteur(listeMotifs);
 
@@ -161,8 +171,7 @@ public class OeELECSaisieCompteurA54 extends BasicProcess {
 	}
 
 	private void initialiseListeCompteur(HttpServletRequest request) throws Exception {
-		SirhAbsWSConsumer consum = new SirhAbsWSConsumer();
-		ArrayList<CompteurDto> listeCompteur = (ArrayList<CompteurDto>) consum.getListeCompteursA54();
+		ArrayList<CompteurDto> listeCompteur = (ArrayList<CompteurDto>) absService.getListeCompteursA54();
 		logger.debug("Taille liste des compteurs ASA A54 : " + listeCompteur.size());
 		// #14737 tri par ordre alpha
 		List<VoAgentCompteur> listCompteurAgent = new ArrayList<VoAgentCompteur>();
@@ -484,7 +493,6 @@ public class OeELECSaisieCompteurA54 extends BasicProcess {
 		}
 
 		// on sauvegarde les données
-		SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
 		ReturnMessageDto message = new ReturnMessageDto();
 
 		// on recupere la saisie
@@ -521,7 +529,7 @@ public class OeELECSaisieCompteurA54 extends BasicProcess {
 		compteurDto.setDateFin(new DateTime(annee, 12, 31, 23, 59, 0).toDate());
 
 		// on sauvegarde
-		message = consuAbs.addCompteurAsaA54(agentConnecte.getIdAgent(), new JSONSerializer().exclude("*.class")
+		message = absService.addCompteurAsaA54(agentConnecte.getIdAgent(), new JSONSerializer().exclude("*.class")
 				.transform(new MSDateTransformer(), Date.class).serialize(compteurDto));
 
 		if (message.getErrors().size() > 0) {
@@ -544,14 +552,13 @@ public class OeELECSaisieCompteurA54 extends BasicProcess {
 		UserAppli u = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
 		Agent agentConnecte = null;
 		// on fait la correspondance entre le login et l'agent via RADI
-		RadiWSConsumer radiConsu = new RadiWSConsumer();
-		LightUserDto user = radiConsu.getAgentCompteADByLogin(u.getUserName());
+		LightUserDto user = radiService.getAgentCompteADByLogin(u.getUserName());
 		if (user == null) {
 			return null;
 		}
 		try {
 			agentConnecte = getAgentDao().chercherAgentParMatricule(
-					radiConsu.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
+					radiService.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
 		} catch (Exception e) {
 			return null;
 		}

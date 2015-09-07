@@ -13,7 +13,6 @@ import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.Agent;
 import nc.mairie.metier.hsct.Medecin;
 import nc.mairie.metier.hsct.VisiteMedicale;
-import nc.mairie.metier.poste.Service;
 import nc.mairie.metier.suiviMedical.SuiviMedical;
 import nc.mairie.spring.dao.metier.agent.AgentDao;
 import nc.mairie.spring.dao.metier.hsct.MedecinDao;
@@ -27,8 +26,11 @@ import nc.mairie.technique.Services;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
+import nc.noumea.mairie.ads.dto.EntiteDto;
+import nc.noumea.spring.service.IAdsService;
 
 import org.springframework.context.ApplicationContext;
+import org.springframework.dao.EmptyResultDataAccessException;
 
 /**
  * Process OeAGENTAccidentTravail Date de création : (30/06/11 13:56:32)
@@ -53,6 +55,7 @@ public class OeSMHistorique extends BasicProcess {
 	private MedecinDao medecinDao;
 	private VisiteMedicaleDao visiteMedicaleDao;
 	private AgentDao agentDao;
+	private IAdsService adsService;
 
 	@Override
 	public void initialiseZones(HttpServletRequest request) throws Exception {
@@ -106,6 +109,9 @@ public class OeSMHistorique extends BasicProcess {
 		if (getAgentDao() == null) {
 			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if(null == adsService) {
+			adsService = (IAdsService)context.getBean("adsService");
+		}
 	}
 
 	public VisiteMedicaleDao getVisiteMedicaleDao() {
@@ -127,28 +133,31 @@ public class OeSMHistorique extends BasicProcess {
 			addZone(getNOM_ST_NUM_CAFAT(i), agent.getNumCafat() == null ? Const.CHAINE_VIDE : agent.getNumCafat()
 					.trim());
 			addZone(getNOM_ST_STATUT(i), sm.getStatut());
-			Service serv = Service.chercherService(getTransaction(), sm.getIdServi());
-			if (getTransaction().isErreur()) {
-				getTransaction().traiterErreur();
-			}
+			
+			EntiteDto serv = adsService.getEntiteByIdEntite(sm.getIdServiceAds());
 			addZone(getNOM_ST_SERVICE(i),
-					serv == null || serv.getLibService() == null ? "&nbsp;" : serv.getLibService());
+					serv == null || serv.getLabel() == null ? "&nbsp;" : serv.getLabel());
 
 			addZone(getNOM_ST_MOTIF(i), getMotifVisiteMedDao().chercherMotif(sm.getIdMotifVm()).getLibMotifVm());
 			// RG-SVM-15
 			// si SM effectue alors on prend les infos de la VM
 			if (sm.getEtat().equals(EnumEtatSuiviMed.EFFECTUE.getCode())) {
-				VisiteMedicale vm = getVisiteMedicaleDao().chercherVisiteMedicaleLieeSM(sm.getIdSuiviMed(),
+				VisiteMedicale vm = null;
+				try {
+					vm = getVisiteMedicaleDao().chercherVisiteMedicaleLieeSM(sm.getIdSuiviMed(),
 						sm.getIdAgent());
+				} catch(EmptyResultDataAccessException e) {
+					
+				}
 				Medecin medecin = null;
-				if (vm.getIdMedecin() != null) {
+				if (null != vm && vm.getIdMedecin() != null) {
 					medecin = getMedecinDao().chercherMedecin(vm.getIdMedecin());
 				}
 				addZone(getNOM_ST_MEDECIN(i),
 						medecin != null ? medecin.getTitreMedecin() + " " + medecin.getPrenomMedecin() + " "
 								+ medecin.getNomMedecin() : Const.CHAINE_VIDE);
 				addZone(getNOM_ST_DATE_RDV(i),
-						vm.getDateDerniereVisite() == null ? Const.CHAINE_VIDE : sdf.format(vm.getDateDerniereVisite()));
+						vm == null || vm.getDateDerniereVisite() == null ? Const.CHAINE_VIDE : sdf.format(vm.getDateDerniereVisite()));
 			} else {
 				Medecin medecin = getMedecinDao().chercherMedecin(sm.getIdMedecin());
 				addZone(getNOM_ST_MEDECIN(i),

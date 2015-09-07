@@ -65,6 +65,7 @@ import nc.mairie.gestionagent.process.election.OeELECSaisieCompteurA52;
 import nc.mairie.gestionagent.process.election.OeELECSaisieCompteurA53;
 import nc.mairie.gestionagent.process.election.OeELECSaisieCompteurA54;
 import nc.mairie.gestionagent.process.election.OeELECSaisieCompteurA55;
+import nc.mairie.gestionagent.process.organigramme.OeORGAGestion;
 import nc.mairie.gestionagent.process.parametre.OePARAMETRAGEAbsence;
 import nc.mairie.gestionagent.process.parametre.OePARAMETRAGEAbsenceCongesAnnuels;
 import nc.mairie.gestionagent.process.parametre.OePARAMETRAGEAbsenceCongesExceptionnels;
@@ -91,6 +92,8 @@ import nc.mairie.gestionagent.process.pointage.OePTGVentilationContractuels;
 import nc.mairie.gestionagent.process.pointage.OePTGVentilationConvCol;
 import nc.mairie.gestionagent.process.pointage.OePTGVentilationFonct;
 import nc.mairie.gestionagent.process.pointage.OePTGVisualisation;
+import nc.mairie.gestionagent.process.poste.OePOSTEActivationFDP;
+import nc.mairie.gestionagent.process.poste.OePOSTEDuplicationFDP;
 import nc.mairie.gestionagent.process.poste.OePOSTEEmploiSelection;
 import nc.mairie.gestionagent.process.poste.OePOSTEFEActivite;
 import nc.mairie.gestionagent.process.poste.OePOSTEFEActiviteSelection;
@@ -98,11 +101,11 @@ import nc.mairie.gestionagent.process.poste.OePOSTEFECompetence;
 import nc.mairie.gestionagent.process.poste.OePOSTEFECompetenceSelection;
 import nc.mairie.gestionagent.process.poste.OePOSTEFERechercheAvancee;
 import nc.mairie.gestionagent.process.poste.OePOSTEFPRechercheAvancee;
-import nc.mairie.gestionagent.process.poste.OePOSTEFPSelection;
 import nc.mairie.gestionagent.process.poste.OePOSTEFPSpecificites;
 import nc.mairie.gestionagent.process.poste.OePOSTEFicheEmploi;
 import nc.mairie.gestionagent.process.poste.OePOSTEFichePoste;
 import nc.mairie.gestionagent.process.poste.OePOSTESuiviRecrutement;
+import nc.mairie.gestionagent.process.poste.OePOSTESupressionFDP;
 import nc.mairie.robot.Robot;
 import nc.mairie.robot.Testeur;
 import nc.mairie.technique.BasicProcess;
@@ -208,6 +211,12 @@ public class RobotAgent extends Robot {
 			return new OePOSTEFEActiviteSelection();
 		} else if (activite.equals("FECompetenceSelection")) {
 			return new OePOSTEFECompetenceSelection();
+		} else if (activite.equals("FPGestionAutomatise")) {
+			return new OePOSTESupressionFDP();
+		} else if (activite.equals("FPGestionAutomatiseActivation")) {
+			return new OePOSTEActivationFDP();
+		} else if (activite.equals("FPGestionAutomatiseDuplication")) {
+			return new OePOSTEDuplicationFDP();
 		} // Module AVANCEMENT
 		else if (activite.equals("AVCTSimulationFontionnaires")) {
 			return new OeAVCTSimulationFonctionnaires();
@@ -247,11 +256,13 @@ public class RobotAgent extends Robot {
 			return new OeAVCTMasseSalarialeConvention();
 		} else if (activite.equals("AVCTMasseSalarialeDetaches")) {
 			return new OeAVCTMasseSalarialeDetaches();
+			
 		} // Module SUIVI MEDICAL
 		else if (activite.equals("SMConvocation")) {
 			return new OeSMConvocation();
 		} else if (activite.equals("SMHistorique")) {
 			return new OeSMHistorique();
+			
 		} // Module POINTAGE
 		else if (activite.equals("PTGSaisie")) {
 			return new OePTGVisualisation();
@@ -267,6 +278,7 @@ public class RobotAgent extends Robot {
 			return new OePTGPayeurFonct();
 		} else if (activite.equals("PTGPayeurContractuels")) {
 			return new OePTGPayeurContractuels();
+			
 		}// Module ABSENCE
 		else if (activite.equals("ABSVisualisation")) {
 			return new OeABSVisualisation();
@@ -274,6 +286,7 @@ public class RobotAgent extends Robot {
 			return new OeABSRestitution();
 		} else if (activite.equals("ABSAlimentationMensuelle")) {
 			return new OeABSAlimentationMensuelle();
+			
 			// Module ELECTION
 		} else if (activite.equals("ELECSaisieCompteurA48")) {
 			return new OeELECSaisieCompteurA48();
@@ -285,6 +298,10 @@ public class RobotAgent extends Robot {
 			return new OeELECSaisieCompteurA53();
 		} else if (activite.equals("ELECSaisieCompteurA52")) {
 			return new OeELECSaisieCompteurA52();
+			
+			// Modul ORGANIGRAMME
+		} else if (activite.equals("gestionOrganigramme")) {
+			return new OeORGAGestion();
 		} // Module PARAMETRAGE - Postes et emplois
 		else if (activite.equals("ParamFicheEmploi")) {
 			return new OePARAMETRAGEFicheEmploi();
@@ -358,11 +375,11 @@ public class RobotAgent extends Robot {
 		// AGENT - Emplois //
 		// ///////////////////
 		navigation.put(OeAGENTEmploisAffectation.class.getName() + OeAGENTEmploisAffectation.STATUT_RECHERCHE_FP,
-				OePOSTEFPSelection.class.getName());
+				OePOSTEFPRechercheAvancee.class.getName());
 		navigation.put(OeAGENTEmploisAffectation.class.getName() + OeAGENTEmploisAffectation.STATUT_HISTORIQUE,
 				OeAGENTEmploisAffHisto.class.getName());
 		navigation.put(OeAGENTEmploisAffectation.class.getName()
-				+ OeAGENTEmploisAffectation.STATUT_RECHERCHE_FP_SECONDAIRE, OePOSTEFPSelection.class.getName());
+				+ OeAGENTEmploisAffectation.STATUT_RECHERCHE_FP_SECONDAIRE, OePOSTEFPRechercheAvancee.class.getName());
 
 		// Classe OeAGENTEtatCivil
 		navigation.put(OeAGENTEtatCivil.class.getName() + OeAGENTEtatCivil.STATUT_LIEU_NAISS,
@@ -410,19 +427,15 @@ public class RobotAgent extends Robot {
 		navigation.put(OePOSTEFichePoste.class.getName() + OePOSTEFichePoste.STATUT_SPECIFICITES,
 				OePOSTEFPSpecificites.class.getName());
 		navigation.put(OePOSTEFichePoste.class.getName() + OePOSTEFichePoste.STATUT_RESPONSABLE,
-				OePOSTEFPSelection.class.getName());
+				OePOSTEFPRechercheAvancee.class.getName());
 		navigation.put(OePOSTEFichePoste.class.getName() + OePOSTEFichePoste.STATUT_REMPLACEMENT,
-				OePOSTEFPSelection.class.getName());
+				OePOSTEFPRechercheAvancee.class.getName());
 		navigation.put(OePOSTEFichePoste.class.getName() + OePOSTEFichePoste.STATUT_FICHE_EMPLOI,
 				OePOSTEFicheEmploi.class.getName());
 
 		// Classe OePOSTESuiviRecrutement
 		navigation.put(OePOSTESuiviRecrutement.class.getName() + OePOSTESuiviRecrutement.STATUT_RECHERCHE_FP,
-				OePOSTEFPSelection.class.getName());
-
-		// Classe OePOSTEFPSelection
-		navigation.put(OePOSTEFPSelection.class.getName() + OePOSTEFPSelection.STATUT_RECHERCHER_AGENT,
-				OeAGENTRecherche.class.getName());
+				OePOSTEFPRechercheAvancee.class.getName());
 
 		// Classe OePOSTEFPRechercheAvancee
 		navigation.put(OePOSTEFPRechercheAvancee.class.getName() + OePOSTEFPRechercheAvancee.STATUT_RECHERCHER_AGENT,

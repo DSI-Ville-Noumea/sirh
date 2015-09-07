@@ -17,8 +17,12 @@ import nc.mairie.gestionagent.pointage.dto.VentilPrimeDto;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.Agent;
 import nc.mairie.spring.dao.metier.agent.AgentDao;
-import nc.mairie.spring.ws.SirhPtgWSConsumer;
+import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.Transaction;
+import nc.noumea.spring.service.IPtgService;
+import nc.noumea.spring.service.PtgService;
+
+import org.springframework.context.ApplicationContext;
 
 /**
  *
@@ -28,13 +32,14 @@ public class OePTGVentilationUtils {
 
 	private static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
+	private static IPtgService ptgService;
+
 	public static String getTabVisu(Transaction aTransaction, int date, int typePointage, String agentsJson,
-			AgentDao agentDao, boolean allVentilation) throws Exception {
+			AgentDao agentDao, boolean allVentilation, IPtgService ptgService) throws Exception {
 
 		SimpleDateFormat moisAnnee = new SimpleDateFormat("MM-yyyy");
 
 		StringBuilder sb = new StringBuilder();
-		SirhPtgWSConsumer consum = new SirhPtgWSConsumer();
 		sb.append("<table  class=\"display\"  id=\"VentilationTable\">");
 
 		Agent agent;
@@ -49,11 +54,11 @@ public class OePTGVentilationUtils {
 				sb.append("<th>Primes</th>");
 				sb.append("<th>Nombre</th>");
 				sb.append("</tr></thead>");
-				List<VentilPrimeDto> rep = consum.getVentilations(VentilPrimeDto.class, date, typePointage, agentsJson,
-						allVentilation);
+				List<VentilPrimeDto> rep = ptgService.getVentilations(VentilPrimeDto.class, date, typePointage,
+						agentsJson, allVentilation);
 				sb.append("<tbody>");
 				for (VentilPrimeDto prime : rep) {
-					RefPrimeDto primeDetail = consum.getPrimeDetailFromRefPrime(prime.getIdRefPrime());
+					RefPrimeDto primeDetail = ptgService.getPrimeDetailFromRefPrime(prime.getIdRefPrime());
 					agent = agentDao.chercherAgent(prime.getId_agent());
 					sb.append("<tr>");
 					sb.append("<td>" + agent.getNomatr() + "</td>");
@@ -86,23 +91,19 @@ public class OePTGVentilationUtils {
 	}
 
 	public static boolean canProcessDeversementPaie(String statut) {
-		SirhPtgWSConsumer consum = new SirhPtgWSConsumer();
-		return consum.isValidAvailable(statut);
+		return getPtgService().isValidAvailable(statut);
 	}
 
 	public static boolean canProcessVentilation(String statut) {
-		SirhPtgWSConsumer consum = new SirhPtgWSConsumer();
-		return consum.isVentilAvailable(statut);
+		return getPtgService().isVentilAvailable(statut);
 	}
 
 	public static boolean isDeversementEnCours(String statut) {
-		SirhPtgWSConsumer consum = new SirhPtgWSConsumer();
-		return consum.isValidEnCours(statut);
+		return getPtgService().isValidEnCours(statut);
 	}
 
 	public static boolean isVentilationEnCours(String statut) {
-		SirhPtgWSConsumer consum = new SirhPtgWSConsumer();
-		return consum.isVentilEnCours(statut);
+		return getPtgService().isVentilEnCours(statut);
 	}
 
 	public static String getMondayFromWeekNumberAndYear(int week, int year) {
@@ -115,14 +116,13 @@ public class OePTGVentilationUtils {
 		return sdf.format(cal.getTime());
 	}
 
-	public static String getTabErreurVentil(String type) {
+	public static String getTabErreurVentil(String type, IPtgService ptgService) {
 
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
 		StringBuilder sb = new StringBuilder();
-		SirhPtgWSConsumer consum = new SirhPtgWSConsumer();
 
-		ArrayList<VentilErreurDto> listeErreurs = (ArrayList<VentilErreurDto>) consum.getErreursVentilation(type);
+		ArrayList<VentilErreurDto> listeErreurs = (ArrayList<VentilErreurDto>) ptgService.getErreursVentilation(type);
 		sb.append("<table class=\"sigp2NewTab\" style=\"text-align:left;width:980px;\"> ");
 
 		sb.append("<tr>");
@@ -149,5 +149,13 @@ public class OePTGVentilationUtils {
 	public static double roundDecimal(double nombre, int precision) {
 		double tmp = Math.pow(10, precision);
 		return Math.round(nombre * tmp) / tmp;
+	}
+
+	public static IPtgService getPtgService() {
+		if (null == ptgService) {
+			ApplicationContext context = ApplicationContextProvider.getContext();
+			ptgService = (PtgService) context.getBean("ptgService");
+		}
+		return ptgService;
 	}
 }

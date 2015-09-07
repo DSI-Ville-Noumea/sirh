@@ -15,16 +15,15 @@ import nc.mairie.spring.dao.metier.agent.AgentDao;
 import nc.mairie.spring.dao.metier.droits.GroupeDao;
 import nc.mairie.spring.dao.metier.droits.GroupeUtilisateurDao;
 import nc.mairie.spring.dao.metier.droits.UtilisateurDao;
-import nc.mairie.spring.dao.metier.poste.NFADao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
-import nc.mairie.spring.ws.RadiWSConsumer;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
+import nc.noumea.spring.service.IRadiService;
 
 import org.springframework.context.ApplicationContext;
 
@@ -58,8 +57,9 @@ public class OeDROITSUtilisateurs extends BasicProcess {
 	private UtilisateurDao utilisateurDao;
 	private GroupeDao groupeDao;
 	private GroupeUtilisateurDao groupeUtilisateurDao;
-	private NFADao nfaDao;
 	private AgentDao agentDao;
+
+	private IRadiService radiService;
 
 	public void initialiseZones(HttpServletRequest request) throws Exception {
 		// POUR RESTER SUR LA MEME PAGE LORS DE LA RECHERCHE D'UN AGENT
@@ -127,11 +127,11 @@ public class OeDROITSUtilisateurs extends BasicProcess {
 		if (getGroupeUtilisateurDao() == null) {
 			setGroupeUtilisateurDao(new GroupeUtilisateurDao((SirhDao) context.getBean("sirhDao")));
 		}
-		if (getNfaDao() == null) {
-			setNfaDao(new NFADao((SirhDao) context.getBean("sirhDao")));
-		}
 		if (getAgentDao() == null) {
 			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (null == radiService) {
+			radiService = (IRadiService) context.getBean("radiService");
 		}
 	}
 
@@ -153,13 +153,12 @@ public class OeDROITSUtilisateurs extends BasicProcess {
 							+ ((Groupe) groupesUtilisateur.get(j)).getLibGroupe();
 				}
 				// on fait la correspondance entre le login et l'agent via RADI
-				RadiWSConsumer radiConsu = new RadiWSConsumer();
-				LightUserDto user = radiConsu.getAgentCompteADByLogin(u.getLoginUtilisateur());
+				LightUserDto user = radiService.getAgentCompteADByLogin(u.getLoginUtilisateur());
 
 				String infoAgent = "&nbsp;";
 				if (user != null && user.getEmployeeNumber() != null && user.getEmployeeNumber() != 0) {
 					Agent agent = getAgentDao().chercherAgentParMatricule(
-							radiConsu.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
+							radiService.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
 					String prenomAgent = agent.getPrenomAgent().toLowerCase();
 					String premLettre = prenomAgent.substring(0, 1).toUpperCase();
 					String restePrenom = prenomAgent.substring(1, prenomAgent.length()).toLowerCase();
@@ -745,14 +744,6 @@ public class OeDROITSUtilisateurs extends BasicProcess {
 
 	public void setGroupeUtilisateurDao(GroupeUtilisateurDao groupeUtilisateurDao) {
 		this.groupeUtilisateurDao = groupeUtilisateurDao;
-	}
-
-	public NFADao getNfaDao() {
-		return nfaDao;
-	}
-
-	public void setNfaDao(NFADao nfaDao) {
-		this.nfaDao = nfaDao;
 	}
 
 	public AgentDao getAgentDao() {

@@ -14,7 +14,6 @@ import nc.mairie.metier.parametrage.TypeDelegation;
 import nc.mairie.metier.parametrage.TypeRegIndemn;
 import nc.mairie.metier.poste.Ecole;
 import nc.mairie.metier.poste.EntiteGeo;
-import nc.mairie.metier.poste.NFA;
 import nc.mairie.metier.poste.TitrePoste;
 import nc.mairie.spring.dao.metier.parametrage.BaseHorairePointageDao;
 import nc.mairie.spring.dao.metier.parametrage.NatureAvantageDao;
@@ -22,7 +21,6 @@ import nc.mairie.spring.dao.metier.parametrage.TypeAvantageDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeDelegationDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeRegIndemnDao;
 import nc.mairie.spring.dao.metier.poste.FichePosteDao;
-import nc.mairie.spring.dao.metier.poste.NFADao;
 import nc.mairie.spring.dao.metier.poste.TitrePosteDao;
 import nc.mairie.spring.dao.metier.specificites.AvantageNatureDao;
 import nc.mairie.spring.dao.metier.specificites.DelegationDao;
@@ -35,6 +33,8 @@ import nc.mairie.technique.Services;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
+import nc.noumea.spring.service.AdsService;
+import nc.noumea.spring.service.IAdsService;
 
 import org.springframework.context.ApplicationContext;
 
@@ -58,7 +58,6 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	private String[] LB_TYPE_DELEGATION;
 	private String[] LB_TYPE_REGIME;
 	private String[] LB_ECOLE;
-	private String[] LB_NFA;
 	private String[] LB_BASE_HORAIRE_POINTAGE;
 
 	private ArrayList<BaseHorairePointage> listeBaseHorairePointage;
@@ -85,9 +84,6 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	private ArrayList<TypeRegIndemn> listeTypeRegime;
 	private TypeRegIndemn typeRegimeCourant;
 
-	private ArrayList<NFA> listeNFA;
-	private NFA NFACourant;
-
 	private ArrayList<Ecole> listeEcole;
 	private Ecole EcoleCourante;
 
@@ -103,9 +99,10 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	private DelegationDao delegationDao;
 	private RegIndemnDao regIndemnDao;
 	private TitrePosteDao titrePosteDao;
-	private NFADao nfaDao;
 	private FichePosteDao fichePosteDao;
 	private BaseHorairePointageDao baseHorairePointageDao;
+
+	private IAdsService adsService;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -175,14 +172,14 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 		if (getTitrePosteDao() == null) {
 			setTitrePosteDao(new TitrePosteDao((SirhDao) context.getBean("sirhDao")));
 		}
-		if (getNfaDao() == null) {
-			setNfaDao(new NFADao((SirhDao) context.getBean("sirhDao")));
-		}
 		if (getFichePosteDao() == null) {
 			setFichePosteDao(new FichePosteDao((SirhDao) context.getBean("sirhDao")));
 		}
 		if (getBaseHorairePointageDao() == null) {
 			setBaseHorairePointageDao(new BaseHorairePointageDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (null == adsService) {
+			adsService = (AdsService) context.getBean("adsService");
 		}
 	}
 
@@ -359,28 +356,6 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Initialisation dede la liste des NFAs Date de création : (04/11/11)
-	 * 
-	 */
-	private void initialiseListeNFA(HttpServletRequest request) throws Exception {
-		setListeNFA((ArrayList<NFA>) getNfaDao().listerNFA());
-		if (getListeNFA().size() != 0) {
-			int tailles[] = { 6, 5 };
-			String padding[] = { "G", "G" };
-			FormateListe aFormat = new FormateListe(tailles, padding, false);
-			for (ListIterator<NFA> list = getListeNFA().listIterator(); list.hasNext();) {
-				NFA nfa = (NFA) list.next();
-				String ligne[] = { nfa.getCodeService(), nfa.getNFA() };
-
-				aFormat.ajouteLigne(ligne);
-			}
-			setLB_NFA(aFormat.getListeFormatee());
-		} else {
-			setLB_NFA(null);
-		}
-	}
-
-	/**
 	 * Initialisation dede la liste des ecoles Date de création : (04/11/11)
 	 */
 	private void initialiseListeEcole(HttpServletRequest request) throws Exception {
@@ -441,12 +416,6 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 			// Recherche des types de régime indemnitaires
 			setListeTypeRegime(getTypeRegIndemnDao().listerTypeRegIndemn());
 			initialiseListeTypeRegime(request);
-		}
-
-		if (getListeNFA() == null) {
-			// Recherche des NFAs
-			setListeNFA((ArrayList<NFA>) getNfaDao().listerNFA());
-			initialiseListeNFA(request);
 		}
 
 		if (getListeEcole() == null) {
@@ -2396,26 +2365,6 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 				return performPB_VALIDER_ECOLE(request);
 			}
 
-			// Si clic sur le bouton PB_ANNULER_NFA
-			if (testerParametre(request, getNOM_PB_ANNULER_NFA())) {
-				return performPB_ANNULER_NFA(request);
-			}
-
-			// Si clic sur le bouton PB_CREER_NFA
-			if (testerParametre(request, getNOM_PB_CREER_NFA())) {
-				return performPB_CREER_NFA(request);
-			}
-
-			// Si clic sur le bouton PB_SUPPRIMER_NFA
-			if (testerParametre(request, getNOM_PB_SUPPRIMER_NFA())) {
-				return performPB_SUPPRIMER_NFA(request);
-			}
-
-			// Si clic sur le bouton PB_VALIDER_NFA
-			if (testerParametre(request, getNOM_PB_VALIDER_NFA())) {
-				return performPB_VALIDER_NFA(request);
-			}
-
 			// Si clic sur le bouton PB_ANNULER_ENTITE_GEO
 			if (testerParametre(request, getNOM_PB_ANNULER_ENTITE_GEO())) {
 				return performPB_ANNULER_ENTITE_GEO(request);
@@ -2856,306 +2805,6 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER_NFA Date de création
-	 * : (04/11/11 11:33:55)
-	 * 
-	 */
-	public String getNOM_PB_ANNULER_NFA() {
-		return "NOM_PB_ANNULER_NFA";
-	}
-
-	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * regles de gestion du process - Positionne un statut en fonction de ces
-	 * regles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (04/11/11 11:33:55)
-	 * 
-	 */
-	public boolean performPB_ANNULER_NFA(HttpServletRequest request) throws Exception {
-		addZone(getNOM_ST_ACTION_NFA(), Const.CHAINE_VIDE);
-		setStatut(STATUT_MEME_PROCESS);
-		return true;
-	}
-
-	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_CREER_NFA Date de création :
-	 * (04/11/11 11:33:55)
-	 * 
-	 */
-	public String getNOM_PB_CREER_NFA() {
-		return "NOM_PB_CREER_NFA";
-	}
-
-	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * regles de gestion du process - Positionne un statut en fonction de ces
-	 * regles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (04/11/11 11:33:55)
-	 * 
-	 */
-	public boolean performPB_CREER_NFA(HttpServletRequest request) throws Exception {
-		// On nomme l'action
-		addZone(getNOM_ST_ACTION_NFA(), ACTION_CREATION);
-		addZone(getNOM_EF_NFA(), Const.CHAINE_VIDE);
-		addZone(getNOM_EF_NFA_CODE_SERVICE(), Const.CHAINE_VIDE);
-
-		setStatut(STATUT_MEME_PROCESS);
-		return true;
-	}
-
-	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMER_NFA Date de
-	 * création : (04/11/11 11:33:55)
-	 * 
-	 */
-	public String getNOM_PB_SUPPRIMER_NFA() {
-		return "NOM_PB_SUPPRIMER_NFA";
-	}
-
-	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * regles de gestion du process - Positionne un statut en fonction de ces
-	 * regles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (04/11/11 11:33:55)
-	 * 
-	 */
-	public boolean performPB_SUPPRIMER_NFA(HttpServletRequest request) throws Exception {
-		int indice = (Services.estNumerique(getVAL_LB_NFA_SELECT()) ? Integer.parseInt(getVAL_LB_NFA_SELECT()) : -1);
-
-		if (indice != -1 && indice < getListeNFA().size()) {
-			NFA nfa = getListeNFA().get(indice);
-			setNFACourant(nfa);
-			addZone(getNOM_EF_NFA_CODE_SERVICE(), nfa.getCodeService());
-			addZone(getNOM_EF_NFA(), nfa.getNFA());
-			addZone(getNOM_ST_ACTION_NFA(), ACTION_SUPPRESSION);
-		} else {
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "NFAs"));
-		}
-
-		return true;
-	}
-
-	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER_NFA Date de création
-	 * : (04/11/11 11:33:55)
-	 * 
-	 */
-	public String getNOM_PB_VALIDER_NFA() {
-		return "NOM_PB_VALIDER_NFA";
-	}
-
-	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * regles de gestion du process - Positionne un statut en fonction de ces
-	 * regles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (04/11/11 11:33:55)
-	 * 
-	 */
-	public boolean performPB_VALIDER_NFA(HttpServletRequest request) throws Exception {
-
-		if (!performControlerSaisieNFA(request))
-			return false;
-
-		if (!performControlerRegleGestionNFA(request))
-			return false;
-
-		if (getVAL_ST_ACTION_NFA() != null && getVAL_ST_ACTION_NFA() != Const.CHAINE_VIDE) {
-			if (getVAL_ST_ACTION_NFA().equals(ACTION_CREATION)) {
-				setNFACourant(new NFA());
-				getNFACourant().setCodeService(getVAL_EF_NFA_CODE_SERVICE());
-				getNFACourant().setNFA(getVAL_EF_NFA());
-				getNfaDao().creerNFA(getNFACourant().getCodeService(), getNFACourant().getNFA());
-				if (!getTransaction().isErreur())
-					getListeNFA().add(getNFACourant());
-			} else if (getVAL_ST_ACTION_NFA().equals(ACTION_SUPPRESSION)) {
-				getNfaDao().supprimerNFA(getNFACourant().getCodeService(), getNFACourant().getNFA());
-				if (!getTransaction().isErreur())
-					getListeNFA().remove(getNFACourant());
-				setNFACourant(null);
-			}
-
-			if (getTransaction().isErreur())
-				return false;
-
-			commitTransaction();
-			initialiseListeNFA(request);
-			addZone(getNOM_ST_ACTION_NFA(), Const.CHAINE_VIDE);
-		}
-
-		return true;
-	}
-
-	/**
-	 * Controle les zones saisies d'un type de regime indemnitaire Date de
-	 * création : (14/09/11)
-	 */
-	private boolean performControlerSaisieNFA(HttpServletRequest request) throws Exception {
-
-		// Verification code service not null
-		if (getZone(getNOM_EF_NFA_CODE_SERVICE()).length() == 0) {
-			// "ERR002","La zone @ est obligatoire."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "code service"));
-			return false;
-		}
-
-		// Verification nfa not null
-		if (getZone(getNOM_EF_NFA()).length() == 0) {
-			// "ERR002","La zone @ est obligatoire."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "NFA"));
-			return false;
-		}
-
-		return true;
-	}
-
-	/**
-	 * Controle les regles de gestion d'un type de régime idemnitaire Date de
-	 * création : (14/09/11)
-	 */
-	private boolean performControlerRegleGestionNFA(HttpServletRequest request) throws Exception {
-
-		// Vérification des contraintes d'unicité du NFA
-		if (getVAL_ST_ACTION_NFA().equals(ACTION_CREATION)) {
-
-			for (NFA nfa : getListeNFA()) {
-				if (nfa.getCodeService().equals(getVAL_EF_NFA_CODE_SERVICE().toUpperCase())) {
-					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "un NFA", "ce code service"));
-					return false;
-				}
-			}
-		}
-
-		return true;
-	}
-
-	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_ACTION_NFA Date de
-	 * création : (04/11/11 11:33:55)
-	 * 
-	 */
-	public String getNOM_ST_ACTION_NFA() {
-		return "NOM_ST_ACTION_NFA";
-	}
-
-	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACTION_NFA
-	 * Date de création : (04/11/11 11:33:55)
-	 * 
-	 */
-	public String getVAL_ST_ACTION_NFA() {
-		return getZone(getNOM_ST_ACTION_NFA());
-	}
-
-	/**
-	 * Retourne le nom d'une zone de saisie pour la JSP : EF_NFA Date de
-	 * création : (04/11/11 11:33:55)
-	 * 
-	 */
-	public String getNOM_EF_NFA() {
-		return "NOM_EF_NFA";
-	}
-
-	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie : EF_NFA
-	 * Date de création : (04/11/11 11:33:55)
-	 * 
-	 */
-	public String getVAL_EF_NFA() {
-		return getZone(getNOM_EF_NFA());
-	}
-
-	/**
-	 * Retourne le nom d'une zone de saisie pour la JSP : EF_NFA_CODE_SERVICE
-	 * Date de création : (04/11/11 11:33:55)
-	 * 
-	 */
-	public String getNOM_EF_NFA_CODE_SERVICE() {
-		return "NOM_EF_NFA_CODE_SERVICE";
-	}
-
-	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_NFA_CODE_SERVICE Date de création : (04/11/11 11:33:55)
-	 * 
-	 */
-	public String getVAL_EF_NFA_CODE_SERVICE() {
-		return getZone(getNOM_EF_NFA_CODE_SERVICE());
-	}
-
-	/**
-	 * Getter de la liste avec un lazy initialize : LB_NFA Date de création :
-	 * (04/11/11 11:33:55)
-	 * 
-	 */
-	private String[] getLB_NFA() {
-		if (LB_NFA == null)
-			LB_NFA = initialiseLazyLB();
-		return LB_NFA;
-	}
-
-	/**
-	 * Setter de la liste: LB_NFA Date de création : (04/11/11 11:33:55)
-	 * 
-	 */
-	private void setLB_NFA(String[] newLB_NFA) {
-		LB_NFA = newLB_NFA;
-	}
-
-	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_NFA Date de création :
-	 * (04/11/11 11:33:55)
-	 * 
-	 */
-	public String getNOM_LB_NFA() {
-		return "NOM_LB_NFA";
-	}
-
-	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_NFA_SELECT Date de création : (04/11/11 11:33:55)
-	 * 
-	 */
-	public String getNOM_LB_NFA_SELECT() {
-		return "NOM_LB_NFA_SELECT";
-	}
-
-	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_NFA Date de création : (04/11/11 11:33:55)
-	 * 
-	 */
-	public String[] getVAL_LB_NFA() {
-		return getLB_NFA();
-	}
-
-	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
-	 * la JSP : LB_NFA Date de création : (04/11/11 11:33:55)
-	 * 
-	 */
-	public String getVAL_LB_NFA_SELECT() {
-		return getZone(getNOM_LB_NFA_SELECT());
-	}
-
-	private NFA getNFACourant() {
-		return NFACourant;
-	}
-
-	private void setNFACourant(NFA courant) {
-		NFACourant = courant;
-	}
-
-	private ArrayList<NFA> getListeNFA() {
-		return listeNFA;
-	}
-
-	private void setListeNFA(ArrayList<NFA> listeNFA) {
-		this.listeNFA = listeNFA;
-	}
-
-	/**
 	 * Getter de la liste avec un lazy initialize : LB_ECOLE Date de création :
 	 * (04/11/11 11:33:55)
 	 * 
@@ -3288,14 +2937,6 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 	public void setTitrePosteDao(TitrePosteDao titrePosteDao) {
 		this.titrePosteDao = titrePosteDao;
-	}
-
-	public NFADao getNfaDao() {
-		return nfaDao;
-	}
-
-	public void setNfaDao(NFADao nfaDao) {
-		this.nfaDao = nfaDao;
 	}
 
 	public FichePosteDao getFichePosteDao() {
@@ -3776,5 +3417,10 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 	public void setFocus(String focus) {
 		this.focus = focus;
+	}
+
+	public String getCurrentWholeTreeJS(String serviceSaisi) {
+		return adsService.getCurrentWholeTreeActifTransitoireJS(
+				null != serviceSaisi && !"".equals(serviceSaisi) ? serviceSaisi : null, false);
 	}
 }

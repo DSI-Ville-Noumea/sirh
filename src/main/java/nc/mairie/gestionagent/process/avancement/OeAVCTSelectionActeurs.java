@@ -1,6 +1,7 @@
 package nc.mairie.gestionagent.process.avancement;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -10,6 +11,9 @@ import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.utils.VariablesActivite;
+import nc.noumea.mairie.ads.dto.EntiteDto;
+import nc.noumea.spring.service.AdsService;
+import nc.noumea.spring.service.IAdsService;
 
 import org.springframework.context.ApplicationContext;
 
@@ -26,6 +30,7 @@ public class OeAVCTSelectionActeurs extends BasicProcess {
 	private ArrayList<Agent> listeActeurs;
 	public String focus = null;
 	private AgentDao agentDao;
+	private IAdsService adsService;
 
 	public ArrayList<Agent> getListeActeurs() {
 		return listeActeurs == null ? new ArrayList<Agent>() : listeActeurs;
@@ -40,6 +45,9 @@ public class OeAVCTSelectionActeurs extends BasicProcess {
 		ApplicationContext context = ApplicationContextProvider.getContext();
 		if (getAgentDao() == null) {
 			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (null == adsService) {
+			adsService = (AdsService) context.getBean("adsService");
 		}
 	}
 
@@ -56,8 +64,18 @@ public class OeAVCTSelectionActeurs extends BasicProcess {
 			@SuppressWarnings("unchecked")
 			ArrayList<Agent> xcludeListe = (ArrayList<Agent>) VariablesActivite.recuperer(this, "LISTEACTEURS");
 			ArrayList<Agent> aListe = new ArrayList<Agent>();
-			aListe = getAgentDao().listerAgentAvecServiceCommencant("DD");
-			aListe = elim_doubure_acteurs(aListe, xcludeListe);
+			// on recupere la liste des sous services de la DRH
+			EntiteDto drh = adsService.getEntiteBySigle("DRH");
+			if (drh != null && drh.getIdEntite() != null) {
+				EntiteDto listeSousServ = adsService.getEntiteWithChildrenByIdEntite(drh.getIdEntite());
+				List<Integer> listIdService = new ArrayList<Integer>();
+				listIdService.add(drh.getIdEntite());
+				for (EntiteDto enfant : listeSousServ.getEnfants()) {
+					listIdService.add(enfant.getIdEntite());
+				}
+				aListe = getAgentDao().listerAgentAvecServiceCommencant(listIdService);
+				aListe = elim_doubure_acteurs(aListe, xcludeListe);
+			}
 
 			// Affectation de la liste
 			setListeActeurs(new ArrayList<Agent>());

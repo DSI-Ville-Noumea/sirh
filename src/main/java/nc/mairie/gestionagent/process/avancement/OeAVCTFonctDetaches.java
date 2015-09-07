@@ -28,13 +28,13 @@ import nc.mairie.spring.dao.metier.parametrage.MotifAvancementDao;
 import nc.mairie.spring.dao.metier.referentiel.AutreAdministrationDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
-import nc.mairie.spring.ws.SirhWSConsumer;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.UserAppli;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
+import nc.noumea.spring.service.ISirhService;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.vfs2.FileObject;
@@ -79,6 +79,8 @@ public class OeAVCTFonctDetaches extends BasicProcess {
 	private AvancementDetachesDao avancementDetachesDao;
 	private HistoCarriereDao histoCarriereDao;
 	private AgentDao agentDao;
+
+	private ISirhService sirhService;
 
 	private SimpleDateFormat sdfFormatDate = new SimpleDateFormat("dd/MM/yyyy");
 
@@ -132,6 +134,9 @@ public class OeAVCTFonctDetaches extends BasicProcess {
 		}
 		if (getAgentDao() == null) {
 			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (null == sirhService) {
+			sirhService = (ISirhService) context.getBean("sirhService");
 		}
 	}
 
@@ -1263,7 +1268,7 @@ public class OeAVCTFonctDetaches extends BasicProcess {
 		if (listeImpressionChangementClasse.size() > 0) {
 
 			try {
-				byte[] fileAsBytes = new SirhWSConsumer().downloadArrete(listeImpressionChangementClasse.toString()
+				byte[] fileAsBytes = sirhService.downloadArrete(listeImpressionChangementClasse.toString()
 						.replace("[", "").replace("]", "").replace(" ", ""), true, Integer.valueOf(getAnneeSelect()),
 						true);
 
@@ -1283,7 +1288,7 @@ public class OeAVCTFonctDetaches extends BasicProcess {
 		}
 		if (listeImpressionAvancementDiff.size() > 0) {
 			try {
-				byte[] fileAsBytes = new SirhWSConsumer().downloadArrete(listeImpressionAvancementDiff.toString()
+				byte[] fileAsBytes = sirhService.downloadArrete(listeImpressionAvancementDiff.toString()
 						.replace("[", "").replace("]", "").replace(" ", ""), false, Integer.valueOf(getAnneeSelect()),
 						true);
 				if (!saveFileToRemoteFileSystem(fileAsBytes, repPartage, docuAvctDiff)) {

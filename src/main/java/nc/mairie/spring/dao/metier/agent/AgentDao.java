@@ -115,25 +115,24 @@ public class AgentDao extends SirhDao implements AgentDaoInterface {
 	}
 
 	@Override
-	public ArrayList<Agent> listerAgentAvecServicesETMatricules(ArrayList<String> codesServices, Integer idAgentMin,
+	public ArrayList<Agent> listerAgentAvecServicesETMatricules(List<Integer> listIdsService, Integer idAgentMin,
 			Integer idAgentMax) throws Exception {
 		String reqWhere = Const.CHAINE_VIDE;
 		if (idAgentMin != null && idAgentMax != null) {
 			reqWhere = " and ag." + CHAMP_ID + " between " + idAgentMin + " and " + idAgentMax + " ";
 		}
 		StringBuilder sb = new StringBuilder();
-		sb.append("('");
-		for (String s : codesServices) {
-			sb.append(s);
-			sb.append("','");
+		sb.append("(");
+		for (Integer id : listIdsService) {
+			sb.append(id);
+			sb.append(",");
 		}
-		sb.deleteCharAt(sb.lastIndexOf("'"));
 		sb.deleteCharAt(sb.lastIndexOf(","));
 		sb.append(")");
 
 		String sql = "select distinct ag.* from "
 				+ NOM_TABLE
-				+ " ag, affectation af, fiche_poste fp where (af.DATE_FIN_AFF is null or af.DATE_FIN_AFF >=?) and fp.id_servi in "
+				+ " ag, affectation af, fiche_poste fp where (af.DATE_FIN_AFF is null or af.DATE_FIN_AFF >=?) and fp.id_service_ads in "
 				+ sb.toString() + " and fp.id_fiche_poste = af.id_fiche_poste and af.id_agent = ag." + CHAMP_ID + " "
 				+ reqWhere + " order by ag." + CHAMP_NOMATR;
 
@@ -312,14 +311,24 @@ public class AgentDao extends SirhDao implements AgentDaoInterface {
 	}
 
 	@Override
-	public ArrayList<Agent> listerAgentAvecServiceCommencant(String debCodeService) throws Exception {
+	public ArrayList<Agent> listerAgentAvecServiceCommencant(List<Integer> listIdServiceADS) throws Exception {
+
+		StringBuilder sb = new StringBuilder();
+		sb.append("(");
+		for (Integer id : listIdServiceADS) {
+			sb.append(id);
+			sb.append(",");
+		}
+		sb.deleteCharAt(sb.lastIndexOf(","));
+		sb.append(")");
+
 		String sql = "select distinct ag.* from "
 				+ NOM_TABLE
-				+ " ag, affectation af, fiche_poste fp where (af.DATE_FIN_AFF is null or af.DATE_FIN_AFF >=?) and fp.id_servi like ? and fp.id_fiche_poste = af.id_fiche_poste and af.id_agent = ag."
-				+ CHAMP_ID + " order by ag." + CHAMP_NOMATR;
+				+ " ag, affectation af, fiche_poste fp where (af.DATE_FIN_AFF is null or af.DATE_FIN_AFF >=?) and fp.id_service_ads in "
+				+ sb.toString() + " and fp.id_fiche_poste = af.id_fiche_poste and af.id_agent = ag." + CHAMP_ID
+				+ " order by ag." + CHAMP_NOMATR;
 
-		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql,
-				new Object[] { new Date(), debCodeService + "%" });
+		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { new Date() });
 		return mapAgent(rows);
 	}
 
@@ -335,24 +344,46 @@ public class AgentDao extends SirhDao implements AgentDaoInterface {
 	}
 
 	@Override
+	public ArrayList<Agent> listerAgentAvecListeServiceAds(List<Integer> listIdsService) throws Exception {
+
+		StringBuilder sb = new StringBuilder();
+		sb.append("(");
+		for (Integer id : listIdsService) {
+			sb.append(id);
+			sb.append(",");
+		}
+		sb.deleteCharAt(sb.lastIndexOf(","));
+		sb.append(")");
+
+		String sql = "select distinct ag.* from " + NOM_TABLE
+				+ " ag, affectation af, fiche_poste fp where (af.DATE_FIN_AFF is null or af.DATE_FIN_AFF >=?) "
+				+ "and fp.id_service_ads in " + sb.toString()
+				+ " and fp.id_fiche_poste = af.id_fiche_poste and af.id_agent = ag." + CHAMP_ID + " order by ag."
+				+ CHAMP_NOMATR;
+
+		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { new Date() });
+		return mapAgent(rows);
+	}
+
+	@Override
 	public Agent chercherAgent(Integer idAgent) throws Exception {
 		return super.chercherObject(Agent.class, idAgent);
 	}
 
 	@Override
-	public ArrayList<Agent> listerAgentEligibleAvct(ArrayList<String> listeSousService, String listeNoMatr)
+	public ArrayList<Agent> listerAgentEligibleAvct(List<Integer> listeSousService, String listeNoMatr)
 			throws Exception {
 		String reqWhere = Const.CHAINE_VIDE;
 		String reqInner = Const.CHAINE_VIDE;
 		if (listeSousService != null) {
 			String list = Const.CHAINE_VIDE;
-			for (String codeServ : listeSousService) {
-				list += "'" + codeServ + "',";
+			for (Integer codeServ : listeSousService) {
+				list += codeServ + ",";
 			}
 			if (!list.equals(Const.CHAINE_VIDE)) {
 				list = list.substring(0, list.length() - 1);
 			}
-			reqWhere += " and fp.id_servi in (" + list + ") ";
+			reqWhere += " and fp.id_service_ads in (" + list + ") ";
 			reqInner = " inner join AFFECTATION aff on a." + CHAMP_ID
 					+ " = aff.id_agent inner join FICHE_POSTE fp on aff.id_fiche_poste= fp.id_fiche_poste ";
 		}

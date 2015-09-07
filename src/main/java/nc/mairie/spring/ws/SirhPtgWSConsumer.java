@@ -24,11 +24,12 @@ import nc.mairie.gestionagent.pointage.dto.RefPrimeDto;
 import nc.mairie.gestionagent.pointage.dto.RefTypePointageDto;
 import nc.mairie.gestionagent.pointage.dto.VentilDateDto;
 import nc.mairie.gestionagent.pointage.dto.VentilErreurDto;
-import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -43,6 +44,10 @@ import flexjson.JSONSerializer;
 
 @Service
 public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
+
+	@Autowired
+	@Qualifier("ptgWsBaseUrl")
+	private String ptgWsBaseUrl;
 
 	// droits
 	private static final String sirhPtgAgentsApprobateurs = "droits/approbateurs";
@@ -94,15 +99,14 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 	private Logger logger = LoggerFactory.getLogger(SirhPtgWSConsumer.class);
 
 	@Override
-	public List<ApprobateurDto> getApprobateurs(String codeService, Integer idAgent) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS_URL");
-		String url = urlWS + sirhPtgAgentsApprobateurs;
+	public List<ApprobateurDto> getApprobateurs(Integer idServiceADS, Integer idAgent) {
+		String url = String.format(ptgWsBaseUrl + sirhPtgAgentsApprobateurs);
 		HashMap<String, String> params = new HashMap<>();
 		if (idAgent != null) {
 			params.put("idAgent", idAgent.toString());
 		}
-		if (codeService != null) {
-			params.put("codeService", codeService);
+		if (idServiceADS != null) {
+			params.put("idServiceADS", idServiceADS.toString());
 		}
 		ClientResponse res = createAndFireRequest(params, url);
 		return readResponseAsList(ApprobateurDto.class, res, url);
@@ -110,24 +114,21 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 
 	@Override
 	public ReturnMessageDto setApprobateur(String json) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS_URL");
-		String url = urlWS + sirhPtgAgentsApprobateurs;
+		String url = String.format(ptgWsBaseUrl + sirhPtgAgentsApprobateurs);
 		ClientResponse res = createAndPostRequest(url, json);
 		return readResponseWithReturnMessageDto(ReturnMessageDto.class, res, url);
 	}
 
 	@Override
 	public ReturnMessageDto deleteApprobateur(String json) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS_URL");
-		String url = urlWS + sirhPtgDeleteApprobateurs;
+		String url = String.format(ptgWsBaseUrl + sirhPtgDeleteApprobateurs);
 		ClientResponse res = createAndPostRequest(url, json);
 		return readResponseWithReturnMessageDto(ReturnMessageDto.class, res, url);
 	}
 
 	@Override
 	public FichePointageDto getSaisiePointage(Integer idAgent, String monday) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS_URL");
-		String url = urlWS + sirhPtgSaisie;
+		String url = String.format(ptgWsBaseUrl + sirhPtgSaisie);
 		HashMap<String, String> params = new HashMap<>();
 		idAgent = idAgent.toString().startsWith("900") ? idAgent : Integer.valueOf("900" + idAgent);
 		params.put("date", monday);
@@ -139,8 +140,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 
 	@Override
 	public ReturnMessageDto setPtgState(ArrayList<Integer> idPtgs, Integer idRefEtat, Integer idAgent) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS_URL");
-		String url = urlWS + sirhPtgVisualisationSetState;
+		String url = String.format(ptgWsBaseUrl + sirhPtgVisualisationSetState);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgent.toString());
 
@@ -158,8 +158,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 
 	@Override
 	public List<ConsultPointageDto> getVisualisationHistory(Integer idPointage) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS_URL");
-		String url = urlWS + sirhPtgVisualisationHistory;
+		String url = String.format(ptgWsBaseUrl + sirhPtgVisualisationHistory);
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put("idPointage", idPointage.toString());
 		ClientResponse res = createAndFireRequest(parameters, url);
@@ -188,7 +187,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 			response = webResource.type("application/json").post(ClientResponse.class, json);
 
 		} catch (ClientHandlerException ex) {
-			throw new SirhPtgWSConsumerException(String.format("An error occured when querying '%s'.", url), ex);
+			throw new BaseWsConsumerException(String.format("An error occured when querying '%s'.", url), ex);
 		}
 
 		return response;
@@ -210,7 +209,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 		try {
 			response = webResource.accept(MediaType.APPLICATION_JSON_VALUE).get(ClientResponse.class);
 		} catch (ClientHandlerException ex) {
-			throw new SirhPtgWSConsumerException(String.format("An error occured when querying '%s'.", url), ex);
+			throw new BaseWsConsumerException(String.format("An error occured when querying '%s'.", url), ex);
 		}
 		return response;
 	}
@@ -220,7 +219,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 		if (response.getStatus() == HttpStatus.OK.value())
 			return;
 
-		throw new SirhPtgWSConsumerException(String.format(
+		throw new BaseWsConsumerException(String.format(
 				"An error occured when querying '%s'. Return code is : %s, content is %s", url, response.getStatus(),
 				response.getEntity(String.class)));
 	}
@@ -232,7 +231,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 		try {
 			result = targetClass.newInstance();
 		} catch (Exception ex) {
-			throw new SirhPtgWSConsumerException(
+			throw new BaseWsConsumerException(
 					"An error occured when instantiating return type when deserializing JSON from SIRH WS request.", ex);
 		}
 
@@ -241,8 +240,8 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 		}
 
 		if (response.getStatus() != HttpStatus.OK.value()) {
-			throw new SirhPtgWSConsumerException(String.format(
-					"An error occured when querying '%s'. Return code is : %s", url, response.getStatus()));
+			throw new BaseWsConsumerException(String.format("An error occured when querying '%s'. Return code is : %s",
+					url, response.getStatus()));
 		}
 
 		String output = response.getEntity(String.class);
@@ -258,8 +257,8 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 		}
 
 		if (response.getStatus() != HttpStatus.OK.value()) {
-			throw new SirhPtgWSConsumerException(String.format(
-					"An error occured when querying '%s'. Return code is : %s", url, response.getStatus()));
+			throw new BaseWsConsumerException(String.format("An error occured when querying '%s'. Return code is : %s",
+					url, response.getStatus()));
 		}
 
 		return response.getEntity(byte[].class);
@@ -274,8 +273,8 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 		}
 
 		if (response.getStatus() != HttpStatus.OK.value()) {
-			throw new SirhPtgWSConsumerException(String.format(
-					"An error occured when querying '%s'. Return code is : %s", url, response.getStatus()));
+			throw new BaseWsConsumerException(String.format("An error occured when querying '%s'. Return code is : %s",
+					url, response.getStatus()));
 		}
 
 		String output = response.getEntity(String.class);
@@ -295,8 +294,8 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 		}
 
 		if (response.getStatus() != HttpStatus.OK.value()) {
-			throw new SirhPtgWSConsumerException(String.format(
-					"An error occured when querying '%s'. Return code is : %s", url, response.getStatus()));
+			throw new BaseWsConsumerException(String.format("An error occured when querying '%s'. Return code is : %s",
+					url, response.getStatus()));
 		}
 
 		String output = response.getEntity(String.class);
@@ -308,8 +307,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 	@Override
 	public List<ConsultPointageDto> getVisualisationPointage(String fromDate, String toDate, List<String> idAgents,
 			Integer idRefEtat, Integer idRefType, String typeHeureSup) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS_URL");
-		String url = urlWS + sirhPtgVisualisationPointage;
+		String url = String.format(ptgWsBaseUrl + sirhPtgVisualisationPointage);
 
 		Map<String, String> parameters = new HashMap<String, String>();
 
@@ -344,8 +342,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 
 	@Override
 	public List<RefEtatDto> getEtatsPointage() {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS_URL");
-		String url = urlWS + sirhPtgEtatsPointage;
+		String url = String.format(ptgWsBaseUrl + sirhPtgEtatsPointage);
 
 		ClientResponse res = createAndFireRequest(new HashMap<String, String>(), url);
 
@@ -354,8 +351,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 
 	@Override
 	public List<RefTypePointageDto> getTypesPointage() {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS_URL");
-		String url = urlWS + sirhPtgTypesPointage;
+		String url = String.format(ptgWsBaseUrl + sirhPtgTypesPointage);
 
 		ClientResponse res = createAndFireRequest(new HashMap<String, String>(), url);
 		return readResponseAsList(RefTypePointageDto.class, res, url);
@@ -363,8 +359,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 
 	@Override
 	public List<RefPrimeDto> getPrimes(String agentStatus) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS_URL");
-		String url = urlWS + sirhPtgPrimesStatut;
+		String url = String.format(ptgWsBaseUrl + sirhPtgPrimesStatut);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("statutAgent", agentStatus);
 		ClientResponse res = createAndFireRequest(params, url);
@@ -373,8 +368,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 
 	@Override
 	public List<RefPrimeDto> getPrimes() {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS_URL");
-		String url = urlWS + sirhPtgPrimes;
+		String url = String.format(ptgWsBaseUrl + sirhPtgPrimes);
 		HashMap<String, String> params = new HashMap<>();
 		ClientResponse res = createAndFireRequest(params, url);
 		return readResponseAsList(RefPrimeDto.class, res, url);
@@ -382,8 +376,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 
 	@Override
 	public RefPrimeDto getPrimeDetail(Integer numRubrique) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS_URL");
-		String url = urlWS + sirhPtgPrimeDetail;
+		String url = String.format(ptgWsBaseUrl + sirhPtgPrimeDetail);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("noRubr", numRubrique.toString());
 		ClientResponse res = createAndFireRequest(params, url);
@@ -392,8 +385,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 
 	@Override
 	public RefPrimeDto getPrimeDetailFromRefPrime(Integer idRefPrime) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS_URL");
-		String url = urlWS + sirhPtgPrimeDetailFromIdRefPrime;
+		String url = String.format(ptgWsBaseUrl + sirhPtgPrimeDetailFromIdRefPrime);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idRefPrime", idRefPrime.toString());
 		ClientResponse res = createAndFireRequest(params, url);
@@ -402,8 +394,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 
 	@Override
 	public ReturnMessageDto setSaisiePointage(Integer idAgent, FichePointageDto toSerialize) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS_URL");
-		String url = urlWS + sirhPtgSaisie;
+		String url = String.format(ptgWsBaseUrl + sirhPtgSaisie);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgent.toString());
 		ClientResponse res = createAndPostRequest(
@@ -416,8 +407,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 
 	@Override
 	public boolean isPrimeUtilPointage(Integer numRubrique, Integer idAgent) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS_URL");
-		String url = urlWS + sirhPtgPrimePointee;
+		String url = String.format(ptgWsBaseUrl + sirhPtgPrimePointee);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("noRubr", numRubrique.toString());
 		params.put("idAgent", idAgent.toString());
@@ -432,8 +422,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 	@Override
 	public <T> List<T> getVentilations(Class<T> targetClass, Integer idDateVentil, Integer idRefTypePointage,
 			String agentsJson, boolean allVentilation) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS_URL");
-		String url = urlWS + sirhPtgVentilationsShow;
+		String url = String.format(ptgWsBaseUrl + sirhPtgVentilationsShow);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idDateVentil", idDateVentil.toString());
 		params.put("typePointage", idRefTypePointage.toString());
@@ -447,8 +436,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 	@Override
 	public <T> List<T> getVentilationsHistory(Class<T> targetClass, Integer mois, Integer annee,
 			Integer idRefTypePointage, Integer idAgent, boolean allVentilation, Integer idVentilDate) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS_URL");
-		String url = urlWS + sirhPtgVentilationsHistory;
+		String url = String.format(ptgWsBaseUrl + sirhPtgVentilationsHistory);
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put("mois", mois.toString());
 		parameters.put("annee", annee.toString());
@@ -462,8 +450,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 
 	@Override
 	public boolean isValidAvailable(String agentStatus) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS_URL");
-		String url = urlWS + sirhPtgCheckValid;
+		String url = String.format(ptgWsBaseUrl + sirhPtgCheckValid);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("statut", agentStatus);
 		ClientResponse res = createAndFireRequest(params, url);
@@ -478,8 +465,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 
 	@Override
 	public boolean isVentilAvailable(String agentStatus) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS_URL");
-		String url = urlWS + sirhPtgCheckVentil;
+		String url = String.format(ptgWsBaseUrl + sirhPtgCheckVentil);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("statut", agentStatus);
 		ClientResponse res = createAndFireRequest(params, url);
@@ -494,8 +480,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 
 	@Override
 	public VentilDateDto getVentilationEnCours(String statut) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS_URL");
-		String url = urlWS + sirhPtgVentilationEnCours;
+		String url = String.format(ptgWsBaseUrl + sirhPtgVentilationEnCours);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("statut", statut);
 		ClientResponse res = createAndFireRequest(params, url);
@@ -511,8 +496,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 	@Override
 	public boolean startVentilation(Integer idAgent, Date dateVentilation, String agentsJson, String statut,
 			String idRefTypePointage) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS_URL");
-		String url = urlWS + sirhPtgStartVentilation;
+		String url = String.format(ptgWsBaseUrl + sirhPtgStartVentilation);
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgent.toString());
@@ -531,8 +515,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 
 	@Override
 	public boolean startDeversementPaie(Integer idAgent, String statut) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS_URL");
-		String url = urlWS + sirhPtgStartDeversement;
+		String url = String.format(ptgWsBaseUrl + sirhPtgStartDeversement);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgent.toString());
 		params.put("statut", statut);
@@ -547,8 +530,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 
 	@Override
 	public boolean canStartExportEtatsPayeur(String statut) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS_URL");
-		String url = urlWS + sirhPtgCanStartExportEtatsPayeur;
+		String url = String.format(ptgWsBaseUrl + sirhPtgCanStartExportEtatsPayeur);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("statut", statut);
 		ClientResponse res = createAndFireRequest(params, url);
@@ -564,8 +546,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 
 	@Override
 	public List<EtatsPayeurDto> getListEtatsPayeurByStatut(String statut) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS_URL");
-		String url = urlWS + sirhPtgListEtatsPayeur;
+		String url = String.format(ptgWsBaseUrl + sirhPtgListEtatsPayeur);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("statutAgent", statut);
 		ClientResponse res = createAndFireRequest(params, url);
@@ -575,9 +556,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 
 	@Override
 	public byte[] downloadFicheEtatsPayeur(Integer idEtatPayeur) {
-
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS_URL");
-		String url = urlWS + sirhPtgDownloadFicheEtatsPayeur;
+		String url = String.format(ptgWsBaseUrl + sirhPtgDownloadFicheEtatsPayeur);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idEtatPayeur", idEtatPayeur.toString());
 		ClientResponse res = createAndFireRequest(params, url);
@@ -587,9 +566,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 
 	@Override
 	public boolean startExportEtatsPayeur(Integer idAgentExporting, String statutString) {
-
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS_URL");
-		String url = urlWS + sirhPtgStartExportEtatsPayeur;
+		String url = String.format(ptgWsBaseUrl + sirhPtgStartExportEtatsPayeur);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgentExporting.toString());
 		params.put("statut", statutString);
@@ -605,8 +582,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 
 	@Override
 	public ArrayList<Integer> getListeIdAgentPointage() {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS_URL");
-		String url = urlWS + sirhPtgVisualisationIdAgentPointage;
+		String url = String.format(ptgWsBaseUrl + sirhPtgVisualisationIdAgentPointage);
 		ClientResponse res = createAndFireRequest(new HashMap<String, String>(), url);
 		List<AgentDto> liste = readResponseAsList(AgentDto.class, res, url);
 		ArrayList<Integer> result = new ArrayList<Integer>();
@@ -618,8 +594,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 
 	@Override
 	public List<VentilErreurDto> getErreursVentilation(String type) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS_URL");
-		String url = urlWS + sirhPtgErreursVentilation;
+		String url = String.format(ptgWsBaseUrl + sirhPtgErreursVentilation);
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put("statut", type);
 		ClientResponse res = createAndFireRequest(parameters, url);
@@ -628,16 +603,14 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 
 	@Override
 	public List<TypeAbsenceDto> getListeRefTypeAbsence() {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS_URL");
-		String url = urlWS + sirhPtgTypeAbsence;
+		String url = String.format(ptgWsBaseUrl + sirhPtgTypeAbsence);
 		ClientResponse res = createAndFireRequest(new HashMap<String, String>(), url);
 		return readResponseAsList(TypeAbsenceDto.class, res, url);
 	}
 
 	@Override
 	public boolean isValidEnCours(String agentStatus) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS_URL");
-		String url = urlWS + sirhPtgCheckIsValidRuning;
+		String url = String.format(ptgWsBaseUrl + sirhPtgCheckIsValidRuning);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("statut", agentStatus);
 		ClientResponse res = createAndFireRequest(params, url);
@@ -652,8 +625,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 
 	@Override
 	public boolean isVentilEnCours(String agentStatus) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS_URL");
-		String url = urlWS + sirhPtgCheckIsVentilRuning;
+		String url = String.format(ptgWsBaseUrl + sirhPtgCheckIsVentilRuning);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("statut", agentStatus);
 		ClientResponse res = createAndFireRequest(params, url);
@@ -673,8 +645,8 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 		try {
 			result = targetClass.newInstance();
 		} catch (Exception ex) {
-			throw new SirhAbsWSConsumerException(
-					"An error occured when instantiating return type when deserializing JSON from SIRH ABS WS request.",
+			throw new BaseWsConsumerException(
+					"An error occured when instantiating return type when deserializing JSON from SIRH PTG WS request.",
 					ex);
 		}
 
@@ -695,9 +667,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 	@Override
 	public List<Integer> getListeAgentsForShowVentilation(Integer idDateVentil, Integer idRefTypePointage,
 			String statut, Date ventilationDate, String agentMin, String agentMax, boolean allVentilation) {
-
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS_URL");
-		String url = urlWS + sirhPtgListeAgentsForShowVentilation;
+		String url = String.format(ptgWsBaseUrl + sirhPtgListeAgentsForShowVentilation);
 
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 
@@ -716,8 +686,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 
 	@Override
 	public List<MotifHeureSupDto> getListeMotifHeureSup() {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS_URL");
-		String url = urlWS + sirhPtgMotifHeureSup;
+		String url = String.format(ptgWsBaseUrl + sirhPtgMotifHeureSup);
 
 		ClientResponse res = createAndFireRequest(new HashMap<String, String>(), url);
 		return readResponseAsList(MotifHeureSupDto.class, res, url);
@@ -725,8 +694,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 
 	@Override
 	public ReturnMessageDto saveMotifHeureSup(String json) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS_URL");
-		String url = urlWS + sirhPtgSaveMotifHeureSup;
+		String url = String.format(ptgWsBaseUrl + sirhPtgSaveMotifHeureSup);
 		HashMap<String, String> params = new HashMap<>();
 		ClientResponse res = createAndPostRequest(params, url, json);
 
@@ -741,8 +709,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 
 	@Override
 	public ReturnMessageDto setDelegataire(Integer idAgent, String json) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS_URL");
-		String url = urlWS + sirhPtgSauvegardeDelegataire;
+		String url = String.format(ptgWsBaseUrl + sirhPtgSauvegardeDelegataire);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgent.toString());
 		ClientResponse res = createAndPostRequest(params, url, json);
@@ -751,8 +718,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 
 	@Override
 	public List<AgentDto> getApprovedAgents(Integer idAgent) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS_URL");
-		String url = urlWS + ptgDroitsAgentsApprouvesUrl;
+		String url = String.format(ptgWsBaseUrl + ptgDroitsAgentsApprouvesUrl);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgent.toString());
 
@@ -762,8 +728,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 
 	@Override
 	public DelegatorAndOperatorsDto getDelegateAndOperator(Integer idAgent) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS_URL");
-		String url = urlWS + ptgDroitsDelegataireOperateursUrl;
+		String url = String.format(ptgWsBaseUrl + ptgDroitsDelegataireOperateursUrl);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgent.toString());
 
@@ -773,8 +738,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 
 	@Override
 	public ReturnMessageDto saveApprovedAgents(Integer idAgent, List<AgentDto> listSelect) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS_URL");
-		String url = urlWS + ptgDroitsAgentsApprouvesUrl;
+		String url = String.format(ptgWsBaseUrl + ptgDroitsAgentsApprouvesUrl);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgent.toString());
 
@@ -786,7 +750,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 		ReturnMessageDto dto = new ReturnMessageDto();
 		try {
 			readResponse(res, url);
-		} catch (SirhPtgWSConsumerException e) {
+		} catch (BaseWsConsumerException e) {
 			dto.setErrors(Arrays.asList("Une erreur est survenue lors de la sauvegarde des agents à approuver."));
 		}
 
@@ -795,8 +759,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 
 	@Override
 	public ReturnMessageDto saveDelegateAndOperator(Integer idAgent, DelegatorAndOperatorsDto dto) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS_URL");
-		String url = urlWS + ptgDroitsDelegataireOperateursUrl;
+		String url = String.format(ptgWsBaseUrl + ptgDroitsDelegataireOperateursUrl);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgent.toString());
 
@@ -809,8 +772,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 
 	@Override
 	public List<AgentDto> getAgentsSaisisOperateur(Integer idAgent, Integer idOperateur) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS_URL");
-		String url = urlWS + ptgDroitsAgentsSaisisUrl;
+		String url = String.format(ptgWsBaseUrl + ptgDroitsAgentsSaisisUrl);
 
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgent.toString());
@@ -822,8 +784,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 
 	@Override
 	public ReturnMessageDto saveAgentsSaisisOperateur(Integer idAgent, Integer idOperateur, List<AgentDto> listSelect) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS_URL");
-		String url = urlWS + ptgDroitsAgentsSaisisUrl;
+		String url = String.format(ptgWsBaseUrl + ptgDroitsAgentsSaisisUrl);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgent.toString());
 		params.put("idOperateur", idOperateur.toString());
@@ -835,7 +796,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 		ReturnMessageDto dto = new ReturnMessageDto();
 		try {
 			readResponse(res, url);
-		} catch (SirhPtgWSConsumerException e) {
+		} catch (BaseWsConsumerException e) {
 			dto.setErrors(Arrays.asList("Une erreur est survenue lors de la sauvegarde des agents à approuver."));
 		}
 

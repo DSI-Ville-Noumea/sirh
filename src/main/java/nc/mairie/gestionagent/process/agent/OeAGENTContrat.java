@@ -27,13 +27,13 @@ import nc.mairie.spring.dao.metier.referentiel.MotifDao;
 import nc.mairie.spring.dao.metier.referentiel.TypeContratDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
-import nc.mairie.spring.ws.SirhWSConsumer;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
+import nc.noumea.spring.service.ISirhService;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.vfs2.FileObject;
@@ -88,6 +88,8 @@ public class OeAGENTContrat extends BasicProcess {
 	private DocumentAgentDao lienDocumentAgentDao;
 	private DocumentDao documentDao;
 	private ContratDao contratDao;
+
+	private ISirhService sirhService;
 
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
@@ -904,6 +906,9 @@ public class OeAGENTContrat extends BasicProcess {
 		if (getContratDao() == null) {
 			setContratDao(new ContratDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (null == sirhService) {
+			sirhService = (ISirhService) context.getBean("sirhService");
+		}
 	}
 
 	/**
@@ -1524,7 +1529,7 @@ public class OeAGENTContrat extends BasicProcess {
 		}
 
 		try {
-			byte[] fileAsBytes = new SirhWSConsumer().downloadContrat(getAgentCourant().getIdAgent(),
+			byte[] fileAsBytes = sirhService.downloadContrat(getAgentCourant().getIdAgent(),
 					getContratCourant().getIdContrat());
 
 			if (!saveFileToRemoteFileSystem(fileAsBytes, repPartage, destination)) {

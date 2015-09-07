@@ -35,7 +35,6 @@ import nc.mairie.metier.poste.CompetenceFP;
 import nc.mairie.metier.poste.EntiteGeo;
 import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.poste.Horaire;
-import nc.mairie.metier.poste.Service;
 import nc.mairie.metier.poste.TitrePoste;
 import nc.mairie.metier.referentiel.TypeCompetence;
 import nc.mairie.metier.specificites.AvantageNature;
@@ -70,13 +69,17 @@ import nc.mairie.spring.dao.metier.specificites.PrimePointageFPDao;
 import nc.mairie.spring.dao.metier.specificites.RegIndemnDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
-import nc.mairie.spring.ws.SirhPtgWSConsumer;
-import nc.mairie.spring.ws.SirhWSConsumer;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
 import nc.mairie.utils.VariablesActivite;
+import nc.noumea.mairie.ads.dto.EntiteDto;
+import nc.noumea.spring.service.AdsService;
+import nc.noumea.spring.service.IAdsService;
+import nc.noumea.spring.service.IPtgService;
+import nc.noumea.spring.service.ISirhService;
+import nc.noumea.spring.service.PtgService;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.vfs2.FileObject;
@@ -117,9 +120,9 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 	private TitrePoste titrePosteRemplacement;
 
 	private String titrePoste;
-	private Service service;
-	private Service direction;
-	private Service section;
+	private EntiteDto service;
+	private EntiteDto direction;
+	private EntiteDto section;
 	private String localisation;
 	private FichePoste responsable;
 	private String cadreEmploi;
@@ -160,6 +163,12 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 	private FichePosteDao fichePosteDao;
 	private AffectationDao affectationDao;
 	private AgentDao agentDao;
+
+	private IAdsService adsService;
+
+	private IPtgService ptgService;
+
+	private ISirhService sirhService;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -317,6 +326,15 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 		if (getAgentDao() == null) {
 			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (null == adsService) {
+			adsService = (AdsService) context.getBean("adsService");
+		}
+		if (null == ptgService) {
+			ptgService = (PtgService) context.getBean("ptgService");
+		}
+		if (null == sirhService) {
+			sirhService = (ISirhService) context.getBean("sirhService");
+		}
 	}
 
 	private void alimenterFicheDePoste() throws Exception {
@@ -325,12 +343,11 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 			setTitrePoste(getFichePosteCourant().getIdTitrePoste() == null ? Const.CHAINE_VIDE : getTitrePosteDao()
 					.chercherTitrePoste(getFichePosteCourant().getIdTitrePoste()).getLibTitrePoste());
 
-			setDirection(Service.getDirection(getTransaction(), getFichePosteCourant().getIdServi()));
-			Service serv = Service.getDivision(getTransaction(), getFichePosteCourant().getIdServi());
-			if (serv == null)
-				serv = Service.chercherService(getTransaction(), getFichePosteCourant().getIdServi());
-			setService(serv);
-			setSection(Service.getSection(getTransaction(), getFichePosteCourant().getIdServi()));
+			setDirection(adsService.getAffichageDirection(getFichePosteCourant().getIdServiceAds()));
+			EntiteDto division = adsService.getAffichageService(getFichePosteCourant().getIdServiceAds());
+			setService(division == null ? adsService.getEntiteByIdEntite(getFichePosteCourant().getIdServiceAds())
+					: division);
+			setSection(adsService.getAffichageSection(getFichePosteCourant().getIdServiceAds()));
 
 			setLocalisation(getFichePosteCourant().getIdEntiteGeo() == null ? Const.CHAINE_VIDE : EntiteGeo
 					.chercherEntiteGeo(getTransaction(), getFichePosteCourant().getIdEntiteGeo().toString())
@@ -501,13 +518,12 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 		}
 
 		// Prime pointage
-		SirhPtgWSConsumer t = new SirhPtgWSConsumer();
 		ArrayList<RefPrimeDto> listeTotale = new ArrayList<RefPrimeDto>();
 		if (getListePrimePointageFP().size() == 0) {
 			setListePrimePointageFP(getPrimePointageFPDao().listerPrimePointageFP(
 					getFichePosteCourant().getIdFichePoste()));
 			for (PrimePointageFP primeFP : getListePrimePointageFP()) {
-				RefPrimeDto rubr = t.getPrimeDetail(primeFP.getNumRubrique());
+				RefPrimeDto rubr = ptgService.getPrimeDetail(primeFP.getNumRubrique());
 				listeTotale.add(rubr);
 			}
 		}
@@ -635,9 +651,9 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 				: getStatutFPDao().chercherStatutFP(getFichePosteCourant().getIdStatutFp()).getLibStatutFp());
 
 		addZone(getNOM_ST_TITRE(), getTitrePoste());
-		addZone(getNOM_ST_DIRECTION(), getDirection() == null ? Const.CHAINE_VIDE : getDirection().getLibService());
-		addZone(getNOM_ST_SERVICE(), getService() == null ? Const.CHAINE_VIDE : getService().getLibService());
-		addZone(getNOM_ST_SECTION(), getSection() == null ? Const.CHAINE_VIDE : getSection().getLibService());
+		addZone(getNOM_ST_DIRECTION(), getDirection() == null ? Const.CHAINE_VIDE : getDirection().getLabel());
+		addZone(getNOM_ST_SERVICE(), getService() == null ? Const.CHAINE_VIDE : getService().getLabel());
+		addZone(getNOM_ST_SECTION(), getSection() == null ? Const.CHAINE_VIDE : getSection().getLabel());
 
 		addZone(getNOM_ST_LOCALISATION(), getLocalisation());
 		addZone(getNOM_ST_GRADE(), getGradeFP());
@@ -1369,7 +1385,7 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 		this.affectationCourant = affectationCourant;
 	}
 
-	private Service getService() {
+	private EntiteDto getService() {
 		return service;
 	}
 
@@ -1378,7 +1394,7 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 	 * 
 	 * @param service
 	 */
-	private void setService(Service service) {
+	private void setService(EntiteDto service) {
 		this.service = service;
 	}
 
@@ -1398,7 +1414,7 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 		this.titrePoste = titrePoste;
 	}
 
-	private Service getDirection() {
+	private EntiteDto getDirection() {
 		return direction;
 	}
 
@@ -1407,7 +1423,7 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 	 * 
 	 * @param direction
 	 */
-	private void setDirection(Service direction) {
+	private void setDirection(EntiteDto direction) {
 		this.direction = direction;
 	}
 
@@ -1567,7 +1583,7 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 		}
 
 		try {
-			byte[] fileAsBytes = new SirhWSConsumer().downloadFichePoste(getFichePosteCourant().getIdFichePoste());
+			byte[] fileAsBytes = sirhService.downloadFichePoste(getFichePosteCourant().getIdFichePoste());
 
 			if (!saveFileToRemoteFileSystem(fileAsBytes, repPartage, destinationFDP)) {
 				// "ERR185",
@@ -1713,11 +1729,11 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 		this.gradeAgt = gradeAgt;
 	}
 
-	private Service getSection() {
+	private EntiteDto getSection() {
 		return section;
 	}
 
-	private void setSection(Service section) {
+	private void setSection(EntiteDto section) {
 		this.section = section;
 	}
 

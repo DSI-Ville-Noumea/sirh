@@ -15,14 +15,15 @@ import nc.mairie.spring.dao.metier.agent.AgentDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.spring.ws.MSDateTransformer;
-import nc.mairie.spring.ws.RadiWSConsumer;
-import nc.mairie.spring.ws.SirhAbsWSConsumer;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.UserAppli;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
+import nc.noumea.spring.service.AbsService;
+import nc.noumea.spring.service.IAbsService;
+import nc.noumea.spring.service.IRadiService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,9 +45,13 @@ public class OeABSRestitution extends BasicProcess {
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
 	private List<RestitutionMassiveDto> listHistoRestitutionMassive;
-	
+
 	private RestitutionMassiveDto detailsHisto;
-	
+
+	private IRadiService radiService;
+
+	private IAbsService absService;
+
 	@Override
 	public String getJSP() {
 		return "OeABSRestitution.jsp";
@@ -93,12 +98,17 @@ public class OeABSRestitution extends BasicProcess {
 		if (getAgentDao() == null) {
 			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (null == radiService) {
+			radiService = (IRadiService) context.getBean("radiService");
+		}
+		if (null == absService) {
+			absService = (AbsService) context.getBean("absService");
+		}
 
 	}
-	
+
 	private void initialiseHisto(HttpServletRequest request) throws Exception {
-		SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
-		setListHistoRestitutionMassive(consuAbs.getHistoRestitutionMassive(getAgentConnecte(request).getIdAgent()));
+		setListHistoRestitutionMassive(absService.getHistoRestitutionMassive(getAgentConnecte(request).getIdAgent()));
 	}
 
 	@Override
@@ -187,7 +197,6 @@ public class OeABSRestitution extends BasicProcess {
 			return false;
 		}
 
-		SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
 		ReturnMessageDto srm = null;
 
 		String err = Const.CHAINE_VIDE;
@@ -205,7 +214,7 @@ public class OeABSRestitution extends BasicProcess {
 		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class)
 				.deepSerialize(dto);
 
-		srm = consuAbs.addRestitutionMassive(getAgentConnecte(request).getIdAgent(), json);
+		srm = absService.addRestitutionMassive(getAgentConnecte(request).getIdAgent(), json);
 
 		if (srm.getErrors().size() > 0) {
 			for (String erreur : srm.getErrors()) {
@@ -228,14 +237,14 @@ public class OeABSRestitution extends BasicProcess {
 		}
 		return true;
 	}
-	
+
 	public boolean performPB_DETAILS_RESTITUTION(HttpServletRequest request, Integer id) throws Exception {
-		
-		SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
-		RestitutionMassiveDto details = consuAbs.getDetailsHistoRestitutionMassive(getAgentConnecte(request).getIdAgent(), getRestitutionMassiveById(id));
-		
+
+		RestitutionMassiveDto details = absService.getDetailsHistoRestitutionMassive(getAgentConnecte(request)
+				.getIdAgent(), getRestitutionMassiveById(id));
+
 		setDetailsHisto(details);
-		
+
 		return true;
 	}
 
@@ -243,14 +252,13 @@ public class OeABSRestitution extends BasicProcess {
 		UserAppli u = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
 		Agent agentConnecte = null;
 		// on fait la correspondance entre le login et l'agent via RADI
-		RadiWSConsumer radiConsu = new RadiWSConsumer();
-		LightUserDto user = radiConsu.getAgentCompteADByLogin(u.getUserName());
+		LightUserDto user = radiService.getAgentCompteADByLogin(u.getUserName());
 		if (user == null) {
 			return null;
 		}
 		try {
 			agentConnecte = getAgentDao().chercherAgentParMatricule(
-					radiConsu.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
+					radiService.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
 		} catch (Exception e) {
 			return null;
 		}
@@ -283,14 +291,13 @@ public class OeABSRestitution extends BasicProcess {
 		return listHistoRestitutionMassive;
 	}
 
-	public void setListHistoRestitutionMassive(
-			List<RestitutionMassiveDto> listHistoRestitutionMassive) {
+	public void setListHistoRestitutionMassive(List<RestitutionMassiveDto> listHistoRestitutionMassive) {
 		this.listHistoRestitutionMassive = listHistoRestitutionMassive;
 	}
-	
-	private RestitutionMassiveDto getRestitutionMassiveById(Integer id)  {
-		for(RestitutionMassiveDto dto : getListHistoRestitutionMassive()) {
-			if(dto.getIdRestitutionMassive().equals(id)) {
+
+	private RestitutionMassiveDto getRestitutionMassiveById(Integer id) {
+		for (RestitutionMassiveDto dto : getListHistoRestitutionMassive()) {
+			if (dto.getIdRestitutionMassive().equals(id)) {
 				return dto;
 			}
 		}
@@ -308,5 +315,5 @@ public class OeABSRestitution extends BasicProcess {
 	public Agent getAgent(Integer idAgent) throws Exception {
 		return getAgentDao().chercherAgent(idAgent);
 	}
-	
+
 }

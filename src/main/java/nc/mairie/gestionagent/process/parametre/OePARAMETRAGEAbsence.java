@@ -13,13 +13,18 @@ import nc.mairie.gestionagent.absence.dto.MotifDto;
 import nc.mairie.gestionagent.absence.dto.TypeAbsenceDto;
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
 import nc.mairie.metier.Const;
-import nc.mairie.spring.ws.SirhAbsWSConsumer;
+import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
+import nc.noumea.spring.service.AbsService;
+import nc.noumea.spring.service.IAbsService;
+
+import org.springframework.context.ApplicationContext;
+
 import flexjson.JSONSerializer;
 
 /**
@@ -46,6 +51,8 @@ public class OePARAMETRAGEAbsence extends BasicProcess {
 	public String ACTION_CREATION = "1";
 	public String ACTION_MODIFICATION = "2";
 
+	private IAbsService absService;
+
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
@@ -66,6 +73,7 @@ public class OePARAMETRAGEAbsence extends BasicProcess {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
+		initialiseDao();
 
 		if (getListeTypeAbsence().size() == 0) {
 			initialiseListeTypeAbsence(request);
@@ -81,10 +89,17 @@ public class OePARAMETRAGEAbsence extends BasicProcess {
 
 	}
 
+	private void initialiseDao() {
+		// on initialise le dao
+		ApplicationContext context = ApplicationContextProvider.getContext();
+		if (null == absService) {
+			absService = (AbsService) context.getBean("absService");
+		}
+	}
+
 	private void initialiseListeMotifCompteur(HttpServletRequest request) {
 		// Liste depuis SIRH-ABS-WS
-		SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
-		ArrayList<MotifCompteurDto> listeMotifs = (ArrayList<MotifCompteurDto>) consuAbs.getListeMotifCompteur(null);
+		ArrayList<MotifCompteurDto> listeMotifs = (ArrayList<MotifCompteurDto>) absService.getListeMotifCompteur(null);
 
 		setListeMotifCompteur(listeMotifs);
 		if (getListeMotifCompteur().size() != 0) {
@@ -109,8 +124,7 @@ public class OePARAMETRAGEAbsence extends BasicProcess {
 
 		// Si liste Type absence vide alors affectation
 		if (getListeTypeAbsence() == null || getListeTypeAbsence().size() == 0) {
-			SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
-			List<TypeAbsenceDto> listeComplete = consuAbs.getListeRefTypeAbsenceDto(null);
+			List<TypeAbsenceDto> listeComplete = absService.getListeRefTypeAbsenceDto(null);
 			setListeTypeAbsence(new ArrayList<TypeAbsenceDto>());
 
 			int[] tailles = { 100 };
@@ -135,8 +149,7 @@ public class OePARAMETRAGEAbsence extends BasicProcess {
 
 	private void initialiseListeMotif(HttpServletRequest request) throws Exception {
 		// Liste depuis SIRH-ABS-WS
-		SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
-		ArrayList<MotifDto> listeMotifs = (ArrayList<MotifDto>) consuAbs.getListeMotif();
+		ArrayList<MotifDto> listeMotifs = (ArrayList<MotifDto>) absService.getListeMotif();
 
 		setListeMotif(listeMotifs);
 		if (getListeMotif().size() != 0) {
@@ -378,8 +391,7 @@ public class OePARAMETRAGEAbsence extends BasicProcess {
 				motif.setLibelle(getVAL_EF_LIB_MOTIF());
 
 				// on sauvegarde
-				SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
-				ReturnMessageDto message = consuAbs.saveMotif(new JSONSerializer().exclude("*.class").serialize(motif));
+				ReturnMessageDto message = absService.saveMotif(new JSONSerializer().exclude("*.class").serialize(motif));
 
 				if (message.getErrors().size() > 0) {
 					String err = Const.CHAINE_VIDE;
@@ -557,8 +569,7 @@ public class OePARAMETRAGEAbsence extends BasicProcess {
 				motifCompteur.setIdRefTypeAbsence(typeAbsence.getIdRefTypeAbsence());
 
 				// on sauvegarde
-				SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
-				ReturnMessageDto message = consuAbs.saveMotifCompteur(new JSONSerializer().exclude("*.class")
+				ReturnMessageDto message = absService.saveMotifCompteur(new JSONSerializer().exclude("*.class")
 						.serialize(motifCompteur));
 
 				if (message.getErrors().size() > 0) {

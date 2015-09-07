@@ -1,6 +1,4 @@
 <%@ page contentType="text/html; charset=UTF-8" %> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<%@page import="nc.mairie.utils.TreeHierarchy"%>
-<%@page import="nc.mairie.metier.poste.Service"%>
 <%@page import="nc.mairie.enums.EnumTypeDroit"%>
 <%@page import="nc.mairie.utils.MairieUtils"%>
 <HTML>
@@ -10,8 +8,7 @@
 <LINK href="theme/sigp2.css" rel="stylesheet" type="text/css">
 <TITLE>Gestion des droits du kiosque</TITLE>
 
-<SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT> 
-<SCRIPT language="javascript" src="js/dtree.js"></SCRIPT>
+<SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT>
 
 <SCRIPT language="JavaScript">
 //afin de sélectionner un élément dans une liste
@@ -27,23 +24,6 @@ if (document.formu.elements[nom] != null)
 document.formu.elements[nom].focus();
 }
 
-// afin d'afficher la hiérarchie des services
-function agrandirHierarchy() {
-
-	hier = 	document.getElementById('treeHierarchy');
-
-	if (hier.style.display!='none') {
-		reduireHierarchy();
-	} else {
-		hier.style.display='block';
-	}
-}
-
-// afin de cacher la hiérarchie des services
-function reduireHierarchy() {
-	hier = 	document.getElementById('treeHierarchy');
-	hier.style.display='none';
-}
 </SCRIPT>
 <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 </HEAD>
@@ -57,41 +37,17 @@ function reduireHierarchy() {
 		<BR/>
 		<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
 			<legend class="sigp2Legend">Filtres pour l'affichage des approbateurs</legend>
-				<span class="sigp2" style="width:70px;">Service :</span>
-				<INPUT id="service" class="sigp2-saisie" readonly="readonly"
-					name="<%= process.getNOM_EF_SERVICE() %>" style="margin-right:10px;width:100px"
+				<span class="sigp2Mandatory" style="width:60px;">Service 
+					<img border="0" src="images/loupe.gif" width="16" title="Cliquer pour afficher l'arborescence" height="16" style="cursor : pointer;" onclick="agrandirHierarchy();">
+				</span>
+				<INPUT id="service" class="sigp2-saisie" readonly="readonly" name="<%= process.getNOM_EF_SERVICE() %>" style="margin-right:10px;width:100px"
 					type="text" value="<%= process.getVAL_EF_SERVICE() %>">
-				<img border="0" src="images/loupe.gif" width="16" title="Cliquer pour afficher l'arborescence"
-					height="16" style="cursor : pointer;" onclick="agrandirHierarchy();">
-				<img border="0" src="images/suppression.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_SERVICE()%>');">
-          		<INPUT type="hidden" id="codeservice" size="4" name="<%=process.getNOM_ST_CODE_SERVICE() %>" 
-					value="<%=process.getVAL_ST_CODE_SERVICE() %>" class="sigp2-saisie">
-				<div id="treeHierarchy" style="display: none; height: 340; width: 500; overflow:auto; background-color: #f4f4f4; border-width: 1px; border-style: solid;z-index:1;">
-					<script type="text/javascript">
-						d = new dTree('d');
-						d.add(0,-1,"Services");
-						
-						<%
-						String serviceSaisi = process.getVAL_EF_SERVICE().toUpperCase();
-						int theNode = 0;
-						for (int i =1; i <  process.getListeServices().size(); i++) {
-							Service serv = (Service)process.getListeServices().get(i);
-							String code = serv.getCodService();
-							TreeHierarchy tree = (TreeHierarchy)process.getHTree().get(code);
-							if (theNode ==0 && serviceSaisi.equals(tree.getService().getSigleService())) {
-								theNode=tree.getIndex();
-							}
-						%>
-						<%=tree.getJavaScriptLine()%>
-						<%}%>
-						document.write(d);
-				
-						d.closeAll();
-						<% if (theNode !=0) { %>
-							d.openTo(<%=theNode%>,true);
-						<%}%>
-					</script>
-				</div>
+				<INPUT type="hidden" id="idServiceADS" size="4" name="<%=process.getNOM_ST_ID_SERVICE_ADS() %>" value="<%=process.getVAL_ST_ID_SERVICE_ADS() %>" class="sigp2-saisie">
+																							
+				<!-- ////////// ARBRE DES SERVICES - ADS ///////////// -->
+				<%=process.getCurrentWholeTreeJS(process.getVAL_EF_SERVICE().toUpperCase()) %>
+				<!-- ////////// ARBRE DES SERVICES - ADS ///////////// -->	
+								
 				<span class="sigp2" style="width:60px">Par agent :</span>
 				<INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_AGENT() %>" size="10" type="text" value="<%= process.getVAL_ST_AGENT() %>" style="margin-right:10px;">
 				<img border="0" src="images/loupe.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_RECHERCHER_AGENT()%>');">

@@ -56,19 +56,15 @@ public class SirhKiosqueWSConsumer implements ISirhKiosqueWSConsumer {
 		return readResponse(KiosqueDto.class, res, params.get("urlDroitEAESharepoint"));
 	}
 
-	public HttpResponse createAndFireRequest(Map<String, String> parameters, boolean removeDroit)
-			throws ClientProtocolException, IOException {
+	public HttpResponse createAndFireRequest(Map<String, String> parameters, boolean removeDroit) throws ClientProtocolException, IOException {
 
 		DefaultHttpClient httpclient = new DefaultHttpClient();
 		httpclient.getAuthSchemes().register("ntlm", new NTLMSchemeFactory());
 
-		httpclient.getCredentialsProvider().setCredentials(
-				new AuthScope(parameters.get("urlSharepoint"), Integer.valueOf(parameters.get("portSharepoint"))),
-				new NTCredentials(parameters.get("userSharepoint"), parameters.get("userPwdSharepoint"), "", parameters
-						.get("domainSharepoint")));
+		httpclient.getCredentialsProvider().setCredentials(new AuthScope(parameters.get("urlSharepoint"), Integer.valueOf(parameters.get("portSharepoint"))),
+				new NTCredentials(parameters.get("userSharepoint"), parameters.get("userPwdSharepoint"), "", parameters.get("domainSharepoint")));
 
-		HttpHost target = new HttpHost(parameters.get("urlSharepoint"), Integer.valueOf(parameters
-				.get("portSharepoint")), "http");
+		HttpHost target = new HttpHost(parameters.get("urlSharepoint"), Integer.valueOf(parameters.get("portSharepoint")), "http");
 
 		// Make sure the same context is used to execute logically related
 		// requests
@@ -76,8 +72,7 @@ public class SirhKiosqueWSConsumer implements ISirhKiosqueWSConsumer {
 
 		// Execute a cheap method first. This will trigger NTLM authentication
 
-		HttpGet httpget = new HttpGet(parameters.get("urlDroitEAESharepoint") + "?idDocument="
-				+ parameters.get("idDocument") + (removeDroit ? "&action=rem" : ""));
+		HttpGet httpget = new HttpGet(parameters.get("urlDroitEAESharepoint") + "?idDocument=" + parameters.get("idDocument") + (removeDroit ? "&action=rem" : ""));
 
 		HttpResponse response1 = httpclient.execute(target, httpget, localContext);
 
@@ -93,9 +88,7 @@ public class SirhKiosqueWSConsumer implements ISirhKiosqueWSConsumer {
 			result = targetClass.newInstance();
 
 		} catch (Exception ex) {
-			throw new SirhKiosqueWSConsumerException(
-					"An error occured when instantiating return type when deserializing JSON from Sharepoint WS request.",
-					ex);
+			throw new BaseWsConsumerException("An error occured when instantiating return type when deserializing JSON from Sharepoint WS request.", ex);
 		}
 
 		if (response.getStatusLine().getStatusCode() == HttpStatus.NO_CONTENT.value()) {
@@ -103,9 +96,7 @@ public class SirhKiosqueWSConsumer implements ISirhKiosqueWSConsumer {
 		}
 
 		if (response.getStatusLine().getStatusCode() != HttpStatus.OK.value()) {
-			throw new SirhKiosqueWSConsumerException(String.format(
-					"An error occured when querying '%s'. Return code is : %s", url, response.getStatusLine()
-							.getStatusCode()));
+			throw new BaseWsConsumerException(String.format("An error occured when querying '%s'. Return code is : %s", url, response.getStatusLine().getStatusCode()));
 		}
 		String output = "";
 		try {

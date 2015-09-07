@@ -2,10 +2,8 @@ package nc.mairie.gestionagent.process.avancement;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
-import java.util.Hashtable;
+import java.util.List;
 import java.util.ListIterator;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,7 +19,6 @@ import nc.mairie.metier.carriere.FiliereGrade;
 import nc.mairie.metier.carriere.Grade;
 import nc.mairie.metier.eae.CampagneEAE;
 import nc.mairie.metier.eae.EAE;
-import nc.mairie.metier.poste.Service;
 import nc.mairie.spring.dao.metier.EAE.CampagneEAEDao;
 import nc.mairie.spring.dao.metier.EAE.EaeEAEDao;
 import nc.mairie.spring.dao.metier.agent.AgentDao;
@@ -37,8 +34,8 @@ import nc.mairie.technique.UserAppli;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
-import nc.mairie.utils.TreeHierarchy;
 import nc.mairie.utils.VariablesActivite;
+import nc.noumea.spring.service.IAdsService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,8 +60,6 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 	private String[] LB_FILIERE;
 
 	private String[] listeAnnee;
-	private ArrayList<Service> listeServices;
-	public Hashtable<String, TreeHierarchy> hTree = null;
 	private ArrayList<FiliereGrade> listeFiliere;
 
 	private ArrayList<AvancementFonctionnaires> listeAvct;
@@ -76,6 +71,9 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 	private AutreAdministrationDao autreAdministrationDao;
 	private AvancementFonctionnairesDao avancementFonctionnairesDao;
 	private AgentDao agentDao;
+	
+	private IAdsService adsService;
+	
 	private SimpleDateFormat sdfFormatDate = new SimpleDateFormat("dd/MM/yyyy");
 
 	/**
@@ -103,8 +101,6 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 		// Initialisation des listes deroulantes
 		initialiseListeDeroulante();
 
-		initialiseListeService();
-
 		if (etatStatut() == STATUT_RECHERCHER_AGENT) {
 			Agent agt = (Agent) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
 			VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
@@ -114,45 +110,6 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 		// Si liste avancements vide alors initialisation.
 		if (getListeAvct() == null || getListeAvct().size() == 0) {
 			agentEnErreur = Const.CHAINE_VIDE;
-		}
-	}
-
-	private void initialiseListeService() throws Exception {
-		// Si la liste des services est nulle
-		if (getListeServices() == null || getListeServices().size() == 0) {
-			ArrayList<Service> services = Service.listerServiceActif(getTransaction());
-			setListeServices(services);
-
-			// Tri par codeservice
-			Collections.sort(getListeServices(), new Comparator<Object>() {
-				public int compare(Object o1, Object o2) {
-					Service s1 = (Service) o1;
-					Service s2 = (Service) o2;
-					return (s1.getCodService().compareTo(s2.getCodService()));
-				}
-			});
-
-			// alim de la hTree
-			hTree = new Hashtable<String, TreeHierarchy>();
-			TreeHierarchy parent = null;
-			for (int i = 0; i < getListeServices().size(); i++) {
-				Service serv = (Service) getListeServices().get(i);
-
-				if (Const.CHAINE_VIDE.equals(serv.getCodService()))
-					continue;
-
-				// recherche du supérieur
-				String codeService = serv.getCodService();
-				while (codeService.endsWith("A")) {
-					codeService = codeService.substring(0, codeService.length() - 1);
-				}
-				codeService = codeService.substring(0, codeService.length() - 1);
-				codeService = Services.rpad(codeService, 4, "A");
-				parent = hTree.get(codeService);
-				int indexParent = (parent == null ? 0 : parent.getIndex());
-				hTree.put(serv.getCodService(), new TreeHierarchy(serv, i, indexParent));
-
-			}
 		}
 	}
 
@@ -233,6 +190,9 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 		if (getAgentDao() == null) {
 			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if(null == adsService) {
+			adsService = (IAdsService) context.getBean("adsService");
+		}
 	}
 
 	/**
@@ -266,6 +226,10 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 			setLB_FILIERE(aFormat.getListeFormatee(true));
 
 		}
+	}
+	
+	public String getCurrentWholeTreeJS(String serviceSaisi) {
+		return adsService.getCurrentWholeTreeActifTransitoireJS(null !=serviceSaisi && !"".equals(serviceSaisi) ? serviceSaisi : null, false);
 	}
 
 	/**
@@ -393,11 +357,10 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 		}
 
 		// recuperation du service
-		ArrayList<String> listeSousService = null;
-		if (getVAL_ST_CODE_SERVICE().length() != 0) {
+		List<String> listeSousService = null;
+		if (getVAL_ST_ID_SERVICE_ADS().length() != 0) {
 			// on recupere les sous-service du service selectionne
-			Service serv = Service.chercherService(getTransaction(), getVAL_ST_CODE_SERVICE());
-			listeSousService = Service.listSousServiceBySigle(getTransaction(), serv.getSigleService());
+			listeSousService = adsService.getListSiglesWithEnfantsOfEntite(new Integer(getVAL_ST_ID_SERVICE_ADS()));
 		}
 
 		String reqEtat = " and (ETAT='" + EnumEtatAvancement.TRAVAIL.getValue() + "' or ETAT='"
@@ -1241,7 +1204,7 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 	 */
 	public boolean performPB_SUPPRIMER_RECHERCHER_SERVICE(HttpServletRequest request) throws Exception {
 		// On enleve le service selectionnée
-		addZone(getNOM_ST_CODE_SERVICE(), Const.CHAINE_VIDE);
+		addZone(getNOM_ST_ID_SERVICE_ADS(), Const.CHAINE_VIDE);
 		addZone(getNOM_EF_SERVICE(), Const.CHAINE_VIDE);
 		return true;
 	}
@@ -1251,8 +1214,8 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 	 * création : (13/09/11 08:45:29)
 	 * 
 	 */
-	public String getNOM_ST_CODE_SERVICE() {
-		return "NOM_ST_CODE_SERVICE";
+	public String getNOM_ST_ID_SERVICE_ADS() {
+		return "NOM_ST_ID_SERVICE_ADS";
 	}
 
 	/**
@@ -1260,36 +1223,8 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 	 * Date de création : (13/09/11 08:45:29)
 	 * 
 	 */
-	public String getVAL_ST_CODE_SERVICE() {
-		return getZone(getNOM_ST_CODE_SERVICE());
-	}
-
-	/**
-	 * Retourne la liste des services.
-	 * 
-	 * @return listeServices
-	 */
-	public ArrayList<Service> getListeServices() {
-		return listeServices;
-	}
-
-	/**
-	 * Met a jour la liste des services.
-	 * 
-	 * @param listeServices
-	 */
-	private void setListeServices(ArrayList<Service> listeServices) {
-		this.listeServices = listeServices;
-	}
-
-	/**
-	 * Retourne une hashTable de la hierarchie des Service selon le code
-	 * Service.
-	 * 
-	 * @return hTree
-	 */
-	public Hashtable<String, TreeHierarchy> getHTree() {
-		return hTree;
+	public String getVAL_ST_ID_SERVICE_ADS() {
+		return getZone(getNOM_ST_ID_SERVICE_ADS());
 	}
 
 	public String getNOM_ST_PA(int i) {

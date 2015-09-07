@@ -39,12 +39,12 @@ public class AffectationDao extends SirhDao implements AffectationDaoInterface {
 				+ "<=? and( " + CHAMP_DATE_FIN_AFF + " is null or " + CHAMP_DATE_FIN_AFF + ">=?)";
 		Affectation aff = null;
 		try {
-			aff = (Affectation) jdbcTemplate.queryForObject(sql, new Object[] { idAgent, dateCreation,
-				dateCreation }, new BeanPropertyRowMapper<Affectation>(Affectation.class));
+			aff = (Affectation) jdbcTemplate.queryForObject(sql, new Object[] { idAgent, dateCreation, dateCreation },
+					new BeanPropertyRowMapper<Affectation>(Affectation.class));
 		} catch (org.springframework.dao.EmptyResultDataAccessException e) {
 			return null;
 		}
-		
+
 		return aff;
 	}
 
@@ -110,14 +110,15 @@ public class AffectationDao extends SirhDao implements AffectationDaoInterface {
 	}
 
 	@Override
-	public ArrayList<Affectation> listerAffectationAgentAvecService(Integer idAgent, String idServi) throws Exception {
+	public ArrayList<Affectation> listerAffectationAgentAvecService(Integer idAgent, Integer idServiceADS)
+			throws Exception {
 		String sql = "select aff.* from " + NOM_TABLE + " aff inner join FICHE_POSTE fp on aff." + CHAMP_ID_FICHE_POSTE
-				+ " = fp.ID_FICHE_POSTE where aff." + CHAMP_ID_AGENT + "=? and fp.ID_SERVI =? order by "
+				+ " = fp.ID_FICHE_POSTE where aff." + CHAMP_ID_AGENT + "=? and fp.ID_SERVICE_ADS =? order by "
 				+ CHAMP_DATE_DEBUT_AFF + " desc";
 
 		ArrayList<Affectation> liste = new ArrayList<Affectation>();
 
-		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { idAgent, idServi });
+		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { idAgent, idServiceADS });
 		for (Map<String, Object> row : rows) {
 			Affectation a = new Affectation();
 			a.setIdAffectation((Integer) row.get(CHAMP_ID));
@@ -261,6 +262,38 @@ public class AffectationDao extends SirhDao implements AffectationDaoInterface {
 	}
 
 	@Override
+	public ArrayList<Affectation> listerAffectationActiveAvecFP(Integer idFichePoste) throws Exception {
+		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID_FICHE_POSTE + " = ? and "
+				+ CHAMP_DATE_DEBUT_AFF + "<=? and( " + CHAMP_DATE_FIN_AFF + " is null or " + CHAMP_DATE_FIN_AFF
+				+ ">=?)";
+
+		ArrayList<Affectation> liste = new ArrayList<Affectation>();
+
+		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { idFichePoste, new Date(),
+				new Date() });
+		for (Map<String, Object> row : rows) {
+			Affectation a = new Affectation();
+			a.setIdAffectation((Integer) row.get(CHAMP_ID));
+			a.setIdMotifAffectation((Integer) row.get(CHAMP_ID_MOTIF_AFFECTATION));
+			a.setIdFichePoste((Integer) row.get(CHAMP_ID_FICHE_POSTE));
+			a.setIdAgent((Integer) row.get(CHAMP_ID_AGENT));
+			a.setRefArreteAff((String) row.get(CHAMP_REF_ARRETE_AFF));
+			a.setDateArrete((Date) row.get(CHAMP_DATE_ARRETE));
+			a.setDateDebutAff((Date) row.get(CHAMP_DATE_DEBUT_AFF));
+			a.setDateFinAff((Date) row.get(CHAMP_DATE_FIN_AFF));
+			a.setTempsTravail((String) row.get(CHAMP_TEMPS_TRAVAIL));
+			a.setCodeEcole((String) row.get(CHAMP_CODE_ECOLE));
+			a.setIdFichePosteSecondaire((Integer) row.get(CHAMP_ID_FICHE_POSTE_SECONDAIRE));
+			a.setCommentaire((String) row.get(CHAMP_COMMENTAIRE));
+			a.setIdBaseHorairePointage((Integer) row.get(CHAMP_ID_BASE_HORAIRE_POINTAGE));
+			a.setIdBaseHoraireAbsence((Integer) row.get(CHAMP_ID_BASE_HORAIRE_ABSENCE));
+			liste.add(a);
+		}
+
+		return liste;
+	}
+
+	@Override
 	public ArrayList<Affectation> listerAffectationAvecAgent(Integer idAgent) throws Exception {
 		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID_AGENT + " = ? order by "
 				+ CHAMP_DATE_DEBUT_AFF;
@@ -329,5 +362,20 @@ public class AffectationDao extends SirhDao implements AffectationDaoInterface {
 						aff.getCommentaire(), aff.getIdBaseHorairePointage(), aff.getIdBaseHoraireAbsence() },
 				Integer.class);
 		return id;
+	}
+
+	@Override
+	public Affectation chercherAffectationAgentAvecDateDebut(Integer idAgent, Date dateDebut) throws Exception {
+		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID_AGENT + " = ? and " + CHAMP_DATE_DEBUT_AFF
+				+ "=? ";
+		Affectation aff = null;
+		try {
+			aff = (Affectation) jdbcTemplate.queryForObject(sql, new Object[] { idAgent, dateDebut },
+					new BeanPropertyRowMapper<Affectation>(Affectation.class));
+		} catch (org.springframework.dao.EmptyResultDataAccessException e) {
+			return null;
+		}
+
+		return aff;
 	}
 }

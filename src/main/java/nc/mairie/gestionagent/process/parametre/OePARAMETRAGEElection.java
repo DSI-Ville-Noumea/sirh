@@ -4,16 +4,19 @@ import java.util.ArrayList;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.context.ApplicationContext;
+
 import nc.mairie.gestionagent.absence.dto.OrganisationSyndicaleDto;
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
 import nc.mairie.metier.Const;
-import nc.mairie.spring.ws.SirhAbsWSConsumer;
+import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
+import nc.noumea.spring.service.IAbsService;
 import flexjson.JSONSerializer;
 
 /**
@@ -32,6 +35,8 @@ public class OePARAMETRAGEElection extends BasicProcess {
 	public String focus = null;
 	private String[] LB_ORGANISATION;
 	private ArrayList<OrganisationSyndicaleDto> listeOrganisation;
+
+	private IAbsService absService;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -53,6 +58,7 @@ public class OePARAMETRAGEElection extends BasicProcess {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
+		initialiseDao();
 
 		if (getListeOrganisation().size() == 0) {
 			initialiseListeOrganisation(request);
@@ -60,10 +66,17 @@ public class OePARAMETRAGEElection extends BasicProcess {
 
 	}
 
+	private void initialiseDao() {
+		// on initialise le dao
+		ApplicationContext context = ApplicationContextProvider.getContext();
+		if (null == absService) {
+			absService = (IAbsService) context.getBean("absService");
+		}
+	}
+
 	private void initialiseListeOrganisation(HttpServletRequest request) {
 		// Liste depuis SIRH-ABS-WS
-		SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
-		ArrayList<OrganisationSyndicaleDto> listeOrga = (ArrayList<OrganisationSyndicaleDto>) consuAbs
+		ArrayList<OrganisationSyndicaleDto> listeOrga = (ArrayList<OrganisationSyndicaleDto>) absService
 				.getListeOrganisationSyndicale();
 		setListeOrganisation(listeOrga);
 
@@ -271,8 +284,8 @@ public class OePARAMETRAGEElection extends BasicProcess {
 				orga.setActif(actif);
 
 				// on sauvegarde
-				SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
-				ReturnMessageDto message = consuAbs.saveOrganisationSyndicale(new JSONSerializer().exclude("*.class").serialize(orga));
+				ReturnMessageDto message = absService.saveOrganisationSyndicale(new JSONSerializer().exclude("*.class")
+						.serialize(orga));
 
 				if (message.getErrors().size() > 0) {
 					String err = Const.CHAINE_VIDE;

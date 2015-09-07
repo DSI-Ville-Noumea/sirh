@@ -76,6 +76,9 @@
 		listeDroits.add("FPGestionOld");
 		listeDroits.add("FPGestion");
 		listeDroits.add("SuiviRecrutement");
+		listeDroits.add("FPGestionAutomatise");
+		listeDroits.add("FPGestionAutomatiseActivation");
+		listeDroits.add("FPGestionAutomatiseDuplication");
 		
 		/*Module AVANCEMENT*/
 		listeDroits.add("AVCTSimulationFontionnaires");
@@ -120,6 +123,10 @@
 		listeDroits.add("ELECSaisieCompteurA55");
 		listeDroits.add("ELECSaisieCompteurA53");
 		listeDroits.add("ELECSaisieCompteurA52");
+		
+
+		/*Module ORGANIGRAMME*/
+		listeDroits.add("gestionOrganigramme");
 		
 		
 		/*Module SUIVI MEDICAL*/

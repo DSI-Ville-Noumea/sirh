@@ -26,11 +26,12 @@ import nc.mairie.gestionagent.dto.ApprobateurDto;
 import nc.mairie.gestionagent.dto.InputterDto;
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
 import nc.mairie.gestionagent.dto.ViseursDto;
-import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -45,6 +46,10 @@ import flexjson.JSONSerializer;
 
 @Service
 public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
+
+	@Autowired
+	@Qualifier("absWsBaseUrl")
+	private String absWsBaseUrl;
 
 	private static final String sirhAbsListOrganisationSyndicale = "organisation/listOrganisation";
 	private static final String sirhAbsOrganisationSyndicaleSauvegarde = "organisation/addOS";
@@ -126,15 +131,14 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	private Logger logger = LoggerFactory.getLogger(SirhAbsWSConsumer.class);
 
 	@Override
-	public List<ApprobateurDto> getApprobateurs(String codeService, Integer idAgent) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
-		String url = urlWS + sirhAbsAgentsApprobateurs;
+	public List<ApprobateurDto> getApprobateurs(Integer idServiceADS, Integer idAgent) {
+		String url = String.format(absWsBaseUrl + sirhAbsAgentsApprobateurs);
 		HashMap<String, String> params = new HashMap<>();
 		if (idAgent != null) {
 			params.put("idAgent", idAgent.toString());
 		}
-		if (codeService != null) {
-			params.put("codeService", codeService);
+		if (idServiceADS != null) {
+			params.put("idServiceADS", idServiceADS.toString());
 		}
 		ClientResponse res = createAndFireRequest(params, url);
 		return readResponseAsList(ApprobateurDto.class, res, url);
@@ -142,16 +146,14 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 
 	@Override
 	public ReturnMessageDto setApprobateur(String json) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
-		String url = urlWS + sirhAbsAgentsApprobateurs;
+		String url = String.format(absWsBaseUrl + sirhAbsAgentsApprobateurs);
 		ClientResponse res = createAndPostRequest(url, json);
 		return readResponseWithReturnMessageDto(ReturnMessageDto.class, res, url);
 	}
 
 	@Override
 	public ReturnMessageDto deleteApprobateur(String json) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
-		String url = urlWS + sirhAbsDeleteApprobateurs;
+		String url = String.format(absWsBaseUrl + sirhAbsDeleteApprobateurs);
 		ClientResponse res = createAndPostRequest(url, json);
 		return readResponseWithReturnMessageDto(ReturnMessageDto.class, res, url);
 	}
@@ -178,7 +180,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 			response = webResource.type("application/json").post(ClientResponse.class, json);
 
 		} catch (ClientHandlerException ex) {
-			throw new SirhAbsWSConsumerException(String.format("An error occured when querying '%s'.", url), ex);
+			throw new BaseWsConsumerException(String.format("An error occured when querying '%s'.", url), ex);
 		}
 
 		return response;
@@ -200,7 +202,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 		try {
 			response = webResource.accept(MediaType.APPLICATION_JSON_VALUE).get(ClientResponse.class);
 		} catch (ClientHandlerException ex) {
-			throw new SirhAbsWSConsumerException(String.format("An error occured when querying '%s'.", url), ex);
+			throw new BaseWsConsumerException(String.format("An error occured when querying '%s'.", url), ex);
 		}
 		return response;
 	}
@@ -214,7 +216,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 		}
 
 		if (response.getStatus() != HttpStatus.OK.value()) {
-			throw new SirhAbsWSConsumerException(String.format(
+			throw new BaseWsConsumerException(String.format(
 					"An error occured when querying '%s'. Return code is : %s", url, response.getStatus()));
 		}
 
@@ -232,7 +234,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 		try {
 			result = targetClass.newInstance();
 		} catch (Exception ex) {
-			throw new SirhAbsWSConsumerException(
+			throw new BaseWsConsumerException(
 					"An error occured when instantiating return type when deserializing JSON from SIRH ABS WS request.",
 					ex);
 		}
@@ -242,7 +244,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 		}
 
 		if (response.getStatus() != HttpStatus.OK.value()) {
-			throw new SirhAbsWSConsumerException(String.format(
+			throw new BaseWsConsumerException(String.format(
 					"An error occured when querying '%s'. Return code is : %s", url, response.getStatus()));
 		}
 
@@ -259,7 +261,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 		try {
 			result = targetClass.newInstance();
 		} catch (Exception ex) {
-			throw new SirhAbsWSConsumerException(
+			throw new BaseWsConsumerException(
 					"An error occured when instantiating return type when deserializing JSON from SIRH ABS WS request.",
 					ex);
 		}
@@ -280,8 +282,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 
 	@Override
 	public SoldeDto getSoldeAgent(Integer idAgent, String json) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
-		String url = urlWS + sirhAbsSoldeRecupAgent;
+		String url = String.format(absWsBaseUrl + sirhAbsSoldeRecupAgent);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgent.toString());
 		logger.debug("Call " + url + " with idAgent : " + idAgent);
@@ -292,9 +293,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	@Override
 	public List<DemandeDto> getListeDemandesAgent(Integer idAgent, String onglet, String dateDebut, String dateFin,
 			String dateDemande, String listIdRefEtat, Integer idRefType, Integer idRefGroupeAbsence) {
-
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
-		String url = urlWS + sirhAbsDemandesAgent;
+		String url = String.format(absWsBaseUrl + sirhAbsDemandesAgent);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgent.toString());
 		params.put("ongletDemande", onglet);
@@ -321,8 +320,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 
 	@Override
 	public List<MotifDto> getListeMotif() {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
-		String url = urlWS + sirhAbsMotif;
+		String url = String.format(absWsBaseUrl + sirhAbsMotif);
 		HashMap<String, String> params = new HashMap<>();
 		ClientResponse res = createAndFireRequest(params, url);
 		return readResponseAsList(MotifDto.class, res, url);
@@ -330,8 +328,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 
 	@Override
 	public List<MotifCompteurDto> getListeMotifCompteur(Integer idRefType) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
-		String url = urlWS + sirhAbsMotifCompteur;
+		String url = String.format(absWsBaseUrl + sirhAbsMotifCompteur);
 		HashMap<String, String> params = new HashMap<>();
 		if (idRefType != null) {
 			params.put("idRefType", idRefType.toString());
@@ -342,24 +339,21 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 
 	@Override
 	public ReturnMessageDto saveMotif(String json) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
-		String url = urlWS + sirhAbsMotifSauvegarde;
+		String url = String.format(absWsBaseUrl + sirhAbsMotifSauvegarde);
 		ClientResponse res = createAndPostRequest(url, json);
 		return readResponseWithReturnMessageDto(ReturnMessageDto.class, res, url);
 	}
 
 	@Override
 	public ReturnMessageDto saveMotifCompteur(String json) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
-		String url = urlWS + sirhAbsMotifCompteurSauvegarde;
+		String url = String.format(absWsBaseUrl + sirhAbsMotifCompteurSauvegarde);
 		ClientResponse res = createAndPostRequest(url, json);
 		return readResponseWithReturnMessageDto(ReturnMessageDto.class, res, url);
 	}
 
 	@Override
 	public ReturnMessageDto addCompteurRecup(Integer idAgentConnecte, String json) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
-		String url = urlWS + sirhAbsAddCompteurRecup;
+		String url = String.format(absWsBaseUrl + sirhAbsAddCompteurRecup);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgentConnecte.toString());
 		ClientResponse res = createAndPostRequest(params, url, json);
@@ -368,8 +362,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 
 	@Override
 	public ReturnMessageDto addCompteurReposComp(Integer idAgentConnecte, String json) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
-		String url = urlWS + sirhAbsAddCompteurReposComp;
+		String url = String.format(absWsBaseUrl + sirhAbsAddCompteurReposComp);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgentConnecte.toString());
 		ClientResponse res = createAndPostRequest(params, url, json);
@@ -378,8 +371,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 
 	@Override
 	public List<CompteurDto> getListeCompteursA48() {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
-		String url = urlWS + sirhAbsListeCompteurA48;
+		String url = String.format(absWsBaseUrl + sirhAbsListeCompteurA48);
 		HashMap<String, String> params = new HashMap<>();
 		ClientResponse res = createAndFireRequest(params, url);
 		return readResponseAsList(CompteurDto.class, res, url);
@@ -387,8 +379,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 
 	@Override
 	public ReturnMessageDto addCompteurAsaA48(Integer idAgentConnecte, String json) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
-		String url = urlWS + sirhAbsAddCompteurAsaA48;
+		String url = String.format(absWsBaseUrl + sirhAbsAddCompteurAsaA48);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgentConnecte.toString());
 		ClientResponse res = createAndPostRequest(params, url, json);
@@ -397,8 +388,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 
 	@Override
 	public List<HistoriqueSoldeDto> getHistoriqueCompteurAgent(Integer idAgent, Integer codeTypeAbsence, String json) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
-		String url = urlWS + sirhAbsHistoCompteurAgent;
+		String url = String.format(absWsBaseUrl + sirhAbsHistoCompteurAgent);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgent.toString());
 		params.put("codeRefTypeAbsence", codeTypeAbsence.toString());
@@ -409,8 +399,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 
 	@Override
 	public List<OrganisationSyndicaleDto> getListeOrganisationSyndicale() {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
-		String url = urlWS + sirhAbsListOrganisationSyndicale;
+		String url = String.format(absWsBaseUrl + sirhAbsListOrganisationSyndicale);
 		HashMap<String, String> params = new HashMap<>();
 		ClientResponse res = createAndFireRequest(params, url);
 		return readResponseAsList(OrganisationSyndicaleDto.class, res, url);
@@ -419,8 +408,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	@Override
 	public List<OrganisationSyndicaleDto> getListeOrganisationSyndicaleActiveByAgent(Integer idAgent,
 			Integer idRefTypeAbsence) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
-		String url = urlWS + sirhAbsListOrganisationActif;
+		String url = String.format(absWsBaseUrl + sirhAbsListOrganisationActif);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgent.toString());
 		params.put("idRefTypeAbsence", idRefTypeAbsence.toString());
@@ -430,16 +418,14 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 
 	@Override
 	public ReturnMessageDto saveOrganisationSyndicale(String json) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
-		String url = urlWS + sirhAbsOrganisationSyndicaleSauvegarde;
+		String url = String.format(absWsBaseUrl + sirhAbsOrganisationSyndicaleSauvegarde);
 		ClientResponse res = createAndPostRequest(url, json);
 		return readResponseWithReturnMessageDto(ReturnMessageDto.class, res, url);
 	}
 
 	@Override
 	public ReturnMessageDto saveDemande(Integer idAgentConnecte, String json) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
-		String url = urlWS + sirhAbsDemandeSauvegarde;
+		String url = String.format(absWsBaseUrl + sirhAbsDemandeSauvegarde);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgentConnecte.toString());
 		ClientResponse res = createAndPostRequest(params, url, json);
@@ -450,8 +436,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	public List<DemandeDto> getListeDemandes(String dateDebut, String dateFin, String listIdRefEtat, Integer idRefType,
 			Integer idAgentRecherche, Integer idRefGroupe, boolean aValider, List<String> idAgentsService) {
 
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
-		String url = urlWS + sirhAbsDemandes;
+		String url = String.format(absWsBaseUrl + sirhAbsDemandes);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("aValider", String.valueOf(aValider));
 
@@ -489,8 +474,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 
 	@Override
 	public List<DemandeDto> getVisualisationHistory(Integer absId) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
-		String url = urlWS + sirhAbsDemandesHistorique;
+		String url = String.format(absWsBaseUrl + sirhAbsDemandesHistorique);
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put("idDemande", absId.toString());
 		ClientResponse res = createAndFireRequest(parameters, url);
@@ -499,8 +483,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 
 	@Override
 	public ReturnMessageDto setAbsState(Integer idAgent, String json) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
-		String url = urlWS + sirhAbsStateSave;
+		String url = String.format(absWsBaseUrl + sirhAbsStateSave);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgent.toString());
 		ClientResponse res = createAndPostRequest(params, url, json);
@@ -510,8 +493,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 
 	@Override
 	public ReturnMessageDto addCompteurAsaA54(Integer idAgentConnecte, String json) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
-		String url = urlWS + sirhAbsAddCompteurAsaA54;
+		String url = String.format(absWsBaseUrl + sirhAbsAddCompteurAsaA54);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgentConnecte.toString());
 		ClientResponse res = createAndPostRequest(params, url, json);
@@ -520,8 +502,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 
 	@Override
 	public List<CompteurDto> getListeCompteursA54() {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
-		String url = urlWS + sirhAbsListeCompteurA54;
+		String url = String.format(absWsBaseUrl + sirhAbsListeCompteurA54);
 		HashMap<String, String> params = new HashMap<>();
 		ClientResponse res = createAndFireRequest(params, url);
 		return readResponseAsList(CompteurDto.class, res, url);
@@ -529,8 +510,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 
 	@Override
 	public List<CompteurDto> getListeCompteursA55() {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
-		String url = urlWS + sirhAbsListeCompteurA55;
+		String url = String.format(absWsBaseUrl + sirhAbsListeCompteurA55);
 		HashMap<String, String> params = new HashMap<>();
 		ClientResponse res = createAndFireRequest(params, url);
 		return readResponseAsList(CompteurDto.class, res, url);
@@ -538,8 +518,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 
 	@Override
 	public ReturnMessageDto addCompteurAsaA55(Integer idAgentConnecte, String json) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
-		String url = urlWS + sirhAbsAddCompteurAsaA55;
+		String url = String.format(absWsBaseUrl + sirhAbsAddCompteurAsaA55);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgentConnecte.toString());
 		ClientResponse res = createAndPostRequest(params, url, json);
@@ -548,8 +527,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 
 	@Override
 	public ReturnMessageDto addCompteurAsaA52(Integer idAgentConnecte, String json) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
-		String url = urlWS + sirhAbsAddCompteurAsaA52;
+		String url = String.format(absWsBaseUrl + sirhAbsAddCompteurAsaA52);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgentConnecte.toString());
 		ClientResponse res = createAndPostRequest(params, url, json);
@@ -558,8 +536,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 
 	@Override
 	public ReturnMessageDto addCompteurAsaA53(Integer idAgentConnecte, String json) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
-		String url = urlWS + sirhAbsAddCompteurAsaA53;
+		String url = String.format(absWsBaseUrl + sirhAbsAddCompteurAsaA53);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgentConnecte.toString());
 		ClientResponse res = createAndPostRequest(params, url, json);
@@ -568,8 +545,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 
 	@Override
 	public List<CompteurDto> getListeCompteursA52(Integer idOrganisationSyndicale) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
-		String url = urlWS + sirhAbsListeCompteurA52;
+		String url = String.format(absWsBaseUrl + sirhAbsListeCompteurA52);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idOrganisationSyndicale", idOrganisationSyndicale.toString());
 
@@ -579,8 +555,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 
 	@Override
 	public List<CompteurDto> getListeCompteursA53() {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
-		String url = urlWS + sirhAbsListeCompteurA53;
+		String url = String.format(absWsBaseUrl + sirhAbsListeCompteurA53);
 		HashMap<String, String> params = new HashMap<>();
 		ClientResponse res = createAndFireRequest(params, url);
 		return readResponseAsList(CompteurDto.class, res, url);
@@ -588,8 +563,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 
 	@Override
 	public List<TypeAbsenceDto> getListeRefTypeAbsenceDto(Integer idRefGroupe) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
-		String url = urlWS + sirhAbsListeRefTypeAbs;
+		String url = String.format(absWsBaseUrl + sirhAbsListeRefTypeAbs);
 		HashMap<String, String> params = new HashMap<>();
 		if (idRefGroupe != null)
 			params.put("idRefGroupeAbsence", idRefGroupe.toString());
@@ -599,8 +573,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 
 	@Override
 	public List<UnitePeriodeQuotaDto> getUnitePeriodeQuota() {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
-		String url = urlWS + sirhAbsListeUnitePeriodeQuota;
+		String url = String.format(absWsBaseUrl + sirhAbsListeUnitePeriodeQuota);
 		HashMap<String, String> params = new HashMap<>();
 		ClientResponse res = createAndFireRequest(params, url);
 		return readResponseAsList(UnitePeriodeQuotaDto.class, res, url);
@@ -608,8 +581,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 
 	@Override
 	public ReturnMessageDto saveTypeAbsence(Integer idAgentConnecte, String json) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
-		String url = urlWS + sirhAbsAddCongeExcep;
+		String url = String.format(absWsBaseUrl + sirhAbsAddCongeExcep);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgentConnecte.toString());
 		ClientResponse res = createAndPostRequest(params, url, json);
@@ -618,8 +590,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 
 	@Override
 	public ReturnMessageDto deleteTypeAbsence(Integer idAgentConnecte, Integer idRefTypeAbsence) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
-		String url = urlWS + sirhAbsDeleteCongeExcep;
+		String url = String.format(absWsBaseUrl + sirhAbsDeleteCongeExcep);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgentConnecte.toString());
 		params.put("idRefTypeAbsence", idRefTypeAbsence.toString());
@@ -629,8 +600,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 
 	@Override
 	public List<RefGroupeAbsenceDto> getRefGroupeAbsence() {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
-		String url = urlWS + sirhAbsGroupeAbsenceUrl;
+		String url = String.format(absWsBaseUrl + sirhAbsGroupeAbsenceUrl);
 		HashMap<String, String> params = new HashMap<>();
 		ClientResponse res = createAndFireRequest(params, url);
 		return readResponseAsList(RefGroupeAbsenceDto.class, res, url);
@@ -639,8 +609,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 
 	@Override
 	public ReturnMessageDto initialiseCompteurConge(Integer agentConnecte, Integer idAgentConcerne) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
-		String url = urlWS + sirhAbsInitialiseCompteurCongeAnnuel;
+		String url = String.format(absWsBaseUrl + sirhAbsInitialiseCompteurCongeAnnuel);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", agentConnecte.toString());
 		params.put("idAgentConcerne", idAgentConcerne.toString());
@@ -650,8 +619,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 
 	@Override
 	public TypeAbsenceDto getTypeAbsence(Integer idBaseHoraireAbsence) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
-		String url = urlWS + sirhAbsRefTypeAbs;
+		String url = String.format(absWsBaseUrl + sirhAbsRefTypeAbs);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idBaseHoraireAbsence", idBaseHoraireAbsence.toString());
 		logger.debug("Call " + url + " with idBaseHoraireAbsence : " + idBaseHoraireAbsence);
@@ -661,8 +629,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 
 	@Override
 	public DemandeDto getDureeCongeAnnuel(DemandeDto demandeDto) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
-		String url = urlWS + sirhDureeCongeAnnuelUrl;
+		String url = String.format(absWsBaseUrl + sirhDureeCongeAnnuelUrl);
 		HashMap<String, String> params = new HashMap<>();
 
 		String json = new JSONSerializer().exclude("*.class").exclude("*.civilite").exclude("*.signature")
@@ -675,8 +642,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 
 	@Override
 	public ReturnMessageDto addCompteurCongeAnnuel(Integer idAgent, String json) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
-		String url = urlWS + sirhAbsAddCompteurCongeAnnuel;
+		String url = String.format(absWsBaseUrl + sirhAbsAddCompteurCongeAnnuel);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgent.toString());
 		ClientResponse res = createAndPostRequest(params, url, json);
@@ -685,8 +651,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 
 	@Override
 	public ReturnMessageDto saveRepresentantAsaA52(Integer idOrganisationSyndicale, String json) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
-		String url = urlWS + sirhAbsAddRepresentantAsaA52;
+		String url = String.format(absWsBaseUrl + sirhAbsAddRepresentantAsaA52);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idOrganisationSyndicale", idOrganisationSyndicale.toString());
 		ClientResponse res = createAndPostRequest(params, url, json);
@@ -695,8 +660,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 
 	@Override
 	public ReturnMessageDto addRestitutionMassive(Integer idAgent, String json) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
-		String url = urlWS + sirhAbsRestitutionMassive;
+		String url = String.format(absWsBaseUrl + sirhAbsRestitutionMassive);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgent.toString());
 		ClientResponse res = createAndPostRequest(params, url, json);
@@ -705,8 +669,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 
 	@Override
 	public List<MoisAlimAutoCongesAnnuelsDto> getListeMoisALimAUtoCongeAnnuel() {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
-		String url = urlWS + sirhAbsMoisAlimAutoUrl;
+		String url = String.format(absWsBaseUrl + sirhAbsMoisAlimAutoUrl);
 		HashMap<String, String> params = new HashMap<>();
 		ClientResponse res = createAndFireRequest(params, url);
 		return readResponseAsList(MoisAlimAutoCongesAnnuelsDto.class, res, url);
@@ -714,8 +677,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 
 	@Override
 	public List<RestitutionMassiveDto> getHistoRestitutionMassive(Integer idAgent) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
-		String url = urlWS + sirhAbsHistoRestitutionMassive;
+		String url = String.format(absWsBaseUrl + sirhAbsHistoRestitutionMassive);
 
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgent.toString());
@@ -726,9 +688,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 
 	@Override
 	public RestitutionMassiveDto getDetailsHistoRestitutionMassive(Integer idAgent, RestitutionMassiveDto dto) {
-
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
-		String url = urlWS + sirhAbsDetailsHistoRestitutionMassive;
+		String url = String.format(absWsBaseUrl + sirhAbsDetailsHistoRestitutionMassive);
 
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgent.toString());
@@ -743,8 +703,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	@Override
 	public List<MoisAlimAutoCongesAnnuelsDto> getListeAlimAutoCongeAnnuel(MoisAlimAutoCongesAnnuelsDto moisChoisi,
 			boolean onlyErreur) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
-		String url = urlWS + sirhAbsAlimAutoUrl;
+		String url = String.format(absWsBaseUrl + sirhAbsAlimAutoUrl);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("onlyErreur", String.valueOf(onlyErreur));
 
@@ -757,8 +716,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 
 	@Override
 	public List<RefAlimCongesAnnuelsDto> getListeRefAlimCongesAnnuels(Integer idRefTypeSaisiCongeAnnuel) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
-		String url = urlWS + sirhAbsListRefAlimUrl;
+		String url = String.format(absWsBaseUrl + sirhAbsListRefAlimUrl);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idRefTypeSaisiCongeAnnuel", idRefTypeSaisiCongeAnnuel.toString());
 		logger.debug("Call " + url + " with idRefTypeSaisiCongeAnnuel : " + idRefTypeSaisiCongeAnnuel);
@@ -768,8 +726,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 
 	@Override
 	public ReturnMessageDto saveRefAlimMensuelle(Integer idAgent, String json) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
-		String url = urlWS + sirhAbsRefAlimCongeAnnuelSauvegarde;
+		String url = String.format(absWsBaseUrl + sirhAbsRefAlimCongeAnnuelSauvegarde);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgent.toString());
 		ClientResponse res = createAndPostRequest(params, url, json);
@@ -778,8 +735,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 
 	@Override
 	public ReturnMessageDto setDelegataire(Integer idAgent, String json) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
-		String url = urlWS + sirhAbsSauvegardeDelegataire;
+		String url = String.format(absWsBaseUrl + sirhAbsSauvegardeDelegataire);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgent.toString());
 		ClientResponse res = createAndPostRequest(params, url, json);
@@ -788,8 +744,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 
 	@Override
 	public ActeursDto getListeActeurs(Integer idAgent) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
-		String url = urlWS + sirhAbsListeActeurs;
+		String url = String.format(absWsBaseUrl + sirhAbsListeActeurs);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgent.toString());
 		logger.debug("Call " + url + " with idAgent : " + idAgent);
@@ -799,8 +754,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 
 	@Override
 	public List<MoisAlimAutoCongesAnnuelsDto> getHistoriqueAlimAutoCongeAnnuelAgent(Integer idAgent) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
-		String url = urlWS + sirhAbsHistoAlimAutoCongeAnnuelUrl;
+		String url = String.format(absWsBaseUrl + sirhAbsHistoAlimAutoCongeAnnuelUrl);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgent.toString());
 		logger.debug("Call " + url + " with idAgent : " + idAgent);
@@ -810,8 +764,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 
 	@Override
 	public List<RestitutionMassiveDto> getHistoRestitutionMassiveByIdAgent(Integer idAgent) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
-		String url = urlWS + sirhAbsHistoRestitutionMassiveByIdAgent;
+		String url = String.format(absWsBaseUrl + sirhAbsHistoRestitutionMassiveByIdAgent);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgent.toString());
 		logger.debug("Call " + url + " with idAgent : " + idAgent);
@@ -821,8 +774,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 
 	@Override
 	public ReturnMessageDto createNouvelleAnneeBaseConges(Integer anneeCreation) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
-		String url = urlWS + sirhAbsCreateBaseConge;
+		String url = String.format(absWsBaseUrl + sirhAbsCreateBaseConge);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("annee", anneeCreation.toString());
 		logger.debug("Call " + url + " with annee : " + anneeCreation);
@@ -832,8 +784,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 
 	@Override
 	public List<AgentDto> getAgentsApprobateur(Integer idAgentApprobateur) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
-		String url = urlWS + sirhAgentApprobateurUrl;
+		String url = String.format(absWsBaseUrl + sirhAgentApprobateurUrl);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgentApprobateur.toString());
 
@@ -843,8 +794,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 
 	@Override
 	public InputterDto getOperateursDelegataireApprobateur(Integer idAgentApprobateur) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
-		String url = urlWS + sirhOperateursDelegataireApprobateurUrl;
+		String url = String.format(absWsBaseUrl + sirhOperateursDelegataireApprobateurUrl);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgentApprobateur.toString());
 
@@ -854,8 +804,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 
 	@Override
 	public ViseursDto getViseursApprobateur(Integer idAgentApprobateur) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
-		String url = urlWS + sirhViseursApprobateurUrl;
+		String url = String.format(absWsBaseUrl + sirhViseursApprobateurUrl);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgentApprobateur.toString());
 
@@ -865,8 +814,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 
 	@Override
 	public ReturnMessageDto saveAgentsApprobateur(Integer idAgent, List<AgentDto> listSelect) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
-		String url = urlWS + sirhAgentApprobateurUrl;
+		String url = String.format(absWsBaseUrl + sirhAgentApprobateurUrl);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgent.toString());
 
@@ -879,8 +827,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 
 	@Override
 	public ReturnMessageDto saveOperateurApprobateur(Integer idAgent, AgentDto dto) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
-		String url = urlWS + sirhOperateurApprobateurUrl;
+		String url = String.format(absWsBaseUrl + sirhOperateurApprobateurUrl);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgent.toString());
 
@@ -893,8 +840,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 
 	@Override
 	public ReturnMessageDto deleteOperateurApprobateur(Integer idAgent, AgentDto dto) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
-		String url = urlWS + sirhDeleteOperateurApprobateurUrl;
+		String url = String.format(absWsBaseUrl + sirhDeleteOperateurApprobateurUrl);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgent.toString());
 
@@ -907,8 +853,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 
 	@Override
 	public ReturnMessageDto saveViseurApprobateur(Integer idAgent, AgentDto dto) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
-		String url = urlWS + sirhViseursApprobateurSIRHUrl;
+		String url = String.format(absWsBaseUrl + sirhViseursApprobateurSIRHUrl);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgent.toString());
 
@@ -921,8 +866,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 
 	@Override
 	public ReturnMessageDto deleteViseurApprobateur(Integer idAgent, AgentDto dto) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
-		String url = urlWS + sirhdeleteViseursApprobateurSIRHUrl;
+		String url = String.format(absWsBaseUrl + sirhdeleteViseursApprobateurSIRHUrl);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgent.toString());
 
@@ -935,8 +879,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 
 	@Override
 	public List<AgentDto> getAgentsOperateur(Integer idAgentApprobateur, Integer idAgentOperateur) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
-		String url = urlWS + sirhAgentsOperateurUrl;
+		String url = String.format(absWsBaseUrl + sirhAgentsOperateurUrl);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgentApprobateur.toString());
 		params.put("idOperateur", idAgentOperateur.toString());
@@ -948,8 +891,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	@Override
 	public ReturnMessageDto saveAgentsOperateur(Integer idAgentApprobateur, Integer idAgentOperateur,
 			List<AgentDto> listSelect) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
-		String url = urlWS + sirhAgentsOperateurUrl;
+		String url = String.format(absWsBaseUrl + sirhAgentsOperateurUrl);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgentApprobateur.toString());
 		params.put("idOperateur", idAgentOperateur.toString());
@@ -963,8 +905,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 
 	@Override
 	public List<AgentDto> getAgentsViseur(Integer idAgentApprobateur, Integer idAgentViseur) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
-		String url = urlWS + sirhAgentsViseurUrl;
+		String url = String.format(absWsBaseUrl + sirhAgentsViseurUrl);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgentApprobateur.toString());
 		params.put("idViseur", idAgentViseur.toString());
@@ -976,8 +917,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	@Override
 	public ReturnMessageDto saveAgentsViseur(Integer idAgentApprobateur, Integer idAgentViseur,
 			List<AgentDto> listSelect) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
-		String url = urlWS + sirhAgentsViseurUrl;
+		String url = String.format(absWsBaseUrl + sirhAgentsViseurUrl);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgentApprobateur.toString());
 		params.put("idViseur", idAgentViseur.toString());
@@ -991,8 +931,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 
 	@Override
 	public List<MoisAlimAutoCongesAnnuelsDto> getHistoriqueAlimAutoRecupAgent(Integer idAgent) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
-		String url = urlWS + sirhAbsHistoAlimAutoRecupUrl;
+		String url = String.format(absWsBaseUrl + sirhAbsHistoAlimAutoRecupUrl);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgent.toString());
 		logger.debug("Call " + url + " with idAgent : " + idAgent);
@@ -1002,8 +941,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 
 	@Override
 	public List<MoisAlimAutoCongesAnnuelsDto> getHistoriqueAlimAutoReposCompAgent(Integer idAgent) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
-		String url = urlWS + sirhAbsHistoAlimAutoReposCompUrl;
+		String url = String.format(absWsBaseUrl + sirhAbsHistoAlimAutoReposCompUrl);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgent.toString());
 		logger.debug("Call " + url + " with idAgent : " + idAgent);
@@ -1013,8 +951,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 
 	@Override
 	public List<OrganisationSyndicaleDto> getListeOSCompteursA52() {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
-		String url = urlWS + sirhAbsListOSA52Url;
+		String url = String.format(absWsBaseUrl + sirhAbsListOSA52Url);
 		HashMap<String, String> params = new HashMap<>();
 		logger.debug("Call " + url);
 		ClientResponse res = createAndFireRequest(params, url);
@@ -1023,8 +960,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 
 	@Override
 	public List<AgentOrganisationSyndicaleDto> getListeRepresentantA52(Integer idOrganisation) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS_URL");
-		String url = urlWS + sirhAbsListRepresentantOSA52Url;
+		String url = String.format(absWsBaseUrl + sirhAbsListRepresentantOSA52Url);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idOrganisationSyndicale", idOrganisation.toString());
 		logger.debug("Call " + url + " with idOrganisationSyndicale : " + idOrganisation);

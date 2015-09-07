@@ -1,8 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" %> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <%@page import="nc.mairie.metier.avancement.AvancementFonctionnaires"%>
 <%@page import="nc.mairie.utils.MairieUtils"%>
-<%@page import="nc.mairie.metier.poste.Service"%>
-<%@page import="nc.mairie.utils.TreeHierarchy"%>
 <%@page import="nc.mairie.enums.EnumTypeDroit"%>
 <HTML>
 <HEAD>
@@ -19,7 +17,6 @@
 <script type="text/javascript" src="js/jquery.dataTables.js"></script>
 <script type="text/javascript" src="TableTools-2.0.1/media/js/TableTools.min.js"></script>
 <SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT> 
-<SCRIPT language="javascript" src="js/dtree.js"></SCRIPT>
 
 <SCRIPT language="JavaScript">
 //afin de sélectionner un élément dans une liste
@@ -33,26 +30,7 @@ function setfocus(nom)
 {
   if (document.formu.elements[nom] != null)
     document.formu.elements[nom].focus();
-}
-
-// afin d'afficher la hiérarchie des services
-function agrandirHierarchy() {
-
-	hier = 	document.getElementById('treeHierarchy');
-
-	if (hier.style.display!='none') {
-		reduireHierarchy();
-	} else {
-		hier.style.display='block';
-	}
-}
-
-// afin de cacher la hiérarchie des services
-function reduireHierarchy() {
-	hier = 	document.getElementById('treeHierarchy');
-	hier.style.display='none';
-}
-  
+}  
 </SCRIPT>
 <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 </HEAD>
@@ -103,34 +81,14 @@ function reduireHierarchy() {
 				<img border="0" src="images/loupe.gif" width="16" title="Cliquer pour afficher l'arborescence"	height="16" style="cursor : pointer;" onclick="agrandirHierarchy();">	
 				<img border="0" src="images/suppression.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_SERVICE()%>');">
 				<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_SERVICE()%>" value="SUPPRECHERCHERSERVICE">	
-          		<INPUT type="hidden" id="codeservice" size="4" name="<%=process.getNOM_ST_CODE_SERVICE() %>" 
-					value="<%=process.getVAL_ST_CODE_SERVICE() %>" class="sigp2-saisie">
-				<div id="treeHierarchy" style="display: none;margin-left:500px;margin-top:20px; height: 340; width: 500; overflow:auto; background-color: #f4f4f4; border-width: 1px; border-style: solid;z-index:1;">
-					<script type="text/javascript">
-						d = new dTree('d');
-						d.add(0,-1,"Services");
-						
-						<%
-						String serviceSaisi = process.getVAL_EF_SERVICE().toUpperCase();
-						int theNode = 0;
-						for (int i =1; i <  process.getListeServices().size(); i++) {
-							Service serv = (Service)process.getListeServices().get(i);
-							String code = serv.getCodService();
-							TreeHierarchy tree = (TreeHierarchy)process.getHTree().get(code);
-							if (theNode ==0 && serviceSaisi.equals(tree.getService().getSigleService())) {
-								theNode=tree.getIndex();
-							}
-						%>
-						<%=tree.getJavaScriptLine()%>
-						<%}%>
-						document.write(d);
+          		<INPUT type="hidden" id="idServiceADS" size="4" name="<%=process.getNOM_ST_ID_SERVICE_ADS() %>" 
+					value="<%=process.getVAL_ST_ID_SERVICE_ADS() %>" class="sigp2-saisie">
 				
-						d.closeAll();
-						<% if (theNode !=0) { %>
-							d.openTo(<%=theNode%>,true);
-						<%}%>
-					</script>
-				</div>
+	             	<div style="margin-left:500px;" class="sigp2">
+	             	<!-- ////////// ARBRE DES SERVICES - ADS ///////////// -->
+					<%=process.getCurrentWholeTreeJS(process.getVAL_EF_SERVICE().toUpperCase()) %>
+					<!-- ////////// ARBRE DES SERVICES - ADS ///////////// -->
+					</div>
           	<BR/>
 			<INPUT type="submit" class="sigp2-Bouton-100" value="Filtrer" name="<%=process.getNOM_PB_FILTRER()%>">
 		</FIELDSET>

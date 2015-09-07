@@ -50,6 +50,12 @@ menuPosteEtEmploiFE.ajouterFils(new Lien("FEActivite", "ACTIVITE", "Gestion des 
 menuPosteEtEmploiFE.ajouterFils(new Lien("FECompetence", "COMPETENCE", "Gestion des compétences", true, false,"COMPETENCE"));
 document.write(menuPosteEtEmploiFE.afficher());
 
+var menuPosteEtEmploiFichePosteAutomatise = new MenuHaut("Module_posteEtEmploi_fichePosteAutomatise");
+menuPosteEtEmploiFichePosteAutomatise.ajouterFils(new Lien("FPGestionAutomatise", "SUPPRESSION", "Gestion de la routine de suppression de FDP", true, false,"SUPPRESSION"));
+menuPosteEtEmploiFichePosteAutomatise.ajouterFils(new Lien("FPGestionAutomatiseActivation", "ACTIVATION", "Gestion de la routine d'activation de FDP", true, false,"ACTIVATION"));
+menuPosteEtEmploiFichePosteAutomatise.ajouterFils(new Lien("FPGestionAutomatiseDuplication", "DUPLICATION", "Gestion de la routine de duplication de FDP", true, false,"DUPLICATION"));
+document.write(menuPosteEtEmploiFichePosteAutomatise.afficher());
+
 //***************************************************************
 //*               Le menu haut Agent
 //***************************************************************

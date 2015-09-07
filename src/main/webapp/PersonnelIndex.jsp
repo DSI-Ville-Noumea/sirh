@@ -52,6 +52,7 @@ var Module_posteEtEmploi = new Dossier("Module_posteEtEmploi", "Postes & emplois
 		Module_posteEtEmploi.ajouterFils(new Lien("ficheEmploi", "FEGestion", "Fiche emploi", "Gestion des fiches emploi", true));
 	<%}%>
 	Module_posteEtEmploi.ajouterFils(new Lien("fichePoste", "FPGestion", "Fiche de poste", "Gestion des fiches de poste", true));
+	Module_posteEtEmploi.ajouterFils(new Lien("fichePosteAutomatise", "FPGestionAutomatise", "Routine organigramme", "Gestion des routine liées aux impacts organigramme sur les fiches de poste", true));
 	//Module_posteEtEmploi.ajouterFils(new Lien("fichePosteOld", "FPGestionOld", "Fiche de poste", "Gestion des fiches de poste", true));
 	//Module_posteEtEmploi.ajouterFils(new Lien("suiviRecrutement", "SuiviRecrutement", "Recrutement", "Suivi des recrutements", true));
 	
@@ -145,7 +146,15 @@ if (affAbsence.equals("TRUE")){ %>
 		Module_election.ajouterFils(new Lien("saisieCompteur", "ELECSaisieCompteurA48", "Saisie des compteurs", "Saisie des compteurs", true));
 	<%}%>
 	
+
+
+//***************************************************************
+//*               Le module ORGANIGRAMME
+//***************************************************************
+var Module_organigramme = new Dossier("Module_organigramme", "Gestion des organigrammes","ORGANIGRAMME");
+	Module_organigramme.ajouterFils(new Lien("gestionOrganigramme", "gestionOrganigramme", "Gestion organigramme", "Gestion organigramme", true));
 		
+			
 //***************************************************************
 //*               Le module Paramètres
 //***************************************************************
@@ -190,6 +199,7 @@ menu.ajouterFils(Module_absence);
 if (affElection.equals("TRUE")){ %>
 menu.ajouterFils(Module_election);
 <%}%>
+menu.ajouterFils(Module_organigramme);
 menu.ajouterFils(Module_parametres);
 menu.ajouterFils(Module_gestionDroits);
 

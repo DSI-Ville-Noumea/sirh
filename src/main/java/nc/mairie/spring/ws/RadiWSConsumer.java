@@ -7,10 +7,11 @@ import java.util.List;
 import java.util.Map;
 
 import nc.mairie.gestionagent.radi.dto.LightUserDto;
-import nc.mairie.gestionagent.servlets.ServletAgent;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -26,13 +27,16 @@ import flexjson.JSONDeserializer;
 public class RadiWSConsumer implements IRadiWSConsumer {
 	private Logger logger = LoggerFactory.getLogger(RadiWSConsumer.class);
 
+	@Autowired
+	@Qualifier("radiWsBaseUrl")
+	private String radiWsBaseUrl;
+
 	// droits
 	private static final String searchAgentRadi = "users";
 
 	@Override
 	public boolean asAgentCompteAD(Integer nomatr) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("RADI_WS_URL");
-		String url = urlWS + searchAgentRadi;
+		String url = String.format(radiWsBaseUrl + searchAgentRadi);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("employeenumber", getEmployeeNumberWithNomatr(nomatr).toString());
 		logger.debug("Call " + url + " with employeenumber=" + getEmployeeNumberWithNomatr(nomatr));
@@ -43,7 +47,7 @@ public class RadiWSConsumer implements IRadiWSConsumer {
 		} else if (res.getStatus() == HttpStatus.OK.value()) {
 			return true;
 		} else {
-			throw new RadiWSConsumerException(String.format("An error occured when querying '%s'. Return code is : %s",
+			throw new BaseWsConsumerException(String.format("An error occured when querying '%s'. Return code is : %s",
 					url, res.getStatus()));
 		}
 	}
@@ -64,15 +68,14 @@ public class RadiWSConsumer implements IRadiWSConsumer {
 		try {
 			response = webResource.accept(MediaType.APPLICATION_JSON_VALUE).get(ClientResponse.class);
 		} catch (ClientHandlerException ex) {
-			throw new SirhPtgWSConsumerException(String.format("An error occured when querying '%s'.", url), ex);
+			throw new BaseWsConsumerException(String.format("An error occured when querying '%s'.", url), ex);
 		}
 		return response;
 	}
 
 	@Override
 	public LightUserDto getAgentCompteAD(Integer nomatr) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("RADI_WS_URL");
-		String url = urlWS + searchAgentRadi;
+		String url = String.format(radiWsBaseUrl + searchAgentRadi);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("employeenumber", getEmployeeNumberWithNomatr(nomatr).toString());
 		logger.debug("Call " + url + " with employeenumber=" + getEmployeeNumberWithNomatr(nomatr));
@@ -90,8 +93,8 @@ public class RadiWSConsumer implements IRadiWSConsumer {
 		}
 
 		if (response.getStatus() != HttpStatus.OK.value()) {
-			throw new SirhAbsWSConsumerException(String.format(
-					"An error occured when querying '%s'. Return code is : %s", url, response.getStatus()));
+			throw new BaseWsConsumerException(String.format("An error occured when querying '%s'. Return code is : %s",
+					url, response.getStatus()));
 		}
 
 		String output = response.getEntity(String.class);
@@ -118,8 +121,7 @@ public class RadiWSConsumer implements IRadiWSConsumer {
 
 	@Override
 	public LightUserDto getAgentCompteADByLogin(String login) {
-		String urlWS = (String) ServletAgent.getMesParametres().get("RADI_WS_URL");
-		String url = urlWS + searchAgentRadi;
+		String url = String.format(radiWsBaseUrl + searchAgentRadi);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("sAMAccountName", login);
 		logger.debug("Call " + url + " with sAMAccountName=" + login);

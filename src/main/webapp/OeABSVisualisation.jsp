@@ -9,8 +9,6 @@
 <%@page import="nc.mairie.gestionagent.absence.dto.RefTypeSaisiDto" %>
 <%@page import="nc.mairie.enums.EnumTypeDroit"%>
 <%@page import="nc.mairie.utils.MairieUtils"%>
-<%@page import="nc.mairie.utils.TreeHierarchy"%>
-<%@page import="nc.mairie.metier.poste.Service"%>
 <%@page import="java.util.Map"%>
 
 <HTML>
@@ -26,7 +24,6 @@
 
 
 <!--             <SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT>  -->
-            <SCRIPT language="javascript" src="js/dtree.js"></SCRIPT>
 			<SCRIPT type="text/javascript" src="js/GestionCalendrier.js"></SCRIPT> 
             <script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
             <script type="text/javascript" src="js/jquery.dataTables.min.js"></script>
@@ -42,22 +39,6 @@
                 {
                     if (document.formu.elements[nom] != null)
                         document.formu.elements[nom].focus();
-                }
-
-                function agrandirHierarchy() {
-
-                    hier = document.getElementById('treeHierarchy');
-
-                    if (hier.style.display != 'none') {
-                        reduireHierarchy();
-                    } else {
-                        hier.style.display = 'block';
-                    }
-                }
-
-                function reduireHierarchy() {
-                    hier = document.getElementById('treeHierarchy');
-                    hier.style.display = 'none';
                 }
                 
                 $.fn.dataTableExt.oSort['date-francais-asc']  = function(a,b) {
@@ -254,7 +235,7 @@
 			                <INPUT id="service" class="sigp2-saisiemajuscule" name="<%= process.getNOM_EF_SERVICE()%>" size="8" type="text" value="<%= process.getVAL_EF_SERVICE()%>">
 			                <img onkeydown="" onkeypress="" onkeyup="" border="0" src="images/loupe.gif" width="16" title="Cliquer pour afficher l'arborescence"	height="16" style="cursor : pointer;" onclick="agrandirHierarchy();">	
 			                <img onkeydown="" onkeypress="" onkeyup="" border="0" src="images/suppression.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_SERVICE()%>');">
-			            	<INPUT type="hidden" id="codeservice" size="4" width="1px" name="<%=process.getNOM_ST_CODE_SERVICE()%>" value="<%=process.getVAL_ST_CODE_SERVICE()%>" class="sigp2-saisie">
+			            	<INPUT type="hidden" id="idServiceADS" size="4" width="1px" name="<%=process.getNOM_ST_ID_SERVICE_ADS()%>" value="<%=process.getVAL_ST_ID_SERVICE_ADS()%>" class="sigp2-saisie">
                 		</td>
                 		<td width="70px">
                 			<span class="sigp2">Etat : </span>
@@ -266,6 +247,13 @@
                 		</td>
                 		<td width="120px">&nbsp;</td>
                 		<td>&nbsp;</td>
+                	</tr>
+                	<tr>
+                		<td colspan="8" class="sigp2">
+			             	<!-- ////////// ARBRE DES SERVICES - ADS ///////////// -->
+							<%=process.getCurrentWholeTreeJS(process.getVAL_EF_SERVICE().toUpperCase()) %>
+							<!-- ////////// ARBRE DES SERVICES - ADS ///////////// -->
+                		</td>
                 	</tr>
                 	<tr>
                 		<td>
@@ -316,34 +304,7 @@
 				<INPUT type="submit" class="sigp2-displayNone" name="<%=process.getNOM_PB_SELECT_GROUPE()%>">	
                 <BR/>         	
                 <INPUT type="submit" class="sigp2-Bouton-100" value="Afficher" name="<%=process.getNOM_PB_FILTRER()%>">		
-                <INPUT type="submit" class="sigp2-Bouton-200" value="Demandes à valider" name="<%=process.getNOM_PB_FILTRER_DEMANDE_A_VALIDER()%>">		
-             	<div id="treeHierarchy" style="display: none;margin-left:300px;margin-top:20px; height: 340; width: 500; overflow:auto; background-color: #f4f4f4; border-width: 1px; border-style: solid;z-index:1;">
-                <script type="text/javascript">
-                d = new dTree('d');
-                d.add(0, -1, "Services");
-
-                        <%
-                            String serviceSaisi = process.getVAL_EF_SERVICE().toUpperCase();
-                            int theNode = 0;
-                            for (int i = 1; i < process.getListeServices().size(); i++) {
-                                Service serv = (Service) process.getListeServices().get(i);
-                                String code = serv.getCodService();
-                                TreeHierarchy tree = (TreeHierarchy) process.getHTree().get(code);
-                                if (theNode == 0 && serviceSaisi.equals(tree.getService().getSigleService())) {
-                                    theNode = tree.getIndex();
-                                }
-                        %>
-                        <%=tree.getJavaScriptLine()%>
-                        <%}%>
-                document.write(d);
-
-                d.closeAll();
-                        <% if (theNode != 0) {%>
-                d.openTo(<%=theNode%>, true);
-                        <%}%>
-                    </script>
-                </div>
-                
+                <INPUT type="submit" class="sigp2-Bouton-200" value="Demandes à valider" name="<%=process.getNOM_PB_FILTRER_DEMANDE_A_VALIDER()%>">	
              </FIELDSET>             
             
             <FIELDSET class="sigp2Fieldset" style="text-align:left;">

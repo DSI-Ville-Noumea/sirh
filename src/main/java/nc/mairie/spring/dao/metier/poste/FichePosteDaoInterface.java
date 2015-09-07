@@ -18,10 +18,10 @@ public interface FichePosteDaoInterface {
 
 	public FichePoste chercherFichePoste(Integer idFichePoste) throws Exception;
 
-	public ArrayList<FichePoste> listerFichePosteAvecCriteresAvances(String prefixeServ, Integer idStatutFP,
-			Integer idTitre, String numero, Integer idAgent) throws Exception;
+	public ArrayList<FichePoste> listerFichePosteAvecCriteresAvances(List<Integer> listIdServADS, Integer idStatutFP,
+			Integer idTitre, String numero, Integer idAgent, boolean avecObservation) throws Exception;
 
-	public ArrayList<FichePoste> listerFichePosteAvecService(String codeService) throws Exception;
+	public ArrayList<FichePoste> listerFichePosteAvecService(Integer idServiceADS) throws Exception;
 
 	public ArrayList<FichePoste> listerFichePosteAvecAgent(ArrayList<Affectation> liens) throws Exception;
 

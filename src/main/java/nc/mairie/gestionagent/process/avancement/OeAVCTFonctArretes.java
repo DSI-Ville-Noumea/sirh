@@ -5,10 +5,9 @@ import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.ListIterator;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,7 +22,6 @@ import nc.mairie.metier.carriere.FiliereGrade;
 import nc.mairie.metier.carriere.Grade;
 import nc.mairie.metier.parametrage.Cap;
 import nc.mairie.metier.parametrage.MotifAvancement;
-import nc.mairie.metier.poste.Service;
 import nc.mairie.metier.referentiel.AvisCap;
 import nc.mairie.spring.dao.metier.agent.AgentDao;
 import nc.mairie.spring.dao.metier.avancement.AvancementFonctionnairesDao;
@@ -33,7 +31,6 @@ import nc.mairie.spring.dao.metier.referentiel.AutreAdministrationDao;
 import nc.mairie.spring.dao.metier.referentiel.AvisCapDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
-import nc.mairie.spring.ws.SirhWSConsumer;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
@@ -41,8 +38,9 @@ import nc.mairie.technique.UserAppli;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
-import nc.mairie.utils.TreeHierarchy;
 import nc.mairie.utils.VariablesActivite;
+import nc.noumea.spring.service.IAdsService;
+import nc.noumea.spring.service.ISirhService;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.vfs2.FileObject;
@@ -84,8 +82,6 @@ public class OeAVCTFonctArretes extends BasicProcess {
 	private ArrayList<Cap> listeCap;
 	private ArrayList<Grade> listeCategorie;
 	private ArrayList<String> listeVerifSGC;
-	private ArrayList<Service> listeServices;
-	public Hashtable<String, TreeHierarchy> hTree = null;
 
 	private ArrayList<AvancementFonctionnaires> listeAvct;
 	private ArrayList<AvisCap> listeAvisCAPMinMoyMax;
@@ -104,6 +100,10 @@ public class OeAVCTFonctArretes extends BasicProcess {
 	private AvancementFonctionnairesDao avancementFonctionnairesDao;
 	private AgentDao agentDao;
 	private SimpleDateFormat sdfFormatDate = new SimpleDateFormat("dd/MM/yyyy");
+
+	private IAdsService adsService;
+
+	private ISirhService sirhService;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -129,8 +129,6 @@ public class OeAVCTFonctArretes extends BasicProcess {
 
 		// Initialisation des listes deroulantes
 		initialiseListeDeroulante();
-
-		initialiseListeService();
 
 		if (etatStatut() == STATUT_RECHERCHER_AGENT) {
 			Agent agt = (Agent) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
@@ -169,6 +167,12 @@ public class OeAVCTFonctArretes extends BasicProcess {
 		if (getAgentDao() == null) {
 			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (null == adsService) {
+			adsService = (IAdsService) context.getBean("adsService");
+		}
+		if (null == sirhService) {
+			sirhService = (ISirhService) context.getBean("sirhService");
+		}
 	}
 
 	private ArrayList<String> listerDocumentsArretes() throws ParseException {
@@ -187,6 +191,11 @@ public class OeAVCTFonctArretes extends BasicProcess {
 			res.add(docuArreteAvctDiff);
 		}
 		return res;
+	}
+
+	public String getCurrentWholeTreeJS(String serviceSaisi) {
+		return adsService.getCurrentWholeTreeActifTransitoireJS(
+				null != serviceSaisi && !"".equals(serviceSaisi) ? serviceSaisi : null, false);
 	}
 
 	private void afficheListeAvancement() throws Exception {
@@ -357,45 +366,6 @@ public class OeAVCTFonctArretes extends BasicProcess {
 				addZone(getNOM_ST_DATE_AVCT_FINALE(i), Const.CHAINE_VIDE);
 			}
 
-		}
-	}
-
-	private void initialiseListeService() throws Exception {
-		// Si la liste des services est nulle
-		if (getListeServices() == null || getListeServices().size() == 0) {
-			ArrayList<Service> services = Service.listerServiceActif(getTransaction());
-			setListeServices(services);
-
-			// Tri par codeservice
-			Collections.sort(getListeServices(), new Comparator<Object>() {
-				public int compare(Object o1, Object o2) {
-					Service s1 = (Service) o1;
-					Service s2 = (Service) o2;
-					return (s1.getCodService().compareTo(s2.getCodService()));
-				}
-			});
-
-			// alim de la hTree
-			hTree = new Hashtable<String, TreeHierarchy>();
-			TreeHierarchy parent = null;
-			for (int i = 0; i < getListeServices().size(); i++) {
-				Service serv = (Service) getListeServices().get(i);
-
-				if (Const.CHAINE_VIDE.equals(serv.getCodService()))
-					continue;
-
-				// recherche du supérieur
-				String codeService = serv.getCodService();
-				while (codeService.endsWith("A")) {
-					codeService = codeService.substring(0, codeService.length() - 1);
-				}
-				codeService = codeService.substring(0, codeService.length() - 1);
-				codeService = Services.rpad(codeService, 4, "A");
-				parent = hTree.get(codeService);
-				int indexParent = (parent == null ? 0 : parent.getIndex());
-				hTree.put(serv.getCodService(), new TreeHierarchy(serv, i, indexParent));
-
-			}
 		}
 	}
 
@@ -687,11 +657,10 @@ public class OeAVCTFonctArretes extends BasicProcess {
 		}
 
 		// recuperation du service
-		ArrayList<String> listeSousService = null;
-		if (getVAL_ST_CODE_SERVICE().length() != 0) {
+		List<String> listeSousService = null;
+		if (null != getVAL_ST_ID_SERVICE_ADS() && getVAL_ST_ID_SERVICE_ADS().length() != 0) {
 			// on recupere les sous-service du service selectionne
-			Service serv = Service.chercherService(getTransaction(), getVAL_ST_CODE_SERVICE());
-			listeSousService = Service.listSousServiceBySigle(getTransaction(), serv.getSigleService());
+			listeSousService = adsService.getListSiglesWithEnfantsOfEntite(new Integer(getVAL_ST_ID_SERVICE_ADS()));
 		}
 
 		String reqEtat = " and (ETAT='" + EnumEtatAvancement.SEF.getValue() + "' or ETAT='"
@@ -702,8 +671,8 @@ public class OeAVCTFonctArretes extends BasicProcess {
 			} else if (verifSGC.equals("non")) {
 				reqEtat = " and (ETAT='" + EnumEtatAvancement.SEF.getValue() + "' )";
 			}
-
 		}
+
 		setListeAvct(getAvancementFonctionnairesDao().listerAvancementAvecAnneeEtat(Integer.valueOf(annee), reqEtat,
 				filiere == null ? null : filiere.getLibFiliere(), agent == null ? null : agent.getIdAgent(),
 				listeSousService, categorie, idCap));
@@ -815,7 +784,7 @@ public class OeAVCTFonctArretes extends BasicProcess {
 		if (listeImpressionChangementClasse.size() > 0) {
 
 			try {
-				byte[] fileAsBytes  = new SirhWSConsumer().downloadArrete(
+				byte[] fileAsBytes = sirhService.downloadArrete(
 						listeImpressionChangementClasse.toString().replace("[", "").replace("]", "").replace(" ", ""),
 						true, Integer.valueOf(getAnneeSelect()), false);
 
@@ -835,9 +804,9 @@ public class OeAVCTFonctArretes extends BasicProcess {
 		}
 		if (listeImpressionAvancementDiff.size() > 0) {
 			try {
-				byte[] fileAsBytes = new SirhWSConsumer().downloadArrete(listeImpressionAvancementDiff.toString()
-						.replace("[", "").replace("]", "").replace(" ", ""), false, Integer.valueOf(getAnneeSelect()),
-						false);
+				byte[] fileAsBytes = sirhService.downloadArrete(
+						listeImpressionAvancementDiff.toString().replace("[", "").replace("]", "").replace(" ", ""),
+						false, Integer.valueOf(getAnneeSelect()), false);
 				if (!saveFileToRemoteFileSystem(fileAsBytes, repPartage, docuAvctDiff)) {
 					// "ERR185",
 					// "Une erreur est survenue dans la génération des documents. Merci de contacter le responsable du projet."
@@ -1440,7 +1409,7 @@ public class OeAVCTFonctArretes extends BasicProcess {
 	 */
 	public boolean performPB_SUPPRIMER_RECHERCHER_SERVICE(HttpServletRequest request) throws Exception {
 		// On enleve le service selectionnée
-		addZone(getNOM_ST_CODE_SERVICE(), Const.CHAINE_VIDE);
+		addZone(getNOM_ST_ID_SERVICE_ADS(), Const.CHAINE_VIDE);
 		addZone(getNOM_EF_SERVICE(), Const.CHAINE_VIDE);
 		return true;
 	}
@@ -1450,8 +1419,8 @@ public class OeAVCTFonctArretes extends BasicProcess {
 	 * création : (13/09/11 08:45:29)
 	 * 
 	 */
-	public String getNOM_ST_CODE_SERVICE() {
-		return "NOM_ST_CODE_SERVICE";
+	public String getNOM_ST_ID_SERVICE_ADS() {
+		return "NOM_ST_ID_SERVICE_ADS";
 	}
 
 	/**
@@ -1459,36 +1428,8 @@ public class OeAVCTFonctArretes extends BasicProcess {
 	 * Date de création : (13/09/11 08:45:29)
 	 * 
 	 */
-	public String getVAL_ST_CODE_SERVICE() {
-		return getZone(getNOM_ST_CODE_SERVICE());
-	}
-
-	/**
-	 * Retourne la liste des services.
-	 * 
-	 * @return listeServices
-	 */
-	public ArrayList<Service> getListeServices() {
-		return listeServices;
-	}
-
-	/**
-	 * Met a jour la liste des services.
-	 * 
-	 * @param listeServices
-	 */
-	private void setListeServices(ArrayList<Service> listeServices) {
-		this.listeServices = listeServices;
-	}
-
-	/**
-	 * Retourne une hashTable de la hierarchie des Service selon le code
-	 * Service.
-	 * 
-	 * @return hTree
-	 */
-	public Hashtable<String, TreeHierarchy> getHTree() {
-		return hTree;
+	public String getVAL_ST_ID_SERVICE_ADS() {
+		return getZone(getNOM_ST_ID_SERVICE_ADS());
 	}
 
 	/**

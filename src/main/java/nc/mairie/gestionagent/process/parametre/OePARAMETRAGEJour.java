@@ -16,13 +16,14 @@ import nc.mairie.spring.dao.metier.parametrage.JourFerieDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeJourFerieDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
-import nc.mairie.spring.ws.SirhAbsWSConsumer;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
+import nc.noumea.spring.service.AbsService;
+import nc.noumea.spring.service.IAbsService;
 
 import org.springframework.context.ApplicationContext;
 
@@ -55,6 +56,8 @@ public class OePARAMETRAGEJour extends BasicProcess {
 	private JourFerie jourFerieCourant;
 	private JourFerieDao jourFerieDao;
 	private TypeJourFerieDao typeJourFerieDao;
+
+	private IAbsService absService;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -127,6 +130,9 @@ public class OePARAMETRAGEJour extends BasicProcess {
 		}
 		if (getTypeJourFerieDao() == null) {
 			setTypeJourFerieDao(new TypeJourFerieDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (null == absService) {
+			absService = (AbsService) context.getBean("absService");
 		}
 	}
 
@@ -392,8 +398,7 @@ public class OePARAMETRAGEJour extends BasicProcess {
 		String annee = getListeAnnee().get(0);
 
 		// #15284 : on crée aussi les bases congés pour l'année choisie
-		SirhAbsWSConsumer consu = new SirhAbsWSConsumer();
-		ReturnMessageDto result = consu.createNouvelleAnneeBaseConges(Integer.valueOf(annee) + 1);
+		ReturnMessageDto result = absService.createNouvelleAnneeBaseConges(Integer.valueOf(annee) + 1);
 
 		if (result.getErrors().size() > 0) {
 			String err = Const.CHAINE_VIDE;

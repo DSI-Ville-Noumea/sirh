@@ -7,13 +7,18 @@ import javax.servlet.http.HttpServletRequest;
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
 import nc.mairie.gestionagent.pointage.dto.MotifHeureSupDto;
 import nc.mairie.metier.Const;
-import nc.mairie.spring.ws.SirhPtgWSConsumer;
+import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
+import nc.noumea.spring.service.IPtgService;
+import nc.noumea.spring.service.PtgService;
+
+import org.springframework.context.ApplicationContext;
+
 import flexjson.JSONSerializer;
 
 /**
@@ -35,6 +40,8 @@ public class OePARAMETRAGEPointage extends BasicProcess {
 	public String ACTION_CREATION = "1";
 	public String ACTION_MODIFICATION = "2";
 
+	private IPtgService ptgService;
+
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
@@ -55,6 +62,7 @@ public class OePARAMETRAGEPointage extends BasicProcess {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
+		initialiseDao();
 
 		if (getListeMotif().size() == 0) {
 			initialiseListeMotif(request);
@@ -62,10 +70,17 @@ public class OePARAMETRAGEPointage extends BasicProcess {
 
 	}
 
+	private void initialiseDao() {
+		// on initialise le dao
+		ApplicationContext context = ApplicationContextProvider.getContext();
+		if (null == ptgService) {
+			ptgService = (PtgService) context.getBean("ptgService");
+		}
+	}
+
 	private void initialiseListeMotif(HttpServletRequest request) throws Exception {
 		// Liste depuis SIRH-PTG-WS
-		SirhPtgWSConsumer consuPtg = new SirhPtgWSConsumer();
-		ArrayList<MotifHeureSupDto> listeMotifs = (ArrayList<MotifHeureSupDto>) consuPtg.getListeMotifHeureSup();
+		ArrayList<MotifHeureSupDto> listeMotifs = (ArrayList<MotifHeureSupDto>) ptgService.getListeMotifHeureSup();
 
 		setListeMotif(listeMotifs);
 		if (getListeMotif().size() != 0) {
@@ -269,8 +284,7 @@ public class OePARAMETRAGEPointage extends BasicProcess {
 				motif.setLibelle(getVAL_EF_LIB_MOTIF());
 
 				// on sauvegarde
-				SirhPtgWSConsumer consuPtg = new SirhPtgWSConsumer();
-				ReturnMessageDto message = consuPtg.saveMotifHeureSup(new JSONSerializer().exclude("*.class")
+				ReturnMessageDto message = ptgService.saveMotifHeureSup(new JSONSerializer().exclude("*.class")
 						.serialize(motif));
 
 				if (message.getErrors().size() > 0) {

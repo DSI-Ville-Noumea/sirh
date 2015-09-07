@@ -25,9 +25,6 @@ import nc.mairie.metier.agent.Agent;
 import nc.mairie.spring.dao.metier.agent.AgentDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
-import nc.mairie.spring.ws.RadiWSConsumer;
-import nc.mairie.spring.ws.SirhPtgWSConsumer;
-import nc.mairie.spring.ws.SirhWSConsumer;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.UserAppli;
@@ -35,6 +32,10 @@ import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
 import nc.mairie.utils.VariablesActivite;
+import nc.noumea.spring.service.IPtgService;
+import nc.noumea.spring.service.IRadiService;
+import nc.noumea.spring.service.ISirhService;
+import nc.noumea.spring.service.PtgService;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
@@ -71,7 +72,13 @@ public class OePTGVentilationFonct extends BasicProcess {
 	private Hashtable<Hashtable<Integer, String>, List<VentilHSupDto>> hashVentilHsup;
 
 	private AgentDao agentDao;
-	
+
+	private IRadiService radiService;
+
+	private IPtgService ptgService;
+
+	private ISirhService sirhService;
+
 	public OePTGVentilationFonct() {
 		super();
 	}
@@ -128,10 +135,19 @@ public class OePTGVentilationFonct extends BasicProcess {
 		if (getAgentDao() == null) {
 			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (null == radiService) {
+			radiService = (IRadiService) context.getBean("radiService");
+		}
+		if (null == ptgService) {
+			ptgService = (PtgService) context.getBean("ptgService");
+		}
+		if (null == sirhService) {
+			sirhService = (ISirhService) context.getBean("sirhService");
+		}
 	}
 
 	private void initialiseTabErreurVentil() {
-		setTabErreurVentil(OePTGVentilationUtils.getTabErreurVentil("F"));
+		setTabErreurVentil(OePTGVentilationUtils.getTabErreurVentil("F", ptgService));
 	}
 
 	private void initialiseListeAgent() {
@@ -393,8 +409,7 @@ public class OePTGVentilationFonct extends BasicProcess {
 	}
 
 	public VentilDateDto getInfoVentilation(String statut) {
-		SirhPtgWSConsumer t = new SirhPtgWSConsumer();
-		VentilDateDto dto = t.getVentilationEnCours(statut);
+		VentilDateDto dto = ptgService.getVentilationEnCours(statut);
 		return dto;
 	}
 
@@ -453,15 +468,14 @@ public class OePTGVentilationFonct extends BasicProcess {
 		UserAppli u = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
 		Agent agentConnecte = null;
 		// on fait la correspondance entre le login et l'agent via RADI
-		RadiWSConsumer radiConsu = new RadiWSConsumer();
-		LightUserDto user = radiConsu.getAgentCompteADByLogin(u.getUserName());
+		LightUserDto user = radiService.getAgentCompteADByLogin(u.getUserName());
 		if (user == null) {
 			// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
 			return false;
 		}
 		agentConnecte = getAgentDao().chercherAgentParMatricule(
-				radiConsu.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
+				radiService.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
 		if (getTransaction().isErreur()) {
 			getTransaction().traiterErreur();
 			// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
@@ -471,11 +485,10 @@ public class OePTGVentilationFonct extends BasicProcess {
 
 		// on transforme la date
 		Date dateVentilation = transformDate(getVAL_EF_DATE_DEBUT());
-		
+
 		// on lance la ventilation
-		SirhPtgWSConsumer t = new SirhPtgWSConsumer();
-		if (!t.startVentilation(agentConnecte.getIdAgent(), dateVentilation, new JSONSerializer().exclude("*.class")
-				.serialize(listeIdAgents), "F", idRefTypePointage)) {
+		if (!ptgService.startVentilation(agentConnecte.getIdAgent(), dateVentilation,
+				new JSONSerializer().exclude("*.class").serialize(listeIdAgents), "F", idRefTypePointage)) {
 			// "ERR602",
 			// "La ventilation des @ n'a pu être lancee. Merci de contacter le responsable du projet.");
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR602", "fonctionnaires"));
@@ -483,14 +496,14 @@ public class OePTGVentilationFonct extends BasicProcess {
 		}
 		return true;
 	}
-	
+
 	// #14346
 	private Date transformDate(String dateVentilationStr) throws ParseException {
 		Date dateVentilation = null;
 		if (Services.estNumerique(dateVentilationStr)) {
 			SimpleDateFormat sdf = new SimpleDateFormat("ddMMyyyy");
 			dateVentilation = sdf.parse(dateVentilationStr);
-		}else{
+		} else {
 			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 			dateVentilation = sdf.parse(dateVentilationStr);
 		}
@@ -582,9 +595,9 @@ public class OePTGVentilationFonct extends BasicProcess {
 			return false;
 		}
 
-		SirhPtgWSConsumer consum = new SirhPtgWSConsumer();
-		List<Integer> agents = consum.getListeAgentsForShowVentilation(ventilEnCours.getIdVentilDate(), new Integer(
-				typePointage), "F", ventilEnCours.getDateVentil(), getVAL_ST_AGENT_MIN(), getVAL_ST_AGENT_MAX(), false);
+		List<Integer> agents = ptgService.getListeAgentsForShowVentilation(ventilEnCours.getIdVentilDate(),
+				new Integer(typePointage), "F", ventilEnCours.getDateVentil(), getVAL_ST_AGENT_MIN(),
+				getVAL_ST_AGENT_MAX(), false);
 
 		if (typePointage == 1) {
 			initialiseHashTableAbs(typePointage, agents, false);
@@ -592,7 +605,8 @@ public class OePTGVentilationFonct extends BasicProcess {
 			initialiseHashTableHsup(typePointage, agents, false);
 		} else if (typePointage == 3) {
 			setTabVisuP(OePTGVentilationUtils.getTabVisu(getTransaction(), ventilEnCours.getIdVentilDate(),
-					typePointage, new JSONSerializer().exclude("*.class").serialize(agents), getAgentDao(), false));
+					typePointage, new JSONSerializer().exclude("*.class").serialize(agents), getAgentDao(), false,
+					ptgService));
 		}
 		return true;
 	}
@@ -676,15 +690,15 @@ public class OePTGVentilationFonct extends BasicProcess {
 		UserAppli u = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
 		Agent agentConnecte = null;
 		// on fait la correspondance entre le login et l'agent via RADI
-		RadiWSConsumer radiConsu = new RadiWSConsumer();
-		LightUserDto user = radiConsu.getAgentCompteADByLogin(u.getUserName());
+
+		LightUserDto user = radiService.getAgentCompteADByLogin(u.getUserName());
 		if (user == null) {
 			// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
 			return false;
 		}
 		agentConnecte = getAgentDao().chercherAgentParMatricule(
-				radiConsu.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
+				radiService.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
 		if (getTransaction().isErreur()) {
 			getTransaction().traiterErreur();
 			// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
@@ -693,8 +707,7 @@ public class OePTGVentilationFonct extends BasicProcess {
 		}
 
 		// on lance le deversement
-		SirhPtgWSConsumer t = new SirhPtgWSConsumer();
-		if (!t.startDeversementPaie(agentConnecte.getIdAgent(), "F")) {
+		if (!ptgService.startDeversementPaie(agentConnecte.getIdAgent(), "F")) {
 			// "ERR603",
 			// "La déversement dans la paie des @ n'a pu être lancee. Merci de contacter le responsable du projet.");
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR603", "fonctionnaires"));
@@ -738,15 +751,15 @@ public class OePTGVentilationFonct extends BasicProcess {
 		SimpleDateFormat moisAnneeFormat = new SimpleDateFormat("MM-yyyy");
 		SimpleDateFormat moisFormat = new SimpleDateFormat("MM");
 		SimpleDateFormat anneeFormat = new SimpleDateFormat("yyyy");
-		SirhPtgWSConsumer consum = new SirhPtgWSConsumer();
 		VentilDateDto ventilEnCours = getInfoVentilation("F");
-		List<VentilAbsenceDto> rep = consum.getVentilations(VentilAbsenceDto.class, ventilEnCours.getIdVentilDate(), 1,
-				new JSONSerializer().exclude("*.class").serialize(agents), isShowAllVentilation());
+		List<VentilAbsenceDto> rep = ptgService.getVentilations(VentilAbsenceDto.class,
+				ventilEnCours.getIdVentilDate(), 1, new JSONSerializer().exclude("*.class").serialize(agents),
+				isShowAllVentilation());
 		Hashtable<Hashtable<Integer, String>, List<VentilAbsenceDto>> list = new Hashtable<Hashtable<Integer, String>, List<VentilAbsenceDto>>();
 		for (VentilAbsenceDto abs : rep) {
 			Hashtable<Integer, String> cle = new Hashtable<>();
 			cle.put(abs.getId_agent(), moisAnneeFormat.format(abs.getDateLundi()));
-			List<VentilAbsenceDto> listVentilAbs = consum.getVentilationsHistory(VentilAbsenceDto.class,
+			List<VentilAbsenceDto> listVentilAbs = ptgService.getVentilationsHistory(VentilAbsenceDto.class,
 					Integer.valueOf(moisFormat.format(abs.getDateLundi())),
 					Integer.valueOf(anneeFormat.format(abs.getDateLundi())), 1, abs.getId_agent(),
 					isShowAllVentilation(), abs.getIdVentilDate());
@@ -799,15 +812,15 @@ public class OePTGVentilationFonct extends BasicProcess {
 		SimpleDateFormat mois = new SimpleDateFormat("MM");
 		SimpleDateFormat annee = new SimpleDateFormat("yyyy");
 
-		SirhPtgWSConsumer consum = new SirhPtgWSConsumer();
 		VentilDateDto ventilEnCours = getInfoVentilation("F");
-		List<VentilAbsenceDto> rep = consum.getVentilations(VentilAbsenceDto.class, ventilEnCours.getIdVentilDate(),
-				typePointage, new JSONSerializer().exclude("*.class").serialize(agents), allVentilation);
+		List<VentilAbsenceDto> rep = ptgService.getVentilations(VentilAbsenceDto.class,
+				ventilEnCours.getIdVentilDate(), typePointage, new JSONSerializer().exclude("*.class")
+						.serialize(agents), allVentilation);
 		Hashtable<Hashtable<Integer, String>, List<VentilAbsenceDto>> hashVentilAbs = new Hashtable<Hashtable<Integer, String>, List<VentilAbsenceDto>>();
 		for (VentilAbsenceDto abs : rep) {
 			Hashtable<Integer, String> cle = new Hashtable<Integer, String>();
 			cle.put(abs.getId_agent(), moisAnnee.format(abs.getDateLundi()));
-			List<VentilAbsenceDto> listVentilAbs = consum.getVentilationsHistory(VentilAbsenceDto.class,
+			List<VentilAbsenceDto> listVentilAbs = ptgService.getVentilationsHistory(VentilAbsenceDto.class,
 					Integer.valueOf(mois.format(abs.getDateLundi())),
 					Integer.valueOf(annee.format(abs.getDateLundi())), typePointage, abs.getId_agent(),
 					isShowAllVentilation(), abs.getIdVentilDate());
@@ -837,15 +850,14 @@ public class OePTGVentilationFonct extends BasicProcess {
 		SimpleDateFormat moisAnneeFormat = new SimpleDateFormat("MM-yyyy");
 		SimpleDateFormat moisFormat = new SimpleDateFormat("MM");
 		SimpleDateFormat anneeFormat = new SimpleDateFormat("yyyy");
-		SirhPtgWSConsumer consum = new SirhPtgWSConsumer();
 		VentilDateDto ventilEnCours = getInfoVentilation("F");
-		List<VentilHSupDto> rep = consum.getVentilations(VentilHSupDto.class, ventilEnCours.getIdVentilDate(), 2,
+		List<VentilHSupDto> rep = ptgService.getVentilations(VentilHSupDto.class, ventilEnCours.getIdVentilDate(), 2,
 				new JSONSerializer().exclude("*.class").serialize(agents), isShowAllVentilation());
 		Hashtable<Hashtable<Integer, String>, List<VentilHSupDto>> list = new Hashtable<Hashtable<Integer, String>, List<VentilHSupDto>>();
 		for (VentilHSupDto hsup : rep) {
 			Hashtable<Integer, String> cle = new Hashtable<>();
 			cle.put(hsup.getId_agent(), moisAnneeFormat.format(hsup.getDateLundi()));
-			List<VentilHSupDto> listVentilHsup = consum.getVentilationsHistory(VentilHSupDto.class,
+			List<VentilHSupDto> listVentilHsup = ptgService.getVentilationsHistory(VentilHSupDto.class,
 					Integer.valueOf(moisFormat.format(hsup.getDateLundi())),
 					Integer.valueOf(anneeFormat.format(hsup.getDateLundi())), 2, hsup.getId_agent(),
 					isShowAllVentilation(), hsup.getIdVentilDate());
@@ -922,16 +934,15 @@ public class OePTGVentilationFonct extends BasicProcess {
 		SimpleDateFormat mois = new SimpleDateFormat("MM");
 		SimpleDateFormat annee = new SimpleDateFormat("yyyy");
 
-		SirhPtgWSConsumer consum = new SirhPtgWSConsumer();
 		VentilDateDto ventilEnCours = getInfoVentilation("F");
-		List<VentilHSupDto> rep = consum.getVentilations(VentilHSupDto.class, ventilEnCours.getIdVentilDate(),
+		List<VentilHSupDto> rep = ptgService.getVentilations(VentilHSupDto.class, ventilEnCours.getIdVentilDate(),
 				typePointage, new JSONSerializer().exclude("*.class").serialize(agents), allVentilation);
 		Hashtable<Hashtable<Integer, String>, List<VentilHSupDto>> hashVentilHsup = new Hashtable<Hashtable<Integer, String>, List<VentilHSupDto>>();
 		for (VentilHSupDto abs : rep) {
-			
+
 			Hashtable<Integer, String> cle = new Hashtable<Integer, String>();
 			cle.put(abs.getId_agent(), moisAnnee.format(abs.getDateLundi()));
-			List<VentilHSupDto> listVentilHsup = consum.getVentilationsHistory(VentilHSupDto.class,
+			List<VentilHSupDto> listVentilHsup = ptgService.getVentilationsHistory(VentilHSupDto.class,
 					Integer.valueOf(mois.format(abs.getDateLundi())),
 					Integer.valueOf(annee.format(abs.getDateLundi())), typePointage, abs.getId_agent(),
 					isShowAllVentilation(), abs.getIdVentilDate());
@@ -939,11 +950,9 @@ public class OePTGVentilationFonct extends BasicProcess {
 		}
 		setHashVentilHsup(hashVentilHsup);
 	}
-	
+
 	public double getWeekBase(Agent agent, Date dateLundi) throws Exception {
-		
-		SirhWSConsumer t = new SirhWSConsumer();
-		BaseHorairePointageDto dto = t.getBaseHorairePointageAgent(agent.getIdAgent(), dateLundi);
+		BaseHorairePointageDto dto = sirhService.getBaseHorairePointageAgent(agent.getIdAgent(), dateLundi);
 		return dto.getBaseLegale();
 	}
 
@@ -994,9 +1003,9 @@ public class OePTGVentilationFonct extends BasicProcess {
 			return false;
 		}
 
-		SirhPtgWSConsumer consum = new SirhPtgWSConsumer();
-		List<Integer> agents = consum.getListeAgentsForShowVentilation(ventilEnCours.getIdVentilDate(), new Integer(
-				typePointage), "F", ventilEnCours.getDateVentil(), getVAL_ST_AGENT_MIN(), getVAL_ST_AGENT_MAX(), true);
+		List<Integer> agents = ptgService.getListeAgentsForShowVentilation(ventilEnCours.getIdVentilDate(),
+				new Integer(typePointage), "F", ventilEnCours.getDateVentil(), getVAL_ST_AGENT_MIN(),
+				getVAL_ST_AGENT_MAX(), true);
 
 		if (typePointage == 1) {
 			initialiseHashTableAbs(typePointage, agents, true);
@@ -1004,7 +1013,8 @@ public class OePTGVentilationFonct extends BasicProcess {
 			initialiseHashTableHsup(typePointage, agents, true);
 		} else if (typePointage == 3) {
 			setTabVisuP(OePTGVentilationUtils.getTabVisu(getTransaction(), ventilEnCours.getIdVentilDate(),
-					typePointage, new JSONSerializer().exclude("*.class").serialize(agents), getAgentDao(), true));
+					typePointage, new JSONSerializer().exclude("*.class").serialize(agents), getAgentDao(), true,
+					ptgService));
 		}
 		return true;
 	}

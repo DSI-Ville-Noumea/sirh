@@ -6,11 +6,10 @@ import java.text.DateFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.ListIterator;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -29,7 +28,6 @@ import nc.mairie.metier.hsct.SPABSEN;
 import nc.mairie.metier.hsct.VisiteMedicale;
 import nc.mairie.metier.poste.Affectation;
 import nc.mairie.metier.poste.FichePoste;
-import nc.mairie.metier.poste.Service;
 import nc.mairie.metier.suiviMedical.MotifVisiteMed;
 import nc.mairie.metier.suiviMedical.SuiviMedical;
 import nc.mairie.spring.dao.metier.agent.AgentDao;
@@ -43,15 +41,16 @@ import nc.mairie.spring.dao.metier.suiviMedical.SuiviMedicalDao;
 import nc.mairie.spring.dao.utils.MairieDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
-import nc.mairie.spring.ws.SirhWSConsumer;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
-import nc.mairie.utils.TreeHierarchy;
 import nc.mairie.utils.VariablesActivite;
+import nc.noumea.mairie.ads.dto.EntiteDto;
+import nc.noumea.spring.service.IAdsService;
+import nc.noumea.spring.service.ISirhService;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.vfs2.FileObject;
@@ -110,13 +109,15 @@ public class OeSMConvocation extends BasicProcess {
 	private AffectationDao affectationDao;
 	private AgentDao agentDao;
 
+	private IAdsService adsService;
+
+	private ISirhService sirhService;
+
 	public static final int STATUT_RECHERCHER_AGENT = 1;
-	private ArrayList<Service> listeServices;
 	private ArrayList<String> listeRelance;
 	private ArrayList<String> listeStatut;
 	private ArrayList<MotifVisiteMed> listeMotif;
 	private ArrayList<EnumEtatSuiviMed> listeEnumEtatSuiviMed;
-	public Hashtable<String, TreeHierarchy> hTree = null;
 
 	@Override
 	public void initialiseZones(HttpServletRequest request) throws Exception {
@@ -135,8 +136,6 @@ public class OeSMConvocation extends BasicProcess {
 		}
 		initialiseDao();
 
-		initialiseListeService();
-
 		// Initialisation des listes deroulantes
 		initialiseListeDeroulante();
 
@@ -154,43 +153,9 @@ public class OeSMConvocation extends BasicProcess {
 		}
 	}
 
-	private void initialiseListeService() throws Exception {
-		// Si la liste des services est nulle
-		if (getListeServices() == null || getListeServices().size() == 0) {
-			ArrayList<Service> services = Service.listerServiceActif(getTransaction());
-			setListeServices(services);
-
-			// Tri par codeservice
-			Collections.sort(getListeServices(), new Comparator<Object>() {
-				public int compare(Object o1, Object o2) {
-					Service s1 = (Service) o1;
-					Service s2 = (Service) o2;
-					return (s1.getCodService().compareTo(s2.getCodService()));
-				}
-			});
-
-			// alim de la hTree
-			hTree = new Hashtable<String, TreeHierarchy>();
-			TreeHierarchy parent = null;
-			for (int i = 0; i < getListeServices().size(); i++) {
-				Service serv = (Service) getListeServices().get(i);
-
-				if (Const.CHAINE_VIDE.equals(serv.getCodService()))
-					continue;
-
-				// recherche du supérieur
-				String codeService = serv.getCodService();
-				while (codeService.endsWith("A")) {
-					codeService = codeService.substring(0, codeService.length() - 1);
-				}
-				codeService = codeService.substring(0, codeService.length() - 1);
-				codeService = Services.rpad(codeService, 4, "A");
-				parent = hTree.get(codeService);
-				int indexParent = (parent == null ? 0 : parent.getIndex());
-				hTree.put(serv.getCodService(), new TreeHierarchy(serv, i, indexParent));
-
-			}
-		}
+	public String getCurrentWholeTreeJS(String serviceSaisi) {
+		return adsService.getCurrentWholeTreeActifTransitoireJS(
+				null != serviceSaisi && !"".equals(serviceSaisi) ? serviceSaisi : null, false);
 	}
 
 	private void initialiseDao() {
@@ -220,6 +185,12 @@ public class OeSMConvocation extends BasicProcess {
 		}
 		if (getAgentDao() == null) {
 			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (null == adsService) {
+			adsService = (IAdsService) context.getBean("adsService");
+		}
+		if (null == sirhService) {
+			sirhService = (ISirhService) context.getBean("sirhService");
 		}
 	}
 
@@ -275,12 +246,9 @@ public class OeSMConvocation extends BasicProcess {
 			addZone(getNOM_ST_NUM_CAFAT(i), agent.getNumCafat() == null ? Const.CHAINE_VIDE : agent.getNumCafat()
 					.trim());
 			addZone(getNOM_ST_STATUT(i), sm.getStatut());
-			Service serv = Service.chercherService(getTransaction(), sm.getIdServi());
-			if (getTransaction().isErreur()) {
-				getTransaction().traiterErreur();
-			}
-			addZone(getNOM_ST_SERVICE(i),
-					serv == null || serv.getLibService() == null ? "&nbsp;" : serv.getLibService());
+			// #16233
+			EntiteDto serv = adsService.getEntiteByIdEntite(sm.getIdServiceAds());
+			addZone(getNOM_ST_SERVICE(i), serv == null || serv.getLabel() == null ? "&nbsp;" : serv.getLabel());
 			addZone(getNOM_ST_DATE_DERNIERE_VISITE(i),
 					sm.getDateDerniereVisite() == null ? "&nbsp;" : Services.convertitDate(sm.getDateDerniereVisite()
 							.toString(), "yyyy-MM-dd", "dd/MM/yyyy"));
@@ -650,11 +618,11 @@ public class OeSMConvocation extends BasicProcess {
 			}
 
 			// recuperation du service
-			ArrayList<String> listeSousService = null;
-			if (getVAL_ST_CODE_SERVICE().length() != 0) {
-				// on recupere les sous-service du service selectionne
-				Service serv = Service.chercherService(getTransaction(), getVAL_ST_CODE_SERVICE());
-				listeSousService = Service.listSousService(getTransaction(), serv.getSigleService());
+			List<Integer> listeSousService = null;
+			if (getVAL_ST_ID_SERVICE_ADS().length() != 0) {
+				// #16233 on recupere les sous-service du service selectionne
+				listeSousService = adsService.getListIdsEntiteWithEnfantsOfEntite(new Integer(
+						getVAL_ST_ID_SERVICE_ADS()));
 			}
 
 			setListeSuiviMed(getSuiviMedDao().listerSuiviMedicalAvecMoisetAnneeSansEffectue(
@@ -836,6 +804,7 @@ public class OeSMConvocation extends BasicProcess {
 			sm.setAgent(agent.getNomAgent() + " " + agent.getPrenomAgent());
 			sm.setStatut(carr != null && carr.getCodeCategorie() != null ? getSuiviMedDao().getStatutSM(
 					carr.getCodeCategorie()) : null);
+			sm.setIdServiceAds(fp != null ? fp.getIdServiceAds() : null);
 			sm.setIdServi(fp != null ? fp.getIdServi() : null);
 			sm.setDateDerniereVisite(null);
 			Date d = new SimpleDateFormat("dd/MM/yyyy").parse("15/" + moisChoisi + "/" + anneeChoisi);
@@ -881,9 +850,10 @@ public class OeSMConvocation extends BasicProcess {
 				// aucune ligne n'a été trouvée alors on continue
 			}
 			getSuiviMedDao().creerSuiviMedical(sm.getIdAgent(), sm.getNomatr(), sm.getAgent(), sm.getStatut(),
-					sm.getIdServi(), sm.getDateDerniereVisite(), sm.getDatePrevisionVisite(), sm.getIdMotifVm(),
+					sm.getDateDerniereVisite(), sm.getDatePrevisionVisite(), sm.getIdMotifVm(),
 					sm.getNbVisitesRatees(), sm.getIdMedecin(), sm.getDateProchaineVisite(),
-					sm.getHeureProchaineVisite(), sm.getEtat(), sm.getMois(), sm.getAnnee(), sm.getRelance());
+					sm.getHeureProchaineVisite(), sm.getEtat(), sm.getMois(), sm.getAnnee(), sm.getRelance(),
+					sm.getIdServiceAds(), sm.getIdServi());
 			nbCas9++;
 		}
 		logger.info("Nb de cas 9 : " + nbCas9);
@@ -974,6 +944,7 @@ public class OeSMConvocation extends BasicProcess {
 					sm.setAgent(agent.getNomAgent() + " " + agent.getPrenomAgent());
 					sm.setStatut(carr != null && carr.getCodeCategorie() != null ? getSuiviMedDao().getStatutSM(
 							carr.getCodeCategorie()) : null);
+					sm.setIdServiceAds(fp != null ? fp.getIdServiceAds() : null);
 					sm.setIdServi(fp != null ? fp.getIdServi() : null);
 					sm.setDateDerniereVisite(null);
 					String datePrev = Services.ajouteJours(
@@ -1021,9 +992,10 @@ public class OeSMConvocation extends BasicProcess {
 						// aucune ligne n'a été trouvée alors on continue
 					}
 					getSuiviMedDao().creerSuiviMedical(sm.getIdAgent(), sm.getNomatr(), sm.getAgent(), sm.getStatut(),
-							sm.getIdServi(), sm.getDateDerniereVisite(), sm.getDatePrevisionVisite(),
-							sm.getIdMotifVm(), sm.getNbVisitesRatees(), sm.getIdMedecin(), sm.getDateProchaineVisite(),
-							sm.getHeureProchaineVisite(), sm.getEtat(), sm.getMois(), sm.getAnnee(), sm.getRelance());
+							sm.getDateDerniereVisite(), sm.getDatePrevisionVisite(), sm.getIdMotifVm(),
+							sm.getNbVisitesRatees(), sm.getIdMedecin(), sm.getDateProchaineVisite(),
+							sm.getHeureProchaineVisite(), sm.getEtat(), sm.getMois(), sm.getAnnee(), sm.getRelance(),
+							sm.getIdServiceAds(), sm.getIdServi());
 					nbCas5++;
 
 				}
@@ -1119,6 +1091,7 @@ public class OeSMConvocation extends BasicProcess {
 					sm.setAgent(agent.getNomAgent() + " " + agent.getPrenomAgent());
 					sm.setStatut(carr != null && carr.getCodeCategorie() != null ? getSuiviMedDao().getStatutSM(
 							carr.getCodeCategorie()) : null);
+					sm.setIdServiceAds(fp != null ? fp.getIdServiceAds() : null);
 					sm.setIdServi(fp != null ? fp.getIdServi() : null);
 					sm.setDateDerniereVisite(null);
 					String datePrev = Services.ajouteJours(
@@ -1166,9 +1139,10 @@ public class OeSMConvocation extends BasicProcess {
 						// aucune ligne n'a été trouvée alors on continue
 					}
 					getSuiviMedDao().creerSuiviMedical(sm.getIdAgent(), sm.getNomatr(), sm.getAgent(), sm.getStatut(),
-							sm.getIdServi(), sm.getDateDerniereVisite(), sm.getDatePrevisionVisite(),
-							sm.getIdMotifVm(), sm.getNbVisitesRatees(), sm.getIdMedecin(), sm.getDateProchaineVisite(),
-							sm.getHeureProchaineVisite(), sm.getEtat(), sm.getMois(), sm.getAnnee(), sm.getRelance());
+							sm.getDateDerniereVisite(), sm.getDatePrevisionVisite(), sm.getIdMotifVm(),
+							sm.getNbVisitesRatees(), sm.getIdMedecin(), sm.getDateProchaineVisite(),
+							sm.getHeureProchaineVisite(), sm.getEtat(), sm.getMois(), sm.getAnnee(), sm.getRelance(),
+							sm.getIdServiceAds(), sm.getIdServi());
 					nbCas4++;
 				}
 			}
@@ -1263,6 +1237,7 @@ public class OeSMConvocation extends BasicProcess {
 					sm.setAgent(agent.getNomAgent() + " " + agent.getPrenomAgent());
 					sm.setStatut(carr != null && carr.getCodeCategorie() != null ? getSuiviMedDao().getStatutSM(
 							carr.getCodeCategorie()) : null);
+					sm.setIdServiceAds(fp != null ? fp.getIdServiceAds() : null);
 					sm.setIdServi(fp != null ? fp.getIdServi() : null);
 					sm.setDateDerniereVisite(null);
 					String datePrev = Services.ajouteJours(
@@ -1310,9 +1285,10 @@ public class OeSMConvocation extends BasicProcess {
 						// aucune ligne n'a été trouvée alors on continue
 					}
 					getSuiviMedDao().creerSuiviMedical(sm.getIdAgent(), sm.getNomatr(), sm.getAgent(), sm.getStatut(),
-							sm.getIdServi(), sm.getDateDerniereVisite(), sm.getDatePrevisionVisite(),
-							sm.getIdMotifVm(), sm.getNbVisitesRatees(), sm.getIdMedecin(), sm.getDateProchaineVisite(),
-							sm.getHeureProchaineVisite(), sm.getEtat(), sm.getMois(), sm.getAnnee(), sm.getRelance());
+							sm.getDateDerniereVisite(), sm.getDatePrevisionVisite(), sm.getIdMotifVm(),
+							sm.getNbVisitesRatees(), sm.getIdMedecin(), sm.getDateProchaineVisite(),
+							sm.getHeureProchaineVisite(), sm.getEtat(), sm.getMois(), sm.getAnnee(), sm.getRelance(),
+							sm.getIdServiceAds(), sm.getIdServi());
 					nbCas3++;
 				}
 			}
@@ -1374,6 +1350,7 @@ public class OeSMConvocation extends BasicProcess {
 			sm.setAgent(agent.getNomAgent() + " " + agent.getPrenomAgent());
 			sm.setStatut(carr != null && carr.getCodeCategorie() != null ? getSuiviMedDao().getStatutSM(
 					carr.getCodeCategorie()) : null);
+			sm.setIdServiceAds(fp != null ? fp.getIdServiceAds() : null);
 			sm.setIdServi(fp != null ? fp.getIdServi() : null);
 			sm.setDateDerniereVisite(null);
 			Date d = new SimpleDateFormat("dd/MM/yyyy").parse("15/" + moisChoisi + "/" + anneeChoisi);
@@ -1419,9 +1396,10 @@ public class OeSMConvocation extends BasicProcess {
 				// aucune ligne n'a été trouvée alors on continue
 			}
 			getSuiviMedDao().creerSuiviMedical(sm.getIdAgent(), sm.getNomatr(), sm.getAgent(), sm.getStatut(),
-					sm.getIdServi(), sm.getDateDerniereVisite(), sm.getDatePrevisionVisite(), sm.getIdMotifVm(),
+					sm.getDateDerniereVisite(), sm.getDatePrevisionVisite(), sm.getIdMotifVm(),
 					sm.getNbVisitesRatees(), sm.getIdMedecin(), sm.getDateProchaineVisite(),
-					sm.getHeureProchaineVisite(), sm.getEtat(), sm.getMois(), sm.getAnnee(), sm.getRelance());
+					sm.getHeureProchaineVisite(), sm.getEtat(), sm.getMois(), sm.getAnnee(), sm.getRelance(),
+					sm.getIdServiceAds(), sm.getIdServi());
 			nbCas1++;
 		}
 		logger.info("Nb de cas 1 : " + nbCas1);
@@ -1479,6 +1457,7 @@ public class OeSMConvocation extends BasicProcess {
 				sm.setAgent(smAncien.getAgent());
 				sm.setStatut(carr != null && carr.getCodeCategorie() != null ? getSuiviMedDao().getStatutSM(
 						carr.getCodeCategorie()) : null);
+				sm.setIdServiceAds(fp != null ? fp.getIdServiceAds() : null);
 				sm.setIdServi(fp != null ? fp.getIdServi() : null);
 				sm.setDateDerniereVisite(smAncien.getDateDerniereVisite());
 				sm.setDatePrevisionVisite(smAncien.getDatePrevisionVisite());
@@ -1535,9 +1514,10 @@ public class OeSMConvocation extends BasicProcess {
 					// aucune ligne n'a été trouvée alors on continue
 				}
 				getSuiviMedDao().creerSuiviMedical(sm.getIdAgent(), sm.getNomatr(), sm.getAgent(), sm.getStatut(),
-						sm.getIdServi(), sm.getDateDerniereVisite(), sm.getDatePrevisionVisite(), sm.getIdMotifVm(),
+						sm.getDateDerniereVisite(), sm.getDatePrevisionVisite(), sm.getIdMotifVm(),
 						sm.getNbVisitesRatees(), sm.getIdMedecin(), sm.getDateProchaineVisite(),
-						sm.getHeureProchaineVisite(), sm.getEtat(), sm.getMois(), sm.getAnnee(), sm.getRelance());
+						sm.getHeureProchaineVisite(), sm.getEtat(), sm.getMois(), sm.getAnnee(), sm.getRelance(),
+						sm.getIdServiceAds(), sm.getIdServi());
 				nbCas8++;
 			}
 		} catch (Exception e) {
@@ -1591,6 +1571,7 @@ public class OeSMConvocation extends BasicProcess {
 					sm.setAgent(agent.getNomAgent() + " " + agent.getPrenomAgent());
 					sm.setStatut(carr != null && carr.getCodeCategorie() != null ? getSuiviMedDao().getStatutSM(
 							carr.getCodeCategorie()) : null);
+					sm.setIdServiceAds(fp != null ? fp.getIdServiceAds() : null);
 					sm.setIdServi(fp != null ? fp.getIdServi() : null);
 					sm.setDateDerniereVisite(null);
 					Date d2 = new SimpleDateFormat("dd/MM/yyyy")
@@ -1637,9 +1618,10 @@ public class OeSMConvocation extends BasicProcess {
 						// aucune ligne n'a été trouvée alors on continue
 					}
 					getSuiviMedDao().creerSuiviMedical(sm.getIdAgent(), sm.getNomatr(), sm.getAgent(), sm.getStatut(),
-							sm.getIdServi(), sm.getDateDerniereVisite(), sm.getDatePrevisionVisite(),
-							sm.getIdMotifVm(), sm.getNbVisitesRatees(), sm.getIdMedecin(), sm.getDateProchaineVisite(),
-							sm.getHeureProchaineVisite(), sm.getEtat(), sm.getMois(), sm.getAnnee(), sm.getRelance());
+							sm.getDateDerniereVisite(), sm.getDatePrevisionVisite(), sm.getIdMotifVm(),
+							sm.getNbVisitesRatees(), sm.getIdMedecin(), sm.getDateProchaineVisite(),
+							sm.getHeureProchaineVisite(), sm.getEtat(), sm.getMois(), sm.getAnnee(), sm.getRelance(),
+							sm.getIdServiceAds(), sm.getIdServi());
 					nbCas7++;
 				} else {
 					continue;
@@ -1696,6 +1678,7 @@ public class OeSMConvocation extends BasicProcess {
 			sm.setAgent(agent.getNomAgent() + " " + agent.getPrenomAgent());
 			sm.setStatut(carr != null && carr.getCodeCategorie() != null ? getSuiviMedDao().getStatutSM(
 					carr.getCodeCategorie()) : null);
+			sm.setIdServiceAds(fp != null ? fp.getIdServiceAds() : null);
 			sm.setIdServi(fp != null ? fp.getIdServi() : null);
 			sm.setDateDerniereVisite(null);
 			sm.setDatePrevisionVisite(agent.getDateDerniereEmbauche());
@@ -1737,9 +1720,10 @@ public class OeSMConvocation extends BasicProcess {
 				// aucune ligne n'a été trouvée alors on continue
 			}
 			getSuiviMedDao().creerSuiviMedical(sm.getIdAgent(), sm.getNomatr(), sm.getAgent(), sm.getStatut(),
-					sm.getIdServi(), sm.getDateDerniereVisite(), sm.getDatePrevisionVisite(), sm.getIdMotifVm(),
+					sm.getDateDerniereVisite(), sm.getDatePrevisionVisite(), sm.getIdMotifVm(),
 					sm.getNbVisitesRatees(), sm.getIdMedecin(), sm.getDateProchaineVisite(),
-					sm.getHeureProchaineVisite(), sm.getEtat(), sm.getMois(), sm.getAnnee(), sm.getRelance());
+					sm.getHeureProchaineVisite(), sm.getEtat(), sm.getMois(), sm.getAnnee(), sm.getRelance(),
+					sm.getIdServiceAds(), sm.getIdServi());
 			nbCas6++;
 		}
 		logger.info("Nb de cas 6 : " + nbCas6);
@@ -1794,6 +1778,7 @@ public class OeSMConvocation extends BasicProcess {
 			sm.setAgent(agent.getNomAgent() + " " + agent.getPrenomAgent());
 			sm.setStatut(carr != null && carr.getCodeCategorie() != null ? getSuiviMedDao().getStatutSM(
 					carr.getCodeCategorie()) : null);
+			sm.setIdServiceAds(fp != null ? fp.getIdServiceAds() : null);
 			sm.setIdServi(fp != null ? fp.getIdServi() : null);
 			sm.setDateDerniereVisite(vm.getDateDerniereVisite());
 			Date d2 = new SimpleDateFormat("dd/MM/yyyy").parse(Services.ajouteMois(
@@ -1837,9 +1822,10 @@ public class OeSMConvocation extends BasicProcess {
 				// aucune ligne n'a été trouvée alors on continue
 			}
 			getSuiviMedDao().creerSuiviMedical(sm.getIdAgent(), sm.getNomatr(), sm.getAgent(), sm.getStatut(),
-					sm.getIdServi(), sm.getDateDerniereVisite(), sm.getDatePrevisionVisite(), sm.getIdMotifVm(),
+					sm.getDateDerniereVisite(), sm.getDatePrevisionVisite(), sm.getIdMotifVm(),
 					sm.getNbVisitesRatees(), sm.getIdMedecin(), sm.getDateProchaineVisite(),
-					sm.getHeureProchaineVisite(), sm.getEtat(), sm.getMois(), sm.getAnnee(), sm.getRelance());
+					sm.getHeureProchaineVisite(), sm.getEtat(), sm.getMois(), sm.getAnnee(), sm.getRelance(),
+					sm.getIdServiceAds(), sm.getIdServi());
 			nbCas2++;
 		}
 		logger.info("Nb de cas 2 : " + nbCas2);
@@ -2636,7 +2622,7 @@ public class OeSMConvocation extends BasicProcess {
 			String destination = "SuiviMedical/SM_Lettre_Accompagnement_F_" + getMoisSelectionne(indiceMois) + "_"
 					+ getAnneeSelectionne(indiceMois) + ".doc";
 
-			byte[] fileAsBytes = new SirhWSConsumer().downloadAccompagnement(smFonctionnaireAImprimer.toString()
+			byte[] fileAsBytes = sirhService.downloadAccompagnement(smFonctionnaireAImprimer.toString()
 					.replace("[", "").replace("]", "").replace(" ", ""), "F",
 					getMoisSelectionne(indiceMois).toString(), getAnneeSelectionne(indiceMois).toString());
 
@@ -2652,9 +2638,9 @@ public class OeSMConvocation extends BasicProcess {
 			String destination = "SuiviMedical/SM_Lettre_Accompagnement_CC_" + getMoisSelectionne(indiceMois) + "_"
 					+ getAnneeSelectionne(indiceMois) + ".doc";
 
-			byte[] fileAsBytes = new SirhWSConsumer().downloadAccompagnement(smCCAImprimer.toString().replace("[", "")
-					.replace("]", "").replace(" ", ""), "CC", getMoisSelectionne(indiceMois).toString(),
-					getAnneeSelectionne(indiceMois).toString());
+			byte[] fileAsBytes = sirhService.downloadAccompagnement(
+					smCCAImprimer.toString().replace("[", "").replace("]", "").replace(" ", ""), "CC",
+					getMoisSelectionne(indiceMois).toString(), getAnneeSelectionne(indiceMois).toString());
 
 			if (!saveFileToRemoteFileSystem(fileAsBytes, repPartage, destination)) {
 				// "ERR185",
@@ -2766,9 +2752,9 @@ public class OeSMConvocation extends BasicProcess {
 			String destination = "SuiviMedical/SM_Convocation_F_" + getMoisSelectionne(indiceMois) + "_"
 					+ getAnneeSelectionne(indiceMois) + ".doc";
 
-			byte[] fileAsBytes = new SirhWSConsumer().downloadConvocation(
-					smFonctionnaireAImprimer.toString().replace("[", "").replace("]", "").replace(" ", ""), "F",
-					getMoisSelectionne(indiceMois).toString(), getAnneeSelectionne(indiceMois).toString());
+			byte[] fileAsBytes = sirhService.downloadConvocation(smFonctionnaireAImprimer.toString().replace("[", "")
+					.replace("]", "").replace(" ", ""), "F", getMoisSelectionne(indiceMois).toString(),
+					getAnneeSelectionne(indiceMois).toString());
 
 			if (!saveFileToRemoteFileSystem(fileAsBytes, repPartage, destination)) {
 				// "ERR185",
@@ -2781,9 +2767,9 @@ public class OeSMConvocation extends BasicProcess {
 			String destination = "SuiviMedical/SM_Convocation_CC_" + getMoisSelectionne(indiceMois) + "_"
 					+ getAnneeSelectionne(indiceMois) + ".doc";
 
-			byte[] fileAsBytes = new SirhWSConsumer().downloadConvocation(smCCAImprimer.toString().replace("[", "")
-					.replace("]", "").replace(" ", ""), "CC", getMoisSelectionne(indiceMois).toString(),
-					getAnneeSelectionne(indiceMois).toString());
+			byte[] fileAsBytes = sirhService.downloadConvocation(
+					smCCAImprimer.toString().replace("[", "").replace("]", "").replace(" ", ""), "CC",
+					getMoisSelectionne(indiceMois).toString(), getAnneeSelectionne(indiceMois).toString());
 
 			if (!saveFileToRemoteFileSystem(fileAsBytes, repPartage, destination)) {
 				// "ERR185",
@@ -3039,7 +3025,7 @@ public class OeSMConvocation extends BasicProcess {
 	 */
 	public boolean performPB_SUPPRIMER_RECHERCHER_SERVICE(HttpServletRequest request) throws Exception {
 		// On enleve le service selectionnée
-		addZone(getNOM_ST_CODE_SERVICE(), Const.CHAINE_VIDE);
+		addZone(getNOM_ST_ID_SERVICE_ADS(), Const.CHAINE_VIDE);
 		addZone(getNOM_EF_SERVICE(), Const.CHAINE_VIDE);
 		return true;
 	}
@@ -3049,8 +3035,8 @@ public class OeSMConvocation extends BasicProcess {
 	 * création : (13/09/11 08:45:29)
 	 * 
 	 */
-	public String getNOM_ST_CODE_SERVICE() {
-		return "NOM_ST_CODE_SERVICE";
+	public String getNOM_ST_ID_SERVICE_ADS() {
+		return "NOM_ST_ID_SERVICE_ADS";
 	}
 
 	/**
@@ -3058,8 +3044,8 @@ public class OeSMConvocation extends BasicProcess {
 	 * Date de création : (13/09/11 08:45:29)
 	 * 
 	 */
-	public String getVAL_ST_CODE_SERVICE() {
-		return getZone(getNOM_ST_CODE_SERVICE());
+	public String getVAL_ST_ID_SERVICE_ADS() {
+		return getZone(getNOM_ST_ID_SERVICE_ADS());
 	}
 
 	/**
@@ -3067,28 +3053,18 @@ public class OeSMConvocation extends BasicProcess {
 	 * 
 	 * @return listeServices
 	 */
-	public ArrayList<Service> getListeServices() {
-		return listeServices;
-	}
+	// public ArrayList<Service> getListeServices() {
+	// return listeServices;
+	// }
 
 	/**
 	 * Met a jour la liste des services.
 	 * 
 	 * @param listeServices
 	 */
-	private void setListeServices(ArrayList<Service> listeServices) {
-		this.listeServices = listeServices;
-	}
-
-	/**
-	 * Retourne une hashTable de la hierarchie des Service selon le code
-	 * Service.
-	 * 
-	 * @return hTree
-	 */
-	public Hashtable<String, TreeHierarchy> getHTree() {
-		return hTree;
-	}
+	// private void setListeServices(ArrayList<Service> listeServices) {
+	// this.listeServices = listeServices;
+	// }
 
 	/**
 	 * Getter de la liste avec un lazy initialize : LB_RELANCE Date de création

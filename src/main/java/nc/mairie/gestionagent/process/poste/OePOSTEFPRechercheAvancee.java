@@ -2,9 +2,7 @@ package nc.mairie.gestionagent.process.poste;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Hashtable;
+import java.util.List;
 import java.util.ListIterator;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,7 +11,6 @@ import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.Agent;
 import nc.mairie.metier.poste.Affectation;
 import nc.mairie.metier.poste.FichePoste;
-import nc.mairie.metier.poste.Service;
 import nc.mairie.metier.poste.StatutFP;
 import nc.mairie.metier.poste.TitrePoste;
 import nc.mairie.spring.dao.metier.agent.AgentDao;
@@ -27,8 +24,11 @@ import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
 import nc.mairie.utils.MessageUtils;
-import nc.mairie.utils.TreeHierarchy;
 import nc.mairie.utils.VariablesActivite;
+import nc.noumea.mairie.ads.dto.EntiteDto;
+import nc.noumea.mairie.ads.dto.StatutEntiteEnum;
+import nc.noumea.spring.service.AdsService;
+import nc.noumea.spring.service.IAdsService;
 
 import org.springframework.context.ApplicationContext;
 
@@ -44,14 +44,14 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 	public static final int STATUT_RECHERCHER_AGENT = 1;
 	private String[] LB_TITRE_POSTE;
 	private String[] LB_STATUT;
+	private String[] LB_STATUT_SERVICE;
 
 	private ArrayList<StatutFP> listeStatut;
+	private ArrayList<StatutEntiteEnum> listeStatutEntite;
 	private ArrayList<TitrePoste> listeTitre;
-	private ArrayList<Service> listeServices;
 	private ArrayList<FichePoste> listeFP;
 	private ArrayList<Affectation> listeAffectation;
 
-	public Hashtable<String, TreeHierarchy> hTree = null;
 	public String focus = null;
 
 	private TitrePosteDao titrePosteDao;
@@ -59,6 +59,8 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 	private FichePosteDao fichePosteDao;
 	private AffectationDao affectationDao;
 	private AgentDao agentDao;
+
+	private IAdsService adsService;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -70,7 +72,6 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 	public void initialiseZones(HttpServletRequest request) throws Exception {
 		initialiseDao();
 		initialiseListeDeroulante();
-		initialiseListeService();
 
 		Agent agt = (Agent) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
 		VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
@@ -100,6 +101,9 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 		if (getAgentDao() == null) {
 			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (null == adsService) {
+			adsService = (AdsService) context.getBean("adsService");
+		}
 	}
 
 	/**
@@ -108,6 +112,25 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 	 * @throws Exception
 	 */
 	private void initialiseListeDeroulante() throws Exception {
+
+		// Si liste statut vide alors affectation
+		if (getLB_STATUT_SERVICE() == LBVide) {
+			ArrayList<StatutEntiteEnum> statutEntite = (ArrayList<StatutEntiteEnum>) StatutEntiteEnum
+					.getAllStatutEntiteEnum();
+			setListeStatutEntite(statutEntite);
+
+			if (getListeStatutEntite().size() != 0) {
+				int[] tailles = { 20 };
+				FormateListe aFormat = new FormateListe(tailles);
+				for (StatutEntiteEnum st : getListeStatutEntite()) {
+					String ligne[] = { st.getLibStatutEntite() };
+					aFormat.ajouteLigne(ligne);
+				}
+				setLB_STATUT_SERVICE(aFormat.getListeFormatee(true));
+			} else {
+				setLB_STATUT_SERVICE(null);
+			}
+		}
 
 		// Si liste statut vide alors affectation
 		if (getLB_STATUT() == LBVide) {
@@ -149,54 +172,9 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 	}
 
 	/**
-	 * Initialise la liste des services.
-	 * 
-	 * @throws Exception
-	 */
-	private void initialiseListeService() throws Exception {
-		// Si la liste des services est nulle
-		if (getListeServices() == null || getListeServices().size() == 0) {
-			ArrayList<Service> services = Service.listerServiceActif(getTransaction());
-			setListeServices(services);
-
-			// Tri par codeservice
-			Collections.sort(getListeServices(), new Comparator<Object>() {
-				public int compare(Object o1, Object o2) {
-					Service s1 = (Service) o1;
-					Service s2 = (Service) o2;
-					return (s1.getCodService().compareTo(s2.getCodService()));
-				}
-			});
-
-			// alim de la hTree
-			hTree = new Hashtable<String, TreeHierarchy>();
-			TreeHierarchy parent = null;
-			for (int i = 0; i < getListeServices().size(); i++) {
-				Service serv = (Service) getListeServices().get(i);
-
-				if (Const.CHAINE_VIDE.equals(serv.getCodService()))
-					continue;
-
-				// recherche du supérieur
-				String codeService = serv.getCodService();
-				while (codeService.endsWith("A")) {
-					codeService = codeService.substring(0, codeService.length() - 1);
-				}
-				codeService = codeService.substring(0, codeService.length() - 1);
-				codeService = Services.rpad(codeService, 4, "A");
-				parent = hTree.get(codeService);
-				int indexParent = (parent == null ? 0 : parent.getIndex());
-				hTree.put(serv.getCodService(), new TreeHierarchy(serv, i, indexParent));
-
-			}
-		}
-	}
-
-	/**
 	 * Rempli la liste des fiches de poste trouvées
 	 */
 	private boolean fillList() throws Exception {
-		int indiceFp = 0;
 		if (getListeFP() != null) {
 
 			// Si liste vide alors erreur
@@ -209,6 +187,7 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 
 			for (int i = 0; i < getListeFP().size(); i++) {
 				FichePoste fp = (FichePoste) getListeFP().get(i);
+				Integer indiceFp = fp.getIdFichePoste();
 				String titreFichePoste = fp.getIdTitrePoste() == null ? "&nbsp;" : getTitrePosteDao()
 						.chercherTitrePoste(fp.getIdTitrePoste()).getLibTitrePoste();
 				Agent agent = null;
@@ -222,15 +201,14 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 					}
 				}
 
-				Service serv = Service.chercherService(getTransaction(), fp.getIdServi());
+				EntiteDto serv = adsService.getEntiteByIdEntite(fp.getIdServiceAds());
 
 				addZone(getNOM_ST_NUM(indiceFp), fp.getNumFp());
 				addZone(getNOM_ST_TITRE(indiceFp), titreFichePoste);
 				addZone(getNOM_ST_AGENT(indiceFp), agent == null ? "&nbsp;" : agent.getNomAgent().toUpperCase() + " "
 						+ agent.getPrenomAgent());
-				addZone(getNOM_ST_SERVICE(indiceFp), serv.getLibService());
+				addZone(getNOM_ST_SERVICE(indiceFp), serv == null ? "Erreur Recuperationservice" : serv.getLabel());
 
-				indiceFp++;
 			}
 		}
 		return true;
@@ -279,14 +257,16 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 		setListeFP(null);
 
 		// Recuperation Service
-		String prefixeServ = Const.CHAINE_VIDE;
-		if (getVAL_ST_CODE_SERVICE().length() != 0) {
-			Service serv = Service.chercherService(getTransaction(), getVAL_ST_CODE_SERVICE());
-			prefixeServ = serv.getCodService().substring(
-					0,
-					Service.isEntite(serv.getCodService()) ? 1 : Service.isDirection(serv.getCodService()) ? 2
-							: Service.isDivision(serv.getCodService()) ? 3
-									: Service.isSection(serv.getCodService()) ? 4 : 0);
+		List<Integer> listIdServiceADSSeelect = new ArrayList<Integer>();
+		if (getVAL_ST_ID_SERVICE_ADS().length() != 0) {
+
+			if (getVAL_CK_WITH_SERVICE_ENFANT().equals(getCHECKED_ON())) {
+				listIdServiceADSSeelect.addAll(adsService.getListIdsEntiteWithEnfantsOfEntite(new Integer(
+						getVAL_ST_ID_SERVICE_ADS())));
+			} else {
+				EntiteDto entiteChoisie = adsService.getEntiteByIdEntite(new Integer(getVAL_ST_ID_SERVICE_ADS()));
+				listIdServiceADSSeelect.add(entiteChoisie.getIdEntite());
+			}
 		}
 
 		// Recuperation Statut
@@ -313,13 +293,82 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 		// recuperation agent
 		Agent agent = null;
 		if (getVAL_ST_AGENT().length() != 0) {
-			agent = getAgentDao().chercherAgentParMatricule(Integer.valueOf(getVAL_ST_AGENT()));
+			try {
+				agent = getAgentDao().chercherAgentParMatricule(Integer.valueOf(getVAL_ST_AGENT()));
+			} catch (Exception e) {
+				// "ERR1120",
+				// "Aucun agent correspondant à votre recherche. Merci de passer par la recherche avancée des agents."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR1120"));
+				return false;
+			}
+		} else if (getVAL_ST_NOM_AGENT().length() != 0) {
+			List<Agent> aListe = getAgentDao().listerAgentAvecNomCommencant(getVAL_ST_NOM_AGENT());
+			if (aListe.size() == 0) {
+				// "ERR1120",
+				// "Aucun agent correspondant à votre recherche. Merci de passer par la recherche avancée des agents."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR1120"));
+				return false;
+			} else if (aListe.size() == 1) {
+				agent = aListe.get(0);
+			} else if (aListe.size() > 1) {
+				// "ERR1119",
+				// "Plusieurs agents correspondent à votre recherche. Merci de passer par la recherche avancée des agents."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR1119"));
+				return false;
+			}
+		} else if (getVAL_ST_MATR_AGENT().length() != 0) {
+			if (!Services.estNumerique(getVAL_ST_MATR_AGENT())) {
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "matricule"));
+				return false;
+			} else {
+				try {
+					agent = getAgentDao().chercherAgentParMatricule(Integer.valueOf(getVAL_ST_MATR_AGENT()));
+				} catch (Exception e) {
+					// "ERR1120",
+					// "Aucun agent correspondant à votre recherche. Merci de passer par la recherche avancée des agents."
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR1120"));
+					return false;
+				}
+			}
 		}
 
-		ArrayList<FichePoste> fp = getFichePosteDao().listerFichePosteAvecCriteresAvances(prefixeServ,
+		// on traite le statut des entité en fonction de l'entité choisie
+		// Recuperation statut entite
+		List<Integer> listIdServiceADS = new ArrayList<Integer>();
+		StatutEntiteEnum statutEntite = null;
+		int indiceStatutEntite = (Services.estNumerique(getVAL_LB_STATUT_SERVICE_SELECT()) ? Integer
+				.parseInt(getVAL_LB_STATUT_SERVICE_SELECT()) : -1);
+		if (indiceStatutEntite > 0)
+			statutEntite = (StatutEntiteEnum) getListeStatutEntite().get(indiceStatutEntite - 1);
+
+		if (statutEntite != null) {
+			if (listIdServiceADSSeelect.size() == 0) {
+				for (EntiteDto dto : adsService.getListEntiteByStatut(statutEntite.getIdRefStatutEntite())) {
+					listIdServiceADS.add(dto.getIdEntite());
+				}
+			} else {
+				for (Integer idEntite : listIdServiceADSSeelect) {
+					EntiteDto entiteChoisie = adsService.getEntiteByIdEntite(idEntite);
+					if (entiteChoisie.getIdStatut().toString()
+							.equals(String.valueOf(statutEntite.getIdRefStatutEntite()))) {
+						listIdServiceADS.add(idEntite);
+					}
+				}
+			}
+			// on ajoute cette ligne pour ne pas retourner toutes les FDP
+			if (listIdServiceADS.size() == 0) {
+				listIdServiceADS.add(0);
+			}
+		} else {
+			listIdServiceADS.addAll(listIdServiceADSSeelect);
+		}
+
+		boolean isCocheObservation = getVAL_CK_WITH_COMMENTAIRE().equals(getCHECKED_ON());
+
+		ArrayList<FichePoste> fp = getFichePosteDao().listerFichePosteAvecCriteresAvances(listIdServiceADS,
 				statut == null ? null : statut.getIdStatutFp(), idTitre,
 				getVAL_EF_NUM_FICHE_POSTE().equals(Const.CHAINE_VIDE) ? null : getVAL_EF_NUM_FICHE_POSTE(),
-				agent == null ? null : agent.getIdAgent());
+				agent == null ? null : agent.getIdAgent(), isCocheObservation);
 		setListeFP(fp);
 
 		fillList();
@@ -350,29 +399,11 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 	 * 
 	 */
 	public boolean performPB_VALIDER(HttpServletRequest request, int elemSelection) throws Exception {
+		FichePoste fp = getFichePosteDao().chercherFichePoste(elemSelection);
 
-		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_FICHE_POSTE,
-				(FichePoste) getListeFP().get(elemSelection));
+		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_FICHE_POSTE, fp);
 		setStatut(STATUT_PROCESS_APPELANT);
 		return true;
-	}
-
-	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_CODE_SERVICE Date de
-	 * création : (13/09/11 08:45:29)
-	 * 
-	 */
-	public String getNOM_ST_CODE_SERVICE() {
-		return "NOM_ST_CODE_SERVICE";
-	}
-
-	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_CODE_SERVICE
-	 * Date de création : (13/09/11 08:45:29)
-	 * 
-	 */
-	public String getVAL_ST_CODE_SERVICE() {
-		return getZone(getNOM_ST_CODE_SERVICE());
 	}
 
 	/**
@@ -562,24 +593,6 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la liste des services.
-	 * 
-	 * @return listeServices
-	 */
-	public ArrayList<Service> getListeServices() {
-		return listeServices;
-	}
-
-	/**
-	 * Met a jour la liste des services.
-	 * 
-	 * @param listeServices
-	 */
-	private void setListeServices(ArrayList<Service> listeServices) {
-		this.listeServices = listeServices;
-	}
-
-	/**
 	 * Constructeur du process OePOSTEFPRechercheAvancee. Date de création :
 	 * (13/09/11 11:47:15)
 	 * 
@@ -604,16 +617,6 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 	 */
 	public String getVAL_EF_SERVICE() {
 		return getZone(getNOM_EF_SERVICE());
-	}
-
-	/**
-	 * Retourne une hashTable de la hierarchie des Service selon le code
-	 * Service.
-	 * 
-	 * @return hTree
-	 */
-	public Hashtable<String, TreeHierarchy> getHTree() {
-		return hTree;
 	}
 
 	/**
@@ -657,7 +660,9 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 			}
 
 			// Si clic sur le bouton PB_VALIDER
-			for (int i = 0; i < getListeFP().size(); i++) {
+			for (int j = 0; j < getListeFP().size(); j++) {
+				FichePoste fp = getListeFP().get(j);
+				Integer i = fp.getIdFichePoste();
 				if (testerParametre(request, getNOM_PB_VALIDER(i))) {
 					return performPB_VALIDER(request, i);
 				}
@@ -819,7 +824,7 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 	 */
 	public boolean performPB_SUPPRIMER_RECHERCHER_SERVICE(HttpServletRequest request) throws Exception {
 		// On enleve le service selectionnée
-		addZone(getNOM_ST_CODE_SERVICE(), Const.CHAINE_VIDE);
+		addZone(getNOM_ST_ID_SERVICE_ADS(), Const.CHAINE_VIDE);
 		addZone(getNOM_EF_SERVICE(), Const.CHAINE_VIDE);
 		return true;
 	}
@@ -951,12 +956,12 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 			// Titre du poste
 			TitrePoste tp = getTitrePosteDao().chercherTitrePoste(fp.getIdTitrePoste());
 			// Service
-			Service direction = Service.getDirection(getTransaction(), fp.getIdServi());
-			Service service = Service.getSection(getTransaction(), fp.getIdServi());
+			EntiteDto direction = adsService.getAffichageDirection(fp.getIdServiceAds());
+			EntiteDto service = adsService.getAffichageSection(fp.getIdServiceAds());
 			Agent agent = getAgentDao().chercherAgent(a.getIdAgent());
 
-			addZone(getNOM_ST_DIR_AFF(i), direction != null ? direction.getCodService() : "&nbsp;");
-			addZone(getNOM_ST_SERV_AFF(i), service != null ? service.getLibService() : "&nbsp;");
+			addZone(getNOM_ST_DIR_AFF(i), direction != null ? direction.getSigle() : "&nbsp;");
+			addZone(getNOM_ST_SERV_AFF(i), service != null ? service.getLabel() : "&nbsp;");
 			addZone(getNOM_ST_AGENT_AFF(i),
 					agent.getNomAgent() + " " + agent.getPrenomAgent() + "(" + agent.getNomatr() + ")");
 			addZone(getNOM_ST_DATE_DEBUT_AFF(i), sdf.format(a.getDateDebutAff()));
@@ -1147,5 +1152,84 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 
 	public void setAgentDao(AgentDao agentDao) {
 		this.agentDao = agentDao;
+	}
+
+	public String getNOM_ST_ID_SERVICE_ADS() {
+		return "NOM_ST_ID_SERVICE_ADS";
+	}
+
+	public String getVAL_ST_ID_SERVICE_ADS() {
+		return getZone(getNOM_ST_ID_SERVICE_ADS());
+	}
+
+	public String getCurrentWholeTreeJS(String serviceSaisi) {
+		return adsService.getCurrentWholeTreeActifTransitoireJS(
+				null != serviceSaisi && !"".equals(serviceSaisi) ? serviceSaisi : null, false);
+	}
+
+	private String[] getLB_STATUT_SERVICE() {
+		if (LB_STATUT_SERVICE == null)
+			LB_STATUT_SERVICE = initialiseLazyLB();
+		return LB_STATUT_SERVICE;
+	}
+
+	private void setLB_STATUT_SERVICE(String[] newLB_STATUT_SERVICE) {
+		LB_STATUT_SERVICE = newLB_STATUT_SERVICE;
+	}
+
+	public String getNOM_LB_STATUT_SERVICE() {
+		return "NOM_LB_STATUT_SERVICE";
+	}
+
+	public String getNOM_LB_STATUT_SERVICE_SELECT() {
+		return "NOM_LB_STATUT_SERVICE_SELECT";
+	}
+
+	public String[] getVAL_LB_STATUT_SERVICE() {
+		return getLB_STATUT_SERVICE();
+	}
+
+	public String getVAL_LB_STATUT_SERVICE_SELECT() {
+		return getZone(getNOM_LB_STATUT_SERVICE_SELECT());
+	}
+
+	public ArrayList<StatutEntiteEnum> getListeStatutEntite() {
+		return listeStatutEntite == null ? new ArrayList<StatutEntiteEnum>() : listeStatutEntite;
+	}
+
+	public void setListeStatutEntite(ArrayList<StatutEntiteEnum> listeStatutEntite) {
+		this.listeStatutEntite = listeStatutEntite;
+	}
+
+	public String getNOM_ST_NOM_AGENT() {
+		return "NOM_ST_NOM_AGENT";
+	}
+
+	public String getVAL_ST_NOM_AGENT() {
+		return getZone(getNOM_ST_NOM_AGENT());
+	}
+
+	public String getNOM_ST_MATR_AGENT() {
+		return "NOM_ST_MATR_AGENT";
+	}
+
+	public String getVAL_ST_MATR_AGENT() {
+		return getZone(getNOM_ST_MATR_AGENT());
+	}
+
+	public String getNOM_CK_WITH_SERVICE_ENFANT() {
+		return "NOM_CK_WITH_SERVICE_ENFANT";
+	}
+
+	public String getVAL_CK_WITH_SERVICE_ENFANT() {
+		return getZone(getNOM_CK_WITH_SERVICE_ENFANT());
+	}
+
+	public String getNOM_CK_WITH_COMMENTAIRE() {
+		return "NOM_CK_WITH_COMMENTAIRE";
+	}
+
+	public String getVAL_CK_WITH_COMMENTAIRE() {
+		return getZone(getNOM_CK_WITH_COMMENTAIRE());
 	}
 }

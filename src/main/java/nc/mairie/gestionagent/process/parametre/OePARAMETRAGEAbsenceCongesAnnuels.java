@@ -20,14 +20,15 @@ import nc.mairie.spring.dao.metier.agent.AgentDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.spring.ws.MSDateTransformer;
-import nc.mairie.spring.ws.RadiWSConsumer;
-import nc.mairie.spring.ws.SirhAbsWSConsumer;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.UserAppli;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
+import nc.noumea.spring.service.AbsService;
+import nc.noumea.spring.service.IAbsService;
+import nc.noumea.spring.service.IRadiService;
 
 import org.springframework.context.ApplicationContext;
 
@@ -56,6 +57,10 @@ public class OePARAMETRAGEAbsenceCongesAnnuels extends BasicProcess {
 	public String ACTION_CREATION_ALIM_MENSUELLE = "Création d'une alimentation mensuelle d'un congé annuel";
 
 	private AgentDao agentDao;
+	
+	private IRadiService radiService;
+
+	private IAbsService absService;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -91,11 +96,16 @@ public class OePARAMETRAGEAbsenceCongesAnnuels extends BasicProcess {
 		if (getAgentDao() == null) {
 			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (null == radiService) {
+			radiService = (IRadiService) context.getBean("radiService");
+		}
+		if (null == absService) {
+			absService = (AbsService) context.getBean("absService");
+		}
 	}
 
 	private void initialiseListeTypeAbsence(HttpServletRequest request) {
-		SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
-		List<TypeAbsenceDto> listeTypeAbsence = consuAbs.getListeRefTypeAbsenceDto(EnumTypeGroupeAbsence.CONGES_ANNUELS
+		List<TypeAbsenceDto> listeTypeAbsence = absService.getListeRefTypeAbsenceDto(EnumTypeGroupeAbsence.CONGES_ANNUELS
 				.getValue());
 
 		ArrayList<RefTypeSaisiCongeAnnuelDto> liste = new ArrayList<RefTypeSaisiCongeAnnuelDto>();
@@ -394,8 +404,7 @@ public class OePARAMETRAGEAbsenceCongesAnnuels extends BasicProcess {
 
 		UserAppli uUser = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
 		// on fait la correspondance entre le login et l'agent via RADI
-		RadiWSConsumer radiConsu = new RadiWSConsumer();
-		LightUserDto user = radiConsu.getAgentCompteADByLogin(uUser.getUserName());
+		LightUserDto user = radiService.getAgentCompteADByLogin(uUser.getUserName());
 		if (user == null) {
 			getTransaction().traiterErreur();
 			// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
@@ -405,7 +414,7 @@ public class OePARAMETRAGEAbsenceCongesAnnuels extends BasicProcess {
 			if (user != null && user.getEmployeeNumber() != null && user.getEmployeeNumber() != 0) {
 				try {
 					agent = getAgentDao().chercherAgentParMatricule(
-							radiConsu.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
+							radiService.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
 				} catch (Exception e) {
 					// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
@@ -465,8 +474,7 @@ public class OePARAMETRAGEAbsenceCongesAnnuels extends BasicProcess {
 			String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class)
 					.deepSerialize(envoi);
 
-			SirhAbsWSConsumer t = new SirhAbsWSConsumer();
-			ReturnMessageDto srm = t.saveTypeAbsence(agentConnecte.getIdAgent(), json);
+			ReturnMessageDto srm = absService.saveTypeAbsence(agentConnecte.getIdAgent(), json);
 
 			if (srm.getErrors().size() > 0) {
 				String err = Const.CHAINE_VIDE;
@@ -631,8 +639,7 @@ public class OePARAMETRAGEAbsenceCongesAnnuels extends BasicProcess {
 	}
 
 	private void initialiseListeAlimMensuelle(HttpServletRequest request) {
-		SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
-		List<RefAlimCongesAnnuelsDto> listeAlimMensuelle = consuAbs
+		List<RefAlimCongesAnnuelsDto> listeAlimMensuelle = absService
 				.getListeRefAlimCongesAnnuels(getTypeAbsenceCourant().getIdRefTypeSaisiCongeAnnuel());
 		setListeAlimMensuelle((ArrayList<RefAlimCongesAnnuelsDto>) listeAlimMensuelle);
 
@@ -898,8 +905,7 @@ public class OePARAMETRAGEAbsenceCongesAnnuels extends BasicProcess {
 			String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class)
 					.deepSerialize(dto);
 
-			SirhAbsWSConsumer consu = new SirhAbsWSConsumer();
-			ReturnMessageDto srm = consu.saveRefAlimMensuelle(agentConnecte.getIdAgent(), json);
+			ReturnMessageDto srm = absService.saveRefAlimMensuelle(agentConnecte.getIdAgent(), json);
 
 			String err = Const.CHAINE_VIDE;
 			String info = Const.CHAINE_VIDE;

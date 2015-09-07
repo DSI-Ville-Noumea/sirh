@@ -58,6 +58,9 @@ import nc.mairie.technique.Services;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
+import nc.noumea.mairie.ads.dto.EntiteDto;
+import nc.noumea.spring.service.AdsService;
+import nc.noumea.spring.service.IAdsService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -142,6 +145,8 @@ public class OeAGENTEae extends BasicProcess {
 	private DocumentAgentDao lienDocumentAgentDao;
 	private DocumentDao documentDao;
 	private AgentDao agentDao;
+
+	private IAdsService adsService;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -347,6 +352,9 @@ public class OeAGENTEae extends BasicProcess {
 		}
 		if (getAgentDao() == null) {
 			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (null == adsService) {
+			adsService = (AdsService) context.getBean("adsService");
 		}
 	}
 
@@ -773,11 +781,11 @@ public class OeAGENTEae extends BasicProcess {
 		}
 		try {
 			EaeFichePoste eaeFDP = getEaeFichePosteDao().chercherEaeFichePoste(eae.getIdEae(), true);
-			String direction = eaeFDP.getDirectionService() == null ? Const.CHAINE_VIDE : eaeFDP.getDirectionService();
-			String serv = eaeFDP.getService() == null ? Const.CHAINE_VIDE : eaeFDP.getService();
-			addZone(getNOM_ST_SERVICE(),
-					direction.equals(Const.CHAINE_VIDE) ? serv.equals(Const.CHAINE_VIDE) ? "&nbsp;" : serv : direction
-							+ " / " + serv);
+
+			EntiteDto direction = adsService.getAffichageDirection(eaeFDP.getIdServiceAds());
+			EntiteDto entite = adsService.getEntiteByIdEntite(eaeFDP.getIdServiceAds());
+			addZone(getNOM_ST_SERVICE(), direction == null ? entite == null ? "&nbsp;" : entite.getLabel()
+					: direction.getLabel() + " / " + entite.getLabel());
 			// #11505 : on alimente les dates modifiables
 			addZone(getNOM_EF_DATE_FONCTION(),
 					eaeFDP.getDateEntreeFonction() == null ? "non renseigné" : sdf.format(eaeFDP

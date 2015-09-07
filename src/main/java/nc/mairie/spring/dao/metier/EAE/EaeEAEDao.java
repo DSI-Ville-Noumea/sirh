@@ -58,7 +58,7 @@ public class EaeEAEDao extends EaeDao implements EaeEAEDaoInterface {
 
 	@Override
 	public ArrayList<EAE> listerEAEPourCampagne(Integer idCampagneEAE, String etat, String statut,
-			ArrayList<String> listeSousService, String capBool, Agent agentEvaluateur, Agent agentEvalue, String affecte)
+			List<Integer> listeSousService, String capBool, Agent agentEvaluateur, Agent agentEvalue, String affecte)
 			throws Exception {
 		String reqWhere = Const.CHAINE_VIDE;
 		String reqInner = Const.CHAINE_VIDE;
@@ -70,13 +70,13 @@ public class EaeEAEDao extends EaeDao implements EaeEAEDaoInterface {
 		}
 		if (listeSousService != null) {
 			String list = Const.CHAINE_VIDE;
-			for (String codeServ : listeSousService) {
-				list += "'" + codeServ + "',";
+			for (Integer idServAds : listeSousService) {
+				list += idServAds + ",";
 			}
 			if (!list.equals(Const.CHAINE_VIDE))
 				list = list.substring(0, list.length() - 1);
 			reqInner += " inner join EAE_FICHE_POSTE fp on e." + CHAMP_ID + "=fp.id_eae ";
-			reqWhere += " and (fp.CODE_SERVICE in (" + list + ")) ";
+			reqWhere += " and (fp.ID_SERVICE_ADS in (" + list + ")) ";
 		}
 		if (!capBool.equals(Const.CHAINE_VIDE)) {
 			if (capBool.equals("oui")) {

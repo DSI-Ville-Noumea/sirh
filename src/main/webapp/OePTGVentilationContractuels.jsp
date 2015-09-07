@@ -24,7 +24,7 @@
         $(document).ready(function() {
            $('#VentilationTable').dataTable({
                 "sDom": '<"H"fl>t<"F"Trip>',
-                "oLanguage": {
+                "oLanguage": { 
                     "oPaginate": {
                         "sFirst": "",
                         "sLast": "",

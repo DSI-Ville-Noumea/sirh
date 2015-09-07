@@ -40,6 +40,7 @@ public class HistoFichePosteDao extends SirhDao implements HistoFichePosteDaoInt
 	public static final String CHAMP_NUM_DELIBERATION = "NUM_DELIBERATION";
 	public static final String CHAMP_ID_BASE_HORAIRE_POINTAGE = "ID_BASE_HORAIRE_POINTAGE";
 	public static final String CHAMP_ID_BASE_HORAIRE_ABSENCE = "ID_BASE_HORAIRE_ABSENCE";
+	public static final String CHAMP_ID_SERVICE_ADS = "ID_SERVICE_ADS";
 
 	public HistoFichePosteDao(SirhDao sirhDao) {
 		super.dataSource = sirhDao.getDataSource();
@@ -96,7 +97,6 @@ public class HistoFichePosteDao extends SirhDao implements HistoFichePosteDaoInt
 			a.setIdCdthorBud(bud == null ? null : bud.intValue());
 			BigDecimal reg = (BigDecimal) row.get(CHAMP_ID_CDTHOR_REG);
 			a.setIdCdthorReg(reg == null ? null : reg.intValue());
-			a.setIdServi((String) row.get(CHAMP_ID_SERVI));
 			a.setDateFinValiditeFp((Date) row.get(CHAMP_DATE_FIN_VALIDITE_FP));
 			a.setOpi((String) row.get(CHAMP_OPI));
 			a.setNfa((String) row.get(CHAMP_NFA));
@@ -114,6 +114,7 @@ public class HistoFichePosteDao extends SirhDao implements HistoFichePosteDaoInt
 			a.setNumDeliberation((String) row.get(CHAMP_NUM_DELIBERATION));
 			a.setIdBaseHorairePointage((Integer) row.get(CHAMP_ID_BASE_HORAIRE_POINTAGE));
 			a.setIdBaseHoraireAbsence((Integer) row.get(CHAMP_ID_BASE_HORAIRE_ABSENCE));
+			a.setIdServiceAds((Integer) row.get(CHAMP_ID_SERVICE_ADS));
 			liste.add(a);
 		}
 
@@ -145,7 +146,6 @@ public class HistoFichePosteDao extends SirhDao implements HistoFichePosteDaoInt
 			a.setIdCdthorBud(bud == null ? null : bud.intValue());
 			BigDecimal reg = (BigDecimal) row.get(CHAMP_ID_CDTHOR_REG);
 			a.setIdCdthorReg(reg == null ? null : reg.intValue());
-			a.setIdServi((String) row.get(CHAMP_ID_SERVI));
 			a.setDateFinValiditeFp((Date) row.get(CHAMP_DATE_FIN_VALIDITE_FP));
 			a.setOpi((String) row.get(CHAMP_OPI));
 			a.setNfa((String) row.get(CHAMP_NFA));
@@ -163,6 +163,7 @@ public class HistoFichePosteDao extends SirhDao implements HistoFichePosteDaoInt
 			a.setNumDeliberation((String) row.get(CHAMP_NUM_DELIBERATION));
 			a.setIdBaseHorairePointage((Integer) row.get(CHAMP_ID_BASE_HORAIRE_POINTAGE));
 			a.setIdBaseHoraireAbsence((Integer) row.get(CHAMP_ID_BASE_HORAIRE_ABSENCE));
+			a.setIdServiceAds((Integer) row.get(CHAMP_ID_SERVICE_ADS));
 			liste.add(a);
 		}
 
@@ -174,23 +175,23 @@ public class HistoFichePosteDao extends SirhDao implements HistoFichePosteDaoInt
 		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_ID_FICHE_POSTE + "," + CHAMP_ID_TITRE_POSTE + ","
 				+ CHAMP_ID_ENTITE_GEO + "," + CHAMP_ID_BUDGET + "," + CHAMP_ID_STATUT_FP + "," + CHAMP_ID_RESPONSABLE
 				+ "," + CHAMP_ID_REMPLACEMENT + "," + CHAMP_ID_CDTHOR_BUD + "," + CHAMP_ID_CDTHOR_REG + ","
-				+ CHAMP_ID_SERVI + "," + CHAMP_DATE_FIN_VALIDITE_FP + "," + CHAMP_OPI + "," + CHAMP_NFA + ","
-				+ CHAMP_MISSIONS + "," + CHAMP_ANNEE_CREATION + "," + CHAMP_NUM_FP + "," + CHAMP_DATE_HISTO + ","
-				+ CHAMP_TYPE_HISTO + "," + CHAMP_USER_HISTO + "," + CHAMP_DATE_DEBUT_VALIDITE_FP + ","
-				+ CHAMP_DATE_DEB_APPLI_SERV + "," + CHAMP_DATE_FIN_APPLI_SERV + "," + CHAMP_CODE_GRADE + ","
-				+ CHAMP_ID_NATURE_CREDIT + "," + CHAMP_NUM_DELIBERATION + "," + CHAMP_ID_BASE_HORAIRE_POINTAGE + ","
-				+ CHAMP_ID_BASE_HORAIRE_ABSENCE + ") "
-				+ "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+				+ CHAMP_DATE_FIN_VALIDITE_FP + "," + CHAMP_OPI + "," + CHAMP_NFA + "," + CHAMP_MISSIONS + ","
+				+ CHAMP_ANNEE_CREATION + "," + CHAMP_NUM_FP + "," + CHAMP_DATE_HISTO + "," + CHAMP_TYPE_HISTO + ","
+				+ CHAMP_USER_HISTO + "," + CHAMP_DATE_DEBUT_VALIDITE_FP + "," + CHAMP_DATE_DEB_APPLI_SERV + ","
+				+ CHAMP_DATE_FIN_APPLI_SERV + "," + CHAMP_CODE_GRADE + "," + CHAMP_ID_NATURE_CREDIT + ","
+				+ CHAMP_NUM_DELIBERATION + "," + CHAMP_ID_BASE_HORAIRE_POINTAGE + "," + CHAMP_ID_BASE_HORAIRE_ABSENCE
+				+ "," + CHAMP_ID_SERVICE_ADS + "," + CHAMP_ID_SERVI + ") "
+				+ "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 		jdbcTemplate.update(
 				sql,
 				new Object[] { histoFP.getIdFichePoste(), histoFP.getIdTitrePoste(), histoFP.getIdEntiteGeo(),
 						histoFP.getIdBudget(), histoFP.getIdStatutFp(), histoFP.getIdResponsable(),
 						histoFP.getIdRemplacement(), histoFP.getIdCdthorBud(), histoFP.getIdCdthorReg(),
-						histoFP.getIdServi(), histoFP.getDateFinValiditeFp(), histoFP.getOpi(), histoFP.getNfa(),
-						histoFP.getMissions(), histoFP.getAnneeCreation(), histoFP.getNumFp(), new Date(),
-						histoFP.getTypeHisto(), histoFP.getUserHisto(), histoFP.getDateDebutValiditeFp(),
-						histoFP.getDateDebAppliServ(), histoFP.getDateFinAppliServ(), histoFP.getCodeGrade(),
-						histoFP.getIdNatureCredit(), histoFP.getNumDeliberation(), histoFP.getIdBaseHorairePointage(),
-						histoFP.getIdBaseHoraireAbsence() });
+						histoFP.getDateFinValiditeFp(), histoFP.getOpi(), histoFP.getNfa(), histoFP.getMissions(),
+						histoFP.getAnneeCreation(), histoFP.getNumFp(), new Date(), histoFP.getTypeHisto(),
+						histoFP.getUserHisto(), histoFP.getDateDebutValiditeFp(), histoFP.getDateDebAppliServ(),
+						histoFP.getDateFinAppliServ(), histoFP.getCodeGrade(), histoFP.getIdNatureCredit(),
+						histoFP.getNumDeliberation(), histoFP.getIdBaseHorairePointage(),
+						histoFP.getIdBaseHoraireAbsence(), histoFP.getIdServiceAds(), histoFP.getIdServi() });
 	}
 }

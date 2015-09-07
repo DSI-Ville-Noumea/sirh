@@ -29,7 +29,7 @@ public interface ISirhAbsWSConsumer {
 	List<UnitePeriodeQuotaDto> getUnitePeriodeQuota();
 
 	// Approbateurs / Droits
-	List<ApprobateurDto> getApprobateurs(String codeService, Integer idAgent);
+	List<ApprobateurDto> getApprobateurs(Integer idServiceADS, Integer idAgent);
 
 	ReturnMessageDto setApprobateur(String json);
 

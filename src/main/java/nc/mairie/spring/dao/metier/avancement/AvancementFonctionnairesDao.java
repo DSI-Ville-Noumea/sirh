@@ -185,7 +185,7 @@ public class AvancementFonctionnairesDao extends SirhDao implements AvancementFo
 
 	@Override
 	public ArrayList<AvancementFonctionnaires> listerAvancementAvecAnneeEtat(Integer annee, String etat,
-			String filiere, Integer idAgent, ArrayList<String> listeSousService, String categorie, String idCap)
+			String filiere, Integer idAgent, List<String> listeSousService, String categorie, String idCap)
 			throws Exception {
 		String reqWhere = Const.CHAINE_VIDE;
 		if (filiere != null) {

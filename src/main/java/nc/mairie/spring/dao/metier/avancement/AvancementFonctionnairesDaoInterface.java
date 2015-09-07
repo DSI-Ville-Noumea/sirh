@@ -2,6 +2,7 @@ package nc.mairie.spring.dao.metier.avancement;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import nc.mairie.metier.avancement.AvancementFonctionnaires;
 
@@ -12,7 +13,7 @@ public interface AvancementFonctionnairesDaoInterface {
 
 	public ArrayList<AvancementFonctionnaires> listerAvancementAvecAnneeEtat(
 			Integer annee, String etat, String filiere, Integer idAgent,
-			ArrayList<String> listeSousService, String categorie, String idCap)
+			List<String> listeSousService, String categorie, String idCap)
 			throws Exception;
 
 	public AvancementFonctionnaires chercherAvancement(Integer idAvct)

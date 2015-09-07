@@ -5,8 +5,6 @@
 <%@page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@page import="nc.mairie.metier.poste.TitrePoste"%>
-<%@page import="nc.mairie.metier.poste.Service"%>
-<%@page import="nc.mairie.utils.TreeHierarchy"%>
 <%@page import="nc.mairie.utils.MairieUtils"%>
 <%@page import="nc.mairie.enums.EnumTypeDroit"%>
 <HTML>
@@ -27,7 +25,6 @@
 		<script type="text/javascript" src="development-bundle/ui/jquery.ui.autocomplete.js"></script>
 		<SCRIPT type="text/javascript" src="js/GestionCalendrier.js"></SCRIPT>
 		<SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT>
-		<SCRIPT language="javascript" src="js/dtree.js"></SCRIPT>
 		<script type="text/javascript" src="js/jquery.dataTables.js"></script>
 		<script type="text/javascript" src="js/competence.js"></script>
 		<SCRIPT language="JavaScript">
@@ -42,24 +39,6 @@
 			{
 			if (document.formu.elements[nom] != null)
 			document.formu.elements[nom].focus();
-			}
-			
-			// afin d'afficher la hiérarchie des services
-			function agrandirHierarchy() {
-			
-				hier = 	document.getElementById('treeHierarchy');
-			
-				if (hier.style.display!='none') {
-					reduireHierarchy();
-				} else {
-					hier.style.display='block';
-				}
-			}
-			
-			// afin de cacher la hiérarchie des services
-			function reduireHierarchy() {
-				hier = 	document.getElementById('treeHierarchy');
-				hier.style.display='none';
 			}
 		</SCRIPT>
 		<%
@@ -112,14 +91,14 @@
 					<legend class="sigp2Legend">Fiche de poste</legend>
 					
 						<% if ((process.ACTION_CREATION.equals(process.getVAL_ST_ACTION()) || process.ACTION_DUPLICATION.equals(process.getVAL_ST_ACTION())) && process.getEmploiPrimaire() == null){ %>
-							<span class="sigp2Mandatory" style="width:150px;"> Fiche emploi primaire : </span>
-							<INPUT class="sigp2-saisie" maxlength="5" size="6"	type="text" style="margin-right:10px;" readonly="readonly" value="<%=process.getVAL_ST_EMPLOI_PRIMAIRE()%>" >
+							<span class="sigp2Mandatory" style="width:150px;">Recherche fiche emploi primaire : </span>
+							<INPUT class="sigp2-saisie" maxlength="60" size="20" type="text" style="margin-right:10px;"name="<%= process.getNOM_ST_EMPLOI_PRIMAIRE() %>" value="<%=process.getVAL_ST_EMPLOI_PRIMAIRE()%>" >
 							<INPUT type="image" src="images/loupe.gif" height="16px" width="16px" editable="false" name="<%=process.getNOM_PB_RECHERCHE_EMPLOI_PRIMAIRE()%>">
 						<%}else if(process.getEmploiPrimaire() == null){ %>
 							<span class="sigp2Mandatory"> Il n'y a pas de fiche emploi associé à cette fiche de poste (<%=process.getVAL_ST_NUMERO()%>). Merci d'en choisir une.</span>
 							<BR/><BR/>
-							<span class="sigp2Mandatory" style="width:150px;"> Fiche emploi primaire : </span>
-							<INPUT class="sigp2-saisie" maxlength="5" size="6"	type="text" style="margin-right:10px;" readonly="readonly" value="<%=process.getVAL_ST_EMPLOI_PRIMAIRE()%>" >
+							<span class="sigp2Mandatory" style="width:150px;">Recherche fiche emploi primaire : </span>
+							<INPUT class="sigp2-saisie" maxlength="60" size="20" type="text" style="margin-right:10px;"name="<%= process.getNOM_ST_EMPLOI_PRIMAIRE() %>" value="<%=process.getVAL_ST_EMPLOI_PRIMAIRE()%>" >
 							<INPUT type="image" src="images/loupe.gif" height="16px" width="16px" editable="false" name="<%=process.getNOM_PB_RECHERCHE_EMPLOI_PRIMAIRE()%>">
 						<%} else {%>
 							<span class="sigp2Mandatory" style="width:70px"> Numéro : </span>
@@ -147,53 +126,22 @@
 									<td width="110px">
 										<span class="sigp2Mandatory">Service :</span>
 									</td>
-									<td>
-										<INPUT <%= process.estFDPInactive ?  "disabled='disabled'" : "" %> id="service" class="sigp2-saisie" readonly="readonly" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>  name="<%= process.getNOM_EF_SERVICE() %>" style="margin-right:0px;width:100px" type="text" value="<%= process.getVAL_EF_SERVICE() %>" >
+									<td class="sigp2">
+										<INPUT onfocus='executeBouton("<%=process.getNOM_PB_INFO_SERVICE() %>")' readonly="readonly" id="service" class="sigp2-saisie"  <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>  name="<%= process.getNOM_EF_SERVICE() %>" style="margin-right:0px;width:100px" type="text" value="<%= process.getVAL_EF_SERVICE() %>" >
 										<img border="0" class="<%=process.estFDPInactive ? MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, ""): MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/loupe.gif" width="16" title="Cliquer pour afficher l'arborescence" height="16" style="cursor : pointer;" onclick="agrandirHierarchy();">
+										<INPUT type="hidden" id="idServiceADS" size="4" name="<%=process.getNOM_ST_ID_SERVICE_ADS() %>" value="<%=process.getVAL_ST_ID_SERVICE_ADS() %>" class="sigp2-saisie">
+												
+											
+										<!-- ////////// ARBRE DES SERVICES - ADS ///////////// -->
+										<%=process.getCurrentWholeTreeJS(process.getVAL_EF_SERVICE().toUpperCase()) %>
+										<!-- ////////// ARBRE DES SERVICES - ADS ///////////// -->
 									</td>
 								</tr>
 								<tr>
 									<td>&nbsp;</td>
-									<td>
-										<input id="infoService" style="width:350px;" <%= process.estFDPInactive ?  "disabled='disabled'" : "" %> class="sigp2-saisie" readonly="readonly" name="<%= process.getNOM_ST_INFO_SERVICE() %>" value="<%= process.getVAL_ST_INFO_SERVICE() %>">			
-										<INPUT type="hidden" id="codeservice" size="4" name="<%=process.getNOM_EF_CODESERVICE() %>" 
-											value="<%=process.getVAL_EF_CODESERVICE() %>" class="sigp2-saisie">
-										<div class="sigp2" id="treeHierarchy" style="display: none; height: 260; width: 500; overflow:auto; background-color: #f4f4f4; border-width: 1px; border-style: solid;z-index:1;">
-											<script type="text/javascript">
-												d = new dTree('d');
-												d.add(0,-1,"Services");
-												
-												<%
-												String serviceSaisi = process.getVAL_EF_SERVICE().toUpperCase();
-												int theNode = 0;
-												if (process.getListeServices() != null){
-												for (int i =1; i <  process.getListeServices().size(); i++) {
-													Service serv = (Service)process.getListeServices().get(i);
-													String code = serv.getCodService();
-													TreeHierarchy tree = (TreeHierarchy)process.getHTree().get(code);
-													if (theNode ==0 && serviceSaisi.equals(tree.getService().getSigleService())) {
-														theNode=tree.getIndex();
-													}
-												%>
-													<%=tree.getJavaScriptLine()%>
-												<%}}%>
-												document.write(d);
+									<td class="sigp2">
+										<input id="infoService" style="width:350px;" class="sigp2-saisie" disabled="disabled" name="<%= process.getNOM_ST_INFO_SERVICE() %>" value="<%= process.getVAL_ST_INFO_SERVICE() %>">
 										
-												d.closeAll();
-												<% if (theNode !=0) { %>
-													d.openTo(<%=theNode%>,true);
-												<%}%>
-											</script>
-										</div>
-									</td>
-								</tr>
-								<tr>
-									<td>
-										<span class="sigp2Mandatory"> Date d'application : </span>
-									</td>
-									<td>
-										<INPUT id="<%=process.getNOM_EF_DATE_DEBUT_APPLI_SERV()%>" <%= process.estFDPInactive ?  "disabled='disabled'" : "" %> class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DATE_DEBUT_APPLI_SERV() %>" size="10" type="text" value="<%= process.getVAL_EF_DATE_DEBUT_APPLI_SERV() %>" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>>
-										<IMG class="<%=process.estFDPInactive ? MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, ""): MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/calendrier.gif" onclick="return showCalendar('<%=process.getNOM_EF_DATE_DEBUT_APPLI_SERV()%>', 'dd/mm/y');" hspace="5">
 									</td>
 								</tr>
 								<tr>
@@ -330,22 +278,14 @@
 										<INPUT <%= process.estFDPInactive ?  "disabled='disabled'" : "" %> class="sigp2-saisie" maxlength="50" name="<%= process.getNOM_EF_NUM_DELIBERATION() %>" size="10" type="text" value="<%= process.getVAL_EF_NUM_DELIBERATION() %>" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>>
 									</td>
 								</tr>
+								
 								<tr>
 									<td>
-										<span class="sigp2"> Date de début de validité : </span>
+										<span class="sigp2Mandatory"> Date d'application : </span>
 									</td>
 									<td>
-										<INPUT id="<%=process.getNOM_EF_DATE_DEBUT_VALIDITE()%>" <%= process.estFDPInactive ?  "disabled='disabled'" : "" %> class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DATE_DEBUT_VALIDITE() %>" size="10" type="text" value="<%= process.getVAL_EF_DATE_DEBUT_VALIDITE() %>" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>>
-										<IMG src="images/calendrier.gif" onclick="return showCalendar('<%=process.getNOM_EF_DATE_DEBUT_VALIDITE()%>', 'dd/mm/y');" hspace="5" class="<%=process.estFDPInactive ? MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, ""): MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>">
-									</td>
-								</tr>
-								<tr>
-									<td>
-										<span class="sigp2"> Date de fin de validité : </span>
-									</td>
-									<td>
-										<INPUT id="<%=process.getNOM_EF_DATE_FIN_VALIDITE()%>" <%= process.estFDPInactive ?  "disabled='disabled'" : "" %> class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DATE_FIN_VALIDITE() %>" size="10" type="text" value="<%= process.getVAL_EF_DATE_FIN_VALIDITE() %>" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>>
-										<IMG src="images/calendrier.gif" onclick="return showCalendar('<%=process.getNOM_EF_DATE_FIN_VALIDITE()%>', 'dd/mm/y');" hspace="5" class="<%=process.estFDPInactive ? MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, ""): MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>">
+										<INPUT id="<%=process.getNOM_EF_DATE_DEBUT_APPLI_SERV()%>" <%= process.estFDPInactive ?  "disabled='disabled'" : "" %> class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DATE_DEBUT_APPLI_SERV() %>" size="10" type="text" value="<%= process.getVAL_EF_DATE_DEBUT_APPLI_SERV() %>" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>>
+										<IMG class="<%=process.estFDPInactive ? MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, ""): MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/calendrier.gif" onclick="return showCalendar('<%=process.getNOM_EF_DATE_DEBUT_APPLI_SERV()%>', 'dd/mm/y');" hspace="5">
 									</td>
 								</tr>
 								<tr>
@@ -729,7 +669,8 @@
 			<% } %>
 			<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_SELECT_STATUT()%>" value="x">
 			<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_AJOUTER_GRADE()%>">
-			<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_AJOUTER_NIVEAU_ETUDE()%>">						
+			<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_AJOUTER_NIVEAU_ETUDE()%>">	
+			<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_INFO_SERVICE()%>">						
 			<%=process.getUrlFichier()%>
 		</FORM>
 	</BODY>

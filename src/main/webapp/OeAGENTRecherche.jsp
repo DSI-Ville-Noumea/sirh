@@ -1,6 +1,4 @@
 <%@ page contentType="text/html; charset=UTF-8" %> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<%@page import="nc.mairie.metier.poste.Service"%>
-<%@page import="nc.mairie.utils.TreeHierarchy"%>
 <HTML>
 	<jsp:useBean class="nc.mairie.gestionagent.process.agent.OeAGENTRecherche" id="process" scope="session"></jsp:useBean>
 	<HEAD>
@@ -16,7 +14,6 @@
 		<script type="text/javascript" src="development-bundle/ui/jquery.ui.position.js"></SCRIPT>
 		<SCRIPT type="text/javascript" src="development-bundle/ui/jquery.ui.autocomplete.js"></SCRIPT>
 		<SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT>
-		<SCRIPT language="javascript" src="js/dtree.js"></SCRIPT>
 		
 		<SCRIPT language="JavaScript">
 			//afin de sélectionner un élément dans une liste
@@ -32,23 +29,7 @@
 			document.formu.elements[nom].focus();
 			}
 			
-			// afin d'afficher la hiérarchie des services
-			function agrandirHierarchy() {
 			
-				hier = 	document.getElementById('treeHierarchy');
-			
-				if (hier.style.display!="none") {
-					reduireHierarchy();
-				} else {
-					hier.style.display="block";
-				}
-			}
-			
-			// afin de cacher la hiérarchie des services
-			function reduireHierarchy() {
-				hier = 	document.getElementById('treeHierarchy');
-				hier.style.display="none";
-			}
 			//function pour changement couleur arriere plan ligne du tableau
 			function SelectLigne(id,tailleTableau)
 			{
@@ -74,34 +55,13 @@
 								<span class="sigp2" style="width:60px;">Service 
 								<img border="0" src="images/loupe.gif" width="16" title="Cliquer pour afficher l'arborescence"
 									height="16" style="cursor : pointer;" onclick="agrandirHierarchy();"></span>
-								<INPUT type="hidden" id="codeservice" size="4" name="<%=process.getNOM_ST_CODE_SERVICE() %>" 
-									value="<%=process.getVAL_ST_CODE_SERVICE() %>" class="sigp2-saisie">
-								<div id="treeHierarchy" style="display: none; height: 360; width: 500; overflow:auto; background-color: #f4f4f4; border-width: 1px; border-style: solid;z-index:1;">
-									<script type="text/javascript">
-										d = new dTree('d');
-										d.add(0,-1,"Services");
-										
-										<%
-										String serviceSaisi = process.getVAL_EF_ZONE().toUpperCase();
-										int theNode = 0;
-										for (int i =1; i <  process.getListeServices().size(); i++) {
-											Service serv = (Service)process.getListeServices().get(i);
-											String code = serv.getCodService();
-											TreeHierarchy tree = (TreeHierarchy)process.getHTree().get(code);
-											if (theNode ==0 && serviceSaisi.equals(tree.getService().getSigleService())) {
-												theNode=tree.getIndex();
-											}
-										%>
-										<%=tree.getJavaScriptLine()%>
-										<%}%>
-										document.write(d);
+								<INPUT type="hidden" id="idServiceADS" size="4" name="<%=process.getNOM_ST_ID_SERVICE_ADS() %>" 
+									value="<%=process.getVAL_ST_ID_SERVICE_ADS() %>" class="sigp2-saisie">
+									
 								
-										d.closeAll();
-										<% if (theNode !=0) { %>
-											d.openTo(<%=theNode%>,true);
-										<%}%>
-									</script>
-								</div>
+								<!-- ////////// ARBRE DES SERVICES - ADS ///////////// -->
+								<%=process.getCurrentWholeTreeJS(process.getVAL_EF_ZONE().toUpperCase()) %>
+								<!-- ////////// ARBRE DES SERVICES - ADS ///////////// -->
 							</TD>
 						</TR>
 						<TR>

@@ -25,8 +25,6 @@ import nc.mairie.spring.dao.metier.agent.AgentDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.spring.ws.MSDateTransformer;
-import nc.mairie.spring.ws.RadiWSConsumer;
-import nc.mairie.spring.ws.SirhAbsWSConsumer;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
@@ -34,6 +32,9 @@ import nc.mairie.technique.UserAppli;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
+import nc.noumea.spring.service.AbsService;
+import nc.noumea.spring.service.IAbsService;
+import nc.noumea.spring.service.IRadiService;
 
 import org.joda.time.DateTime;
 import org.springframework.context.ApplicationContext;
@@ -71,6 +72,10 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 	public String ACTION_CREATION_CONGE_ANNUEL = "Alimenter le compteur des congés annuels";
 
 	private AgentDao agentDao;
+	
+	private IRadiService radiService;
+
+	private IAbsService absService;
 
 	/**
 	 * Constructeur du process OeAGENTAbsences. Date de création : (05/09/11
@@ -86,6 +91,12 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 		ApplicationContext context = ApplicationContextProvider.getContext();
 		if (getAgentDao() == null) {
 			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (null == radiService) {
+			radiService = (IRadiService) context.getBean("radiService");
+		}
+		if (null == absService) {
+			absService = (AbsService) context.getBean("absService");
 		}
 	}
 
@@ -133,8 +144,7 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 
 		// Si liste Type absence vide alors affectation
 		if (getListeTypeAbsence() == null || getListeTypeAbsence().size() == 0) {
-			SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
-			List<TypeAbsenceDto> listeComplete = consuAbs.getListeRefTypeAbsenceDto(null);
+			List<TypeAbsenceDto> listeComplete = absService.getListeRefTypeAbsenceDto(null);
 			setListeTypeAbsence(new ArrayList<TypeAbsenceDto>());
 
 			int[] tailles = { 100 };
@@ -270,8 +280,7 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 		}
 
 		// Liste depuis SIRH-ABS-WS
-		SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
-		ArrayList<MotifCompteurDto> listeMotifs = (ArrayList<MotifCompteurDto>) consuAbs
+		ArrayList<MotifCompteurDto> listeMotifs = (ArrayList<MotifCompteurDto>) absService
 				.getListeMotifCompteur(getTypeAbsenceCourant().getIdRefTypeAbsence());
 		setListeMotifCompteur(listeMotifs);
 		if (getListeMotifCompteur().size() > 0) {
@@ -378,11 +387,10 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 		viderZoneSaisie();
 
 		// Solde depuis SIRH-ABS-WS
-		SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
 
 		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class)
 				.deepSerialize(dto);
-		SoldeDto soldeGlobal = consuAbs.getSoldeAgent(getAgentCourant().getIdAgent(), json);
+		SoldeDto soldeGlobal = absService.getSoldeAgent(getAgentCourant().getIdAgent(), json);
 
 		switch (typeAbsenceCourant.getIdRefTypeAbsence()) {
 			case 1:
@@ -457,7 +465,6 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 		}
 
 		// on sauvegarde les données
-		SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
 		ReturnMessageDto message = new ReturnMessageDto();
 
 		if (getZone(getNOM_ST_ACTION()).equals(ACTION_CREATION_RECUP)
@@ -522,7 +529,7 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 			compteurDto.setAnneePrecedente(false);
 
 			// on sauvegarde
-			message = consuAbs.addCompteurRecup(agentConnecte.getIdAgent(), new JSONSerializer().exclude("*.class")
+			message = absService.addCompteurRecup(agentConnecte.getIdAgent(), new JSONSerializer().exclude("*.class")
 					.serialize(compteurDto));
 
 		} else if (getZone(getNOM_ST_ACTION()).equals(ACTION_CREATION_REPOS_COMP)
@@ -594,7 +601,7 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 			compteurDto.setAnneePrecedente(anneePrec);
 
 			// on sauvegarde
-			message = consuAbs.addCompteurReposComp(agentConnecte.getIdAgent(), new JSONSerializer().exclude("*.class")
+			message = absService.addCompteurReposComp(agentConnecte.getIdAgent(), new JSONSerializer().exclude("*.class")
 					.serialize(compteurDto));
 
 		} else if (getZone(getNOM_ST_ACTION()).equals(ACTION_CREATION_CONGE_ANNUEL)
@@ -659,7 +666,7 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 			compteurDto.setAnneePrecedente(anneePrec);
 
 			// on sauvegarde
-			message = consuAbs.addCompteurCongeAnnuel(agentConnecte.getIdAgent(),
+			message = absService.addCompteurCongeAnnuel(agentConnecte.getIdAgent(),
 					new JSONSerializer().exclude("*.class").serialize(compteurDto));
 
 		}
@@ -685,14 +692,13 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 		UserAppli u = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
 		Agent agentConnecte = null;
 		// on fait la correspondance entre le login et l'agent via RADI
-		RadiWSConsumer radiConsu = new RadiWSConsumer();
-		LightUserDto user = radiConsu.getAgentCompteADByLogin(u.getUserName());
+		LightUserDto user = radiService.getAgentCompteADByLogin(u.getUserName());
 		if (user == null) {
 			return null;
 		}
 		try {
 			agentConnecte = getAgentDao().chercherAgentParMatricule(
-					radiConsu.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
+					radiService.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
 		} catch (Exception e) {
 			return null;
 		}

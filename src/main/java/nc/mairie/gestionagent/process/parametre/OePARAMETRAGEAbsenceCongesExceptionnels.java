@@ -19,8 +19,6 @@ import nc.mairie.spring.dao.metier.agent.AgentDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.spring.ws.MSDateTransformer;
-import nc.mairie.spring.ws.RadiWSConsumer;
-import nc.mairie.spring.ws.SirhAbsWSConsumer;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
@@ -28,6 +26,9 @@ import nc.mairie.technique.UserAppli;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
+import nc.noumea.spring.service.AbsService;
+import nc.noumea.spring.service.IAbsService;
+import nc.noumea.spring.service.IRadiService;
 
 import org.springframework.context.ApplicationContext;
 
@@ -57,6 +58,10 @@ public class OePARAMETRAGEAbsenceCongesExceptionnels extends BasicProcess {
 	public String ACTION_SUPPRESSION = "Suppression d'un congé exceptionnel :";
 
 	private AgentDao agentDao;
+
+	private IRadiService radiService;
+
+	private IAbsService absService;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -93,6 +98,12 @@ public class OePARAMETRAGEAbsenceCongesExceptionnels extends BasicProcess {
 		if (getAgentDao() == null) {
 			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (null == radiService) {
+			radiService = (IRadiService) context.getBean("radiService");
+		}
+		if (null == absService) {
+			absService = (AbsService) context.getBean("absService");
+		}
 	}
 
 	private void initialiseListeDeroulante() {
@@ -114,8 +125,7 @@ public class OePARAMETRAGEAbsenceCongesExceptionnels extends BasicProcess {
 		}
 		// Si liste type quota vide alors affectation
 		if (getLB_TYPE_QUOTA() == LBVide) {
-			SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
-			setListeTypeQuota((ArrayList<UnitePeriodeQuotaDto>) consuAbs.getUnitePeriodeQuota());
+			setListeTypeQuota((ArrayList<UnitePeriodeQuotaDto>) absService.getUnitePeriodeQuota());
 
 			int[] tailles = { 20 };
 			FormateListe aFormat = new FormateListe(tailles);
@@ -131,8 +141,7 @@ public class OePARAMETRAGEAbsenceCongesExceptionnels extends BasicProcess {
 	}
 
 	private void initialiseListeTypeAbsence(HttpServletRequest request) {
-		SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
-		setListeTypeAbsence((ArrayList<TypeAbsenceDto>) consuAbs.getListeRefTypeAbsenceDto(null));
+		setListeTypeAbsence((ArrayList<TypeAbsenceDto>) absService.getListeRefTypeAbsenceDto(null));
 
 		for (TypeAbsenceDto abs : getListeTypeAbsence()) {
 			if (abs.getGroupeAbsence() == null
@@ -792,8 +801,7 @@ public class OePARAMETRAGEAbsenceCongesExceptionnels extends BasicProcess {
 
 		UserAppli uUser = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
 		// on fait la correspondance entre le login et l'agent via RADI
-		RadiWSConsumer radiConsu = new RadiWSConsumer();
-		LightUserDto user = radiConsu.getAgentCompteADByLogin(uUser.getUserName());
+		LightUserDto user = radiService.getAgentCompteADByLogin(uUser.getUserName());
 		if (user == null) {
 			getTransaction().traiterErreur();
 			// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
@@ -803,7 +811,7 @@ public class OePARAMETRAGEAbsenceCongesExceptionnels extends BasicProcess {
 			if (user != null && user.getEmployeeNumber() != null && user.getEmployeeNumber() != 0) {
 				try {
 					agent = getAgentDao().chercherAgentParMatricule(
-							radiConsu.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
+							radiService.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
 				} catch (Exception e) {
 					// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
@@ -832,8 +840,7 @@ public class OePARAMETRAGEAbsenceCongesExceptionnels extends BasicProcess {
 		}
 		if (getVAL_ST_ACTION().equals(ACTION_SUPPRESSION)) {
 
-			SirhAbsWSConsumer t = new SirhAbsWSConsumer();
-			ReturnMessageDto srm = t.deleteTypeAbsence(agentConnecte.getIdAgent(), getTypeCreation()
+			ReturnMessageDto srm = absService.deleteTypeAbsence(agentConnecte.getIdAgent(), getTypeCreation()
 					.getIdRefTypeAbsence());
 
 			if (srm.getErrors().size() > 0) {
@@ -899,8 +906,7 @@ public class OePARAMETRAGEAbsenceCongesExceptionnels extends BasicProcess {
 			String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class)
 					.deepSerialize(getTypeCreation());
 
-			SirhAbsWSConsumer t = new SirhAbsWSConsumer();
-			ReturnMessageDto srm = t.saveTypeAbsence(agentConnecte.getIdAgent(), json);
+			ReturnMessageDto srm = absService.saveTypeAbsence(agentConnecte.getIdAgent(), json);
 
 			if (srm.getErrors().size() > 0) {
 				String err = Const.CHAINE_VIDE;

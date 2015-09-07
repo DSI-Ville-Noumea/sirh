@@ -4,8 +4,6 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -19,7 +17,9 @@ import nc.mairie.enums.EnumTypeGroupeAbsence;
 import nc.mairie.enums.EnumTypeHisto;
 import nc.mairie.gestionagent.absence.dto.RefTypeSaisiCongeAnnuelDto;
 import nc.mairie.gestionagent.absence.dto.TypeAbsenceDto;
+import nc.mairie.gestionagent.dto.ReturnMessageDto;
 import nc.mairie.gestionagent.pointage.dto.RefPrimeDto;
+import nc.mairie.gestionagent.radi.dto.LightUserDto;
 import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.Agent;
@@ -50,7 +50,6 @@ import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.poste.HistoFichePoste;
 import nc.mairie.metier.poste.Horaire;
 import nc.mairie.metier.poste.NiveauEtudeFP;
-import nc.mairie.metier.poste.Service;
 import nc.mairie.metier.poste.StatutFP;
 import nc.mairie.metier.poste.TitrePoste;
 import nc.mairie.metier.referentiel.NiveauEtude;
@@ -85,7 +84,6 @@ import nc.mairie.spring.dao.metier.poste.FEFPDao;
 import nc.mairie.spring.dao.metier.poste.FicheEmploiDao;
 import nc.mairie.spring.dao.metier.poste.FichePosteDao;
 import nc.mairie.spring.dao.metier.poste.HistoFichePosteDao;
-import nc.mairie.spring.dao.metier.poste.NFADao;
 import nc.mairie.spring.dao.metier.poste.NiveauEtudeFPDao;
 import nc.mairie.spring.dao.metier.poste.StatutFPDao;
 import nc.mairie.spring.dao.metier.poste.TitrePosteDao;
@@ -96,16 +94,12 @@ import nc.mairie.spring.dao.metier.specificites.AvantageNatureDao;
 import nc.mairie.spring.dao.metier.specificites.AvantageNatureFPDao;
 import nc.mairie.spring.dao.metier.specificites.DelegationDao;
 import nc.mairie.spring.dao.metier.specificites.DelegationFPDao;
-import nc.mairie.spring.dao.metier.specificites.PrimePointageAffDao;
 import nc.mairie.spring.dao.metier.specificites.PrimePointageFPDao;
 import nc.mairie.spring.dao.metier.specificites.RegIndemnAffDao;
 import nc.mairie.spring.dao.metier.specificites.RegIndemnDao;
 import nc.mairie.spring.dao.metier.specificites.RegIndemnFPDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
-import nc.mairie.spring.ws.SirhAbsWSConsumer;
-import nc.mairie.spring.ws.SirhPtgWSConsumer;
-import nc.mairie.spring.ws.SirhWSConsumer;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
@@ -114,8 +108,17 @@ import nc.mairie.technique.VariableActivite;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
-import nc.mairie.utils.TreeHierarchy;
 import nc.mairie.utils.VariablesActivite;
+import nc.noumea.mairie.ads.dto.EntiteDto;
+import nc.noumea.mairie.ads.dto.StatutEntiteEnum;
+import nc.noumea.spring.service.AbsService;
+import nc.noumea.spring.service.AdsService;
+import nc.noumea.spring.service.IAbsService;
+import nc.noumea.spring.service.IAdsService;
+import nc.noumea.spring.service.IPtgService;
+import nc.noumea.spring.service.IRadiService;
+import nc.noumea.spring.service.ISirhService;
+import nc.noumea.spring.service.PtgService;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.vfs2.FileObject;
@@ -211,14 +214,12 @@ public class OePOSTEFichePoste extends BasicProcess {
 	private ArrayList<PrimePointageFP> listePrimePointageFP;
 	private ArrayList<PrimePointageFP> listePrimePointageFPAAjouter;
 	private ArrayList<PrimePointageFP> listePrimePointageFPASupprimer;
-	private ArrayList<Service> listeServices;
 	private ArrayList<Horaire> listeHoraire;
 	private String observation;
 	private String mission;
 	private boolean afficherListeGrade = false;
 	private boolean afficherListeNivEt = false;
 	private boolean fpCouranteAffectee = false;
-	public HashMap<String, TreeHierarchy> hTree = null;
 	public HashMap<Integer, TypeAvantage> hashtypAv = null;
 	public HashMap<Integer, NatureAvantage> hashNatAv = null;
 	public HashMap<Integer, TypeDelegation> hashTypDel = null;
@@ -238,7 +239,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	private FichePoste remplacement;
 	private Agent agtRemplacement;
 	private TitrePoste titrePosteRemplacement;
-	private Service service;
+	private EntiteDto service;
 	private BaseHorairePointage baseHorairePointageCourant;
 	public String focus = null;
 	private String urlFichier;
@@ -246,7 +247,6 @@ public class OePOSTEFichePoste extends BasicProcess {
 	public boolean responsableObligatoire = false;
 	private boolean changementFEAutorise = true;
 	public boolean estFDPInactive = false;
-	private PrimePointageAffDao primePointageAffDao;
 	private PrimePointageFPDao primePointageFPDao;
 	private NatureCreditDao natureCreditDao;
 	private NatureAvantageDao natureAvantageDao;
@@ -271,7 +271,6 @@ public class OePOSTEFichePoste extends BasicProcess {
 	private NiveauEtudeFPDao niveauEtudeFPDao;
 	private BudgetDao budgetDao;
 	private FEFPDao fefpDao;
-	private NFADao nfaDao;
 	private CompetenceDao competenceDao;
 	private CompetenceFPDao competenceFPDao;
 	private CompetenceFEDao competenceFEDao;
@@ -287,6 +286,16 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 	private Logger logger = LoggerFactory.getLogger(OePOSTEFichePoste.class);
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+
+	private IAdsService adsService;
+
+	private IAbsService absService;
+
+	private IPtgService ptgService;
+
+	private ISirhService sirhService;
+
+	private IRadiService radiService;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -316,7 +325,16 @@ public class OePOSTEFichePoste extends BasicProcess {
 		// ---------------------------//
 		initialiseDao();
 		initialiseListeDeroulante();
-		initialiseListeService();
+
+		// #17320 provient de la page Agent > Emplois > Affectations
+		String numFP = (String) request.getParameter("numFP");
+		if (null != numFP && !numFP.equals("")) {
+			ArrayList<FichePoste> fp = getFichePosteDao().listerFichePosteAvecCriteresAvances(new ArrayList<Integer>(),
+					null, null, numFP, null, false);
+			setFichePosteCourante(fp.get(0));
+			afficheFicheCourante();
+			addZone(getNOM_ST_ACTION(), ACTION_MODIFICATION);
+		}
 
 		if (etatStatut() == STATUT_RECHERCHE) {
 			afficheFicheCourante();
@@ -480,10 +498,6 @@ public class OePOSTEFichePoste extends BasicProcess {
 	private void initialiseDao() {
 		// on initialise le dao
 		ApplicationContext context = ApplicationContextProvider.getContext();
-
-		if (getPrimePointageAffDao() == null) {
-			setPrimePointageAffDao(new PrimePointageAffDao((SirhDao) context.getBean("sirhDao")));
-		}
 		if (getPrimePointageFPDao() == null) {
 			setPrimePointageFPDao(new PrimePointageFPDao((SirhDao) context.getBean("sirhDao")));
 		}
@@ -556,9 +570,6 @@ public class OePOSTEFichePoste extends BasicProcess {
 		if (getFefpDao() == null) {
 			setFefpDao(new FEFPDao((SirhDao) context.getBean("sirhDao")));
 		}
-		if (getNfaDao() == null) {
-			setNfaDao(new NFADao((SirhDao) context.getBean("sirhDao")));
-		}
 		if (getCompetenceDao() == null) {
 			setCompetenceDao(new CompetenceDao((SirhDao) context.getBean("sirhDao")));
 		}
@@ -595,6 +606,21 @@ public class OePOSTEFichePoste extends BasicProcess {
 		if (getBaseHorairePointageDao() == null) {
 			setBaseHorairePointageDao(new BaseHorairePointageDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (null == adsService) {
+			adsService = (AdsService) context.getBean("adsService");
+		}
+		if (null == absService) {
+			absService = (AbsService) context.getBean("absService");
+		}
+		if (null == ptgService) {
+			ptgService = (PtgService) context.getBean("ptgService");
+		}
+		if (null == sirhService) {
+			sirhService = (ISirhService) context.getBean("sirhService");
+		}
+		if (null == radiService) {
+			radiService = (IRadiService) context.getBean("radiService");
+		}
 	}
 
 	/**
@@ -616,10 +642,9 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 			// SERVICE
 			if (getService() != null) {
-				addZone(getNOM_EF_SERVICE(), getService().getSigleService());
-				addZone(getNOM_EF_CODESERVICE(), getService().getCodService());
-				String infoService = getService().getCodService() + " - "
-						+ getService().getLibService().replace("\'", " ");
+				addZone(getNOM_EF_SERVICE(), getService().getSigle());
+				addZone(getNOM_ST_ID_SERVICE_ADS(), String.valueOf(getService().getIdEntite()));
+				String infoService = getService().getLabel().replace("\'", " ");
 				addZone(getNOM_ST_INFO_SERVICE(), infoService);
 			}
 
@@ -639,12 +664,6 @@ public class OePOSTEFichePoste extends BasicProcess {
 			afficheInfosAffectationFP();
 			addZone(getNOM_EF_ANNEE(), getFichePosteCourante().getAnneeCreation().toString());
 			addZone(getNOM_ST_NUMERO(), getFichePosteCourante().getNumFp());
-			addZone(getNOM_EF_DATE_DEBUT_VALIDITE(),
-					getFichePosteCourante().getDateDebutValiditeFp() == null ? Const.CHAINE_VIDE : sdf
-							.format(getFichePosteCourante().getDateDebutValiditeFp()));
-			addZone(getNOM_EF_DATE_FIN_VALIDITE(),
-					getFichePosteCourante().getDateFinValiditeFp() == null ? Const.CHAINE_VIDE : sdf
-							.format(getFichePosteCourante().getDateFinValiditeFp()));
 			addZone(getNOM_EF_DATE_DEBUT_APPLI_SERV(),
 					getFichePosteCourante().getDateDebAppliServ() == null ? Const.CHAINE_VIDE : sdf
 							.format(getFichePosteCourante().getDateDebAppliServ()));
@@ -861,62 +880,6 @@ public class OePOSTEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Initialise la liste des services.
-	 * 
-	 * @throws Exception
-	 *             RG_PE_FP_C03
-	 */
-	private void initialiseListeService() throws Exception {
-		// Si la liste des services est nulle
-		if (getListeServices() == null || getListeServices().isEmpty()) {
-			ArrayList<Service> services = Service.listerServiceActif(getTransaction());
-			setListeServices(services);
-
-			// Tri par codeservice
-			Collections.sort(getListeServices(), new Comparator<Object>() {
-				public int compare(Object o1, Object o2) {
-					Service s1 = (Service) o1;
-					Service s2 = (Service) o2;
-					return (s1.getCodService().compareTo(s2.getCodService()));
-				}
-			});
-
-			// alim de la hTree
-			// RG_PE_FP_C03
-			hTree = new HashMap<>();
-			TreeHierarchy parent = null;
-			for (int i = 0; i < getListeServices().size(); i++) {
-				Service serv = (Service) getListeServices().get(i);
-
-				if (Const.CHAINE_VIDE.equals(serv.getCodService())) {
-					continue;
-				}
-
-				// recherche du nfa
-				String nfa = null;
-				try {
-					nfa = getNfaDao().chercherNFAByCodeService(serv.getCodService()).getNFA();
-				} catch (Exception e) {
-
-				}
-
-				// recherche du supérieur
-				String codeService = serv.getCodService();
-				while (codeService.endsWith("A")) {
-					codeService = codeService.substring(0, codeService.length() - 1);
-				}
-				codeService = codeService.substring(0, codeService.length() - 1);
-				codeService = Services.rpad(codeService, 4, "A");
-
-				parent = hTree.get(codeService);
-				int indexParent = (parent == null ? 0 : parent.getIndex());
-				hTree.put(serv.getCodService(), new TreeHierarchy(serv, i, indexParent, nfa));
-
-			}
-		}
-	}
-
-	/**
 	 * Initialise les listes deroulantes de l'écran.
 	 * 
 	 * @throws Exception
@@ -1080,8 +1043,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 		// Si liste base horaire absence vide alors affectation
 		if (getLB_BASE_HORAIRE_ABSENCE() == LBVide) {
-			SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
-			List<TypeAbsenceDto> listeTypeAbsence = consuAbs
+			List<TypeAbsenceDto> listeTypeAbsence = absService
 					.getListeRefTypeAbsenceDto(EnumTypeGroupeAbsence.CONGES_ANNUELS.getValue());
 
 			ArrayList<RefTypeSaisiCongeAnnuelDto> liste = new ArrayList<RefTypeSaisiCongeAnnuelDto>();
@@ -1413,12 +1375,11 @@ public class OePOSTEFichePoste extends BasicProcess {
 		}
 
 		// Prime de pointage
-		SirhPtgWSConsumer t = new SirhPtgWSConsumer();
 		int indicePrime = 0;
 		if (getListePrimePointageFP() != null) {
 			for (PrimePointageFP prime : getListePrimePointageFP()) {
 				RefPrimeDto rubr = null;
-				rubr = t.getPrimeDetail(prime.getNumRubrique());
+				rubr = ptgService.getPrimeDetail(prime.getNumRubrique());
 				addZone(getNOM_ST_PP_RUBR(indicePrime), rubr.getNumRubrique() + " - " + rubr.getLibelle());
 
 				indicePrime++;
@@ -1451,8 +1412,6 @@ public class OePOSTEFichePoste extends BasicProcess {
 		addZone(getNOM_EF_SERVICE(), Const.CHAINE_VIDE);
 		addZone(getNOM_EF_TITRE_POSTE(), Const.CHAINE_VIDE);
 		addZone(getNOM_EF_NIVEAU_ETUDE_MULTI(), Const.CHAINE_VIDE);
-		addZone(getNOM_EF_DATE_FIN_VALIDITE(), Const.CHAINE_VIDE);
-		addZone(getNOM_EF_DATE_DEBUT_VALIDITE(), Const.CHAINE_VIDE);
 		addZone(getNOM_EF_DATE_DEBUT_APPLI_SERV(), Const.CHAINE_VIDE);
 
 		addZone(getNOM_ST_INFO_FP(), Const.CHAINE_VIDE);
@@ -1621,7 +1580,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 		// **********************
 		// Verification Service
 		// **********************
-		if (getZone(getNOM_EF_SERVICE()).length() == 0) {
+		if (getZone(getNOM_EF_SERVICE()).length() == 0 || getZone(getNOM_ST_ID_SERVICE_ADS()).length() == 0) {
 			// "ERR002","La zone @ est obligatoire."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "service"));
 			setFocus(getNOM_EF_SERVICE());
@@ -1914,15 +1873,13 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 		// récupération des informations remplies dans les zones de saisie
 		String annee = getVAL_EF_ANNEE();
-		String dateFinValidite = getVAL_EF_DATE_FIN_VALIDITE();
-		String dateDebutValidite = getVAL_EF_DATE_DEBUT_VALIDITE();
 		String dateDebutAppliServ = getVAL_EF_DATE_DEBUT_APPLI_SERV();
 		String opi = getVAL_EF_OPI().length() == 0 ? null : getVAL_EF_OPI();
 		String numDeliberation = getVAL_EF_NUM_DELIBERATION().length() == 0 ? null : getVAL_EF_NUM_DELIBERATION();
 		String observation = getVAL_EF_OBSERVATION();
 		String nfa = getVAL_EF_NFA();
 		String missions = getVAL_EF_MISSIONS();
-		String codServ = getVAL_EF_CODESERVICE();
+		Integer idServiceADS = new Integer(getVAL_ST_ID_SERVICE_ADS());
 		String grade = getVAL_EF_CODE_GRADE();
 
 		// récupération du titre de poste et Vérification de son existence.
@@ -2032,10 +1989,9 @@ public class OePOSTEFichePoste extends BasicProcess {
 		NatureCredit natureCredit = (NatureCredit) getListeNatureCredit().get(numLigneNatureCredit);
 
 		getFichePosteCourante().setAnneeCreation(Integer.valueOf(annee));
-		getFichePosteCourante().setDateFinValiditeFp(
-				dateFinValidite.equals(Const.CHAINE_VIDE) ? null : sdf.parse(dateFinValidite));
-		getFichePosteCourante().setDateDebutValiditeFp(
-				dateDebutValidite.equals(Const.CHAINE_VIDE) ? null : sdf.parse(dateDebutValidite));
+		// #16555 on n'alimente plus date debut validité et date fin validité
+		getFichePosteCourante().setDateFinValiditeFp(null);
+		getFichePosteCourante().setDateDebutValiditeFp(null);
 		getFichePosteCourante().setObservation(observation);
 		getFichePosteCourante().setMissions(missions);
 		getFichePosteCourante().setIdStatutFp(statut.getIdStatutFp());
@@ -2046,7 +2002,9 @@ public class OePOSTEFichePoste extends BasicProcess {
 		getFichePosteCourante().setIdEntiteGeo(Integer.valueOf(lieu.getIdEntiteGeo()));
 		getFichePosteCourante().setIdTitrePoste(idTitre);
 		getFichePosteCourante().setCodeGrade(grade);
-		getFichePosteCourante().setIdServi(codServ);
+		EntiteDto serv = adsService.getInfoSiservByIdEntite(idServiceADS);
+		getFichePosteCourante().setIdServi(serv == null || serv.getCodeServi() == null ? null : serv.getCodeServi());
+		getFichePosteCourante().setIdServiceAds(idServiceADS);
 		getFichePosteCourante().setIdCdthorBud(Integer.valueOf(budgete.getCdtHor()));
 		getFichePosteCourante().setIdCdthorReg(Integer.valueOf(reglementaire.getCdtHor()));
 		getFichePosteCourante().setDateDebAppliServ(sdf.parse(dateDebutAppliServ));
@@ -2439,6 +2397,12 @@ public class OePOSTEFichePoste extends BasicProcess {
 			return false;
 		}
 
+		// Controle des RGs entre stut FDP et staut des entités
+		// # 16364 et #16363
+		if (!performControlerRGEntite(request)) {
+			return false;
+		}
+
 		// Alimentation de la fiche de poste
 		if (!alimenterFichePoste(request)) {
 			return false;
@@ -2630,7 +2594,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 		}
 
 		// appel WS mise à jour Abre FDP
-		if (!new SirhWSConsumer().miseAJourArbreFDP()) {
+		if (!sirhService.miseAJourArbreFDP()) {
 			// "ERR970","Une erreur est survenue lors de la mise à jour de l'arbre des Fiche de poste. Merci de contacter le responsable du projet car cela engendre un soucis sur le Kiosque RH."
 			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
@@ -2640,6 +2604,58 @@ public class OePOSTEFichePoste extends BasicProcess {
 			return false;
 		}
 
+		return true;
+	}
+
+	private boolean performControlerRGEntite(HttpServletRequest request) {
+		if (getFichePosteCourante() != null) {
+
+			// Récupération Statut de la fiche
+			int numLigneStatut = (Services.estNumerique(getZone(getNOM_LB_STATUT_SELECT())) ? Integer
+					.parseInt(getZone(getNOM_LB_STATUT_SELECT())) : -1);
+
+			if (numLigneStatut == -1 || getListeStatut().isEmpty() || numLigneStatut > getListeStatut().size()) {
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "statuts"));
+				return false;
+			}
+
+			StatutFP statutCourant = (StatutFP) getListeStatut().get(numLigneStatut);
+
+			Integer idServiceADS = new Integer(getVAL_ST_ID_SERVICE_ADS());
+			EntiteDto entiteDto = adsService.getEntiteByIdEntite(idServiceADS);
+
+			// #16363 : si statut FP = en creation alors l'entite doit etre au
+			// statut "Prevision" et inversement
+			if (EnumStatutFichePoste.EN_CREATION.getLibLong().equals(statutCourant.getLibStatutFp())) {
+				if (!String.valueOf(StatutEntiteEnum.PREVISION.getIdRefStatutEntite()).equals(
+						entiteDto.getIdStatut().toString())) {
+					// "ERR126",
+					// "Le statut de la FDP ne peut être @ si l'entité n'est pas @."
+					getTransaction().declarerErreur(
+							MessageUtils.getMessage("ERR126", "'En création'", "'En prévision'"));
+					return false;
+				}
+			} else {
+				if (String.valueOf(StatutEntiteEnum.PREVISION.getIdRefStatutEntite()).equals(
+						entiteDto.getIdStatut().toString())) {
+					// "ERR126",
+					// "Le statut de la FDP ne peut être @ si l'entité n'est pas @."
+					getTransaction().declarerErreur(
+							MessageUtils.getMessage("ERR126", "'En création'", "'En prévision'"));
+					return false;
+				}
+			}
+
+			// #1634 : RG sur entité vs FDP
+			if (String.valueOf(StatutEntiteEnum.INACTIF.getIdRefStatutEntite()).equals(
+					entiteDto.getIdStatut().toString())) {
+				// "ERR126",
+				// "Le statut de la FDP ne peut être @ si l'entité n'est pas @."
+				getTransaction().declarerErreur(
+						MessageUtils.getMessage("ERR126", statutCourant.getLibStatutFp(), "'Active'"));
+				return false;
+			}
+		}
 		return true;
 	}
 
@@ -2653,7 +2669,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 				+ ".doc";
 
 		try {
-			byte[] fileAsBytes = new SirhWSConsumer().downloadFichePoste(getFichePosteCourante().getIdFichePoste());
+			byte[] fileAsBytes = sirhService.downloadFichePoste(getFichePosteCourante().getIdFichePoste());
 
 			if (!saveFileToRemoteFileSystem(fileAsBytes, repPartage, destinationFDP)) {
 				// "ERR185",
@@ -2741,9 +2757,9 @@ public class OePOSTEFichePoste extends BasicProcess {
 				return false;
 			}
 
-			ArrayList<FichePoste> fp = getFichePosteDao().listerFichePosteAvecCriteresAvances(Const.CHAINE_VIDE, null,
-					null, getVAL_EF_RECHERCHE().equals(Const.CHAINE_VIDE) ? null : getVAL_EF_RECHERCHE(),
-					agent == null ? null : agent.getIdAgent());
+			ArrayList<FichePoste> fp = getFichePosteDao().listerFichePosteAvecCriteresAvances(new ArrayList<Integer>(),
+					null, null, getVAL_EF_RECHERCHE().equals(Const.CHAINE_VIDE) ? null : getVAL_EF_RECHERCHE(),
+					agent == null ? null : agent.getIdAgent(), false);
 
 			// si aucun resultat ==> message erreur
 			if (null == fp || 0 == fp.size()) {
@@ -2798,9 +2814,9 @@ public class OePOSTEFichePoste extends BasicProcess {
 				return false;
 			}
 
-			ArrayList<FichePoste> fp = getFichePosteDao().listerFichePosteAvecCriteresAvances(Const.CHAINE_VIDE, null,
-					null, getVAL_EF_RECHERCHE().equals(Const.CHAINE_VIDE) ? null : getVAL_EF_RECHERCHE(),
-					agent == null ? null : agent.getIdAgent());
+			ArrayList<FichePoste> fp = getFichePosteDao().listerFichePosteAvecCriteresAvances(new ArrayList<Integer>(),
+					null, null, getVAL_EF_RECHERCHE().equals(Const.CHAINE_VIDE) ? null : getVAL_EF_RECHERCHE(),
+					agent == null ? null : agent.getIdAgent(), false);
 
 			// si aucun resultat ==> message erreur
 			if (null == fp || 0 == fp.size()) {
@@ -3679,8 +3695,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 			setEmploiSecondaire(getFicheEmploiDao().chercherFicheEmploiAvecFichePoste(false, liens2));
 
 			// Init Service
-			if (getFichePosteCourante().getIdServi() != null && getFichePosteCourante().getIdServi().length() != 0) {
-				setService(Service.chercherService(getTransaction(), getFichePosteCourante().getIdServi()));
+			if (getFichePosteCourante().getIdServiceAds() != null) {
+				setService(adsService.getEntiteByIdEntite(getFichePosteCourante().getIdServiceAds()));
 			}
 			// Init Responsable
 			if (getFichePosteCourante().getIdResponsable() != null) {
@@ -3990,6 +4006,15 @@ public class OePOSTEFichePoste extends BasicProcess {
 	 * 
 	 */
 	public boolean performPB_RECHERCHE_EMPLOI_PRIMAIRE(HttpServletRequest request) throws Exception {
+		// 17319 : on envoi la recherche
+		if (getVAL_ST_EMPLOI_PRIMAIRE().length() == 0) {
+			// "ERR002","La zone @ est obligatoire."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "emploi primaire"));
+			setFocus(getNOM_EF_ANNEE());
+			return false;
+		}
+
+		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_FICHE_EMPLOI, getZone(getNOM_ST_EMPLOI_PRIMAIRE()));
 		setStatut(STATUT_EMPLOI_PRIMAIRE, true);
 		return true;
 	}
@@ -4285,34 +4310,6 @@ public class OePOSTEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la liste des services.
-	 * 
-	 * @return listeServices
-	 */
-	public ArrayList<Service> getListeServices() {
-		return listeServices;
-	}
-
-	/**
-	 * Met a jour la liste des services.
-	 * 
-	 * @param listeServices
-	 */
-	private void setListeServices(ArrayList<Service> listeServices) {
-		this.listeServices = listeServices;
-	}
-
-	/**
-	 * Retourne une hashTable de la hierarchie des Service selon le code
-	 * Service.
-	 * 
-	 * @return hTree
-	 */
-	public HashMap<String, TreeHierarchy> getHTree() {
-		return hTree;
-	}
-
-	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_SERVICE Date de
 	 * création : (25/07/11 16:45:35)
 	 * 
@@ -4386,9 +4383,9 @@ public class OePOSTEFichePoste extends BasicProcess {
 	 * 
 	 */
 	public boolean performPB_RECHERCHER_RESPONSABLE(HttpServletRequest request) throws Exception {
-		if (!getVAL_EF_CODESERVICE().equals(Const.CHAINE_VIDE)) {
+		if (!getVAL_ST_ID_SERVICE_ADS().equals(Const.CHAINE_VIDE)) {
 			VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_SERVICE,
-					Service.chercherService(getTransaction(), getVAL_EF_CODESERVICE()));
+					adsService.getEntiteByIdEntite(new Integer(getVAL_ST_ID_SERVICE_ADS())));
 		}
 
 		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_RECHERCHE_POSTE_AVANCEE, Boolean.TRUE);
@@ -4762,31 +4759,11 @@ public class OePOSTEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'une zone de saisie pour la JSP : EF_CODESERVICE Date de
-	 * création : (12/08/11 11:27:01)
-	 * 
-	 * 
-	 */
-	public String getNOM_EF_CODESERVICE() {
-		return "NOM_EF_CODESERVICE";
-	}
-
-	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_CODESERVICE Date de création : (12/08/11 11:27:01)
-	 * 
-	 * 
-	 */
-	public String getVAL_EF_CODESERVICE() {
-		return getZone(getNOM_EF_CODESERVICE());
-	}
-
-	/**
 	 * Retourne le service sélectionné.
 	 * 
 	 * @return service
 	 */
-	private Service getService() {
+	private EntiteDto getService() {
 		return service;
 	}
 
@@ -4796,48 +4773,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 	 * @param service
 	 *            service à définir
 	 */
-	private void setService(Service service) {
+	private void setService(EntiteDto service) {
 		this.service = service;
-	}
-
-	/**
-	 * Retourne le nom d'une zone de saisie pour la JSP : EF_DATE_DEBUT_VALIDITE
-	 * Date de création : (22/08/11 09:09:51)
-	 * 
-	 * 
-	 */
-	public String getNOM_EF_DATE_DEBUT_VALIDITE() {
-		return "NOM_EF_DATE_DEBUT_VALIDITE";
-	}
-
-	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_DATE_DEBUT_VALIDITE Date de création : (22/08/11 09:09:51)
-	 * 
-	 * 
-	 */
-	public String getVAL_EF_DATE_DEBUT_VALIDITE() {
-		return getZone(getNOM_EF_DATE_DEBUT_VALIDITE());
-	}
-
-	/**
-	 * Retourne le nom d'une zone de saisie pour la JSP : EF_DATE_FIN_VALIDITE
-	 * Date de création : (22/08/11 09:09:51)
-	 * 
-	 * 
-	 */
-	public String getNOM_EF_DATE_FIN_VALIDITE() {
-		return "NOM_EF_DATE_FIN_VALIDITE";
-	}
-
-	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_DATE_FIN_VALIDITE Date de création : (22/08/11 09:09:51)
-	 * 
-	 * 
-	 */
-	public String getVAL_EF_DATE_FIN_VALIDITE() {
-		return getZone(getNOM_EF_DATE_FIN_VALIDITE());
 	}
 
 	/**
@@ -5248,9 +5185,9 @@ public class OePOSTEFichePoste extends BasicProcess {
 	 * 
 	 */
 	public boolean performPB_RECHERCHER_REMPLACEMENT(HttpServletRequest request) throws Exception {
-		if (!getVAL_EF_CODESERVICE().equals(Const.CHAINE_VIDE)) {
+		if (!getVAL_ST_ID_SERVICE_ADS().equals(Const.CHAINE_VIDE)) {
 			VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_SERVICE,
-					Service.chercherService(getTransaction(), getVAL_EF_CODESERVICE()));
+					adsService.getEntiteByIdEntite(new Integer(getVAL_ST_ID_SERVICE_ADS())));
 		}
 
 		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_RECHERCHE_POSTE_AVANCEE, Boolean.TRUE);
@@ -5347,7 +5284,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 		String destinationFDP = "FichePosteVierge/FP_" + getFichePosteCourante().getIdFichePoste() + ".doc";
 
 		try {
-			byte[] fileAsBytes = new SirhWSConsumer().downloadFichePoste(getFichePosteCourante().getIdFichePoste());
+			byte[] fileAsBytes = sirhService.downloadFichePoste(getFichePosteCourante().getIdFichePoste());
 
 			if (!saveFileToRemoteFileSystem(fileAsBytes, repPartage, destinationFDP)) {
 				// "ERR185",
@@ -5973,6 +5910,11 @@ public class OePOSTEFichePoste extends BasicProcess {
 				return performPB_SUPPRIMER_FP(request);
 			}
 
+			// Si clic sur le bouton PB_INFO_SERVICE()
+			if (testerParametre(request, getNOM_PB_INFO_SERVICE())) {
+				return performPB_INFO_SERVICE(request);
+			}
+
 		}
 		// Si TAG INPUT non géré par le process
 		setStatut(STATUT_MEME_PROCESS);
@@ -6518,14 +6460,6 @@ public class OePOSTEFichePoste extends BasicProcess {
 		return true;
 	}
 
-	public PrimePointageAffDao getPrimePointageAffDao() {
-		return primePointageAffDao;
-	}
-
-	public void setPrimePointageAffDao(PrimePointageAffDao primePointageAffDao) {
-		this.primePointageAffDao = primePointageAffDao;
-	}
-
 	public PrimePointageFPDao getPrimePointageFPDao() {
 		return primePointageFPDao;
 	}
@@ -6939,14 +6873,6 @@ public class OePOSTEFichePoste extends BasicProcess {
 		this.fefpDao = fefpDao;
 	}
 
-	public NFADao getNfaDao() {
-		return nfaDao;
-	}
-
-	public void setNfaDao(NFADao nfaDao) {
-		this.nfaDao = nfaDao;
-	}
-
 	public CompetenceDao getCompetenceDao() {
 		return competenceDao;
 	}
@@ -7126,82 +7052,32 @@ public class OePOSTEFichePoste extends BasicProcess {
 	public boolean performPB_SUPPRIMER_FP(HttpServletRequest request) throws Exception {
 
 		if (getFichePosteCourante() != null && getFichePosteCourante().getIdFichePoste() != null) {
-			// #16358 : on verifie qq RG :
-			// - une fiche de poste en statut autre que "en création" ne peut
-			// jamais être supprimée
-			// - une fiche de poste qui a déjà été affectée ne peut pas être
-			// supprimée
-			if (!getFichePosteCourante().getIdStatutFp().toString().equals(EnumStatutFichePoste.EN_CREATION.getId())) {
-				// "ERR1117",
-				// "Une FDP ne peut être supprimée que si son statut est : 'En création'."
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR1117"));
+
+			// on fait appel à SIRH-WS pour la suppression
+			ReturnMessageDto srm = sirhService.deleteFDP(getFichePosteCourante().getIdFichePoste(),
+					getAgentConnecte(request).getIdAgent());
+
+			String err = Const.CHAINE_VIDE;
+			String info = Const.CHAINE_VIDE;
+			if (srm.getErrors().size() > 0) {
+				for (String erreur : srm.getErrors()) {
+					err += " " + erreur;
+				}
+			}
+			if (srm.getInfos().size() > 0) {
+				for (String erreur : srm.getInfos()) {
+					info += " " + erreur;
+				}
+			}
+
+			if (!err.equals(Const.CHAINE_VIDE)) {
+				err += info;
+				getTransaction().declarerErreur("ERREUR : " + err);
 				return false;
 			}
-			if (getAffectationDao().listerAffectationAvecFP(getFichePosteCourante().getIdFichePoste()).size() > 0) {
-				// "ERR1118",
-				// "Une FDP ne peut pas être supprimée si elle a déjà été affectée."
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR1117"));
-				return false;
-
+			if (!info.equals(Const.CHAINE_VIDE)) {
+				getTransaction().declarerErreur(info);
 			}
-			UserAppli user = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
-			HistoFichePoste histo = new HistoFichePoste(getFichePosteCourante());
-			// supprimer la FDP en base (dans HISTO on sauvegarde l'action) et
-			// SPPOST
-			// supprimer les actvites, comptences...
-			ArrayList<FEFP> liensA = getFefpDao().listerFEFPAvecFP(getFichePosteCourante().getIdFichePoste());
-			for (FEFP lien : liensA) {
-				getFefpDao().supprimerFEFP(lien.getIdFicheEmploi(), lien.getIdFichePoste(), lien.isFePrimaire());
-			}
-
-			ArrayList<NiveauEtudeFP> niveauFPExistant = getNiveauEtudeFPDao().listerNiveauEtudeFPAvecFP(
-					getFichePosteCourante().getIdFichePoste());
-			for (NiveauEtudeFP lien : niveauFPExistant) {
-				getNiveauEtudeFPDao().supprimerNiveauEtudeFP(lien.getIdNiveauEtude(), lien.getIdFichePoste());
-			}
-
-			ArrayList<ActiviteFP> activiteFPExistant = getActiviteFPDao().listerActiviteFPAvecFP(
-					getFichePosteCourante().getIdFichePoste());
-			for (ActiviteFP lien : activiteFPExistant) {
-				getActiviteFPDao().supprimerActiviteFP(lien.getIdFichePoste(), lien.getIdActivite(),
-						lien.isActivitePrincipale());
-			}
-
-			ArrayList<CompetenceFP> competencesFPExistant = getCompetenceFPDao().listerCompetenceFPAvecFP(
-					getFichePosteCourante().getIdFichePoste());
-			for (CompetenceFP lien : competencesFPExistant) {
-				getCompetenceFPDao().supprimerCompetenceFP(lien.getIdFichePoste(), lien.getIdCompetence());
-			}
-
-			ArrayList<AvantageNatureFP> avantagesFPExistant = getAvantageNatureFPDao().listerAvantageNatureFPAvecFP(
-					getFichePosteCourante().getIdFichePoste());
-			for (AvantageNatureFP lien : avantagesFPExistant) {
-				getAvantageNatureFPDao().supprimerAvantageNatureFP(lien.getIdAvantage(), lien.getIdFichePoste());
-			}
-
-			ArrayList<DelegationFP> delegationFPExistant = getDelegationFPDao().listerDelegationFPAvecFP(
-					getFichePosteCourante().getIdFichePoste());
-			for (DelegationFP lien : delegationFPExistant) {
-				getDelegationFPDao().supprimerDelegationFP(lien.getIdDelegation(), lien.getIdFichePoste());
-			}
-
-			ArrayList<PrimePointageFP> primesPointagesFPExistant = getPrimePointageFPDao().listerPrimePointageFP(
-					getFichePosteCourante().getIdFichePoste());
-			for (PrimePointageFP lien : primesPointagesFPExistant) {
-				getPrimePointageFPDao().supprimerPrimePointageFP(lien.getIdFichePoste(), lien.getNumRubrique());
-			}
-
-			ArrayList<RegIndemFP> regimesFPExistant = getRegIndemnFPDao().listerRegIndemFPFPAvecFP(
-					getFichePosteCourante().getIdFichePoste());
-			for (RegIndemFP lien : regimesFPExistant) {
-				getRegIndemnFPDao().supprimerRegIndemFP(lien.getIdRegIndemn(), lien.getIdFichePoste());
-			}
-
-			// on supprime enfin la FDP
-			getFichePosteDao().supprimerFichePoste(getFichePosteCourante(), getTransaction());
-			// historisation
-			getHistoFichePosteDao().creerHistoFichePoste(histo, user, EnumTypeHisto.SUPPRESSION);
-			commitTransaction();
 
 			viderFichePoste();
 			viderObjetsFichePoste();
@@ -7214,6 +7090,69 @@ public class OePOSTEFichePoste extends BasicProcess {
 		} else {
 			getTransaction().declarerErreur(MessageUtils.getMessage("INF107"));
 			return false;
+		}
+		return true;
+	}
+
+	private Agent getAgentConnecte(HttpServletRequest request) throws Exception {
+		UserAppli u = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
+		Agent agentConnecte = null;
+		// on fait la correspondance entre le login et l'agent via RADI
+		LightUserDto user = radiService.getAgentCompteADByLogin(u.getUserName());
+		if (user == null) {
+			return null;
+		}
+		try {
+			agentConnecte = getAgentDao().chercherAgentParMatricule(
+					radiService.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
+		} catch (Exception e) {
+			return null;
+		}
+
+		return agentConnecte;
+	}
+
+	public String getNOM_ST_ID_SERVICE_ADS() {
+		return "NOM_ST_ID_SERVICE_ADS";
+	}
+
+	public String getVAL_ST_ID_SERVICE_ADS() {
+		return getZone(getNOM_ST_ID_SERVICE_ADS());
+	}
+
+	public String getCurrentWholeTreeJS(String serviceSaisi) {
+		return adsService.getCurrentWholeTreePrevisionActifTransitoireJS(
+				null != serviceSaisi && !"".equals(serviceSaisi) ? serviceSaisi : null, false);
+	}
+
+	public String getNOM_PB_INFO_SERVICE() {
+		return "NOM_PB_INFO_SERVICE";
+	}
+
+	public boolean performPB_INFO_SERVICE(HttpServletRequest request) throws Exception {
+		// #16356
+		// on recupere le service
+		try {
+			Integer idServiceADS = new Integer(getVAL_ST_ID_SERVICE_ADS());
+			EntiteDto entite = adsService.getEntiteByIdEntite(idServiceADS);
+
+			// on remplit les champs
+			addZone(getNOM_EF_SERVICE(), entite.getSigle());
+			addZone(getNOM_ST_ID_SERVICE_ADS(), String.valueOf(entite.getIdEntite()));
+			String infoService = entite.getLabel().replace("\'", " ");
+			addZone(getNOM_ST_INFO_SERVICE(), infoService);
+
+			String dateDebutAppliServ = getVAL_EF_DATE_DEBUT_APPLI_SERV();
+			String numDeliberation = getVAL_EF_NUM_DELIBERATION();
+			if (dateDebutAppliServ.length() == 0 && entite.getDateDeliberationActif() != null) {
+				SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+				addZone(getNOM_EF_DATE_DEBUT_APPLI_SERV(), sdf.format(entite.getDateDeliberationActif()));
+			}
+			if (numDeliberation.length() == 0 && entite.getRefDeliberationActif() != null) {
+				addZone(getNOM_EF_NUM_DELIBERATION(), entite.getRefDeliberationActif());
+			}
+		} catch (Exception e) {
+
 		}
 		return true;
 	}

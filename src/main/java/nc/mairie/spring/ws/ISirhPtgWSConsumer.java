@@ -24,7 +24,7 @@ public interface ISirhPtgWSConsumer {
 	public ArrayList<Integer> getListeIdAgentPointage();
 
 	// Droits
-	List<ApprobateurDto> getApprobateurs(String codeService, Integer idAgent);
+	List<ApprobateurDto> getApprobateurs(Integer idServiceADS, Integer idAgent);
 
 	ReturnMessageDto setApprobateur(String json);
 

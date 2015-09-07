@@ -6,7 +6,6 @@
 <HEAD>
 <META name="GENERATOR" content="IBM WebSphere Page Designer V3.5.3 for Windows">
 <META http-equiv="Content-Style-Type" content="text/css">
-<SCRIPT language="javascript" src="js/dtree.js"></SCRIPT>
 <LINK href="theme/sigp2.css" rel="stylesheet" type="text/css">
 <LINK href="theme/dataTables.css" rel="stylesheet" type="text/css">
 <LINK href="TableTools-2.0.1/media/css/TableTools.css" rel="stylesheet" type="text/css">
@@ -30,23 +29,6 @@ function setfocus(nom)
 {
 if (document.formu.elements[nom] != null)
 document.formu.elements[nom].focus();
-}
-// afin d'afficher la hiérarchie des services
-function agrandirHierarchy() {
-		
-	hier = 	document.getElementById('treeHierarchy');
-		
-	if (hier.style.display!='none') {
-		reduireHierarchy();
-	} else {
-		hier.style.display='block';
-	}
-}
-		
-// afin de cacher la hiérarchie des services
-function reduireHierarchy() {
-	hier = 	document.getElementById('treeHierarchy');
-	hier.style.display='none';
 }
 
 </SCRIPT>

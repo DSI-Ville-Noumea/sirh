@@ -1,24 +1,22 @@
 package nc.mairie.gestionagent.process.pointage;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Hashtable;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.Agent;
 import nc.mairie.metier.carriere.Carriere;
-import nc.mairie.metier.poste.Service;
 import nc.mairie.spring.dao.metier.agent.AgentDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.Services;
 import nc.mairie.utils.MessageUtils;
-import nc.mairie.utils.TreeHierarchy;
 import nc.mairie.utils.VariablesActivite;
+import nc.noumea.mairie.ads.dto.EntiteDto;
+import nc.noumea.spring.service.IAdsService;
 
 import org.springframework.context.ApplicationContext;
 
@@ -33,18 +31,15 @@ public class OePTGSelectionAgent extends BasicProcess {
 	private ArrayList<Agent> listAff = new ArrayList<Agent>();
 	private String typePopulation;
 
-	private ArrayList<Service> listeServices;
-	public Hashtable<String, TreeHierarchy> hTree = null;
 	public String focus = null;
 	private boolean first = true;
 
 	private AgentDao agentDao;
+	private IAdsService adsService;
 
 	public void initialiseZones(HttpServletRequest request) throws Exception {
 		initialiseDao();
 
-		// Initialise la liste des services
-		initialiseListeService();
 		if (isFirst()) {
 			addZone(getNOM_RG_RECHERCHE(), getNOM_RB_RECH_NOM());
 			// on recupere le type de population F, C ou CC
@@ -70,6 +65,9 @@ public class OePTGSelectionAgent extends BasicProcess {
 		if (getAgentDao() == null) {
 			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (null == adsService) {
+			adsService = (IAdsService) context.getBean("adsService");
+		}
 	}
 
 	private void afficheListeAgents() {
@@ -88,44 +86,9 @@ public class OePTGSelectionAgent extends BasicProcess {
 
 	}
 
-	private void initialiseListeService() throws Exception {
-		// Si la liste des services est nulle
-		if (getListeServices() == null || getListeServices().size() == 0) {
-			ArrayList<Service> services = Service.listerServiceActif(getTransaction());
-			setListeServices(services);
-
-			// Tri par codeservice
-			Collections.sort(getListeServices(), new Comparator<Object>() {
-				public int compare(Object o1, Object o2) {
-					Service s1 = (Service) o1;
-					Service s2 = (Service) o2;
-					return (s1.getCodService().compareTo(s2.getCodService()));
-				}
-			});
-
-			// alim de la hTree
-			hTree = new Hashtable<String, TreeHierarchy>();
-			TreeHierarchy parent = null;
-			for (int i = 0; i < getListeServices().size(); i++) {
-				Service serv = (Service) getListeServices().get(i);
-
-				if (Const.CHAINE_VIDE.equals(serv.getCodService())) {
-					continue;
-				}
-
-				// recherche du supérieur
-				String codeService = serv.getCodService();
-				while (codeService.endsWith("A")) {
-					codeService = codeService.substring(0, codeService.length() - 1);
-				}
-				codeService = codeService.substring(0, codeService.length() - 1);
-				codeService = Services.rpad(codeService, 4, "A");
-				parent = hTree.get(codeService);
-				int indexParent = (parent == null ? 0 : parent.getIndex());
-				hTree.put(serv.getCodService(), new TreeHierarchy(serv, i, indexParent));
-
-			}
-		}
+	public String getCurrentWholeTreeJS(String serviceSaisi) {
+		return adsService.getCurrentWholeTreeActifTransitoireJS(null != serviceSaisi && !"".equals(serviceSaisi) ? serviceSaisi : null,
+				false);
 	}
 
 	/**
@@ -289,20 +252,12 @@ public class OePTGSelectionAgent extends BasicProcess {
 		return "NOM_RB_RECH_SERVICE";
 	}
 
-	public String getNOM_ST_CODE_SERVICE() {
-		return "NOM_ST_CODE_SERVICE";
+	public String getNOM_ST_ID_SERVICE_ADS() {
+		return "NOM_ST_ID_SERVICE_ADS";
 	}
 
-	public String getVAL_ST_CODE_SERVICE() {
-		return getZone(getNOM_ST_CODE_SERVICE());
-	}
-
-	public String getNOM_EF_SERVICE() {
-		return "NOM_EF_SERVICE";
-	}
-
-	public String getVAL_EF_SERVICE() {
-		return getZone(getNOM_EF_SERVICE());
+	public String getVAL_ST_ID_SERVICE_ADS() {
+		return getZone(getNOM_ST_ID_SERVICE_ADS());
 	}
 
 	public String getNOM_RB_RECH_NOM() {
@@ -353,13 +308,26 @@ public class OePTGSelectionAgent extends BasicProcess {
 		} else if (getVAL_RG_RECHERCHE().equals(getNOM_RB_RECH_PRENOM())) {
 			aListe = getAgentDao().listerAgentAvecPrenomCommencant(zone);
 		} else if (getVAL_RG_RECHERCHE().equals(getNOM_RB_RECH_SERVICE())) {
-			Service service = Service.chercherService(getTransaction(), getVAL_ST_CODE_SERVICE());
-			String prefixe = service.getCodService().substring(
-					0,
-					Service.isEntite(service.getCodService()) ? 1 : Service.isDirection(service.getCodService()) ? 2
-							: Service.isDivision(service.getCodService()) ? 3 : Service.isSection(service
-									.getCodService()) ? 4 : 0);
-			aListe = getAgentDao().listerAgentAvecServiceCommencant(prefixe);
+
+			String sigle = getVAL_EF_ZONE().toUpperCase();
+			String idServiceAds = getVAL_ST_ID_SERVICE_ADS().toUpperCase();
+
+			if (idServiceAds.equals(Const.CHAINE_VIDE) && !sigle.equals(Const.CHAINE_VIDE)) {
+				EntiteDto service = adsService.getEntiteBySigle(sigle);
+
+				if (null == service || 0 == service.getIdEntite()) {
+					// ERR502", "Le sigle service saisie ne permet pas de
+					// trouver le
+					// service associé."
+					setStatut(STATUT_MEME_PROCESS, false, MessageUtils.getMessage("ERR502"));
+					return false;
+				}
+
+				idServiceAds = service.getIdEntite().toString();
+			}
+			List<Integer> listeSousService = adsService
+					.getListIdsEntiteWithEnfantsOfEntite(new Integer(idServiceAds));
+			aListe = getAgentDao().listerAgentAvecListeServiceAds(listeSousService);
 		}
 
 		// Si la liste est vide alors erreur
@@ -386,18 +354,6 @@ public class OePTGSelectionAgent extends BasicProcess {
 		afficheListeAgents();
 
 		return true;
-	}
-
-	public ArrayList<Service> getListeServices() {
-		return listeServices;
-	}
-
-	private void setListeServices(ArrayList<Service> listeServices) {
-		this.listeServices = listeServices;
-	}
-
-	public Hashtable<String, TreeHierarchy> getHTree() {
-		return hTree;
 	}
 
 	private boolean isFirst() {

@@ -7,6 +7,7 @@ import nc.mairie.gestionagent.absence.dto.RefTypeSaisiCongeAnnuelDto;
 import nc.mairie.gestionagent.dto.AgentDto;
 import nc.mairie.gestionagent.dto.BaseHorairePointageDto;
 import nc.mairie.gestionagent.dto.DateAvctDto;
+import nc.mairie.gestionagent.dto.ReturnMessageDto;
 
 public interface ISirhWSConsumer {
 
@@ -15,6 +16,8 @@ public interface ISirhWSConsumer {
 	DateAvctDto getCalculDateAvct(Integer idAgent) throws Exception;
 
 	boolean miseAJourArbreFDP();
+
+	ReturnMessageDto deleteFDP(Integer idFichePoste, Integer idAgent);
 
 	// BIRT
 	byte[] downloadTableauAvancement(int idCap, int idCadreEmploi, boolean avisEAE, String format) throws Exception;

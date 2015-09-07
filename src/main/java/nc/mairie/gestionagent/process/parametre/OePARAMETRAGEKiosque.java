@@ -2,9 +2,6 @@ package nc.mairie.gestionagent.process.parametre;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Hashtable;
 import java.util.ListIterator;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,7 +11,6 @@ import nc.mairie.metier.agent.Agent;
 import nc.mairie.metier.parametrage.AccueilKiosque;
 import nc.mairie.metier.parametrage.AlerteKiosque;
 import nc.mairie.metier.parametrage.ReferentRh;
-import nc.mairie.metier.poste.Service;
 import nc.mairie.spring.dao.metier.agent.AgentDao;
 import nc.mairie.spring.dao.metier.parametrage.AccueilKiosqueDao;
 import nc.mairie.spring.dao.metier.parametrage.AlerteKiosqueDao;
@@ -27,8 +23,9 @@ import nc.mairie.technique.Services;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
-import nc.mairie.utils.TreeHierarchy;
 import nc.mairie.utils.VariablesActivite;
+import nc.noumea.mairie.ads.dto.EntiteDto;
+import nc.noumea.spring.service.IAdsService;
 
 import org.springframework.context.ApplicationContext;
 
@@ -55,14 +52,14 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 	private String[] LB_TEXTE_KIOSQUE;
 	private String[] LB_ALERTE_KIOSQUE;
 
-	public Hashtable<String, TreeHierarchy> hTree = null;
-	private ArrayList<Service> listeServices;
-	private ArrayList<Service> listeServiceUtilisateur;
+	private ArrayList<EntiteDto> listeServiceUtilisateur;
 
 	private ReferentRhDao referentRhDao;
 	private AccueilKiosqueDao accueilKiosqueDao;
 	private AgentDao agentDao;
 	private AlerteKiosqueDao alerteKiosqueDao;
+
+	private IAdsService adsService;
 
 	private ReferentRh referentRhGlobalCourant;
 	private ReferentRh referentRhCourant;
@@ -128,51 +125,14 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 		if (getListeAlerteKiosque().size() == 0) {
 			initialiseListeAlerteKiosque(request);
 		}
-		// Si la liste des services est nulle
-		if (getListeServices() == null || getListeServices().isEmpty()) {
-			ArrayList<Service> services = Service.listerServiceActif(getTransaction());
-			setListeServices(services);
-
-			// Tri par codeservice
-			Collections.sort(getListeServices(), new Comparator<Object>() {
-				public int compare(Object o1, Object o2) {
-					Service s1 = (Service) o1;
-					Service s2 = (Service) o2;
-					return (s1.getCodService().compareTo(s2.getCodService()));
-				}
-			});
-
-			// alim de la hTree
-			hTree = new Hashtable<>();
-			TreeHierarchy parent = null;
-			for (int i = 0; i < getListeServices().size(); i++) {
-				Service serv = (Service) getListeServices().get(i);
-
-				if (Const.CHAINE_VIDE.equals(serv.getCodService())) {
-					continue;
-				}
-
-				// recherche du supérieur
-				String codeService = serv.getCodService();
-				while (codeService.endsWith("A")) {
-					codeService = codeService.substring(0, codeService.length() - 1);
-				}
-				codeService = codeService.substring(0, codeService.length() - 1);
-				codeService = Services.rpad(codeService, 4, "A");
-				parent = hTree.get(codeService);
-				int indexParent = (parent == null ? 0 : parent.getIndex());
-				hTree.put(serv.getCodService(), new TreeHierarchy(serv, i, indexParent));
-
-			}
-		}
 
 		// Initialisation des Services
 		if (getListeServiceUtilisateur().size() != 0) {
 			int[] tailles = { 50 };
 			FormateListe aFormat = new FormateListe(tailles);
-			for (ListIterator<Service> list = getListeServiceUtilisateur().listIterator(); list.hasNext();) {
-				Service de = (Service) list.next();
-				String ligne[] = { de.getSigleService() + " " + de.getLibService() };
+			for (ListIterator<EntiteDto> list = getListeServiceUtilisateur().listIterator(); list.hasNext();) {
+				EntiteDto de = (EntiteDto) list.next();
+				String ligne[] = { de.getSigle() + " " + de.getLabel() };
 				aFormat.ajouteLigne(ligne);
 			}
 			setLB_SERVICE_UTILISATEUR(aFormat.getListeFormatee());
@@ -182,12 +142,9 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 
 	}
 
-	public ArrayList<Service> getListeServices() {
-		return listeServices;
-	}
-
-	private void setListeServices(ArrayList<Service> listeServices) {
-		this.listeServices = listeServices;
+	public String getCurrentWholeTreeJS(String serviceSaisi) {
+		return adsService.getCurrentWholeTreeActifTransitoireJS(
+				null != serviceSaisi && !"".equals(serviceSaisi) ? serviceSaisi : null, true);
 	}
 
 	private void initialiseReferentRhGlobal(HttpServletRequest request) {
@@ -274,6 +231,9 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 		if (getAlerteKiosqueDao() == null) {
 			setAlerteKiosqueDao(new AlerteKiosqueDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (null == adsService) {
+			adsService = (IAdsService) context.getBean("adsService");
+		}
 	}
 
 	public String getNOM_ST_ACTION_REFERENT_RH() {
@@ -301,13 +261,15 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 				try {
 					Agent ag = getAgentDao().chercherAgentParMatricule(Integer.valueOf(getVAL_EF_ID_REFERENT_RH()));
 					// on crée les entrées
-					for (Service serv : getListeServiceUtilisateur()) {
+					for (EntiteDto serv : getListeServiceUtilisateur()) {
 						getReferentRhCourant().setIdAgentReferent(ag.getIdAgent());
 						getReferentRhCourant().setNumeroTelephone(Integer.valueOf(getVAL_EF_NUMERO_TELEPHONE()));
-						getReferentRhCourant().setServi(serv.getCodService());
-						getReferentRhDao().creerReferentRh(getReferentRhCourant().getServi(),
-								getReferentRhCourant().getIdAgentReferent(),
-								getReferentRhCourant().getNumeroTelephone());
+						getReferentRhCourant().setIdServiceAds(serv.getIdEntite());
+						EntiteDto serviceAs400 = adsService.getInfoSiservByIdEntite(serv.getIdEntite());
+						getReferentRhCourant().setServi(serviceAs400 == null ? null : serviceAs400.getCodeServi());
+						getReferentRhDao().creerReferentRh(getReferentRhCourant().getIdAgentReferent(),
+								getReferentRhCourant().getNumeroTelephone(), getReferentRhCourant().getIdServiceAds(),
+								getReferentRhCourant().getServi());
 					}
 				} catch (Exception e) {
 					// "ERR503",
@@ -328,13 +290,16 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 					getReferentRhDao().supprimerReferentRh(ref.getIdReferentRh());
 				}
 				// on crée les entrées
-				for (Service serv : getListeServiceUtilisateur()) {
+				for (EntiteDto serv : getListeServiceUtilisateur()) {
 					setReferentRhCourant(new ReferentRh());
 					getReferentRhCourant().setIdAgentReferent(Integer.valueOf("900" + getVAL_EF_ID_REFERENT_RH()));
 					getReferentRhCourant().setNumeroTelephone(Integer.valueOf(getVAL_EF_NUMERO_TELEPHONE()));
-					getReferentRhCourant().setServi(serv.getCodService());
-					getReferentRhDao().creerReferentRh(getReferentRhCourant().getServi(),
-							getReferentRhCourant().getIdAgentReferent(), getReferentRhCourant().getNumeroTelephone());
+					getReferentRhCourant().setIdServiceAds(serv.getIdEntite().intValue());
+					EntiteDto serviceAs400 = adsService.getInfoSiservByIdEntite(serv.getIdEntite());
+					getReferentRhCourant().setServi(serviceAs400 == null ? null : serviceAs400.getCodeServi());
+					getReferentRhDao().creerReferentRh(getReferentRhCourant().getIdAgentReferent(),
+							getReferentRhCourant().getNumeroTelephone(), getReferentRhCourant().getIdServiceAds(),
+							getReferentRhCourant().getServi());
 				}
 			}
 			initialiseListeReferentRh(request);
@@ -402,10 +367,10 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 		addZone(getNOM_EF_NOM_REFERENT_RH(), ag.getNomAgent() + " " + ag.getPrenomAgent());
 		addZone(getNOM_EF_NUMERO_TELEPHONE(), getReferentRhCourant().getNumeroTelephone().toString());
 
-		ArrayList<Service> listeServ = new ArrayList<Service>();
+		ArrayList<EntiteDto> listeServ = new ArrayList<EntiteDto>();
 		for (ReferentRh ref : getReferentRhDao().listerServiceAvecReferentRh(
 				getReferentRhCourant().getIdAgentReferent())) {
-			Service serv = Service.chercherService(getTransaction(), ref.getServi());
+			EntiteDto serv = adsService.getEntiteByIdEntite(ref.getIdServiceAds());
 			listeServ.add(serv);
 		}
 		setListeServiceUtilisateur(listeServ);
@@ -748,13 +713,13 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 
 	public boolean performPB_AJOUTER_SERVICE(HttpServletRequest request) throws Exception {
 		// Recup du service sélectionné
-		String codServ = getVAL_EF_CODESERVICE();
+		String idServiceAds = getVAL_EF_ID_SERVICE_ADS();
 
-		if (codServ.equals(Const.CHAINE_VIDE)) {
+		if (idServiceAds.equals(Const.CHAINE_VIDE)) {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "Autres services"));
 			return false;
 		}
-		Service serv = Service.chercherService(getTransaction(), codServ);
+		EntiteDto serv = adsService.getEntiteByIdEntite(new Integer(idServiceAds));
 		if (!getListeServiceUtilisateur().contains(serv))
 			getListeServiceUtilisateur().add(serv);
 
@@ -767,25 +732,34 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 
 	public boolean performPB_AJOUTER_TOUT(HttpServletRequest request) throws Exception {
 		// Recup du service sélectionné
-		String codServ = getVAL_EF_CODESERVICE();
+		String idServiceAds = getVAL_EF_ID_SERVICE_ADS();
 
-		if (codServ.equals(Const.CHAINE_VIDE)) {
+		if (idServiceAds.equals(Const.CHAINE_VIDE)) {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "Autres services"));
 			return false;
 		}
 
 		// On recupere les sous services
-		Service serv = Service.chercherService(getTransaction(), codServ);
-		ArrayList<String> listeSousServ = Service.listSousService(getTransaction(), serv.getSigleService());
+		EntiteDto listeSousServ = adsService.getEntiteWithChildrenByIdEntite(new Integer(idServiceAds));
 
 		// On ajoute le service et les sous services
-		for (String codeServSele : listeSousServ) {
-			Service sousServ = Service.chercherService(getTransaction(), codeServSele);
-			if (!getListeServiceUtilisateur().contains(sousServ))
-				getListeServiceUtilisateur().add(sousServ);
+		if (null != listeSousServ && !getListeServiceUtilisateur().contains(listeSousServ)) {
+			getListeServiceUtilisateur().add(listeSousServ);
 		}
+		addServicesUtilisateur(listeSousServ);
 
 		return true;
+	}
+
+	private void addServicesUtilisateur(EntiteDto entiteDto) {
+		if (null != entiteDto && null != entiteDto.getEnfants()) {
+			for (EntiteDto sousServ : entiteDto.getEnfants()) {
+				if (!getListeServiceUtilisateur().contains(sousServ)) {
+					getListeServiceUtilisateur().add(sousServ);
+				}
+				addServicesUtilisateur(sousServ);
+			}
+		}
 	}
 
 	public String getNOM_PB_RETIRER_SERVICE() {
@@ -802,7 +776,7 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 			return false;
 		}
 
-		Service groupe = (Service) getListeServiceUtilisateur().get(numLigne);
+		EntiteDto groupe = (EntiteDto) getListeServiceUtilisateur().get(numLigne);
 		if (getListeServiceUtilisateur().contains(groupe))
 			getListeServiceUtilisateur().remove(groupe);
 
@@ -823,18 +797,13 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 			return false;
 		}
 
-		Service groupe = (Service) getListeServiceUtilisateur().get(numLigne);
+		EntiteDto groupe = (EntiteDto) getListeServiceUtilisateur().get(numLigne);
 
 		// On recupere les sous services
-		Service serv = Service.chercherService(getTransaction(), groupe.getCodService());
-		ArrayList<String> listeSousServ = Service.listSousService(getTransaction(), serv.getSigleService());
+		EntiteDto serv = adsService.getEntiteWithChildrenByIdEntite(groupe.getIdEntite().intValue());
 
 		// On ajoute le service et les sous services
-		for (String codeServSele : listeSousServ) {
-			Service sousServ = Service.chercherService(getTransaction(), codeServSele);
-			if (getListeServiceUtilisateur().contains(sousServ))
-				getListeServiceUtilisateur().remove(sousServ);
-		}
+		removeServicesUtilisateur(serv);
 
 		if (getListeServiceUtilisateur().contains(groupe))
 			getListeServiceUtilisateur().remove(groupe);
@@ -842,13 +811,24 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 		return true;
 	}
 
-	private ArrayList<Service> getListeServiceUtilisateur() {
+	private void removeServicesUtilisateur(EntiteDto entiteDto) {
+		if (null != entiteDto && null != entiteDto.getEnfants()) {
+			for (EntiteDto sousServ : entiteDto.getEnfants()) {
+				if (getListeServiceUtilisateur().contains(sousServ)) {
+					getListeServiceUtilisateur().remove(sousServ);
+				}
+				removeServicesUtilisateur(sousServ);
+			}
+		}
+	}
+
+	private ArrayList<EntiteDto> getListeServiceUtilisateur() {
 		if (listeServiceUtilisateur == null)
-			listeServiceUtilisateur = new ArrayList<Service>();
+			listeServiceUtilisateur = new ArrayList<EntiteDto>();
 		return listeServiceUtilisateur;
 	}
 
-	private void setListeServiceUtilisateur(ArrayList<Service> listeGroupesUtilisateur) {
+	private void setListeServiceUtilisateur(ArrayList<EntiteDto> listeGroupesUtilisateur) {
 		this.listeServiceUtilisateur = listeGroupesUtilisateur;
 	}
 
@@ -1129,9 +1109,11 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 		Agent ag = getAgentDao().chercherAgentParMatricule(Integer.valueOf(getVAL_EF_ID_REFERENT_RH_GLOBAL()));
 		getReferentRhGlobalCourant().setIdAgentReferent(ag.getIdAgent());
 		getReferentRhGlobalCourant().setNumeroTelephone(Integer.valueOf(getVAL_EF_NUMERO_TELEPHONE_GLOBAL()));
+		getReferentRhGlobalCourant().setIdServiceAds(null);
 		getReferentRhGlobalCourant().setServi(null);
-		getReferentRhDao().creerReferentRh(getReferentRhGlobalCourant().getServi(),
-				getReferentRhGlobalCourant().getIdAgentReferent(), getReferentRhGlobalCourant().getNumeroTelephone());
+		getReferentRhDao().creerReferentRh(getReferentRhGlobalCourant().getIdAgentReferent(),
+				getReferentRhGlobalCourant().getNumeroTelephone(), getReferentRhCourant().getIdServiceAds(),
+				getReferentRhCourant().getServi());
 
 		initialiseReferentRhGlobal(request);
 		setReferentRhGlobalCourant(null);
@@ -1178,16 +1160,12 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 		return true;
 	}
 
-	public Hashtable<String, TreeHierarchy> getHTree() {
-		return hTree;
+	public String getNOM_EF_ID_SERVICE_ADS() {
+		return "NOM_EF_ID_SERVICE_ADS";
 	}
 
-	public String getNOM_EF_CODESERVICE() {
-		return "NOM_EF_CODESERVICE";
-	}
-
-	public String getVAL_EF_CODESERVICE() {
-		return getZone(getNOM_EF_CODESERVICE());
+	public String getVAL_EF_ID_SERVICE_ADS() {
+		return getZone(getNOM_EF_ID_SERVICE_ADS());
 	}
 
 	public String getNOM_EF_SERVICE() {

@@ -39,7 +39,6 @@ import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.poste.HistoAffectation;
 import nc.mairie.metier.poste.HistoFichePoste;
 import nc.mairie.metier.poste.Horaire;
-import nc.mairie.metier.poste.Service;
 import nc.mairie.metier.specificites.AvantageNature;
 import nc.mairie.metier.specificites.AvantageNatureAFF;
 import nc.mairie.metier.specificites.Delegation;
@@ -75,10 +74,6 @@ import nc.mairie.spring.dao.metier.specificites.RubriqueDao;
 import nc.mairie.spring.dao.utils.MairieDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
-import nc.mairie.spring.ws.RadiWSConsumer;
-import nc.mairie.spring.ws.SirhAbsWSConsumer;
-import nc.mairie.spring.ws.SirhPtgWSConsumer;
-import nc.mairie.spring.ws.SirhWSConsumer;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
@@ -87,6 +82,15 @@ import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
 import nc.mairie.utils.VariablesActivite;
+import nc.noumea.mairie.ads.dto.EntiteDto;
+import nc.noumea.spring.service.AbsService;
+import nc.noumea.spring.service.AdsService;
+import nc.noumea.spring.service.IAbsService;
+import nc.noumea.spring.service.IAdsService;
+import nc.noumea.spring.service.IPtgService;
+import nc.noumea.spring.service.IRadiService;
+import nc.noumea.spring.service.ISirhService;
+import nc.noumea.spring.service.PtgService;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.vfs2.FileObject;
@@ -111,7 +115,6 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	public static final int STATUT_HISTORIQUE = 3;
 	public static final int STATUT_RECHERCHE_FP = 1;
 	public static final int STATUT_RECHERCHE_FP_SECONDAIRE = 4;
-	public static final int STATUT_VISU_FP = 2;
 
 	private final String ACTION_AJOUTER_SPEC = "Ajouter";
 	public String ACTION_CONSULTATION = "Consultation d'une affectation";
@@ -206,6 +209,16 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	private AgentDao agentDao;
 
 	SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+
+	private IAdsService adsService;
+
+	private IRadiService radiService;
+
+	private IAbsService absService;
+
+	private IPtgService ptgService;
+
+	private ISirhService sirhService;
 
 	/**
 	 * Constructeur du process OeAGENTEmploisAffectation. Date de création :
@@ -2096,11 +2109,9 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		try {
 			byte[] fileAsBytes = null;
 			if (typeDocument.equals("Interne")) {
-				fileAsBytes = new SirhWSConsumer()
-						.downloadNoteService(getAffectationCourant().getIdAffectation(), null);
+				fileAsBytes = sirhService.downloadNoteService(getAffectationCourant().getIdAffectation(), null);
 			} else {
-				fileAsBytes = new SirhWSConsumer().downloadNoteService(getAffectationCourant().getIdAffectation(),
-						typeDocument);
+				fileAsBytes = sirhService.downloadNoteService(getAffectationCourant().getIdAffectation(), typeDocument);
 			}
 
 			if (!saveFileToRemoteFileSystem(fileAsBytes, repPartage, destination)) {
@@ -2491,20 +2502,20 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 				}
 				String titreFichePoste = Const.CHAINE_VIDE;
 				String numFP = Const.CHAINE_VIDE;
-				Service direction = null;
-				Service service = null;
+				EntiteDto direction = null;
+				EntiteDto service = null;
 				if (hfp != null) {
 					titreFichePoste = hfp.getIdTitrePoste() == null ? "&nbsp;" : getTitrePosteDao().chercherTitrePoste(
 							hfp.getIdTitrePoste()).getLibTitrePoste();
 					// Service
-					direction = Service.getDirection(getTransaction(), hfp.getIdServi());
-					service = Service.getSection(getTransaction(), hfp.getIdServi());
+					direction = adsService.getAffichageDirection(hfp.getIdServiceAds());
+					service = adsService.getAffichageSection(hfp.getIdServiceAds());
 					if (service == null)
-						service = Service.getDivision(getTransaction(), hfp.getIdServi());
+						service = adsService.getAffichageService(hfp.getIdServiceAds());
 					if (service == null)
-						service = Service.getDirection(getTransaction(), hfp.getIdServi());
+						service = adsService.getAffichageDirection(hfp.getIdServiceAds());
 					if (service == null)
-						service = Service.chercherService(getTransaction(), hfp.getIdServi());
+						service = adsService.getEntiteByIdEntite(hfp.getIdServiceAds());
 
 					numFP = hfp.getNumFp();
 					if (a.getIdFichePosteSecondaire() != null)
@@ -2514,14 +2525,14 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 					titreFichePoste = fp.getIdTitrePoste() == null ? "&nbsp;" : getTitrePosteDao().chercherTitrePoste(
 							fp.getIdTitrePoste()).getLibTitrePoste();
 					// Service
-					direction = Service.getDirection(getTransaction(), fp.getIdServi());
-					service = Service.getSection(getTransaction(), fp.getIdServi());
+					direction = adsService.getAffichageDirection(fp.getIdServiceAds());
+					service = adsService.getAffichageSection(fp.getIdServiceAds());
 					if (service == null)
-						service = Service.getDivision(getTransaction(), fp.getIdServi());
+						service = adsService.getAffichageService(fp.getIdServiceAds());
 					if (service == null)
-						service = Service.getDirection(getTransaction(), fp.getIdServi());
+						service = adsService.getAffichageDirection(fp.getIdServiceAds());
 					if (service == null)
-						service = Service.chercherService(getTransaction(), fp.getIdServi());
+						service = adsService.getEntiteByIdEntite(fp.getIdServiceAds());
 
 					numFP = fp.getNumFp();
 					if (a.getIdFichePosteSecondaire() != null)
@@ -2529,9 +2540,9 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 				}
 
-				addZone(getNOM_ST_DIR(indiceAff), direction != null ? direction.getCodService() : "&nbsp;");
-				addZone(getNOM_ST_SERV(indiceAff),
-						service != null ? service.getLibService() + " ( " + service.getCodService() + " )" : "&nbsp;");
+				addZone(getNOM_ST_DIR(indiceAff), direction != null ? direction.getSigle() : "&nbsp;");
+				addZone(getNOM_ST_SERV(indiceAff), service != null ? service.getLabel() + " ( " + service.getSigle()
+						+ " )" : "&nbsp;");
 				addZone(getNOM_ST_DATE_DEBUT(indiceAff), sdf.format(a.getDateDebutAff()));
 				addZone(getNOM_ST_DATE_FIN(indiceAff),
 						a.getDateFinAff() == null ? "&nbsp;" : sdf.format(a.getDateFinAff()));
@@ -2596,8 +2607,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 		// Si liste base horaire absence vide alors affectation
 		if (getLB_BASE_HORAIRE_ABSENCE() == LBVide) {
-			SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
-			List<TypeAbsenceDto> listeTypeAbsence = consuAbs
+			List<TypeAbsenceDto> listeTypeAbsence = absService
 					.getListeRefTypeAbsenceDto(EnumTypeGroupeAbsence.CONGES_ANNUELS.getValue());
 
 			for (TypeAbsenceDto abs : listeTypeAbsence) {
@@ -2770,14 +2780,13 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	 * @throws Exception
 	 */
 	private List<RefPrimeDto> initialiseListeDeroulantePrimes_spec() throws Exception {
-		SirhPtgWSConsumer t = new SirhPtgWSConsumer();
 		List<RefPrimeDto> primes = new ArrayList<RefPrimeDto>();
 		if (agentCourant != null) {
 			Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), agentCourant);
 			if (carr != null && !carr.getCodeCategorie().equals(Const.CHAINE_VIDE)) {
 				String statut = Carriere.getStatutCarriere(carr.getCodeCategorie());
 				if (!statut.equals(Const.CHAINE_VIDE))
-					primes = t.getPrimes();
+					primes = ptgService.getPrimes();
 			}
 		}
 		return primes;
@@ -2813,7 +2822,6 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	 */
 
 	private void initialisePrimePointage_spec() throws Exception {
-		SirhPtgWSConsumer t = new SirhPtgWSConsumer();
 		// Primes pointages
 		if (getListePrimePointageFP().size() == 0 && getFichePosteCourant() != null
 				&& getFichePosteCourant().getIdFichePoste() != null) {
@@ -2836,7 +2844,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			for (int i = 0; i < getListePrimePointageFP().size(); i++) {
 				PrimePointageFP prime = (PrimePointageFP) getListePrimePointageFP().get(i);
 				if (prime != null) {
-					RefPrimeDto rubr = t.getPrimeDetail(prime.getNumRubrique());
+					RefPrimeDto rubr = ptgService.getPrimeDetail(prime.getNumRubrique());
 					if (rubr != null && rubr.getNumRubrique() != null)
 						addZone(getNOM_ST_LST_PRIME_POINTAGE_RUBRIQUE(indicePrime), rubr.getNumRubrique() + " : "
 								+ rubr.getLibelle());
@@ -2849,7 +2857,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			for (int j = 0; j < getListePrimePointageAFF().size(); j++) {
 				PrimePointageAff prime = (PrimePointageAff) getListePrimePointageAFF().get(j);
 				if (prime != null) {
-					RefPrimeDto rubr = t.getPrimeDetail(prime.getNumRubrique());
+					RefPrimeDto rubr = ptgService.getPrimeDetail(prime.getNumRubrique());
 					if (rubr != null && rubr.getNumRubrique() != null)
 						addZone(getNOM_ST_LST_PRIME_POINTAGE_RUBRIQUE(indicePrime), rubr.getNumRubrique() + " : "
 								+ rubr.getLibelle());
@@ -2861,7 +2869,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		if (getListePrimePointageAffAAjouter() != null && getListePrimePointageAffAAjouter().size() != 0) {
 			for (PrimePointageAff prime : getListePrimePointageAffAAjouter()) {
 				if (prime != null) {
-					RefPrimeDto rubr = t.getPrimeDetail(prime.getNumRubrique());
+					RefPrimeDto rubr = ptgService.getPrimeDetail(prime.getNumRubrique());
 					if (rubr != null && rubr.getNumRubrique() != null)
 						addZone(getNOM_ST_LST_PRIME_POINTAGE_RUBRIQUE(indicePrime), rubr.getNumRubrique() + " : "
 								+ rubr.getLibelle());
@@ -2949,36 +2957,22 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		// Titre
 		String titreFichePoste = getFichePosteCourant().getIdTitrePoste() == null ? Const.CHAINE_VIDE
 				: getTitrePosteDao().chercherTitrePoste(getFichePosteCourant().getIdTitrePoste()).getLibTitrePoste();
+
 		// Service
-		Service srv = Service.chercherService(getTransaction(), getFichePosteCourant().getIdServi());
-		String direction = Const.CHAINE_VIDE;
-		String division = Const.CHAINE_VIDE;
-		String section = Const.CHAINE_VIDE;
-		if (Services.estAlphabetique(srv.getCodService())) {
-			if (Service.isSection(srv.getCodService()))
-				section = srv.getLibService();
-			if (!srv.getCodService().substring(2, 3).equals("A"))
-				division = Service.getDivision(getTransaction(), srv.getCodService().substring(0, 3) + "A")
-						.getLibService();
-			if (!srv.getCodService().substring(1, 2).equals("A"))
-				direction = Service.getDirection(getTransaction(), srv.getCodService().substring(0, 2) + "AA")
-						.getLibService();
-		} else {
-			division = srv.getLibService();
-		}
-		if (division == null) {
-			Service serv = Service.chercherService(getTransaction(), getFichePosteCourant().getIdServi());
-			division = serv.getLibService();
-		}
+		EntiteDto srv = adsService.getEntiteByIdEntite(getFichePosteCourant().getIdServiceAds());
+		EntiteDto direction = adsService.getAffichageDirection(getFichePosteCourant().getIdServiceAds());
+		EntiteDto division = adsService.getAffichageService(getFichePosteCourant().getIdServiceAds());
+		EntiteDto section = adsService.getAffichageSection(getFichePosteCourant().getIdServiceAds());
+
 		// temps reglementaire de travail
 		Horaire hor = Horaire.chercherHoraire(getTransaction(), getFichePosteCourant().getIdCdthorReg().toString());
 		// Lieu
 		EntiteGeo eg = EntiteGeo
 				.chercherEntiteGeo(getTransaction(), getFichePosteCourant().getIdEntiteGeo().toString());
 
-		addZone(getNOM_ST_DIRECTION(), direction);
-		addZone(getNOM_ST_SERVICE(), division);
-		addZone(getNOM_ST_SUBDIVISION(), section);
+		addZone(getNOM_ST_DIRECTION(), direction == null ? Const.CHAINE_VIDE : direction.getLabel());
+		addZone(getNOM_ST_SERVICE(), division == null ? srv.getLabel() : division.getLabel());
+		addZone(getNOM_ST_SUBDIVISION(), section == null ? Const.CHAINE_VIDE : section.getLabel());
 		addZone(getNOM_ST_NUM_FICHE_POSTE(), getFichePosteCourant().getNumFp());
 		addZone(getNOM_ST_TITRE_FP(), titreFichePoste);
 		addZone(getNOM_ST_TPS_REG(), hor.getLibHor());
@@ -2997,22 +2991,11 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 				: getTitrePosteDao().chercherTitrePoste(getFichePosteSecondaireCourant().getIdTitrePoste())
 						.getLibTitrePoste();
 		// Service
-		Service srv = Service.chercherService(getTransaction(), getFichePosteSecondaireCourant().getIdServi());
-		String direction = Const.CHAINE_VIDE;
-		String division = Const.CHAINE_VIDE;
-		String section = Const.CHAINE_VIDE;
-		if (Services.estAlphabetique(srv.getCodService())) {
-			if (Service.isSection(srv.getCodService()))
-				section = srv.getLibService();
-			if (!srv.getCodService().substring(2, 3).equals("A"))
-				division = Service.getDivision(getTransaction(), srv.getCodService().substring(0, 3) + "A")
-						.getLibService();
-			if (!srv.getCodService().substring(1, 2).equals("A"))
-				direction = Service.getDirection(getTransaction(), srv.getCodService().substring(0, 2) + "AA")
-						.getLibService();
-		} else {
-			division = srv.getLibService();
-		}
+		EntiteDto srv = adsService.getEntiteByIdEntite(getFichePosteCourant().getIdServiceAds());
+		EntiteDto direction = adsService.getAffichageDirection(getFichePosteCourant().getIdServiceAds());
+		EntiteDto division = adsService.getAffichageService(getFichePosteCourant().getIdServiceAds());
+		EntiteDto section = adsService.getAffichageSection(getFichePosteCourant().getIdServiceAds());
+
 		// temps reglementaire de travail
 		Horaire hor = Horaire.chercherHoraire(getTransaction(), getFichePosteSecondaireCourant().getIdCdthorReg()
 				.toString());
@@ -3020,9 +3003,9 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		EntiteGeo eg = EntiteGeo.chercherEntiteGeo(getTransaction(), getFichePosteSecondaireCourant().getIdEntiteGeo()
 				.toString());
 
-		addZone(getNOM_ST_DIRECTION_SECONDAIRE(), direction);
-		addZone(getNOM_ST_SERVICE_SECONDAIRE(), division);
-		addZone(getNOM_ST_SUBDIVISION_SECONDAIRE(), section);
+		addZone(getNOM_ST_DIRECTION_SECONDAIRE(), direction == null ? Const.CHAINE_VIDE : direction.getLabel());
+		addZone(getNOM_ST_SERVICE_SECONDAIRE(), division == null ? srv.getLabel() : division.getLabel());
+		addZone(getNOM_ST_SUBDIVISION_SECONDAIRE(), section == null ? Const.CHAINE_VIDE : section.getLabel());
 		addZone(getNOM_ST_NUM_FICHE_POSTE_SECONDAIRE(), getFichePosteSecondaireCourant().getNumFp());
 		addZone(getNOM_ST_TITRE_FP_SECONDAIRE(), titreFichePoste);
 		addZone(getNOM_ST_TPS_REG_SECONDAIRE(), hor.getLibHor());
@@ -3180,6 +3163,21 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		}
 		if (getAgentDao() == null) {
 			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (null == adsService) {
+			adsService = (AdsService) context.getBean("adsService");
+		}
+		if (null == radiService) {
+			radiService = (IRadiService) context.getBean("radiService");
+		}
+		if (null == absService) {
+			absService = (AbsService) context.getBean("absService");
+		}
+		if (null == ptgService) {
+			ptgService = (PtgService) context.getBean("ptgService");
+		}
+		if (null == sirhService) {
+			sirhService = (ISirhService) context.getBean("sirhService");
 		}
 	}
 
@@ -3991,7 +3989,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	public boolean performPB_RECHERCHER_FP(HttpServletRequest request) throws Exception {
 		// RG_AG_AF_C05
 		// RG_AG_AF_C07
-		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_RECHERCHE_FP_AFFECTATION, Boolean.TRUE);
+		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_RECHERCHE_POSTE_AVANCEE, Boolean.TRUE);
 		setStatut(STATUT_RECHERCHE_FP, true);
 		return true;
 	}
@@ -4007,7 +4005,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	public boolean performPB_RECHERCHER_FP_SECONDAIRE(HttpServletRequest request) throws Exception {
 		// RG_AG_AF_C05
 		// RG_AG_AF_C07
-		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_RECHERCHE_FP_SECONDAIRE_AFFECTATION, Boolean.TRUE);
+		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_RECHERCHE_POSTE_AVANCEE, Boolean.TRUE);
 		setStatut(STATUT_RECHERCHE_FP_SECONDAIRE, true);
 		return true;
 	}
@@ -4394,16 +4392,16 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			if (getVAL_ST_ACTION().equals(ACTION_MODIFICATION)) {
 				// Modification
 				// RG_AG_AF_A01
-				HistoAffectation histo = new HistoAffectation(getAffectationCourant());
-				getHistoAffectationDao().creerHistoAffectation(histo, user, EnumTypeHisto.MODIFICATION);
-
 				if (!Connecteur.modifierSPMTSR(getTransaction(), getAffectationCourant(),
 						getAgentCourant().getNomatr(), getFichePosteCourant(), oldDateDeb, true))
 					return false;
+				HistoAffectation histo = new HistoAffectation(getAffectationCourant());
+				getHistoAffectationDao().creerHistoAffectation(histo, user, EnumTypeHisto.MODIFICATION);
 				getAffectationDao().modifierAffectation(getAffectationCourant());
 
 				// mise à jour du champ primaire de sppost
 				Connecteur.modifierSPPOST_Primaire(getTransaction(), getFichePosteCourant().getNumFp(), true);
+
 				if (getFichePosteSecondaireCourant() != null) {
 					Connecteur.modifierSPPOST_Primaire(getTransaction(), getFichePosteSecondaireCourant().getNumFp(),
 							false);
@@ -4455,9 +4453,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 				commitTransaction();
 
 				// on initialise le compteur de congé
-				SirhAbsWSConsumer t = new SirhAbsWSConsumer();
 				@SuppressWarnings("unused")
-				ReturnMessageDto erreurDto = t.initialiseCompteurConge(getAgentConnecte(request).getIdAgent(),
+				ReturnMessageDto erreurDto = absService.initialiseCompteurConge(getAgentConnecte(request).getIdAgent(),
 						getAgentCourant().getIdAgent());
 
 				// on sauvegarde les FDP au moment de la creation d'une
@@ -4812,24 +4809,15 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 				if (testerParametre(request, getNOM_PB_MODIFIER(i))) {
 					return performPB_MODIFIER(request, i);
 				}
-			}
-
-			// Si clic sur le bouton PB_CONSULTER
-			for (int i = 0; i < getListeAffectation().size(); i++) {
+				// Si clic sur le bouton PB_CONSULTER
 				if (testerParametre(request, getNOM_PB_CONSULTER(i))) {
 					return performPB_CONSULTER(request, i);
 				}
-			}
-
-			// Si clic sur le bouton PB_SUPPRIMER
-			for (int i = 0; i < getListeAffectation().size(); i++) {
+				// Si clic sur le bouton PB_SUPPRIMER
 				if (testerParametre(request, getNOM_PB_SUPPRIMER(i))) {
 					return performPB_SUPPRIMER(request, i);
 				}
-			}
-
-			// Si clic sur le bouton PB_IMPRIMER
-			for (int i = 0; i < getListeAffectation().size(); i++) {
+				// Si clic sur le bouton PB_IMPRIMER
 				if (testerParametre(request, getNOM_PB_IMPRIMER(i))) {
 					return performPB_IMPRIMER(request, i);
 				}
@@ -4927,7 +4915,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		String destinationFDP = "SauvegardeFDP/SauvFP_" + idFichePoste + "_" + dateJour + ".doc";
 
 		try {
-			byte[] fileAsBytes = new SirhWSConsumer().downloadFichePoste(idFichePoste);
+			byte[] fileAsBytes = sirhService.downloadFichePoste(idFichePoste);
 
 			if (!saveFileToRemoteFileSystem(fileAsBytes, repPartage, destinationFDP)) {
 				// "ERR185",
@@ -5375,7 +5363,6 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	public boolean isPrimeSupprimable(int indiceEltASupprimer) throws Exception {
-		SirhPtgWSConsumer t = new SirhPtgWSConsumer();
 
 		PrimePointageAff primePointage = null;
 		// Si la spécificité a supprimer est déjà en base
@@ -5394,7 +5381,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		}
 		// on interroge le WS pour savoir si la prime est utilisee sur un
 		// pointage donné.
-		return t.isPrimeUtilPointage(primePointage.getNumRubrique(), getAgentCourant().getIdAgent());
+		return ptgService.isPrimeUtilPointage(primePointage.getNumRubrique(), getAgentCourant().getIdAgent());
 
 	}
 
@@ -5656,8 +5643,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 		UserAppli uUser = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
 		// on fait la correspondance entre le login et l'agent via RADI
-		RadiWSConsumer radiConsu = new RadiWSConsumer();
-		LightUserDto user = radiConsu.getAgentCompteADByLogin(uUser.getUserName());
+		LightUserDto user = radiService.getAgentCompteADByLogin(uUser.getUserName());
 		if (user == null) {
 			getTransaction().traiterErreur();
 			// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
@@ -5667,7 +5653,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			if (user != null && user.getEmployeeNumber() != null && user.getEmployeeNumber() != 0) {
 				try {
 					agent = getAgentDao().chercherAgentParMatricule(
-							radiConsu.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
+							radiService.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
 				} catch (Exception e) {
 					// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
@@ -5736,5 +5722,4 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	public String getVAL_EF_INFO_ABSENCE_FDP() {
 		return getZone(getNOM_EF_INFO_ABSENCE_FDP());
 	}
-
 }

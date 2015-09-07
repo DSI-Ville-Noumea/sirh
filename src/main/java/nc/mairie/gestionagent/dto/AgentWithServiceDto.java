@@ -8,7 +8,7 @@ public class AgentWithServiceDto implements IJSONSerialize, IJSONDeserialize<Age
 	private String prenom;
 	private Integer idAgent;
 	private String service;
-	private String codeService;
+	private Integer idServiceADS;
 	private String statut;
 	private String sigleService;
 
@@ -22,14 +22,6 @@ public class AgentWithServiceDto implements IJSONSerialize, IJSONDeserialize<Age
 
 	public void setService(String service) {
 		this.service = service;
-	}
-
-	public String getCodeService() {
-		return codeService;
-	}
-
-	public void setCodeService(String codeService) {
-		this.codeService = codeService;
 	}
 
 	public String getStatut() {
@@ -75,8 +67,8 @@ public class AgentWithServiceDto implements IJSONSerialize, IJSONDeserialize<Age
 	}
 
 	public String toString() {
-		return " Agent:" + nom + " " + prenom + " id=" + idAgent + " service " + service + " codeService "
-				+ codeService;
+		return " Agent:" + nom + " " + getPrenom() + " id=" + getIdAgent() + " service " + getService()
+				+ " idServiceADS " + getIdServiceADS();
 	}
 
 	@Override
@@ -97,5 +89,13 @@ public class AgentWithServiceDto implements IJSONSerialize, IJSONDeserialize<Age
 	public void setSigleService(String sigleService) {
 		this.sigleService = sigleService;
 	}
-	
+
+	public Integer getIdServiceADS() {
+		return idServiceADS;
+	}
+
+	public void setIdServiceADS(Integer idServiceADS) {
+		this.idServiceADS = idServiceADS;
+	}
+
 }

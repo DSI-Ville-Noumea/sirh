@@ -14,12 +14,7 @@ function executeBouton(nom)
 document.formu.elements[nom].click();
 }
 
-// afin de mettre le focus sur une zone précise
-function setfocus(nom)
-{
-if (document.formu.elements[nom] != null)
-document.formu.elements[nom].focus();
-}
+
 		//function pour changement couleur arriere plan ligne du tableau
 		function SelectLigne(id,tailleTableau)
 		{
@@ -33,7 +28,7 @@ document.formu.elements[nom].focus();
 <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 </HEAD>
 <jsp:useBean class="nc.mairie.gestionagent.process.poste.OePOSTEEmploiSelection" id="process" scope="session"></jsp:useBean>
-<BODY bgcolor="#FFFFFF" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" style="tab-interval:35.4pt" onload="return setfocus('<%= process.getFocus() %>')" >
+<BODY bgcolor="#FFFFFF" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" style="tab-interval:35.4pt" >
 
     <%@ include file="BanniereErreur.jsp" %>
 	<FORM name="formu" method="POST" class="sigp2-titre">
@@ -41,7 +36,7 @@ document.formu.elements[nom].focus();
 	    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px">
 		    <legend class="sigp2Legend">Sélection d'une fiche emploi</legend>
 		    <br/>
-			<span class="sigp2">Ref. mairie commençant par :</span>
+			<span class="sigp2">Recherche alphabétique :</span>
 			<span>
 				<INPUT class="sigp2-saisiemajuscule" maxlength="60" name="<%= process.getNOM_EF_RECHERCHE() %>" size="20" type="text" value="<%= process.getVAL_EF_RECHERCHE() %>">
 			</span>

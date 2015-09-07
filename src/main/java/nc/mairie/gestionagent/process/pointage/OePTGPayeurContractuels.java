@@ -13,13 +13,14 @@ import nc.mairie.metier.agent.Agent;
 import nc.mairie.spring.dao.metier.agent.AgentDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
-import nc.mairie.spring.ws.RadiWSConsumer;
-import nc.mairie.spring.ws.SirhPtgWSConsumer;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.UserAppli;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
+import nc.noumea.spring.service.IPtgService;
+import nc.noumea.spring.service.IRadiService;
+import nc.noumea.spring.service.PtgService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,6 +52,10 @@ public class OePTGPayeurContractuels extends BasicProcess {
 	private String urlFichier;
 	private AgentDao agentDao;
 
+	private IRadiService radiService;
+
+	private IPtgService ptgService;
+
 	@Override
 	public String getJSP() {
 		return "OePTGPayeurContractuels.jsp";
@@ -61,6 +66,12 @@ public class OePTGPayeurContractuels extends BasicProcess {
 		ApplicationContext context = ApplicationContextProvider.getContext();
 		if (getAgentDao() == null) {
 			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (null == radiService) {
+			radiService = (IRadiService) context.getBean("radiService");
+		}
+		if (null == ptgService) {
+			ptgService = (PtgService) context.getBean("ptgService");
 		}
 	}
 
@@ -86,9 +97,8 @@ public class OePTGPayeurContractuels extends BasicProcess {
 	// affichage ou non du bouton "lancer editions"
 	public boolean isBoutonLancerEditionAffiche() throws Exception {
 
-		SirhPtgWSConsumer t = new SirhPtgWSConsumer();
 		try {
-			return t.canStartExportEtatsPayeur(STATUT);
+			return ptgService.canStartExportEtatsPayeur(STATUT);
 		} catch (Exception e) {
 			logger.debug("Erreur OePTGPayeurContractuels.isBoutonLancerEditionAffiche() " + e.getMessage());
 			return false;
@@ -123,9 +133,8 @@ public class OePTGPayeurContractuels extends BasicProcess {
 	 */
 	private void initialiseHistoriqueEditions() throws Exception {
 
-		SirhPtgWSConsumer t = new SirhPtgWSConsumer();
 		try {
-			setListEtatsPayeurDto((ArrayList<EtatsPayeurDto>) t.getListEtatsPayeurByStatut(STATUT));
+			setListEtatsPayeurDto((ArrayList<EtatsPayeurDto>) ptgService.getListEtatsPayeurByStatut(STATUT));
 		} catch (Exception e) {
 			logger.debug("Erreur OePTGPayeurContractuels.initialiseHistoriqueEditions() " + e.getMessage());
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR700", libelleStatut));
@@ -155,8 +164,7 @@ public class OePTGPayeurContractuels extends BasicProcess {
 			UserAppli u = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
 			Agent agentConnecte = null;
 			// on fait la correspondance entre le login et l'agent via RADI
-			RadiWSConsumer radiConsu = new RadiWSConsumer();
-			LightUserDto user = radiConsu.getAgentCompteADByLogin(u.getUserName());
+			LightUserDto user = radiService.getAgentCompteADByLogin(u.getUserName());
 			if (user == null) {
 				// "ERR183",
 				// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
@@ -164,11 +172,9 @@ public class OePTGPayeurContractuels extends BasicProcess {
 				return false;
 			}
 			agentConnecte = getAgentDao().chercherAgentParMatricule(
-					radiConsu.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
+					radiService.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
 
-			SirhPtgWSConsumer ptg = new SirhPtgWSConsumer();
-
-			ptg.startExportEtatsPayeur(agentConnecte.getIdAgent(), STATUT);
+			ptgService.startExportEtatsPayeur(agentConnecte.getIdAgent(), STATUT);
 		} catch (Exception e) {
 			logger.debug("Erreur OePTGPayeurContractuels.performPB_LANCER_EDITIONS() " + e.getMessage());
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR702", libelleStatut));

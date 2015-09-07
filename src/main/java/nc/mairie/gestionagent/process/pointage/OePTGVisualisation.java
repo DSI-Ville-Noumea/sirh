@@ -5,12 +5,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.TimeZone;
 
@@ -26,13 +23,10 @@ import nc.mairie.gestionagent.radi.dto.LightUserDto;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.Agent;
 import nc.mairie.metier.poste.Affectation;
-import nc.mairie.metier.poste.Service;
 import nc.mairie.spring.dao.metier.agent.AgentDao;
 import nc.mairie.spring.dao.metier.poste.AffectationDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
-import nc.mairie.spring.ws.RadiWSConsumer;
-import nc.mairie.spring.ws.SirhPtgWSConsumer;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
@@ -40,8 +34,12 @@ import nc.mairie.technique.UserAppli;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
-import nc.mairie.utils.TreeHierarchy;
 import nc.mairie.utils.VariablesActivite;
+import nc.noumea.mairie.ads.dto.EntiteDto;
+import nc.noumea.spring.service.IAdsService;
+import nc.noumea.spring.service.IPtgService;
+import nc.noumea.spring.service.IRadiService;
+import nc.noumea.spring.service.PtgService;
 
 import org.codehaus.plexus.util.CollectionUtils;
 import org.slf4j.Logger;
@@ -62,7 +60,6 @@ public class OePTGVisualisation extends BasicProcess {
 	public static final int STATUT_RECHERCHER_AGENT_MAX = 2;
 	public static final int STATUT_RECHERCHER_AGENT_MIN = 1;
 	public static final int STATUT_SAISIE_PTG = 3;
-	public Hashtable<String, TreeHierarchy> hTree = null;
 	private String[] LB_ETAT;
 	private String[] LB_TYPE;
 	private String[] LB_TYPE_HS;
@@ -71,7 +68,6 @@ public class OePTGVisualisation extends BasicProcess {
 	private ArrayList<String> listePopulation;
 	private ArrayList<RefEtatDto> listeEtats;
 	private HashMap<Integer, ConsultPointageDto> listePointage;
-	private ArrayList<Service> listeServices;
 	private ArrayList<RefTypePointageDto> listeTypes;
 	private HashMap<Integer, List<ConsultPointageDto>> history = new HashMap<>();
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
@@ -83,6 +79,17 @@ public class OePTGVisualisation extends BasicProcess {
 
 	private AffectationDao affectationDao;
 	private AgentDao agentDao;
+
+	private IAdsService adsService;
+
+	private IRadiService radiService;
+
+	private IPtgService ptgService;
+
+	public String getCurrentWholeTreeJS(String serviceSaisi) {
+		return adsService.getCurrentWholeTreeActifTransitoireJS(
+				null != serviceSaisi && !"".equals(serviceSaisi) ? serviceSaisi : null, false);
+	}
 
 	private void afficheListePointages() {
 		GregorianCalendar greg = new GregorianCalendar();
@@ -131,16 +138,6 @@ public class OePTGVisualisation extends BasicProcess {
 			addZone(getNOM_ST_ETAT(i), EtatPointageEnum.getEtatPointageEnum(ptg.getIdRefEtat()).name());
 			addZone(getNOM_ST_DATE_SAISIE(i), sdf.format(ptg.getDateSaisie()) + " a " + hrs.format(ptg.getDateSaisie()));
 		}
-	}
-
-	/**
-	 * Retourne une hashTable de la hierarchie des Service selon le code
-	 * Service.
-	 * 
-	 * @return hTree
-	 */
-	public Hashtable<String, TreeHierarchy> getHTree() {
-		return hTree;
 	}
 
 	@Override
@@ -200,15 +197,6 @@ public class OePTGVisualisation extends BasicProcess {
 
 	public HashMap<Integer, ConsultPointageDto> getListePointage() {
 		return listePointage == null ? new HashMap<Integer, ConsultPointageDto>() : listePointage;
-	}
-
-	/**
-	 * Retourne la liste des services.
-	 * 
-	 * @return listeServices
-	 */
-	public ArrayList<Service> getListeServices() {
-		return listeServices;
 	}
 
 	public ArrayList<RefTypePointageDto> getListeTypes() {
@@ -384,8 +372,8 @@ public class OePTGVisualisation extends BasicProcess {
 	 * création : (13/09/11 08:45:29)
 	 * 
 	 */
-	public String getNOM_ST_CODE_SERVICE() {
-		return "NOM_ST_CODE_SERVICE";
+	public String getNOM_ST_ID_SERVICE_ADS() {
+		return "NOM_ST_ID_SERVICE_ADS";
 	}
 
 	/**
@@ -604,8 +592,8 @@ public class OePTGVisualisation extends BasicProcess {
 	 * Date de création : (13/09/11 08:45:29)
 	 * 
 	 */
-	public String getVAL_ST_CODE_SERVICE() {
-		return getZone(getNOM_ST_CODE_SERVICE());
+	public String getVAL_ST_ID_SERVICE_ADS() {
+		return getZone(getNOM_ST_ID_SERVICE_ADS());
 	}
 
 	/**
@@ -713,10 +701,9 @@ public class OePTGVisualisation extends BasicProcess {
 	 * médical.
 	 */
 	private void initialiseListeDeroulante() throws Exception {
-		SirhPtgWSConsumer t = new SirhPtgWSConsumer();
 		// Si liste etat vide alors affectation
 		if (getLB_ETAT() == LBVide) {
-			List<RefEtatDto> etats = t.getEtatsPointage();
+			List<RefEtatDto> etats = ptgService.getEtatsPointage();
 			setListeEtats((ArrayList<RefEtatDto>) etats);
 			int[] tailles = { 50 };
 			FormateListe aFormat = new FormateListe(tailles);
@@ -730,7 +717,7 @@ public class OePTGVisualisation extends BasicProcess {
 		}
 		// Si liste type vide alors affectation
 		if (getLB_TYPE() == LBVide) {
-			List<RefTypePointageDto> types = t.getTypesPointage();
+			List<RefTypePointageDto> types = ptgService.getTypesPointage();
 			setListeTypes((ArrayList<RefTypePointageDto>) types);
 
 			int[] tailles = { 50 };
@@ -779,44 +766,6 @@ public class OePTGVisualisation extends BasicProcess {
 			addZone(getNOM_LB_POPULATION_SELECT(), Const.ZERO);
 
 		}
-		// Si la liste des services est nulle
-		if (getListeServices() == null || getListeServices().isEmpty()) {
-			ArrayList<Service> services = Service.listerServiceActif(getTransaction());
-			setListeServices(services);
-
-			// Tri par codeservice
-			Collections.sort(getListeServices(), new Comparator<Object>() {
-				public int compare(Object o1, Object o2) {
-					Service s1 = (Service) o1;
-					Service s2 = (Service) o2;
-					return (s1.getCodService().compareTo(s2.getCodService()));
-				}
-			});
-
-			// alim de la hTree
-			hTree = new Hashtable<>();
-			TreeHierarchy parent = null;
-			for (int i = 0; i < getListeServices().size(); i++) {
-				Service serv = (Service) getListeServices().get(i);
-
-				if (Const.CHAINE_VIDE.equals(serv.getCodService())) {
-					continue;
-				}
-
-				// recherche du supérieur
-				String codeService = serv.getCodService();
-				while (codeService.endsWith("A")) {
-					codeService = codeService.substring(0, codeService.length() - 1);
-				}
-				codeService = codeService.substring(0, codeService.length() - 1);
-				codeService = Services.rpad(codeService, 4, "A");
-				parent = hTree.get(codeService);
-				int indexParent = (parent == null ? 0 : parent.getIndex());
-				hTree.put(serv.getCodService(), new TreeHierarchy(serv, i, indexParent));
-
-			}
-		}
-
 	}
 
 	@Override
@@ -876,6 +825,15 @@ public class OePTGVisualisation extends BasicProcess {
 		if (getAgentDao() == null) {
 			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (null == adsService) {
+			adsService = (IAdsService) context.getBean("adsService");
+		}
+		if (null == radiService) {
+			radiService = (IRadiService) context.getBean("radiService");
+		}
+		if (null == ptgService) {
+			ptgService = (PtgService) context.getBean("ptgService");
+		}
 	}
 
 	private void initialiseInfoVentilation() {
@@ -896,8 +854,7 @@ public class OePTGVisualisation extends BasicProcess {
 	}
 
 	private VentilDateDto getInfoVentilation(String statut) {
-		SirhPtgWSConsumer t = new SirhPtgWSConsumer();
-		VentilDateDto dto = t.getVentilationEnCours(statut);
+		VentilDateDto dto = ptgService.getVentilationEnCours(statut);
 		return dto;
 	}
 
@@ -913,15 +870,14 @@ public class OePTGVisualisation extends BasicProcess {
 		// on controle que le service saisie est bien un service
 		String sigleService = getVAL_EF_SERVICE().toUpperCase();
 		if (!sigleService.equals(Const.CHAINE_VIDE)) {
+
 			// on cherche le code service associé
-			Service siserv = Service.chercherServiceBySigle(getTransaction(), sigleService);
-			if (getTransaction().isErreur() || siserv == null || siserv.getCodService() == null) {
-				getTransaction().traiterErreur();
+			EntiteDto serv = adsService.getEntiteBySigle(sigleService);
+			if (null == serv || 0 == serv.getIdEntite()) {
 				// ERR502", "Le sigle service saisie ne permet pas de trouver le
 				// service associé."
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR502"));
 				return false;
-
 			}
 		}
 
@@ -940,7 +896,6 @@ public class OePTGVisualisation extends BasicProcess {
 		if (!performControlerFiltres()) {
 			return false;
 		}
-		SirhPtgWSConsumer t = new SirhPtgWSConsumer();
 
 		String dateDeb = getVAL_ST_DATE_MIN();
 		String dateMin = Services.convertitDate(dateDeb, "dd/MM/yyyy", "yyyyMMdd");
@@ -1013,7 +968,7 @@ public class OePTGVisualisation extends BasicProcess {
 			}
 			// on receupere tous les agents qui ont des pointages
 			// on regarde si il sont du type de population choisi
-			ArrayList<Integer> listIdAgentPtg = t.getListeIdAgentPointage();
+			ArrayList<Integer> listIdAgentPtg = (ArrayList<Integer>) ptgService.getListeIdAgentPointage();
 			for (Integer idAgentPtg : listIdAgentPtg) {
 				if (listeTempAgent.contains(idAgentPtg) && !idAgentPopulation.contains(idAgentPtg.toString())) {
 					idAgentPopulation.add(idAgentPtg.toString());
@@ -1039,31 +994,28 @@ public class OePTGVisualisation extends BasicProcess {
 		}
 
 		// SERVICE
-		Collection<String> idAgentService = new ArrayList<>();
-		String sigleService = getVAL_EF_SERVICE().toUpperCase();
-		if (!sigleService.equals(Const.CHAINE_VIDE)) {
+		Collection<String> idAgentService = new ArrayList<String>();
+		String sigle = getVAL_EF_SERVICE().toUpperCase();
+		String idServiceAds = getVAL_ST_ID_SERVICE_ADS().toUpperCase();
+
+		if (!sigle.equals(Const.CHAINE_VIDE)) {
+			EntiteDto service = adsService.getEntiteBySigle(sigle);
+			idServiceAds = service.getIdEntite().toString();
+		}
+
+		if (!idServiceAds.equals(Const.CHAINE_VIDE)) {
 			filtreAgent = true;
-			// on cherche le code service associé
-			Service siserv = Service.chercherServiceBySigle(getTransaction(), sigleService);
-			String codeService = siserv.getCodService();
+
 			// Récupération des agents
 			// on recupere les sous-service du service selectionne
-			ArrayList<String> listeSousService = null;
-			if (!codeService.equals(Const.CHAINE_VIDE)) {
-				Service serv = Service.chercherService(getTransaction(), codeService);
-				listeSousService = Service.listSousService(getTransaction(), serv.getSigleService());
-			}
+			List<Integer> listeSousService = adsService.getListIdsEntiteWithEnfantsOfEntite(new Integer(idServiceAds));
 
-			if (!codeService.equals(Const.CHAINE_VIDE)) {
-				ArrayList<String> codesServices = listeSousService;
-				if (!codesServices.contains(codeService))
-					codesServices.add(codeService);
-				ArrayList<Agent> listAgent = getAgentDao().listerAgentAvecServicesETMatricules(codesServices,
-						idAgentMin, idAgentMax);
-				for (Agent ag : listAgent) {
-					if (!idAgentService.contains(ag.getIdAgent().toString())) {
-						idAgentService.add(ag.getIdAgent().toString());
-					}
+			ArrayList<Agent> listAgent = getAgentDao().listerAgentAvecServicesETMatricules(listeSousService,
+					idAgentMin, idAgentMax);
+			// on supprime les doublons
+			for (Agent ag : listAgent) {
+				if (!idAgentService.contains(ag.getIdAgent().toString())) {
+					idAgentService.add(ag.getIdAgent().toString());
 				}
 			}
 		}
@@ -1106,7 +1058,7 @@ public class OePTGVisualisation extends BasicProcess {
 			return false;
 		}
 
-		List<ConsultPointageDto> _listePointage = t.getVisualisationPointage(dateMin, dateMax,
+		List<ConsultPointageDto> _listePointage = ptgService.getVisualisationPointage(dateMin, dateMax,
 				(List<String>) intersectionCollection, etat != null ? etat.getIdRefEtat() : null,
 				type != null ? type.getIdRefTypePointage() : null, typeHS);
 		setListePointage((ArrayList<ConsultPointageDto>) _listePointage);
@@ -1147,27 +1099,28 @@ public class OePTGVisualisation extends BasicProcess {
 		return true;
 	}
 
-	private void changeState(HttpServletRequest request, ConsultPointageDto ptg, EtatPointageEnum state) throws Exception {
+	private void changeState(HttpServletRequest request, ConsultPointageDto ptg, EtatPointageEnum state)
+			throws Exception {
 		ArrayList<ConsultPointageDto> param = new ArrayList<>();
 		param.add(ptg);
 		changeState(request, param, state);
 	}
 
-	private void changeState(HttpServletRequest request, Collection<ConsultPointageDto> ptg, EtatPointageEnum state) throws Exception {
+	private void changeState(HttpServletRequest request, Collection<ConsultPointageDto> ptg, EtatPointageEnum state)
+			throws Exception {
 		ArrayList<Integer> ids = new ArrayList<>();
 		for (ConsultPointageDto pt : ptg) {
 			ids.add(pt.getIdPointage());
 			refreshHistory(pt.getIdPointage());
 		}
-		SirhPtgWSConsumer t = new SirhPtgWSConsumer();
-		
+
 		if (!verifieDroitAgents(request)) {
 			logger.debug("Agent nul dans jsp visualisation");
 		} else {
 
 			try {
 
-				ReturnMessageDto message = t.setPtgState(ids, state.ordinal(), loggedAgent.getIdAgent());
+				ReturnMessageDto message = ptgService.setPtgState(ids, state.ordinal(), loggedAgent.getIdAgent());
 				if (message.getErrors().size() > 0) {
 					String err = Const.CHAINE_VIDE;
 					for (String erreur : message.getErrors()) {
@@ -1181,15 +1134,15 @@ public class OePTGVisualisation extends BasicProcess {
 			}
 		}
 	}
-	
+
 	private boolean verifieDroitAgents(HttpServletRequest request) throws Exception {
 
-		if(null == loggedAgent) {
+		if (null == loggedAgent) {
 			// on recupere l'agent connecte
 			UserAppli uUser = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
 			// on fait la correspondance entre le login et l'agent via RADI
-			RadiWSConsumer radiConsu = new RadiWSConsumer();
-			LightUserDto user = radiConsu.getAgentCompteADByLogin(uUser.getUserName());
+
+			LightUserDto user = radiService.getAgentCompteADByLogin(uUser.getUserName());
 			if (user == null) {
 				// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
@@ -1197,7 +1150,7 @@ public class OePTGVisualisation extends BasicProcess {
 			}
 			if (user != null && user.getEmployeeNumber() != null && user.getEmployeeNumber() != 0) {
 				loggedAgent = getAgentDao().chercherAgentParMatricule(
-						radiConsu.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
+						radiService.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
 				if (getTransaction().isErreur()) {
 					getTransaction().traiterErreur();
 					// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
@@ -1281,7 +1234,7 @@ public class OePTGVisualisation extends BasicProcess {
 	 */
 	public boolean performPB_SUPPRIMER_RECHERCHER_SERVICE(HttpServletRequest request) throws Exception {
 		// On enleve le service selectionnée
-		addZone(getNOM_ST_CODE_SERVICE(), Const.CHAINE_VIDE);
+		addZone(getNOM_ST_ID_SERVICE_ADS(), Const.CHAINE_VIDE);
 		addZone(getNOM_EF_SERVICE(), Const.CHAINE_VIDE);
 		return true;
 	}
@@ -1464,15 +1417,6 @@ public class OePTGVisualisation extends BasicProcess {
 		}
 	}
 
-	/**
-	 * Met a jour la liste des services.
-	 * 
-	 * @param listeServices
-	 */
-	private void setListeServices(ArrayList<Service> listeServices) {
-		this.listeServices = listeServices;
-	}
-
 	public void setListeTypes(ArrayList<RefTypePointageDto> listeTypes) {
 		this.listeTypes = listeTypes;
 	}
@@ -1481,34 +1425,18 @@ public class OePTGVisualisation extends BasicProcess {
 		return loggedAgent;
 	}
 
-	private void loadHistory() {
-		for (Integer i : listePointage.keySet()) {
-			loadHistory(i);
-		}
-	}
-
 	public int getHistorySize() {
 		return history.size();
 	}
 
-	private void loadHistory(int ptgId) {
-		if (!history.containsKey(ptgId)) {
-			SirhPtgWSConsumer t = new SirhPtgWSConsumer();
-			history.put(ptgId, t.getVisualisationHistory(ptgId));
-		}
-
-	}
-
 	private void refreshHistory(int ptgId) {
 		history.remove(ptgId);
-		SirhPtgWSConsumer t = new SirhPtgWSConsumer();
-		history.put(ptgId, t.getVisualisationHistory(ptgId));
+		history.put(ptgId, ptgService.getVisualisationHistory(ptgId));
 	}
 
 	public String getHistory(int ptgId) {
 
-		SirhPtgWSConsumer t = new SirhPtgWSConsumer();
-		List<ConsultPointageDto> data = t.getVisualisationHistory(ptgId);
+		List<ConsultPointageDto> data = getPtgService().getVisualisationHistory(ptgId);
 		int numParams = 8;
 		String[][] ret = new String[data.size()][numParams];
 		int index = 0;
@@ -1683,4 +1611,17 @@ public class OePTGVisualisation extends BasicProcess {
 		this.listeTypeHS = listeTypeHS;
 	}
 
+	public IPtgService getPtgService() {
+
+		if (null == ptgService) {
+			ApplicationContext context = ApplicationContextProvider.getContext();
+			ptgService = (PtgService) context.getBean("ptgService");
+		}
+		return ptgService;
+	}
+
+	public void setPtgService(IPtgService ptgService) {
+		this.ptgService = ptgService;
+	}
+	
 }

@@ -9,12 +9,15 @@ import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.gestionagent.dto.AgentDto;
 import nc.mairie.gestionagent.dto.AgentWithServiceDto;
-import nc.mairie.spring.ws.SirhWSConsumer;
+import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.VariableActivite;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
 import nc.mairie.utils.VariablesActivite;
+import nc.noumea.spring.service.ISirhService;
+
+import org.springframework.context.ApplicationContext;
 
 /**
  * Process OeAGENTRecherche Date de création : (01/01/03 09:35:10)
@@ -24,6 +27,8 @@ public class OeAGENTRechercheDroitKiosque extends BasicProcess {
 
 	private static final long serialVersionUID = 1L;
 	private List<AgentDto> listeAgents;
+
+	private ISirhService sirhService;
 
 	public void initialiseZones(HttpServletRequest request) throws Exception {
 
@@ -36,6 +41,7 @@ public class OeAGENTRechercheDroitKiosque extends BasicProcess {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
+		initialiseDao();
 
 		// Récup de l'agent activité, s'il existe
 		AgentWithServiceDto approbateur = (AgentWithServiceDto) VariableActivite.recuperer(this,
@@ -49,7 +55,7 @@ public class OeAGENTRechercheDroitKiosque extends BasicProcess {
 		VariableActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE_DROIT);
 
 		// on charge les sous agents de l'approbateur
-		List<AgentDto> result = new SirhWSConsumer().getAgentsSubordonnes(approbateur.getIdAgent());
+		List<AgentDto> result = sirhService.getAgentsSubordonnes(approbateur.getIdAgent());
 		for (AgentDto exist : listAgentExistant) {
 			if (result.contains(exist))
 				result.remove(exist);
@@ -67,6 +73,14 @@ public class OeAGENTRechercheDroitKiosque extends BasicProcess {
 		});
 		afficheListe();
 
+	}
+
+	private void initialiseDao() {
+		// on initialise le dao
+		ApplicationContext context = ApplicationContextProvider.getContext();
+		if (null == sirhService) {
+			sirhService = (ISirhService) context.getBean("sirhService");
+		}
 	}
 
 	private void afficheListe() {

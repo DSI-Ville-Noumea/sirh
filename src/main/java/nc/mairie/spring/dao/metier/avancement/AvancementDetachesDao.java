@@ -75,7 +75,7 @@ public class AvancementDetachesDao extends SirhDao implements AvancementDetaches
 
 	@Override
 	public ArrayList<AvancementDetaches> listerAvancementAvecAnneeEtat(Integer annee, String etat, String libFiliere,
-			Integer idAgent, ArrayList<String> listeSousService, String categorie) throws Exception {
+			Integer idAgent, List<String> listeSousService, String categorie) throws Exception {
 
 		String reqWhere = Const.CHAINE_VIDE;
 		if (libFiliere != null) {

@@ -8,7 +8,6 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
@@ -34,15 +33,12 @@ import nc.mairie.metier.agent.Agent;
 import nc.mairie.metier.carriere.Carriere;
 import nc.mairie.metier.parametrage.ReferentRh;
 import nc.mairie.metier.poste.Affectation;
-import nc.mairie.metier.poste.Service;
 import nc.mairie.spring.dao.metier.agent.AgentDao;
 import nc.mairie.spring.dao.metier.parametrage.ReferentRhDao;
 import nc.mairie.spring.dao.metier.poste.AffectationDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.spring.ws.MSDateTransformer;
-import nc.mairie.spring.ws.RadiWSConsumer;
-import nc.mairie.spring.ws.SirhAbsWSConsumer;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
@@ -50,8 +46,12 @@ import nc.mairie.technique.UserAppli;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
-import nc.mairie.utils.TreeHierarchy;
 import nc.mairie.utils.VariablesActivite;
+import nc.noumea.mairie.ads.dto.EntiteDto;
+import nc.noumea.spring.service.AbsService;
+import nc.noumea.spring.service.IAbsService;
+import nc.noumea.spring.service.IAdsService;
+import nc.noumea.spring.service.IRadiService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -86,8 +86,6 @@ public class OeABSVisualisation extends BasicProcess {
 	private String[] LB_OS;
 	private String[] LB_GESTIONNAIRE;
 
-	public Hashtable<String, TreeHierarchy> hTree = null;
-	private ArrayList<Service> listeServices;
 	private ArrayList<EnumEtatAbsence> listeEtats;
 	private ArrayList<TypeAbsenceDto> listeFamilleAbsence;
 	private ArrayList<TypeAbsenceDto> listeFamilleAbsenceCreation;
@@ -109,6 +107,12 @@ public class OeABSVisualisation extends BasicProcess {
 	private AgentDao agentDao;
 	private AffectationDao affectationDao;
 	private ReferentRhDao referentRhDao;
+
+	private IAdsService adsService;
+
+	private IRadiService radiService;
+
+	private IAbsService absService;
 
 	private String typeFiltre;
 
@@ -180,6 +184,15 @@ public class OeABSVisualisation extends BasicProcess {
 		if (getReferentRhDao() == null) {
 			setReferentRhDao(new ReferentRhDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (null == adsService) {
+			adsService = (IAdsService) context.getBean("adsService");
+		}
+		if (null == radiService) {
+			radiService = (IRadiService) context.getBean("radiService");
+		}
+		if (null == absService) {
+			absService = (AbsService) context.getBean("absService");
+		}
 	}
 
 	private void initialiseListeDeroulante() throws Exception {
@@ -216,8 +229,7 @@ public class OeABSVisualisation extends BasicProcess {
 
 		// Si liste famille absence vide alors affectation
 		if (getLB_FAMILLE_CREATION() == LBVide) {
-			SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
-			setListeFamilleAbsenceCreation((ArrayList<TypeAbsenceDto>) consuAbs.getListeRefTypeAbsenceDto(null));
+			setListeFamilleAbsenceCreation((ArrayList<TypeAbsenceDto>) absService.getListeRefTypeAbsenceDto(null));
 
 			int[] tailles = { 100 };
 			FormateListe aFormat = new FormateListe(tailles);
@@ -233,8 +245,7 @@ public class OeABSVisualisation extends BasicProcess {
 
 		// Si liste organisation syndicale vide alors affectation
 		if (getLB_OS() == LBVide) {
-			SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
-			ArrayList<OrganisationSyndicaleDto> listeOrga = (ArrayList<OrganisationSyndicaleDto>) consuAbs
+			ArrayList<OrganisationSyndicaleDto> listeOrga = (ArrayList<OrganisationSyndicaleDto>) absService
 					.getListeOrganisationSyndicale();
 			setListeOrganisationSyndicale(listeOrga);
 
@@ -246,43 +257,6 @@ public class OeABSVisualisation extends BasicProcess {
 			}
 			setLB_OS(aFormat.getListeFormatee(false));
 			addZone(getNOM_LB_OS_SELECT(), Const.ZERO);
-		}
-		// Si la liste des services est nulle
-		if (getListeServices() == null || getListeServices().isEmpty()) {
-			ArrayList<Service> services = Service.listerServiceActif(getTransaction());
-			setListeServices(services);
-
-			// Tri par codeservice
-			Collections.sort(getListeServices(), new Comparator<Object>() {
-				public int compare(Object o1, Object o2) {
-					Service s1 = (Service) o1;
-					Service s2 = (Service) o2;
-					return (s1.getCodService().compareTo(s2.getCodService()));
-				}
-			});
-
-			// alim de la hTree
-			hTree = new Hashtable<>();
-			TreeHierarchy parent = null;
-			for (int i = 0; i < getListeServices().size(); i++) {
-				Service serv = (Service) getListeServices().get(i);
-
-				if (Const.CHAINE_VIDE.equals(serv.getCodService())) {
-					continue;
-				}
-
-				// recherche du supérieur
-				String codeService = serv.getCodService();
-				while (codeService.endsWith("A")) {
-					codeService = codeService.substring(0, codeService.length() - 1);
-				}
-				codeService = codeService.substring(0, codeService.length() - 1);
-				codeService = Services.rpad(codeService, 4, "A");
-				parent = hTree.get(codeService);
-				int indexParent = (parent == null ? 0 : parent.getIndex());
-				hTree.put(serv.getCodService(), new TreeHierarchy(serv, i, indexParent));
-
-			}
 		}
 
 		// si liste des heures vide alors affectation
@@ -329,8 +303,7 @@ public class OeABSVisualisation extends BasicProcess {
 
 		// Si liste groupe absence vide alors affectation
 		if (getLB_GROUPE() == LBVide) {
-			SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
-			setListeGroupeAbsence((ArrayList<RefGroupeAbsenceDto>) consuAbs.getRefGroupeAbsence());
+			setListeGroupeAbsence((ArrayList<RefGroupeAbsenceDto>) absService.getRefGroupeAbsence());
 
 			int[] tailles = { 100 };
 			FormateListe aFormat = new FormateListe(tailles);
@@ -343,7 +316,11 @@ public class OeABSVisualisation extends BasicProcess {
 			setLB_GROUPE(aFormat.getListeFormatee(true));
 			addZone(getNOM_LB_GROUPE_SELECT(), Const.ZERO);
 		}
+	}
 
+	public String getCurrentWholeTreeJS(String serviceSaisi) {
+		return adsService.getCurrentWholeTreeActifTransitoireJS(
+				null != serviceSaisi && !"".equals(serviceSaisi) ? serviceSaisi : null, false);
 	}
 
 	@Override
@@ -494,12 +471,12 @@ public class OeABSVisualisation extends BasicProcess {
 		return getZone(getNOM_EF_SERVICE());
 	}
 
-	public String getNOM_ST_CODE_SERVICE() {
-		return "NOM_ST_CODE_SERVICE";
+	public String getNOM_ST_ID_SERVICE_ADS() {
+		return "NOM_ST_ID_SERVICE_ADS";
 	}
 
-	public String getVAL_ST_CODE_SERVICE() {
-		return getZone(getNOM_ST_CODE_SERVICE());
+	public String getVAL_ST_ID_SERVICE_ADS() {
+		return getZone(getNOM_ST_ID_SERVICE_ADS());
 	}
 
 	public String getNOM_PB_SUPPRIMER_RECHERCHER_SERVICE() {
@@ -508,7 +485,7 @@ public class OeABSVisualisation extends BasicProcess {
 
 	public boolean performPB_SUPPRIMER_RECHERCHER_SERVICE(HttpServletRequest request) throws Exception {
 		// On enleve le service selectionnée
-		addZone(getNOM_ST_CODE_SERVICE(), Const.CHAINE_VIDE);
+		addZone(getNOM_ST_ID_SERVICE_ADS(), Const.CHAINE_VIDE);
 		addZone(getNOM_EF_SERVICE(), Const.CHAINE_VIDE);
 		return true;
 	}
@@ -629,24 +606,21 @@ public class OeABSVisualisation extends BasicProcess {
 
 		// SERVICE
 		List<String> idAgentService = new ArrayList<>();
-		String sigleService = getVAL_EF_SERVICE().toUpperCase();
-		if (!sigleService.equals(Const.CHAINE_VIDE) && null == idAgentDemande) {
-			// on cherche le code service associé
-			Service siserv = Service.chercherServiceBySigle(getTransaction(), sigleService);
-			String codeService = siserv.getCodService();
+		String sigle = getVAL_EF_SERVICE().toUpperCase();
+		String idServiceAds = getVAL_ST_ID_SERVICE_ADS().toUpperCase();
+
+		if (!sigle.equals(Const.CHAINE_VIDE) && null == idAgentDemande) {
+			EntiteDto service = adsService.getEntiteBySigle(sigle);
+			idServiceAds = new Long(service.getIdEntite()).toString();
+		}
+
+		if (!idServiceAds.equals(Const.CHAINE_VIDE) && null == idAgentDemande) {
 			// Récupération des agents
 			// on recupere les sous-service du service selectionne
-			ArrayList<String> listeSousService = null;
-			if (!codeService.equals(Const.CHAINE_VIDE)) {
-				Service serv = Service.chercherService(getTransaction(), codeService);
-				listeSousService = Service.listSousService(getTransaction(), serv.getSigleService());
-			}
+			List<Integer> listeSousService = adsService.getListIdsEntiteWithEnfantsOfEntite(new Integer(idServiceAds));
 
-			if (!codeService.equals(Const.CHAINE_VIDE)) {
-				ArrayList<String> codesServices = listeSousService;
-				if (!codesServices.contains(codeService))
-					codesServices.add(codeService);
-				ArrayList<Agent> listAgent = getAgentDao().listerAgentAvecServicesETMatricules(codesServices, null,
+			if (null != listeSousService && !listeSousService.isEmpty()) {
+				ArrayList<Agent> listAgent = getAgentDao().listerAgentAvecServicesETMatricules(listeSousService, null,
 						null);
 				for (Agent ag : listAgent) {
 					if (!idAgentService.contains(ag.getIdAgent().toString())) {
@@ -670,7 +644,7 @@ public class OeABSVisualisation extends BasicProcess {
 		if (numGestionnaire != -1 && numGestionnaire != 0) {
 			gestionnaire = (ReferentRh) getListeGestionnaire().get(numGestionnaire - 1);
 		}
-		if (sigleService.equals(Const.CHAINE_VIDE) && null == idAgentDemande && gestionnaire != null) {
+		if (idServiceAds.equals(Const.CHAINE_VIDE) && null == idAgentDemande && gestionnaire != null) {
 
 			List<ReferentRh> listServiceRH = null;
 			try {
@@ -685,18 +659,17 @@ public class OeABSVisualisation extends BasicProcess {
 			}
 			// Récupération des agents
 			// on recupere les sous-service du service selectionne
-			List<String> listeService = new ArrayList<String>();
+			List<Integer> listeIdsServiceAdsReferentRh = new ArrayList<Integer>();
 			for (ReferentRh service : listServiceRH) {
-				listeService.add(service.getServi());
+				listeIdsServiceAdsReferentRh.add(service.getIdServiceAds());
 			}
-			List<String> listeSousServiceTmp = new ArrayList<String>();
-			for (String service : listeService) {
-				Service serv = Service.chercherService(getTransaction(), service);
-				listeSousServiceTmp.addAll(Service.listSousService(getTransaction(), serv.getSigleService()));
+			List<Integer> listeSousServiceTmp = new ArrayList<Integer>();
+			for (Integer idService : listeIdsServiceAdsReferentRh) {
+				listeSousServiceTmp.addAll(adsService.getListIdsEntiteWithEnfantsOfEntite(idService));
 			}
 			// on trie la liste des sous service pour supprimer les doublons
-			ArrayList<String> listeSousService = new ArrayList<String>();
-			for (String sousService : listeSousServiceTmp) {
+			ArrayList<Integer> listeSousService = new ArrayList<Integer>();
+			for (Integer sousService : listeSousServiceTmp) {
 				if (!listeSousService.contains(sousService)) {
 					listeSousService.add(sousService);
 				}
@@ -710,8 +683,7 @@ public class OeABSVisualisation extends BasicProcess {
 			}
 		}
 
-		SirhAbsWSConsumer t = new SirhAbsWSConsumer();
-		List<DemandeDto> listeDemande = t.getListeDemandes(dateMin, dateMax, listeEtat.size() == 0 ? null : listeEtat
+		List<DemandeDto> listeDemande = absService.getListeDemandes(dateMin, dateMax, listeEtat.size() == 0 ? null : listeEtat
 				.toString().replace("[", "").replace("]", "").replace(" ", ""),
 				type == null ? null : type.getIdRefTypeAbsence(),
 				idAgentDemande == null ? null : Integer.valueOf(idAgentDemande),
@@ -855,33 +827,19 @@ public class OeABSVisualisation extends BasicProcess {
 	private boolean performControlerFiltres() throws Exception {
 
 		// on controle que le service saisie est bien un service
-		String sigleService = getVAL_EF_SERVICE().toUpperCase();
-		if (!sigleService.equals(Const.CHAINE_VIDE)) {
+		String sigle = getVAL_EF_SERVICE().toUpperCase();
+		if (!sigle.equals(Const.CHAINE_VIDE)) {
 			// on cherche le code service associé
-			Service siserv = Service.chercherServiceBySigle(getTransaction(), sigleService);
-			if (getTransaction().isErreur() || siserv == null || siserv.getCodService() == null) {
-				getTransaction().traiterErreur();
+			EntiteDto serv = adsService.getEntiteBySigle(sigle);
+			if (null == serv || 0 == serv.getIdEntite()) {
 				// ERR502", "Le sigle service saisie ne permet pas de trouver le
 				// service associé."
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR502"));
 				return false;
-
 			}
 		}
 
 		return true;
-	}
-
-	public ArrayList<Service> getListeServices() {
-		return listeServices;
-	}
-
-	private void setListeServices(ArrayList<Service> listeServices) {
-		this.listeServices = listeServices;
-	}
-
-	public Hashtable<String, TreeHierarchy> getHTree() {
-		return hTree;
 	}
 
 	public ArrayList<EnumEtatAbsence> getListeEtats() {
@@ -1014,8 +972,7 @@ public class OeABSVisualisation extends BasicProcess {
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR805", idAgent));
 					return false;
 				}
-				SirhAbsWSConsumer consu = new SirhAbsWSConsumer();
-				type = consu.getTypeAbsence(aff.getIdBaseHoraireAbsence());
+				type = absService.getTypeAbsence(aff.getIdBaseHoraireAbsence());
 			}
 			setTypeCreation(type);
 		}
@@ -1033,17 +990,16 @@ public class OeABSVisualisation extends BasicProcess {
 						.getValue() || type.getGroupeAbsence().getIdRefGroupeAbsence() == EnumTypeGroupeAbsence.CONGES_ANNUELS
 						.getValue()))) {
 
-			SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
 			ArrayList<OrganisationSyndicaleDto> listeOrga = new ArrayList<OrganisationSyndicaleDto>();
 			if (type.getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.ASA_A52.getCode().toString())) {
-				listeOrga = (ArrayList<OrganisationSyndicaleDto>) consuAbs.getListeOrganisationSyndicaleActiveByAgent(
+				listeOrga = (ArrayList<OrganisationSyndicaleDto>) absService.getListeOrganisationSyndicaleActiveByAgent(
 						new Integer(idAgent), type.getIdRefTypeAbsence());
 				if (null == listeOrga || listeOrga.isEmpty()) {
 					getTransaction().declarerErreur("L'agent ne fait parti d'aucun syndicat.");
 					return false;
 				}
 			} else {
-				listeOrga = (ArrayList<OrganisationSyndicaleDto>) consuAbs.getListeOrganisationSyndicale();
+				listeOrga = (ArrayList<OrganisationSyndicaleDto>) absService.getListeOrganisationSyndicale();
 			}
 
 			setListeOrganisationSyndicale(listeOrga);
@@ -1179,8 +1135,7 @@ public class OeABSVisualisation extends BasicProcess {
 
 		UserAppli uUser = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
 		// on fait la correspondance entre le login et l'agent via RADI
-		RadiWSConsumer radiConsu = new RadiWSConsumer();
-		LightUserDto user = radiConsu.getAgentCompteADByLogin(uUser.getUserName());
+		LightUserDto user = radiService.getAgentCompteADByLogin(uUser.getUserName());
 		if (user == null) {
 			getTransaction().traiterErreur();
 			// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
@@ -1190,7 +1145,7 @@ public class OeABSVisualisation extends BasicProcess {
 			if (user != null && user.getEmployeeNumber() != null && user.getEmployeeNumber() != 0) {
 				try {
 					agent = getAgentDao().chercherAgentParMatricule(
-							radiConsu.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
+							radiService.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
 				} catch (Exception e) {
 					// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
@@ -1320,8 +1275,7 @@ public class OeABSVisualisation extends BasicProcess {
 
 	public String getHistory(int absId, int idDemande) {
 
-		SirhAbsWSConsumer t = new SirhAbsWSConsumer();
-		history.put(absId, t.getVisualisationHistory(idDemande));
+		history.put(absId, getAbsService().getVisualisationHistory(idDemande));
 
 		List<DemandeDto> data = history.get(absId);
 		int numParams = 7;
@@ -1419,8 +1373,7 @@ public class OeABSVisualisation extends BasicProcess {
 						MessageUtils.getMessage("ERR805", dem.getAgentWithServiceDto().getIdAgent().toString()));
 				return false;
 			}
-			SirhAbsWSConsumer consu = new SirhAbsWSConsumer();
-			type = consu.getTypeAbsence(aff.getIdBaseHoraireAbsence());
+			type = absService.getTypeAbsence(aff.getIdBaseHoraireAbsence());
 		}
 		setTypeCreation(type);
 
@@ -1652,7 +1605,6 @@ public class OeABSVisualisation extends BasicProcess {
 
 	private void changeState(HttpServletRequest request, Collection<DemandeDto> dem, EnumEtatAbsence state, String motif)
 			throws Exception {
-		SirhAbsWSConsumer t = new SirhAbsWSConsumer();
 		Agent agentConnecte = getAgentConnecte(request);
 		if (agentConnecte == null) {
 			logger.debug("Agent nul dans jsp visualisation");
@@ -1668,7 +1620,7 @@ public class OeABSVisualisation extends BasicProcess {
 
 			String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class)
 					.deepSerialize(listDto);
-			ReturnMessageDto message = t.setAbsState(agentConnecte.getIdAgent(), json);
+			ReturnMessageDto message = absService.setAbsState(agentConnecte.getIdAgent(), json);
 
 			for (DemandeDto d : dem) {
 				refreshHistory(d.getIdDemande());
@@ -1698,8 +1650,7 @@ public class OeABSVisualisation extends BasicProcess {
 
 	private void refreshHistory(int absId) {
 		history.remove(absId);
-		SirhAbsWSConsumer t = new SirhAbsWSConsumer();
-		history.put(absId, t.getVisualisationHistory(absId));
+		history.put(absId, absService.getVisualisationHistory(absId));
 	}
 
 	public String getNOM_PB_ANNULER_DEMANDE(int i) {
@@ -2100,8 +2051,7 @@ public class OeABSVisualisation extends BasicProcess {
 		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class)
 				.deepSerialize(dto);
 
-		SirhAbsWSConsumer t = new SirhAbsWSConsumer();
-		ReturnMessageDto srm = t.saveDemande(agentConnecte.getIdAgent(), json);
+		ReturnMessageDto srm = absService.saveDemande(agentConnecte.getIdAgent(), json);
 
 		if (srm.getErrors().size() > 0) {
 			String err = Const.CHAINE_VIDE;
@@ -2226,8 +2176,7 @@ public class OeABSVisualisation extends BasicProcess {
 
 		// on charge les familles
 		if (groupe != null) {
-			SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
-			setListeFamilleAbsence((ArrayList<TypeAbsenceDto>) consuAbs.getListeRefTypeAbsenceDto(groupe
+			setListeFamilleAbsence((ArrayList<TypeAbsenceDto>) absService.getListeRefTypeAbsenceDto(groupe
 					.getIdRefGroupeAbsence()));
 		} else {
 			setListeFamilleAbsence(null);
@@ -2319,18 +2268,17 @@ public class OeABSVisualisation extends BasicProcess {
 			}
 			// Récupération des agents
 			// on recupere les sous-service du service selectionne
-			List<String> listeService = new ArrayList<String>();
+			List<Integer> listeService = new ArrayList<Integer>();
 			for (ReferentRh service : listServiceRH) {
-				listeService.add(service.getServi());
+				listeService.add(service.getIdServiceAds());
 			}
-			List<String> listeSousServiceTmp = new ArrayList<String>();
-			for (String service : listeService) {
-				Service serv = Service.chercherService(getTransaction(), service);
-				listeSousServiceTmp.addAll(Service.listSousService(getTransaction(), serv.getSigleService()));
+			List<Integer> listeSousServiceTmp = new ArrayList<Integer>();
+			for (Integer idService : listeService) {
+				listeSousServiceTmp.addAll(adsService.getListIdsEntiteWithEnfantsOfEntite(idService));
 			}
 			// on trie la liste des sous service pour supprimer les doublons
-			ArrayList<String> listeSousService = new ArrayList<String>();
-			for (String sousService : listeSousServiceTmp) {
+			ArrayList<Integer> listeSousService = new ArrayList<Integer>();
+			for (Integer sousService : listeSousServiceTmp) {
 				if (!listeSousService.contains(sousService)) {
 					listeSousService.add(sousService);
 				}
@@ -2344,8 +2292,7 @@ public class OeABSVisualisation extends BasicProcess {
 			}
 		}
 
-		SirhAbsWSConsumer t = new SirhAbsWSConsumer();
-		List<DemandeDto> listeDemande = t.getListeDemandes(dateMin, dateMax, listeEtat.size() == 0 ? null : listeEtat
+		List<DemandeDto> listeDemande = absService.getListeDemandes(dateMin, dateMax, listeEtat.size() == 0 ? null : listeEtat
 				.toString().replace("[", "").replace("]", "").replace(" ", ""),
 				type == null ? null : type.getIdRefTypeAbsence(),
 				idAgentDemande == null ? null : Integer.valueOf(idAgentDemande),
@@ -2406,8 +2353,7 @@ public class OeABSVisualisation extends BasicProcess {
 		if (demandeDto.getDateDebut() != null
 				&& (demandeDto.getDateFin() != null || demandeDto.getDateReprise() != null)) {
 			demandeDto.setTypeSaisiCongeAnnuel(getTypeCreation().getTypeSaisiCongeAnnuelDto());
-			SirhAbsWSConsumer absWsConsumer = new SirhAbsWSConsumer();
-			DemandeDto dureeDto = absWsConsumer.getDureeCongeAnnuel(demandeDto);
+			DemandeDto dureeDto = absService.getDureeCongeAnnuel(demandeDto);
 			return dureeDto.getDuree().toString();
 		}
 		return null;
@@ -2478,5 +2424,18 @@ public class OeABSVisualisation extends BasicProcess {
 	public String getNOM_RB_ETAT_VALIDE() {
 		return "NOM_RB_ETAT_VALIDE";
 	}
+
+	public IAbsService getAbsService() {
+		if (null == absService) {
+			ApplicationContext context = ApplicationContextProvider.getContext();
+			absService = (AbsService) context.getBean("absService");
+		}
+		return absService;
+	}
+
+	public void setAbsService(IAbsService absService) {
+		this.absService = absService;
+	}
+	
 
 }

@@ -1,8 +1,7 @@
+<%@page import="nc.mairie.metier.poste.FichePoste"%>
 <%@ page contentType="text/html; charset=UTF-8" %> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <%@page import="java.util.ArrayList"%>
 <%@page import="nc.mairie.metier.poste.TitrePoste"%>
-<%@page import="nc.mairie.metier.poste.Service"%>
-<%@page import="nc.mairie.utils.TreeHierarchy"%>
 <HTML>
 	<jsp:useBean class="nc.mairie.gestionagent.process.poste.OePOSTEFPRechercheAvancee" id="process" scope="session"></jsp:useBean>
 	<HEAD>
@@ -10,15 +9,18 @@
 		<META http-equiv="Content-Style-Type" content="text/css">
 		<LINK href="theme/sigp2.css" rel="stylesheet" type="text/css">
 		<lINK rel="stylesheet" href="css/custom-theme/jquery-ui-1.8.16.custom.css" type="text/css">
+		<LINK href="theme/dataTables.css" rel="stylesheet" type="text/css">
+		<LINK href="TableTools-2.0.1/media/css/TableTools.css" rel="stylesheet" type="text/css">
 		<TITLE>Sélection d'une fiche de poste</TITLE>
 		
 		<SCRIPT type="text/javascript" src="js/jquery-1.6.2.min.js"></SCRIPT>
+		<script type="text/javascript" src="js/jquery.dataTables.js"></script>
+		<script type="text/javascript" src="TableTools-2.0.1/media/js/TableTools.min.js"></script>
 		<script type="text/javascript" src="development-bundle/ui/jquery.ui.core.js"></script>
 		<script type="text/javascript" src="development-bundle/ui/jquery.ui.widget.js"></script>
 		<script type="text/javascript" src="development-bundle/ui/jquery.ui.position.js"></script>
 		<SCRIPT type="text/javascript" src="development-bundle/ui/jquery.ui.autocomplete.js"></SCRIPT>
 		<SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT>
-		<SCRIPT language="javascript" src="js/dtree.js"></SCRIPT>
 		
 		<SCRIPT language="JavaScript">
 		//afin de sélectionner un élément dans une liste
@@ -32,32 +34,6 @@
 		{
 		if (document.formu.elements[nom] != null)
 		document.formu.elements[nom].focus();
-		}
-		
-		// afin d'afficher la hiérarchie des services
-		function agrandirHierarchy() {
-		
-			hier = 	document.getElementById('treeHierarchy');
-		
-			if (hier.style.display!='none') {
-				reduireHierarchy();
-			} else {
-				hier.style.display='block';
-			}
-		}
-		
-		// afin de cacher la hiérarchie des services
-		function reduireHierarchy() {
-			hier = 	document.getElementById('treeHierarchy');
-			hier.style.display='none';
-		}	
-		//function pour changement couleur arriere plan ligne du tableau
-		function SelectLigne(id,tailleTableau)
-		{
-			for (i=0; i<tailleTableau; i++){
-		 		document.getElementById(i).className="";
-			} 
-		 document.getElementById(id).className="selectLigne";
 		}
 		</SCRIPT>
 		<%
@@ -81,7 +57,21 @@
 				$("#listeTitrePoste").autocomplete({source:availableTitres
 				});
 			});
-		</SCRIPT>
+			
+			$(document).ready(function() {
+				$('#tabFDP').dataTable({
+				"oLanguage": {"sUrl": "media/dataTables/language/fr_FR.txt"},
+				"aoColumns": [null,null,null,null],
+				"sDom": '<"H"fl>t<"F"iT>',
+				"sScrollY": "375px",
+				"bPaginate": false,
+				"oTableTools": {
+					"aButtons": [{"sExtends":"xls","sButtonText":"Export Excel","mColumns":"visible","sTitle":"rechercheFDP","sFileName":"*.xls"}], //OU : "mColumns":[0,1,2,3,4]
+					"sSwfPath": "TableTools-2.0.1/media/swf/copy_cvs_xls_pdf.swf"
+					}
+				});
+			} );
+		</script>
 		<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	</HEAD>
 	<BODY bgcolor="#FFFFFF" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="return setfocus('<%= process.getFocus() %>')">
@@ -91,48 +81,35 @@
 				<LEGEND class="sigp2Legend">Recherche avancée d'une fiche de poste</LEGEND>
 				<table>
 					<tr>
-						<td width="60px">
+						<td width="70px">
 							<span class="sigp2">Numero :</span>
 						</td>
-						<td>
+						<td width="200px">
 							<INPUT class="sigp2-saisie" maxlength="8" name="<%= process.getNOM_EF_NUM_FICHE_POSTE() %>" size="10" type="text" value="<%= process.getVAL_EF_NUM_FICHE_POSTE() %>" style="margin-right:10px;">
 						</td>
-					</tr>
-					<tr>
-						<td>
+						<td width="100px">
+							<span class="sigp2">Recherche agent :</span>
+						</td>
+						<td width="200px">
+							<INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_AGENT() %>" size="10" readonly="readonly" type="text" value="<%= process.getVAL_ST_AGENT() %>" style="margin-right:10px;">
+							<img border="0" src="images/loupe.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_RECHERCHER_AGENT()%>');">
+			          		<img border="0" src="images/suppression.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT()%>');">
+						</td>
+						<td width="100px">
 							<span class="sigp2">Service :</span>
 						</td>
-						<td>
+						<td class="sigp2">
 							<INPUT id="service" class="sigp2-saisie" readonly="readonly" name="<%= process.getNOM_EF_SERVICE() %>" size="10" style="margin-right:10px;" type="text" value="<%= process.getVAL_EF_SERVICE() %>">
-							<img border="0" src="images/loupe.gif" width="16" title="Cliquer pour afficher l'arborescence"	height="16" style="cursor : pointer;" onclick="agrandirHierarchy();">	
-							<img border="0" src="images/suppression.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_SERVICE()%>');">
-			          		<INPUT type="hidden" id="codeservice" size="4" name="<%=process.getNOM_ST_CODE_SERVICE() %>" value="<%=process.getVAL_ST_CODE_SERVICE() %>" class="sigp2-saisie">							
-								<div class="sigp2" id="treeHierarchy" style="display: none; height: 360; width: 500; overflow:auto; background-color: #f4f4f4; border-width: 1px; border-style: solid;z-index:1;">
-									<script type="text/javascript">
-										d = new dTree('d');
-										d.add(0,-1,"Services");
-										
-										<%
-										String serviceSaisi = process.getVAL_EF_SERVICE().toUpperCase();
-										int theNode = 0;
-										for (int i =1; i <  process.getListeServices().size(); i++) {
-											Service serv = (Service)process.getListeServices().get(i);
-											String code = serv.getCodService();
-											TreeHierarchy tree = (TreeHierarchy)process.getHTree().get(code);
-											if (theNode ==0 && serviceSaisi.equals(tree.getService().getSigleService())) {
-												theNode=tree.getIndex();
-											}
-										%>
-										<%=tree.getJavaScriptLine()%>
-										<%}%>
-										document.write(d);
-								
-										d.closeAll();
-										<% if (theNode !=0) { %>
-											d.openTo(<%=theNode%>,true);
-										<%}%>
-									</script>
-								</div>
+							<span class="sigp2Mandatory" style="width:60px;">
+								<img border="0" src="images/loupe.gif" width="16" title="Cliquer pour afficher l'arborescence" height="16" style="cursor : pointer;" onclick="agrandirHierarchy();">
+								<img border="0" src="images/suppression.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_SERVICE()%>');">
+							</span>
+							<INPUT type="hidden" id="idServiceADS" size="4" name="<%=process.getNOM_ST_ID_SERVICE_ADS() %>" value="<%=process.getVAL_ST_ID_SERVICE_ADS() %>" class="sigp2-saisie">
+							<INPUT style="visibility: visible;" type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_WITH_SERVICE_ENFANT(),process.getVAL_CK_WITH_SERVICE_ENFANT())%>>Avec entités enfants									
+											
+							<!-- ////////// ARBRE DES SERVICES - ADS ///////////// -->
+							<%=process.getCurrentWholeTreeJS(process.getVAL_EF_SERVICE().toUpperCase()) %>
+							<!-- ////////// ARBRE DES SERVICES - ADS ///////////// -->	
 						</td>
 					</tr>
 					<tr>
@@ -144,6 +121,20 @@
 								<%=process.forComboHTML(process.getVAL_LB_STATUT(), process.getVAL_LB_STATUT_SELECT()) %>
 							</SELECT>
 						</td>
+						<td>
+							<span class="sigp2">Nom agent :</span>
+						</td>
+						<td>
+							<INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_NOM_AGENT() %>" size="10" type="text" value="<%= process.getVAL_ST_NOM_AGENT() %>" style="margin-right:10px;">
+						</td>
+						<td>
+							<span class="sigp2">Statut service :</span>
+						</td>
+						<td>
+							<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_STATUT_SERVICE() %>">
+								<%=process.forComboHTML(process.getVAL_LB_STATUT_SERVICE(), process.getVAL_LB_STATUT_SERVICE_SELECT()) %>
+							</SELECT>
+						</td>
 					</tr>
 					<tr>
 						<td>
@@ -152,17 +143,23 @@
 						<td>
 							<INPUT id="listeTitrePoste" class="sigp2-saisie" name="<%= process.getNOM_EF_TITRE_POSTE() %>" type="text" value="<%= process.getVAL_EF_TITRE_POSTE() %>">
 						</td>
+						<td>
+							<span class="sigp2">Matricule agent :</span>
+						</td>
+						<td>
+							<INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_MATR_AGENT() %>" size="10" type="text" value="<%= process.getVAL_ST_MATR_AGENT() %>" style="margin-right:10px;">
+						</td>
 					</tr>
 					<tr>
 						<td>
-							<span class="sigp2">Par agent :</span>
+							<span class="sigp2">Avec commentaire :</span>
 						</td>
 						<td>
-							<INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_AGENT() %>" size="10" readonly="readonly" type="text" value="<%= process.getVAL_ST_AGENT() %>" style="margin-right:10px;">
-							<img border="0" src="images/loupe.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_RECHERCHER_AGENT()%>');">
-			          		<img border="0" src="images/suppression.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT()%>');">
+							<INPUT style="visibility: visible;" type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_WITH_COMMENTAIRE(),process.getVAL_CK_WITH_COMMENTAIRE())%>><span  class="sigp2">Oui</span>									
 						</td>
 					</tr>
+					
+							
 				</table>
 				<INPUT size="1" type="text" class="sigp2-saisie" maxlength="1" name="ZoneTampon" style="display:none;">
 				<INPUT type="submit" value="Rechercher" class="sigp2-Bouton-100" name="<%=process.getNOM_PB_RECHERCHER()%>" accesskey="R">
@@ -172,32 +169,32 @@
 			<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;" title="Sélection d'une fiche de poste">
 				<LEGEND class="sigp2Legend">Sélection d'une fiche de poste</LEGEND>
             	<%if(process.getListeFP()!= null && process.getListeFP().size()>0){ %>
-				<BR>	            
-	            <span style="margin-left: 0px;">Numéro</span>
-				<span style="margin-left: 30px;">Titre</span>
-				<span style="margin-left: 425px;">Agent affecté</span>
-				<span style="margin-left: 75px;">Service</span>
-				<BR/>
-				<div style="overflow: auto;height: 250px;width:1000px;margin-right: 0px;margin-left: 0px;">
-					<table class="sigp2NewTab" style="text-align:left;width:980px;">
+            	<table class="display" id="tabFDP">
+					<thead>
+						<tr>
+							<th>Numéro</th>
+							<th>Titre</th>
+							<th>Agent affecté</th>
+							<th>Service</th>				
+						</tr>
+					</thead>
+					<tbody>
 					<%
-					int indiceFp = 0;
-					if (process.getListeFP()!=null){
-						for (int i = 0;i<process.getListeFP().size();i++){
+						for (int j = 0;j<process.getListeFP().size();j++){
+							FichePoste fp = (FichePoste) process.getListeFP().get(j);
+							Integer i = fp.getIdFichePoste();
 					%>
-							<tr id="<%=indiceFp%>" onmouseover="SelectLigne(<%=indiceFp%>,<%=process.getListeFP().size()%>)" ondblclick='executeBouton("<%=process.getNOM_PB_VALIDER(indiceFp)%>")'>
-								<td class="sigp2NewTab-liste" style="position:relative;width:70px;text-align: left;"><%=process.getVAL_ST_NUM(indiceFp)%></td>
-								<td class="sigp2NewTab-liste" style="position:relative;width:450px;text-align: left;"><%=process.getVAL_ST_TITRE(indiceFp)%></td>
-								<td class="sigp2NewTab-liste" style="position:relative;width:150px;text-align: left;"><%=process.getVAL_ST_AGENT(indiceFp)%></td>
-								<td class="sigp2NewTab-liste" style="position:relative;text-align: left;"><%=process.getVAL_ST_SERVICE(indiceFp)%></td>
-								<td><INPUT type="submit" style="display:none;" name="<%=process.getNOM_PB_VALIDER(indiceFp)%>" value="x"></td>
+							<tr  id="<%=i%>" ondblclick='executeBouton("<%=process.getNOM_PB_VALIDER(i)%>")'>
+								<td><%=process.getVAL_ST_NUM(i)%></td>
+								<td><%=process.getVAL_ST_TITRE(i)%></td>
+								<td><%=process.getVAL_ST_AGENT(i)%></td>
+								<td><%=process.getVAL_ST_SERVICE(i)%><INPUT style="display:none;" type="submit" name="<%=process.getNOM_PB_VALIDER(i)%>" value="x"></td>
 							</tr>
-							<%
-							indiceFp++;
+					<%
 						}
-					}%>
-					</table>	
-				</div>
+					%>
+					</tbody>
+				</table>
 				<BR/>
 				<%} %>
 				<INPUT type="submit" value="Annuler" class="sigp2-Bouton-100" name="<%=process.getNOM_PB_ANNULER()%>" accesskey="A">

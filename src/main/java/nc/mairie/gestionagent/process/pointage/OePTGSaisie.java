@@ -27,20 +27,22 @@ import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.Agent;
 import nc.mairie.metier.poste.Affectation;
 import nc.mairie.metier.poste.FichePoste;
-import nc.mairie.metier.poste.Service;
 import nc.mairie.spring.dao.metier.agent.AgentDao;
 import nc.mairie.spring.dao.metier.poste.AffectationDao;
 import nc.mairie.spring.dao.metier.poste.FichePosteDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
-import nc.mairie.spring.ws.RadiWSConsumer;
-import nc.mairie.spring.ws.SirhPtgWSConsumer;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.UserAppli;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
 import nc.mairie.utils.VariablesActivite;
+import nc.noumea.mairie.ads.dto.EntiteDto;
+import nc.noumea.spring.service.IAdsService;
+import nc.noumea.spring.service.IPtgService;
+import nc.noumea.spring.service.IRadiService;
+import nc.noumea.spring.service.PtgService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,6 +75,13 @@ public class OePTGSaisie extends BasicProcess {
 	private FichePosteDao fichePosteDao;
 	private AffectationDao affectationDao;
 	private AgentDao agentDao;
+
+	private IAdsService adsService;
+
+	private IRadiService radiService;
+
+	private IPtgService ptgService;
+
 	public String focus = null;
 
 	private List<MotifHeureSupDto> listMotifHsup;
@@ -93,12 +102,11 @@ public class OePTGSaisie extends BasicProcess {
 	 * Initialisation des données.
 	 */
 	private void initialiseDonnees() throws Exception {
-		SirhPtgWSConsumer t = new SirhPtgWSConsumer();
 		String date = wsdf.format(getDateLundi(0));
-		FichePointageDto dto = t.getSaisiePointage(idAgent, date);
+		FichePointageDto dto = ptgService.getSaisiePointage(idAgent, date);
 		setListeFichePointage(dto);
 
-		setListMotifHsup(t.getListeMotifHeureSup());
+		setListMotifHsup(ptgService.getListeMotifHeureSup());
 
 		setINASuperieur315(dto.isINASuperieur315());
 		setDPM(dto.isDPM());
@@ -148,6 +156,15 @@ public class OePTGSaisie extends BasicProcess {
 		if (getAgentDao() == null) {
 			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (null == adsService) {
+			adsService = (IAdsService) context.getBean("adsService");
+		}
+		if (null == radiService) {
+			radiService = (IRadiService) context.getBean("radiService");
+		}
+		if (null == ptgService) {
+			ptgService = (PtgService) context.getBean("ptgService");
+		}
 	}
 
 	private boolean save(HttpServletRequest request) throws Exception {
@@ -160,8 +177,7 @@ public class OePTGSaisie extends BasicProcess {
 
 		UserAppli uUser = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
 		// on fait la correspondance entre le login et l'agent via RADI
-		RadiWSConsumer radiConsu = new RadiWSConsumer();
-		LightUserDto user = radiConsu.getAgentCompteADByLogin(uUser.getUserName());
+		LightUserDto user = radiService.getAgentCompteADByLogin(uUser.getUserName());
 		if (user == null) {
 			// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
@@ -170,7 +186,7 @@ public class OePTGSaisie extends BasicProcess {
 		if (user != null && user.getEmployeeNumber() != null && user.getEmployeeNumber() != 0) {
 			try {
 				loggedAgent = getAgentDao().chercherAgentParMatricule(
-						radiConsu.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
+						radiService.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
 			} catch (Exception e) {
 				// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
@@ -182,8 +198,7 @@ public class OePTGSaisie extends BasicProcess {
 		if (loggedAgent == null) {
 			logger.debug("OePTGSaisie.Java : Objet Agent nul");
 		} else {
-			SirhPtgWSConsumer t = new SirhPtgWSConsumer();
-			ReturnMessageDto message = t.setSaisiePointage(loggedAgent.getIdAgent(), listeFichePointage);
+			ReturnMessageDto message = ptgService.setSaisiePointage(loggedAgent.getIdAgent(), listeFichePointage);
 			if (message.getErrors().size() > 0) {
 				String err = Const.CHAINE_VIDE;
 				for (String erreur : message.getErrors()) {
@@ -481,16 +496,11 @@ public class OePTGSaisie extends BasicProcess {
 		try {
 			Affectation affAgent = getAffectationDao().chercherAffectationActiveAvecAgent(agent.getIdAgent());
 			if (affAgent.getIdFichePoste() != null) {
-				try {
-					FichePoste fp = getFichePosteDao().chercherFichePoste(affAgent.getIdFichePoste());
-					Service serviceAgent = Service.chercherService(getTransaction(), fp.getIdServi());
-					service = serviceAgent.getLibService();
-				} catch (Exception e) {
-
-				}
+				FichePoste fp = getFichePosteDao().chercherFichePoste(affAgent.getIdFichePoste());
+				EntiteDto serv = adsService.getEntiteByIdEntite(fp.getIdServiceAds());
+				service = serv.getLabel();
 			}
 		} catch (Exception e) {
-
 		}
 		return agent.getNomAgent() + " " + agent.getPrenomAgent() + " (" + idAgent + ")"
 				+ (service.equals(Const.CHAINE_VIDE) ? Const.CHAINE_VIDE : " - " + service);
@@ -633,8 +643,7 @@ public class OePTGSaisie extends BasicProcess {
 		StringBuilder ret = new StringBuilder();
 		ret.append("<option value=''></option>");
 		// on recupere la liste des types d'absence absence
-		SirhPtgWSConsumer consu = new SirhPtgWSConsumer();
-		ArrayList<TypeAbsenceDto> listeTypeAbs = (ArrayList<TypeAbsenceDto>) consu.getListeRefTypeAbsence();
+		ArrayList<TypeAbsenceDto> listeTypeAbs = (ArrayList<TypeAbsenceDto>) ptgService.getListeRefTypeAbsence();
 
 		for (TypeAbsenceDto typeAbs : listeTypeAbs) {
 			ret.append("<option value='" + typeAbs.getIdRefTypeAbsence() + "'"

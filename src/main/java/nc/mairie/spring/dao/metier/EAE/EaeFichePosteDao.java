@@ -30,8 +30,9 @@ public class EaeFichePosteDao extends EaeDao implements EaeFichePosteDaoInterfac
 	public static final String CHAMP_DATE_ENTREE_SERVICE_RESP = "DATE_ENTREE_SERVICE_RESP";
 	public static final String CHAMP_DATE_ENTREE_COLLECT_RESP = "DATE_ENTREE_COLLECT_RESP";
 	public static final String CHAMP_DATE_ENTREE_FONCTION_RESP = "DATE_ENTREE_FONCTION_RESP";
-	public static final String CHAMP_CODE_SERVICE = "CODE_SERVICE";
 	public static final String CHAMP_ID_SIRH_FICHE_POSTE = "ID_SIRH_FICHE_POSTE";
+	public static final String CHAMP_ID_SERVICE_ADS = "ID_SERVICE_ADS";
+	public static final String CHAMP_CODE_SERVICE = "CODE_SERVICE";
 
 	public EaeFichePosteDao(EaeDao eaeDao) {
 		super.dataSource = eaeDao.getDataSource();
@@ -44,19 +45,19 @@ public class EaeFichePosteDao extends EaeDao implements EaeFichePosteDaoInterfac
 	public void creerEaeFichePoste(Integer id, Integer idEae, Integer idSHD, boolean typeFDP, String direction,
 			String service, String section, String emploi, String fonction, Date dateEntreeFonction, String grade,
 			String localisation, String mission, String fonctionResp, Date dateEntreeServiceResp,
-			Date dateEntreeCollectiviteResp, Date dateEntreeFonctionResp, String codeService, Integer idSirhFichePoste)
-			throws Exception {
+			Date dateEntreeCollectiviteResp, Date dateEntreeFonctionResp, Integer idServiceADS, String codeService,
+			Integer idSirhFichePoste) throws Exception {
 		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_ID + "," + CHAMP_ID_EAE + "," + CHAMP_ID_SHD + ","
 				+ CHAMP_PRIMAIRE + "," + CHAMP_DIRECTION_SERVICE + "," + CHAMP_SERVICE + "," + CHAMP_SECTION_SERVICE
 				+ "," + CHAMP_EMPLOI + "," + CHAMP_FONCTION + "," + CHAMP_DATE_ENTREE_FONCTION + ","
 				+ CHAMP_GRADE_POSTE + "," + CHAMP_LOCALISATION + "," + CHAMP_MISSIONS + "," + CHAMP_FONCTION_RESP + ","
 				+ CHAMP_DATE_ENTREE_SERVICE_RESP + "," + CHAMP_DATE_ENTREE_COLLECT_RESP + ","
-				+ CHAMP_DATE_ENTREE_FONCTION_RESP + "," + CHAMP_CODE_SERVICE + "," + CHAMP_ID_SIRH_FICHE_POSTE + ") "
-				+ "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+				+ CHAMP_DATE_ENTREE_FONCTION_RESP + "," + CHAMP_ID_SERVICE_ADS + "," + CHAMP_CODE_SERVICE + ","
+				+ CHAMP_ID_SIRH_FICHE_POSTE + ") " + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 		jdbcTemplate.update(sql, new Object[] { id, idEae, idSHD, typeFDP, direction, service, section, emploi,
 				fonction, dateEntreeFonction, grade, localisation, mission, fonctionResp, dateEntreeServiceResp,
-				dateEntreeCollectiviteResp, dateEntreeFonctionResp, codeService, idSirhFichePoste });
+				dateEntreeCollectiviteResp, dateEntreeFonctionResp, idServiceADS, codeService, idSirhFichePoste });
 
 	}
 
@@ -117,6 +118,7 @@ public class EaeFichePosteDao extends EaeDao implements EaeFichePosteDaoInterfac
 			eae.setLocalisation((String) row.get(CHAMP_LOCALISATION));
 			eae.setMissions((String) row.get(CHAMP_MISSIONS));
 			eae.setFonctionResp((String) row.get(CHAMP_FONCTION_RESP));
+			eae.setIdServiceAds((Integer) row.get(CHAMP_ID_SERVICE_ADS));
 			listeEAE.add(eae);
 		}
 
@@ -127,19 +129,20 @@ public class EaeFichePosteDao extends EaeDao implements EaeFichePosteDaoInterfac
 	public void modifierEaeFichePoste(Integer idEaeFichePoste, Integer idEae, Integer idSHD, boolean typeFDP,
 			String direction, String service, String section, String emploi, String fonction, Date dateEntreeFonction,
 			String grade, String localisation, String mission, String fonctionResp, Date dateEntreeServiceResp,
-			Date dateEntreeCollectiviteResp, Date dateEntreeFonctionResp, String codeService, Integer idSirhFichePoste)
-			throws Exception {
+			Date dateEntreeCollectiviteResp, Date dateEntreeFonctionResp, Integer idServiceADS, String codeService,
+			Integer idSirhFichePoste) throws Exception {
 		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_ID_EAE + "=?," + CHAMP_ID_SHD + "=?," + CHAMP_PRIMAIRE
 				+ "=?," + CHAMP_DIRECTION_SERVICE + "=?," + CHAMP_SERVICE + "=?," + CHAMP_SECTION_SERVICE + "=?,"
 				+ CHAMP_EMPLOI + "=?," + CHAMP_FONCTION + "=?," + CHAMP_DATE_ENTREE_FONCTION + "=?,"
 				+ CHAMP_GRADE_POSTE + "=?," + CHAMP_LOCALISATION + "=?," + CHAMP_MISSIONS + "=?," + CHAMP_FONCTION_RESP
 				+ "=?," + CHAMP_DATE_ENTREE_SERVICE_RESP + "=?," + CHAMP_DATE_ENTREE_COLLECT_RESP + "=?,"
-				+ CHAMP_DATE_ENTREE_FONCTION_RESP + "=?," + CHAMP_CODE_SERVICE + "=?," + CHAMP_ID_SIRH_FICHE_POSTE
-				+ "=? where " + CHAMP_ID + "=?";
+				+ CHAMP_DATE_ENTREE_FONCTION_RESP + "=?," + CHAMP_ID_SERVICE_ADS + "=?," + CHAMP_ID_SIRH_FICHE_POSTE
+				+ "=?," + CHAMP_CODE_SERVICE + "=? where " + CHAMP_ID + "=?";
 
 		jdbcTemplate.update(sql, new Object[] { idEae, idSHD, typeFDP, direction, service, section, emploi, fonction,
 				dateEntreeFonction, grade, localisation, mission, fonctionResp, dateEntreeServiceResp,
-				dateEntreeCollectiviteResp, dateEntreeFonctionResp, codeService, idSirhFichePoste, idEaeFichePoste });
+				dateEntreeCollectiviteResp, dateEntreeFonctionResp, idServiceADS, idSirhFichePoste, codeService,
+				idEaeFichePoste });
 
 	}
 

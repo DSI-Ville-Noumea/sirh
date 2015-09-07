@@ -44,6 +44,18 @@
                 }
                 document.getElementById(id).className = "selectLigne";
             }
+            // #17320
+            function envoieFormulaire(numFP) {
+            	leForm.ACTIVITE.value = 'FPGestion';
+            	leForm.numFP.value = numFP;
+            	document.leForm.submit();
+            }
+
+          //Change le sous-menu secondaire (en haut)
+          function changerMenuHaut(ssModule) {
+        		window.parent.frames["MenuHaut"].changerMenuHaut(ssModule);
+          }
+            
 
         </SCRIPT>
 <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -60,6 +72,11 @@
 	<%
 		if (process.getAgentCourant() != null) {
 	%>
+	<FORM name="leForm" method="POST" target="Main" action="GestionAgentServlet">
+		<input name="ACTIVITE" value="" type="hidden">
+		<input name="numFP" value="" type="hidden">
+	</form> 
+							
 	<FORM name="formu" method="POST" class="sigp2-titre">
 		<%=process.getUrlFichier()%>
 		<INPUT name="JSP" type="hidden" value="<%=process.getJSP()%>">
@@ -102,7 +119,15 @@
 						<td class="sigp2NewTab-liste" style="position: relative; width: 300px; text-align: left;"><%=process.getVAL_ST_SERV(indiceAff)%></td>
 						<td class="sigp2NewTab-liste" style="position: relative; width: 80px; text-align: center;"><%=process.getVAL_ST_DATE_DEBUT(indiceAff)%></td>
 						<td class="sigp2NewTab-liste" style="position: relative; width: 80px; text-align: center;"><%=process.getVAL_ST_DATE_FIN(indiceAff)%></td>
-						<td class="sigp2NewTab-liste" style="position: relative; width: 65px; text-align: left;"><%=process.getVAL_ST_NUM_FP(indiceAff)%></td>
+						<td class="sigp2NewTab-liste" style="position: relative; width: 65px; text-align: left;">
+							<%=process.getVAL_ST_NUM_FP(indiceAff)%> 
+							
+							<span style="color: rgb(0, 128, 204);" onmouseover="this.style.color='#000000';" onmouseout="this.style.color='#0080CC';" id="FPGestion" 
+								class="LienActif" title="Gestion des fiches de poste" 
+								onclick="envoieFormulaire('<%=process.getVAL_ST_NUM_FP(indiceAff)%>'); changerMenuHaut('Module_posteEtEmploi_fichePoste');">
+									<img title="Modifier la fiche de poste" src="images/loupe.gif" height="16px" width="16px">
+							</span>	
+						</td>
 						<td class="sigp2NewTab-liste" style="position: relative; text-align: left;"><%=process.getVAL_ST_TITRE(indiceAff)%></td>
 					</tr>
 					<%

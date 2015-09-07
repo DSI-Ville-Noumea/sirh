@@ -27,12 +27,13 @@ import nc.mairie.spring.dao.metier.agent.AgentDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.spring.ws.MSDateTransformer;
-import nc.mairie.spring.ws.SirhAbsWSConsumer;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
+import nc.noumea.spring.service.AbsService;
+import nc.noumea.spring.service.IAbsService;
 
 import org.joda.time.DateTime;
 import org.springframework.context.ApplicationContext;
@@ -76,6 +77,8 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 	private AgentDao agentDao;
 	public String focus = null;
 
+	private IAbsService absService;
+
 	/**
 	 * Constructeur du process OeAGENTAbsences. Date de création : (05/09/11
 	 * 11:39:24)
@@ -90,6 +93,9 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 		ApplicationContext context = ApplicationContextProvider.getContext();
 		if (getAgentDao() == null) {
 			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (null == absService) {
+			absService = (AbsService) context.getBean("absService");
 		}
 	}
 
@@ -156,8 +162,7 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 
 	private void initialiseListeDeroulante() {
 		if (getListeTypeAbsence().size() == 0) {
-			SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
-			setListeTypeAbsence((ArrayList<TypeAbsenceDto>) consuAbs.getListeRefTypeAbsenceDto(null));
+			setListeTypeAbsence((ArrayList<TypeAbsenceDto>) absService.getListeRefTypeAbsenceDto(null));
 		}
 		// Si liste annee vide alors affectation
 		if (getLB_ANNEE() == LBVide) {
@@ -187,8 +192,7 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 				.deepSerialize(dto);
 
 		// Solde depuis SIRH-ABS-WS
-		SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
-		SoldeDto soldeGlobal = consuAbs.getSoldeAgent(getAgentCourant().getIdAgent(), json);
+		SoldeDto soldeGlobal = absService.getSoldeAgent(getAgentCourant().getIdAgent(), json);
 
 		// solde congés
 		addZone(getNOM_ST_SOLDE_CONGE(), soldeGlobal.getSoldeCongeAnnee() == 0 ? "&nbsp;" : soldeGlobal
@@ -268,8 +272,7 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 	}
 
 	private void initialiseActeursAbsenceAgent(HttpServletRequest request) {
-		SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
-		ActeursDto acteursDto = consuAbs.getListeActeurs(getAgentCourant().getIdAgent());
+		ActeursDto acteursDto = absService.getListeActeurs(getAgentCourant().getIdAgent());
 
 		setActeursDto(acteursDto);
 	}
@@ -445,8 +448,7 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 				.deepSerialize(dto);
 
 		// Liste depuis SIRH-ABS-WS
-		SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
-		ArrayList<HistoriqueSoldeDto> listeHistorique = (ArrayList<HistoriqueSoldeDto>) consuAbs
+		ArrayList<HistoriqueSoldeDto> listeHistorique = (ArrayList<HistoriqueSoldeDto>) absService
 				.getHistoriqueCompteurAgent(getAgentCourant().getIdAgent(), codeTypeAbsence, json);
 		setListeHistorique(listeHistorique);
 
@@ -470,7 +472,7 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 			// des
 			// alim auto de fin de mois
 			// Liste depuis SIRH-ABS-WS
-			ArrayList<MoisAlimAutoCongesAnnuelsDto> listeHistoriqueAlimAuto = (ArrayList<MoisAlimAutoCongesAnnuelsDto>) consuAbs
+			ArrayList<MoisAlimAutoCongesAnnuelsDto> listeHistoriqueAlimAuto = (ArrayList<MoisAlimAutoCongesAnnuelsDto>) absService
 					.getHistoriqueAlimAutoCongeAnnuelAgent(getAgentCourant().getIdAgent());
 			setListeHistoriqueAlimAuto(listeHistoriqueAlimAuto);
 
@@ -486,7 +488,7 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 			// #15599 : dans les congés annuels, on charge aussi l'historique
 			// des restitutions massives de CA
 			// Liste depuis SIRH-ABS-WS
-			ArrayList<RestitutionMassiveDto> listeHistoriquerestitutionMassive = (ArrayList<RestitutionMassiveDto>) consuAbs
+			ArrayList<RestitutionMassiveDto> listeHistoriquerestitutionMassive = (ArrayList<RestitutionMassiveDto>) absService
 					.getHistoRestitutionMassiveByIdAgent(getAgentCourant().getIdAgent());
 			setListeHistoriqueRestitutionMassive(listeHistoriquerestitutionMassive);
 
@@ -501,7 +503,7 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 			// #15479 : dans les recups/repos comp, on charge aussi l'historique
 			// des alim auto de la paie
 			// Liste depuis SIRH-ABS-WS
-			ArrayList<MoisAlimAutoCongesAnnuelsDto> listeHistoriqueAlimAuto = (ArrayList<MoisAlimAutoCongesAnnuelsDto>) consuAbs
+			ArrayList<MoisAlimAutoCongesAnnuelsDto> listeHistoriqueAlimAuto = (ArrayList<MoisAlimAutoCongesAnnuelsDto>) absService
 					.getHistoriqueAlimAutoRecupAgent(getAgentCourant().getIdAgent());
 			setListeHistoriqueAlimPaie(listeHistoriqueAlimAuto);
 
@@ -522,7 +524,7 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 			// #15479 : dans les recups/repos comp, on charge aussi l'historique
 			// des alim auto de la paie
 			// Liste depuis SIRH-ABS-WS
-			ArrayList<MoisAlimAutoCongesAnnuelsDto> listeHistoriqueAlimAuto = (ArrayList<MoisAlimAutoCongesAnnuelsDto>) consuAbs
+			ArrayList<MoisAlimAutoCongesAnnuelsDto> listeHistoriqueAlimAuto = (ArrayList<MoisAlimAutoCongesAnnuelsDto>) absService
 					.getHistoriqueAlimAutoReposCompAgent(getAgentCourant().getIdAgent());
 			setListeHistoriqueAlimPaie(listeHistoriqueAlimAuto);
 

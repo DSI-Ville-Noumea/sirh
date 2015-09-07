@@ -2,9 +2,7 @@ package nc.mairie.gestionagent.process.avancement;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Hashtable;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -22,7 +20,6 @@ import nc.mairie.metier.carriere.Grade;
 import nc.mairie.metier.carriere.GradeGenerique;
 import nc.mairie.metier.poste.Affectation;
 import nc.mairie.metier.poste.FichePoste;
-import nc.mairie.metier.poste.Service;
 import nc.mairie.spring.dao.metier.agent.AgentDao;
 import nc.mairie.spring.dao.metier.agent.AutreAdministrationAgentDao;
 import nc.mairie.spring.dao.metier.avancement.AvancementDetachesDao;
@@ -35,8 +32,9 @@ import nc.mairie.technique.Services;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
-import nc.mairie.utils.TreeHierarchy;
 import nc.mairie.utils.VariablesActivite;
+import nc.noumea.mairie.ads.dto.EntiteDto;
+import nc.noumea.spring.service.IAdsService;
 
 import org.springframework.context.ApplicationContext;
 
@@ -55,8 +53,6 @@ public class OeAVCTSimulationDetaches extends BasicProcess {
 	private String[] LB_ANNEE;
 
 	private String[] listeAnnee;
-	private ArrayList<Service> listeServices;
-	public Hashtable<String, TreeHierarchy> hTree = null;
 
 	public String focus = null;
 	public String ACTION_CALCUL = "Calcul";
@@ -67,6 +63,8 @@ public class OeAVCTSimulationDetaches extends BasicProcess {
 	private FichePosteDao fichePosteDao;
 	private AffectationDao affectationDao;
 	private AgentDao agentDao;
+	
+	private IAdsService adsService;
 
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
@@ -92,7 +90,6 @@ public class OeAVCTSimulationDetaches extends BasicProcess {
 		}
 		initialiseDao();
 		initialiseListeDeroulante();
-		initialiseListeService();
 
 		Agent agt = (Agent) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
 		VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
@@ -120,6 +117,9 @@ public class OeAVCTSimulationDetaches extends BasicProcess {
 		if (getAgentDao() == null) {
 			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if(null == adsService) {
+			adsService = (IAdsService) context.getBean("adsService");
+		}
 	}
 
 	/**
@@ -139,49 +139,9 @@ public class OeAVCTSimulationDetaches extends BasicProcess {
 			addZone(getNOM_LB_ANNEE_SELECT(), Const.ZERO);
 		}
 	}
-
-	/**
-	 * Initialise la liste des services.
-	 * 
-	 * @throws Exception
-	 */
-	private void initialiseListeService() throws Exception {
-		// Si la liste des services est nulle
-		if (getListeServices() == null || getListeServices().size() == 0) {
-			ArrayList<Service> services = Service.listerServiceActif(getTransaction());
-			setListeServices(services);
-
-			// Tri par codeservice
-			Collections.sort(getListeServices(), new Comparator<Object>() {
-				public int compare(Object o1, Object o2) {
-					Service s1 = (Service) o1;
-					Service s2 = (Service) o2;
-					return (s1.getCodService().compareTo(s2.getCodService()));
-				}
-			});
-
-			// alim de la hTree
-			hTree = new Hashtable<String, TreeHierarchy>();
-			TreeHierarchy parent = null;
-			for (int i = 0; i < getListeServices().size(); i++) {
-				Service serv = (Service) getListeServices().get(i);
-
-				if (Const.CHAINE_VIDE.equals(serv.getCodService()))
-					continue;
-
-				// recherche du supérieur
-				String codeService = serv.getCodService();
-				while (codeService.endsWith("A")) {
-					codeService = codeService.substring(0, codeService.length() - 1);
-				}
-				codeService = codeService.substring(0, codeService.length() - 1);
-				codeService = Services.rpad(codeService, 4, "A");
-				parent = hTree.get(codeService);
-				int indexParent = (parent == null ? 0 : parent.getIndex());
-				hTree.put(serv.getCodService(), new TreeHierarchy(serv, i, indexParent));
-
-			}
-		}
+	
+	public String getCurrentWholeTreeJS(String serviceSaisi) {
+		return adsService.getCurrentWholeTreeActifTransitoireJS(null !=serviceSaisi && !"".equals(serviceSaisi) ? serviceSaisi : null, false);
 	}
 
 	/**
@@ -269,7 +229,7 @@ public class OeAVCTSimulationDetaches extends BasicProcess {
 			agent = getAgentDao().chercherAgentParMatricule(Integer.valueOf(getVAL_ST_AGENT()));
 		}
 
-		if (!performCalculDetache(getVAL_ST_CODE_SERVICE(), an, agent))
+		if (!performCalculDetache(getVAL_ST_ID_SERVICE_ADS(), an, agent))
 			return false;
 
 		commitTransaction();
@@ -289,7 +249,7 @@ public class OeAVCTSimulationDetaches extends BasicProcess {
 	 * @param agent
 	 * @throws Exception
 	 */
-	private boolean performCalculDetache(String codeService, String annee, Agent agent) throws Exception {
+	private boolean performCalculDetache(String idServiceAds, String annee, Agent agent) throws Exception {
 		ArrayList<Agent> la = new ArrayList<Agent>();
 		if (agent != null) {
 			// il faut regarder si cet agent est de type Fonctionnaire détaché
@@ -311,10 +271,9 @@ public class OeAVCTSimulationDetaches extends BasicProcess {
 			// Récupération des agents
 			// on recupere les sous-service du service selectionne
 
-			ArrayList<String> listeSousService = null;
-			if (!codeService.equals(Const.CHAINE_VIDE)) {
-				Service serv = Service.chercherService(getTransaction(), codeService);
-				listeSousService = Service.listSousService(getTransaction(), serv.getSigleService());
+			List<Integer> listeSousService = null;
+			if (!idServiceAds.equals(Const.CHAINE_VIDE)) {
+				listeSousService = adsService.getListIdsEntiteWithEnfantsOfEntite(new Integer(idServiceAds));
 			}
 
 			// Récupération des agents
@@ -497,10 +456,10 @@ public class OeAVCTSimulationDetaches extends BasicProcess {
 							continue;
 						}
 						FichePoste fp = getFichePosteDao().chercherFichePoste(aff.getIdFichePoste());
-						Service direction = Service.getDirection(getTransaction(), fp.getIdServi());
-						Service section = Service.getSection(getTransaction(), fp.getIdServi());
-						avct.setDirectionService(direction == null ? Const.CHAINE_VIDE : direction.getSigleService());
-						avct.setSectionService(section == null ? Const.CHAINE_VIDE : section.getSigleService());
+						EntiteDto direction = adsService.getAffichageDirection(fp.getIdServiceAds());
+						EntiteDto section = adsService.getAffichageSection(fp.getIdServiceAds());
+						avct.setDirectionService(direction == null ? Const.CHAINE_VIDE : direction.getSigle());
+						avct.setSectionService(section == null ? Const.CHAINE_VIDE : section.getSigle());
 					}
 
 					if (carr != null) {
@@ -585,8 +544,8 @@ public class OeAVCTSimulationDetaches extends BasicProcess {
 	 * création : (21/11/11 11:11:24)
 	 * 
 	 */
-	public String getNOM_ST_CODE_SERVICE() {
-		return "NOM_ST_CODE_SERVICE";
+	public String getNOM_ST_ID_SERVICE_ADS() {
+		return "NOM_ST_ID_SERVICE_ADS";
 	}
 
 	/**
@@ -594,8 +553,8 @@ public class OeAVCTSimulationDetaches extends BasicProcess {
 	 * Date de création : (21/11/11 11:11:24)
 	 * 
 	 */
-	public String getVAL_ST_CODE_SERVICE() {
-		return getZone(getNOM_ST_CODE_SERVICE());
+	public String getVAL_ST_ID_SERVICE_ADS() {
+		return getZone(getNOM_ST_ID_SERVICE_ADS());
 	}
 
 	/**
@@ -691,34 +650,6 @@ public class OeAVCTSimulationDetaches extends BasicProcess {
 	 */
 	public void setFocus(String focus) {
 		this.focus = focus;
-	}
-
-	/**
-	 * Retourne la liste des services.
-	 * 
-	 * @return listeServices
-	 */
-	public ArrayList<Service> getListeServices() {
-		return listeServices;
-	}
-
-	/**
-	 * Met a jour la liste des services.
-	 * 
-	 * @param listeServices
-	 */
-	private void setListeServices(ArrayList<Service> listeServices) {
-		this.listeServices = listeServices;
-	}
-
-	/**
-	 * Retourne une hashTable de la hierarchie des Service selon le code
-	 * Service.
-	 * 
-	 * @return hTree
-	 */
-	public Hashtable<String, TreeHierarchy> getHTree() {
-		return hTree;
 	}
 
 	/**
@@ -859,7 +790,7 @@ public class OeAVCTSimulationDetaches extends BasicProcess {
 	 */
 	public boolean performPB_SUPPRIMER_RECHERCHER_SERVICE(HttpServletRequest request) throws Exception {
 		// On enleve le service selectionnée
-		addZone(getNOM_ST_CODE_SERVICE(), Const.CHAINE_VIDE);
+		addZone(getNOM_ST_ID_SERVICE_ADS(), Const.CHAINE_VIDE);
 		addZone(getNOM_EF_SERVICE(), Const.CHAINE_VIDE);
 		return true;
 	}

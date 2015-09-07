@@ -9,7 +9,8 @@
 		<LINK href="theme/sigp2.css" rel="stylesheet" type="text/css">
 		<TITLE>Gestion des paramètres des fiches de poste</TITLE>
 		<LINK rel="stylesheet" href="theme/calendrier-mairie.css" type="text/css">
-		<SCRIPT type="text/javascript" src="js/GestionCalendrier.js"></SCRIPT> <SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT>
+		<SCRIPT type="text/javascript" src="js/GestionCalendrier.js"></SCRIPT> 
+		<SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT>
 		
 		<SCRIPT language="JavaScript">
 		//afin de sélectionner un élément dans une liste
@@ -393,172 +394,6 @@
 				<tr>
 					<td>
 						<FIELDSET class="sigp2Fieldset"  style="text-align: left;">
-					    	<legend class="sigp2Legend">NFA</legend>
-							<span class="sigp2-titre" >
-							<SELECT name="<%= process.getNOM_LB_NFA() %>" size="10" style="width:100%;" class="sigp2-liste">
-								<%=process.forComboHTML(process.getVAL_LB_NFA(), process.getVAL_LB_NFA_SELECT()) %>
-							</SELECT>
-			            	</span>
-			
-							<div class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>">
-								<INPUT type="image" src="images/ajout.gif" height="20px" width="20px" name="<%=process.getNOM_PB_CREER_NFA()%>">
-			    	        	<INPUT type="image" src="images/suppression.gif" height="20px" width="20px" name="<%=process.getNOM_PB_SUPPRIMER_NFA()%>">
-			    	        </div>
-			            	
-			            	<% if (process.getVAL_ST_ACTION_NFA()!= null && !process.getVAL_ST_ACTION_NFA().equals("")) {%>
-			            	<br>
-				            <table width="500px">
-								<% if (!process.ACTION_SUPPRESSION.equals(process.getVAL_ST_ACTION_NFA())) { %>
-					            	<tr>
-					            		<td width="90px">
-											<label class="sigp2Mandatory">Code service:</label>
-					            		</td>
-					            		<td align="left">
-					            			<INPUT class="sigp2-saisiemajuscule" maxlength="4" name="<%= process.getNOM_EF_NFA_CODE_SERVICE() %>" size="4" type="text" value="<%= process.getVAL_EF_NFA_CODE_SERVICE() %>">
-										</td>
-					            	</tr>
-					            	<tr>
-					            		<td>
-											<label class="sigp2Mandatory">NFA:</label>
-					            		</td>
-					            		<td>
-					            			<INPUT class="sigp2-saisiemajuscule" maxlength="5" name="<%= process.getNOM_EF_NFA() %>" size="5" type="text" value="<%= process.getVAL_EF_NFA() %>">
-										</td>
-					            	</tr>	
-									<tr>
-					            		<td colspan="2" align="center">
-											<% if (process.ACTION_CREATION.equals(process.getVAL_ST_ACTION_NFA())) { %>
-					            				<INPUT type="submit" class="sigp2-Bouton-100" value="Ajouter" name="<%=process.getNOM_PB_VALIDER_NFA()%>">	
-											<% }%>	
-											<INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER_NFA()%>">						
-					            		</td>
-					            	</tr>		            	
-								<%} else {%>
-					            	<tr>
-					            		<td width="90px">
-											<label class="sigp2Mandatory">Code service:</label>
-					            		</td>
-					            		<td>
-					            			<INPUT class="sigp2-saisiemajuscule" maxlength="4" readonly="readonly" name="<%= process.getNOM_EF_NFA_CODE_SERVICE() %>" size="4" type="text" value="<%= process.getVAL_EF_NFA_CODE_SERVICE() %>">
-										</td>
-					            	</tr>
-					            	<tr>
-					            		<td align="left">
-											<label class="sigp2Mandatory">NFA:</label>
-					            		</td>
-					            		<td>
-					            			<INPUT class="sigp2-saisiemajuscule" maxlength="5" readonly="readonly" name="<%= process.getNOM_EF_NFA() %>" size="5" type="text" value="<%= process.getVAL_EF_NFA() %>">
-										</td>
-					            	</tr>	
-					            	<tr>
-					            		<td colspan="2" align="center">
-											<INPUT type="submit" class="sigp2-Bouton-100" value="Supprimer" name="<%=process.getNOM_PB_VALIDER_NFA()%>">
-											<INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER_NFA()%>">
-					            		</td>
-					            	</tr>
-				            	<%}%>
-				            </table>
-				            <%}%> 			
-						</FIELDSET>
-					</td>
-					<td>
-						<FIELDSET class="sigp2Fieldset"  style="text-align: left;">
-					    	<legend class="sigp2Legend">Ecoles</legend>
-							<span class="sigp2-titre" >
-							<SELECT name="<%= process.getNOM_LB_ECOLE() %>" size="10"
-								style="width:100%;" class="sigp2-liste">
-								<%=process.forComboHTML(process.getVAL_LB_ECOLE(), process.getVAL_LB_ECOLE_SELECT()) %>
-							</SELECT>
-			            	</span>
-			
-							<div class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>">
-								<INPUT type="image" src="images/ajout.gif" height="20px" width="20px" name="<%=process.getNOM_PB_CREER_ECOLE()%>">
-								<INPUT type="image" src="images/modifier.gif" height="20px" width="20px" name="<%=process.getNOM_PB_MODIFIER_ECOLE()%>">
-			    	        	<INPUT type="image" src="images/suppression.gif" height="20px" width="20px" name="<%=process.getNOM_PB_SUPPRIMER_ECOLE()%>">
-			    	        </div>
-			            	
-			            	<% if (process.getVAL_ST_ACTION_ECOLE()!= null && !process.getVAL_ST_ACTION_ECOLE().equals("")) {%>
-			            	<br>
-				            <table width="500px">
-								<% if (process.ACTION_MODIFICATION.equals(process.getVAL_ST_ACTION_ECOLE())) { %>
-					            	<tr>
-					            		<td width="90px">
-											<label class="sigp2Mandatory">Code école:</label>
-					            		</td>
-					            		<td align="left">
-					            			<INPUT class="sigp2-saisiemajuscule" maxlength="2" disabled="disabled" name="<%= process.getNOM_EF_ECOLE_CODE_ECOLE() %>" size="2" type="text" value="<%= process.getVAL_EF_ECOLE_CODE_ECOLE() %>">
-										</td>
-					            	</tr>
-					            	<tr>
-					            		<td>
-											<label class="sigp2Mandatory">Libellé:</label>
-					            		</td>
-					            		<td>
-					            			<INPUT class="sigp2-saisiemajuscule" maxlength="40" name="<%= process.getNOM_EF_ECOLE() %>" size="40" type="text" value="<%= process.getVAL_EF_ECOLE() %>">
-										</td>
-					            	</tr>	
-									<tr>
-					            		<td colspan="2" align="center">
-					            			<INPUT type="submit" class="sigp2-Bouton-100" value="Modifier" name="<%=process.getNOM_PB_VALIDER_ECOLE()%>">
-											<INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER_ECOLE()%>">						
-					            		</td>
-					            	</tr>		
-					            <%}else if(process.ACTION_CREATION.equals(process.getVAL_ST_ACTION_ECOLE())) {%> 
-					            	<tr>
-					            		<td width="90px">
-											<label class="sigp2Mandatory">Code école:</label>
-					            		</td>
-					            		<td align="left">
-					            			<INPUT class="sigp2-saisiemajuscule" maxlength="2" name="<%= process.getNOM_EF_ECOLE_CODE_ECOLE() %>" size="2" type="text" value="<%= process.getVAL_EF_ECOLE_CODE_ECOLE() %>">
-										</td>
-					            	</tr>
-					            	<tr>
-					            		<td>
-											<label class="sigp2Mandatory">Libellé:</label>
-					            		</td>
-					            		<td>
-					            			<INPUT class="sigp2-saisiemajuscule" maxlength="40" name="<%= process.getNOM_EF_ECOLE() %>" size="40" type="text" value="<%= process.getVAL_EF_ECOLE() %>">
-										</td>
-					            	</tr>	
-									<tr>
-					            		<td colspan="2" align="center">
-					            			<INPUT type="submit" class="sigp2-Bouton-100" value="Ajouter" name="<%=process.getNOM_PB_VALIDER_ECOLE()%>">	
-											<INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER_ECOLE()%>">						
-					            		</td>
-					            	</tr>
-					                       	
-								<%} else {%>
-					            	<tr>
-					            		<td width="90px">
-											<label class="sigp2Mandatory">Code école:</label>
-					            		</td>
-					            		<td>
-					            			<INPUT class="sigp2-saisiemajuscule" maxlength="2" readonly="readonly" name="<%= process.getNOM_EF_ECOLE_CODE_ECOLE() %>" size="2" type="text" value="<%= process.getVAL_EF_ECOLE_CODE_ECOLE() %>">
-										</td>
-					            	</tr>
-					            	<tr>
-					            		<td align="left">
-											<label class="sigp2Mandatory">Libellé:</label>
-					            		</td>
-					            		<td>
-					            			<INPUT class="sigp2-saisiemajuscule" maxlength="40" readonly="readonly" name="<%= process.getNOM_EF_ECOLE() %>" size="40" type="text" value="<%= process.getVAL_EF_ECOLE() %>">
-										</td>
-					            	</tr>	
-					            	<tr>
-					            		<td colspan="2" align="center">
-											<INPUT type="submit" class="sigp2-Bouton-100" value="Supprimer" name="<%=process.getNOM_PB_VALIDER_ECOLE()%>">
-											<INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER_ECOLE()%>">
-					            		</td>
-					            	</tr>
-				            	<%}%>
-				            </table>
-				            <%}%> 	
-						</FIELDSET>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<FIELDSET class="sigp2Fieldset"  style="text-align: left;">
 					    	<legend class="sigp2Legend">Liste des bases horaires de pointage</legend>
 							<span class="sigp2-saisie" style="margin-left: 5px;">Code</span>
 							<span class="sigp2-saisie" style="margin-left: 20px;">Libellé</span>
@@ -800,7 +635,100 @@
 							<%} %>							
 						</FIELDSET>	
 					</td>
-					<td></td>
+					<td>
+						<FIELDSET class="sigp2Fieldset"  style="text-align: left;">
+					    	<legend class="sigp2Legend">Ecoles</legend>
+							<span class="sigp2-titre" >
+							<SELECT name="<%= process.getNOM_LB_ECOLE() %>" size="10"
+								style="width:100%;" class="sigp2-liste">
+								<%=process.forComboHTML(process.getVAL_LB_ECOLE(), process.getVAL_LB_ECOLE_SELECT()) %>
+							</SELECT>
+			            	</span>
+			
+							<div class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>">
+								<INPUT type="image" src="images/ajout.gif" height="20px" width="20px" name="<%=process.getNOM_PB_CREER_ECOLE()%>">
+								<INPUT type="image" src="images/modifier.gif" height="20px" width="20px" name="<%=process.getNOM_PB_MODIFIER_ECOLE()%>">
+			    	        	<INPUT type="image" src="images/suppression.gif" height="20px" width="20px" name="<%=process.getNOM_PB_SUPPRIMER_ECOLE()%>">
+			    	        </div>
+			            	
+			            	<% if (process.getVAL_ST_ACTION_ECOLE()!= null && !process.getVAL_ST_ACTION_ECOLE().equals("")) {%>
+			            	<br>
+				            <table width="500px">
+								<% if (process.ACTION_MODIFICATION.equals(process.getVAL_ST_ACTION_ECOLE())) { %>
+					            	<tr>
+					            		<td width="90px">
+											<label class="sigp2Mandatory">Code école:</label>
+					            		</td>
+					            		<td align="left">
+					            			<INPUT class="sigp2-saisiemajuscule" maxlength="2" disabled="disabled" name="<%= process.getNOM_EF_ECOLE_CODE_ECOLE() %>" size="2" type="text" value="<%= process.getVAL_EF_ECOLE_CODE_ECOLE() %>">
+										</td>
+					            	</tr>
+					            	<tr>
+					            		<td>
+											<label class="sigp2Mandatory">Libellé:</label>
+					            		</td>
+					            		<td>
+					            			<INPUT class="sigp2-saisiemajuscule" maxlength="40" name="<%= process.getNOM_EF_ECOLE() %>" size="40" type="text" value="<%= process.getVAL_EF_ECOLE() %>">
+										</td>
+					            	</tr>	
+									<tr>
+					            		<td colspan="2" align="center">
+					            			<INPUT type="submit" class="sigp2-Bouton-100" value="Modifier" name="<%=process.getNOM_PB_VALIDER_ECOLE()%>">
+											<INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER_ECOLE()%>">						
+					            		</td>
+					            	</tr>		
+					            <%}else if(process.ACTION_CREATION.equals(process.getVAL_ST_ACTION_ECOLE())) {%> 
+					            	<tr>
+					            		<td width="90px">
+											<label class="sigp2Mandatory">Code école:</label>
+					            		</td>
+					            		<td align="left">
+					            			<INPUT class="sigp2-saisiemajuscule" maxlength="2" name="<%= process.getNOM_EF_ECOLE_CODE_ECOLE() %>" size="2" type="text" value="<%= process.getVAL_EF_ECOLE_CODE_ECOLE() %>">
+										</td>
+					            	</tr>
+					            	<tr>
+					            		<td>
+											<label class="sigp2Mandatory">Libellé:</label>
+					            		</td>
+					            		<td>
+					            			<INPUT class="sigp2-saisiemajuscule" maxlength="40" name="<%= process.getNOM_EF_ECOLE() %>" size="40" type="text" value="<%= process.getVAL_EF_ECOLE() %>">
+										</td>
+					            	</tr>	
+									<tr>
+					            		<td colspan="2" align="center">
+					            			<INPUT type="submit" class="sigp2-Bouton-100" value="Ajouter" name="<%=process.getNOM_PB_VALIDER_ECOLE()%>">	
+											<INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER_ECOLE()%>">						
+					            		</td>
+					            	</tr>
+					                       	
+								<%} else {%>
+					            	<tr>
+					            		<td width="90px">
+											<label class="sigp2Mandatory">Code école:</label>
+					            		</td>
+					            		<td>
+					            			<INPUT class="sigp2-saisiemajuscule" maxlength="2" readonly="readonly" name="<%= process.getNOM_EF_ECOLE_CODE_ECOLE() %>" size="2" type="text" value="<%= process.getVAL_EF_ECOLE_CODE_ECOLE() %>">
+										</td>
+					            	</tr>
+					            	<tr>
+					            		<td align="left">
+											<label class="sigp2Mandatory">Libellé:</label>
+					            		</td>
+					            		<td>
+					            			<INPUT class="sigp2-saisiemajuscule" maxlength="40" readonly="readonly" name="<%= process.getNOM_EF_ECOLE() %>" size="40" type="text" value="<%= process.getVAL_EF_ECOLE() %>">
+										</td>
+					            	</tr>	
+					            	<tr>
+					            		<td colspan="2" align="center">
+											<INPUT type="submit" class="sigp2-Bouton-100" value="Supprimer" name="<%=process.getNOM_PB_VALIDER_ECOLE()%>">
+											<INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER_ECOLE()%>">
+					            		</td>
+					            	</tr>
+				            	<%}%>
+				            </table>
+				            <%}%> 	
+						</FIELDSET>
+					</td>
 				</tr>
 			</table>	
 		</FORM>

@@ -24,8 +24,8 @@ public class ApprobateurDto implements IJSONSerialize, IJSONDeserialize<Approbat
 
 	public String toString() {
 		return " Agent:" + getApprobateur().getNom() + " " + getApprobateur().getPrenom() + " id="
-				+ getApprobateur().getIdAgent() + " service " + getApprobateur().getService() + " codeService "
-				+ getApprobateur().getCodeService();
+				+ getApprobateur().getIdAgent() + " service " + getApprobateur().getService() + " idServiceADS "
+				+ getApprobateur().getIdServiceADS();
 	}
 
 	@Override

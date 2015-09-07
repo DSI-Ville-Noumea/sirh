@@ -1,8 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" %> 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <%@page import="nc.mairie.gestionagent.pointage.dto.ConsultPointageDto"%>
-<%@page import="nc.mairie.utils.TreeHierarchy"%>
-<%@page import="nc.mairie.metier.poste.Service"%>
 <%@page import="nc.mairie.enums.EnumTypeDroit"%>
 <%@page import="nc.mairie.utils.MairieUtils"%>
 <HTML>
@@ -22,7 +20,6 @@
             <script type="text/javascript" src="TableTools-2.0.1/media/js/TableTools.min.js"></script>
 
             <!-- <SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT>  -->
-            <SCRIPT language="javascript" src="js/dtree.js"></SCRIPT>
             <SCRIPT type="text/javascript" src="js/GestionCalendrierSemaine.js"></SCRIPT>
 
             <SCRIPT type="text/javascript">
@@ -34,22 +31,6 @@
                 {
                     if (document.formu.elements[nom] != null)
                         document.formu.elements[nom].focus();
-                }
-
-                function agrandirHierarchy() {
-
-                    hier = document.getElementById('treeHierarchy');
-
-                    if (hier.style.display != 'none') {
-                        reduireHierarchy();
-                    } else {
-                        hier.style.display = 'block';
-                    }
-                }
-
-                function reduireHierarchy() {
-                    hier = document.getElementById('treeHierarchy');
-                    hier.style.display = 'none';
                 }
                 
                 $.fn.dataTableExt.oSort['date-francais-asc']  = function(a,b) {
@@ -245,10 +226,19 @@
 			                <INPUT id="service" class="sigp2-saisiemajuscule" name="<%= process.getNOM_EF_SERVICE()%>" size="8" type="text" value="<%= process.getVAL_EF_SERVICE()%>">
 			                <img border="0" src="images/loupe.gif" width="16" title="Cliquer pour afficher l'arborescence"	height="16" style="cursor : pointer;" onclick="agrandirHierarchy();">	
 			                <img border="0" src="images/suppression.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_SERVICE()%>');">
-			            	<INPUT type="hidden" id="codeservice" size="4" width="1px" name="<%=process.getNOM_ST_CODE_SERVICE()%>" value="<%=process.getVAL_ST_CODE_SERVICE()%>" class="sigp2-saisie">
+			            	<INPUT type="hidden" id="idServiceADS" size="4" width="1px" name="<%=process.getNOM_ST_ID_SERVICE_ADS()%>" value="<%=process.getVAL_ST_ID_SERVICE_ADS()%>" class="sigp2-saisie">
                 		</td>
                 		<td>&nbsp;</td>
                 		<td>&nbsp;</td>
+                	</tr>
+                	<tr>
+                		<td colspan="10" class="sigp2">
+                		<div style="margin-left:500px;">
+			             	<!-- ////////// ARBRE DES SERVICES - ADS ///////////// -->
+							<%=process.getCurrentWholeTreeJS(process.getVAL_EF_SERVICE().toUpperCase()) %>
+							<!-- ////////// ARBRE DES SERVICES - ADS ///////////// -->
+						</div>
+                		</td>
                 	</tr>
                 	<tr>
                 		<td>
@@ -292,33 +282,7 @@
 			            </td>
                 	</tr>
                 </table>         	
-                <INPUT type="submit" class="sigp2-Bouton-100" value="Afficher" name="<%=process.getNOM_PB_FILTRER()%>">		
-             	<div id="treeHierarchy" style="display: none;margin-left:300px;margin-top:20px; height: 340; width: 500; overflow:auto; background-color: #f4f4f4; border-width: 1px; border-style: solid;z-index:1;">
-                <script type="text/javascript">
-                d = new dTree('d');
-                d.add(0, -1, "Services");
-
-                        <%
-                            String serviceSaisi = process.getVAL_EF_SERVICE().toUpperCase();
-                            int theNode = 0;
-                            for (int i = 1; i < process.getListeServices().size(); i++) {
-                                Service serv = (Service) process.getListeServices().get(i);
-                                String code = serv.getCodService();
-                                TreeHierarchy tree = (TreeHierarchy) process.getHTree().get(code);
-                                if (theNode == 0 && serviceSaisi.equals(tree.getService().getSigleService())) {
-                                    theNode = tree.getIndex();
-                                }
-                        %>
-                        <%=tree.getJavaScriptLine()%>
-                        <%}%>
-                document.write(d);
-
-                d.closeAll();
-                        <% if (theNode != 0) {%>
-                d.openTo(<%=theNode%>, true);
-                        <%}%>
-                    </script>
-                </div>
+                <INPUT type="submit" class="sigp2-Bouton-100" value="Afficher" name="<%=process.getNOM_PB_FILTRER()%>">	
              </FIELDSET>
 
             <FIELDSET class="sigp2Fieldset" style="text-align:left;">
@@ -417,35 +381,35 @@
 
             <% if (process.status.equals("CREATION")) {%>
             <div id="creatediv" title="Creation"  style="display:block;margin-right:10px;width:800px;">
-                <% } else {%>
-                <div id="creatediv" title="Creation" style="display:none;margin-right:10px;width:800px;">
-                    <% }%>
+            <% } else {%>
+            <div id="creatediv" title="Creation" style="display:none;margin-right:10px;width:800px;">
+            <% }%>
 
-                    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
-                        <legend class="sigp2Legend">Création d'un pointage
-                        </legend>
-                        <span class="sigp2Mandatory" style="width:80px">Date : </span>
-                        <input id="<%=process.getNOM_ST_DATE_CREATE()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_CREATE()%>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_CREATE()%>" >
-                        <IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_CREATE()%>', 'dd/mm/y');">
-                        <span class="sigp2Mandatory" style="width:80px"></span>
-                        <span class="sigp2Mandatory" style="width:100px">Agent :</span>
-                        <INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_AGENT_CREATE()%>" size="10" type="text" value="<%= process.getVAL_ST_AGENT_CREATE()%>" style="margin-right:10px;">
-                        <img border="0" src="images/loupe.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_RECHERCHER_AGENT_CREATE()%>');">
-                        <span class="sigp2Mandatory" style="width:80px"></span>
-                        <INPUT onkeydown="" onkeypress="" onkeyup="" type="submit" class="sigp2-Bouton-100" value="Creer" name="<%=process.getNOM_PB_CREATE()%>">	 
-                        <INPUT onkeydown="" onkeypress="" onkeyup="" type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_CREATE_CANCEL()%>">		
-                        <BR/><BR/>				
-                    </FIELDSET>
-                </div>
+                <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
+                    <legend class="sigp2Legend">Création d'un pointage
+                    </legend>
+                    <span class="sigp2Mandatory" style="width:80px">Date : </span>
+                    <input id="<%=process.getNOM_ST_DATE_CREATE()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_CREATE()%>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_CREATE()%>" >
+                    <IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_CREATE()%>', 'dd/mm/y');">
+                    <span class="sigp2Mandatory" style="width:80px"></span>
+                    <span class="sigp2Mandatory" style="width:100px">Agent :</span>
+                    <INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_AGENT_CREATE()%>" size="10" type="text" value="<%= process.getVAL_ST_AGENT_CREATE()%>" style="margin-right:10px;">
+                    <img border="0" src="images/loupe.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_RECHERCHER_AGENT_CREATE()%>');">
+                    <span class="sigp2Mandatory" style="width:80px"></span>
+                    <INPUT onkeydown="" onkeypress="" onkeyup="" type="submit" class="sigp2-Bouton-100" value="Creer" name="<%=process.getNOM_PB_CREATE()%>">	 
+                    <INPUT onkeydown="" onkeypress="" onkeyup="" type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_CREATE_CANCEL()%>">		
+                    <BR/><BR/>				
+                </FIELDSET>
+            </div>
+                
             <FIELDSET class="sigp2Fieldset" style="text-align:left;">
-            <legend class="sigp2Legend">Informations sur les dates de ventilation</legend>
+         		<legend class="sigp2Legend">Informations sur les dates de ventilation</legend>
 	            <span class="sigp2" style="width:150px">Conventions collectives :</span>
 				<INPUT class="sigp2-saisie" disabled="disabled" name="<%= process.getNOM_ST_DATE_VENTIL_CC() %>" size="10" readonly="readonly" type="text" value="<%= process.getVAL_ST_DATE_VENTIL_CC() %>" style="margin-right:10px;">
 				<span class="sigp2" style="width:150px">Fonctionnaire / Contractuels :</span>
 				<INPUT class="sigp2-saisie" disabled="disabled" name="<%= process.getNOM_ST_DATE_VENTIL_F_C() %>" size="10" readonly="readonly" type="text" value="<%= process.getVAL_ST_DATE_VENTIL_F_C() %>" style="margin-right:10px;">
-				
+			</FIELDSET>
             
-            </FIELDSET>
             <INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_SERVICE()%>" value="SUPPRECHERCHERSERVICE">
 			<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_RECHERCHER_AGENT_MIN()%>" value="RECHERCHERAGENTMIN">
             <INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_MIN()%>" value="SUPPRECHERCHERAGENTMIN">	

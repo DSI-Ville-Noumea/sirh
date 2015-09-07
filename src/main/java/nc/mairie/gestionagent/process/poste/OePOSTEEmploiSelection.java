@@ -28,7 +28,6 @@ public class OePOSTEEmploiSelection extends BasicProcess {
 
 	private ArrayList<FicheEmploi> listeFicheEmploi = new ArrayList<FicheEmploi>();
 
-	public String focus = null;
 	private FicheEmploiDao ficheEmploiDao;
 
 	/**
@@ -39,7 +38,16 @@ public class OePOSTEEmploiSelection extends BasicProcess {
 	 * 
 	 */
 	public void initialiseZones(HttpServletRequest request) throws Exception {
-		// aucune initialisation
+		initialiseDao();
+		// #17319
+		// on recupere la recherche
+		String recherche = (String) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_FICHE_EMPLOI);
+		VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_FICHE_EMPLOI);
+		// on lance la recherche
+		if (recherche != null && recherche.length() != 0) {
+			addZone(getNOM_EF_RECHERCHE(), recherche);
+			performPB_RECHERCHER(request, recherche);
+		}
 	}
 
 	/**
@@ -88,15 +96,13 @@ public class OePOSTEEmploiSelection extends BasicProcess {
 	 * setStatut(STATUT,Message d'erreur) Date de création : (13/07/11 10:23:55)
 	 * 
 	 */
-	public boolean performPB_RECHERCHER(HttpServletRequest request) throws Exception {
-		initialiseDao();
-		String zone = getZone(getNOM_EF_RECHERCHE());
+	public boolean performPB_RECHERCHER(HttpServletRequest request, String zone) throws Exception {
 
 		ArrayList<FicheEmploi> eListe = getFicheEmploiDao().listerFicheEmploiavecRefMairie(zone);
 
 		// Si liste vide alors erreur
 		if (eListe.size() == 0) {
-			setStatut(STATUT_MEME_PROCESS, false, MessageUtils.getMessage("ERR005", "resultat"));
+			setStatut(STATUT_MEME_PROCESS, false, MessageUtils.getMessage("ERR005", "résultat"));
 			return false;
 		}
 
@@ -166,7 +172,7 @@ public class OePOSTEEmploiSelection extends BasicProcess {
 
 			// Si clic sur le bouton PB_RECHERCHER
 			if (testerParametre(request, getNOM_PB_RECHERCHER())) {
-				return performPB_RECHERCHER(request);
+				return performPB_RECHERCHER(request, getVAL_EF_RECHERCHE());
 			}
 		}
 		// Si TAG INPUT non géré par le process
@@ -216,28 +222,6 @@ public class OePOSTEEmploiSelection extends BasicProcess {
 
 	private void setListeFicheEmploi(ArrayList<FicheEmploi> listeFicheEmploi) {
 		this.listeFicheEmploi = listeFicheEmploi;
-	}
-
-	/**
-	 * @return Renvoie focus.
-	 */
-	public String getFocus() {
-		if (focus == null) {
-			focus = getDefaultFocus();
-		}
-		return focus;
-	}
-
-	public String getDefaultFocus() {
-		return getNOM_EF_RECHERCHE();
-	}
-
-	/**
-	 * @param focus
-	 *            focus à définir.
-	 */
-	public void setFocus(String focus) {
-		this.focus = focus;
 	}
 
 	/**

@@ -25,12 +25,13 @@ import nc.mairie.spring.dao.metier.specificites.RubriqueDao;
 import nc.mairie.spring.dao.utils.MairieDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
-import nc.mairie.spring.ws.SirhPtgWSConsumer;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
 import nc.mairie.utils.MessageUtils;
 import nc.mairie.utils.VariablesActivite;
+import nc.noumea.spring.service.IPtgService;
+import nc.noumea.spring.service.PtgService;
 
 import org.springframework.context.ApplicationContext;
 
@@ -90,6 +91,8 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	private TypeDelegationDao typeDelegationDao;
 	private TypeRegIndemnDao typeRegIndemnDao;
 	private RubriqueDao rubriqueDao;
+
+	private IPtgService ptgService;
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER Date de création :
@@ -1338,6 +1341,9 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 		if (getRubriqueDao() == null) {
 			setRubriqueDao(new RubriqueDao((MairieDao) context.getBean("mairieDao")));
 		}
+		if (null == ptgService) {
+			ptgService = (PtgService) context.getBean("ptgService");
+		}
 
 	}
 
@@ -1413,9 +1419,6 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 		}
 
 		// Primes pointage
-
-		SirhPtgWSConsumer t = new SirhPtgWSConsumer();
-
 		if (getListePrimePointageFP() == null || getListePrimePointageFP().size() == 0)
 			setListePrimePointageFP((ArrayList<PrimePointageFP>) VariablesActivite.recuperer(this,
 					VariablesActivite.ACTIVITE_LST_PRIME_POINTAGE));
@@ -1424,7 +1427,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 			FormateListe aFormatReg = new FormateListe(taillesReg);
 			for (ListIterator<PrimePointageFP> list = getListePrimePointageFP().listIterator(); list.hasNext();) {
 				PrimePointageFP aReg = (PrimePointageFP) list.next();
-				RefPrimeDto rubr = t.getPrimeDetail(aReg.getNumRubrique());
+				RefPrimeDto rubr = ptgService.getPrimeDetail(aReg.getNumRubrique());
 				if (aReg != null) {
 					String ligne[] = { rubr.getNumRubrique().toString(), rubr.getLibelle() };
 					aFormatReg.ajouteLigne(ligne);
@@ -1440,8 +1443,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	 * #3264 Initialisation de la liste deroulantes des primes.
 	 */
 	private List<RefPrimeDto> initialiseListeDeroulantePrimes() {
-		SirhPtgWSConsumer t = new SirhPtgWSConsumer();
-		return t.getPrimes();
+		return ptgService.getPrimes();
 	}
 
 	/**

@@ -63,8 +63,8 @@ public class HistoAffectationDao extends SirhDao implements HistoAffectationDaoI
 
 	@Override
 	public ArrayList<HistoAffectation> listerAffectationHistoAvecAgent(Integer idAgent) throws Exception {
-		String sql = " select * from " + NOM_TABLE + "  WHERE " + CHAMP_ID_AGENT + "=? order by "
-				+ CHAMP_DATE_HISTO + " desc";
+		String sql = " select * from " + NOM_TABLE + "  WHERE " + CHAMP_ID_AGENT + "=? order by " + CHAMP_DATE_HISTO
+				+ " desc";
 
 		ArrayList<HistoAffectation> liste = new ArrayList<HistoAffectation>();
 

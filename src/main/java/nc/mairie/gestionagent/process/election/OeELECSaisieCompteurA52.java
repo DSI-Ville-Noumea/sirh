@@ -24,7 +24,6 @@ import nc.mairie.spring.dao.metier.agent.AgentDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.spring.ws.MSDateTransformer;
-import nc.mairie.spring.ws.RadiWSConsumer;
 import nc.mairie.spring.ws.SirhAbsWSConsumer;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
@@ -34,6 +33,9 @@ import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
 import nc.mairie.utils.VariablesActivite;
+import nc.noumea.spring.service.AbsService;
+import nc.noumea.spring.service.IAbsService;
+import nc.noumea.spring.service.IRadiService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,6 +76,10 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 	public String ACTION_MODIFIER_COMPTEUR = "Modif compteur";
 
 	private AgentDao agentDao;
+
+	private IRadiService radiService;
+
+	private IAbsService absService;
 
 	@Override
 	public String getJSP() {
@@ -120,8 +126,7 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 
 	private void initialiseListeOSExistant(HttpServletRequest request) {
 		SirhAbsWSConsumer consum = new SirhAbsWSConsumer();
-		ArrayList<OrganisationSyndicaleDto> listeOS = (ArrayList<OrganisationSyndicaleDto>) consum
-				.getListeOSCompteursA52();
+		ArrayList<OrganisationSyndicaleDto> listeOS = (ArrayList<OrganisationSyndicaleDto>) consum.getListeOSCompteursA52();
 		logger.debug("Taille liste des AS ASA A52 : " + listeOS.size());
 
 		for (OrganisationSyndicaleDto vo : listeOS) {
@@ -138,14 +143,18 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 		if (getAgentDao() == null) {
 			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (null == radiService) {
+			radiService = (IRadiService) context.getBean("radiService");
+		}
+		if (null == absService) {
+			absService = (AbsService) context.getBean("absService");
+		}
 	}
 
 	private void initialiseListeDeroulante() {
 		// Si liste motifs vide alors affectation
 		if (getLB_MOTIF() == LBVide) {
-			SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
-			ArrayList<MotifCompteurDto> listeMotifs = (ArrayList<MotifCompteurDto>) consuAbs
-					.getListeMotifCompteur(EnumTypeAbsence.ASA_A52.getCode());
+			ArrayList<MotifCompteurDto> listeMotifs = (ArrayList<MotifCompteurDto>) absService.getListeMotifCompteur(EnumTypeAbsence.ASA_A52.getCode());
 			setListeMotifCompteur(listeMotifs);
 
 			int[] tailles = { 50 };
@@ -160,9 +169,7 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 
 		// Si liste organisations syndicales vide alors affectation
 		if (getLB_OS() == LBVide) {
-			SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
-			ArrayList<OrganisationSyndicaleDto> listeOrga = (ArrayList<OrganisationSyndicaleDto>) consuAbs
-					.getListeOrganisationSyndicale();
+			ArrayList<OrganisationSyndicaleDto> listeOrga = (ArrayList<OrganisationSyndicaleDto>) absService.getListeOrganisationSyndicale();
 			setListeOrganisationSyndicale(listeOrga);
 
 			int[] tailles = { 20, 50 };
@@ -359,13 +366,11 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 		OrganisationSyndicaleDto dto = new OrganisationSyndicaleDto();
 		dto.setIdOrganisation(indiceEltAModifier);
 
-		OrganisationSyndicaleDto osCourant = (OrganisationSyndicaleDto) getListeOrganisationSyndicaleExistante().get(
-				getListeOrganisationSyndicaleExistante().indexOf(dto));
+		OrganisationSyndicaleDto osCourant = (OrganisationSyndicaleDto) getListeOrganisationSyndicaleExistante().get(getListeOrganisationSyndicaleExistante().indexOf(dto));
 		setOrganisationCourante(osCourant);
 
 		SirhAbsWSConsumer consu = new SirhAbsWSConsumer();
-		setListeCompteur((ArrayList<CompteurDto>) consu.getListeCompteursA52(getOrganisationCourante()
-				.getIdOrganisation()));
+		setListeCompteur((ArrayList<CompteurDto>) consu.getListeCompteursA52(getOrganisationCourante().getIdOrganisation()));
 		afficheListeCompteur(request, getListeCompteur());
 
 		// On nomme l'action
@@ -381,13 +386,10 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 			Integer indiceLigne = vo.getIdCompteur();
 			addZone(getNOM_ST_DATE_DEBUT(indiceLigne), sdf.format(vo.getDateDebut()));
 			addZone(getNOM_ST_DATE_FIN(indiceLigne), sdf.format(vo.getDateFin()));
-			String soldeAsaA52Heure = (vo.getDureeAAjouter().intValue() / 60) == 0 ? Const.CHAINE_VIDE : vo
-					.getDureeAAjouter().intValue() / 60 + "h ";
-			String soldeAsaA52Minute = (vo.getDureeAAjouter().intValue() % 60) == 0 ? "&nbsp;" : vo.getDureeAAjouter()
-					.intValue() % 60 + "m";
+			String soldeAsaA52Heure = (vo.getDureeAAjouter().intValue() / 60) == 0 ? Const.CHAINE_VIDE : vo.getDureeAAjouter().intValue() / 60 + "h ";
+			String soldeAsaA52Minute = (vo.getDureeAAjouter().intValue() % 60) == 0 ? "&nbsp;" : vo.getDureeAAjouter().intValue() % 60 + "m";
 			addZone(getNOM_ST_NB_HEURES(indiceLigne), soldeAsaA52Heure + soldeAsaA52Minute);
-			addZone(getNOM_ST_MOTIF(indiceLigne), vo.getMotifCompteurDto() == null ? Const.CHAINE_VIDE : vo
-					.getMotifCompteurDto().getLibelle());
+			addZone(getNOM_ST_MOTIF(indiceLigne), vo.getMotifCompteurDto() == null ? Const.CHAINE_VIDE : vo.getMotifCompteurDto().getLibelle());
 		}
 	}
 
@@ -405,13 +407,11 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 		OrganisationSyndicaleDto dto = new OrganisationSyndicaleDto();
 		dto.setIdOrganisation(indiceEltAConsulter);
 
-		OrganisationSyndicaleDto osCourant = (OrganisationSyndicaleDto) getListeOrganisationSyndicaleExistante().get(
-				getListeOrganisationSyndicaleExistante().indexOf(dto));
+		OrganisationSyndicaleDto osCourant = (OrganisationSyndicaleDto) getListeOrganisationSyndicaleExistante().get(getListeOrganisationSyndicaleExistante().indexOf(dto));
 		setOrganisationCourante(osCourant);
 
 		SirhAbsWSConsumer consu = new SirhAbsWSConsumer();
-		setListeCompteur((ArrayList<CompteurDto>) consu.getListeCompteursA52(getOrganisationCourante()
-				.getIdOrganisation()));
+		setListeCompteur((ArrayList<CompteurDto>) consu.getListeCompteursA52(getOrganisationCourante().getIdOrganisation()));
 		afficheListeCompteur(request, getListeCompteur());
 
 		// On nomme l'action
@@ -467,8 +467,7 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 		}
 
 		// motif obligatoire
-		int indiceMotif = (Services.estNumerique(getVAL_LB_MOTIF_SELECT()) ? Integer.parseInt(getVAL_LB_MOTIF_SELECT())
-				: -1);
+		int indiceMotif = (Services.estNumerique(getVAL_LB_MOTIF_SELECT()) ? Integer.parseInt(getVAL_LB_MOTIF_SELECT()) : -1);
 		if (indiceMotif <= 0) {
 			// "ERR002", "La zone @ est obligatoire."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "motif"));
@@ -514,12 +513,10 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 		}
 
 		// on sauvegarde les données
-		SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
 		ReturnMessageDto message = new ReturnMessageDto();
 
 		// motif
-		int indiceMotif = (Services.estNumerique(getVAL_LB_MOTIF_SELECT()) ? Integer.parseInt(getVAL_LB_MOTIF_SELECT())
-				: -1);
+		int indiceMotif = (Services.estNumerique(getVAL_LB_MOTIF_SELECT()) ? Integer.parseInt(getVAL_LB_MOTIF_SELECT()) : -1);
 		MotifCompteurDto motif = null;
 		if (indiceMotif > 0) {
 			motif = getListeMotifCompteur().get(indiceMotif - 1);
@@ -549,8 +546,7 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 		compteurDto.setDateFin(sdf.parse(dateFin));
 
 		// on sauvegarde
-		message = consuAbs.addCompteurAsaA52(agentConnecte.getIdAgent(), new JSONSerializer().exclude("*.class")
-				.transform(new MSDateTransformer(), Date.class).serialize(compteurDto));
+		message = absService.addCompteurAsaA52(agentConnecte.getIdAgent(), new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class).serialize(compteurDto));
 
 		if (message.getErrors().size() > 0) {
 			String err = Const.CHAINE_VIDE;
@@ -572,14 +568,12 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 		UserAppli u = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
 		Agent agentConnecte = null;
 		// on fait la correspondance entre le login et l'agent via RADI
-		RadiWSConsumer radiConsu = new RadiWSConsumer();
-		LightUserDto user = radiConsu.getAgentCompteADByLogin(u.getUserName());
+		LightUserDto user = radiService.getAgentCompteADByLogin(u.getUserName());
 		if (user == null) {
 			return null;
 		}
 		try {
-			agentConnecte = getAgentDao().chercherAgentParMatricule(
-					radiConsu.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
+			agentConnecte = getAgentDao().chercherAgentParMatricule(radiService.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
 		} catch (Exception e) {
 			return null;
 		}
@@ -691,14 +685,12 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 		OrganisationSyndicaleDto dto = new OrganisationSyndicaleDto();
 		dto.setIdOrganisation(indiceEltAConsulter);
 
-		OrganisationSyndicaleDto osCourant = (OrganisationSyndicaleDto) getListeOrganisationSyndicaleExistante().get(
-				getListeOrganisationSyndicaleExistante().indexOf(dto));
+		OrganisationSyndicaleDto osCourant = (OrganisationSyndicaleDto) getListeOrganisationSyndicaleExistante().get(getListeOrganisationSyndicaleExistante().indexOf(dto));
 		setOrganisationCourante(osCourant);
 
 		SirhAbsWSConsumer consum = new SirhAbsWSConsumer();
 
-		ArrayList<AgentOrganisationSyndicaleDto> listeAgent = (ArrayList<AgentOrganisationSyndicaleDto>) consum
-				.getListeRepresentantA52(getOrganisationCourante().getIdOrganisation());
+		ArrayList<AgentOrganisationSyndicaleDto> listeAgent = (ArrayList<AgentOrganisationSyndicaleDto>) consum.getListeRepresentantA52(getOrganisationCourante().getIdOrganisation());
 
 		setListeRepresentant(listeAgent);
 
@@ -725,14 +717,12 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 		OrganisationSyndicaleDto dto = new OrganisationSyndicaleDto();
 		dto.setIdOrganisation(indiceEltAModifier);
 
-		OrganisationSyndicaleDto osCourant = (OrganisationSyndicaleDto) getListeOrganisationSyndicaleExistante().get(
-				getListeOrganisationSyndicaleExistante().indexOf(dto));
+		OrganisationSyndicaleDto osCourant = (OrganisationSyndicaleDto) getListeOrganisationSyndicaleExistante().get(getListeOrganisationSyndicaleExistante().indexOf(dto));
 		setOrganisationCourante(osCourant);
 
 		SirhAbsWSConsumer consum = new SirhAbsWSConsumer();
 
-		ArrayList<AgentOrganisationSyndicaleDto> listeAgent = (ArrayList<AgentOrganisationSyndicaleDto>) consum
-				.getListeRepresentantA52(getOrganisationCourante().getIdOrganisation());
+		ArrayList<AgentOrganisationSyndicaleDto> listeAgent = (ArrayList<AgentOrganisationSyndicaleDto>) consum.getListeRepresentantA52(getOrganisationCourante().getIdOrganisation());
 
 		setListeRepresentant(listeAgent);
 
@@ -757,10 +747,8 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 
 		ArrayList<AgentOrganisationSyndicaleDto> listeRepresentantsTriee = new ArrayList<AgentOrganisationSyndicaleDto>();
 		for (VoAgentCompteur vo : listeVoAgentCompteur) {
-			addZone(getNOM_ST_AGENT_REPRESENTANT(vo.getAgentOS().getIdAgent()), vo.getAgent().getNomAgent() + " "
-					+ vo.getAgent().getPrenomAgent());
-			addZone(getNOM_ST_AGENT_REPRESENTANT_ACTIF(vo.getAgentOS().getIdAgent()), vo.getAgentOS().isActif() ? "oui"
-					: "non");
+			addZone(getNOM_ST_AGENT_REPRESENTANT(vo.getAgentOS().getIdAgent()), vo.getAgent().getNomAgent() + " " + vo.getAgent().getPrenomAgent());
+			addZone(getNOM_ST_AGENT_REPRESENTANT_ACTIF(vo.getAgentOS().getIdAgent()), vo.getAgentOS().isActif() ? "oui" : "non");
 			listeRepresentantsTriee.add(vo.getAgentOS());
 		}
 		setListeRepresentant(listeRepresentantsTriee);
@@ -824,8 +812,7 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 		AgentOrganisationSyndicaleDto dto = new AgentOrganisationSyndicaleDto();
 		dto.setIdAgent(indiceEltAModifier);
 
-		AgentOrganisationSyndicaleDto agentCourant = (AgentOrganisationSyndicaleDto) getListeRepresentant().get(
-				getListeRepresentant().indexOf(dto));
+		AgentOrganisationSyndicaleDto agentCourant = (AgentOrganisationSyndicaleDto) getListeRepresentant().get(getListeRepresentant().indexOf(dto));
 
 		if (!initialiseRepresentantCourant(request, agentCourant))
 			return false;
@@ -837,8 +824,7 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 		return true;
 	}
 
-	private boolean initialiseRepresentantCourant(HttpServletRequest request, AgentOrganisationSyndicaleDto agentCourant)
-			throws Exception {
+	private boolean initialiseRepresentantCourant(HttpServletRequest request, AgentOrganisationSyndicaleDto agentCourant) throws Exception {
 		Agent ag = getAgentDao().chercherAgent(agentCourant.getIdAgent());
 		addZone(getNOM_ST_AGENT_CREATE(), ag.getNomatr().toString());
 		addZone(getNOM_RG_REPRESENTANT_INACTIF(), agentCourant.isActif() ? getNOM_RB_OUI() : getNOM_RB_NON());
@@ -922,12 +908,11 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 		}
 
 		// on sauvegarde les données
-		SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
 		ReturnMessageDto message = new ReturnMessageDto();
 
 		// on sauvegarde
-		message = consuAbs.saveRepresentantAsaA52(getOrganisationCourante().getIdOrganisation(), new JSONSerializer()
-				.exclude("*.class").transform(new MSDateTransformer(), Date.class).serialize(getListeRepresentant()));
+		message = absService.saveRepresentantAsaA52(getOrganisationCourante().getIdOrganisation(),
+				new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class).serialize(getListeRepresentant()));
 
 		if (message.getErrors().size() > 0) {
 			String err = Const.CHAINE_VIDE;
@@ -989,21 +974,17 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 	public boolean peutSupprimerAgent(Integer idAgent) {
 		// on cherche si il y a deja des demandes de decharge de service pour
 		// cet agent
-		SirhAbsWSConsumer consu = new SirhAbsWSConsumer();
-		List<DemandeDto> list = consu.getListeDemandes(null, null, null, EnumTypeAbsence.ASA_A52.getCode(), idAgent,
-				EnumTypeGroupeAbsence.AS.getValue(), false, null);
+		List<DemandeDto> list = absService.getListeDemandes(null, null, null, EnumTypeAbsence.ASA_A52.getCode(), idAgent, EnumTypeGroupeAbsence.AS.getValue(), false, null);
 		if (list.size() == 0)
 			return true;
 		return false;
 	}
 
 	public ArrayList<OrganisationSyndicaleDto> getListeOrganisationSyndicaleExistante() {
-		return listeOrganisationSyndicaleExistante == null ? new ArrayList<OrganisationSyndicaleDto>()
-				: listeOrganisationSyndicaleExistante;
+		return listeOrganisationSyndicaleExistante == null ? new ArrayList<OrganisationSyndicaleDto>() : listeOrganisationSyndicaleExistante;
 	}
 
-	public void setListeOrganisationSyndicaleExistante(
-			ArrayList<OrganisationSyndicaleDto> listeOrganisationSyndicaleExistante) {
+	public void setListeOrganisationSyndicaleExistante(ArrayList<OrganisationSyndicaleDto> listeOrganisationSyndicaleExistante) {
 		this.listeOrganisationSyndicaleExistante = listeOrganisationSyndicaleExistante;
 	}
 
@@ -1037,8 +1018,7 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 		return "NOM_PB_VISUALISATION_COMPTEUR" + i;
 	}
 
-	public boolean performPB_VISUALISATION_COMPTEUR(HttpServletRequest request, int indiceEltAConsulter)
-			throws Exception {
+	public boolean performPB_VISUALISATION_COMPTEUR(HttpServletRequest request, int indiceEltAConsulter) throws Exception {
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION_COMPTEUR(), Const.CHAINE_VIDE);
 		videZonesDeSaisie(request);
@@ -1095,10 +1075,8 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 		addZone(getNOM_LB_MOTIF_SELECT(), String.valueOf(ligneMotif + 1));
 		addZone(getNOM_ST_DATE_DEBUT(), sdf.format(dto.getDateDebut()));
 		addZone(getNOM_ST_DATE_FIN(), sdf.format(dto.getDateFin()));
-		String soldeAsaA52Heure = (dto.getDureeAAjouter().intValue() / 60) == 0 ? Const.CHAINE_VIDE : dto
-				.getDureeAAjouter().intValue() / 60 + Const.CHAINE_VIDE;
-		String soldeAsaA52Minute = (dto.getDureeAAjouter().intValue() % 60) == 0 ? Const.CHAINE_VIDE : "."
-				+ dto.getDureeAAjouter().intValue() % 60;
+		String soldeAsaA52Heure = (dto.getDureeAAjouter().intValue() / 60) == 0 ? Const.CHAINE_VIDE : dto.getDureeAAjouter().intValue() / 60 + Const.CHAINE_VIDE;
+		String soldeAsaA52Minute = (dto.getDureeAAjouter().intValue() % 60) == 0 ? Const.CHAINE_VIDE : "." + dto.getDureeAAjouter().intValue() % 60;
 		addZone(getNOM_ST_NB_HEURES(), soldeAsaA52Heure + soldeAsaA52Minute);
 		return true;
 	}

@@ -16,13 +16,17 @@ import nc.mairie.gestionagent.absence.dto.TypeAbsenceDto;
 import nc.mairie.gestionagent.robot.MaClasse;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.Agent;
-import nc.mairie.spring.ws.SirhAbsWSConsumer;
+import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
+import nc.noumea.spring.service.AbsService;
+import nc.noumea.spring.service.IAbsService;
+
+import org.springframework.context.ApplicationContext;
 
 /**
  * Process OeAGENTAbsences Date de création : (05/09/11 11:31:37)
@@ -52,6 +56,8 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 	private ArrayList<EnumEtatAbsence> listeEtatAbsenceEC;
 	private ArrayList<EnumEtatAbsence> listeEtatAbsenceTT;
 
+	private IAbsService absService;
+
 	public OeAGENTAbsencesHisto() {
 		super();
 	}
@@ -78,6 +84,7 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
+		initialiseDao();
 
 		// Initialisation des listes deroulantes
 		initialiseListeDeroulante();
@@ -97,17 +104,23 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 		}
 	}
 
+	private void initialiseDao() {
+		// on initialise le dao
+		ApplicationContext context = ApplicationContextProvider.getContext();
+		if (null == absService) {
+			absService = (AbsService) context.getBean("absService");
+		}
+	}
+
 	private void initialiseListeDeroulante() {
 
 		if (getListeTypeAbsence() == null || getListeTypeAbsence().size() == 0) {
-			SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
-			setListeTypeAbsence((ArrayList<TypeAbsenceDto>) consuAbs.getListeRefTypeAbsenceDto(null));
+			setListeTypeAbsence((ArrayList<TypeAbsenceDto>) absService.getListeRefTypeAbsenceDto(null));
 		}
 
 		// Si liste Type absence vide alors affectation
 		if (getListeGroupeAbsence() == null || getListeGroupeAbsence().size() == 0) {
-			SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
-			setListeGroupeAbsence((ArrayList<RefGroupeAbsenceDto>) consuAbs.getRefGroupeAbsence());
+			setListeGroupeAbsence((ArrayList<RefGroupeAbsenceDto>) absService.getRefGroupeAbsence());
 
 			int[] tailles = { 30 };
 			String padding[] = { "G" };
@@ -183,11 +196,10 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 
 	private void initialiseHistoAgentToutes(HttpServletRequest request, String dateDebut, String dateFin,
 			String dateDemande, List<Integer> listeIdRefEtat, Integer idRefGroupeAbsence) {
-		SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
 
 		// Recherche des absences non prises de l'agent
-		ArrayList<DemandeDto> a = (ArrayList<DemandeDto>) consuAbs.getListeDemandesAgent(
-				getAgentCourant().getIdAgent(), "TOUTES", dateDebut, dateFin, dateDemande,
+		ArrayList<DemandeDto> a = (ArrayList<DemandeDto>) absService.getListeDemandesAgent(getAgentCourant()
+				.getIdAgent(), "TOUTES", dateDebut, dateFin, dateDemande,
 				listeIdRefEtat == null || listeIdRefEtat.size() == 0 ? null : listeIdRefEtat.toString()
 						.replace("[", "").replace("]", "").replace(" ", ""), null, idRefGroupeAbsence);
 		setListeToutesDemandes(a);
@@ -201,8 +213,8 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 			TypeAbsenceDto t = new TypeAbsenceDto();
 			t.setIdRefTypeAbsence(dto.getIdTypeDemande());
 			// #15586 affichage des restitutions massives des CA
-			addZone(getNOM_ST_TYPE_DEMANDE_TT(i), 0==t.getIdRefTypeAbsence()?dto.getLibelleTypeDemande():getListeTypeAbsence().get(getListeTypeAbsence().indexOf(t))
-					.getLibelle());
+			addZone(getNOM_ST_TYPE_DEMANDE_TT(i), 0 == t.getIdRefTypeAbsence() ? dto.getLibelleTypeDemande()
+					: getListeTypeAbsence().get(getListeTypeAbsence().indexOf(t)).getLibelle());
 
 			String dateDebAff = dto.getDateDebut() == null ? "&nbsp;" : sdfDate.format(dto.getDateDebut());
 			String dateFinAff = dto.getDateFin() == null ? "&nbsp;" : sdfDate.format(dto.getDateFin());
@@ -245,8 +257,8 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 					addZone(getNOM_ST_DUREE_TT(i), dto.getDuree() == null ? "&nbsp;" : getHeureMinute(dto.getDuree()
 							.intValue()));
 				}
-			// #15586 affichage des restitutions massives des CA
-			} else if(0 == dto.getIdTypeDemande()) {
+				// #15586 affichage des restitutions massives des CA
+			} else if (0 == dto.getIdTypeDemande()) {
 				addZone(getNOM_ST_DUREE_TT(i), dto.getDuree() + "j");
 			} else {
 				addZone(getNOM_ST_DUREE_TT(i), "&nbsp;");
@@ -271,11 +283,10 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 
 	private void initialiseHistoAgentEnCours(HttpServletRequest request, String dateDebut, String dateFin,
 			String dateDemande, List<Integer> listeIdRefEtat, Integer idRefGroupeAbsence) {
-		SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
 
 		// Recherche des absences non prises de l'agent
-		ArrayList<DemandeDto> a = (ArrayList<DemandeDto>) consuAbs.getListeDemandesAgent(
-				getAgentCourant().getIdAgent(), "EN_COURS", dateDebut, dateFin, dateDemande,
+		ArrayList<DemandeDto> a = (ArrayList<DemandeDto>) absService.getListeDemandesAgent(getAgentCourant()
+				.getIdAgent(), "EN_COURS", dateDebut, dateFin, dateDemande,
 				listeIdRefEtat == null || listeIdRefEtat.size() == 0 ? null : listeIdRefEtat.toString()
 						.replace("[", "").replace("]", "").replace(" ", ""), null, idRefGroupeAbsence);
 		setListeDemandeEnCours(a);
@@ -288,8 +299,8 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 
 			TypeAbsenceDto t = new TypeAbsenceDto();
 			t.setIdRefTypeAbsence(dto.getIdTypeDemande());
-			addZone(getNOM_ST_TYPE_DEMANDE_EC(i), 0==t.getIdRefTypeAbsence()?dto.getLibelleTypeDemande():getListeTypeAbsence().get(getListeTypeAbsence().indexOf(t))
-					.getLibelle());
+			addZone(getNOM_ST_TYPE_DEMANDE_EC(i), 0 == t.getIdRefTypeAbsence() ? dto.getLibelleTypeDemande()
+					: getListeTypeAbsence().get(getListeTypeAbsence().indexOf(t)).getLibelle());
 
 			String dateDebAff = dto.getDateDebut() == null ? "&nbsp;" : sdfDate.format(dto.getDateDebut());
 			String dateFinAff = dto.getDateFin() == null ? "&nbsp;" : sdfDate.format(dto.getDateFin());
@@ -356,11 +367,10 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 
 	private void initialiseHistoAgentNonPrises(HttpServletRequest request, String dateDebut, String dateFin,
 			String dateDemande, List<Integer> listeIdRefEtat, Integer idRefGroupeAbsence) {
-		SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
 
 		// Recherche des absences non prises de l'agent
-		ArrayList<DemandeDto> a = (ArrayList<DemandeDto>) consuAbs.getListeDemandesAgent(
-				getAgentCourant().getIdAgent(), "NON_PRISES", dateDebut, dateFin, dateDemande,
+		ArrayList<DemandeDto> a = (ArrayList<DemandeDto>) absService.getListeDemandesAgent(getAgentCourant()
+				.getIdAgent(), "NON_PRISES", dateDebut, dateFin, dateDemande,
 				listeIdRefEtat == null || listeIdRefEtat.size() == 0 ? null : listeIdRefEtat.toString()
 						.replace("[", "").replace("]", "").replace(" ", ""), null, idRefGroupeAbsence);
 		setListeDemandeNonPrises(a);
@@ -370,7 +380,7 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 
 		for (int i = 0; i < getListeDemandeNonPrises().size(); i++) {
 			DemandeDto dto = getListeDemandeNonPrises().get(i);
-			
+
 			TypeAbsenceDto t = new TypeAbsenceDto();
 			t.setIdRefTypeAbsence(dto.getIdTypeDemande());
 			addZone(getNOM_ST_TYPE_DEMANDE_NP(i), getListeTypeAbsence().get(getListeTypeAbsence().indexOf(t))

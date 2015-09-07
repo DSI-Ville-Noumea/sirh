@@ -2,13 +2,14 @@ package nc.mairie.spring.dao.metier.avancement;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import nc.mairie.metier.avancement.AvancementDetaches;
 
 public interface AvancementDetachesDaoInterface {
 
 	public ArrayList<AvancementDetaches> listerAvancementAvecAnneeEtat(Integer annee, String etat, String libFiliere,
-			Integer idAgent, ArrayList<String> listeSousService, String categorie) throws Exception;
+			Integer idAgent, List<String> listeSousService, String categorie) throws Exception;
 
 	public AvancementDetaches chercherAvancementAvecAnneeEtAgent(Integer annee, Integer idAgent) throws Exception;
 

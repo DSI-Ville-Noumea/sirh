@@ -15,21 +15,18 @@ import nc.mairie.gestionagent.absence.dto.SoldeDto;
 import nc.mairie.gestionagent.dto.AgentDto;
 import nc.mairie.gestionagent.dto.ApprobateurDto;
 import nc.mairie.metier.Const;
+import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.spring.ws.MSDateTransformer;
-import nc.mairie.spring.ws.SirhAbsWSConsumer;
+import nc.noumea.spring.service.AbsService;
+import nc.noumea.spring.service.IAbsService;
 
 import org.joda.time.DateTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
 
 import flexjson.JSONSerializer;
 
 public class ServletActeursAgent extends javax.servlet.http.HttpServlet {
 
-	private Logger logger = LoggerFactory.getLogger(ServletActeursAgent.class);
-
-	public SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
-	
 	/**
 	 * 
 	 */
@@ -38,47 +35,46 @@ public class ServletActeursAgent extends javax.servlet.http.HttpServlet {
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
 		try {
+
+			IAbsService absService = null;
+			if (null == absService) {
+
+				ApplicationContext context = ApplicationContextProvider.getContext();
+				absService = (AbsService) context.getBean("absService");
+			}
+
 			String nomatr = req.getParameter("nomatr");
 			String typeDemande = req.getParameter("typeDemande");
 			String dateDemande = req.getParameter("dateDemande");
-			ActeursDto dto = consuAbs.getListeActeurs(new Integer(900+nomatr));
+			ActeursDto dto = absService.getListeActeurs(new Integer(900+nomatr));
 			
 			StringBuffer result = new StringBuffer();
 			// les acteurs de l agent
-			if(null != dto) {
-				for(AgentDto operateur : dto.getListOperateurs()) {
-					result.append("Opérateur : " 
-							+ operateur.getPrenom() + " " 
-							+ operateur.getNom() + " ("
-							+ new Integer(operateur.getIdAgent() - 9000000).toString() 
-							+ ") \r");
+			if (null != dto) {
+				for (AgentDto operateur : dto.getListOperateurs()) {
+					result.append("Opérateur : " + operateur.getPrenom() + " " + operateur.getNom() + " ("
+							+ new Integer(operateur.getIdAgent() - 9000000).toString() + ") \r");
 				}
-				for(AgentDto viseur : dto.getListViseurs()) {
-					result.append("Viseur : " 
-							+ viseur.getPrenom() + " " 
-							+ viseur.getNom() + " ("
-							+ new Integer(viseur.getIdAgent() - 9000000).toString() 
-							+ ") \r");
+				for (AgentDto viseur : dto.getListViseurs()) {
+					result.append("Viseur : " + viseur.getPrenom() + " " + viseur.getNom() + " ("
+							+ new Integer(viseur.getIdAgent() - 9000000).toString() + ") \r");
 				}
-				for(ApprobateurDto approbateur : dto.getListApprobateurs()) {
-					result.append("Approbateur : " 
-							+ approbateur.getApprobateur().getPrenom() + " " 
+				for (ApprobateurDto approbateur : dto.getListApprobateurs()) {
+					result.append("Approbateur : " + approbateur.getApprobateur().getPrenom() + " "
 							+ approbateur.getApprobateur().getNom() + " ("
-							+ new Integer(approbateur.getApprobateur().getIdAgent() - 9000000).toString() 
-							+ ") \r");
+							+ new Integer(approbateur.getApprobateur().getIdAgent() - 9000000).toString() + ") \r");
 				}
-				if(dto.getListOperateurs().isEmpty()
-						&& dto.getListViseurs().isEmpty()
+				if (dto.getListOperateurs().isEmpty() && dto.getListViseurs().isEmpty()
 						&& dto.getListApprobateurs().isEmpty()) {
 					result.append("Aucun acteur");
 				}
 			}
-			
+
 			// le sigle service
 			// la base conge
 			// le nombre de garde
 			// le solde
-			if(null != EnumTypeAbsence.getRefTypeAbsenceEnum(new Integer(typeDemande))) {
+			if (null != EnumTypeAbsence.getRefTypeAbsenceEnum(new Integer(typeDemande))) {
 				Calendar cal = Calendar.getInstance();
 				cal.setTime(new Date());
 				Integer annee = cal.get(Calendar.YEAR);
@@ -91,47 +87,54 @@ public class ServletActeursAgent extends javax.servlet.http.HttpServlet {
 				filtreDto.setTypeDemande(new Integer(typeDemande));
 				String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class)
 						.deepSerialize(filtreDto);
-				SoldeDto solde = consuAbs.getSoldeAgent(new Integer(900+nomatr), json);
-				
-				if(null != solde) {
+				SoldeDto solde = absService.getSoldeAgent(new Integer(900 + nomatr), json);
+
+				if (null != solde) {
 					switch (EnumTypeAbsence.getRefTypeAbsenceEnum(new Integer(typeDemande))) {
 						case CONGE:
-							result.append("\r Solde Congé Annuel année en cours : " + solde.getSoldeCongeAnnee()+ " j");
-							result.append("\r Solde Congé Annuel  année précédente : " + solde.getSoldeCongeAnneePrec()+ " j");
+							result.append("\r Solde Congé Annuel année en cours : " + solde.getSoldeCongeAnnee() + " j");
+							result.append("\r Solde Congé Annuel  année précédente : " + solde.getSoldeCongeAnneePrec()
+									+ " j");
 							break;
 						case REPOS_COMP:
-							String soldeReposCompHeure = (solde.getSoldeReposCompAnnee() / 60) == 0 ? Const.CHAINE_VIDE : solde.getSoldeReposCompAnnee() / 60
-									+ "h ";
-							String soldeReposCompMinute = (solde.getSoldeReposCompAnnee() % 60) == 0 ? "" : solde.getSoldeReposCompAnnee() % 60 + "m";
-							String soldeReposCompPrecHeure = (solde.getSoldeReposCompAnneePrec() / 60) == 0 ? Const.CHAINE_VIDE : solde.getSoldeReposCompAnneePrec() / 60
-									+ "h ";
-							String soldeReposCompPrecMinute = (solde.getSoldeReposCompAnneePrec() % 60) == 0 ? "" : solde.getSoldeReposCompAnneePrec() % 60 + "m";
-							result.append("\r Solde Repos Comp. année en cours : " + soldeReposCompHeure + soldeReposCompMinute);
-							result.append("\r Solde Repos Comp. année précédente : " + soldeReposCompPrecHeure + soldeReposCompPrecMinute);
+							String soldeReposCompHeure = (solde.getSoldeReposCompAnnee() / 60) == 0 ? Const.CHAINE_VIDE
+									: solde.getSoldeReposCompAnnee() / 60 + "h ";
+							String soldeReposCompMinute = (solde.getSoldeReposCompAnnee() % 60) == 0 ? "" : solde
+									.getSoldeReposCompAnnee() % 60 + "m";
+							String soldeReposCompPrecHeure = (solde.getSoldeReposCompAnneePrec() / 60) == 0 ? Const.CHAINE_VIDE
+									: solde.getSoldeReposCompAnneePrec() / 60 + "h ";
+							String soldeReposCompPrecMinute = (solde.getSoldeReposCompAnneePrec() % 60) == 0 ? ""
+									: solde.getSoldeReposCompAnneePrec() % 60 + "m";
+							result.append("\r Solde Repos Comp. année en cours : " + soldeReposCompHeure
+									+ soldeReposCompMinute);
+							result.append("\r Solde Repos Comp. année précédente : " + soldeReposCompPrecHeure
+									+ soldeReposCompPrecMinute);
 							break;
 						case RECUP:
-							String soldeRecupHeure = (solde.getSoldeRecup() / 60) == 0 ? Const.CHAINE_VIDE : solde.getSoldeRecup() / 60 + "h ";
-							String soldeRecupMinute = (solde.getSoldeRecup() % 60) == 0 ? "" : solde.getSoldeRecup() % 60 + "m";
+							String soldeRecupHeure = (solde.getSoldeRecup() / 60) == 0 ? Const.CHAINE_VIDE : solde
+									.getSoldeRecup() / 60 + "h ";
+							String soldeRecupMinute = (solde.getSoldeRecup() % 60) == 0 ? "" : solde.getSoldeRecup()
+									% 60 + "m";
 							result.append("\r Solde récupération: " + soldeRecupHeure + soldeRecupMinute);
 							break;
 						case ASA_A48:
-							result.append("\r Solde : " + solde.getSoldeAsaA48()+ " j");
+							result.append("\r Solde : " + solde.getSoldeAsaA48() + " j");
 							break;
 						case ASA_A54:
-							result.append("\r Solde : " + solde.getSoldeAsaA54()+ " j");
+							result.append("\r Solde : " + solde.getSoldeAsaA54() + " j");
 							break;
 						case ASA_A55:
-							String soldeAsaA55Heure = (solde.getSoldeAsaA55() / 60) == 0 ? Const.CHAINE_VIDE : new Double(solde.getSoldeAsaA55()
-									/ 60).intValue() + "h ";
-							String soldeAsaA55Minute = (solde.getSoldeAsaA55() % 60) == 0 ? "" : solde.getSoldeAsaA55() % 60
-									+ "m";
+							String soldeAsaA55Heure = (solde.getSoldeAsaA55() / 60) == 0 ? Const.CHAINE_VIDE
+									: new Double(solde.getSoldeAsaA55() / 60).intValue() + "h ";
+							String soldeAsaA55Minute = (solde.getSoldeAsaA55() % 60) == 0 ? "" : solde.getSoldeAsaA55()
+									% 60 + "m";
 							result.append("\r Solde : " + soldeAsaA55Heure + soldeAsaA55Minute);
 							break;
 						case ASA_A52:
-							String soldeAsaA52Heure = (solde.getSoldeAsaA52() / 60) == 0 ? Const.CHAINE_VIDE : new Double(solde.getSoldeAsaA52()
-								/ 60).intValue() + "h ";
-							String soldeAsaA52Minute = (solde.getSoldeAsaA52() % 60) == 0 ? "" : solde.getSoldeAsaA52() % 60
-								+ "m";
+							String soldeAsaA52Heure = (solde.getSoldeAsaA52() / 60) == 0 ? Const.CHAINE_VIDE
+									: new Double(solde.getSoldeAsaA52() / 60).intValue() + "h ";
+							String soldeAsaA52Minute = (solde.getSoldeAsaA52() % 60) == 0 ? "" : solde.getSoldeAsaA52()
+									% 60 + "m";
 							result.append("\r Solde : " + soldeAsaA52Heure + soldeAsaA52Minute);
 							break;
 						case MALADIE:
@@ -142,7 +145,7 @@ public class ServletActeursAgent extends javax.servlet.http.HttpServlet {
 					}
 				}
 			}
-			
+
 			resp.setContentType("text/html");
 			resp.setHeader("Cache-Control", "no-cache");
 			resp.getWriter().write(result.toString());
