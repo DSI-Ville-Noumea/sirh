@@ -39,7 +39,9 @@ document.formu.elements[nom].focus();
 			<legend class="sigp2Legend">Filtres pour l'affichage des approbateurs</legend>
 				<span class="sigp2Mandatory" style="width:60px;">Service 
 					<img border="0" src="images/loupe.gif" width="16" title="Cliquer pour afficher l'arborescence" height="16" style="cursor : pointer;" onclick="agrandirHierarchy();">
-				</span>
+					<img onkeydown="" onkeypress="" onkeyup="" border="0" src="images/suppression.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_SERVICE()%>');">
+			    </span>
+			    <span class="sigp2">
 				<INPUT id="service" class="sigp2-saisie" readonly="readonly" name="<%= process.getNOM_EF_SERVICE() %>" style="margin-right:10px;width:100px"
 					type="text" value="<%= process.getVAL_EF_SERVICE() %>">
 				<INPUT type="hidden" id="idServiceADS" size="4" name="<%=process.getNOM_ST_ID_SERVICE_ADS() %>" value="<%=process.getVAL_ST_ID_SERVICE_ADS() %>" class="sigp2-saisie">
@@ -47,7 +49,7 @@ document.formu.elements[nom].focus();
 				<!-- ////////// ARBRE DES SERVICES - ADS ///////////// -->
 				<%=process.getCurrentWholeTreeJS(process.getVAL_EF_SERVICE().toUpperCase()) %>
 				<!-- ////////// ARBRE DES SERVICES - ADS ///////////// -->	
-								
+				</span>			
 				<span class="sigp2" style="width:60px">Par agent :</span>
 				<INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_AGENT() %>" size="10" type="text" value="<%= process.getVAL_ST_AGENT() %>" style="margin-right:10px;">
 				<img border="0" src="images/loupe.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_RECHERCHER_AGENT()%>');">
