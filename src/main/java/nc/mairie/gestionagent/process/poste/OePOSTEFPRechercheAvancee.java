@@ -115,8 +115,7 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 
 		// Si liste statut vide alors affectation
 		if (getLB_STATUT_SERVICE() == LBVide) {
-			ArrayList<StatutEntiteEnum> statutEntite = (ArrayList<StatutEntiteEnum>) StatutEntiteEnum
-					.getAllStatutEntiteEnum();
+			ArrayList<StatutEntiteEnum> statutEntite = (ArrayList<StatutEntiteEnum>) StatutEntiteEnum.getAllStatutEntiteEnum();
 			setListeStatutEntite(statutEntite);
 
 			if (getListeStatutEntite().size() != 0) {
@@ -180,16 +179,14 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 			// Si liste vide alors erreur
 			if (getListeFP().size() == 0) {
 				// "ERR125", "Impossible de trouver @."
-				setStatut(STATUT_MEME_PROCESS, false,
-						MessageUtils.getMessage("ERR125", "une fiche de poste avec ces critéres"));
+				setStatut(STATUT_MEME_PROCESS, false, MessageUtils.getMessage("ERR125", "une fiche de poste avec ces critéres"));
 				return false;
 			}
 
 			for (int i = 0; i < getListeFP().size(); i++) {
 				FichePoste fp = (FichePoste) getListeFP().get(i);
 				Integer indiceFp = fp.getIdFichePoste();
-				String titreFichePoste = fp.getIdTitrePoste() == null ? "&nbsp;" : getTitrePosteDao()
-						.chercherTitrePoste(fp.getIdTitrePoste()).getLibTitrePoste();
+				String titreFichePoste = fp.getIdTitrePoste() == null ? "&nbsp;" : getTitrePosteDao().chercherTitrePoste(fp.getIdTitrePoste()).getLibTitrePoste();
 				Agent agent = null;
 				try {
 					agent = getAgentDao().chercherAgentAffecteFichePoste(fp.getIdFichePoste());
@@ -205,8 +202,7 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 
 				addZone(getNOM_ST_NUM(indiceFp), fp.getNumFp());
 				addZone(getNOM_ST_TITRE(indiceFp), titreFichePoste);
-				addZone(getNOM_ST_AGENT(indiceFp), agent == null ? "&nbsp;" : agent.getNomAgent().toUpperCase() + " "
-						+ agent.getPrenomAgent());
+				addZone(getNOM_ST_AGENT(indiceFp), agent == null ? "&nbsp;" : agent.getNomAgent().toUpperCase() + " " + agent.getPrenomAgent());
 				addZone(getNOM_ST_SERVICE(indiceFp), serv == null ? "Erreur Recuperationservice" : serv.getLabel());
 
 			}
@@ -261,8 +257,7 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 		if (getVAL_ST_ID_SERVICE_ADS().length() != 0) {
 
 			if (getVAL_CK_WITH_SERVICE_ENFANT().equals(getCHECKED_ON())) {
-				listIdServiceADSSeelect.addAll(adsService.getListIdsEntiteWithEnfantsOfEntite(new Integer(
-						getVAL_ST_ID_SERVICE_ADS())));
+				listIdServiceADSSeelect.addAll(adsService.getListIdsEntiteWithEnfantsOfEntite(new Integer(getVAL_ST_ID_SERVICE_ADS())));
 			} else {
 				EntiteDto entiteChoisie = adsService.getEntiteByIdEntite(new Integer(getVAL_ST_ID_SERVICE_ADS()));
 				listIdServiceADSSeelect.add(entiteChoisie.getIdEntite());
@@ -271,8 +266,7 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 
 		// Recuperation Statut
 		StatutFP statut = null;
-		int indiceStatut = (Services.estNumerique(getVAL_LB_STATUT_SELECT()) ? Integer
-				.parseInt(getVAL_LB_STATUT_SELECT()) : -1);
+		int indiceStatut = (Services.estNumerique(getVAL_LB_STATUT_SELECT()) ? Integer.parseInt(getVAL_LB_STATUT_SELECT()) : -1);
 		if (indiceStatut > 0)
 			statut = (StatutFP) getListeStatut().get(indiceStatut - 1);
 
@@ -336,8 +330,7 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 		// Recuperation statut entite
 		List<Integer> listIdServiceADS = new ArrayList<Integer>();
 		StatutEntiteEnum statutEntite = null;
-		int indiceStatutEntite = (Services.estNumerique(getVAL_LB_STATUT_SERVICE_SELECT()) ? Integer
-				.parseInt(getVAL_LB_STATUT_SERVICE_SELECT()) : -1);
+		int indiceStatutEntite = (Services.estNumerique(getVAL_LB_STATUT_SERVICE_SELECT()) ? Integer.parseInt(getVAL_LB_STATUT_SERVICE_SELECT()) : -1);
 		if (indiceStatutEntite > 0)
 			statutEntite = (StatutEntiteEnum) getListeStatutEntite().get(indiceStatutEntite - 1);
 
@@ -349,8 +342,7 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 			} else {
 				for (Integer idEntite : listIdServiceADSSeelect) {
 					EntiteDto entiteChoisie = adsService.getEntiteByIdEntite(idEntite);
-					if (entiteChoisie.getIdStatut().toString()
-							.equals(String.valueOf(statutEntite.getIdRefStatutEntite()))) {
+					if (entiteChoisie.getIdStatut().toString().equals(String.valueOf(statutEntite.getIdRefStatutEntite()))) {
 						listIdServiceADS.add(idEntite);
 					}
 				}
@@ -365,10 +357,8 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 
 		boolean isCocheObservation = getVAL_CK_WITH_COMMENTAIRE().equals(getCHECKED_ON());
 
-		ArrayList<FichePoste> fp = getFichePosteDao().listerFichePosteAvecCriteresAvances(listIdServiceADS,
-				statut == null ? null : statut.getIdStatutFp(), idTitre,
-				getVAL_EF_NUM_FICHE_POSTE().equals(Const.CHAINE_VIDE) ? null : getVAL_EF_NUM_FICHE_POSTE(),
-				agent == null ? null : agent.getIdAgent(), isCocheObservation);
+		ArrayList<FichePoste> fp = getFichePosteDao().listerFichePosteAvecCriteresAvances(listIdServiceADS, statut == null ? null : statut.getIdStatutFp(), idTitre,
+				getVAL_EF_NUM_FICHE_POSTE().equals(Const.CHAINE_VIDE) ? null : getVAL_EF_NUM_FICHE_POSTE(), agent == null ? null : agent.getIdAgent(), isCocheObservation);
 		setListeFP(fp);
 
 		fillList();
@@ -924,19 +914,16 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 				FichePoste fiche = getFichePosteDao().chercherFichePosteAvecNumeroFP(getVAL_EF_NUM_FICHE_POSTE_AFF());
 				if (fiche != null && fiche.getIdFichePoste() != null) {
 					// on alimente une liste d'affectation que l'on affiche
-					ArrayList<Affectation> listeAff = getAffectationDao().listerAffectationAvecFPOrderDatDeb(
-							fiche.getIdFichePoste());
+					ArrayList<Affectation> listeAff = getAffectationDao().listerAffectationAvecFPOrderDatDeb(fiche.getIdFichePoste());
 					setListeAffectation(listeAff);
 					initialiseListeAff();
 
 				} else {
-					setStatut(STATUT_MEME_PROCESS, true,
-							MessageUtils.getMessage("ERR125", "la fiche de poste " + getVAL_EF_NUM_FICHE_POSTE_AFF()));
+					setStatut(STATUT_MEME_PROCESS, true, MessageUtils.getMessage("ERR125", "la fiche de poste " + getVAL_EF_NUM_FICHE_POSTE_AFF()));
 					return false;
 				}
 			} catch (Exception e) {
-				getTransaction().declarerErreur(
-						MessageUtils.getMessage("ERR125", "la fiche de poste " + getVAL_EF_NUM_FICHE_POSTE_AFF()));
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR125", "la fiche de poste " + getVAL_EF_NUM_FICHE_POSTE_AFF()));
 				return false;
 			}
 		} else {
@@ -962,8 +949,7 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 
 			addZone(getNOM_ST_DIR_AFF(i), direction != null ? direction.getSigle() : "&nbsp;");
 			addZone(getNOM_ST_SERV_AFF(i), service != null ? service.getLabel() : "&nbsp;");
-			addZone(getNOM_ST_AGENT_AFF(i),
-					agent.getNomAgent() + " " + agent.getPrenomAgent() + "(" + agent.getNomatr() + ")");
+			addZone(getNOM_ST_AGENT_AFF(i), agent.getNomAgent() + " " + agent.getPrenomAgent() + "(" + agent.getNomatr() + ")");
 			addZone(getNOM_ST_DATE_DEBUT_AFF(i), sdf.format(a.getDateDebutAff()));
 			addZone(getNOM_ST_DATE_FIN_AFF(i), a.getDateFinAff() == null ? "&nbsp;" : sdf.format(a.getDateFinAff()));
 			addZone(getNOM_ST_NUM_FP_AFF(i), fp.getNumFp().equals(Const.CHAINE_VIDE) ? "&nbsp;" : fp.getNumFp());
@@ -1163,8 +1149,7 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 	}
 
 	public String getCurrentWholeTreeJS(String serviceSaisi) {
-		return adsService.getCurrentWholeTreeActifTransitoireJS(
-				null != serviceSaisi && !"".equals(serviceSaisi) ? serviceSaisi : null, false);
+		return adsService.getCurrentWholeTreePrevisionActifTransitoireJS(null != serviceSaisi && !"".equals(serviceSaisi) ? serviceSaisi : null, false);
 	}
 
 	private String[] getLB_STATUT_SERVICE() {
