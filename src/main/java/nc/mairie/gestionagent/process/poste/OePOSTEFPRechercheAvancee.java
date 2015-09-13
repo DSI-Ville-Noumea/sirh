@@ -173,7 +173,7 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 	/**
 	 * Rempli la liste des fiches de poste trouvées
 	 */
-	private boolean fillList() throws Exception {
+	private boolean fillList(List<EntiteDto> listEntiteDto) throws Exception {
 		if (getListeFP() != null) {
 
 			// Si liste vide alors erreur
