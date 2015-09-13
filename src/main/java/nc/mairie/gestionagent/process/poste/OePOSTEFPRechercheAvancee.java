@@ -198,7 +198,7 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 					}
 				}
 
-				EntiteDto serv = adsService.getEntiteByIdEntite(fp.getIdServiceAds());
+				EntiteDto serv = adsService.getListEntiteDtoByIdService(listEntiteDto, fp.getIdServiceAds());
 
 				addZone(getNOM_ST_NUM(indiceFp), fp.getNumFp());
 				addZone(getNOM_ST_TITRE(indiceFp), titreFichePoste);
@@ -253,20 +253,27 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 		setListeFP(null);
 
 		// Recuperation Service
-		List<Integer> listIdServiceADSSeelect = new ArrayList<Integer>();
+		EntiteDto entiteDtoSelect = null;
+		List<EntiteDto> listEntiteDtoSelect = new ArrayList<EntiteDto>();
+		
 		if (getVAL_ST_ID_SERVICE_ADS().length() != 0) {
 
 			if (getVAL_CK_WITH_SERVICE_ENFANT().equals(getCHECKED_ON())) {
-				listIdServiceADSSeelect.addAll(adsService.getListIdsEntiteWithEnfantsOfEntite(new Integer(getVAL_ST_ID_SERVICE_ADS())));
+				entiteDtoSelect = adsService.getEntiteWithChildrenByIdEntite(new Integer(
+						getVAL_ST_ID_SERVICE_ADS()));
 			} else {
-				EntiteDto entiteChoisie = adsService.getEntiteByIdEntite(new Integer(getVAL_ST_ID_SERVICE_ADS()));
-				listIdServiceADSSeelect.add(entiteChoisie.getIdEntite());
+				entiteDtoSelect = adsService.getEntiteByIdEntite(new Integer(getVAL_ST_ID_SERVICE_ADS()));
 			}
+		}
+		
+		if(null != entiteDtoSelect) {
+			listEntiteDtoSelect = adsService.getListEntiteDto(entiteDtoSelect);
 		}
 
 		// Recuperation Statut
 		StatutFP statut = null;
-		int indiceStatut = (Services.estNumerique(getVAL_LB_STATUT_SELECT()) ? Integer.parseInt(getVAL_LB_STATUT_SELECT()) : -1);
+		int indiceStatut = (Services.estNumerique(getVAL_LB_STATUT_SELECT()) ? Integer
+				.parseInt(getVAL_LB_STATUT_SELECT()) : -1);
 		if (indiceStatut > 0)
 			statut = (StatutFP) getListeStatut().get(indiceStatut - 1);
 
@@ -330,45 +337,54 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 		// Recuperation statut entite
 		List<Integer> listIdServiceADS = new ArrayList<Integer>();
 		StatutEntiteEnum statutEntite = null;
-		int indiceStatutEntite = (Services.estNumerique(getVAL_LB_STATUT_SERVICE_SELECT()) ? Integer.parseInt(getVAL_LB_STATUT_SERVICE_SELECT()) : -1);
+		int indiceStatutEntite = (Services.estNumerique(getVAL_LB_STATUT_SERVICE_SELECT()) ? Integer
+				.parseInt(getVAL_LB_STATUT_SERVICE_SELECT()) : -1);
 		if (indiceStatutEntite > 0)
 			statutEntite = (StatutEntiteEnum) getListeStatutEntite().get(indiceStatutEntite - 1);
 
 		if (statutEntite != null) {
-			if (listIdServiceADSSeelect.size() == 0) {
-				for (EntiteDto dto : adsService.getListEntiteByStatut(statutEntite.getIdRefStatutEntite())) {
+			if (null == entiteDtoSelect) {
+				listEntiteDtoSelect = adsService.getListEntiteByStatut(statutEntite.getIdRefStatutEntite());
+				for (EntiteDto dto : listEntiteDtoSelect) {
 					listIdServiceADS.add(dto.getIdEntite());
 				}
 			} else {
-				for (Integer idEntite : listIdServiceADSSeelect) {
-					EntiteDto entiteChoisie = adsService.getEntiteByIdEntite(idEntite);
-					if (entiteChoisie.getIdStatut().toString().equals(String.valueOf(statutEntite.getIdRefStatutEntite()))) {
-						listIdServiceADS.add(idEntite);
+				for (EntiteDto entiteChoisie : listEntiteDtoSelect) {
+					if (entiteChoisie.getIdStatut().toString()
+							.equals(String.valueOf(statutEntite.getIdRefStatutEntite()))) {
+						listIdServiceADS.add(entiteChoisie.getIdEntite());
 					}
 				}
 			}
 			// on ajoute cette ligne pour ne pas retourner toutes les FDP
-			if (listIdServiceADS.size() == 0) {
+			if (listIdServiceADS.isEmpty()) {
 				listIdServiceADS.add(0);
 			}
 		} else {
-			listIdServiceADS.addAll(listIdServiceADSSeelect);
+			if(null != listEntiteDtoSelect 
+					&& !listEntiteDtoSelect.isEmpty()) {
+				for(EntiteDto entiteChoisie : listEntiteDtoSelect) {
+					listIdServiceADS.add(entiteChoisie.getIdEntite());
+				}
+			}
 		}
 
 		boolean isCocheObservation = getVAL_CK_WITH_COMMENTAIRE().equals(getCHECKED_ON());
 
-		ArrayList<FichePoste> fp = getFichePosteDao().listerFichePosteAvecCriteresAvances(listIdServiceADS, statut == null ? null : statut.getIdStatutFp(), idTitre,
-				getVAL_EF_NUM_FICHE_POSTE().equals(Const.CHAINE_VIDE) ? null : getVAL_EF_NUM_FICHE_POSTE(), agent == null ? null : agent.getIdAgent(), isCocheObservation);
+		ArrayList<FichePoste> fp = getFichePosteDao().listerFichePosteAvecCriteresAvances(listIdServiceADS,
+				statut == null ? null : statut.getIdStatutFp(), idTitre,
+				getVAL_EF_NUM_FICHE_POSTE().equals(Const.CHAINE_VIDE) ? null : getVAL_EF_NUM_FICHE_POSTE(),
+				agent == null ? null : agent.getIdAgent(), isCocheObservation);
 		setListeFP(fp);
 
-		fillList();
+		fillList(listEntiteDtoSelect);
 
 		if (getListeFP().size() == 1) {
 			// Alimentation de la variable fichePoste
 			VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_FICHE_POSTE, (FichePoste) getListeFP().get(0));
 			setStatut(STATUT_PROCESS_APPELANT);
-
 		}
+		
 		return true;
 	}
 

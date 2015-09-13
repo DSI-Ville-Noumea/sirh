@@ -405,5 +405,41 @@ public class AdsService implements IAdsService {
 		}
 		return adsConsumer.getParentOfEntiteByTypeEntite(idEntite, type.getId());
 	}
+	
+	@Override 
+	public List<EntiteDto> getListEntiteDto(EntiteDto entiteWithChildren) {
+		
+		List<EntiteDto> result = new ArrayList<EntiteDto>();
+		
+		result.add(entiteWithChildren);
+		getListEntiteDtoRecursive(entiteWithChildren, result);
+		
+		return result;
+	}
+
+	private void getListEntiteDtoRecursive(EntiteDto entiteDto, List<EntiteDto> result) {
+
+		if (null != entiteDto && null != entiteDto.getEnfants()) {
+			for (EntiteDto enfant : entiteDto.getEnfants()) {
+				result.add(enfant);
+				getListEntiteDtoRecursive(enfant, result);
+			}
+		}
+	}
+	
+	@Override
+	public EntiteDto getListEntiteDtoByIdService(List<EntiteDto> listEntiteDto, Integer idService) {
+		
+		if(null != listEntiteDto
+				&& null != idService) {
+			for(EntiteDto entite : listEntiteDto) {
+				if(entite.getIdEntite().equals(idService)) {
+					return entite;
+				}
+			}
+		}
+		
+		return null;
+	}
 
 }

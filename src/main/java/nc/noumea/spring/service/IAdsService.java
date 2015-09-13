@@ -33,4 +33,9 @@ public interface IAdsService {
 	List<EntiteDto> getListEntiteByStatut(Integer idStatut);
 
 	EntiteDto getInfoSiservByIdEntite(Integer idEntite);
+
+	List<EntiteDto> getListEntiteDto(EntiteDto entiteWithChildren);
+
+	EntiteDto getListEntiteDtoByIdService(List<EntiteDto> listEntiteDto,
+			Integer idService);
 }
