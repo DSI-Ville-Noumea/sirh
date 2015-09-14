@@ -115,6 +115,7 @@ public class HistoFichePosteDao extends SirhDao implements HistoFichePosteDaoInt
 			a.setIdBaseHorairePointage((Integer) row.get(CHAMP_ID_BASE_HORAIRE_POINTAGE));
 			a.setIdBaseHoraireAbsence((Integer) row.get(CHAMP_ID_BASE_HORAIRE_ABSENCE));
 			a.setIdServiceAds((Integer) row.get(CHAMP_ID_SERVICE_ADS));
+			a.setIdServi((String) row.get(CHAMP_ID_SERVI));
 			liste.add(a);
 		}
 
@@ -164,6 +165,7 @@ public class HistoFichePosteDao extends SirhDao implements HistoFichePosteDaoInt
 			a.setIdBaseHorairePointage((Integer) row.get(CHAMP_ID_BASE_HORAIRE_POINTAGE));
 			a.setIdBaseHoraireAbsence((Integer) row.get(CHAMP_ID_BASE_HORAIRE_ABSENCE));
 			a.setIdServiceAds((Integer) row.get(CHAMP_ID_SERVICE_ADS));
+			a.setIdServi((String) row.get(CHAMP_ID_SERVI));
 			liste.add(a);
 		}
 
