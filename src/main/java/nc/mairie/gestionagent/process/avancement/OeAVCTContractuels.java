@@ -86,8 +86,7 @@ public class OeAVCTContractuels extends BasicProcess {
 		// Si liste avancements vide alors initialisation.
 		if (getListeAvct().size() == 0) {
 			agentEnErreur = Const.CHAINE_VIDE;
-			int indiceAnnee = (Services.estNumerique(getVAL_LB_ANNEE_SELECT()) ? Integer
-					.parseInt(getVAL_LB_ANNEE_SELECT()) : -1);
+			int indiceAnnee = (Services.estNumerique(getVAL_LB_ANNEE_SELECT()) ? Integer.parseInt(getVAL_LB_ANNEE_SELECT()) : -1);
 			String annee = (String) getListeAnnee()[indiceAnnee];
 			setListeAvct(getAvancementContractuelsDao().listerAvancementContractuelsAnnee(Integer.valueOf(annee)));
 
@@ -107,30 +106,25 @@ public class OeAVCTContractuels extends BasicProcess {
 
 				addZone(getNOM_ST_MATRICULE(i), agent.getNomatr().toString());
 				addZone(getNOM_ST_AGENT(i), agent.getNomAgent() + " <br> " + agent.getPrenomAgent());
-				addZone(getNOM_ST_DATE_EMBAUCHE(i),
-						av.getDateEmbauche() == null ? Const.CHAINE_VIDE : sdf.format(av.getDateEmbauche()));
+				addZone(getNOM_ST_DATE_EMBAUCHE(i), av.getDateEmbauche() == null ? Const.CHAINE_VIDE : sdf.format(av.getDateEmbauche()));
 				addZone(getNOM_ST_FP(i), av.getNumFp() + " <br> " + (tp == null ? "&nbsp;" : tp.getLibTitrePoste()));
 				addZone(getNOM_ST_PA(i), av.getPa());
 				addZone(getNOM_ST_CATEGORIE(i), av.getCdcadr());
 				addZone(getNOM_ST_DIRECTION(i), av.getDirectionService() + " <br> " + av.getSectionService());
 
 				addZone(getNOM_ST_NUM_AVCT(i), av.getIdAvct().toString());
-				addZone(getNOM_ST_DATE_DEBUT(i),
-						sdf.format(av.getDateGrade()) + " <br> " + sdf.format(av.getDateProchainGrade()));
+				addZone(getNOM_ST_DATE_DEBUT(i), sdf.format(av.getDateGrade()) + " <br> " + sdf.format(av.getDateProchainGrade()));
 				addZone(getNOM_ST_IBA(i), av.getIban() + " <br> " + av.getNouvIban());
 				addZone(getNOM_ST_INM(i), av.getInm() + " <br> " + av.getNouvInm());
 				addZone(getNOM_ST_INA(i), av.getIna() + " <br> " + av.getNouvIna());
 
-				addZone(getNOM_CK_VALID_DRH(i),
-						av.getEtat().equals(EnumEtatAvancement.TRAVAIL.getValue()) ? getCHECKED_OFF() : getCHECKED_ON());
+				addZone(getNOM_CK_VALID_DRH(i), av.getEtat().equals(EnumEtatAvancement.TRAVAIL.getValue()) ? getCHECKED_OFF() : getCHECKED_ON());
 				addZone(getNOM_ST_MOTIF_AVCT(i), "REVALORISATION");
-				addZone(getNOM_CK_PROJET_ARRETE(i), av.getEtat().equals(EnumEtatAvancement.TRAVAIL.getValue())
-						|| av.getEtat().equals(EnumEtatAvancement.SGC.getValue()) ? getCHECKED_OFF() : getCHECKED_ON());
+				addZone(getNOM_CK_PROJET_ARRETE(i), av.getEtat().equals(EnumEtatAvancement.TRAVAIL.getValue()) || av.getEtat().equals(EnumEtatAvancement.SGC.getValue()) ? getCHECKED_OFF()
+						: getCHECKED_ON());
 				addZone(getNOM_EF_NUM_ARRETE(i), av.getNumArrete());
-				addZone(getNOM_EF_DATE_ARRETE(i),
-						av.getDateArrete() == null ? Const.CHAINE_VIDE : sdf.format(av.getDateArrete()));
-				addZone(getNOM_CK_AFFECTER(i), av.getEtat().equals(EnumEtatAvancement.VALIDE.getValue())
-						|| av.getEtat().equals(EnumEtatAvancement.AFFECTE.getValue()) ? getCHECKED_ON()
+				addZone(getNOM_EF_DATE_ARRETE(i), av.getDateArrete() == null ? Const.CHAINE_VIDE : sdf.format(av.getDateArrete()));
+				addZone(getNOM_CK_AFFECTER(i), av.getEtat().equals(EnumEtatAvancement.VALIDE.getValue()) || av.getEtat().equals(EnumEtatAvancement.AFFECTE.getValue()) ? getCHECKED_ON()
 						: getCHECKED_OFF());
 				addZone(getNOM_ST_ETAT(i), av.getEtat());
 				addZone(getNOM_ST_CARRIERE_SIMU(i), av.getCarriereSimu() == null ? "&nbsp;" : av.getCarriereSimu());
@@ -271,8 +265,7 @@ public class OeAVCTContractuels extends BasicProcess {
 	 * 
 	 */
 	public boolean performPB_CHANGER_ANNEE(HttpServletRequest request) throws Exception {
-		int indiceAnnee = (Services.estNumerique(getVAL_LB_ANNEE_SELECT()) ? Integer.parseInt(getVAL_LB_ANNEE_SELECT())
-				: -1);
+		int indiceAnnee = (Services.estNumerique(getVAL_LB_ANNEE_SELECT()) ? Integer.parseInt(getVAL_LB_ANNEE_SELECT()) : -1);
 		String annee = (String) getListeAnnee()[indiceAnnee];
 		if (!annee.equals(getAnneeSelect())) {
 			setListeAvct(null);
@@ -323,25 +316,20 @@ public class OeAVCTContractuels extends BasicProcess {
 					// on recupere l'agent concerné
 					Agent agentCarr = getAgentDao().chercherAgent(avct.getIdAgent());
 					// on recupere la derniere carriere dans l'année
-					Carriere carr = Carriere.chercherDerniereCarriereAvecAgentEtAnnee(getTransaction(),
-							agentCarr.getNomatr(), avct.getAnnee().toString());
+					Carriere carr = Carriere.chercherDerniereCarriereAvecAgentEtAnnee(getTransaction(), agentCarr.getNomatr(), avct.getAnnee().toString());
 					// si la carriere est bien la derniere de la liste
-					if (carr.getDateFin() == null || carr.getDateFin().equals("0")) {
+					String dateDebAvct = sdf.format(avct.getDateProchainGrade());
+					String dateDebCarr = carr.getDateDebut();
+					if ((carr.getDateFin() == null || carr.getDateFin().equals("0")) && !dateDebAvct.equals(dateDebCarr)) {
 						// alors on fait les modifs sur avancement
 						avct.setEtat(EnumEtatAvancement.AFFECTE.getValue());
 						addZone(getNOM_ST_ETAT(i), avct.getEtat());
 						// on traite le numero et la date d'arrete
-						avct.setDateArrete(getVAL_EF_DATE_ARRETE(i).equals(Const.CHAINE_VIDE) ? null : sdf
-								.parse(getVAL_EF_DATE_ARRETE(i)));
+						avct.setDateArrete(getVAL_EF_DATE_ARRETE(i).equals(Const.CHAINE_VIDE) ? null : sdf.parse(getVAL_EF_DATE_ARRETE(i)));
 						avct.setNumArrete(getVAL_EF_NUM_ARRETE(i));
-						getAvancementContractuelsDao()
-								.modifierAvancementContractuels(avct.getIdAvct(), avct.getIdAgent(),
-										avct.getDateEmbauche(), avct.getNumFp(), avct.getPa(), avct.getDateGrade(),
-										avct.getDateProchainGrade(), avct.getIban(), avct.getInm(), avct.getIna(),
-										avct.getNouvIban(), avct.getNouvInm(), avct.getNouvIna(), avct.getEtat(),
-										avct.getDateArrete(), avct.getNumArrete(), avct.getCarriereSimu(),
-										avct.getAnnee(), avct.getDirectionService(), avct.getSectionService(),
-										avct.getCdcadr());
+						getAvancementContractuelsDao().modifierAvancementContractuels(avct.getIdAvct(), avct.getIdAgent(), avct.getDateEmbauche(), avct.getNumFp(), avct.getPa(), avct.getDateGrade(),
+								avct.getDateProchainGrade(), avct.getIban(), avct.getInm(), avct.getIna(), avct.getNouvIban(), avct.getNouvInm(), avct.getNouvIna(), avct.getEtat(),
+								avct.getDateArrete(), avct.getNumArrete(), avct.getCarriereSimu(), avct.getAnnee(), avct.getDirectionService(), avct.getSectionService(), avct.getCdcadr());
 
 						// on ferme cette carriere
 						carr.setDateFin(sdf.format(avct.getDateProchainGrade()));
@@ -353,10 +341,8 @@ public class OeAVCTContractuels extends BasicProcess {
 						// on crée un nouvelle carriere
 						Carriere nouvelleCarriere = new Carriere();
 						nouvelleCarriere.setCodeCategorie(carr.getCodeCategorie());
-						nouvelleCarriere.setReferenceArrete(avct.getNumArrete().equals(Const.CHAINE_VIDE) ? Const.ZERO
-								: avct.getNumArrete());
-						nouvelleCarriere.setDateArrete(avct.getDateArrete() == null ? Const.ZERO : sdf.format(avct
-								.getDateArrete()));
+						nouvelleCarriere.setReferenceArrete(avct.getNumArrete().equals(Const.CHAINE_VIDE) ? Const.ZERO : avct.getNumArrete());
+						nouvelleCarriere.setDateArrete(avct.getDateArrete() == null ? Const.ZERO : sdf.format(avct.getDateArrete()));
 						nouvelleCarriere.setDateDebut(sdf.format(avct.getDateProchainGrade()));
 						nouvelleCarriere.setDateFin(Const.ZERO);
 						nouvelleCarriere.setIban(avct.getNouvIban());
@@ -386,8 +372,7 @@ public class OeAVCTContractuels extends BasicProcess {
 						// si datfin!=0
 						// on met l'agent dans une variable et on affiche cette
 						// liste a l'ecran
-						agentEnErreur += agentCarr.getNomAgent() + " " + agentCarr.getPrenomAgent() + " ("
-								+ agentCarr.getNomatr() + "); ";
+						agentEnErreur += agentCarr.getNomAgent() + " " + agentCarr.getPrenomAgent() + " (" + agentCarr.getNomatr() + "); ";
 					}
 				}
 			}
@@ -444,16 +429,12 @@ public class OeAVCTContractuels extends BasicProcess {
 					avct.setEtat(EnumEtatAvancement.TRAVAIL.getValue());
 				}
 				// on traite le numero et la date d'arrete
-				avct.setDateArrete(getVAL_EF_DATE_ARRETE(i).equals(Const.CHAINE_VIDE) ? null : sdf
-						.parse(getVAL_EF_DATE_ARRETE(i)));
+				avct.setDateArrete(getVAL_EF_DATE_ARRETE(i).equals(Const.CHAINE_VIDE) ? null : sdf.parse(getVAL_EF_DATE_ARRETE(i)));
 				avct.setNumArrete(getVAL_EF_NUM_ARRETE(i));
 			}
-			getAvancementContractuelsDao().modifierAvancementContractuels(avct.getIdAvct(), avct.getIdAgent(),
-					avct.getDateEmbauche(), avct.getNumFp(), avct.getPa(), avct.getDateGrade(),
-					avct.getDateProchainGrade(), avct.getIban(), avct.getInm(), avct.getIna(), avct.getNouvIban(),
-					avct.getNouvInm(), avct.getNouvIna(), avct.getEtat(), avct.getDateArrete(), avct.getNumArrete(),
-					avct.getCarriereSimu(), avct.getAnnee(), avct.getDirectionService(), avct.getSectionService(),
-					avct.getCdcadr());
+			getAvancementContractuelsDao().modifierAvancementContractuels(avct.getIdAvct(), avct.getIdAgent(), avct.getDateEmbauche(), avct.getNumFp(), avct.getPa(), avct.getDateGrade(),
+					avct.getDateProchainGrade(), avct.getIban(), avct.getInm(), avct.getIna(), avct.getNouvIban(), avct.getNouvInm(), avct.getNouvIna(), avct.getEtat(), avct.getDateArrete(),
+					avct.getNumArrete(), avct.getCarriereSimu(), avct.getAnnee(), avct.getDirectionService(), avct.getSectionService(), avct.getCdcadr());
 			if (getTransaction().isErreur())
 				return false;
 		}

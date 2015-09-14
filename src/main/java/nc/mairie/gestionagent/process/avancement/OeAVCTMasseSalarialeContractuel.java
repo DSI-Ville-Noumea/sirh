@@ -1161,7 +1161,9 @@ public class OeAVCTMasseSalarialeContractuel extends BasicProcess {
 					Carriere carr = Carriere.chercherDerniereCarriereAvecAgentEtAnnee(getTransaction(),
 							agentCarr.getNomatr(), avct.getAnnee().toString());
 					// si la carriere est bien la derniere de la liste
-					if (carr.getDateFin() == null || carr.getDateFin().equals("0")) {
+					String dateDebAvct = sdf.format(avct.getDateProchainGrade());
+					String dateDebCarr = carr.getDateDebut();
+					if ((carr.getDateFin() == null || carr.getDateFin().equals("0")) && !dateDebAvct.equals(dateDebCarr)) {
 						// alors on fait les modifs sur avancement
 						avct.setEtat(EnumEtatAvancement.AFFECTE.getValue());
 						addZone(getNOM_ST_ETAT(i), avct.getEtat());
