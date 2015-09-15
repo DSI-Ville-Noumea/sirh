@@ -591,7 +591,7 @@ public class OeABSVisualisation extends BasicProcess {
 				.parseInt(getZone(getNOM_LB_FAMILLE_SELECT())) : -1);
 		TypeAbsenceDto type = null;
 		if (numType != -1 && numType != 0) {
-			type = (TypeAbsenceDto) getListeFamilleAbsenceCreation().get(numType - 1);
+			type = (TypeAbsenceDto) getListeFamilleAbsence().get(numType - 1);
 		}
 		// groupe
 		int numGroupe = (Services.estNumerique(getZone(getNOM_LB_GROUPE_SELECT())) ? Integer
