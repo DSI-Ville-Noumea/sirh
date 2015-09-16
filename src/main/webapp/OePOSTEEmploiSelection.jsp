@@ -38,7 +38,7 @@ document.formu.elements[nom].click();
 		    <br/>
 			<span class="sigp2">Recherche alphabétique :</span>
 			<span>
-				<INPUT class="sigp2-saisiemajuscule" maxlength="60" name="<%= process.getNOM_EF_RECHERCHE() %>" size="20" type="text" value="<%= process.getVAL_EF_RECHERCHE() %>">
+				<INPUT class="sigp2-saisie" maxlength="60" name="<%= process.getNOM_EF_RECHERCHE() %>" size="20" type="text" value="<%= process.getVAL_EF_RECHERCHE() %>">
 			</span>
                <span>
 				<INPUT size="1" type="text" class="sigp2-saisie" maxlength="1" name="ZoneTampon" style="display:none;">

@@ -34,7 +34,7 @@ public interface FicheEmploiDaoInterface {
 
 	public ArrayList<FicheEmploi> listerFicheEmploiAvecDomaineEmploi(Integer idDomaineEmploi) throws Exception;
 
-	public ArrayList<FicheEmploi> listerFicheEmploiavecRefMairie(String refMairie) throws Exception;
+	public ArrayList<FicheEmploi> listerFicheEmploiavecRefMairieOuLibelle(String refMairie) throws Exception;
 
 	public List<FicheEmploi> listerFicheEmploi() throws Exception;
 

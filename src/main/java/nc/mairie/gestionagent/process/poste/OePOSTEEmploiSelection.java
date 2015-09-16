@@ -98,7 +98,7 @@ public class OePOSTEEmploiSelection extends BasicProcess {
 	 */
 	public boolean performPB_RECHERCHER(HttpServletRequest request, String zone) throws Exception {
 
-		ArrayList<FicheEmploi> eListe = getFicheEmploiDao().listerFicheEmploiavecRefMairie(zone);
+		ArrayList<FicheEmploi> eListe = getFicheEmploiDao().listerFicheEmploiavecRefMairieOuLibelle(zone);
 
 		// Si liste vide alors erreur
 		if (eListe.size() == 0) {

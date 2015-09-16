@@ -4006,14 +4006,6 @@ public class OePOSTEFichePoste extends BasicProcess {
 	 * 
 	 */
 	public boolean performPB_RECHERCHE_EMPLOI_PRIMAIRE(HttpServletRequest request) throws Exception {
-		// 17319 : on envoi la recherche
-		if (getVAL_ST_EMPLOI_PRIMAIRE().length() == 0) {
-			// "ERR002","La zone @ est obligatoire."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "emploi primaire"));
-			setFocus(getNOM_EF_ANNEE());
-			return false;
-		}
-
 		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_FICHE_EMPLOI, getZone(getNOM_ST_EMPLOI_PRIMAIRE()));
 		setStatut(STATUT_EMPLOI_PRIMAIRE, true);
 		return true;
