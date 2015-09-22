@@ -245,13 +245,11 @@
 							    	<legend class="sigp2Legend">* Réunion des membres du bureau directeur</legend>
 									<table class="sigp2NewTab" style="text-align:left;width:200px;">
 										<tr bgcolor="#EFEFEF">
-											<td width="200px;" align="center">En cours</td>
-											<td>Historique</td>
+											<td align="center">En cours</td>
 										</tr>
 										<tr>
 											<td style="text-align: center"><%=process.getVAL_ST_SOLDE_ASA_A48()%></td>
-											<td style="text-align: center"><INPUT title="historique" type="image" src="images/oeil.gif" height="15px" width="15px" name="<%=process.getNOM_PB_HISTORIQUE(EnumTypeAbsence.ASA_A48.getCode())%>"></td>
-										</tr>
+											</tr>
 									</table>				    
 							    </FIELDSET>	
 							<%}%>
@@ -262,12 +260,10 @@
 							    	<legend class="sigp2Legend">* Congrès et conseil syndical</legend>
 									<table class="sigp2NewTab" style="text-align:left;width:200px;">
 										<tr bgcolor="#EFEFEF">
-											<td width="200px;" align="center">En cours</td>
-											<td>Historique</td>
+											<td align="center">En cours</td>
 										</tr>
 										<tr>
 											<td style="text-align: center"><%=process.getVAL_ST_SOLDE_ASA_A54()%></td>
-											<td style="text-align: center"><INPUT title="historique" type="image" src="images/oeil.gif" height="15px" width="15px" name="<%=process.getNOM_PB_HISTORIQUE(EnumTypeAbsence.ASA_A54.getCode())%>"></td>
 										</tr>
 									</table>				    
 							    </FIELDSET>
@@ -281,12 +277,10 @@
 							    	<legend class="sigp2Legend">* Délégation DP</legend>
 									<table class="sigp2NewTab" style="text-align:left;width:400px;">
 										<tr bgcolor="#EFEFEF">
-											<td width="150px;" align="center">En cours</td>
-											<td>Historique</td>
+											<td align="center">En cours</td>
 										</tr>
 										<tr>
 											<td style="text-align: center"><%=process.getVAL_ST_SOLDE_ASA_A55()%></td>
-											<td style="text-align: center"><INPUT title="historique" type="image" src="images/oeil.gif" height="15px" width="15px" name="<%=process.getNOM_PB_HISTORIQUE(EnumTypeAbsence.ASA_A55.getCode())%>"></td>
 										</tr>
 									</table>				    
 							    </FIELDSET>
@@ -300,15 +294,13 @@
 										<table class="sigp2NewTab" style="text-align:left;width:400px;">
 											<tr bgcolor="#EFEFEF">
 											<%if(process.getOrganisationAgent()!=null){%>
-												<td width="150px;" align="center">En cours pour <%=process.getOrganisationAgent().getSigle() %></td>
+												<td align="center">En cours pour <%=process.getOrganisationAgent().getSigle() %></td>
 											<%}else{ %>
-												<td width="150px;" align="center">En cours pour OS</td>
+												<td align="center">En cours pour OS</td>
 											<%} %>
-												<td>Historique</td>
 											</tr>
 											<tr>
 												<td style="text-align: center"><%=process.getVAL_ST_SOLDE_ASA_A52()%></td>
-												<td style="text-align: center"><INPUT title="historique" type="image" src="images/oeil.gif" height="15px" width="15px" name="<%=process.getNOM_PB_HISTORIQUE(EnumTypeAbsence.ASA_A52.getCode())%>"></td>
 											</tr>
 										</table>	    
 							    </FIELDSET>
