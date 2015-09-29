@@ -202,6 +202,7 @@ public class OeELECSaisieCompteurA48 extends BasicProcess {
 			addZone(getNOM_ST_NB_JOURS(indiceLigne), String.valueOf(vo.getCompteur().getDureeAAjouter().intValue()));
 			addZone(getNOM_ST_MOTIF(indiceLigne), vo.getCompteur().getMotifCompteurDto() == null ? Const.CHAINE_VIDE
 					: vo.getCompteur().getMotifCompteurDto().getLibelle());
+			addZone(getNOM_ST_ACTIF(indiceLigne), vo.isActif() ? "oui" : "non");
 
 			indiceLigne++;
 
@@ -304,6 +305,7 @@ public class OeELECSaisieCompteurA48 extends BasicProcess {
 
 	private void videZonesDeSaisie(HttpServletRequest request) throws Exception {
 		addZone(getNOM_ST_NB_JOURS(), Const.CHAINE_VIDE);
+		addZone(getNOM_RG_AGENT_INACTIF(), getNOM_RB_OUI());
 		addZone(getNOM_ST_ANNEE(), Const.CHAINE_VIDE);
 		addZone(getNOM_LB_ANNEE_SELECT(), Const.ZERO);
 		addZone(getNOM_ST_AGENT_CREATE(), Const.CHAINE_VIDE);
@@ -358,7 +360,8 @@ public class OeELECSaisieCompteurA48 extends BasicProcess {
 				.substring(3, dto.getIdAgent().toString().length()));
 		int ligneMotif = getListeMotifCompteur().indexOf(dto.getMotifCompteurDto());
 		addZone(getNOM_LB_MOTIF_SELECT(), String.valueOf(ligneMotif + 1));
-
+		addZone(getNOM_RG_AGENT_INACTIF(), dto.isActif() ? getNOM_RB_OUI() : getNOM_RB_NON());
+		
 		return true;
 	}
 
@@ -532,6 +535,8 @@ public class OeELECSaisieCompteurA48 extends BasicProcess {
 		compteurDto.setDureeAAjouter(new Double(Integer.valueOf(getVAL_ST_NB_JOURS())));
 		compteurDto.setDateDebut(new DateTime(annee, 1, 1, 0, 0, 0).toDate());
 		compteurDto.setDateFin(new DateTime(annee, 12, 31, 23, 59, 0).toDate());
+		Boolean actif = getZone(getNOM_RG_AGENT_INACTIF()).equals(getNOM_RB_OUI());
+		compteurDto.setActif(actif);
 
 		// on sauvegarde
 		message = absService.addCompteurAsaA48(agentConnecte.getIdAgent(), new JSONSerializer().exclude("*.class")
@@ -674,6 +679,30 @@ public class OeELECSaisieCompteurA48 extends BasicProcess {
 
 	public void setAgentDao(AgentDao agentDao) {
 		this.agentDao = agentDao;
+	}
+
+	public String getNOM_ST_ACTIF(int i) {
+		return "NOM_ST_ACTIF" + i;
+	}
+
+	public String getVAL_ST_ACTIF(int i) {
+		return getZone(getNOM_ST_ACTIF(i));
+	}
+
+	public String getNOM_RG_AGENT_INACTIF() {
+		return "NOM_RG_AGENT_INACTIF";
+	}
+
+	public String getVAL_RG_AGENT_INACTIF() {
+		return getZone(getNOM_RG_AGENT_INACTIF());
+	}
+
+	public String getNOM_RB_NON() {
+		return "NOM_RB_NON";
+	}
+
+	public String getNOM_RB_OUI() {
+		return "NOM_RB_OUI";
 	}
 
 }

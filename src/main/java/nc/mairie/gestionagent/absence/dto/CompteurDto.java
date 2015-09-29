@@ -21,6 +21,8 @@ public class CompteurDto {
 	private Date dateFin;
 
 	private OrganisationSyndicaleDto organisationSyndicaleDto;
+	
+	private boolean actif;
 
 	public Integer getIdAgent() {
 		return idAgent;
@@ -97,6 +99,14 @@ public class CompteurDto {
 	@Override
 	public boolean equals(Object obj) {
 		return idCompteur.toString().equals(((CompteurDto) obj).getIdCompteur().toString());
+	}
+
+	public boolean isActif() {
+		return actif;
+	}
+
+	public void setActif(boolean actif) {
+		this.actif = actif;
 	}
 
 }

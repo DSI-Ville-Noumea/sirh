@@ -10,11 +10,13 @@ public class VoAgentCompteur implements Comparable<VoAgentCompteur> {
 	private Agent agent;
 	private CompteurDto compteur;
 	private AgentOrganisationSyndicaleDto agentOS;
+	private boolean actif;
 	
 	public VoAgentCompteur(CompteurDto compteur, Agent agent) {
 		this.agent = agent;
 		this.compteur = compteur;
 		this.nom = null != agent ? agent.getNomUsage() : "";
+		this.actif = compteur.isActif();
 	}
 	
 	public VoAgentCompteur(AgentOrganisationSyndicaleDto agentOS, Agent agent) {
@@ -52,6 +54,14 @@ public class VoAgentCompteur implements Comparable<VoAgentCompteur> {
 
 	public void setAgentOS(AgentOrganisationSyndicaleDto agentOS) {
 		this.agentOS = agentOS;
+	}
+
+	public boolean isActif() {
+		return actif;
+	}
+
+	public void setActif(boolean actif) {
+		this.actif = actif;
 	}
 	
 }

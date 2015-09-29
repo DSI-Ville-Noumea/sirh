@@ -63,7 +63,7 @@ public class OeELECSaisieCompteurA54 extends BasicProcess {
 	public String ACTION_VISUALISATION = "Consultation d'un compteur.";
 
 	private AgentDao agentDao;
-	
+
 	private IRadiService radiService;
 
 	private IAbsService absService;
@@ -146,8 +146,7 @@ public class OeELECSaisieCompteurA54 extends BasicProcess {
 
 		// Si liste motifs vide alors affectation
 		if (getLB_MOTIF() == LBVide) {
-			ArrayList<MotifCompteurDto> listeMotifs = (ArrayList<MotifCompteurDto>) absService
-					.getListeMotifCompteur(EnumTypeAbsence.ASA_A54.getCode());
+			ArrayList<MotifCompteurDto> listeMotifs = (ArrayList<MotifCompteurDto>) absService.getListeMotifCompteur(EnumTypeAbsence.ASA_A54.getCode());
 			setListeMotifCompteur(listeMotifs);
 
 			int[] tailles = { 50 };
@@ -178,7 +177,7 @@ public class OeELECSaisieCompteurA54 extends BasicProcess {
 		for (CompteurDto dto : listeCompteur) {
 
 			Agent ag = getAgentDao().chercherAgent(dto.getIdAgent());
-			
+
 			VoAgentCompteur voCompteur = new VoAgentCompteur(dto, ag);
 			listCompteurAgent.add(voCompteur);
 		}
@@ -196,11 +195,11 @@ public class OeELECSaisieCompteurA54 extends BasicProcess {
 			addZone(getNOM_ST_AGENT(indiceLigne), vo.getAgent().getNomAgent() + " " + vo.getAgent().getPrenomAgent());
 			addZone(getNOM_ST_ANNEE(indiceLigne), annee.toString());
 			addZone(getNOM_ST_NB_JOURS(indiceLigne), String.valueOf(vo.getCompteur().getDureeAAjouter().intValue()));
-			addZone(getNOM_ST_MOTIF(indiceLigne),  vo.getCompteur().getMotifCompteurDto() == null ? Const.CHAINE_VIDE
-					:vo.getCompteur().getMotifCompteurDto().getLibelle());
+			addZone(getNOM_ST_MOTIF(indiceLigne), vo.getCompteur().getMotifCompteurDto() == null ? Const.CHAINE_VIDE : vo.getCompteur().getMotifCompteurDto().getLibelle());
+			addZone(getNOM_ST_ACTIF(indiceLigne), vo.isActif() ? "oui" : "non");
 
 			indiceLigne++;
-			
+
 			listeCompteurTriee.add(vo.getCompteur());
 		}
 		setListeCompteur(listeCompteurTriee);
@@ -294,12 +293,21 @@ public class OeELECSaisieCompteurA54 extends BasicProcess {
 		return getZone(getNOM_ST_MOTIF(i));
 	}
 
+	public String getNOM_ST_ACTIF(int i) {
+		return "NOM_ST_ACTIF" + i;
+	}
+
+	public String getVAL_ST_ACTIF(int i) {
+		return getZone(getNOM_ST_ACTIF(i));
+	}
+
 	public String getVAL_ST_NB_JOURS(int i) {
 		return getZone(getNOM_ST_NB_JOURS(i));
 	}
 
 	private void videZonesDeSaisie(HttpServletRequest request) throws Exception {
 		addZone(getNOM_ST_NB_JOURS(), Const.CHAINE_VIDE);
+		addZone(getNOM_RG_AGENT_INACTIF(), getNOM_RB_OUI());
 		addZone(getNOM_ST_ANNEE(), Const.CHAINE_VIDE);
 		addZone(getNOM_LB_ANNEE_SELECT(), Const.ZERO);
 		addZone(getNOM_ST_AGENT_CREATE(), Const.CHAINE_VIDE);
@@ -350,10 +358,10 @@ public class OeELECSaisieCompteurA54 extends BasicProcess {
 		addZone(getNOM_LB_ANNEE_SELECT(), String.valueOf(ligneAnnee));
 		addZone(getNOM_ST_NB_JOURS(), String.valueOf(dto.getDureeAAjouter().intValue()));
 		addZone(getNOM_ST_ANNEE(), annee.toString());
-		addZone(getNOM_ST_AGENT_CREATE(), dto.getIdAgent().toString()
-				.substring(3, dto.getIdAgent().toString().length()));
+		addZone(getNOM_ST_AGENT_CREATE(), dto.getIdAgent().toString().substring(3, dto.getIdAgent().toString().length()));
 		int ligneMotif = getListeMotifCompteur().indexOf(dto.getMotifCompteurDto());
 		addZone(getNOM_LB_MOTIF_SELECT(), String.valueOf(ligneMotif + 1));
+		addZone(getNOM_RG_AGENT_INACTIF(), dto.isActif() ? getNOM_RB_OUI() : getNOM_RB_NON());
 		return true;
 	}
 
@@ -435,8 +443,7 @@ public class OeELECSaisieCompteurA54 extends BasicProcess {
 		}
 
 		// motif obligatoire
-		int indiceMotif = (Services.estNumerique(getVAL_LB_MOTIF_SELECT()) ? Integer.parseInt(getVAL_LB_MOTIF_SELECT())
-				: -1);
+		int indiceMotif = (Services.estNumerique(getVAL_LB_MOTIF_SELECT()) ? Integer.parseInt(getVAL_LB_MOTIF_SELECT()) : -1);
 		if (indiceMotif <= 0) {
 			// "ERR002", "La zone @ est obligatoire."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "motif"));
@@ -445,8 +452,7 @@ public class OeELECSaisieCompteurA54 extends BasicProcess {
 
 		// annee obligatoire
 		if (getZone(getNOM_ST_ACTION()).equals(ACTION_CREATION)) {
-			int indiceAnnee = (Services.estNumerique(getVAL_LB_ANNEE_SELECT()) ? Integer
-					.parseInt(getVAL_LB_ANNEE_SELECT()) : -1);
+			int indiceAnnee = (Services.estNumerique(getVAL_LB_ANNEE_SELECT()) ? Integer.parseInt(getVAL_LB_ANNEE_SELECT()) : -1);
 			if (indiceAnnee < 0) {
 				// "ERR002", "La zone @ est obligatoire."
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "année"));
@@ -500,8 +506,7 @@ public class OeELECSaisieCompteurA54 extends BasicProcess {
 		Agent agCompteur = getAgentDao().chercherAgentParMatricule(Integer.valueOf(nomatr));
 
 		// motif
-		int indiceMotif = (Services.estNumerique(getVAL_LB_MOTIF_SELECT()) ? Integer.parseInt(getVAL_LB_MOTIF_SELECT())
-				: -1);
+		int indiceMotif = (Services.estNumerique(getVAL_LB_MOTIF_SELECT()) ? Integer.parseInt(getVAL_LB_MOTIF_SELECT()) : -1);
 		MotifCompteurDto motif = null;
 		if (indiceMotif > 0) {
 			motif = getListeMotifCompteur().get(indiceMotif - 1);
@@ -510,8 +515,7 @@ public class OeELECSaisieCompteurA54 extends BasicProcess {
 		// annee
 		Integer annee = null;
 		if (getZone(getNOM_ST_ACTION()).equals(ACTION_CREATION)) {
-			int indiceAnnee = (Services.estNumerique(getVAL_LB_ANNEE_SELECT()) ? Integer
-					.parseInt(getVAL_LB_ANNEE_SELECT()) : -1);
+			int indiceAnnee = (Services.estNumerique(getVAL_LB_ANNEE_SELECT()) ? Integer.parseInt(getVAL_LB_ANNEE_SELECT()) : -1);
 			if (indiceAnnee >= 0) {
 				annee = Integer.valueOf(getListeAnnee().get(indiceAnnee));
 			}
@@ -527,10 +531,11 @@ public class OeELECSaisieCompteurA54 extends BasicProcess {
 		compteurDto.setDureeAAjouter(new Double(Integer.valueOf(getVAL_ST_NB_JOURS())));
 		compteurDto.setDateDebut(new DateTime(annee, 1, 1, 0, 0, 0).toDate());
 		compteurDto.setDateFin(new DateTime(annee, 12, 31, 23, 59, 0).toDate());
+		Boolean actif = getZone(getNOM_RG_AGENT_INACTIF()).equals(getNOM_RB_OUI());
+		compteurDto.setActif(actif);
 
 		// on sauvegarde
-		message = absService.addCompteurAsaA54(agentConnecte.getIdAgent(), new JSONSerializer().exclude("*.class")
-				.transform(new MSDateTransformer(), Date.class).serialize(compteurDto));
+		message = absService.addCompteurAsaA54(agentConnecte.getIdAgent(), new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class).serialize(compteurDto));
 
 		if (message.getErrors().size() > 0) {
 			String err = Const.CHAINE_VIDE;
@@ -557,8 +562,7 @@ public class OeELECSaisieCompteurA54 extends BasicProcess {
 			return null;
 		}
 		try {
-			agentConnecte = getAgentDao().chercherAgentParMatricule(
-					radiService.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
+			agentConnecte = getAgentDao().chercherAgentParMatricule(radiService.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
 		} catch (Exception e) {
 			return null;
 		}
@@ -669,5 +673,21 @@ public class OeELECSaisieCompteurA54 extends BasicProcess {
 
 	public void setAgentDao(AgentDao agentDao) {
 		this.agentDao = agentDao;
+	}
+
+	public String getNOM_RG_AGENT_INACTIF() {
+		return "NOM_RG_AGENT_INACTIF";
+	}
+
+	public String getVAL_RG_AGENT_INACTIF() {
+		return getZone(getNOM_RG_AGENT_INACTIF());
+	}
+
+	public String getNOM_RB_NON() {
+		return "NOM_RB_NON";
+	}
+
+	public String getNOM_RB_OUI() {
+		return "NOM_RB_OUI";
 	}
 }

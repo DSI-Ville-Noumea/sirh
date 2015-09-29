@@ -60,6 +60,7 @@ function testClickEnrigistrer(){
 								<td width="300px;">Agent</td>
 								<td align="center" width="50px;">Année</td>
 								<td align="center" width="90px;">Nb jours</td>
+								<td align="center" width="20px;">Actif</td>
 								<td align="center">Motif</td>
 							</tr>
 							<%
@@ -78,6 +79,7 @@ function testClickEnrigistrer(){
 										<td class="sigp2NewTab-liste"><%=process.getVAL_ST_AGENT(i)%></td>
 										<td class="sigp2NewTab-liste" style="text-align: center;"><%=process.getVAL_ST_ANNEE(i)%></td>
 										<td class="sigp2NewTab-liste" style="text-align: center;"><%=process.getVAL_ST_NB_JOURS(i)%></td>
+										<td class="sigp2NewTab-liste" style="text-align: center;"><%=process.getVAL_ST_ACTIF(i)%></td>
 										<td class="sigp2NewTab-liste" style="text-align: center;"><%=process.getVAL_ST_MOTIF(i)%></td>
 									</tr>
 									<%
@@ -138,6 +140,16 @@ function testClickEnrigistrer(){
 					</td>
 				</tr>
 				<tr>
+					<td>
+						<span class="sigp2Mandatory">Actif :</span>
+					</td>
+					<td>
+						<INPUT type="radio" <%= process.forRadioHTML(process.getNOM_RG_AGENT_INACTIF(), process.getNOM_RB_OUI()) %> ><span class="sigp2Mandatory">oui</span>
+						<INPUT type="radio" <%= process.forRadioHTML(process.getNOM_RG_AGENT_INACTIF(), process.getNOM_RB_NON()) %> ><span class="sigp2Mandatory">non</span>					
+								
+					</td>
+				</tr>
+				<tr>
 					<td colspan="2">
 						<%if(process.getVAL_ST_ACTION().equals(process.ACTION_CREATION)){%>
 							<INPUT type="submit" class="sigp2-Bouton-100" value="Creer" name="<%=process.getNOM_PB_VALIDER()%>">
@@ -183,6 +195,16 @@ function testClickEnrigistrer(){
 						<SELECT disabled="disabled" class="sigp2-saisie" name="<%= process.getNOM_LB_MOTIF() %>">
 							<%=process.forComboHTML(process.getVAL_LB_MOTIF(), process.getVAL_LB_MOTIF_SELECT()) %>
 						</SELECT>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span class="sigp2Mandatory">Actif :</span>
+					</td>
+					<td>
+						<INPUT type="radio" disabled="disabled" <%= process.forRadioHTML(process.getNOM_RG_AGENT_INACTIF(), process.getNOM_RB_OUI()) %> ><span class="sigp2Mandatory">oui</span>
+						<INPUT type="radio" disabled="disabled" <%= process.forRadioHTML(process.getNOM_RG_AGENT_INACTIF(), process.getNOM_RB_NON()) %> ><span class="sigp2Mandatory">non</span>					
+								
 					</td>
 				</tr>
 				<tr>
