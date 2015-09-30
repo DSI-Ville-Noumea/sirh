@@ -64,6 +64,7 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 	private boolean afficheSoldeAsaA48;
 	private boolean afficheSoldeAsaA54;
 	private boolean afficheSoldeAsaA55;
+	private boolean afficheSoldeAsaAmicale;
 	private ArrayList<SoldeSpecifiqueDto> listeSoldeCongesExcep;
 	private OrganisationSyndicaleDto organisationAgent;
 	private boolean agentReposComp;
@@ -229,6 +230,14 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 			String soldeAsaA55Heure = (soldeGlobal.getSoldeAsaA55() / 60) == 0 ? Const.CHAINE_VIDE : soldeGlobal.getSoldeAsaA55() / 60 + "h ";
 			String soldeAsaA55Minute = (soldeGlobal.getSoldeAsaA55() % 60) == 0 ? "&nbsp;" : soldeGlobal.getSoldeAsaA55() % 60 + "m";
 			addZone(getNOM_ST_SOLDE_ASA_A55(), soldeAsaA55Heure + soldeAsaA55Minute);
+		}
+
+		// Solde ASA AMICALE
+		setAfficheSoldeAsaAmicale(soldeGlobal.isAfficheSoldeAsaAmicale());
+		if (soldeGlobal != null) {
+			String soldeAsaAmicaleHeure = (soldeGlobal.getSoldeAsaAmicale() / 60) == 0 ? Const.CHAINE_VIDE : soldeGlobal.getSoldeAsaAmicale() / 60 + "h ";
+			String soldeAsaAmicaleMinute = (soldeGlobal.getSoldeAsaAmicale() % 60) == 0 ? "&nbsp;" : soldeGlobal.getSoldeAsaAmicale() % 60 + "m";
+			addZone(getNOM_ST_SOLDE_ASA_AMICALE(), soldeAsaAmicaleHeure + soldeAsaAmicaleMinute);
 		}
 
 		// Solde ASA A52
@@ -813,6 +822,22 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 
 	public void setListeHistoriqueRestitutionMassive(ArrayList<RestitutionMassiveDto> listeHistoriqueRestitutionMassive) {
 		this.listeHistoriqueRestitutionMassive = listeHistoriqueRestitutionMassive;
+	}
+
+	public String getNOM_ST_SOLDE_ASA_AMICALE() {
+		return "NOM_ST_SOLDE_ASA_AMICALE";
+	}
+
+	public String getVAL_ST_SOLDE_ASA_AMICALE() {
+		return getZone(getNOM_ST_SOLDE_ASA_AMICALE());
+	}
+
+	public boolean isAfficheSoldeAsaAmicale() {
+		return afficheSoldeAsaAmicale;
+	}
+
+	public void setAfficheSoldeAsaAmicale(boolean afficheSoldeAsaAmicale) {
+		this.afficheSoldeAsaAmicale = afficheSoldeAsaAmicale;
 	}
 
 }

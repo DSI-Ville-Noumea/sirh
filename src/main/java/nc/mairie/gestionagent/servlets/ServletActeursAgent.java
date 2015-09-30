@@ -137,6 +137,13 @@ public class ServletActeursAgent extends javax.servlet.http.HttpServlet {
 									% 60 + "m";
 							result.append("\r Solde : " + soldeAsaA52Heure + soldeAsaA52Minute);
 							break;
+						case ASA_AMICALE:
+							String soldeAsaAmicaleHeure = (solde.getSoldeAsaAmicale() / 60) == 0 ? Const.CHAINE_VIDE
+									: new Double(solde.getSoldeAsaAmicale() / 60).intValue() + "h ";
+							String soldeAsaAmicaleMinute = (solde.getSoldeAsaAmicale() % 60) == 0 ? "" : solde.getSoldeAsaAmicale()
+									% 60 + "m";
+							result.append("\r Solde : " + soldeAsaAmicaleHeure + soldeAsaAmicaleMinute);
+							break;
 						case MALADIE:
 							// TODO
 							break;

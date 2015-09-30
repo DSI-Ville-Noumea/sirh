@@ -134,6 +134,10 @@ public interface IAbsService {
 
 	List<CompteurDto> getListeCompteursA55();
 
+	ReturnMessageDto addCompteurAsaAmicale(Integer idAgent, String json);
+
+	List<CompteurDto> getListeCompteursAmicale();
+
 	ReturnMessageDto saveMotifCompteur(String json);
 
 	List<MotifDto> getListeMotif();

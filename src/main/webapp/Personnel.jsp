@@ -121,6 +121,7 @@
 		listeDroits.add("ELECSaisieCompteurA48");
 		listeDroits.add("ELECSaisieCompteurA54");
 		listeDroits.add("ELECSaisieCompteurA55");
+		listeDroits.add("ELECSaisieCompteurAmicale");
 		listeDroits.add("ELECSaisieCompteurA53");
 		listeDroits.add("ELECSaisieCompteurA52");
 		

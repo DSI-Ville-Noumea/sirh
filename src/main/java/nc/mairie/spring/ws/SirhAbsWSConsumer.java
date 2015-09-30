@@ -94,6 +94,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	private static final String sirhAbsListeCompteurA55 = "asaA55/listeCompteurA55";
 	private static final String sirhAbsListeCompteurA53 = "asaA53/listeCompteurA53";
 	private static final String sirhAbsListeCompteurA52 = "asaA52/listeCompteurA52";
+	private static final String sirhAbsListeCompteurAmicale = "asaAmicale/listeCompteurAmicale";
 
 	private static final String sirhAbsInitialiseCompteurCongeAnnuel = "congeannuel/intitCompteurCongeAnnuel";
 
@@ -109,6 +110,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	private static final String sirhAbsAddCompteurAsaA55 = "asaA55/addManual";
 	private static final String sirhAbsAddCompteurAsaA53 = "asaA53/addManual";
 	private static final String sirhAbsAddCompteurAsaA52 = "asaA52/addManual";
+	private static final String sirhAbsAddCompteurAsaAmicale = "asaAmicale/addManual";
 
 	private static final String sirhAbsListeRefTypeAbs = "typeAbsence/getListeTypeAbsence";
 	private static final String sirhAbsAddCongeExcep = "typeAbsence/setTypeAbsence";
@@ -216,14 +218,12 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 		}
 
 		if (response.getStatus() != HttpStatus.OK.value()) {
-			throw new BaseWsConsumerException(String.format(
-					"An error occured when querying '%s'. Return code is : %s", url, response.getStatus()));
+			throw new BaseWsConsumerException(String.format("An error occured when querying '%s'. Return code is : %s", url, response.getStatus()));
 		}
 
 		String output = response.getEntity(String.class);
 		logger.trace("json recu:" + output);
-		result = new JSONDeserializer<List<T>>().use(Date.class, new MSDateTransformer()).use(null, ArrayList.class)
-				.use("values", targetClass).deserialize(output);
+		result = new JSONDeserializer<List<T>>().use(Date.class, new MSDateTransformer()).use(null, ArrayList.class).use("values", targetClass).deserialize(output);
 		return result;
 	}
 
@@ -234,9 +234,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 		try {
 			result = targetClass.newInstance();
 		} catch (Exception ex) {
-			throw new BaseWsConsumerException(
-					"An error occured when instantiating return type when deserializing JSON from SIRH ABS WS request.",
-					ex);
+			throw new BaseWsConsumerException("An error occured when instantiating return type when deserializing JSON from SIRH ABS WS request.", ex);
 		}
 
 		if (response.getStatus() == HttpStatus.NO_CONTENT.value()) {
@@ -244,8 +242,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 		}
 
 		if (response.getStatus() != HttpStatus.OK.value()) {
-			throw new BaseWsConsumerException(String.format(
-					"An error occured when querying '%s'. Return code is : %s", url, response.getStatus()));
+			throw new BaseWsConsumerException(String.format("An error occured when querying '%s'. Return code is : %s", url, response.getStatus()));
 		}
 
 		String output = response.getEntity(String.class);
@@ -261,9 +258,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 		try {
 			result = targetClass.newInstance();
 		} catch (Exception ex) {
-			throw new BaseWsConsumerException(
-					"An error occured when instantiating return type when deserializing JSON from SIRH ABS WS request.",
-					ex);
+			throw new BaseWsConsumerException("An error occured when instantiating return type when deserializing JSON from SIRH ABS WS request.", ex);
 		}
 
 		if (response.getStatus() == HttpStatus.NO_CONTENT.value()) {
@@ -291,8 +286,8 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	}
 
 	@Override
-	public List<DemandeDto> getListeDemandesAgent(Integer idAgent, String onglet, String dateDebut, String dateFin,
-			String dateDemande, String listIdRefEtat, Integer idRefType, Integer idRefGroupeAbsence) {
+	public List<DemandeDto> getListeDemandesAgent(Integer idAgent, String onglet, String dateDebut, String dateFin, String dateDemande, String listIdRefEtat, Integer idRefType,
+			Integer idRefGroupeAbsence) {
 		String url = String.format(absWsBaseUrl + sirhAbsDemandesAgent);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgent.toString());
@@ -310,9 +305,8 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 		if (idRefGroupeAbsence != null)
 			params.put("groupe", idRefGroupeAbsence.toString());
 
-		logger.debug("Call " + url + " with idAgent : " + idAgent + ",ongletDemande : " + onglet + ",from : "
-				+ dateDebut + ",to : " + dateFin + ",dateDemande : " + dateDemande + ",etat : " + listIdRefEtat
-				+ ",type : " + idRefType);
+		logger.debug("Call " + url + " with idAgent : " + idAgent + ",ongletDemande : " + onglet + ",from : " + dateDebut + ",to : " + dateFin + ",dateDemande : " + dateDemande + ",etat : "
+				+ listIdRefEtat + ",type : " + idRefType);
 		ClientResponse res = createAndFireRequest(params, url);
 		return readResponseAsList(DemandeDto.class, res, url);
 
@@ -406,8 +400,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	}
 
 	@Override
-	public List<OrganisationSyndicaleDto> getListeOrganisationSyndicaleActiveByAgent(Integer idAgent,
-			Integer idRefTypeAbsence) {
+	public List<OrganisationSyndicaleDto> getListeOrganisationSyndicaleActiveByAgent(Integer idAgent, Integer idRefTypeAbsence) {
 		String url = String.format(absWsBaseUrl + sirhAbsListOrganisationActif);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgent.toString());
@@ -433,8 +426,8 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	}
 
 	@Override
-	public List<DemandeDto> getListeDemandes(String dateDebut, String dateFin, String listIdRefEtat, Integer idRefType,
-			Integer idAgentRecherche, Integer idRefGroupe, boolean aValider, List<String> idAgentsService) {
+	public List<DemandeDto> getListeDemandes(String dateDebut, String dateFin, String listIdRefEtat, Integer idRefType, Integer idAgentRecherche, Integer idRefGroupe, boolean aValider,
+			List<String> idAgentsService) {
 
 		String url = String.format(absWsBaseUrl + sirhAbsDemandes);
 		HashMap<String, String> params = new HashMap<>();
@@ -464,9 +457,8 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 			params.put("idAgents", csvId);
 		}
 
-		logger.debug("Call " + url + " with from : " + dateDebut + ",to : " + dateFin + ",etat : " + listIdRefEtat
-				+ ",type : " + idRefType + ",idAgentRecherche : " + idAgentRecherche + ",groupe : " + idRefGroupe
-				+ ",aValider : " + aValider + ", idAgents : " + idAgentsService);
+		logger.debug("Call " + url + " with from : " + dateDebut + ",to : " + dateFin + ",etat : " + listIdRefEtat + ",type : " + idRefType + ",idAgentRecherche : " + idAgentRecherche + ",groupe : "
+				+ idRefGroupe + ",aValider : " + aValider + ", idAgents : " + idAgentsService);
 
 		ClientResponse res = createAndFireRequest(params, url);
 		return readResponseAsList(DemandeDto.class, res, url);
@@ -632,9 +624,8 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 		String url = String.format(absWsBaseUrl + sirhDureeCongeAnnuelUrl);
 		HashMap<String, String> params = new HashMap<>();
 
-		String json = new JSONSerializer().exclude("*.class").exclude("*.civilite").exclude("*.signature")
-				.exclude("*.position").exclude("*.selectedDroitAbs").transform(new MSDateTransformer(), Date.class)
-				.deepSerialize(demandeDto);
+		String json = new JSONSerializer().exclude("*.class").exclude("*.civilite").exclude("*.signature").exclude("*.position").exclude("*.selectedDroitAbs")
+				.transform(new MSDateTransformer(), Date.class).deepSerialize(demandeDto);
 
 		ClientResponse res = createAndPostRequest(params, url, json);
 		return readResponse(DemandeDto.class, res, url);
@@ -693,22 +684,19 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgent.toString());
 
-		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class)
-				.deepSerialize(dto);
+		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class).deepSerialize(dto);
 
 		ClientResponse res = createAndPostRequest(params, url, json);
 		return readResponse(RestitutionMassiveDto.class, res, url);
 	}
 
 	@Override
-	public List<MoisAlimAutoCongesAnnuelsDto> getListeAlimAutoCongeAnnuel(MoisAlimAutoCongesAnnuelsDto moisChoisi,
-			boolean onlyErreur) {
+	public List<MoisAlimAutoCongesAnnuelsDto> getListeAlimAutoCongeAnnuel(MoisAlimAutoCongesAnnuelsDto moisChoisi, boolean onlyErreur) {
 		String url = String.format(absWsBaseUrl + sirhAbsAlimAutoUrl);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("onlyErreur", String.valueOf(onlyErreur));
 
-		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class)
-				.deepSerialize(moisChoisi);
+		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class).deepSerialize(moisChoisi);
 
 		ClientResponse res = createAndPostRequest(params, url, json);
 		return readResponseAsList(MoisAlimAutoCongesAnnuelsDto.class, res, url);
@@ -818,8 +806,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgent.toString());
 
-		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class)
-				.deepSerialize(listSelect);
+		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class).deepSerialize(listSelect);
 
 		ClientResponse res = createAndPostRequest(params, url, json);
 		return readResponse(ReturnMessageDto.class, res, url);
@@ -831,8 +818,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgent.toString());
 
-		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class)
-				.deepSerialize(dto);
+		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class).deepSerialize(dto);
 
 		ClientResponse res = createAndPostRequest(params, url, json);
 		return readResponse(ReturnMessageDto.class, res, url);
@@ -844,8 +830,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgent.toString());
 
-		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class)
-				.deepSerialize(dto);
+		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class).deepSerialize(dto);
 
 		ClientResponse res = createAndPostRequest(params, url, json);
 		return readResponse(ReturnMessageDto.class, res, url);
@@ -857,8 +842,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgent.toString());
 
-		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class)
-				.deepSerialize(dto);
+		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class).deepSerialize(dto);
 
 		ClientResponse res = createAndPostRequest(params, url, json);
 		return readResponse(ReturnMessageDto.class, res, url);
@@ -870,8 +854,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgent.toString());
 
-		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class)
-				.deepSerialize(dto);
+		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class).deepSerialize(dto);
 
 		ClientResponse res = createAndPostRequest(params, url, json);
 		return readResponse(ReturnMessageDto.class, res, url);
@@ -889,15 +872,13 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	}
 
 	@Override
-	public ReturnMessageDto saveAgentsOperateur(Integer idAgentApprobateur, Integer idAgentOperateur,
-			List<AgentDto> listSelect) {
+	public ReturnMessageDto saveAgentsOperateur(Integer idAgentApprobateur, Integer idAgentOperateur, List<AgentDto> listSelect) {
 		String url = String.format(absWsBaseUrl + sirhAgentsOperateurUrl);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgentApprobateur.toString());
 		params.put("idOperateur", idAgentOperateur.toString());
 
-		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class)
-				.deepSerialize(listSelect);
+		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class).deepSerialize(listSelect);
 
 		ClientResponse res = createAndPostRequest(params, url, json);
 		return readResponse(ReturnMessageDto.class, res, url);
@@ -915,15 +896,13 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	}
 
 	@Override
-	public ReturnMessageDto saveAgentsViseur(Integer idAgentApprobateur, Integer idAgentViseur,
-			List<AgentDto> listSelect) {
+	public ReturnMessageDto saveAgentsViseur(Integer idAgentApprobateur, Integer idAgentViseur, List<AgentDto> listSelect) {
 		String url = String.format(absWsBaseUrl + sirhAgentsViseurUrl);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgentApprobateur.toString());
 		params.put("idViseur", idAgentViseur.toString());
 
-		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class)
-				.deepSerialize(listSelect);
+		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class).deepSerialize(listSelect);
 
 		ClientResponse res = createAndPostRequest(params, url, json);
 		return readResponse(ReturnMessageDto.class, res, url);
@@ -966,5 +945,22 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 		logger.debug("Call " + url + " with idOrganisationSyndicale : " + idOrganisation);
 		ClientResponse res = createAndFireRequest(params, url);
 		return readResponseAsList(AgentOrganisationSyndicaleDto.class, res, url);
+	}
+
+	@Override
+	public ReturnMessageDto addCompteurAsaAmicale(Integer idAgentConnecte, String json) {
+		String url = String.format(absWsBaseUrl + sirhAbsAddCompteurAsaAmicale);
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idAgent", idAgentConnecte.toString());
+		ClientResponse res = createAndPostRequest(params, url, json);
+		return readResponseWithReturnMessageDto(ReturnMessageDto.class, res, url);
+	}
+
+	@Override
+	public List<CompteurDto> getListeCompteursAmicale() {
+		String url = String.format(absWsBaseUrl + sirhAbsListeCompteurAmicale);
+		HashMap<String, String> params = new HashMap<>();
+		ClientResponse res = createAndFireRequest(params, url);
+		return readResponseAsList(CompteurDto.class, res, url);
 	}
 }

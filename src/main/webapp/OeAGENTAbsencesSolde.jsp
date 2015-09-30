@@ -230,7 +230,7 @@
 				<%} %>
 				
 			
-			<%if(process.isAfficheSoldeAsaA48() || process.isAfficheSoldeAsaA54() || process.isAfficheSoldeAsaA55() || process.isAfficheSoldeAsaA52()){ %>
+			<%if(process.isAfficheSoldeAsaA48() || process.isAfficheSoldeAsaA54() || process.isAfficheSoldeAsaA55() || process.isAfficheSoldeAsaA52()|| process.isAfficheSoldeAsaAmicale()){ %>
 			<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
 			<legend class="sigp2Legend">Filtres pour les absences syndicales
 				<SELECT onchange='executeBouton("<%=process.getNOM_PB_ANNEE() %>")'  class="sigp2-saisie" name="<%= process.getNOM_LB_ANNEE() %>">
@@ -306,6 +306,24 @@
 							    </FIELDSET>
 							<%} %>	
 				    		</td>
+				    	</tr>
+				    	<tr>
+				    		<td>
+							<%if(process.isAfficheSoldeAsaAmicale()){ %>
+					    		 <FIELDSET class="sigp2Fieldset" style="text-align:left;width:450px;">
+							    	<legend class="sigp2Legend">* Amicale VDN</legend>
+									<table class="sigp2NewTab" style="text-align:left;width:400px;">
+										<tr bgcolor="#EFEFEF">
+											<td align="center">En cours</td>
+										</tr>
+										<tr>
+											<td style="text-align: center"><%=process.getVAL_ST_SOLDE_ASA_AMICALE()%></td>
+										</tr>
+									</table>				    
+							    </FIELDSET>
+							<%}%>
+				    		</td>
+				    		<td>&nbsp;</td>
 				    	</tr>
 				    </table>
 			</FIELDSET>

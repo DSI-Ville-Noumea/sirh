@@ -370,4 +370,14 @@ public class AbsService implements IAbsService {
 		return absConsumer.getListeRepresentantA52(idOrganisation);
 	}
 
+	@Override
+	public ReturnMessageDto addCompteurAsaAmicale(Integer idAgent, String json) {
+		return absConsumer.addCompteurAsaAmicale(idAgent, json);
+	}
+
+	@Override
+	public List<CompteurDto> getListeCompteursAmicale() {
+		return absConsumer.getListeCompteursAmicale();
+	}
+
 }

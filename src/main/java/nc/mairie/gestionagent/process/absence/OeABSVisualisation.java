@@ -245,8 +245,7 @@ public class OeABSVisualisation extends BasicProcess {
 
 		// Si liste organisation syndicale vide alors affectation
 		if (getLB_OS() == LBVide) {
-			ArrayList<OrganisationSyndicaleDto> listeOrga = (ArrayList<OrganisationSyndicaleDto>) absService
-					.getListeOrganisationSyndicale();
+			ArrayList<OrganisationSyndicaleDto> listeOrga = (ArrayList<OrganisationSyndicaleDto>) absService.getListeOrganisationSyndicale();
 			setListeOrganisationSyndicale(listeOrga);
 
 			int[] tailles = { 50 };
@@ -319,8 +318,7 @@ public class OeABSVisualisation extends BasicProcess {
 	}
 
 	public String getCurrentWholeTreeJS(String serviceSaisi) {
-		return adsService.getCurrentWholeTreeActifTransitoireJS(
-				null != serviceSaisi && !"".equals(serviceSaisi) ? serviceSaisi : null, false);
+		return adsService.getCurrentWholeTreeActifTransitoireJS(null != serviceSaisi && !"".equals(serviceSaisi) ? serviceSaisi : null, false);
 	}
 
 	@Override
@@ -376,7 +374,7 @@ public class OeABSVisualisation extends BasicProcess {
 			if (testerParametre(request, getNOM_PB_ANNULER())) {
 				return performPB_ANNULER(request);
 			}
-			// Si clic sur le bouton PB_VALIDER_CREATION_A48_A54_A50
+			// Si clic sur le bouton PB_VALIDER_CREATION_A48_A54_A50_Amicale
 			if (testerParametre(request, getNOM_PB_VALIDER_CREATION_DEMANDE())) {
 				return performPB_VALIDER_CREATION_DEMANDE(request);
 			}
@@ -569,16 +567,13 @@ public class OeABSVisualisation extends BasicProcess {
 		}
 
 		String dateDeb = getVAL_ST_DATE_MIN();
-		String dateMin = dateDeb.equals(Const.CHAINE_VIDE) ? null : Services.convertitDate(dateDeb, "dd/MM/yyyy",
-				"yyyyMMdd");
+		String dateMin = dateDeb.equals(Const.CHAINE_VIDE) ? null : Services.convertitDate(dateDeb, "dd/MM/yyyy", "yyyyMMdd");
 
 		String dateFin = getVAL_ST_DATE_MAX();
-		String dateMax = dateFin.equals(Const.CHAINE_VIDE) ? null : Services.convertitDate(dateFin, "dd/MM/yyyy",
-				"yyyyMMdd");
+		String dateMax = dateFin.equals(Const.CHAINE_VIDE) ? null : Services.convertitDate(dateFin, "dd/MM/yyyy", "yyyyMMdd");
 
 		// etat
-		int numEtat = (Services.estNumerique(getZone(getNOM_LB_ETAT_SELECT())) ? Integer
-				.parseInt(getZone(getNOM_LB_ETAT_SELECT())) : -1);
+		int numEtat = (Services.estNumerique(getZone(getNOM_LB_ETAT_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_ETAT_SELECT())) : -1);
 		EnumEtatAbsence etat = null;
 		if (numEtat != -1 && numEtat != 0) {
 			etat = (EnumEtatAbsence) getListeEtats().get(numEtat - 1);
@@ -587,22 +582,19 @@ public class OeABSVisualisation extends BasicProcess {
 		if (etat != null)
 			listeEtat.add(etat.getCode());
 		// famille
-		int numType = (Services.estNumerique(getZone(getNOM_LB_FAMILLE_SELECT())) ? Integer
-				.parseInt(getZone(getNOM_LB_FAMILLE_SELECT())) : -1);
+		int numType = (Services.estNumerique(getZone(getNOM_LB_FAMILLE_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_FAMILLE_SELECT())) : -1);
 		TypeAbsenceDto type = null;
 		if (numType != -1 && numType != 0) {
 			type = (TypeAbsenceDto) getListeFamilleAbsence().get(numType - 1);
 		}
 		// groupe
-		int numGroupe = (Services.estNumerique(getZone(getNOM_LB_GROUPE_SELECT())) ? Integer
-				.parseInt(getZone(getNOM_LB_GROUPE_SELECT())) : -1);
+		int numGroupe = (Services.estNumerique(getZone(getNOM_LB_GROUPE_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_GROUPE_SELECT())) : -1);
 		RefGroupeAbsenceDto groupe = null;
 		if (numGroupe != -1 && numGroupe != 0) {
 			groupe = (RefGroupeAbsenceDto) getListeGroupeAbsence().get(numGroupe - 1);
 		}
 
-		String idAgentDemande = getVAL_ST_AGENT_DEMANDE().equals(Const.CHAINE_VIDE) ? null : "900"
-				+ getVAL_ST_AGENT_DEMANDE();
+		String idAgentDemande = getVAL_ST_AGENT_DEMANDE().equals(Const.CHAINE_VIDE) ? null : "900" + getVAL_ST_AGENT_DEMANDE();
 
 		// SERVICE
 		List<String> idAgentService = new ArrayList<>();
@@ -620,8 +612,7 @@ public class OeABSVisualisation extends BasicProcess {
 			List<Integer> listeSousService = adsService.getListIdsEntiteWithEnfantsOfEntite(new Integer(idServiceAds));
 
 			if (null != listeSousService && !listeSousService.isEmpty()) {
-				ArrayList<Agent> listAgent = getAgentDao().listerAgentAvecServicesETMatricules(listeSousService, null,
-						null);
+				ArrayList<Agent> listAgent = getAgentDao().listerAgentAvecServicesETMatricules(listeSousService, null, null);
 				for (Agent ag : listAgent) {
 					if (!idAgentService.contains(ag.getIdAgent().toString())) {
 						idAgentService.add(ag.getIdAgent().toString());
@@ -638,8 +629,7 @@ public class OeABSVisualisation extends BasicProcess {
 		}
 
 		// GESTIONNAIRE
-		int numGestionnaire = (Services.estNumerique(getZone(getNOM_LB_GESTIONNAIRE_SELECT())) ? Integer
-				.parseInt(getZone(getNOM_LB_GESTIONNAIRE_SELECT())) : -1);
+		int numGestionnaire = (Services.estNumerique(getZone(getNOM_LB_GESTIONNAIRE_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_GESTIONNAIRE_SELECT())) : -1);
 		ReferentRh gestionnaire = null;
 		if (numGestionnaire != -1 && numGestionnaire != 0) {
 			gestionnaire = (ReferentRh) getListeGestionnaire().get(numGestionnaire - 1);
@@ -683,11 +673,9 @@ public class OeABSVisualisation extends BasicProcess {
 			}
 		}
 
-		List<DemandeDto> listeDemande = absService.getListeDemandes(dateMin, dateMax, listeEtat.size() == 0 ? null : listeEtat
-				.toString().replace("[", "").replace("]", "").replace(" ", ""),
-				type == null ? null : type.getIdRefTypeAbsence(),
-				idAgentDemande == null ? null : Integer.valueOf(idAgentDemande),
-				groupe == null ? null : groupe.getIdRefGroupeAbsence(), false, idAgentService);
+		List<DemandeDto> listeDemande = absService.getListeDemandes(dateMin, dateMax, listeEtat.size() == 0 ? null : listeEtat.toString().replace("[", "").replace("]", "").replace(" ", ""),
+				type == null ? null : type.getIdRefTypeAbsence(), idAgentDemande == null ? null : Integer.valueOf(idAgentDemande), groupe == null ? null : groupe.getIdRefGroupeAbsence(), false,
+				idAgentService);
 
 		logger.debug("Taille liste absences : " + listeDemande.size());
 		setListeAbsence((ArrayList<DemandeDto>) listeDemande);
@@ -697,8 +685,7 @@ public class OeABSVisualisation extends BasicProcess {
 
 		afficheListeAbsence();
 		if (299 < listeDemande.size()) {
-			getTransaction().declarerErreur(
-					"Attention, les demandes sont limitées a 300 résultats. Utiliser les filtres.");
+			getTransaction().declarerErreur("Attention, les demandes sont limitées a 300 résultats. Utiliser les filtres.");
 		}
 		setTypeFiltre("GLOBAL");
 
@@ -722,66 +709,46 @@ public class OeABSVisualisation extends BasicProcess {
 				t.setIdRefTypeAbsence(abs.getIdTypeDemande());
 
 				// #15586 affichage des restitutions massives des CA
-				TypeAbsenceDto type = 0 == abs.getIdTypeDemande() ? new TypeAbsenceDto()
-						: getListeFamilleAbsenceCreation().get(getListeFamilleAbsenceCreation().indexOf(t));
+				TypeAbsenceDto type = 0 == abs.getIdTypeDemande() ? new TypeAbsenceDto() : getListeFamilleAbsenceCreation().get(getListeFamilleAbsenceCreation().indexOf(t));
 
 				addZone(getNOM_ST_MATRICULE(i), null != ag ? ag.getNomatr().toString() : "");
-				addZone(getNOM_ST_AGENT(i), ag.getNomAgent() + " " + ag.getPrenomAgent() + " ("
-						+ abs.getAgentWithServiceDto().getSigleService() + ")");
+				addZone(getNOM_ST_AGENT(i), ag.getNomAgent() + " " + ag.getPrenomAgent() + " (" + abs.getAgentWithServiceDto().getSigleService() + ")");
 				addZone(getNOM_ST_INFO_AGENT(i), "<br/>" + statut);
-				String baseConges = null != abs.getTypeSaisiCongeAnnuel() ? " (Base congé : "
-						+ abs.getTypeSaisiCongeAnnuel().getCodeBaseHoraireAbsence() + ")" : "";
+				String baseConges = null != abs.getTypeSaisiCongeAnnuel() ? " (Base congé : " + abs.getTypeSaisiCongeAnnuel().getCodeBaseHoraireAbsence() + ")" : "";
 
 				// #15586 affichage des restitutions massives des CA
-				String ST_type = 0 == abs.getIdTypeDemande() ? abs.getLibelleTypeDemande() + "<br/>"
-						+ sdf.format(abs.getDateDemande()) : type.getLibelle() + baseConges + "<br/>"
+				String ST_type = 0 == abs.getIdTypeDemande() ? abs.getLibelleTypeDemande() + "<br/>" + sdf.format(abs.getDateDemande()) : type.getLibelle() + baseConges + "<br/>"
 						+ sdf.format(abs.getDateDemande());
 
 				addZone(getNOM_ST_TYPE(i), ST_type);
 
 				String debutMAM = abs.isDateDebutAM() ? "M" : abs.isDateDebutPM() ? "A" : Const.CHAINE_VIDE;
-				addZone(getNOM_ST_DATE_DEB(i),
-						sdf.format(abs.getDateDebut()) + "<br/>"
-								+ (debutMAM.equals(Const.CHAINE_VIDE) ? hrs.format(abs.getDateDebut()) : debutMAM));
+				addZone(getNOM_ST_DATE_DEB(i), sdf.format(abs.getDateDebut()) + "<br/>" + (debutMAM.equals(Const.CHAINE_VIDE) ? hrs.format(abs.getDateDebut()) : debutMAM));
 				if (abs.getDateFin() != null) {
 					String finMAM = abs.isDateFinAM() ? "M" : abs.isDateFinPM() ? "A" : Const.CHAINE_VIDE;
-					addZone(getNOM_ST_DATE_FIN(i),
-							sdf.format(abs.getDateFin()) + "<br/>"
-									+ (finMAM.equals(Const.CHAINE_VIDE) ? hrs.format(abs.getDateFin()) : finMAM));
+					addZone(getNOM_ST_DATE_FIN(i), sdf.format(abs.getDateFin()) + "<br/>" + (finMAM.equals(Const.CHAINE_VIDE) ? hrs.format(abs.getDateFin()) : finMAM));
 				}
-				if (abs.getIdTypeDemande() == EnumTypeAbsence.RECUP.getCode()
-						|| abs.getIdTypeDemande() == EnumTypeAbsence.REPOS_COMP.getCode()
-						|| abs.getIdTypeDemande() == EnumTypeAbsence.ASA_A55.getCode()
-						|| abs.getIdTypeDemande() == EnumTypeAbsence.ASA_A52.getCode()
-						|| abs.getIdTypeDemande() == EnumTypeAbsence.ASA_A49.getCode()) {
-					addZone(getNOM_ST_DUREE(i), abs.getDuree() == null ? "&nbsp;" : getHeureMinute(abs.getDuree()
-							.intValue()));
-				} else if (abs.getIdTypeDemande() == EnumTypeAbsence.ASA_A48.getCode()
-						|| abs.getIdTypeDemande() == EnumTypeAbsence.ASA_A54.getCode()
-						|| abs.getIdTypeDemande() == EnumTypeAbsence.ASA_A53.getCode()
-						|| abs.getIdTypeDemande() == EnumTypeAbsence.ASA_A50.getCode()
+				if (abs.getIdTypeDemande() == EnumTypeAbsence.RECUP.getCode() || abs.getIdTypeDemande() == EnumTypeAbsence.REPOS_COMP.getCode()
+						|| abs.getIdTypeDemande() == EnumTypeAbsence.ASA_A55.getCode() || abs.getIdTypeDemande() == EnumTypeAbsence.ASA_A52.getCode()
+						|| abs.getIdTypeDemande() == EnumTypeAbsence.ASA_A49.getCode() || abs.getIdTypeDemande() == EnumTypeAbsence.ASA_AMICALE.getCode()) {
+					addZone(getNOM_ST_DUREE(i), abs.getDuree() == null ? "&nbsp;" : getHeureMinute(abs.getDuree().intValue()));
+				} else if (abs.getIdTypeDemande() == EnumTypeAbsence.ASA_A48.getCode() || abs.getIdTypeDemande() == EnumTypeAbsence.ASA_A54.getCode()
+						|| abs.getIdTypeDemande() == EnumTypeAbsence.ASA_A53.getCode() || abs.getIdTypeDemande() == EnumTypeAbsence.ASA_A50.getCode()
 						|| abs.getIdTypeDemande() == EnumTypeAbsence.CONGE.getCode()) {
 					if (abs.getIdTypeDemande() == EnumTypeAbsence.CONGE.getCode()) {
 
-						Double nombreGarde = (null != abs.getTypeSaisiCongeAnnuel()
-								&& null != abs.getTypeSaisiCongeAnnuel().getQuotaMultiple()
-								&& 0 != abs.getTypeSaisiCongeAnnuel().getQuotaMultiple() ? abs.getDuree()
-								/ abs.getTypeSaisiCongeAnnuel().getQuotaMultiple() : 0);
-						String nombreGardeStr = 0 == nombreGarde ? "" : (1 == nombreGarde ? " ("
-								+ nombreGarde.toString() + " garde)" : " (" + nombreGarde.toString() + " gardes)");
-						addZone(getNOM_ST_DUREE(i), abs.getDuree() == null ? "&nbsp;" : abs.getDuree().toString() + "j"
-								+ (abs.isSamediOffert() ? " +S" : "") + nombreGardeStr);
+						Double nombreGarde = (null != abs.getTypeSaisiCongeAnnuel() && null != abs.getTypeSaisiCongeAnnuel().getQuotaMultiple()
+								&& 0 != abs.getTypeSaisiCongeAnnuel().getQuotaMultiple() ? abs.getDuree() / abs.getTypeSaisiCongeAnnuel().getQuotaMultiple() : 0);
+						String nombreGardeStr = 0 == nombreGarde ? "" : (1 == nombreGarde ? " (" + nombreGarde.toString() + " garde)" : " (" + nombreGarde.toString() + " gardes)");
+						addZone(getNOM_ST_DUREE(i), abs.getDuree() == null ? "&nbsp;" : abs.getDuree().toString() + "j" + (abs.isSamediOffert() ? " +S" : "") + nombreGardeStr);
 					} else {
 						addZone(getNOM_ST_DUREE(i), abs.getDuree() == null ? "&nbsp;" : abs.getDuree().toString() + "j");
 					}
-				} else if (abs.getGroupeAbsence() != null
-						&& abs.getGroupeAbsence().getIdRefGroupeAbsence() == EnumTypeGroupeAbsence.CONGES_EXCEP
-								.getValue()) {
+				} else if (abs.getGroupeAbsence() != null && abs.getGroupeAbsence().getIdRefGroupeAbsence() == EnumTypeGroupeAbsence.CONGES_EXCEP.getValue()) {
 					if (abs.getTypeSaisi().isChkDateDebut()) {
 						addZone(getNOM_ST_DUREE(i), abs.getDuree() == null ? "&nbsp;" : abs.getDuree().toString() + "j");
 					} else if (abs.getTypeSaisi().isCalendarHeureDebut()) {
-						addZone(getNOM_ST_DUREE(i), abs.getDuree() == null ? "&nbsp;" : getHeureMinute(abs.getDuree()
-								.intValue()));
+						addZone(getNOM_ST_DUREE(i), abs.getDuree() == null ? "&nbsp;" : getHeureMinute(abs.getDuree().intValue()));
 					} else if (abs.getTypeSaisi().isCalendarDateDebut()) {
 						addZone(getNOM_ST_DUREE(i), abs.getDuree() == null ? "&nbsp;" : abs.getDuree().toString() + "j");
 					} else {
@@ -948,8 +915,7 @@ public class OeABSVisualisation extends BasicProcess {
 			}
 		}
 		// famille
-		int numType = (Services.estNumerique(getZone(getNOM_LB_FAMILLE_CREATION_SELECT())) ? Integer
-				.parseInt(getZone(getNOM_LB_FAMILLE_CREATION_SELECT())) : -1);
+		int numType = (Services.estNumerique(getZone(getNOM_LB_FAMILLE_CREATION_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_FAMILLE_CREATION_SELECT())) : -1);
 		TypeAbsenceDto type = null;
 		if (numType != -1) {
 			type = (TypeAbsenceDto) getListeFamilleAbsenceCreation().get(numType);
@@ -960,8 +926,7 @@ public class OeABSVisualisation extends BasicProcess {
 				try {
 					aff = getAffectationDao().chercherAffectationActiveAvecAgent(getAgentCreation().getIdAgent());
 				} catch (Exception e) {
-					List<Affectation> listAffAutre = getAffectationDao().listerAffectationAvecAgent(
-							getAgentCreation().getIdAgent());
+					List<Affectation> listAffAutre = getAffectationDao().listerAffectationAvecAgent(getAgentCreation().getIdAgent());
 					if (listAffAutre.size() > 0) {
 						aff = listAffAutre.get(listAffAutre.size() - 1);
 					}
@@ -978,22 +943,20 @@ public class OeABSVisualisation extends BasicProcess {
 		}
 
 		// On nomme l'action
-		if ((type != null && (type.getIdRefTypeAbsence().toString()
-				.equals(EnumTypeAbsence.ASA_A48.getCode().toString())
+		if ((type != null && (type.getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.ASA_A48.getCode().toString())
 				|| type.getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.ASA_A49.getCode().toString())
 				|| type.getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.ASA_A50.getCode().toString())
 				|| type.getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.ASA_A52.getCode().toString())
 				|| type.getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.ASA_A53.getCode().toString())
-				|| type.getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.ASA_A54.getCode().toString()) || type
-				.getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.ASA_A55.getCode().toString())))
-				|| (type != null && type.getGroupeAbsence() != null && (type.getGroupeAbsence().getIdRefGroupeAbsence() == EnumTypeGroupeAbsence.CONGES_EXCEP
-						.getValue() || type.getGroupeAbsence().getIdRefGroupeAbsence() == EnumTypeGroupeAbsence.CONGES_ANNUELS
-						.getValue()))) {
+				|| type.getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.ASA_A54.getCode().toString())
+				|| type.getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.ASA_A55.getCode().toString()) || type.getIdRefTypeAbsence().toString()
+				.equals(EnumTypeAbsence.ASA_AMICALE.getCode().toString())))
+				|| (type != null && type.getGroupeAbsence() != null && (type.getGroupeAbsence().getIdRefGroupeAbsence() == EnumTypeGroupeAbsence.CONGES_EXCEP.getValue() || type.getGroupeAbsence()
+						.getIdRefGroupeAbsence() == EnumTypeGroupeAbsence.CONGES_ANNUELS.getValue()))) {
 
 			ArrayList<OrganisationSyndicaleDto> listeOrga = new ArrayList<OrganisationSyndicaleDto>();
 			if (type.getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.ASA_A52.getCode().toString())) {
-				listeOrga = (ArrayList<OrganisationSyndicaleDto>) absService.getListeOrganisationSyndicaleActiveByAgent(
-						new Integer(idAgent), type.getIdRefTypeAbsence());
+				listeOrga = (ArrayList<OrganisationSyndicaleDto>) absService.getListeOrganisationSyndicaleActiveByAgent(new Integer(idAgent), type.getIdRefTypeAbsence());
 				if (null == listeOrga || listeOrga.isEmpty()) {
 					getTransaction().declarerErreur("L'agent ne fait parti d'aucun syndicat.");
 					return false;
@@ -1144,8 +1107,7 @@ public class OeABSVisualisation extends BasicProcess {
 		} else {
 			if (user != null && user.getEmployeeNumber() != null && user.getEmployeeNumber() != 0) {
 				try {
-					agent = getAgentDao().chercherAgentParMatricule(
-							radiService.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
+					agent = getAgentDao().chercherAgentParMatricule(radiService.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
 				} catch (Exception e) {
 					// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
@@ -1286,25 +1248,20 @@ public class OeABSVisualisation extends BasicProcess {
 			ret[index][1] = formatDate(p.getDateDebut()) + "<br/>" + formatHeure(p.getDateDebut());
 			ret[index][2] = formatDate(p.getDateFin()) + "<br/>" + formatHeure(p.getDateFin());
 			String duree = "&nbsp;";
-			if (p.getIdTypeDemande() == EnumTypeAbsence.RECUP.getCode()
-					|| p.getIdTypeDemande() == EnumTypeAbsence.REPOS_COMP.getCode()) {
+			if (p.getIdTypeDemande() == EnumTypeAbsence.RECUP.getCode() || p.getIdTypeDemande() == EnumTypeAbsence.REPOS_COMP.getCode()) {
 				duree = getHeureMinute(p.getDuree().intValue());
-			} else if (p.getIdTypeDemande() == EnumTypeAbsence.ASA_A48.getCode()
-					|| p.getIdTypeDemande() == EnumTypeAbsence.ASA_A54.getCode()
-					|| p.getIdTypeDemande() == EnumTypeAbsence.ASA_A53.getCode()
-					|| p.getIdTypeDemande() == EnumTypeAbsence.ASA_A50.getCode()
+			} else if (p.getIdTypeDemande() == EnumTypeAbsence.ASA_A48.getCode() || p.getIdTypeDemande() == EnumTypeAbsence.ASA_A54.getCode()
+					|| p.getIdTypeDemande() == EnumTypeAbsence.ASA_A53.getCode() || p.getIdTypeDemande() == EnumTypeAbsence.ASA_A50.getCode()
 					|| p.getIdTypeDemande() == EnumTypeAbsence.CONGE.getCode()) {
 				if (p.getIdTypeDemande() == EnumTypeAbsence.CONGE.getCode()) {
 					duree = p.getDuree().toString() + "j" + (p.isSamediOffert() ? " +S" : "");
 				} else {
 					duree = p.getDuree().toString() + "j";
 				}
-			} else if (p.getIdTypeDemande() == EnumTypeAbsence.ASA_A55.getCode()
-					|| p.getIdTypeDemande() == EnumTypeAbsence.ASA_A52.getCode()
-					|| p.getIdTypeDemande() == EnumTypeAbsence.ASA_A49.getCode()) {
+			} else if (p.getIdTypeDemande() == EnumTypeAbsence.ASA_A55.getCode() || p.getIdTypeDemande() == EnumTypeAbsence.ASA_A52.getCode()
+					|| p.getIdTypeDemande() == EnumTypeAbsence.ASA_A49.getCode() || p.getIdTypeDemande() == EnumTypeAbsence.ASA_AMICALE.getCode()) {
 				duree = getHeureMinute(p.getDuree().intValue());
-			} else if (p.getGroupeAbsence() != null
-					&& p.getGroupeAbsence().getIdRefGroupeAbsence() == EnumTypeGroupeAbsence.CONGES_EXCEP.getValue()) {
+			} else if (p.getGroupeAbsence() != null && p.getGroupeAbsence().getIdRefGroupeAbsence() == EnumTypeGroupeAbsence.CONGES_EXCEP.getValue()) {
 				if (p.getTypeSaisi().isChkDateDebut()) {
 					duree = p.getDuree() == null ? "&nbsp;" : p.getDuree().toString() + "j";
 				} else if (p.getTypeSaisi().isCalendarHeureDebut()) {
@@ -1316,8 +1273,7 @@ public class OeABSVisualisation extends BasicProcess {
 			ret[index][3] = duree;
 			ret[index][4] = p.getMotif() == null ? "&nbsp;" : p.getMotif();
 			ret[index][5] = EnumEtatAbsence.getValueEnumEtatAbsence(p.getIdRefEtat());
-			ret[index][6] = formatDate(p.getDateSaisie()) + " " + formatHeure(p.getDateSaisie()) + "<br/>"
-					+ p.getAgentWithServiceDto().getPrenom() + " " + p.getAgentWithServiceDto().getNom() + " ("
+			ret[index][6] = formatDate(p.getDateSaisie()) + " " + formatHeure(p.getDateSaisie()) + "<br/>" + p.getAgentWithServiceDto().getPrenom() + " " + p.getAgentWithServiceDto().getNom() + " ("
 					+ new Integer(p.getAgentWithServiceDto().getIdAgent() - 9000000).toString() + ")";
 			index++;
 		}
@@ -1364,13 +1320,11 @@ public class OeABSVisualisation extends BasicProcess {
 
 		if (type.getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.CONGE.getCode().toString())) {
 			// on cherche la base horaire absence de l'agent
-			Affectation aff = getAffectationDao().chercherAffectationActiveAvecAgent(
-					dem.getAgentWithServiceDto().getIdAgent());
+			Affectation aff = getAffectationDao().chercherAffectationActiveAvecAgent(dem.getAgentWithServiceDto().getIdAgent());
 			if (aff == null || aff.getIdBaseHoraireAbsence() == null) {
 				// "ERR805",
 				// "L'agent @ n'a pas de base horaire d'absence. Merci de la renseigner dans l'affectation de l'agent."
-				getTransaction().declarerErreur(
-						MessageUtils.getMessage("ERR805", dem.getAgentWithServiceDto().getIdAgent().toString()));
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR805", dem.getAgentWithServiceDto().getIdAgent().toString()));
 				return false;
 			}
 			type = absService.getTypeAbsence(aff.getIdBaseHoraireAbsence());
@@ -1384,14 +1338,11 @@ public class OeABSVisualisation extends BasicProcess {
 
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		// date de debut
-		if ((null != type.getTypeSaisiDto() && type.getTypeSaisiDto().isCalendarDateDebut())
-				|| (null != type.getTypeSaisiCongeAnnuelDto() && type.getTypeSaisiCongeAnnuelDto()
-						.isCalendarDateDebut())) {
+		if ((null != type.getTypeSaisiDto() && type.getTypeSaisiDto().isCalendarDateDebut()) || (null != type.getTypeSaisiCongeAnnuelDto() && type.getTypeSaisiCongeAnnuelDto().isCalendarDateDebut())) {
 			addZone(getNOM_ST_DATE_DEBUT(), sdf.format(dem.getDateDebut()));
 		}
 		// date de fin
-		if ((null != type.getTypeSaisiDto() && type.getTypeSaisiDto().isCalendarDateFin())
-				|| (null != type.getTypeSaisiCongeAnnuelDto() && type.getTypeSaisiCongeAnnuelDto().isCalendarDateFin())) {
+		if ((null != type.getTypeSaisiDto() && type.getTypeSaisiDto().isCalendarDateFin()) || (null != type.getTypeSaisiCongeAnnuelDto() && type.getTypeSaisiCongeAnnuelDto().isCalendarDateFin())) {
 			addZone(getNOM_ST_DATE_FIN(), sdf.format(dem.getDateFin()));
 		}
 		// checkbox
@@ -1416,21 +1367,17 @@ public class OeABSVisualisation extends BasicProcess {
 			if (dem.getOrganisationSyndicale() != null) {
 				orga = dem.getOrganisationSyndicale();
 			}
-			addZone(getNOM_LB_OS_SELECT(),
-					orga == null ? Const.ZERO : String.valueOf(getListeOrganisationSyndicale().indexOf(orga)));
+			addZone(getNOM_LB_OS_SELECT(), orga == null ? Const.ZERO : String.valueOf(getListeOrganisationSyndicale().indexOf(orga)));
 		}
 		// /////////////// MOTIF ////////////////////
-		if ((null != type.getTypeSaisiDto() && type.getTypeSaisiDto().isMotif())
-				|| (null != type.getTypeSaisiCongeAnnuelDto())) {
+		if ((null != type.getTypeSaisiDto() && type.getTypeSaisiDto().isMotif()) || (null != type.getTypeSaisiCongeAnnuelDto())) {
 			addZone(getNOM_ST_MOTIF_CREATION(), dem.getMotif() == null ? Const.CHAINE_VIDE : dem.getMotif().trim());
 		}
 
 		// /////////////// DUREE ////////////////////
 		if (null != type.getTypeSaisiDto() && type.getTypeSaisiDto().isDuree()) {
-			String dureeHeures = (dem.getDuree() / 60) == 0 ? Const.CHAINE_VIDE : new Double(dem.getDuree() / 60)
-					.intValue() + Const.CHAINE_VIDE;
-			String dureeMinutes = (dem.getDuree() % 60) == 0 ? Const.CHAINE_VIDE : new Double(dem.getDuree() % 60)
-					.intValue() + Const.CHAINE_VIDE;
+			String dureeHeures = (dem.getDuree() / 60) == 0 ? Const.CHAINE_VIDE : new Double(dem.getDuree() / 60).intValue() + Const.CHAINE_VIDE;
+			String dureeMinutes = (dem.getDuree() % 60) == 0 ? Const.CHAINE_VIDE : new Double(dem.getDuree() % 60).intValue() + Const.CHAINE_VIDE;
 			addZone(getNOM_ST_DUREE(), dureeHeures);
 			addZone(getNOM_ST_DUREE_MIN(), dureeMinutes);
 		} else if (null != type.getTypeSaisiCongeAnnuelDto()) {
@@ -1511,23 +1458,20 @@ public class OeABSVisualisation extends BasicProcess {
 		Agent ag = getAgentDao().chercherAgent(dem.getAgentWithServiceDto().getIdAgent());
 		// Si ASA ou CONGES_EXCEP et etat=validé ou prise,
 		// alors un motif est obligatoire
-		if (((dem.getGroupeAbsence().getIdRefGroupeAbsence() == EnumTypeGroupeAbsence.AS.getValue() || dem
-				.getGroupeAbsence().getIdRefGroupeAbsence() == EnumTypeGroupeAbsence.CONGES_EXCEP.getValue()) && (dem
+		if (((dem.getGroupeAbsence().getIdRefGroupeAbsence() == EnumTypeGroupeAbsence.AS.getValue() || dem.getGroupeAbsence().getIdRefGroupeAbsence() == EnumTypeGroupeAbsence.CONGES_EXCEP.getValue()) && (dem
 				.getIdRefEtat() == EnumEtatAbsence.APPROUVE.getCode()
 		// #14696 ajout de l etat A VALIDER car erreur lors de la reprise de
 		// donnees des conges exceptionnels mis l etat A VALIDER au lieu de
 		// SAISI ou APPROUVE
-		|| dem.getIdRefEtat() == EnumEtatAbsence.A_VALIDER.getCode()))
-				|| (dem.getGroupeAbsence().getIdRefGroupeAbsence() == EnumTypeGroupeAbsence.CONGES_ANNUELS.getValue())
-				&& dem.getIdRefEtat() == EnumEtatAbsence.A_VALIDER.getCode()) {
+				|| dem.getIdRefEtat() == EnumEtatAbsence.A_VALIDER.getCode()))
+				|| (dem.getGroupeAbsence().getIdRefGroupeAbsence() == EnumTypeGroupeAbsence.CONGES_ANNUELS.getValue()) && dem.getIdRefEtat() == EnumEtatAbsence.A_VALIDER.getCode()) {
 			// "ERR803",
 			// "Pour @ cette demande, merci de renseigner un motif."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR803", "mettre en attente"));
 			TypeAbsenceDto t = new TypeAbsenceDto();
 			t.setIdRefTypeAbsence(dem.getIdTypeDemande());
-			String info = "Demande "
-					+ getListeFamilleAbsenceCreation().get(getListeFamilleAbsenceCreation().indexOf(t)).getLibelle()
-					+ " de l'agent " + ag.getNomatr() + " du " + sdf.format(dem.getDateDebut()) + ".";
+			String info = "Demande " + getListeFamilleAbsenceCreation().get(getListeFamilleAbsenceCreation().indexOf(t)).getLibelle() + " de l'agent " + ag.getNomatr() + " du "
+					+ sdf.format(dem.getDateDebut()) + ".";
 			addZone(getNOM_ST_INFO_MOTIF_EN_ATTENTE(), info);
 			addZone(getNOM_ST_MOTIF_EN_ATTENTE(), Const.CHAINE_VIDE);
 			addZone(getNOM_ST_ID_DEMANDE_EN_ATTENTE(), new Integer(idDemande).toString());
@@ -1596,15 +1540,13 @@ public class OeABSVisualisation extends BasicProcess {
 		return true;
 	}
 
-	private void changeState(HttpServletRequest request, DemandeDto dem, EnumEtatAbsence state, String motif)
-			throws Exception {
+	private void changeState(HttpServletRequest request, DemandeDto dem, EnumEtatAbsence state, String motif) throws Exception {
 		ArrayList<DemandeDto> param = new ArrayList<DemandeDto>();
 		param.add(dem);
 		changeState(request, param, state, motif);
 	}
 
-	private void changeState(HttpServletRequest request, Collection<DemandeDto> dem, EnumEtatAbsence state, String motif)
-			throws Exception {
+	private void changeState(HttpServletRequest request, Collection<DemandeDto> dem, EnumEtatAbsence state, String motif) throws Exception {
 		Agent agentConnecte = getAgentConnecte(request);
 		if (agentConnecte == null) {
 			logger.debug("Agent nul dans jsp visualisation");
@@ -1618,8 +1560,7 @@ public class OeABSVisualisation extends BasicProcess {
 				listDto.add(dto);
 			}
 
-			String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class)
-					.deepSerialize(listDto);
+			String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class).deepSerialize(listDto);
 			ReturnMessageDto message = absService.setAbsState(agentConnecte.getIdAgent(), json);
 
 			for (DemandeDto d : dem) {
@@ -1676,9 +1617,8 @@ public class OeABSVisualisation extends BasicProcess {
 		getTransaction().declarerErreur(MessageUtils.getMessage("ERR803", "annuler"));
 		TypeAbsenceDto t = new TypeAbsenceDto();
 		t.setIdRefTypeAbsence(dem.getIdTypeDemande());
-		String info = "Demande "
-				+ getListeFamilleAbsenceCreation().get(getListeFamilleAbsenceCreation().indexOf(t)).getLibelle()
-				+ " de l'agent " + ag.getNomatr() + " du " + sdf.format(dem.getDateDebut()) + ".";
+		String info = "Demande " + getListeFamilleAbsenceCreation().get(getListeFamilleAbsenceCreation().indexOf(t)).getLibelle() + " de l'agent " + ag.getNomatr() + " du "
+				+ sdf.format(dem.getDateDebut()) + ".";
 		addZone(getNOM_ST_INFO_MOTIF_ANNULATION(), info);
 		addZone(getNOM_ST_MOTIF_ANNULATION(), Const.CHAINE_VIDE);
 		addZone(getNOM_ST_ID_DEMANDE_ANNULATION(), new Integer(idDemande).toString());
@@ -1870,8 +1810,7 @@ public class OeABSVisualisation extends BasicProcess {
 			// /////////////// HEURE DEBUT ////////////////////
 			if (type.getTypeSaisiDto().isCalendarHeureDebut()) {
 				// heure obligatoire
-				int indiceHeureDebut = (Services.estNumerique(getVAL_LB_HEURE_DEBUT_SELECT()) ? Integer
-						.parseInt(getVAL_LB_HEURE_DEBUT_SELECT()) : -1);
+				int indiceHeureDebut = (Services.estNumerique(getVAL_LB_HEURE_DEBUT_SELECT()) ? Integer.parseInt(getVAL_LB_HEURE_DEBUT_SELECT()) : -1);
 				if (indiceHeureDebut < 0) {
 					// "ERR002", "La zone @ est obligatoire."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "heure de début"));
@@ -1898,8 +1837,7 @@ public class OeABSVisualisation extends BasicProcess {
 					return false;
 				}
 				String dureeHeure = null != getVAL_ST_DUREE() ? getVAL_ST_DUREE() : "0";
-				String dureeMinutes = null != getVAL_ST_DUREE_MIN() ? 1 == getVAL_ST_DUREE_MIN().length() ? "0"
-						+ getVAL_ST_DUREE_MIN() : getVAL_ST_DUREE_MIN() : "00";
+				String dureeMinutes = null != getVAL_ST_DUREE_MIN() ? 1 == getVAL_ST_DUREE_MIN().length() ? "0" + getVAL_ST_DUREE_MIN() : getVAL_ST_DUREE_MIN() : "00";
 
 				dto.setDuree(Double.valueOf(dureeHeure + "." + dureeMinutes));
 			}
@@ -1915,8 +1853,7 @@ public class OeABSVisualisation extends BasicProcess {
 			// /////////////// HEURE FIN ////////////////////
 			if (type.getTypeSaisiDto().isCalendarHeureFin()) {
 				// heure obligatoire
-				int indiceHeureFin = (Services.estNumerique(getVAL_LB_HEURE_FIN_SELECT()) ? Integer
-						.parseInt(getVAL_LB_HEURE_FIN_SELECT()) : -1);
+				int indiceHeureFin = (Services.estNumerique(getVAL_LB_HEURE_FIN_SELECT()) ? Integer.parseInt(getVAL_LB_HEURE_FIN_SELECT()) : -1);
 				if (indiceHeureFin <= 0) {
 					// "ERR002", "La zone @ est obligatoire."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "heure de fin"));
@@ -1937,8 +1874,7 @@ public class OeABSVisualisation extends BasicProcess {
 			}
 			// /////////////// ORGANISATION SYNDICALE ////////////////////
 			if (type.getTypeSaisiDto().isCompteurCollectif()) {
-				int numOrga = (Services.estNumerique(getZone(getNOM_LB_OS_SELECT())) ? Integer
-						.parseInt(getZone(getNOM_LB_OS_SELECT())) : -1);
+				int numOrga = (Services.estNumerique(getZone(getNOM_LB_OS_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_OS_SELECT())) : -1);
 				OrganisationSyndicaleDto orgaSynd = null;
 				if (numOrga != -1) {
 					orgaSynd = (OrganisationSyndicaleDto) getListeOrganisationSyndicale().get(numOrga);
@@ -1972,8 +1908,7 @@ public class OeABSVisualisation extends BasicProcess {
 					return false;
 				}
 				RefEtatDto dtoEtat = new RefEtatDto();
-				dtoEtat.setIdRefEtat(getZone(getNOM_RG_ETAT()).equals(getNOM_RB_ETAT_EN_ATTENTE()) ? EnumEtatAbsence.EN_ATTENTE
-						.getCode() : EnumEtatAbsence.VALIDEE.getCode());
+				dtoEtat.setIdRefEtat(getZone(getNOM_RG_ETAT()).equals(getNOM_RB_ETAT_EN_ATTENTE()) ? EnumEtatAbsence.EN_ATTENTE.getCode() : EnumEtatAbsence.VALIDEE.getCode());
 				dto.setEtatDto(dtoEtat);
 			}
 		} else if (type.getTypeSaisiCongeAnnuelDto() != null) {
@@ -2048,8 +1983,7 @@ public class OeABSVisualisation extends BasicProcess {
 
 		dto.setIdRefEtat(EnumEtatAbsence.SAISIE.getCode());
 
-		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class)
-				.deepSerialize(dto);
+		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class).deepSerialize(dto);
 
 		ReturnMessageDto srm = absService.saveDemande(agentConnecte.getIdAgent(), json);
 
@@ -2167,8 +2101,7 @@ public class OeABSVisualisation extends BasicProcess {
 	public boolean performPB_SELECT_GROUPE(HttpServletRequest request) throws Exception {
 
 		// groupe
-		int numGroupe = (Services.estNumerique(getZone(getNOM_LB_GROUPE_SELECT())) ? Integer
-				.parseInt(getZone(getNOM_LB_GROUPE_SELECT())) : -1);
+		int numGroupe = (Services.estNumerique(getZone(getNOM_LB_GROUPE_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_GROUPE_SELECT())) : -1);
 		RefGroupeAbsenceDto groupe = null;
 		if (numGroupe != -1 && numGroupe != 0) {
 			groupe = (RefGroupeAbsenceDto) getListeGroupeAbsence().get(numGroupe - 1);
@@ -2176,8 +2109,7 @@ public class OeABSVisualisation extends BasicProcess {
 
 		// on charge les familles
 		if (groupe != null) {
-			setListeFamilleAbsence((ArrayList<TypeAbsenceDto>) absService.getListeRefTypeAbsenceDto(groupe
-					.getIdRefGroupeAbsence()));
+			setListeFamilleAbsence((ArrayList<TypeAbsenceDto>) absService.getListeRefTypeAbsenceDto(groupe.getIdRefGroupeAbsence()));
 		} else {
 			setListeFamilleAbsence(null);
 		}
@@ -2210,16 +2142,13 @@ public class OeABSVisualisation extends BasicProcess {
 	public boolean performPB_FILTRER_DEMANDE_A_VALIDER(HttpServletRequest request) throws Exception {
 
 		String dateDeb = getVAL_ST_DATE_MIN();
-		String dateMin = dateDeb.equals(Const.CHAINE_VIDE) ? null : Services.convertitDate(dateDeb, "dd/MM/yyyy",
-				"yyyyMMdd");
+		String dateMin = dateDeb.equals(Const.CHAINE_VIDE) ? null : Services.convertitDate(dateDeb, "dd/MM/yyyy", "yyyyMMdd");
 
 		String dateFin = getVAL_ST_DATE_MAX();
-		String dateMax = dateFin.equals(Const.CHAINE_VIDE) ? null : Services.convertitDate(dateFin, "dd/MM/yyyy",
-				"yyyyMMdd");
+		String dateMax = dateFin.equals(Const.CHAINE_VIDE) ? null : Services.convertitDate(dateFin, "dd/MM/yyyy", "yyyyMMdd");
 
 		// etat
-		int numEtat = (Services.estNumerique(getZone(getNOM_LB_ETAT_SELECT())) ? Integer
-				.parseInt(getZone(getNOM_LB_ETAT_SELECT())) : -1);
+		int numEtat = (Services.estNumerique(getZone(getNOM_LB_ETAT_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_ETAT_SELECT())) : -1);
 		EnumEtatAbsence etat = null;
 		if (numEtat != -1 && numEtat != 0) {
 			etat = (EnumEtatAbsence) getListeEtats().get(numEtat - 1);
@@ -2229,26 +2158,22 @@ public class OeABSVisualisation extends BasicProcess {
 			listeEtat.add(etat.getCode());
 
 		// famille
-		int numType = (Services.estNumerique(getZone(getNOM_LB_FAMILLE_SELECT())) ? Integer
-				.parseInt(getZone(getNOM_LB_FAMILLE_SELECT())) : -1);
+		int numType = (Services.estNumerique(getZone(getNOM_LB_FAMILLE_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_FAMILLE_SELECT())) : -1);
 		TypeAbsenceDto type = null;
 		if (numType != -1 && numType != 0) {
 			type = (TypeAbsenceDto) getListeFamilleAbsenceCreation().get(numType - 1);
 		}
 		// groupe
-		int numGroupe = (Services.estNumerique(getZone(getNOM_LB_GROUPE_SELECT())) ? Integer
-				.parseInt(getZone(getNOM_LB_GROUPE_SELECT())) : -1);
+		int numGroupe = (Services.estNumerique(getZone(getNOM_LB_GROUPE_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_GROUPE_SELECT())) : -1);
 		RefGroupeAbsenceDto groupe = null;
 		if (numGroupe != -1 && numGroupe != 0) {
 			groupe = (RefGroupeAbsenceDto) getListeGroupeAbsence().get(numGroupe - 1);
 		}
 
-		String idAgentDemande = getVAL_ST_AGENT_DEMANDE().equals(Const.CHAINE_VIDE) ? null : "900"
-				+ getVAL_ST_AGENT_DEMANDE();
+		String idAgentDemande = getVAL_ST_AGENT_DEMANDE().equals(Const.CHAINE_VIDE) ? null : "900" + getVAL_ST_AGENT_DEMANDE();
 
 		// GESTIONNAIRE
-		int numGestionnaire = (Services.estNumerique(getZone(getNOM_LB_GESTIONNAIRE_SELECT())) ? Integer
-				.parseInt(getZone(getNOM_LB_GESTIONNAIRE_SELECT())) : -1);
+		int numGestionnaire = (Services.estNumerique(getZone(getNOM_LB_GESTIONNAIRE_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_GESTIONNAIRE_SELECT())) : -1);
 		ReferentRh gestionnaire = null;
 		if (numGestionnaire != -1 && numGestionnaire != 0) {
 			gestionnaire = (ReferentRh) getListeGestionnaire().get(numGestionnaire - 1);
@@ -2292,11 +2217,9 @@ public class OeABSVisualisation extends BasicProcess {
 			}
 		}
 
-		List<DemandeDto> listeDemande = absService.getListeDemandes(dateMin, dateMax, listeEtat.size() == 0 ? null : listeEtat
-				.toString().replace("[", "").replace("]", "").replace(" ", ""),
-				type == null ? null : type.getIdRefTypeAbsence(),
-				idAgentDemande == null ? null : Integer.valueOf(idAgentDemande),
-				groupe == null ? null : groupe.getIdRefGroupeAbsence(), true, idAgentService);
+		List<DemandeDto> listeDemande = absService.getListeDemandes(dateMin, dateMax, listeEtat.size() == 0 ? null : listeEtat.toString().replace("[", "").replace("]", "").replace(" ", ""),
+				type == null ? null : type.getIdRefTypeAbsence(), idAgentDemande == null ? null : Integer.valueOf(idAgentDemande), groupe == null ? null : groupe.getIdRefGroupeAbsence(), true,
+				idAgentService);
 
 		logger.debug("Taille liste absences : " + listeDemande.size());
 
@@ -2325,24 +2248,19 @@ public class OeABSVisualisation extends BasicProcess {
 	}
 
 	public boolean performPB_CALCUL_DUREE(HttpServletRequest request) throws Exception {
-		if (!getVAL_ST_DATE_DEBUT().equals(Const.CHAINE_VIDE)
-				&& (!getVAL_ST_DATE_FIN().equals(Const.CHAINE_VIDE) || !getVAL_ST_DATE_REPRISE().equals(
-						Const.CHAINE_VIDE))) {
+		if (!getVAL_ST_DATE_DEBUT().equals(Const.CHAINE_VIDE) && (!getVAL_ST_DATE_FIN().equals(Const.CHAINE_VIDE) || !getVAL_ST_DATE_REPRISE().equals(Const.CHAINE_VIDE))) {
 			AgentWithServiceDto agentdto = new AgentWithServiceDto();
 			agentdto.setIdAgent(getAgentCreation().getIdAgent());
 			DemandeDto demandeCreation = new DemandeDto();
 			demandeCreation.setAgentWithServiceDto(agentdto);
 			demandeCreation.setDateDebut(sdf.parse(getVAL_ST_DATE_DEBUT()));
-			demandeCreation.setDateFin(getVAL_ST_DATE_FIN().equals(Const.CHAINE_VIDE) ? null : sdf
-					.parse(getVAL_ST_DATE_FIN()));
-			demandeCreation.setDateReprise(getVAL_ST_DATE_REPRISE().equals(Const.CHAINE_VIDE) ? null : sdf
-					.parse(getVAL_ST_DATE_REPRISE()));
+			demandeCreation.setDateFin(getVAL_ST_DATE_FIN().equals(Const.CHAINE_VIDE) ? null : sdf.parse(getVAL_ST_DATE_FIN()));
+			demandeCreation.setDateReprise(getVAL_ST_DATE_REPRISE().equals(Const.CHAINE_VIDE) ? null : sdf.parse(getVAL_ST_DATE_REPRISE()));
 			demandeCreation.setDateDebutAM(getZone(getNOM_RG_DEBUT_MAM()).equals(getNOM_RB_M()));
 			demandeCreation.setDateDebutPM(getZone(getNOM_RG_DEBUT_MAM()).equals(getNOM_RB_AM()));
 			demandeCreation.setDateFinAM(getZone(getNOM_RG_FIN_MAM()).equals(getNOM_RB_M()));
 			demandeCreation.setDateFinPM(getZone(getNOM_RG_FIN_MAM()).equals(getNOM_RB_AM()));
-			String res = getCalculDureeCongeAnnuel(getTypeCreation().getTypeSaisiCongeAnnuelDto()
-					.getCodeBaseHoraireAbsence(), demandeCreation);
+			String res = getCalculDureeCongeAnnuel(getTypeCreation().getTypeSaisiCongeAnnuelDto().getCodeBaseHoraireAbsence(), demandeCreation);
 
 			addZone(getNOM_ST_DUREE(), res);
 		}
@@ -2350,8 +2268,7 @@ public class OeABSVisualisation extends BasicProcess {
 	}
 
 	public String getCalculDureeCongeAnnuel(String codeBaseHoraireAbsence, DemandeDto demandeDto) {
-		if (demandeDto.getDateDebut() != null
-				&& (demandeDto.getDateFin() != null || demandeDto.getDateReprise() != null)) {
+		if (demandeDto.getDateDebut() != null && (demandeDto.getDateFin() != null || demandeDto.getDateReprise() != null)) {
 			demandeDto.setTypeSaisiCongeAnnuel(getTypeCreation().getTypeSaisiCongeAnnuelDto());
 			DemandeDto dureeDto = absService.getDureeCongeAnnuel(demandeDto);
 			return dureeDto.getDuree().toString();
@@ -2436,6 +2353,5 @@ public class OeABSVisualisation extends BasicProcess {
 	public void setAbsService(IAbsService absService) {
 		this.absService = absService;
 	}
-	
 
 }

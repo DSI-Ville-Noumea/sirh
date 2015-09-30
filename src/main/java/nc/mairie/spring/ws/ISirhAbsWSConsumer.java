@@ -103,6 +103,8 @@ public interface ISirhAbsWSConsumer {
 
 	ReturnMessageDto addCompteurAsaA55(Integer idAgentConnecte, String json);
 
+	ReturnMessageDto addCompteurAsaAmicale(Integer idAgentConnecte, String json);
+
 	ReturnMessageDto addCompteurAsaA52(Integer idAgentConnecte, String json);
 
 	ReturnMessageDto addCompteurAsaA53(Integer idAgentConnecte, String json);
@@ -115,6 +117,8 @@ public interface ISirhAbsWSConsumer {
 
 	List<CompteurDto> getListeCompteursA55();
 
+	List<CompteurDto> getListeCompteursAmicale();
+
 	List<CompteurDto> getListeCompteursA52(Integer idOrganisation);
 
 	List<CompteurDto> getListeCompteursA53();
@@ -124,11 +128,10 @@ public interface ISirhAbsWSConsumer {
 	ReturnMessageDto initialiseCompteurConge(Integer agentConnecte, Integer idAgentConcerne);
 
 	// demandes
-	List<DemandeDto> getListeDemandesAgent(Integer idAgent, String onglet, String dateDebut, String dateFin,
-			String dateDemande, String listIdRefEtat, Integer idRefType, Integer idRefGroupeAbsence);
+	List<DemandeDto> getListeDemandesAgent(Integer idAgent, String onglet, String dateDebut, String dateFin, String dateDemande, String listIdRefEtat, Integer idRefType, Integer idRefGroupeAbsence);
 
-	List<DemandeDto> getListeDemandes(String dateDebut, String dateFin, String listIdRefEtat, Integer idRefType,
-			Integer idAgentRecherche, Integer idRefGroupe, boolean aValider, List<String> idAgentsService);
+	List<DemandeDto> getListeDemandes(String dateDebut, String dateFin, String listIdRefEtat, Integer idRefType, Integer idAgentRecherche, Integer idRefGroupe, boolean aValider,
+			List<String> idAgentsService);
 
 	List<DemandeDto> getVisualisationHistory(Integer absId);
 
@@ -143,8 +146,7 @@ public interface ISirhAbsWSConsumer {
 	// alimentation auto des congés annuels
 	List<MoisAlimAutoCongesAnnuelsDto> getListeMoisALimAUtoCongeAnnuel();
 
-	List<MoisAlimAutoCongesAnnuelsDto> getListeAlimAutoCongeAnnuel(MoisAlimAutoCongesAnnuelsDto moisChoisi,
-			boolean onlyErreur);
+	List<MoisAlimAutoCongesAnnuelsDto> getListeAlimAutoCongeAnnuel(MoisAlimAutoCongesAnnuelsDto moisChoisi, boolean onlyErreur);
 
 	List<MoisAlimAutoCongesAnnuelsDto> getHistoriqueAlimAutoCongeAnnuelAgent(Integer idAgent);
 

@@ -72,7 +72,7 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 	public String ACTION_CREATION_CONGE_ANNUEL = "Alimenter le compteur des congés annuels";
 
 	private AgentDao agentDao;
-	
+
 	private IRadiService radiService;
 
 	private IAbsService absService;
@@ -153,8 +153,7 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 			for (ListIterator<TypeAbsenceDto> list = listeComplete.listIterator(); list.hasNext();) {
 				TypeAbsenceDto type = (TypeAbsenceDto) list.next();
 				if (!getListeTypeAbsence().contains(type)) {
-					if (EnumTypeGroupeAbsence.CONGES_EXCEP.getValue() != type.getGroupeAbsence()
-							.getIdRefGroupeAbsence().intValue()) {
+					if (EnumTypeGroupeAbsence.CONGES_EXCEP.getValue() != type.getGroupeAbsence().getIdRefGroupeAbsence().intValue()) {
 						String ligne[] = { type.getLibelle() };
 
 						aFormat.ajouteLigne(ligne);
@@ -268,8 +267,7 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 
 		// Recuperation type absence
 		TypeAbsenceDto typeAbsence = null;
-		int indiceTypeAbsence = (Services.estNumerique(getVAL_LB_TYPE_ABSENCE_SELECT()) ? Integer
-				.parseInt(getVAL_LB_TYPE_ABSENCE_SELECT()) : -1);
+		int indiceTypeAbsence = (Services.estNumerique(getVAL_LB_TYPE_ABSENCE_SELECT()) ? Integer.parseInt(getVAL_LB_TYPE_ABSENCE_SELECT()) : -1);
 		if (indiceTypeAbsence >= 0) {
 			typeAbsence = (TypeAbsenceDto) getListeTypeAbsence().get(indiceTypeAbsence);
 			setTypeAbsenceCourant(typeAbsence);
@@ -280,8 +278,7 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 		}
 
 		// Liste depuis SIRH-ABS-WS
-		ArrayList<MotifCompteurDto> listeMotifs = (ArrayList<MotifCompteurDto>) absService
-				.getListeMotifCompteur(getTypeAbsenceCourant().getIdRefTypeAbsence());
+		ArrayList<MotifCompteurDto> listeMotifs = (ArrayList<MotifCompteurDto>) absService.getListeMotifCompteur(getTypeAbsenceCourant().getIdRefTypeAbsence());
 		setListeMotifCompteur(listeMotifs);
 		if (getListeMotifCompteur().size() > 0) {
 			int[] tailles = { 30 };
@@ -309,34 +306,26 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 			dto.setTypeDemande(EnumTypeAbsence.RECUP.getCode());
 			afficheSolde(getTypeAbsenceCourant(), dto);
 			addZone(getNOM_ST_ACTION(), ACTION_CREATION_RECUP);
-		} else if (getTypeAbsenceCourant().getIdRefTypeAbsence().toString()
-				.equals(EnumTypeAbsence.REPOS_COMP.getCode().toString())) {
+		} else if (getTypeAbsenceCourant().getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.REPOS_COMP.getCode().toString())) {
 			dto.setTypeDemande(EnumTypeAbsence.REPOS_COMP.getCode());
 			afficheSolde(getTypeAbsenceCourant(), dto);
 			addZone(getNOM_RG_COMPTEUR(), getNOM_RB_COMPTEUR_ANNEE());
 			addZone(getNOM_ST_ACTION(), ACTION_CREATION_REPOS_COMP);
-		} else if (getTypeAbsenceCourant().getIdRefTypeAbsence().toString()
-				.equals(EnumTypeAbsence.ASA_A48.getCode().toString())
-				|| getTypeAbsenceCourant().getIdRefTypeAbsence().toString()
-						.equals(EnumTypeAbsence.ASA_A54.getCode().toString())
-				|| getTypeAbsenceCourant().getIdRefTypeAbsence().toString()
-						.equals(EnumTypeAbsence.ASA_A55.getCode().toString())
-				|| getTypeAbsenceCourant().getIdRefTypeAbsence().toString()
-						.equals(EnumTypeAbsence.ASA_A53.getCode().toString())
-				|| getTypeAbsenceCourant().getIdRefTypeAbsence().toString()
-						.equals(EnumTypeAbsence.ASA_A52.getCode().toString())) {
+		} else if (getTypeAbsenceCourant().getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.ASA_A48.getCode().toString())
+				|| getTypeAbsenceCourant().getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.ASA_A54.getCode().toString())
+				|| getTypeAbsenceCourant().getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.ASA_A55.getCode().toString())
+				|| getTypeAbsenceCourant().getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.ASA_A53.getCode().toString())
+				|| getTypeAbsenceCourant().getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.ASA_A52.getCode().toString())
+				|| getTypeAbsenceCourant().getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.ASA_AMICALE.getCode().toString())) {
 			addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 			setMessageInfo("La gestion de ce compteur se fait dans le menu Election / Saisie des compteurs.");
 
-		} else if (getTypeAbsenceCourant().getIdRefTypeAbsence().toString()
-				.equals(EnumTypeAbsence.ASA_A50.getCode().toString())
-				|| getTypeAbsenceCourant().getIdRefTypeAbsence().toString()
-						.equals(EnumTypeAbsence.ASA_A49.getCode().toString())) {
+		} else if (getTypeAbsenceCourant().getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.ASA_A50.getCode().toString())
+				|| getTypeAbsenceCourant().getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.ASA_A49.getCode().toString())) {
 			addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 			setMessageInfo("Ce type d'absence syndicale ne se gère pas par compteur.");
 
-		} else if (getTypeAbsenceCourant().getIdRefTypeAbsence().toString()
-				.equals(EnumTypeAbsence.CONGE.getCode().toString())) {
+		} else if (getTypeAbsenceCourant().getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.CONGE.getCode().toString())) {
 			dto.setTypeDemande(EnumTypeAbsence.CONGE.getCode());
 			afficheSolde(getTypeAbsenceCourant(), dto);
 			addZone(getNOM_RG_COMPTEUR(), getNOM_RB_COMPTEUR_ANNEE());
@@ -362,18 +351,15 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 		// si l'agent n'est pas contractuel ou convention collectives, alors il
 		// n'a pas le droit au repos compensateur
 
-		if (getTypeAbsenceCourant().getIdRefTypeAbsence().toString()
-				.equals(EnumTypeAbsence.REPOS_COMP.getCode().toString())) {
+		if (getTypeAbsenceCourant().getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.REPOS_COMP.getCode().toString())) {
 			if (!(carr.getCodeCategorie().equals("4") || carr.getCodeCategorie().equals("7"))) {
 				// "ERR802",
 				// "Cet agent n'est ni contractuel ni convention collective, il ne peut avoir de repos compensateur."
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR802"));
 				return false;
 			}
-		} else if (getTypeAbsenceCourant().getIdRefTypeAbsence().toString()
-				.equals(EnumTypeAbsence.CONGE.getCode().toString())) {
-			if (carr.getCodeCategorie().equals("9") || carr.getCodeCategorie().equals("10")
-					|| carr.getCodeCategorie().equals("11")) {
+		} else if (getTypeAbsenceCourant().getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.CONGE.getCode().toString())) {
+			if (carr.getCodeCategorie().equals("9") || carr.getCodeCategorie().equals("10") || carr.getCodeCategorie().equals("11")) {
 				// "ERR806",
 				// "Cet agent est adjoint, conseiller municipal ou maire, il ne peut avoir de congé annuel."
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR806"));
@@ -388,8 +374,7 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 
 		// Solde depuis SIRH-ABS-WS
 
-		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class)
-				.deepSerialize(dto);
+		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class).deepSerialize(dto);
 		SoldeDto soldeGlobal = absService.getSoldeAgent(getAgentCourant().getIdAgent(), json);
 
 		switch (typeAbsenceCourant.getIdRefTypeAbsence()) {
@@ -401,12 +386,10 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 				break;
 			case 2:
 				int soldeRecupAnnee = soldeGlobal.getSoldeReposCompAnnee().intValue();
-				String soldeRecupAnneeHeure = (soldeRecupAnnee / 60) == 0 ? Const.CHAINE_VIDE : soldeRecupAnnee / 60
-						+ "h ";
+				String soldeRecupAnneeHeure = (soldeRecupAnnee / 60) == 0 ? Const.CHAINE_VIDE : soldeRecupAnnee / 60 + "h ";
 				String soldeRecupAnneeMinute = soldeRecupAnnee % 60 + "m";
 				int soldeRecupAnneePrec = soldeGlobal.getSoldeReposCompAnneePrec().intValue();
-				String soldeRecupAnneePrecHeure = (soldeRecupAnneePrec / 60) == 0 ? Const.CHAINE_VIDE
-						: soldeRecupAnneePrec / 60 + "h ";
+				String soldeRecupAnneePrecHeure = (soldeRecupAnneePrec / 60) == 0 ? Const.CHAINE_VIDE : soldeRecupAnneePrec / 60 + "h ";
 				String soldeRecupAnneePrecMinute = soldeRecupAnneePrec % 60 + "m";
 				setSoldeCourantMinute(soldeRecupAnnee);
 				setSoldeCourantPrecMinute(soldeRecupAnneePrec);
@@ -467,26 +450,19 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 		// on sauvegarde les données
 		ReturnMessageDto message = new ReturnMessageDto();
 
-		if (getZone(getNOM_ST_ACTION()).equals(ACTION_CREATION_RECUP)
-				&& getTypeAbsenceCourant().getIdRefTypeAbsence().toString()
-						.equals(EnumTypeAbsence.RECUP.getCode().toString())) {
+		if (getZone(getNOM_ST_ACTION()).equals(ACTION_CREATION_RECUP) && getTypeAbsenceCourant().getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.RECUP.getCode().toString())) {
 			// on recupere la saisie
 			String dureeHeure = null;
 			String dureeMin = null;
 			boolean ajout = false;
-			if (!getVAL_ST_DUREE_HEURE_AJOUT().equals(Const.CHAINE_VIDE)
-					|| !getVAL_ST_DUREE_MIN_AJOUT().equals(Const.CHAINE_VIDE)) {
-				dureeHeure = getVAL_ST_DUREE_HEURE_AJOUT().equals(Const.CHAINE_VIDE) ? "0"
-						: getVAL_ST_DUREE_HEURE_AJOUT();
+			if (!getVAL_ST_DUREE_HEURE_AJOUT().equals(Const.CHAINE_VIDE) || !getVAL_ST_DUREE_MIN_AJOUT().equals(Const.CHAINE_VIDE)) {
+				dureeHeure = getVAL_ST_DUREE_HEURE_AJOUT().equals(Const.CHAINE_VIDE) ? "0" : getVAL_ST_DUREE_HEURE_AJOUT();
 				dureeMin = getVAL_ST_DUREE_MIN_AJOUT().equals(Const.CHAINE_VIDE) ? "0" : getVAL_ST_DUREE_MIN_AJOUT();
 				ajout = true;
 			}
-			if (!getVAL_ST_DUREE_HEURE_RETRAIT().equals(Const.CHAINE_VIDE)
-					|| !getVAL_ST_DUREE_MIN_RETRAIT().equals(Const.CHAINE_VIDE)) {
-				dureeHeure = getVAL_ST_DUREE_HEURE_RETRAIT().equals(Const.CHAINE_VIDE) ? "0"
-						: getVAL_ST_DUREE_HEURE_RETRAIT();
-				dureeMin = getVAL_ST_DUREE_MIN_RETRAIT().equals(Const.CHAINE_VIDE) ? "0"
-						: getVAL_ST_DUREE_MIN_RETRAIT();
+			if (!getVAL_ST_DUREE_HEURE_RETRAIT().equals(Const.CHAINE_VIDE) || !getVAL_ST_DUREE_MIN_RETRAIT().equals(Const.CHAINE_VIDE)) {
+				dureeHeure = getVAL_ST_DUREE_HEURE_RETRAIT().equals(Const.CHAINE_VIDE) ? "0" : getVAL_ST_DUREE_HEURE_RETRAIT();
+				dureeMin = getVAL_ST_DUREE_MIN_RETRAIT().equals(Const.CHAINE_VIDE) ? "0" : getVAL_ST_DUREE_MIN_RETRAIT();
 				ajout = false;
 			}
 
@@ -512,8 +488,7 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 			}
 
 			// motif
-			int indiceMotif = (Services.estNumerique(getVAL_LB_MOTIF_SELECT()) ? Integer
-					.parseInt(getVAL_LB_MOTIF_SELECT()) : -1);
+			int indiceMotif = (Services.estNumerique(getVAL_LB_MOTIF_SELECT()) ? Integer.parseInt(getVAL_LB_MOTIF_SELECT()) : -1);
 			MotifCompteurDto motif = null;
 			if (indiceMotif > 0) {
 				motif = getListeMotifCompteur().get(indiceMotif - 1);
@@ -529,29 +504,21 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 			compteurDto.setAnneePrecedente(false);
 
 			// on sauvegarde
-			message = absService.addCompteurRecup(agentConnecte.getIdAgent(), new JSONSerializer().exclude("*.class")
-					.serialize(compteurDto));
+			message = absService.addCompteurRecup(agentConnecte.getIdAgent(), new JSONSerializer().exclude("*.class").serialize(compteurDto));
 
-		} else if (getZone(getNOM_ST_ACTION()).equals(ACTION_CREATION_REPOS_COMP)
-				&& getTypeAbsenceCourant().getIdRefTypeAbsence().toString()
-						.equals(EnumTypeAbsence.REPOS_COMP.getCode().toString())) {
+		} else if (getZone(getNOM_ST_ACTION()).equals(ACTION_CREATION_REPOS_COMP) && getTypeAbsenceCourant().getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.REPOS_COMP.getCode().toString())) {
 			// on recupere la saisie
 			String dureeHeure = null;
 			String dureeMin = null;
 			boolean ajout = false;
-			if (!getVAL_ST_DUREE_HEURE_AJOUT().equals(Const.CHAINE_VIDE)
-					|| !getVAL_ST_DUREE_MIN_AJOUT().equals(Const.CHAINE_VIDE)) {
-				dureeHeure = getVAL_ST_DUREE_HEURE_AJOUT().equals(Const.CHAINE_VIDE) ? "0"
-						: getVAL_ST_DUREE_HEURE_AJOUT();
+			if (!getVAL_ST_DUREE_HEURE_AJOUT().equals(Const.CHAINE_VIDE) || !getVAL_ST_DUREE_MIN_AJOUT().equals(Const.CHAINE_VIDE)) {
+				dureeHeure = getVAL_ST_DUREE_HEURE_AJOUT().equals(Const.CHAINE_VIDE) ? "0" : getVAL_ST_DUREE_HEURE_AJOUT();
 				dureeMin = getVAL_ST_DUREE_MIN_AJOUT().equals(Const.CHAINE_VIDE) ? "0" : getVAL_ST_DUREE_MIN_AJOUT();
 				ajout = true;
 			}
-			if (!getVAL_ST_DUREE_HEURE_RETRAIT().equals(Const.CHAINE_VIDE)
-					|| !getVAL_ST_DUREE_MIN_RETRAIT().equals(Const.CHAINE_VIDE)) {
-				dureeHeure = getVAL_ST_DUREE_HEURE_RETRAIT().equals(Const.CHAINE_VIDE) ? "0"
-						: getVAL_ST_DUREE_HEURE_RETRAIT();
-				dureeMin = getVAL_ST_DUREE_MIN_RETRAIT().equals(Const.CHAINE_VIDE) ? "0"
-						: getVAL_ST_DUREE_MIN_RETRAIT();
+			if (!getVAL_ST_DUREE_HEURE_RETRAIT().equals(Const.CHAINE_VIDE) || !getVAL_ST_DUREE_MIN_RETRAIT().equals(Const.CHAINE_VIDE)) {
+				dureeHeure = getVAL_ST_DUREE_HEURE_RETRAIT().equals(Const.CHAINE_VIDE) ? "0" : getVAL_ST_DUREE_HEURE_RETRAIT();
+				dureeMin = getVAL_ST_DUREE_MIN_RETRAIT().equals(Const.CHAINE_VIDE) ? "0" : getVAL_ST_DUREE_MIN_RETRAIT();
 				ajout = false;
 			}
 
@@ -584,8 +551,7 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 			}
 
 			// motif
-			int indiceMotif = (Services.estNumerique(getVAL_LB_MOTIF_SELECT()) ? Integer
-					.parseInt(getVAL_LB_MOTIF_SELECT()) : -1);
+			int indiceMotif = (Services.estNumerique(getVAL_LB_MOTIF_SELECT()) ? Integer.parseInt(getVAL_LB_MOTIF_SELECT()) : -1);
 			MotifCompteurDto motif = null;
 			if (indiceMotif > 0) {
 				motif = getListeMotifCompteur().get(indiceMotif - 1);
@@ -601,12 +567,9 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 			compteurDto.setAnneePrecedente(anneePrec);
 
 			// on sauvegarde
-			message = absService.addCompteurReposComp(agentConnecte.getIdAgent(), new JSONSerializer().exclude("*.class")
-					.serialize(compteurDto));
+			message = absService.addCompteurReposComp(agentConnecte.getIdAgent(), new JSONSerializer().exclude("*.class").serialize(compteurDto));
 
-		} else if (getZone(getNOM_ST_ACTION()).equals(ACTION_CREATION_CONGE_ANNUEL)
-				&& getTypeAbsenceCourant().getIdRefTypeAbsence().toString()
-						.equals(EnumTypeAbsence.CONGE.getCode().toString())) {
+		} else if (getZone(getNOM_ST_ACTION()).equals(ACTION_CREATION_CONGE_ANNUEL) && getTypeAbsenceCourant().getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.CONGE.getCode().toString())) {
 			// on recupere la saisie
 			String dureeJour = null;
 			boolean ajout = false;
@@ -615,8 +578,7 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 				ajout = true;
 			}
 			if (!getVAL_ST_DUREE_JOUR_RETRAIT().equals(Const.CHAINE_VIDE)) {
-				dureeJour = getVAL_ST_DUREE_JOUR_RETRAIT().equals(Const.CHAINE_VIDE) ? "0"
-						: getVAL_ST_DUREE_JOUR_RETRAIT();
+				dureeJour = getVAL_ST_DUREE_JOUR_RETRAIT().equals(Const.CHAINE_VIDE) ? "0" : getVAL_ST_DUREE_JOUR_RETRAIT();
 				ajout = false;
 			}
 
@@ -649,8 +611,7 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 			}
 
 			// motif
-			int indiceMotif = (Services.estNumerique(getVAL_LB_MOTIF_SELECT()) ? Integer
-					.parseInt(getVAL_LB_MOTIF_SELECT()) : -1);
+			int indiceMotif = (Services.estNumerique(getVAL_LB_MOTIF_SELECT()) ? Integer.parseInt(getVAL_LB_MOTIF_SELECT()) : -1);
 			MotifCompteurDto motif = null;
 			if (indiceMotif > 0) {
 				motif = getListeMotifCompteur().get(indiceMotif - 1);
@@ -666,8 +627,7 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 			compteurDto.setAnneePrecedente(anneePrec);
 
 			// on sauvegarde
-			message = absService.addCompteurCongeAnnuel(agentConnecte.getIdAgent(),
-					new JSONSerializer().exclude("*.class").serialize(compteurDto));
+			message = absService.addCompteurCongeAnnuel(agentConnecte.getIdAgent(), new JSONSerializer().exclude("*.class").serialize(compteurDto));
 
 		}
 
@@ -679,8 +639,7 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 			getTransaction().declarerErreur("ERREUR : " + err);
 		} else {
 			// "INF010", "Le compteur @ a bien été mis a jour."
-			setStatut(STATUT_MEME_PROCESS, false,
-					MessageUtils.getMessage("INF010", getTypeAbsenceCourant().getLibelle()));
+			setStatut(STATUT_MEME_PROCESS, false, MessageUtils.getMessage("INF010", getTypeAbsenceCourant().getLibelle()));
 		}
 
 		// On nomme l'action
@@ -697,8 +656,7 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 			return null;
 		}
 		try {
-			agentConnecte = getAgentDao().chercherAgentParMatricule(
-					radiService.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
+			agentConnecte = getAgentDao().chercherAgentParMatricule(radiService.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
 		} catch (Exception e) {
 			return null;
 		}
@@ -708,8 +666,7 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 
 	private boolean performControlerChamps(HttpServletRequest request) {
 		// motif obligatoire
-		int indiceMotif = (Services.estNumerique(getVAL_LB_MOTIF_SELECT()) ? Integer.parseInt(getVAL_LB_MOTIF_SELECT())
-				: -1);
+		int indiceMotif = (Services.estNumerique(getVAL_LB_MOTIF_SELECT()) ? Integer.parseInt(getVAL_LB_MOTIF_SELECT()) : -1);
 		if (indiceMotif <= 0) {
 			// "ERR002", "La zone @ est obligatoire."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "motif"));
@@ -718,8 +675,7 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 
 		if (getVAL_ST_ACTION().equals(ACTION_CREATION_CONGE_ANNUEL)) {
 			// durée obligatoire (ajout ou retrait)
-			if (getVAL_ST_DUREE_JOUR_AJOUT().equals(Const.CHAINE_VIDE)
-					&& getVAL_ST_DUREE_JOUR_RETRAIT().equals(Const.CHAINE_VIDE)) {
+			if (getVAL_ST_DUREE_JOUR_AJOUT().equals(Const.CHAINE_VIDE) && getVAL_ST_DUREE_JOUR_RETRAIT().equals(Const.CHAINE_VIDE)) {
 				// "ERR002", "La zone @ est obligatoire."
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "durée"));
 				return false;
@@ -745,9 +701,7 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 		} else {
 
 			// durée obligatoire (ajout ou retrait)
-			if (getVAL_ST_DUREE_HEURE_AJOUT().equals(Const.CHAINE_VIDE)
-					&& getVAL_ST_DUREE_MIN_AJOUT().equals(Const.CHAINE_VIDE)
-					&& getVAL_ST_DUREE_HEURE_RETRAIT().equals(Const.CHAINE_VIDE)
+			if (getVAL_ST_DUREE_HEURE_AJOUT().equals(Const.CHAINE_VIDE) && getVAL_ST_DUREE_MIN_AJOUT().equals(Const.CHAINE_VIDE) && getVAL_ST_DUREE_HEURE_RETRAIT().equals(Const.CHAINE_VIDE)
 					&& getVAL_ST_DUREE_MIN_RETRAIT().equals(Const.CHAINE_VIDE)) {
 				// "ERR002", "La zone @ est obligatoire."
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "durée"));
@@ -756,14 +710,12 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 
 			// pas 2 durées de saisie
 			boolean ajoutSaisie = false;
-			if (!getVAL_ST_DUREE_HEURE_AJOUT().equals(Const.CHAINE_VIDE)
-					|| !getVAL_ST_DUREE_MIN_AJOUT().equals(Const.CHAINE_VIDE)) {
+			if (!getVAL_ST_DUREE_HEURE_AJOUT().equals(Const.CHAINE_VIDE) || !getVAL_ST_DUREE_MIN_AJOUT().equals(Const.CHAINE_VIDE)) {
 				ajoutSaisie = true;
 			}
 
 			boolean retraitSaisie = false;
-			if (!getVAL_ST_DUREE_HEURE_RETRAIT().equals(Const.CHAINE_VIDE)
-					|| !getVAL_ST_DUREE_MIN_RETRAIT().equals(Const.CHAINE_VIDE)) {
+			if (!getVAL_ST_DUREE_HEURE_RETRAIT().equals(Const.CHAINE_VIDE) || !getVAL_ST_DUREE_MIN_RETRAIT().equals(Const.CHAINE_VIDE)) {
 				retraitSaisie = true;
 			}
 

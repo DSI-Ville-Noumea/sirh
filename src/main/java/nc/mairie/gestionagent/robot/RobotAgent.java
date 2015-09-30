@@ -65,6 +65,7 @@ import nc.mairie.gestionagent.process.election.OeELECSaisieCompteurA52;
 import nc.mairie.gestionagent.process.election.OeELECSaisieCompteurA53;
 import nc.mairie.gestionagent.process.election.OeELECSaisieCompteurA54;
 import nc.mairie.gestionagent.process.election.OeELECSaisieCompteurA55;
+import nc.mairie.gestionagent.process.election.OeELECSaisieCompteurAmicale;
 import nc.mairie.gestionagent.process.organigramme.OeORGAGestion;
 import nc.mairie.gestionagent.process.parametre.OePARAMETRAGEAbsence;
 import nc.mairie.gestionagent.process.parametre.OePARAMETRAGEAbsenceCongesAnnuels;
@@ -294,6 +295,8 @@ public class RobotAgent extends Robot {
 			return new OeELECSaisieCompteurA54();
 		} else if (activite.equals("ELECSaisieCompteurA55")) {
 			return new OeELECSaisieCompteurA55();
+		} else if (activite.equals("ELECSaisieCompteurAmicale")) {
+			return new OeELECSaisieCompteurAmicale();
 		} else if (activite.equals("ELECSaisieCompteurA53")) {
 			return new OeELECSaisieCompteurA53();
 		} else if (activite.equals("ELECSaisieCompteurA52")) {
@@ -589,6 +592,10 @@ public class RobotAgent extends Robot {
 		navigation.put(
 				OeELECSaisieCompteurA55.class.getName() + OeELECSaisieCompteurA55.STATUT_RECHERCHER_AGENT_CREATE,
 				OeAGENTRecherche.class.getName());
+		// Classe OeELECSaisieCompteurAmicale
+		navigation.put(
+				OeELECSaisieCompteurAmicale.class.getName() + OeELECSaisieCompteurAmicale.STATUT_RECHERCHER_AGENT_CREATE,
+				OeAGENTRecherche.class.getName());
 
 		// ///////////////////
 		// PARAMETRES //
@@ -783,6 +790,8 @@ public class RobotAgent extends Robot {
 				OeAGENTRecherche.class.getName());
 		navigation.put(OeELECSaisieCompteurA55.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
 				OeAGENTRecherche.class.getName());
+		navigation.put(OeELECSaisieCompteurAmicale.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
+				OeELECSaisieCompteurAmicale.class.getName());
 		navigation.put(OeELECSaisieCompteurA53.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
 				OeAGENTRecherche.class.getName());
 		navigation.put(OeELECSaisieCompteurA52.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
