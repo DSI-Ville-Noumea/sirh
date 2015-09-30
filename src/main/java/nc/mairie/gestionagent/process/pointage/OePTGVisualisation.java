@@ -1445,7 +1445,7 @@ public class OePTGVisualisation extends BasicProcess {
 			ret[index][1] = formatHeure(p.getDebut()).equals("00:00") ? "&nbsp;" : formatHeure(p.getDebut());
 			ret[index][2] = formatHeure(p.getFin()).equals("00:00") ? "&nbsp;" : formatHeure(p.getFin());
 			ret[index][3] = Const.CHAINE_VIDE + p.getQuantite();
-			ret[index][4] = p.getMotif() + " - " + p.getCommentaire();
+			ret[index][4] = (null == p.getMotif() ? "" : p.getMotif()) + (null != p.getMotif() && null != p.getCommentaire() ? " - " : "") + (null == p.getCommentaire() ? "" : p.getCommentaire());
 			AgentDto opPtg = p.getOperateur();
 			ret[index][5] = opPtg.getNom() + " " + opPtg.getPrenom() + " ("
 					+ opPtg.getIdAgent().toString().substring(3, opPtg.getIdAgent().toString().length()) + ")";
