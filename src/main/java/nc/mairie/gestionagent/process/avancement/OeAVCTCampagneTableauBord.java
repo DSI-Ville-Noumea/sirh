@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.enums.EnumEtatEAE;
+import nc.mairie.metier.Const;
 import nc.mairie.metier.eae.CampagneEAE;
 import nc.mairie.metier.eae.EaeFichePoste;
 import nc.mairie.spring.dao.metier.EAE.CampagneEAEDao;
@@ -14,6 +15,8 @@ import nc.mairie.spring.dao.metier.EAE.EaeFichePosteDao;
 import nc.mairie.spring.dao.utils.EaeDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
+import nc.mairie.technique.FormateListe;
+import nc.mairie.technique.Services;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
@@ -40,6 +43,9 @@ public class OeAVCTCampagneTableauBord extends BasicProcess {
 	private EaeEvaluationDao eaeEvaluationDao;
 	private EaeFichePosteDao eaeFichePosteDao;
 
+	private ArrayList<String> listeAnnee;
+	private String[] LB_ANNEE;
+
 	private Logger logger = LoggerFactory.getLogger(OeAVCTCampagneTableauBord.class);
 
 	/**
@@ -64,6 +70,28 @@ public class OeAVCTCampagneTableauBord extends BasicProcess {
 		}
 
 		initialiseDao();
+
+		initialiseListeDeroulante();
+	}
+
+	private void initialiseListeDeroulante() throws Exception {
+		// Si liste annee vide alors affectation
+		if (getLB_ANNEE() == LBVide) {
+
+			ArrayList<CampagneEAE> listCampagne = getCampagneEAEDao().listerCampagneEAE();
+			int[] tailles = { 50 };
+			FormateListe aFormat = new FormateListe(tailles);
+			ArrayList<String> listannee = new ArrayList<String>();
+			for (CampagneEAE camp : listCampagne) {
+				listannee.add(camp.getAnnee().toString());
+				String ligne[] = { camp.getAnnee().toString() };
+				aFormat.ajouteLigne(ligne);
+			}
+			setListeAnnee(listannee);
+
+			setLB_ANNEE(aFormat.getListeFormatee(false));
+			addZone(getNOM_LB_ANNEE_SELECT(), Const.ZERO);
+		}
 	}
 
 	private void initialiseDao() {
@@ -143,15 +171,21 @@ public class OeAVCTCampagneTableauBord extends BasicProcess {
 	 * 
 	 */
 	public boolean performPB_CALCULER(HttpServletRequest request) throws Exception {
+
+		int numAnnee = (Services.estNumerique(getZone(getNOM_LB_ANNEE_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_ANNEE_SELECT())) : -1);
+
+		if (numAnnee < 0 || getListeAnnee().size() == 0 || numAnnee > getListeAnnee().size())
+			return false;
+
+		String annee = getListeAnnee().get(numAnnee);
 		// on commence le calcul pour la campagne en cours
 		// on cherche la campagne ou datefin est vide
 		setListeTableauBord(null);
 		// RG-EAE-24
 		try {
-			CampagneEAE campEnCours = getCampagneEAEDao().chercherCampagneEAEOuverte();
+			CampagneEAE campEnCours = getCampagneEAEDao().chercherCampagneEAEAnnee(new Integer(annee));
 			// on determine les section differentes
-			ArrayList<EaeFichePoste> listeDirectionSection = getEaeFichePosteDao()
-					.listerEaeFichePosteGrouperParDirectionSection(campEnCours.getIdCampagneEae());
+			ArrayList<EaeFichePoste> listeDirectionSection = getEaeFichePosteDao().listerEaeFichePosteGrouperParDirectionSection(campEnCours.getIdCampagneEae());
 			Integer nbNonAff = 0;
 			Integer nbNonDeb = 0;
 			Integer nbCree = 0;
@@ -169,46 +203,38 @@ public class OeAVCTCampagneTableauBord extends BasicProcess {
 				EaeFichePoste eaeFDP = listeDirectionSection.get(i);
 				// on cherche la liste des EAE pour cette direction et section
 				// et par etat
-				Integer nbEAENonAffecte = getEaeDao().compterEAEDirectionSectionEtat(campEnCours.getIdCampagneEae(),
-						eaeFDP.getDirectionService(), eaeFDP.getSectionService(), EnumEtatEAE.NON_AFFECTE.getCode());
+				Integer nbEAENonAffecte = getEaeDao().compterEAEDirectionSectionEtat(campEnCours.getIdCampagneEae(), eaeFDP.getDirectionService(), eaeFDP.getSectionService(),
+						EnumEtatEAE.NON_AFFECTE.getCode());
 				nbNonAff += nbEAENonAffecte;
-				Integer nbEAENonDebute = getEaeDao().compterEAEDirectionSectionEtat(campEnCours.getIdCampagneEae(),
-						eaeFDP.getDirectionService(), eaeFDP.getSectionService(), EnumEtatEAE.NON_DEBUTE.getCode());
+				Integer nbEAENonDebute = getEaeDao().compterEAEDirectionSectionEtat(campEnCours.getIdCampagneEae(), eaeFDP.getDirectionService(), eaeFDP.getSectionService(),
+						EnumEtatEAE.NON_DEBUTE.getCode());
 				nbNonDeb += nbEAENonDebute;
-				Integer nbEAECRee = getEaeDao().compterEAEDirectionSectionEtat(campEnCours.getIdCampagneEae(),
-						eaeFDP.getDirectionService(), eaeFDP.getSectionService(), EnumEtatEAE.CREE.getCode());
+				Integer nbEAECRee = getEaeDao().compterEAEDirectionSectionEtat(campEnCours.getIdCampagneEae(), eaeFDP.getDirectionService(), eaeFDP.getSectionService(), EnumEtatEAE.CREE.getCode());
 				nbCree += nbEAECRee;
-				Integer nbEAEEnCours = getEaeDao().compterEAEDirectionSectionEtat(campEnCours.getIdCampagneEae(),
-						eaeFDP.getDirectionService(), eaeFDP.getSectionService(), EnumEtatEAE.EN_COURS.getCode());
+				Integer nbEAEEnCours = getEaeDao().compterEAEDirectionSectionEtat(campEnCours.getIdCampagneEae(), eaeFDP.getDirectionService(), eaeFDP.getSectionService(),
+						EnumEtatEAE.EN_COURS.getCode());
 				nbEnCours += nbEAEEnCours;
-				Integer nbEAEFinalise = getEaeDao().compterEAEDirectionSectionEtat(campEnCours.getIdCampagneEae(),
-						eaeFDP.getDirectionService(), eaeFDP.getSectionService(), EnumEtatEAE.FINALISE.getCode());
+				Integer nbEAEFinalise = getEaeDao().compterEAEDirectionSectionEtat(campEnCours.getIdCampagneEae(), eaeFDP.getDirectionService(), eaeFDP.getSectionService(),
+						EnumEtatEAE.FINALISE.getCode());
 				nbFinalise += nbEAEFinalise;
-				Integer nbEAEControle = getEaeDao().compterEAEDirectionSectionEtat(campEnCours.getIdCampagneEae(),
-						eaeFDP.getDirectionService(), eaeFDP.getSectionService(), EnumEtatEAE.CONTROLE.getCode());
+				Integer nbEAEControle = getEaeDao().compterEAEDirectionSectionEtat(campEnCours.getIdCampagneEae(), eaeFDP.getDirectionService(), eaeFDP.getSectionService(),
+						EnumEtatEAE.CONTROLE.getCode());
 				nbControle += nbEAEControle;
-				Integer nbEAECAP = getEaeDao().compterEAEDirectionSectionCAP(campEnCours.getIdCampagneEae(),
-						eaeFDP.getDirectionService(), eaeFDP.getSectionService());
+				Integer nbEAECAP = getEaeDao().compterEAEDirectionSectionCAP(campEnCours.getIdCampagneEae(), eaeFDP.getDirectionService(), eaeFDP.getSectionService());
 				nbCAP += nbEAECAP;
-				Integer totalEAE = nbEAENonAffecte + nbEAENonDebute + nbEAECRee + nbEAEEnCours + nbEAEFinalise
-						+ nbEAEControle;
+				Integer totalEAE = nbEAENonAffecte + nbEAENonDebute + nbEAECRee + nbEAEEnCours + nbEAEFinalise + nbEAEControle;
 				nbTotalEae += totalEAE;
 
 				// on cherche les propositions d'avancement
-				Integer nbAvctNonDefini = getEaeEvaluationDao().compterAvisSHDNonDefini(campEnCours.getIdCampagneEae(),
-						eaeFDP.getDirectionService(), eaeFDP.getSectionService());
+				Integer nbAvctNonDefini = getEaeEvaluationDao().compterAvisSHDNonDefini(campEnCours.getIdCampagneEae(), eaeFDP.getDirectionService(), eaeFDP.getSectionService());
 				nbNonDef += nbAvctNonDefini;
-				Integer nbAvctMini = getEaeEvaluationDao().compterAvisSHDAvct(campEnCours.getIdCampagneEae(),
-						eaeFDP.getDirectionService(), eaeFDP.getSectionService(), "MINI");
+				Integer nbAvctMini = getEaeEvaluationDao().compterAvisSHDAvct(campEnCours.getIdCampagneEae(), eaeFDP.getDirectionService(), eaeFDP.getSectionService(), "MINI");
 				nbMini += nbAvctMini;
-				Integer nbAvctMoy = getEaeEvaluationDao().compterAvisSHDAvct(campEnCours.getIdCampagneEae(),
-						eaeFDP.getDirectionService(), eaeFDP.getSectionService(), "MOY");
+				Integer nbAvctMoy = getEaeEvaluationDao().compterAvisSHDAvct(campEnCours.getIdCampagneEae(), eaeFDP.getDirectionService(), eaeFDP.getSectionService(), "MOY");
 				nbMoy += nbAvctMoy;
-				Integer nbAvctMAxi = getEaeEvaluationDao().compterAvisSHDAvct(campEnCours.getIdCampagneEae(),
-						eaeFDP.getDirectionService(), eaeFDP.getSectionService(), "MAXI");
+				Integer nbAvctMAxi = getEaeEvaluationDao().compterAvisSHDAvct(campEnCours.getIdCampagneEae(), eaeFDP.getDirectionService(), eaeFDP.getSectionService(), "MAXI");
 				nbMaxi += nbAvctMAxi;
-				Integer nbAvctChangementClasse = getEaeEvaluationDao().compterAvisSHDChangementClasse(
-						campEnCours.getIdCampagneEae(), eaeFDP.getSectionService(), eaeFDP.getSectionService());
+				Integer nbAvctChangementClasse = getEaeEvaluationDao().compterAvisSHDChangementClasse(campEnCours.getIdCampagneEae(), eaeFDP.getSectionService(), eaeFDP.getSectionService());
 				nbChangementClasse += nbAvctChangementClasse;
 
 				addZone(getNOM_ST_DIRECTION(i), eaeFDP.getDirectionService());
@@ -226,8 +252,7 @@ public class OeAVCTCampagneTableauBord extends BasicProcess {
 				addZone(getNOM_ST_MINI(i), nbAvctMini == 0 ? "&nbsp;" : nbAvctMini.toString());
 				addZone(getNOM_ST_MOY(i), nbAvctMoy == 0 ? "&nbsp;" : nbAvctMoy.toString());
 				addZone(getNOM_ST_MAXI(i), nbAvctMAxi == 0 ? "&nbsp;" : nbAvctMAxi.toString());
-				addZone(getNOM_ST_CHANGEMENT_CLASSE(i),
-						nbAvctChangementClasse == 0 ? "&nbsp;" : nbAvctChangementClasse.toString());
+				addZone(getNOM_ST_CHANGEMENT_CLASSE(i), nbAvctChangementClasse == 0 ? "&nbsp;" : nbAvctChangementClasse.toString());
 
 			}
 			setListeTableauBord(listeDirectionSection);
@@ -559,5 +584,39 @@ public class OeAVCTCampagneTableauBord extends BasicProcess {
 
 	public void setEaeFichePosteDao(EaeFichePosteDao eaeFichePosteDao) {
 		this.eaeFichePosteDao = eaeFichePosteDao;
+	}
+
+	private String[] getLB_ANNEE() {
+		if (LB_ANNEE == null)
+			LB_ANNEE = initialiseLazyLB();
+		return LB_ANNEE;
+	}
+
+	private void setLB_ANNEE(String[] newLB_ANNEE) {
+		LB_ANNEE = newLB_ANNEE;
+	}
+
+	public String getNOM_LB_ANNEE() {
+		return "NOM_LB_ANNEE";
+	}
+
+	public String getNOM_LB_ANNEE_SELECT() {
+		return "NOM_LB_ANNEE_SELECT";
+	}
+
+	public String[] getVAL_LB_ANNEE() {
+		return getLB_ANNEE();
+	}
+
+	public String getVAL_LB_ANNEE_SELECT() {
+		return getZone(getNOM_LB_ANNEE_SELECT());
+	}
+
+	public ArrayList<String> getListeAnnee() {
+		return listeAnnee == null ? new ArrayList<String>() : listeAnnee;
+	}
+
+	public void setListeAnnee(ArrayList<String> listeAnnee) {
+		this.listeAnnee = listeAnnee;
 	}
 }

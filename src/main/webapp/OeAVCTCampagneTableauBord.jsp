@@ -42,6 +42,10 @@ document.formu.elements[nom].focus();
 		
 	    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
 		    <legend class="sigp2Legend">Calcul du tableau</legend>
+				<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_ANNEE() %>">
+					<%=process.forComboHTML(process.getVAL_LB_ANNEE(), process.getVAL_LB_ANNEE_SELECT()) %>
+				</SELECT>
+				<BR/>
 			<INPUT type="submit" class="sigp2-Bouton-100" value="Calculer" name="<%=process.getNOM_PB_CALCULER()%>">			
 		</FIELDSET>
 		
