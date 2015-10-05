@@ -2935,7 +2935,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		EntiteGeo eg = EntiteGeo.chercherEntiteGeo(getTransaction(), getFichePosteCourant().getIdEntiteGeo().toString());
 
 		addZone(getNOM_ST_DIRECTION(), direction == null ? Const.CHAINE_VIDE : direction.getLabel());
-		addZone(getNOM_ST_SERVICE(), division == null ? srv.getLabel() : division.getLabel());
+		addZone(getNOM_ST_SERVICE(), division == null ? srv == null ? Const.CHAINE_VIDE : srv.getLabel() : division.getLabel());
 		addZone(getNOM_ST_SUBDIVISION(), section == null ? Const.CHAINE_VIDE : section.getLabel());
 		addZone(getNOM_ST_NUM_FICHE_POSTE(), getFichePosteCourant().getNumFp());
 		addZone(getNOM_ST_TITRE_FP(), titreFichePoste);
