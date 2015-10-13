@@ -4,16 +4,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import nc.mairie.gestionagent.absence.dto.RefTypeSaisiCongeAnnuelDto;
 import nc.mairie.gestionagent.dto.AgentDto;
-import nc.mairie.gestionagent.dto.BaseHorairePointageDto;
 import nc.mairie.gestionagent.dto.DateAvctDto;
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
 
@@ -40,7 +37,6 @@ public class SirhWSConsumer implements ISirhWSConsumer {
 	@Qualifier("sirhWsBaseUrl")
 	private String sirhWsBaseUrl;
 
-	private static final String sirhBaseCongeUrl = "absences/baseHoraire";
 	private static final String sirhDateAvancementUrl = "calculEae/calculDateAvancement";
 	private static final String sirhConstruitArbreFDPUrl = "fichePostes/rebuildFichePosteTree";
 	private static final String sirhDeleteFDPUrl = "fichePostes/deleteFichePosteByIdFichePoste";
@@ -54,7 +50,6 @@ public class SirhWSConsumer implements ISirhWSConsumer {
 	private static final String sirhDownloadConvocationVisiteMedPUrl = "suiviMedical/downloadConvocationSIRH";
 	private static final String sirhDownloadLettreAccompagnementVisiteMedPUrl = "suiviMedical/downloadLettreAccompagnementSIRH";
 	private static final String sirhDownloadContratUrl = "contrat/downloadContratSIRH";
-	private static final String sirhBaseHorairePointageUrl = "pointages/baseHoraire";
 
 	// pour la gestion des droits
 	private static final String sirhAgentSubordonnesUrl = "agents/agentsSubordonnes";
@@ -127,20 +122,6 @@ public class SirhWSConsumer implements ISirhWSConsumer {
 		logger.trace("json recu:" + output);
 		result = new JSONDeserializer<T>().use(Date.class, new MSDateTransformer()).deserializeInto(output, result);
 		return result;
-	}
-
-	@Override
-	public RefTypeSaisiCongeAnnuelDto getBaseHoraireAbsence(Integer idAgent, Date date) {
-		SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd");
-		String url = String.format(sirhWsBaseUrl + sirhBaseCongeUrl);
-
-		Map<String, String> parameters = new HashMap<String, String>();
-		parameters.put("idAgent", String.valueOf(idAgent));
-		parameters.put("date", sf.format(date));
-
-		ClientResponse res = createAndFireRequest(parameters, url);
-
-		return readResponse(RefTypeSaisiCongeAnnuelDto.class, res, url);
 	}
 
 	@Override
@@ -317,20 +298,6 @@ public class SirhWSConsumer implements ISirhWSConsumer {
 		}
 
 		return reponseData;
-	}
-
-	@Override
-	public BaseHorairePointageDto getBaseHorairePointageAgent(Integer idAgent, Date date) {
-
-		SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd");
-		String url = String.format(sirhWsBaseUrl + sirhBaseHorairePointageUrl);
-
-		HashMap<String, String> params = new HashMap<>();
-		params.put("idAgent", idAgent.toString());
-		params.put("date", sf.format(date));
-
-		ClientResponse res = createAndFireRequest(params, url);
-		return readResponse(BaseHorairePointageDto.class, res, url);
 	}
 
 	@Override

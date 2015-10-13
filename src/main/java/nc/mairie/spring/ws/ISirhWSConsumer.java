@@ -1,17 +1,12 @@
 package nc.mairie.spring.ws;
 
-import java.util.Date;
 import java.util.List;
 
-import nc.mairie.gestionagent.absence.dto.RefTypeSaisiCongeAnnuelDto;
 import nc.mairie.gestionagent.dto.AgentDto;
-import nc.mairie.gestionagent.dto.BaseHorairePointageDto;
 import nc.mairie.gestionagent.dto.DateAvctDto;
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
 
 public interface ISirhWSConsumer {
-
-	RefTypeSaisiCongeAnnuelDto getBaseHoraireAbsence(Integer idAgent, Date date);
 
 	DateAvctDto getCalculDateAvct(Integer idAgent) throws Exception;
 
@@ -36,8 +31,6 @@ public interface ISirhWSConsumer {
 			throws Exception;
 
 	byte[] downloadContrat(Integer idAgent, Integer idContrat) throws Exception;
-
-	BaseHorairePointageDto getBaseHorairePointageAgent(Integer idAgent, Date date);
 
 	// pour la gestion des droits
 

@@ -1,10 +1,8 @@
 package nc.noumea.spring.service;
 
-import java.util.Date;
 import java.util.List;
 
 import nc.mairie.gestionagent.dto.AgentDto;
-import nc.mairie.gestionagent.dto.BaseHorairePointageDto;
 import nc.mairie.gestionagent.dto.DateAvctDto;
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
 import nc.mairie.spring.ws.ISirhWSConsumer;
@@ -60,11 +58,6 @@ public class SirhService implements ISirhService {
 	public byte[] downloadTableauAvancement(int idCap, int idCadreEmploi, boolean avisEAE, String format)
 			throws Exception {
 		return sirhConsumer.downloadTableauAvancement(idCap, idCadreEmploi, avisEAE, format);
-	}
-
-	@Override
-	public BaseHorairePointageDto getBaseHorairePointageAgent(Integer idAgent, Date dateLundi) {
-		return sirhConsumer.getBaseHorairePointageAgent(idAgent, dateLundi);
 	}
 
 	@Override

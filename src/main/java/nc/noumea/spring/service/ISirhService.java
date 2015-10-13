@@ -1,10 +1,8 @@
 package nc.noumea.spring.service;
 
-import java.util.Date;
 import java.util.List;
 
 import nc.mairie.gestionagent.dto.AgentDto;
-import nc.mairie.gestionagent.dto.BaseHorairePointageDto;
 import nc.mairie.gestionagent.dto.DateAvctDto;
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
 
@@ -28,8 +26,6 @@ public interface ISirhService {
 			throws Exception;
 
 	byte[] downloadTableauAvancement(int idCap, int idCadreEmploi, boolean avisEAE, String format) throws Exception;
-
-	BaseHorairePointageDto getBaseHorairePointageAgent(Integer idAgent, Date dateLundi);
 
 	boolean miseAJourArbreFDP();
 
