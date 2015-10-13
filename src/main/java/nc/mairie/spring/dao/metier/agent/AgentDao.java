@@ -144,12 +144,9 @@ public class AgentDao extends SirhDao implements AgentDaoInterface {
 	public ArrayList<Agent> listerAgentEntreDeuxIdAgent(Integer idAgentMin, Integer idAgentMax) throws Exception {
 		String sql = "select a.* from "
 				+ NOM_TABLE
-				+ " a inner join AFFECTATION aff on a."
-				+ CHAMP_ID
-				+ " = aff.id_agent where aff.date_debut_aff <=? and (aff.date_fin_aff is null or aff.date_fin_aff>=?) and a.id_agent between ?  and ? ";
+				+ " a where a.id_agent between ?  and ? ";
 
-		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { new Date(), new Date(),
-				idAgentMin, idAgentMax });
+		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { idAgentMin, idAgentMax });
 		return mapAgent(rows);
 	}
 
