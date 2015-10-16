@@ -1,8 +1,10 @@
 package nc.noumea.spring.service;
 
+import java.util.Date;
 import java.util.List;
 
 import nc.mairie.gestionagent.dto.AgentDto;
+import nc.mairie.gestionagent.dto.BaseHorairePointageDto;
 import nc.mairie.gestionagent.dto.DateAvctDto;
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
 import nc.mairie.spring.ws.ISirhWSConsumer;
@@ -73,6 +75,19 @@ public class SirhService implements ISirhService {
 	@Override
 	public ReturnMessageDto deleteFDP(Integer idFichePoste, Integer idAgent) {
 		return sirhConsumer.deleteFDP(idFichePoste, idAgent);
+	}
+
+	@Override
+	public BaseHorairePointageDto getBaseHorairePointageAgent(Integer idAgent, Date dateDebut) {
+		
+		
+		List<BaseHorairePointageDto> listBaseHorairePointageDto = sirhConsumer.getListBaseHorairePointageAgent(idAgent, dateDebut, dateDebut);
+		
+		if(null != listBaseHorairePointageDto
+				&& !listBaseHorairePointageDto.isEmpty()) {
+			return listBaseHorairePointageDto.get(0);
+		}
+		return null;
 	}
 
 }

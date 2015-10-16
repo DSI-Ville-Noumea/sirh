@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 import nc.mairie.gestionagent.dto.AgentDto;
+import nc.mairie.gestionagent.dto.BaseHorairePointageDto;
 import nc.mairie.gestionagent.dto.DateAvctDto;
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
 
@@ -50,6 +52,7 @@ public class SirhWSConsumer implements ISirhWSConsumer {
 	private static final String sirhDownloadConvocationVisiteMedPUrl = "suiviMedical/downloadConvocationSIRH";
 	private static final String sirhDownloadLettreAccompagnementVisiteMedPUrl = "suiviMedical/downloadLettreAccompagnementSIRH";
 	private static final String sirhDownloadContratUrl = "contrat/downloadContratSIRH";
+	private static final String sirhBaseHorairePointageUrl = "pointages/baseHoraire";
 
 	// pour la gestion des droits
 	private static final String sirhAgentSubordonnesUrl = "agents/agentsSubordonnes";
@@ -343,6 +346,26 @@ public class SirhWSConsumer implements ISirhWSConsumer {
 		logger.trace("json recu:" + output);
 		result = new JSONDeserializer<T>().use(Date.class, new MSDateTransformer()).deserializeInto(output, result);
 		return result;
+	}
+	
+	/**
+	 * Retourne la liste des bases horaires par rapport à la liste des affectations de l'agent 
+	 * triees par date de debut dans l ordre croissant
+	 */
+	@Override
+	public List<BaseHorairePointageDto> getListBaseHorairePointageAgent(Integer idAgent, Date dateDebut, Date dateFin) {
+		SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd");
+
+		String url = String.format(sirhWsBaseUrl + sirhBaseHorairePointageUrl);
+
+		Map<String, String> parameters = new HashMap<String, String>();
+		parameters.put("idAgent", String.valueOf(idAgent));
+		parameters.put("dateDebut", sf.format(dateDebut));
+		parameters.put("dateFin", sf.format(dateFin));
+
+		ClientResponse res = createAndFireRequest(parameters, url);
+
+		return readResponseAsList(BaseHorairePointageDto.class, res, url);
 	}
 
 }

@@ -15,6 +15,7 @@ import java.util.TimeZone;
 
 import javax.servlet.http.HttpServletRequest;
 
+import nc.mairie.gestionagent.dto.BaseHorairePointageDto;
 import nc.mairie.gestionagent.pointage.dto.VentilAbsenceDto;
 import nc.mairie.gestionagent.pointage.dto.VentilDateDto;
 import nc.mairie.gestionagent.pointage.dto.VentilHSupDto;
@@ -1011,5 +1012,10 @@ public class OePTGVentilationConvCol extends BasicProcess {
 
 	public void setShowAllVentilation(boolean showAllVentilation) {
 		this.showAllVentilation = showAllVentilation;
+	}
+
+	public double getWeekBase(Agent agent, Date dateLundi) throws Exception {
+		BaseHorairePointageDto dto = sirhService.getBaseHorairePointageAgent(agent.getIdAgent(), dateLundi);
+		return dto.getBaseLegale();
 	}
 }

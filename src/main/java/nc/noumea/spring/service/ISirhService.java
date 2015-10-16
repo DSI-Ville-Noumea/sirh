@@ -1,8 +1,10 @@
 package nc.noumea.spring.service;
 
+import java.util.Date;
 import java.util.List;
 
 import nc.mairie.gestionagent.dto.AgentDto;
+import nc.mairie.gestionagent.dto.BaseHorairePointageDto;
 import nc.mairie.gestionagent.dto.DateAvctDto;
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
 
@@ -32,4 +34,7 @@ public interface ISirhService {
 	List<AgentDto> getAgentsSubordonnes(Integer idAgent);
 
 	ReturnMessageDto deleteFDP(Integer idFichePoste, Integer idAgent);
+
+	BaseHorairePointageDto getBaseHorairePointageAgent(Integer idAgent,
+			Date dateDebut);
 }

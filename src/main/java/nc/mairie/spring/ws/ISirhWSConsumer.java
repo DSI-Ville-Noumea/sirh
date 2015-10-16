@@ -1,8 +1,10 @@
 package nc.mairie.spring.ws;
 
+import java.util.Date;
 import java.util.List;
 
 import nc.mairie.gestionagent.dto.AgentDto;
+import nc.mairie.gestionagent.dto.BaseHorairePointageDto;
 import nc.mairie.gestionagent.dto.DateAvctDto;
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
 
@@ -35,4 +37,7 @@ public interface ISirhWSConsumer {
 	// pour la gestion des droits
 
 	List<AgentDto> getAgentsSubordonnes(Integer idAgent);
+
+	List<BaseHorairePointageDto> getListBaseHorairePointageAgent(
+			Integer idAgent, Date dateDebut, Date dateFin);
 }
