@@ -521,6 +521,14 @@
 				<span class="sigp2" style="margin-left:20px;position:relative;width:150px;">Type avancement : </span>
 				<span class="sigp2-saisie"><%=process.getVAL_ST_TYPE_AVCT()%></span>
 			</div>
+			<% }else if(process.getVAL_ST_ACTION().equals(process.ACTION_AVCT_PREV_CC)){ %>
+			<div>
+				<span class="sigp2" style="margin-left:20px;position:relative;width:150px;">Montant prime: </span>
+				<span class="sigp2-saisie"><%=process.getVAL_ST_GRADE()%></span>
+				<BR/><BR/>
+				<span class="sigp2" style="margin-left:20px;position:relative;width:150px;">Date début prime : </span>
+				<span class="sigp2-saisie"><%=process.getVAL_EF_DATE_DEBUT()%></span>		
+			</div>
 		<%} %>
 			<BR/>
 			<div style="width:100%; text-align:center;">

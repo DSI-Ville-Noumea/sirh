@@ -25,6 +25,7 @@ import nc.mairie.technique.UserAppli;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
+import nc.noumea.spring.service.ISirhService;
 
 import org.springframework.context.ApplicationContext;
 
@@ -51,6 +52,7 @@ public class OeAVCTConvCol extends BasicProcess {
 	private HistoPrimeDao histoPrimeDao;
 	private AgentDao agentDao;
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+	private ISirhService sirhService;
 
 	private void initialiseDao() {
 		// on initialise le dao
@@ -64,6 +66,9 @@ public class OeAVCTConvCol extends BasicProcess {
 		}
 		if (getAgentDao() == null) {
 			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (null == sirhService) {
+			sirhService = (ISirhService) context.getBean("sirhService");
 		}
 	}
 
@@ -93,8 +98,7 @@ public class OeAVCTConvCol extends BasicProcess {
 
 		// Si liste avancements vide alors initialisation.
 		if (getListeAvct().size() == 0) {
-			int indiceAnnee = (Services.estNumerique(getVAL_LB_ANNEE_SELECT()) ? Integer
-					.parseInt(getVAL_LB_ANNEE_SELECT()) : -1);
+			int indiceAnnee = (Services.estNumerique(getVAL_LB_ANNEE_SELECT()) ? Integer.parseInt(getVAL_LB_ANNEE_SELECT()) : -1);
 			String annee = (String) getListeAnnee()[indiceAnnee];
 			setListeAvct(getAvancementConvColDao().listerAvancementConvColAvecAnnee(Integer.valueOf(annee)));
 
@@ -108,31 +112,25 @@ public class OeAVCTConvCol extends BasicProcess {
 				addZone(getNOM_ST_DIRECTION(i), av.getDirectionService() + " <br> " + av.getSectionService());
 				addZone(getNOM_ST_MATRICULE(i), agent.getNomatr().toString());
 				addZone(getNOM_ST_AGENT(i), agent.getNomAgent() + " <br> " + agent.getPrenomAgent());
-				addZone(getNOM_ST_DATE_EMBAUCHE(i),
-						av.getDateEmbauche() == null ? "&nbsp;" : sdf.format(av.getDateEmbauche()));
+				addZone(getNOM_ST_DATE_EMBAUCHE(i), av.getDateEmbauche() == null ? "&nbsp;" : sdf.format(av.getDateEmbauche()));
 				PositionAdm pa = PositionAdm.chercherPositionAdm(getTransaction(), av.getCodePa());
 				addZone(getNOM_ST_PA(i), pa.getLiPAdm());
 
-				addZone(getNOM_CK_VALID_DRH(i),
-						av.getEtat().equals(EnumEtatAvancement.TRAVAIL.getValue()) ? getCHECKED_OFF() : getCHECKED_ON());
+				addZone(getNOM_CK_VALID_DRH(i), av.getEtat().equals(EnumEtatAvancement.TRAVAIL.getValue()) ? getCHECKED_OFF() : getCHECKED_ON());
 				addZone(getNOM_ST_MOTIF_AVCT(i), "REVALORISATION");
-				addZone(getNOM_CK_PROJET_ARRETE(i), av.getEtat().equals(EnumEtatAvancement.TRAVAIL.getValue())
-						|| av.getEtat().equals(EnumEtatAvancement.SGC.getValue()) ? getCHECKED_OFF() : getCHECKED_ON());
+				addZone(getNOM_CK_PROJET_ARRETE(i), av.getEtat().equals(EnumEtatAvancement.TRAVAIL.getValue()) || av.getEtat().equals(EnumEtatAvancement.SGC.getValue()) ? getCHECKED_OFF()
+						: getCHECKED_ON());
 				addZone(getNOM_EF_NUM_ARRETE(i), av.getNumArrete());
-				addZone(getNOM_EF_DATE_ARRETE(i),
-						av.getDateArrete() == null ? Const.CHAINE_VIDE : sdf.format(av.getDateArrete()));
-				addZone(getNOM_CK_AFFECTER(i), av.getEtat().equals(EnumEtatAvancement.VALIDE.getValue())
-						|| av.getEtat().equals(EnumEtatAvancement.AFFECTE.getValue()) ? getCHECKED_ON()
+				addZone(getNOM_EF_DATE_ARRETE(i), av.getDateArrete() == null ? Const.CHAINE_VIDE : sdf.format(av.getDateArrete()));
+				addZone(getNOM_CK_AFFECTER(i), av.getEtat().equals(EnumEtatAvancement.VALIDE.getValue()) || av.getEtat().equals(EnumEtatAvancement.AFFECTE.getValue()) ? getCHECKED_ON()
 						: getCHECKED_OFF());
 				addZone(getNOM_ST_ETAT(i), av.getEtat());
 				addZone(getNOM_ST_CARRIERE_SIMU(i), av.getCarriereSimu() == null ? "&nbsp;" : av.getCarriereSimu());
 				addZone(getNOM_ST_MONTANT_PRIME(i),
 						(av.getMontantPrime1200() == null ? "&nbsp;" : av.getMontantPrime1200())
 								+ " <br> "
-								+ (av.getMontantPrime1200() == null
-										|| av.getMontantPrime1200().equals(Const.CHAINE_VIDE) ? "&nbsp;" : Integer
-										.valueOf(av.getMontantPrime1200()) == 30 ? "30" : String.valueOf(Integer
-										.valueOf(av.getMontantPrime1200()) + 1)));
+								+ (av.getMontantPrime1200() == null || av.getMontantPrime1200().equals(Const.CHAINE_VIDE) ? "&nbsp;" : Integer.valueOf(av.getMontantPrime1200()) == 30 ? "30" : String
+										.valueOf(Integer.valueOf(av.getMontantPrime1200()) + 1)));
 			}
 		}
 	}
@@ -258,8 +256,7 @@ public class OeAVCTConvCol extends BasicProcess {
 	 * 
 	 */
 	public boolean performPB_CHANGER_ANNEE(HttpServletRequest request) throws Exception {
-		int indiceAnnee = (Services.estNumerique(getVAL_LB_ANNEE_SELECT()) ? Integer.parseInt(getVAL_LB_ANNEE_SELECT())
-				: -1);
+		int indiceAnnee = (Services.estNumerique(getVAL_LB_ANNEE_SELECT()) ? Integer.parseInt(getVAL_LB_ANNEE_SELECT()) : -1);
 		String annee = (String) getListeAnnee()[indiceAnnee];
 		if (!annee.equals(getAnneeSelect())) {
 			setListeAvct(null);
@@ -300,30 +297,23 @@ public class OeAVCTConvCol extends BasicProcess {
 					// on crée une ligne de prime
 					Agent agent = getAgentDao().chercherAgent(avct.getIdAgent());
 
-					// on regarde si la prime existe deja ou pas
-					@SuppressWarnings("unused")
-					Prime primeExist = Prime.chercherPrime1200ByRubrAndDate(getTransaction(), agent.getNomatr(),
-							avct.getAnnee() + "0101");
-					if (getTransaction().isErreur()) {
-						getTransaction().traiterErreur();
-						avct.setCarriereSimu(null);
-					} else {
+					// on check la si prime saisie en simu
+					if (sirhService.isPrimeAvctConvColSimu(getTransaction(), agent, avct)) {
 						// c'est qu'il existe une prime pour cette date
 
 						// si ce n'est pas la derniere carriere du tableau ie :
 						// si datfin!=0
 						// on met l'agent dans une variable et on affiche cette
 						// liste a l'ecran
-						agentEnErreur += agent.getNomAgent() + " " + agent.getPrenomAgent() + " (" + agent.getNomatr()
-								+ "); ";
+						agentEnErreur += agent.getNomAgent() + " " + agent.getPrenomAgent() + " (" + agent.getNomatr() + "); ";
 						// on met un 'S' dans son avancement
 						avct.setCarriereSimu("S");
-						getAvancementConvColDao().modifierAvancementConvCol(avct.getIdAvct(), avct.getIdAgent(),
-								avct.getAnnee(), avct.getEtat(), avct.getNumArrete(), avct.getDateArrete(),
-								avct.getDateEmbauche(), avct.getGrade(), avct.getLibGrade(),
-								avct.getDirectionService(), avct.getSectionService(), avct.getCarriereSimu(),
-								avct.getMontantPrime1200(), avct.getCodePa());
+						getAvancementConvColDao().modifierAvancementConvCol(avct.getIdAvct(), avct.getIdAgent(), avct.getAnnee(), avct.getEtat(), avct.getNumArrete(), avct.getDateArrete(),
+								avct.getDateEmbauche(), avct.getGrade(), avct.getLibGrade(), avct.getDirectionService(), avct.getSectionService(), avct.getCarriereSimu(), avct.getMontantPrime1200(),
+								avct.getCodePa());
 						continue;
+					} else {
+						avct.setCarriereSimu(null);
 					}
 
 					// alors on fait les modifs sur avancement
@@ -331,19 +321,15 @@ public class OeAVCTConvCol extends BasicProcess {
 					addZone(getNOM_ST_ETAT(i), avct.getEtat());
 
 					// on traite le numero et la date d'arrete
-					avct.setDateArrete(getVAL_EF_DATE_ARRETE(i).equals(Const.CHAINE_VIDE) ? null : sdf
-							.parse(getVAL_EF_DATE_ARRETE(i)));
+					avct.setDateArrete(getVAL_EF_DATE_ARRETE(i).equals(Const.CHAINE_VIDE) ? null : sdf.parse(getVAL_EF_DATE_ARRETE(i)));
 					avct.setNumArrete(getVAL_EF_NUM_ARRETE(i));
-					getAvancementConvColDao().modifierAvancementConvCol(avct.getIdAvct(), avct.getIdAgent(),
-							avct.getAnnee(), avct.getEtat(), avct.getNumArrete(), avct.getDateArrete(),
-							avct.getDateEmbauche(), avct.getGrade(), avct.getLibGrade(), avct.getDirectionService(),
-							avct.getSectionService(), avct.getCarriereSimu(), avct.getMontantPrime1200(),
+					getAvancementConvColDao().modifierAvancementConvCol(avct.getIdAvct(), avct.getIdAgent(), avct.getAnnee(), avct.getEtat(), avct.getNumArrete(), avct.getDateArrete(),
+							avct.getDateEmbauche(), avct.getGrade(), avct.getLibGrade(), avct.getDirectionService(), avct.getSectionService(), avct.getCarriereSimu(), avct.getMontantPrime1200(),
 							avct.getCodePa());
 
 					// on recherche la derniere ligne de prime pour la rubrique
 					// 1200(prime anciennete)
-					Prime prime = Prime.chercherDernierePrimeOuverteAvecRubrique(getTransaction(), agent.getNomatr(),
-							"1200");
+					Prime prime = Prime.chercherDernierePrimeOuverteAvecRubrique(getTransaction(), agent.getNomatr(), "1200");
 					// si il y en a une alors on la ferme et on en crée une
 					// nouvelle
 					if (!getTransaction().isErreur()) {
@@ -356,18 +342,7 @@ public class OeAVCTConvCol extends BasicProcess {
 							getHistoPrimeDao().creerHistoPrime(histo, user, EnumTypeHisto.MODIFICATION);
 							prime.modifierPrime(getTransaction(), agent, user);
 
-							Prime newPrime = new Prime();
-							newPrime.setNoMatr(agent.getNomatr().toString());
-							if ((Integer.valueOf(prime.getMtPri()) + 1) > 30) {
-								newPrime.setMtPri("30");
-							} else {
-								newPrime.setMtPri(String.valueOf(Integer.valueOf(prime.getMtPri()) + 1));
-							}
-							newPrime.setDatDeb("01/01/" + avct.getAnnee());
-							newPrime.setDatFin(Const.ZERO);
-							newPrime.setRefArr(avct.getNumArrete());
-							newPrime.setDateArrete(sdf.format(avct.getDateArrete()));
-							newPrime.setNoRubr("1200");
+							Prime newPrime = sirhService.getNewPrimeConventionCollective(getTransaction(), agent, avct);
 							// RG_AG_PR_A04
 							HistoPrime histo2 = new HistoPrime(newPrime);
 							getHistoPrimeDao().creerHistoPrime(histo2, user, EnumTypeHisto.CREATION);
@@ -375,15 +350,7 @@ public class OeAVCTConvCol extends BasicProcess {
 						}
 					} else {
 						getTransaction().traiterErreur();
-
-						Prime newPrime = new Prime();
-						newPrime.setNoMatr(agent.getNomatr().toString());
-						newPrime.setMtPri("3");
-						newPrime.setDatDeb("01/01/" + avct.getAnnee());
-						newPrime.setDatFin(Const.ZERO);
-						newPrime.setRefArr(avct.getNumArrete());
-						newPrime.setDateArrete(sdf.format(avct.getDateArrete()));
-						newPrime.setNoRubr("1200");
+						Prime newPrime = sirhService.getNewPrimeConventionCollective(getTransaction(), agent, avct);
 						// RG_AG_PR_A04
 						HistoPrime histo2 = new HistoPrime(newPrime);
 						getHistoPrimeDao().creerHistoPrime(histo2, user, EnumTypeHisto.CREATION);
@@ -463,14 +430,12 @@ public class OeAVCTConvCol extends BasicProcess {
 					avct.setEtat(EnumEtatAvancement.TRAVAIL.getValue());
 				}
 				// on traite le numero et la date d'arrete
-				avct.setDateArrete(getVAL_EF_DATE_ARRETE(i).equals(Const.CHAINE_VIDE) ? null : sdf
-						.parse(getVAL_EF_DATE_ARRETE(i)));
+				avct.setDateArrete(getVAL_EF_DATE_ARRETE(i).equals(Const.CHAINE_VIDE) ? null : sdf.parse(getVAL_EF_DATE_ARRETE(i)));
 				avct.setNumArrete(getVAL_EF_NUM_ARRETE(i));
 			}
-			getAvancementConvColDao().modifierAvancementConvCol(avct.getIdAvct(), avct.getIdAgent(), avct.getAnnee(),
-					avct.getEtat(), avct.getNumArrete(), avct.getDateArrete(), avct.getDateEmbauche(), avct.getGrade(),
-					avct.getLibGrade(), avct.getDirectionService(), avct.getSectionService(), avct.getCarriereSimu(),
-					avct.getMontantPrime1200(), avct.getCodePa());
+			getAvancementConvColDao().modifierAvancementConvCol(avct.getIdAvct(), avct.getIdAgent(), avct.getAnnee(), avct.getEtat(), avct.getNumArrete(), avct.getDateArrete(),
+					avct.getDateEmbauche(), avct.getGrade(), avct.getLibGrade(), avct.getDirectionService(), avct.getSectionService(), avct.getCarriereSimu(), avct.getMontantPrime1200(),
+					avct.getCodePa());
 			if (getTransaction().isErreur())
 				return false;
 		}
