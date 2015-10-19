@@ -192,6 +192,28 @@ public class PtgService implements IPtgService {
 	public RefPrimeDto getPrimeDetailFromRefPrime(Integer idRefPrime) {
 		return ptgConsumer.getPrimeDetailFromRefPrime(idRefPrime);
 	}
+	
+	@Override
+	public RefPrimeDto getPrimeDetailFromRefPrimeOptimise(List<RefPrimeDto> listRefPrimeDto, Integer idRefPrime) {
+		
+		if(null != listRefPrimeDto
+				&& !listRefPrimeDto.isEmpty()) {
+			for(RefPrimeDto refPrimeDto : listRefPrimeDto) {
+				if(refPrimeDto.getIdRefPrime().equals(idRefPrime)) {
+					return refPrimeDto;
+				}
+			}
+		}
+		
+		RefPrimeDto dto = getPrimeDetailFromRefPrime(idRefPrime);
+		
+		if(null != listRefPrimeDto
+				&& null != dto) {
+			listRefPrimeDto.add(dto);
+		}
+		
+		return dto;
+	}
 
 	@Override
 	public boolean isVentilEnCours(String statut) {

@@ -105,4 +105,7 @@ public interface IPtgService {
 	List<VentilErreurDto> getErreursVentilation(String type);
 
 	ReturnMessageDto saveMotifHeureSup(String json);
+
+	RefPrimeDto getPrimeDetailFromRefPrimeOptimise(
+			List<RefPrimeDto> listRefPrimeDto, Integer idRefPrime);
 }

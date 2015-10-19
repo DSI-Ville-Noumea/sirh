@@ -57,8 +57,10 @@ public class OePTGVentilationUtils {
 				List<VentilPrimeDto> rep = ptgService.getVentilations(VentilPrimeDto.class, date, typePointage,
 						agentsJson, allVentilation);
 				sb.append("<tbody>");
+				
+				List<RefPrimeDto> listRefPrimeDto = new ArrayList<RefPrimeDto>();
 				for (VentilPrimeDto prime : rep) {
-					RefPrimeDto primeDetail = ptgService.getPrimeDetailFromRefPrime(prime.getIdRefPrime());
+					RefPrimeDto primeDetail = ptgService.getPrimeDetailFromRefPrimeOptimise(listRefPrimeDto, prime.getIdRefPrime());
 					agent = agentDao.chercherAgent(prime.getId_agent());
 					sb.append("<tr>");
 					sb.append("<td>" + agent.getNomatr() + "</td>");
