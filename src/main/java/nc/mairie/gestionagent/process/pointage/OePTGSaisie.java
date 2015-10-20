@@ -462,6 +462,7 @@ public class OePTGSaisie extends BasicProcess {
 		ret.setIdRefEtat(Integer.parseInt("0" + getZone("NOM_idrefetat_" + id)));
 		if (isAbsence) {
 			ret.setIdTypeAbsence(Integer.parseInt("0" + getZone("NOM_typeAbs_" + id)));
+			ret.setMotif(getZone("NOM_motif_" + id));
 		} else if (isHeureSup) {
 			ret.setChk(getZone("NOM_CK_RECUP_" + id));
 			ret.setChkRappelService(getZone("NOM_CK_RAPPEL_" + id));
