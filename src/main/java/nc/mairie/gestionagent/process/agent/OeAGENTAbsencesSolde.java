@@ -227,16 +227,16 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 		// Solde ASA A55
 		setAfficheSoldeAsaA55(soldeGlobal.isAfficheSoldeAsaA55());
 		if (soldeGlobal != null) {
-			String soldeAsaA55Heure = (soldeGlobal.getSoldeAsaA55() / 60) == 0 ? Const.CHAINE_VIDE : soldeGlobal.getSoldeAsaA55() / 60 + "h ";
-			String soldeAsaA55Minute = (soldeGlobal.getSoldeAsaA55() % 60) == 0 ? "&nbsp;" : soldeGlobal.getSoldeAsaA55() % 60 + "m";
+			String soldeAsaA55Heure = (soldeGlobal.getSoldeAsaA55().intValue() / 60) == 0 ? Const.CHAINE_VIDE : soldeGlobal.getSoldeAsaA55().intValue() / 60 + "h ";
+			String soldeAsaA55Minute = (soldeGlobal.getSoldeAsaA55().intValue() % 60) == 0 ? "&nbsp;" : soldeGlobal.getSoldeAsaA55().intValue() % 60 + "m";
 			addZone(getNOM_ST_SOLDE_ASA_A55(), soldeAsaA55Heure + soldeAsaA55Minute);
 		}
 
 		// Solde ASA AMICALE
 		setAfficheSoldeAsaAmicale(soldeGlobal.isAfficheSoldeAsaAmicale());
 		if (soldeGlobal != null) {
-			String soldeAsaAmicaleHeure = (soldeGlobal.getSoldeAsaAmicale() / 60) == 0 ? Const.CHAINE_VIDE : soldeGlobal.getSoldeAsaAmicale() / 60 + "h ";
-			String soldeAsaAmicaleMinute = (soldeGlobal.getSoldeAsaAmicale() % 60) == 0 ? "&nbsp;" : soldeGlobal.getSoldeAsaAmicale() % 60 + "m";
+			String soldeAsaAmicaleHeure = (soldeGlobal.getSoldeAsaAmicale().intValue() / 60) == 0 ? Const.CHAINE_VIDE : soldeGlobal.getSoldeAsaAmicale().intValue() / 60 + "h ";
+			String soldeAsaAmicaleMinute = (soldeGlobal.getSoldeAsaAmicale().intValue() % 60) == 0 ? "&nbsp;" : soldeGlobal.getSoldeAsaAmicale().intValue() % 60 + "m";
 			addZone(getNOM_ST_SOLDE_ASA_AMICALE(), soldeAsaAmicaleHeure + soldeAsaAmicaleMinute);
 		}
 
@@ -245,8 +245,8 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 		if (soldeGlobal != null) {
 			setOrganisationAgent(soldeGlobal.getOrganisationA52());
 
-			String soldeAsaA52Heure = (soldeGlobal.getSoldeAsaA52() / 60) == 0 ? Const.CHAINE_VIDE : soldeGlobal.getSoldeAsaA52() / 60 + "h ";
-			String soldeAsaA52Minute = (soldeGlobal.getSoldeAsaA52() % 60) == 0 ? "&nbsp;" : soldeGlobal.getSoldeAsaA52() % 60 + "m";
+			String soldeAsaA52Heure = (soldeGlobal.getSoldeAsaA52().intValue() / 60) == 0 ? Const.CHAINE_VIDE : soldeGlobal.getSoldeAsaA52().intValue() / 60 + "h ";
+			String soldeAsaA52Minute = (soldeGlobal.getSoldeAsaA52().intValue() % 60) == 0 ? "&nbsp;" : soldeGlobal.getSoldeAsaA52().intValue() % 60 + "m";
 			addZone(getNOM_ST_SOLDE_ASA_A52(), soldeAsaA52Heure + soldeAsaA52Minute);
 		}
 
@@ -255,8 +255,8 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 		for (int i = 0; i < getListeSoldeCongesExcep().size(); i++) {
 			SoldeSpecifiqueDto soldeSpecifiqueDto = getListeSoldeCongesExcep().get(i);
 			if ("minutes".equals(soldeSpecifiqueDto.getUniteDecompte())) {
-				String soldeCongesExcepHeure = "0".equals(df.format(soldeSpecifiqueDto.getSolde() / 60)) ? Const.CHAINE_VIDE : df.format(soldeSpecifiqueDto.getSolde() / 60) + "h ";
-				String soldeCongesExcepMinute = "0".equals(df.format(soldeSpecifiqueDto.getSolde() % 60)) ? "&nbsp;" : df.format(soldeSpecifiqueDto.getSolde() % 60) + "m";
+				String soldeCongesExcepHeure = "0".equals(df.format(soldeSpecifiqueDto.getSolde().intValue() / 60)) ? Const.CHAINE_VIDE : df.format(soldeSpecifiqueDto.getSolde().intValue() / 60) + "h ";
+				String soldeCongesExcepMinute = "0".equals(df.format(soldeSpecifiqueDto.getSolde().intValue() % 60)) ? "&nbsp;" : df.format(soldeSpecifiqueDto.getSolde().intValue() % 60) + "m";
 				addZone(getNOM_ST_SOLDE_CONGES_EXCEP(i), soldeCongesExcepHeure + soldeCongesExcepMinute);
 			}
 			if ("jours".equals(soldeSpecifiqueDto.getUniteDecompte())) {
