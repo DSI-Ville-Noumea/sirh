@@ -7,6 +7,8 @@ import nc.mairie.gestionagent.dto.AgentDto;
 import nc.mairie.gestionagent.dto.BaseHorairePointageDto;
 import nc.mairie.gestionagent.dto.DateAvctDto;
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
+import nc.mairie.gestionagent.eae.dto.AutreAdministrationAgentDto;
+import nc.mairie.gestionagent.eae.dto.CalculEaeInfosDto;
 import nc.mairie.metier.agent.Agent;
 import nc.mairie.metier.agent.Prime;
 import nc.mairie.metier.avancement.AvancementConvCol;
@@ -53,4 +55,8 @@ public interface ISirhService {
 	Prime getNewPrimeConventionCollective(Transaction aTransaction, Agent agent, AvancementConvCol avct) throws Exception;
 
 	boolean isPrimeAvctConvColSimu(Transaction aTransaction, Agent agent, AvancementConvCol avct) throws Exception;
+
+	CalculEaeInfosDto getDetailAffectationActiveByAgent(Integer idAgent, Integer anneeFormation);
+
+	List<AutreAdministrationAgentDto> getListeAutreAdministrationAgent(Integer idAgent);
 }

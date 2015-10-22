@@ -7,6 +7,8 @@ import nc.mairie.gestionagent.dto.AgentDto;
 import nc.mairie.gestionagent.dto.BaseHorairePointageDto;
 import nc.mairie.gestionagent.dto.DateAvctDto;
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
+import nc.mairie.gestionagent.eae.dto.AutreAdministrationAgentDto;
+import nc.mairie.gestionagent.eae.dto.CalculEaeInfosDto;
 
 public interface ISirhWSConsumer {
 
@@ -40,4 +42,8 @@ public interface ISirhWSConsumer {
 
 	List<BaseHorairePointageDto> getListBaseHorairePointageAgent(
 			Integer idAgent, Date dateDebut, Date dateFin);
+
+	CalculEaeInfosDto getDetailAffectationActiveByAgent(Integer idAgent, Integer anneeFormation);
+
+	List<AutreAdministrationAgentDto> getListeAutreAdministrationAgent(Integer idAgent);
 }

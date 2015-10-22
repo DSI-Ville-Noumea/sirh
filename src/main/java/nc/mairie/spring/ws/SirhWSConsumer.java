@@ -15,6 +15,8 @@ import nc.mairie.gestionagent.dto.AgentDto;
 import nc.mairie.gestionagent.dto.BaseHorairePointageDto;
 import nc.mairie.gestionagent.dto.DateAvctDto;
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
+import nc.mairie.gestionagent.eae.dto.AutreAdministrationAgentDto;
+import nc.mairie.gestionagent.eae.dto.CalculEaeInfosDto;
 
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -41,6 +43,8 @@ public class SirhWSConsumer implements ISirhWSConsumer {
 
 	private static final String sirhDateAvancementUrl = "calculEae/calculDateAvancement";
 	private static final String sirhConstruitArbreFDPUrl = "fichePostes/rebuildFichePosteTree";
+	private static final String sirhAffectationActiveByAgentUrl = "calculEae/affectationActiveByAgent";
+	private static final String sirhListeAutreAdministrationAgentUrl = "calculEae/listeAutreAdministrationAgent";
 	private static final String sirhDeleteFDPUrl = "fichePostes/deleteFichePosteByIdFichePoste";
 
 	// Pour les editions BIRT
@@ -89,14 +93,12 @@ public class SirhWSConsumer implements ISirhWSConsumer {
 		}
 
 		if (response.getStatus() != HttpStatus.OK.value()) {
-			throw new BaseWsConsumerException(String.format("An error occured when querying '%s'. Return code is : %s",
-					url, response.getStatus()));
+			throw new BaseWsConsumerException(String.format("An error occured when querying '%s'. Return code is : %s", url, response.getStatus()));
 		}
 
 		String output = response.getEntity(String.class);
 		logger.trace("json recu:" + output);
-		result = new JSONDeserializer<List<T>>().use(Date.class, new MSDateTransformer()).use(null, ArrayList.class)
-				.use("values", targetClass).deserialize(output);
+		result = new JSONDeserializer<List<T>>().use(Date.class, new MSDateTransformer()).use(null, ArrayList.class).use("values", targetClass).deserialize(output);
 		return result;
 	}
 
@@ -107,9 +109,7 @@ public class SirhWSConsumer implements ISirhWSConsumer {
 		try {
 			result = targetClass.newInstance();
 		} catch (Exception ex) {
-			throw new BaseWsConsumerException(
-					"An error occured when instantiating return type when deserializing JSON from SIRH ABS WS request.",
-					ex);
+			throw new BaseWsConsumerException("An error occured when instantiating return type when deserializing JSON from SIRH ABS WS request.", ex);
 		}
 
 		if (response.getStatus() == HttpStatus.NO_CONTENT.value()) {
@@ -117,8 +117,7 @@ public class SirhWSConsumer implements ISirhWSConsumer {
 		}
 
 		if (response.getStatus() != HttpStatus.OK.value()) {
-			throw new BaseWsConsumerException(String.format("An error occured when querying '%s'. Return code is : %s",
-					url, response.getStatus()));
+			throw new BaseWsConsumerException(String.format("An error occured when querying '%s'. Return code is : %s", url, response.getStatus()));
 		}
 
 		String output = response.getEntity(String.class);
@@ -166,12 +165,10 @@ public class SirhWSConsumer implements ISirhWSConsumer {
 	}
 
 	@Override
-	public byte[] downloadTableauAvancement(int idCap, int idCadreEmploi, boolean avisEAE, String format)
-			throws Exception {
+	public byte[] downloadTableauAvancement(int idCap, int idCadreEmploi, boolean avisEAE, String format) throws Exception {
 		String url = String.format(sirhWsBaseUrl + sirhDownloadTabAvctPUrl);
 
-		String urlWSTableauAvctCAP = url + "?idCap=" + idCap + "&idCadreEmploi=" + idCadreEmploi + "&avisEAE="
-				+ avisEAE;
+		String urlWSTableauAvctCAP = url + "?idCap=" + idCap + "&idCadreEmploi=" + idCadreEmploi + "&avisEAE=" + avisEAE;
 
 		Client client = Client.create();
 
@@ -183,11 +180,9 @@ public class SirhWSConsumer implements ISirhWSConsumer {
 	}
 
 	@Override
-	public byte[] downloadArrete(String csvAgents, boolean isChangementClasse, int anneeAvct, boolean isAffecte)
-			throws Exception {
+	public byte[] downloadArrete(String csvAgents, boolean isChangementClasse, int anneeAvct, boolean isAffecte) throws Exception {
 		String url = String.format(sirhWsBaseUrl + sirhDownloadArretesPUrl);
-		String urlWSArretes = url + "?isChangementClasse=" + isChangementClasse + "&csvIdAgents=" + csvAgents
-				+ "&annee=" + anneeAvct + "&isDetache=" + isAffecte;
+		String urlWSArretes = url + "?isChangementClasse=" + isChangementClasse + "&csvIdAgents=" + csvAgents + "&annee=" + anneeAvct + "&isDetache=" + isAffecte;
 
 		Client client = Client.create();
 
@@ -219,11 +214,9 @@ public class SirhWSConsumer implements ISirhWSConsumer {
 		String url = null;
 
 		if (typeDocument == null) {
-			url = String.format(sirhWsBaseUrl + sirhDownloadNoteServiceInterneSIRHPUrl + "?idAffectation="
-					+ idAffectation);
+			url = String.format(sirhWsBaseUrl + sirhDownloadNoteServiceInterneSIRHPUrl + "?idAffectation=" + idAffectation);
 		} else {
-			url = String.format(sirhWsBaseUrl + sirhDownloadNoteServiceSIRHPUrl + "?idAffectation=" + idAffectation
-					+ "&typeNoteService=" + typeDocument);
+			url = String.format(sirhWsBaseUrl + sirhDownloadNoteServiceSIRHPUrl + "?idAffectation=" + idAffectation + "&typeNoteService=" + typeDocument);
 		}
 
 		Client client = Client.create();
@@ -236,11 +229,9 @@ public class SirhWSConsumer implements ISirhWSConsumer {
 	}
 
 	@Override
-	public byte[] downloadConvocation(String csvIdSuiviMedical, String typePopulation, String mois, String annee)
-			throws Exception {
+	public byte[] downloadConvocation(String csvIdSuiviMedical, String typePopulation, String mois, String annee) throws Exception {
 		String url = String.format(sirhWsBaseUrl + sirhDownloadConvocationVisiteMedPUrl);
-		String urlWSConvocation = url + "?csvIdSuiviMedical=" + csvIdSuiviMedical + "&typePopulation=" + typePopulation
-				+ "&mois=" + mois + "&annee=" + annee;
+		String urlWSConvocation = url + "?csvIdSuiviMedical=" + csvIdSuiviMedical + "&typePopulation=" + typePopulation + "&mois=" + mois + "&annee=" + annee;
 
 		Client client = Client.create();
 
@@ -252,11 +243,9 @@ public class SirhWSConsumer implements ISirhWSConsumer {
 	}
 
 	@Override
-	public byte[] downloadAccompagnement(String csvIdSuiviMedical, String typePopulation, String mois, String annee)
-			throws Exception {
+	public byte[] downloadAccompagnement(String csvIdSuiviMedical, String typePopulation, String mois, String annee) throws Exception {
 		String url = String.format(sirhWsBaseUrl + sirhDownloadLettreAccompagnementVisiteMedPUrl);
-		String urlWSAccomp = url + "?csvIdSuiviMedical=" + csvIdSuiviMedical + "&typePopulation=" + typePopulation
-				+ "&mois=" + mois + "&annee=" + annee;
+		String urlWSAccomp = url + "?csvIdSuiviMedical=" + csvIdSuiviMedical + "&typePopulation=" + typePopulation + "&mois=" + mois + "&annee=" + annee;
 
 		Client client = Client.create();
 
@@ -330,8 +319,7 @@ public class SirhWSConsumer implements ISirhWSConsumer {
 		try {
 			result = targetClass.newInstance();
 		} catch (Exception ex) {
-			throw new BaseWsConsumerException(
-					"An error occured when instantiating return type when deserializing JSON from SIRH WS request.", ex);
+			throw new BaseWsConsumerException("An error occured when instantiating return type when deserializing JSON from SIRH WS request.", ex);
 		}
 
 		if (response.getStatus() == HttpStatus.NO_CONTENT.value()) {
@@ -347,10 +335,10 @@ public class SirhWSConsumer implements ISirhWSConsumer {
 		result = new JSONDeserializer<T>().use(Date.class, new MSDateTransformer()).deserializeInto(output, result);
 		return result;
 	}
-	
+
 	/**
-	 * Retourne la liste des bases horaires par rapport à la liste des affectations de l'agent 
-	 * triees par date de debut dans l ordre croissant
+	 * Retourne la liste des bases horaires par rapport à la liste des
+	 * affectations de l'agent triees par date de debut dans l ordre croissant
 	 */
 	@Override
 	public List<BaseHorairePointageDto> getListBaseHorairePointageAgent(Integer idAgent, Date dateDebut, Date dateFin) {
@@ -366,6 +354,30 @@ public class SirhWSConsumer implements ISirhWSConsumer {
 		ClientResponse res = createAndFireRequest(parameters, url);
 
 		return readResponseAsList(BaseHorairePointageDto.class, res, url);
+	}
+
+	@Override
+	public CalculEaeInfosDto getDetailAffectationActiveByAgent(Integer idAgent, Integer anneeFormation) {
+		String url = String.format(sirhWsBaseUrl + sirhAffectationActiveByAgentUrl);
+		Map<String, String> parameters = new HashMap<String, String>();
+		parameters.put("idAgent", String.valueOf(idAgent));
+		parameters.put("anneeFormation", String.valueOf(anneeFormation));
+
+		ClientResponse res = createAndFireRequest(parameters, url);
+
+		return readResponse(CalculEaeInfosDto.class, res, url);
+	}
+
+	@Override
+	public List<AutreAdministrationAgentDto> getListeAutreAdministrationAgent(Integer idAgent) {
+		String url = String.format(sirhWsBaseUrl + sirhListeAutreAdministrationAgentUrl);
+
+		Map<String, String> parameters = new HashMap<String, String>();
+		parameters.put("idAgent", String.valueOf(idAgent));
+
+		ClientResponse res = createAndFireRequest(parameters, url);
+
+		return readResponseAsList(AutreAdministrationAgentDto.class, res, url);
 	}
 
 }

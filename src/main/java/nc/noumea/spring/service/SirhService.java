@@ -10,6 +10,8 @@ import nc.mairie.gestionagent.dto.AgentDto;
 import nc.mairie.gestionagent.dto.BaseHorairePointageDto;
 import nc.mairie.gestionagent.dto.DateAvctDto;
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
+import nc.mairie.gestionagent.eae.dto.AutreAdministrationAgentDto;
+import nc.mairie.gestionagent.eae.dto.CalculEaeInfosDto;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.Agent;
 import nc.mairie.metier.agent.PositionAdmAgent;
@@ -315,20 +317,26 @@ public class SirhService implements ISirhService {
 		}
 		return newPrime;
 	}
-	
-
 
 	@Override
 	public BaseHorairePointageDto getBaseHorairePointageAgent(Integer idAgent, Date dateDebut) {
-		
-		
+
 		List<BaseHorairePointageDto> listBaseHorairePointageDto = sirhConsumer.getListBaseHorairePointageAgent(idAgent, dateDebut, dateDebut);
-		
-		if(null != listBaseHorairePointageDto
-				&& !listBaseHorairePointageDto.isEmpty()) {
+
+		if (null != listBaseHorairePointageDto && !listBaseHorairePointageDto.isEmpty()) {
 			return listBaseHorairePointageDto.get(0);
 		}
 		return null;
+	}
+
+	@Override
+	public CalculEaeInfosDto getDetailAffectationActiveByAgent(Integer idAgent, Integer anneeFormation) {
+		return sirhConsumer.getDetailAffectationActiveByAgent(idAgent, anneeFormation);
+	}
+
+	@Override
+	public List<AutreAdministrationAgentDto> getListeAutreAdministrationAgent(Integer idAgent) {
+		return sirhConsumer.getListeAutreAdministrationAgent(idAgent);
 	}
 
 }

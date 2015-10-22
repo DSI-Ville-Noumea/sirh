@@ -2,25 +2,27 @@ package nc.mairie.gestionagent.process.avancement;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.ListIterator;
 
 import javax.servlet.http.HttpServletRequest;
 
-import nc.mairie.connecteur.metier.Spmtsr;
 import nc.mairie.enums.EnumEtatAvancement;
 import nc.mairie.enums.EnumEtatEAE;
 import nc.mairie.enums.EnumTypeCompetence;
 import nc.mairie.gestionagent.dto.DateAvctDto;
 import nc.mairie.gestionagent.dto.KiosqueDto;
+import nc.mairie.gestionagent.eae.dto.AutreAdministrationAgentDto;
+import nc.mairie.gestionagent.eae.dto.CalculEaeInfosDto;
+import nc.mairie.gestionagent.eae.dto.ParcoursProDto;
 import nc.mairie.gestionagent.radi.dto.LightUserDto;
 import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.Agent;
 import nc.mairie.metier.agent.AutreAdministrationAgent;
 import nc.mairie.metier.agent.PositionAdmAgent;
-import nc.mairie.metier.agent.SISERV;
 import nc.mairie.metier.avancement.AvancementDetaches;
 import nc.mairie.metier.avancement.AvancementFonctionnaires;
 import nc.mairie.metier.carriere.Carriere;
@@ -58,7 +60,6 @@ import nc.mairie.metier.poste.FEFP;
 import nc.mairie.metier.poste.FicheEmploi;
 import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.poste.TitrePoste;
-import nc.mairie.metier.referentiel.AutreAdministration;
 import nc.mairie.metier.referentiel.TypeCompetence;
 import nc.mairie.spring.dao.metier.EAE.CampagneEAEDao;
 import nc.mairie.spring.dao.metier.EAE.EaeCampagneTaskDao;
@@ -117,7 +118,6 @@ import nc.noumea.spring.service.IAdsService;
 import nc.noumea.spring.service.IRadiService;
 import nc.noumea.spring.service.ISirhService;
 
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -1920,264 +1920,99 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	}
 
 	private void performCreerParcoursPro(HttpServletRequest request, Agent ag) throws Exception {
-		SimpleDateFormat sdfMairie = new SimpleDateFormat("yyyyMMdd");
-		// suite à la nouvelle gestion des services, on cherche d'abord dans
-		// l'affectation pour avoir une information exacte de service
-		Affectation derniereAff = null;
-		ArrayList<Affectation> listAff = getAffectationDao().listerAffectationAvecAgent(ag.getIdAgent());
-		if (listAff.size() > 0) {
-			derniereAff = listAff.get(0);
-		}
-		for (int i = 0; i < listAff.size(); i++) {
-			Affectation aff = listAff.get(i);
-			FichePoste fp = getFichePosteDao().chercherFichePoste(aff.getIdFichePoste());
-			EntiteDto serv = null;
-			EntiteDto direction = null;
-			if (fp == null || fp.getIdServiceAds() == null) {
-				if (fp.getIdServi() == null) {
-					continue;
-				} else {
-					SISERV siserv = getSiservDao().chercherSiserv(fp.getIdServi());
-					if (siserv != null && siserv.getServi() != null) {
-						serv = new EntiteDto();
-						serv.setLabel(siserv.getLiserv());
-						serv.setSigle(siserv.getSigle());
-					} else {
-						continue;
-					}
-				}
-			} else {
-				serv = adsService.getEntiteByIdEntite(fp.getIdServiceAds());
-				direction = adsService.getAffichageDirection(fp.getIdServiceAds());
-			}
+		// on fait appel à SIRH-WS : on se fiche de l'année car on ne recupere
+		// pas les formations encore
+		CampagneEAE eaeCampagne = getCampagneEAEDao().chercherCampagneEAEOuverte();
+		CalculEaeInfosDto affAgent = sirhService.getDetailAffectationActiveByAgent(ag.getIdAgent(), eaeCampagne.getAnnee() - 1);
 
-			if (serv == null && direction == null) {
-				continue;
-			}
+		List<ParcoursProDto> listParcoursPro = affAgent.getListParcoursPro();
+		if (null != listParcoursPro) {
+			for (int i = 0; i < listParcoursPro.size(); i++) {
 
-			if (aff.getDateFinAff() == null) {
-				// on crée une ligne pour affectation
+				ParcoursProDto ppDto = listParcoursPro.get(i);
+
 				EaeParcoursPro parcours = new EaeParcoursPro();
 				parcours.setIdEAE(getEaeCourant().getIdEae());
-				parcours.setDateDebut(aff.getDateDebutAff());
-				parcours.setDateFin(aff.getDateFinAff());
-				String lib = direction == null ? Const.CHAINE_VIDE : direction.getLabel();
-				lib += serv == null || serv.getLabel() == null ? Const.CHAINE_VIDE : " " + serv.getLabel();
-				parcours.setLibelleParcoursPro(lib);
-				getEaeParcoursProDao().creerParcoursPro(parcours.getIdEAE(), parcours.getDateDebut(), parcours.getDateFin(), parcours.getLibelleParcoursPro());
-			} else {
-				// on regarde si il y a des lignes suivantes
-				DateTime dateFin = new DateTime(aff.getDateFinAff());
-				Affectation affSuiv = getAffectationDao().chercherAffectationAgentAvecDateDebut(ag.getIdAgent(), dateFin.plusDays(1).toDate());
-				if (affSuiv == null) {
-					// on crée une ligne pour administration
-					EaeParcoursPro parcours = new EaeParcoursPro();
-					parcours.setIdEAE(getEaeCourant().getIdEae());
-					parcours.setDateDebut(aff.getDateDebutAff());
-					parcours.setDateFin(aff.getDateFinAff());
-					String lib = direction == null ? Const.CHAINE_VIDE : direction.getLabel();
-					lib += serv == null || serv.getLabel() == null ? Const.CHAINE_VIDE : " " + serv.getLabel();
-					parcours.setLibelleParcoursPro(lib);
-					getEaeParcoursProDao().creerParcoursPro(parcours.getIdEAE(), parcours.getDateDebut(), parcours.getDateFin(), parcours.getLibelleParcoursPro());
-				} else {
-					boolean fin = false;
-					DateTime dateSortie = null;
-					if (affSuiv.getDateFinAff() == null) {
-						dateSortie = new DateTime(aff.getDateFinAff());
-						fin = true;
-					} else {
-						dateSortie = new DateTime(affSuiv.getDateFinAff());
-					}
+				parcours.setDateDebut(ppDto.getDateDebut());
+				parcours.setLibelleParcoursPro(ppDto.getDirection() + " " + ppDto.getService());
 
-					while (!fin) {
-						affSuiv = getAffectationDao().chercherAffectationAgentAvecDateDebut(ag.getIdAgent(), dateSortie == null ? null : dateSortie.plusDays(1).toDate());
-						if (affSuiv == null) {
-							fin = true;
+				if (null != ppDto.getDateFin()) {
+					for (int j = i; j < listParcoursPro.size(); j++) {
+						// la liste de parcours pro est trie par date de debut
+						// croissante du cote de SIRH-WS
+						if (j + 1 < listParcoursPro.size() && null != listParcoursPro.get(j + 1).getDateDebut() && null != listParcoursPro.get(j).getDateFin()
+								&& ppDto.getService().equals(listParcoursPro.get(j + 1).getService())) {
+
+							Calendar cal = Calendar.getInstance();
+							cal.setTime(listParcoursPro.get(j).getDateFin());
+							cal.add(Calendar.DAY_OF_YEAR, 1);
+
+							if (listParcoursPro.get(j + 1).getDateDebut().equals(cal.getTime())) {
+								parcours.setDateFin(listParcoursPro.get(j + 1).getDateFin());
+								i = j + 1;
+							} else {
+								parcours.setDateFin(listParcoursPro.get(j).getDateFin());
+								break;
+							}
 						} else {
-							dateSortie = new DateTime(affSuiv.getDateFinAff());
+							parcours.setDateFin(listParcoursPro.get(j).getDateFin());
+							break;
 						}
 					}
-					// on crée la ligne
-					EaeParcoursPro parcours = new EaeParcoursPro();
-					parcours.setIdEAE(getEaeCourant().getIdEae());
-					parcours.setDateDebut(aff.getDateDebutAff());
-					parcours.setDateFin(dateSortie == null ? null : dateSortie.toDate());
-					String lib = direction == null ? Const.CHAINE_VIDE : direction.getLabel();
-					lib += serv == null || serv.getLabel() == null ? Const.CHAINE_VIDE : " " + serv.getLabel();
-					parcours.setLibelleParcoursPro(lib);
-					getEaeParcoursProDao().creerParcoursPro(parcours.getIdEAE(), parcours.getDateDebut(), parcours.getDateFin(), parcours.getLibelleParcoursPro());
-
 				}
-			}
-		}
-		// on cherche dans SPMTSR pour l'historique
-		ArrayList<Spmtsr> listSpmtsr = new ArrayList<Spmtsr>();
-		if (derniereAff == null) {
-			listSpmtsr = Spmtsr.listerSpmtsrAvecAgentOrderDateDeb(getTransaction(), ag);
-		} else {
-			listSpmtsr = Spmtsr.listerSpmtsrAvecAgentAPartirDateOrderDateDeb(getTransaction(), ag, new Integer(sdfMairie.format(derniereAff.getDateDebutAff())));
-		}
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-		for (int i = 0; i < listSpmtsr.size(); i++) {
-			Spmtsr sp = listSpmtsr.get(i);
-			EntiteDto serv = adsService.getEntiteByCodeServiceSISERV(sp.getServi());
-			EntiteDto direction = null;
-			if (serv != null && serv.getIdEntite() != null) {
-				direction = adsService.getAffichageDirection(serv.getIdEntite());
-			}
-
-			if (sp.getDatfin() == null || sp.getDatfin().equals(Const.ZERO) || sp.getDatfin().equals(Const.DATE_NULL)) {
-				// on crée une ligne pour affectation
-				EaeParcoursPro parcours = new EaeParcoursPro();
-				parcours.setIdEAE(getEaeCourant().getIdEae());
-				String anneeDateDebSpmtsr = sp.getDatdeb().substring(0, 4);
-				String moisDateDebSpmtsr = sp.getDatdeb().substring(4, 6);
-				String jourDateDebSpmtsr = sp.getDatdeb().substring(6, 8);
-				String dateDebSpmtsr = jourDateDebSpmtsr + "/" + moisDateDebSpmtsr + "/" + anneeDateDebSpmtsr;
-				parcours.setDateDebut(sdf.parse(dateDebSpmtsr));
-				Date dateFinSp = null;
-				if (sp.getDatfin() != null && !sp.getDatfin().equals(Const.ZERO) && !sp.getDatfin().equals(Const.DATE_NULL)) {
-					String anneeDateFinSpmtsr = sp.getDatfin().substring(0, 4);
-					String moisDateFinSpmtsr = sp.getDatfin().substring(4, 6);
-					String jourDateFinSpmtsr = sp.getDatfin().substring(6, 8);
-					String dateFinSpmtsr = jourDateFinSpmtsr + "/" + moisDateFinSpmtsr + "/" + anneeDateFinSpmtsr;
-					dateFinSp = sdf.parse(dateFinSpmtsr);
-				}
-				parcours.setDateFin(dateFinSp);
-				String lib = direction == null ? Const.CHAINE_VIDE : direction.getLabel();
-				lib += serv == null || serv.getLabel() == null ? Const.CHAINE_VIDE : " " + serv.getLabel();
-				parcours.setLibelleParcoursPro(lib);
 				getEaeParcoursProDao().creerParcoursPro(parcours.getIdEAE(), parcours.getDateDebut(), parcours.getDateFin(), parcours.getLibelleParcoursPro());
-			} else {
-				// on regarde si il y a des lignes suivantes
-				Spmtsr spSuiv = Spmtsr.chercherSpmtsrAvecAgentEtDateDebut(getTransaction(), ag.getNomatr(),
-						new Integer(sdfMairie.format(new DateTime(sdfMairie.parse(sp.getDatfin())).plusDays(1).toDate())));
-				if (getTransaction().isErreur()) {
-					getTransaction().traiterErreur();
-					// on crée une ligne pour administration
+			}
+		}
+		// CAS DES AUTRES ADMINISTRATIONS
+		// sur autre administration
+		List<AutreAdministrationAgentDto> listAutreAdmin = sirhService.getListeAutreAdministrationAgent(ag.getIdAgent());
+		ArrayList<EaeParcoursPro> listeEaeParcoursProExistant = getEaeParcoursProDao().listerEaeParcoursPro(getEaeCourant().getIdEae());
+
+		if (null != listAutreAdmin) {
+			for (int i = 0; i < listAutreAdmin.size(); i++) {
+				AutreAdministrationAgentDto admAgent = listAutreAdmin.get(i);
+
+				// mise en place de cette verification, car probleme d index
+				// unique rencontre
+				boolean isParcoursExistant = false;
+				for (EaeParcoursPro parcoursDejaCree : listeEaeParcoursProExistant) {
+					if (parcoursDejaCree.getDateDebut().equals(admAgent.getDateEntree())) {
+						isParcoursExistant = true;
+						break;
+					}
+				}
+
+				if (!isParcoursExistant) {
 					EaeParcoursPro parcours = new EaeParcoursPro();
 					parcours.setIdEAE(getEaeCourant().getIdEae());
-					String anneeDateDebSpmtsr = sp.getDatdeb().substring(0, 4);
-					String moisDateDebSpmtsr = sp.getDatdeb().substring(4, 6);
-					String jourDateDebSpmtsr = sp.getDatdeb().substring(6, 8);
-					String dateDebSpmtsr = jourDateDebSpmtsr + "/" + moisDateDebSpmtsr + "/" + anneeDateDebSpmtsr;
-					parcours.setDateDebut(sdf.parse(dateDebSpmtsr));
-					Date dateFinSp = null;
-					if (sp.getDatfin() != null && !sp.getDatfin().equals(Const.ZERO) && !sp.getDatfin().equals(Const.DATE_NULL)) {
-						String anneeDateFinSpmtsr = sp.getDatfin().substring(0, 4);
-						String moisDateFinSpmtsr = sp.getDatfin().substring(4, 6);
-						String jourDateFinSpmtsr = sp.getDatfin().substring(6, 8);
-						String dateFinSpmtsr = jourDateFinSpmtsr + "/" + moisDateFinSpmtsr + "/" + anneeDateFinSpmtsr;
-						dateFinSp = sdf.parse(dateFinSpmtsr);
-					}
-					parcours.setDateFin(dateFinSp);
-					String lib = direction == null ? Const.CHAINE_VIDE : direction.getLabel();
-					lib += serv == null || serv.getLabel() == null ? Const.CHAINE_VIDE : " " + serv.getLabel();
-					parcours.setLibelleParcoursPro(lib);
-					getEaeParcoursProDao().creerParcoursPro(parcours.getIdEAE(), parcours.getDateDebut(), parcours.getDateFin(), parcours.getLibelleParcoursPro());
-				} else {
-					boolean fin = false;
-					Integer dateSortie = null;
-					if (spSuiv.getDatfin() == null || spSuiv.getDatfin().equals(Const.ZERO) || spSuiv.getDatfin().equals(Const.DATE_NULL)) {
-						Integer dateFinSP = Integer.valueOf(sp.getDatfin());
-						String anneeDateDebSpmtsr = dateFinSP.toString().substring(0, 4);
-						String moisDateDebSpmtsr = dateFinSP.toString().substring(4, 6);
-						String jourDateDebSpmtsr = dateFinSP.toString().substring(6, 8);
-						String dateDebSpmtsr = anneeDateDebSpmtsr + moisDateDebSpmtsr + jourDateDebSpmtsr;
-						dateSortie = Integer.valueOf(dateDebSpmtsr);
-						fin = true;
-					} else {
-						Integer dateFinSP = Integer.valueOf(spSuiv.getDatdeb());
-						String anneeDateDebSpmtsr = dateFinSP.toString().substring(0, 4);
-						String moisDateDebSpmtsr = dateFinSP.toString().substring(4, 6);
-						String jourDateDebSpmtsr = dateFinSP.toString().substring(6, 8);
-						String dateDebSpmtsr = anneeDateDebSpmtsr + moisDateDebSpmtsr + jourDateDebSpmtsr;
-						dateSortie = Integer.valueOf(dateDebSpmtsr);
-					}
-					while (!fin) {
-						spSuiv = Spmtsr.chercherSpmtsrAvecAgentEtDateDebut(getTransaction(), ag.getNomatr(),
-								dateSortie == null ? 0 : new Integer(sdfMairie.format(new DateTime(sdfMairie.parse(dateSortie.toString())).plusDays(1).toDate())));
-						if (getTransaction().isErreur()) {
-							getTransaction().traiterErreur();
-							fin = true;
-						} else {
-							try {
-								Integer dateFinSP = Integer.valueOf(spSuiv.getDatfin());
-								String anneeDateDebSpmtsr = dateFinSP.toString().substring(0, 4);
-								String moisDateDebSpmtsr = dateFinSP.toString().substring(4, 6);
-								String jourDateDebSpmtsr = dateFinSP.toString().substring(6, 8);
-								String dateDebSpmtsr = anneeDateDebSpmtsr + moisDateDebSpmtsr + jourDateDebSpmtsr;
-								dateSortie = Integer.valueOf(dateDebSpmtsr);
-							} catch (Exception e) {
-								fin = true;
+					parcours.setDateDebut(admAgent.getDateEntree());
+					parcours.setLibelleParcoursPro(admAgent.getLibelleAdministration());
+
+					if (null != admAgent.getDateSortie()) {
+						for (int j = i; j < listAutreAdmin.size(); j++) {
+							// la liste de parcours pro est trie par date de
+							// debut croissante du cote de SIRH-WS
+							if (j + 1 < listAutreAdmin.size() && null != listAutreAdmin.get(j + 1).getDateEntree() && null != listAutreAdmin.get(j).getDateSortie()
+									&& admAgent.getLibelleAdministration().equals(listAutreAdmin.get(j + 1).getLibelleAdministration())) {
+
+								Calendar cal = Calendar.getInstance();
+								cal.setTime(listAutreAdmin.get(j).getDateSortie());
+								cal.add(Calendar.DAY_OF_YEAR, 1);
+
+								if (listAutreAdmin.get(j + 1).getDateEntree().equals(cal.getTime())) {
+									parcours.setDateFin(listAutreAdmin.get(j + 1).getDateSortie());
+									i = j + 1;
+								} else {
+									break;
+								}
+							} else {
+								break;
 							}
 						}
-					}
-					// on crée la ligne
-					EaeParcoursPro parcours = new EaeParcoursPro();
-					parcours.setIdEAE(getEaeCourant().getIdEae());
-					String anneeDateDebSpmtsr = sp.getDatdeb().substring(0, 4);
-					String moisDateDebSpmtsr = sp.getDatdeb().substring(4, 6);
-					String jourDateDebSpmtsr = sp.getDatdeb().substring(6, 8);
-					String dateDebSpmtsr = jourDateDebSpmtsr + "/" + moisDateDebSpmtsr + "/" + anneeDateDebSpmtsr;
-					parcours.setDateDebut(sdf.parse(dateDebSpmtsr));
-					Date dateFinale = null;
-					if (sp.getDatfin() != null && !sp.getDatfin().equals(Const.ZERO) && !sp.getDatfin().equals(Const.DATE_NULL)) {
-						dateFinale = sdfMairie.parse(sp.getDatfin());
+					} else {
+						parcours.setDateFin(admAgent.getDateSortie());
 					}
 
-					parcours.setDateFin(dateFinale);
-					String lib = direction == null ? Const.CHAINE_VIDE : direction.getLabel();
-					lib += serv == null || serv.getLabel() == null ? Const.CHAINE_VIDE : " " + serv.getLabel();
-					parcours.setLibelleParcoursPro(lib);
-					getEaeParcoursProDao().creerParcoursPro(parcours.getIdEAE(), parcours.getDateDebut(), parcours.getDateFin(), parcours.getLibelleParcoursPro());
-
-				}
-			}
-		}
-		// sur autre administration
-		ArrayList<AutreAdministrationAgent> listAutreAdmin = getAutreAdministrationAgentDao().listerAutreAdministrationAgentAvecAgent(ag.getIdAgent());
-		for (int i = 0; i < listAutreAdmin.size(); i++) {
-			AutreAdministrationAgent admAgent = listAutreAdmin.get(i);
-			AutreAdministration administration = getAutreAdministrationDao().chercherAutreAdministration(admAgent.getIdAutreAdmin());
-			if (admAgent.getDateSortie() == null) {
-				// on crée une ligne pour administration
-				EaeParcoursPro parcours = new EaeParcoursPro();
-				parcours.setIdEAE(getEaeCourant().getIdEae());
-				parcours.setDateDebut(admAgent.getDateEntree());
-				parcours.setDateFin(admAgent.getDateSortie());
-				parcours.setLibelleParcoursPro(administration.getLibAutreAdmin());
-				getEaeParcoursProDao().creerParcoursPro(parcours.getIdEAE(), parcours.getDateDebut(), parcours.getDateFin(), parcours.getLibelleParcoursPro());
-			} else {
-				// on regarde si il y a des lignes suivantes
-				try {
-					AutreAdministrationAgent admSuiv = getAutreAdministrationAgentDao().chercherAutreAdministrationAgentDateDebut(ag.getIdAgent(), admAgent.getDateSortie());
-
-					boolean fin = false;
-					Date dateSortie = admSuiv.getDateSortie();
-					while (!fin) {
-						try {
-							admSuiv = getAutreAdministrationAgentDao().chercherAutreAdministrationAgentDateDebut(ag.getIdAgent(), dateSortie);
-							dateSortie = admSuiv.getDateSortie();
-						} catch (Exception e) {
-							fin = true;
-						}
-					}
-					// on crée la ligne
-					EaeParcoursPro parcours = new EaeParcoursPro();
-					parcours.setIdEAE(getEaeCourant().getIdEae());
-					parcours.setDateDebut(admAgent.getDateEntree());
-					parcours.setDateFin(dateSortie);
-					parcours.setLibelleParcoursPro(administration.getLibAutreAdmin());
-					getEaeParcoursProDao().creerParcoursPro(parcours.getIdEAE(), parcours.getDateDebut(), parcours.getDateFin(), parcours.getLibelleParcoursPro());
-				} catch (Exception e) {
-
-					// on crée une ligne pour administration
-					EaeParcoursPro parcours = new EaeParcoursPro();
-					parcours.setIdEAE(getEaeCourant().getIdEae());
-					parcours.setDateDebut(admAgent.getDateEntree());
-					parcours.setDateFin(admAgent.getDateSortie());
-					parcours.setLibelleParcoursPro(administration.getLibAutreAdmin());
 					getEaeParcoursProDao().creerParcoursPro(parcours.getIdEAE(), parcours.getDateDebut(), parcours.getDateFin(), parcours.getLibelleParcoursPro());
 				}
 			}
