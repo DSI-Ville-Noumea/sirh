@@ -133,8 +133,13 @@ if (document.formu.elements[nom] != null)
           		<img border="0" src="images/suppression.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT()%>');">
           		<BR/><BR/><BR/>
 				<INPUT type="submit" value="Lancer" class="sigp2-Bouton-100" name="<%=process.getNOM_PB_LANCER()%>">
-			<INPUT type="submit" class="sigp2-Bouton-100" value="Afficher" name="<%=process.getNOM_PB_CHANGER_ANNEE()%>">
-				<BR>
+				<INPUT type="submit" class="sigp2-Bouton-100" value="Afficher" name="<%=process.getNOM_PB_CHANGER_ANNEE()%>">
+				<BR><BR>		
+				<% if (!process.agentEnErreur.equals("")){ %>
+					<span style="color: red;" class="sigp2Mandatory">Agents en anomalies : <%=process.agentEnErreur %></span>
+					<BR/><BR/>
+					<span style="color: red;" class="sigp2Mandatory">Pour ces agents, aucun avancement n'a pu être calculé.</span>
+				<%} %>
 			</FIELDSET>
 		 <FIELDSET class="sigp2Fieldset" style="text-align:left;">
 		    <legend class="sigp2Legend">Gestion des avancements des contractuels</legend>
@@ -252,11 +257,6 @@ if (document.formu.elements[nom] != null)
 					%>
 					</tbody>
 				</table>
-				<% if (!process.agentEnErreur.equals("")){ %>
-					<span style="color: red;" class="sigp2Mandatory">Agents en anomalies : <%=process.agentEnErreur %></span>
-					<BR/><BR/>
-					<span style="color: red;" class="sigp2Mandatory">Pour ces agents une ligne de carrière n'a pu être crée car il y avait déjà une carrière suivante de saisie. Merci de corriger manuellement les carrières de ces agents.</span>
-				<%} %>
 				<script type="text/javascript">
 					$(document).ready(function() {
 					    $('#tabAvctContr').dataTable({

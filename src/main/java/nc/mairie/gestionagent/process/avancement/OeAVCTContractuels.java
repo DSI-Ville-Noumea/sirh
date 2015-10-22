@@ -28,6 +28,7 @@ import nc.mairie.technique.UserAppli;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
+import nc.noumea.spring.service.IAvancementService;
 
 import org.springframework.context.ApplicationContext;
 
@@ -55,6 +56,7 @@ public class OeAVCTContractuels extends BasicProcess {
 	private FichePosteDao fichePosteDao;
 	private HistoCarriereDao histoCarriereDao;
 	private AgentDao agentDao;
+	private IAvancementService avctService;
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyy");
 
 	/**
@@ -149,6 +151,9 @@ public class OeAVCTContractuels extends BasicProcess {
 		}
 		if (getAgentDao() == null) {
 			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (null == avctService) {
+			avctService = (IAvancementService) context.getBean("avctService");
 		}
 	}
 
@@ -313,67 +318,61 @@ public class OeAVCTContractuels extends BasicProcess {
 			// affecté est cochée
 			if (!avct.getEtat().equals(EnumEtatAvancement.AFFECTE.getValue())) {
 				if (getVAL_CK_AFFECTER(i).equals(getCHECKED_ON())) {
-					// on recupere l'agent concerné
-					Agent agentCarr = getAgentDao().chercherAgent(avct.getIdAgent());
-					// on recupere la derniere carriere dans l'année
-					Carriere carr = Carriere.chercherDerniereCarriereAvecAgentEtAnnee(getTransaction(), agentCarr.getNomatr(), avct.getAnnee().toString());
-					// si la carriere est bien la derniere de la liste
-					String dateDebAvct = sdf.format(avct.getDateProchainGrade());
-					String dateDebCarr = carr.getDateDebut();
-					if ((carr.getDateFin() == null || carr.getDateFin().equals("0")) && !dateDebAvct.equals(dateDebCarr)) {
-						// alors on fait les modifs sur avancement
-						avct.setEtat(EnumEtatAvancement.AFFECTE.getValue());
-						addZone(getNOM_ST_ETAT(i), avct.getEtat());
-						// on traite le numero et la date d'arrete
-						avct.setDateArrete(getVAL_EF_DATE_ARRETE(i).equals(Const.CHAINE_VIDE) ? null : sdf.parse(getVAL_EF_DATE_ARRETE(i)));
-						avct.setNumArrete(getVAL_EF_NUM_ARRETE(i));
-						getAvancementContractuelsDao().modifierAvancementContractuels(avct.getIdAvct(), avct.getIdAgent(), avct.getDateEmbauche(), avct.getNumFp(), avct.getPa(), avct.getDateGrade(),
-								avct.getDateProchainGrade(), avct.getIban(), avct.getInm(), avct.getIna(), avct.getNouvIban(), avct.getNouvInm(), avct.getNouvIna(), avct.getEtat(),
-								avct.getDateArrete(), avct.getNumArrete(), avct.getCarriereSimu(), avct.getAnnee(), avct.getDirectionService(), avct.getSectionService(), avct.getCdcadr());
 
-						// on ferme cette carriere
-						carr.setDateFin(sdf.format(avct.getDateProchainGrade()));
-						// RG_AG_CA_A03
-						HistoCarriere histo = new HistoCarriere(carr);
-						getHistoCarriereDao().creerHistoCarriere(histo, user, EnumTypeHisto.MODIFICATION);
-						carr.modifierCarriere(getTransaction(), agentCarr, user);
+					// on crée une ligne de prime
+					Agent agent = getAgentDao().chercherAgent(avct.getIdAgent());
 
-						// on crée un nouvelle carriere
-						Carriere nouvelleCarriere = new Carriere();
-						nouvelleCarriere.setCodeCategorie(carr.getCodeCategorie());
-						nouvelleCarriere.setReferenceArrete(avct.getNumArrete().equals(Const.CHAINE_VIDE) ? Const.ZERO : avct.getNumArrete());
-						nouvelleCarriere.setDateArrete(avct.getDateArrete() == null ? Const.ZERO : sdf.format(avct.getDateArrete()));
-						nouvelleCarriere.setDateDebut(sdf.format(avct.getDateProchainGrade()));
-						nouvelleCarriere.setDateFin(Const.ZERO);
-						nouvelleCarriere.setIban(avct.getNouvIban());
-						// champ a remplir pour creer une carriere NB : on
-						// reprend ceux de la carriere precedente
-						nouvelleCarriere.setCodeBase(Const.CHAINE_VIDE);
-						nouvelleCarriere.setCodeTypeEmploi(carr.getCodeTypeEmploi());
-						nouvelleCarriere.setCodeGrade(carr.getCodeGrade());
-						nouvelleCarriere.setCodeBaseHoraire2(carr.getCodeBaseHoraire2());
-						nouvelleCarriere.setIdMotif(Const.ZERO);
-						nouvelleCarriere.setModeReglement(carr.getModeReglement());
-						nouvelleCarriere.setTypeContrat(carr.getTypeContrat());
+					Carriere carr = Carriere.chercherDerniereCarriereAvecAgentEtAnnee(getTransaction(), agent.getNomatr(), avct.getAnnee().toString());
+					// on check la si prime saisie en simu
+					if (avctService.isCarriereContractuelSimu(getTransaction(), agent, avct, carr)) {
+						// c'est qu'il existe une carriere pour cette date
 
-						// RG_AG_CA_A03
-						nouvelleCarriere.setNoMatricule(agentCarr.getNomatr().toString());
-						HistoCarriere histo2 = new HistoCarriere(nouvelleCarriere);
-						getHistoCarriereDao().creerHistoCarriere(histo2, user, EnumTypeHisto.CREATION);
-						nouvelleCarriere.creerCarriere(getTransaction(), agentCarr, user);
-
-						if (getTransaction().isErreur()) {
-							return false;
-						} else {
-							nbAgentAffectes += 1;
-						}
-					} else {
 						// si ce n'est pas la derniere carriere du tableau ie :
 						// si datfin!=0
 						// on met l'agent dans une variable et on affiche cette
 						// liste a l'ecran
-						agentEnErreur += agentCarr.getNomAgent() + " " + agentCarr.getPrenomAgent() + " (" + agentCarr.getNomatr() + "); ";
+						agentEnErreur += agent.getNomAgent() + " " + agent.getPrenomAgent() + " (" + agent.getNomatr() + "); ";
+						// on met un 'S' dans son avancement
+						avct.setCarriereSimu("S");
+						getAvancementContractuelsDao().modifierAvancementContractuels(avct.getIdAvct(), avct.getIdAgent(), avct.getDateEmbauche(), avct.getNumFp(), avct.getPa(), avct.getDateGrade(),
+								avct.getDateProchainGrade(), avct.getIban(), avct.getInm(), avct.getIna(), avct.getNouvIban(), avct.getNouvInm(), avct.getNouvIna(), avct.getEtat(),
+								avct.getDateArrete(), avct.getNumArrete(), avct.getCarriereSimu(), avct.getAnnee(), avct.getDirectionService(), avct.getSectionService(), avct.getCdcadr());
+						continue;
+					} else {
+						avct.setCarriereSimu(null);
 					}
+
+					// alors on fait les modifs sur avancement
+					avct.setEtat(EnumEtatAvancement.AFFECTE.getValue());
+					addZone(getNOM_ST_ETAT(i), avct.getEtat());
+					// on traite le numero et la date d'arrete
+					avct.setDateArrete(getVAL_EF_DATE_ARRETE(i).equals(Const.CHAINE_VIDE) ? null : sdf.parse(getVAL_EF_DATE_ARRETE(i)));
+					avct.setNumArrete(getVAL_EF_NUM_ARRETE(i));
+					getAvancementContractuelsDao().modifierAvancementContractuels(avct.getIdAvct(), avct.getIdAgent(), avct.getDateEmbauche(), avct.getNumFp(), avct.getPa(), avct.getDateGrade(),
+							avct.getDateProchainGrade(), avct.getIban(), avct.getInm(), avct.getIna(), avct.getNouvIban(), avct.getNouvInm(), avct.getNouvIna(), avct.getEtat(), avct.getDateArrete(),
+							avct.getNumArrete(), avct.getCarriereSimu(), avct.getAnnee(), avct.getDirectionService(), avct.getSectionService(), avct.getCdcadr());
+
+					// on ferme cette carriere
+					carr.setDateFin(sdf.format(avct.getDateProchainGrade()));
+					// RG_AG_CA_A03
+					HistoCarriere histo = new HistoCarriere(carr);
+					getHistoCarriereDao().creerHistoCarriere(histo, user, EnumTypeHisto.MODIFICATION);
+					carr.modifierCarriere(getTransaction(), agent, user);
+
+					Carriere nouvelleCarriere = avctService.getNewCarriereContractuel(getTransaction(), agent, avct, carr);
+
+					// RG_AG_CA_A03
+					nouvelleCarriere.setNoMatricule(agent.getNomatr().toString());
+					HistoCarriere histo2 = new HistoCarriere(nouvelleCarriere);
+					getHistoCarriereDao().creerHistoCarriere(histo2, user, EnumTypeHisto.CREATION);
+					nouvelleCarriere.creerCarriere(getTransaction(), agent, user);
+
+					if (getTransaction().isErreur()) {
+						return false;
+					} else {
+						nbAgentAffectes += 1;
+					}
+
 				}
 			}
 		}

@@ -2,24 +2,18 @@ package nc.mairie.gestionagent.process.avancement;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.enums.EnumEtatAvancement;
 import nc.mairie.enums.EnumTypeHisto;
+import nc.mairie.gestionagent.dto.ReturnMessageDto;
 import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.Agent;
-import nc.mairie.metier.agent.PositionAdm;
-import nc.mairie.metier.agent.PositionAdmAgent;
 import nc.mairie.metier.avancement.AvancementContractuels;
-import nc.mairie.metier.carriere.Bareme;
 import nc.mairie.metier.carriere.Carriere;
-import nc.mairie.metier.carriere.Grade;
-import nc.mairie.metier.carriere.GradeGenerique;
 import nc.mairie.metier.carriere.HistoCarriere;
-import nc.mairie.metier.poste.Affectation;
 import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.poste.TitrePoste;
 import nc.mairie.spring.dao.metier.agent.AgentDao;
@@ -31,14 +25,13 @@ import nc.mairie.spring.dao.metier.poste.TitrePosteDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
-import nc.mairie.technique.Services;
 import nc.mairie.technique.UserAppli;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
 import nc.mairie.utils.VariablesActivite;
-import nc.noumea.mairie.ads.dto.EntiteDto;
 import nc.noumea.spring.service.IAdsService;
+import nc.noumea.spring.service.IAvancementService;
 
 import org.springframework.context.ApplicationContext;
 
@@ -69,9 +62,10 @@ public class OeAVCTMasseSalarialeContractuel extends BasicProcess {
 	private HistoCarriereDao histoCarriereDao;
 	private AffectationDao affectationDao;
 	private AgentDao agentDao;
-	
+
 	private IAdsService adsService;
-	
+	private IAvancementService avctService;
+
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
 	/**
@@ -127,8 +121,11 @@ public class OeAVCTMasseSalarialeContractuel extends BasicProcess {
 		if (getAgentDao() == null) {
 			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
 		}
-		if(null == adsService) {
+		if (null == adsService) {
 			adsService = (IAdsService) context.getBean("adsService");
+		}
+		if (null == avctService) {
+			avctService = (IAvancementService) context.getBean("avctService");
 		}
 	}
 
@@ -144,9 +141,9 @@ public class OeAVCTMasseSalarialeContractuel extends BasicProcess {
 			addZone(getNOM_LB_ANNEE_SELECT(), Const.ZERO);
 		}
 	}
-	
+
 	public String getCurrentWholeTreeJS(String serviceSaisi) {
-		return adsService.getCurrentWholeTreeActifTransitoireJS(null !=serviceSaisi && !"".equals(serviceSaisi) ? serviceSaisi : null, false);
+		return adsService.getCurrentWholeTreeActifTransitoireJS(null != serviceSaisi && !"".equals(serviceSaisi) ? serviceSaisi : null, false);
 	}
 
 	/**
@@ -503,150 +500,32 @@ public class OeAVCTMasseSalarialeContractuel extends BasicProcess {
 	private boolean performCalculContractuel(String idServiceAds, String annee, Agent agent) throws Exception {
 		ArrayList<Agent> la = new ArrayList<Agent>();
 		if (agent != null) {
-			// il faut regarder si cet agent est de type Convention Collective
-			Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), agent);
-			if (getTransaction().isErreur()) {
-				getTransaction().traiterErreur();
-			}
-			if (carr == null || carr.getCodeCategorie() == null || !carr.getCodeCategorie().equals("4")) {
-				// "ERR181",
-				// "Cet agent n'est pas de type @. Il ne peut pas être soumis a l'avancement @."
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR181", "contractuel", "des contractuels"));
+			ReturnMessageDto result = avctService.isAvancementContractuel(getTransaction(), agent);
+			if (result.getErrors().size() > 0) {
+				String erreur = Const.CHAINE_VIDE;
+				for (String err : result.getErrors()) {
+					erreur += err;
+				}
+				getTransaction().declarerErreur(erreur);
 				return false;
 			}
 			la.add(agent);
 		} else {
-			List<Integer> listeSousService = null;
-			if (!idServiceAds.equals(Const.CHAINE_VIDE)) {
-				listeSousService = adsService.getListIdsEntiteWithEnfantsOfEntite(new Integer(idServiceAds));
-			}
-
-			// Récupération des agents
-			ArrayList<Carriere> listeCarriereActive = Carriere.listerCarriereActive(getTransaction(), annee,
-					"Contractuel");
-			String listeNomatrAgent = Const.CHAINE_VIDE;
-			for (Carriere carr : listeCarriereActive) {
-				listeNomatrAgent += carr.getNoMatricule() + ",";
-			}
-			if (!listeNomatrAgent.equals(Const.CHAINE_VIDE)) {
-				listeNomatrAgent = listeNomatrAgent.substring(0, listeNomatrAgent.length() - 1);
-			}
-			la = getAgentDao().listerAgentEligibleAvct(listeSousService, listeNomatrAgent);
+			la = (ArrayList<Agent>) avctService.listAgentAvctContractuel(getTransaction(), idServiceAds, annee, adsService, getAgentDao());
 		}
 
 		// Parcours des agents
 		for (Agent a : la) {
-			// Recuperation de la carriere en cours
-			Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), a);
-			if (getTransaction().isErreur() || carr == null || carr.getDateDebut() == null) {
-				getTransaction().traiterErreur();
+			AvancementContractuels avct = avctService.calculAvancementContractuel(getTransaction(), a, annee, adsService, getFichePosteDao(), getAffectationDao(), false);
+			if (avct == null) {
+				// on informe les agents en erreur
+				agentEnErreur += a.getNomAgent() + " " + a.getPrenomAgent() + " (" + a.getNomatr() + "); ";
+				continue;
+			} else if (avct.getIdAgent() == null) {
+				// l'agent n'a pas 3 ans d'ancienneté
 				continue;
 			}
-
-			PositionAdmAgent paAgent = PositionAdmAgent.chercherPositionAdmAgentDateComprise(getTransaction(),
-					a.getNomatr(),
-					Services.formateDateInternationale(Services.dateDuJour()).replace("-", Const.CHAINE_VIDE));
-			if (getTransaction().isErreur() || paAgent == null || paAgent.getCdpadm() == null
-					|| paAgent.estPAInactive(getTransaction())) {
-				getTransaction().traiterErreur();
-				continue;
-			}
-			// Récupération du CDCADR de SPGRADN
-			// Grade grade = Grade.chercherGrade(getTransaction(),
-			// carr.getCodeGrade());
-			// L'agent doit avoir la date début de la nouvelle carriere comprise
-			// dans l'année d'avancement
-			if (Services.compareDates(Services.ajouteAnnee(Services.formateDate(carr.getDateDebut()), 2), "01/01/"
-					+ annee) >= 0
-					&& Services.compareDates(Services.ajouteAnnee(Services.formateDate(carr.getDateDebut()), 2),
-							"31/12/" + annee) <= 0) {
-				// Récupération de l'avancement
-				try {
-					@SuppressWarnings("unused")
-					AvancementContractuels avct = getAvancementContractuelsDao()
-							.chercherAvancementContractuelsAvecAnneeEtAgent(Integer.valueOf(annee), a.getIdAgent());
-				} catch (Exception e) {
-					// Création de l'avancement
-					AvancementContractuels avct = new AvancementContractuels();
-					avct.setIdAgent(a.getIdAgent());
-					avct.setDateEmbauche(a.getDateDerniereEmbauche());
-					avct.setAnnee(Integer.valueOf(annee));
-					avct.setEtat(EnumEtatAvancement.TRAVAIL.getValue());
-
-					PositionAdm pa = PositionAdm.chercherPositionAdm(getTransaction(), paAgent.getCdpadm());
-					avct.setPa(pa.getLiPAdm());
-
-					// on recupere le grade du poste
-					Affectation aff = null;
-					try {
-						aff = getAffectationDao().chercherAffectationActiveAvecAgent(a.getIdAgent());
-					} catch (Exception e2) {
-						continue;
-					}
-					if (aff == null || aff.getIdFichePoste() == null) {
-						continue;
-					}
-					FichePoste fp = getFichePosteDao().chercherFichePoste(aff.getIdFichePoste());
-
-					avct.setNumFp(fp.getNumFp());
-					// on cherche a quelle categorie appartient l'agent
-					// (A,B,A+..;)
-					Grade g = Grade.chercherGrade(getTransaction(), fp.getCodeGrade());
-					GradeGenerique gg = GradeGenerique.chercherGradeGenerique(getTransaction(),
-							g.getCodeGradeGenerique());
-					if (getTransaction().isErreur()) {
-						getTransaction().traiterErreur();
-					}
-					// on recupere les points pour cette categorie (A,B,A+..)
-					if (gg.getCodCadre() == null || gg.getCodCadre().equals(Const.CHAINE_VIDE)) {
-						continue;
-					}
-
-					Bareme bareme = Bareme.chercherBareme(getTransaction(), carr.getIban());
-					avct.setCdcadr(gg.getCodCadre());
-					// on calcul le nouvel INM
-					String nouvINM = String.valueOf(Integer.valueOf(bareme.getInm())
-							+ Integer.valueOf(gg.getNbPointsAvct()));
-					// avec ce nouvel INM on recupere l'iban et l'ina
-					// correspondant
-					Bareme nouvBareme = (Bareme) Bareme.listerBaremeByINM(getTransaction(), nouvINM).get(0);
-
-					// on rempli les champs
-					avct.setNouvIban(nouvBareme.getIban());
-					avct.setNouvInm(Integer.valueOf(nouvBareme.getInm()));
-					avct.setNouvIna(Integer.valueOf(nouvBareme.getIna()));
-					avct.setDateProchainGrade(sdf.parse(Services.ajouteAnnee(Services.formateDate(carr.getDateDebut()),
-							2)));
-
-					avct.setDateArrete(sdf.parse("01/01/" + annee));
-					avct.setNumArrete(annee);
-
-					EntiteDto direction = adsService.getAffichageDirection(fp.getIdServiceAds());
-					EntiteDto section = adsService.getAffichageSection(fp.getIdServiceAds());
-
-					avct.setDirectionService(direction == null ? Const.CHAINE_VIDE : direction.getSigle());
-					avct.setSectionService(section == null ? Const.CHAINE_VIDE : section.getSigle());
-					avct.setDateGrade(sdf.parse(carr.getDateDebut()));
-					avct.setIban(carr.getIban());
-					avct.setInm(Integer.valueOf(bareme.getInm()));
-					avct.setIna(Integer.valueOf(bareme.getIna()));
-
-					// on regarde si l'agent a une carriere de simulation deja
-					// saisie
-					// autrement dis si la carriere actuelle a pour datfin 0
-					if (carr.getDateFin() == null || carr.getDateFin().equals(Const.ZERO)) {
-						avct.setCarriereSimu(null);
-					} else {
-						avct.setCarriereSimu("S");
-					}
-					getAvancementContractuelsDao().creerAvancementContractuels(avct.getIdAgent(),
-							avct.getDateEmbauche(), avct.getNumFp(), avct.getPa(), avct.getDateGrade(),
-							avct.getDateProchainGrade(), avct.getIban(), avct.getInm(), avct.getIna(),
-							avct.getNouvIban(), avct.getNouvInm(), avct.getNouvIna(), avct.getEtat(),
-							avct.getDateArrete(), avct.getNumArrete(), avct.getCarriereSimu(), avct.getAnnee(),
-							avct.getDirectionService(), avct.getSectionService(), avct.getCdcadr());
-				}
-			}
+			avctService.creerAvancementContractuel(avct, getAvancementContractuelsDao());
 		}
 		return true;
 	}
@@ -712,30 +591,25 @@ public class OeAVCTMasseSalarialeContractuel extends BasicProcess {
 
 			addZone(getNOM_ST_MATRICULE(i), agent.getNomatr().toString());
 			addZone(getNOM_ST_AGENT(i), agent.getNomAgent() + " <br> " + agent.getPrenomAgent());
-			addZone(getNOM_ST_DATE_EMBAUCHE(i),
-					av.getDateEmbauche() == null ? Const.CHAINE_VIDE : sdf.format(av.getDateEmbauche()));
+			addZone(getNOM_ST_DATE_EMBAUCHE(i), av.getDateEmbauche() == null ? Const.CHAINE_VIDE : sdf.format(av.getDateEmbauche()));
 			addZone(getNOM_ST_FP(i), av.getNumFp() + " <br> " + (tp == null ? "&nbsp;" : tp.getLibTitrePoste()));
 			addZone(getNOM_ST_PA(i), av.getPa());
 			addZone(getNOM_ST_CATEGORIE(i), av.getCdcadr());
 			addZone(getNOM_ST_DIRECTION(i), av.getDirectionService() + " <br> " + av.getSectionService());
 
 			addZone(getNOM_ST_NUM_AVCT(i), av.getIdAvct().toString());
-			addZone(getNOM_ST_DATE_DEBUT(i),
-					sdf.format(av.getDateGrade()) + " <br> " + sdf.format(av.getDateProchainGrade()));
+			addZone(getNOM_ST_DATE_DEBUT(i), sdf.format(av.getDateGrade()) + " <br> " + sdf.format(av.getDateProchainGrade()));
 			addZone(getNOM_ST_IBA(i), av.getIban() + " <br> " + av.getNouvIban());
 			addZone(getNOM_ST_INM(i), av.getInm() + " <br> " + av.getNouvInm());
 			addZone(getNOM_ST_INA(i), av.getIna() + " <br> " + av.getNouvIna());
 
-			addZone(getNOM_CK_VALID_DRH(i),
-					av.getEtat().equals(EnumEtatAvancement.TRAVAIL.getValue()) ? getCHECKED_OFF() : getCHECKED_ON());
+			addZone(getNOM_CK_VALID_DRH(i), av.getEtat().equals(EnumEtatAvancement.TRAVAIL.getValue()) ? getCHECKED_OFF() : getCHECKED_ON());
 			addZone(getNOM_ST_MOTIF_AVCT(i), "REVALORISATION");
-			addZone(getNOM_CK_PROJET_ARRETE(i), av.getEtat().equals(EnumEtatAvancement.TRAVAIL.getValue())
-					|| av.getEtat().equals(EnumEtatAvancement.SGC.getValue()) ? getCHECKED_OFF() : getCHECKED_ON());
+			addZone(getNOM_CK_PROJET_ARRETE(i), av.getEtat().equals(EnumEtatAvancement.TRAVAIL.getValue()) || av.getEtat().equals(EnumEtatAvancement.SGC.getValue()) ? getCHECKED_OFF()
+					: getCHECKED_ON());
 			addZone(getNOM_EF_NUM_ARRETE(i), av.getNumArrete());
-			addZone(getNOM_EF_DATE_ARRETE(i),
-					av.getDateArrete() == null ? Const.CHAINE_VIDE : sdf.format(av.getDateArrete()));
-			addZone(getNOM_CK_AFFECTER(i), av.getEtat().equals(EnumEtatAvancement.VALIDE.getValue())
-					|| av.getEtat().equals(EnumEtatAvancement.AFFECTE.getValue()) ? getCHECKED_ON() : getCHECKED_OFF());
+			addZone(getNOM_EF_DATE_ARRETE(i), av.getDateArrete() == null ? Const.CHAINE_VIDE : sdf.format(av.getDateArrete()));
+			addZone(getNOM_CK_AFFECTER(i), av.getEtat().equals(EnumEtatAvancement.VALIDE.getValue()) || av.getEtat().equals(EnumEtatAvancement.AFFECTE.getValue()) ? getCHECKED_ON() : getCHECKED_OFF());
 			addZone(getNOM_ST_ETAT(i), av.getEtat());
 			addZone(getNOM_ST_CARRIERE_SIMU(i), av.getCarriereSimu() == null ? "&nbsp;" : av.getCarriereSimu());
 		}
@@ -1118,16 +992,12 @@ public class OeAVCTMasseSalarialeContractuel extends BasicProcess {
 					avct.setEtat(EnumEtatAvancement.TRAVAIL.getValue());
 				}
 				// on traite le numero et la date d'arrete
-				avct.setDateArrete(getVAL_EF_DATE_ARRETE(i).equals(Const.CHAINE_VIDE) ? null : sdf
-						.parse(getVAL_EF_DATE_ARRETE(i)));
+				avct.setDateArrete(getVAL_EF_DATE_ARRETE(i).equals(Const.CHAINE_VIDE) ? null : sdf.parse(getVAL_EF_DATE_ARRETE(i)));
 				avct.setNumArrete(getVAL_EF_NUM_ARRETE(i));
 			}
-			getAvancementContractuelsDao().modifierAvancementContractuels(avct.getIdAvct(), avct.getIdAgent(),
-					avct.getDateEmbauche(), avct.getNumFp(), avct.getPa(), avct.getDateGrade(),
-					avct.getDateProchainGrade(), avct.getIban(), avct.getInm(), avct.getIna(), avct.getNouvIban(),
-					avct.getNouvInm(), avct.getNouvIna(), avct.getEtat(), avct.getDateArrete(), avct.getNumArrete(),
-					avct.getCarriereSimu(), avct.getAnnee(), avct.getDirectionService(), avct.getSectionService(),
-					avct.getCdcadr());
+			getAvancementContractuelsDao().modifierAvancementContractuels(avct.getIdAvct(), avct.getIdAgent(), avct.getDateEmbauche(), avct.getNumFp(), avct.getPa(), avct.getDateGrade(),
+					avct.getDateProchainGrade(), avct.getIban(), avct.getInm(), avct.getIna(), avct.getNouvIban(), avct.getNouvInm(), avct.getNouvIna(), avct.getEtat(), avct.getDateArrete(),
+					avct.getNumArrete(), avct.getCarriereSimu(), avct.getAnnee(), avct.getDirectionService(), avct.getSectionService(), avct.getCdcadr());
 			if (getTransaction().isErreur())
 				return false;
 		}
@@ -1155,76 +1025,59 @@ public class OeAVCTMasseSalarialeContractuel extends BasicProcess {
 			// affecté est cochée
 			if (!avct.getEtat().equals(EnumEtatAvancement.AFFECTE.getValue())) {
 				if (getVAL_CK_AFFECTER(i).equals(getCHECKED_ON())) {
-					// on recupere l'agent concerné
-					Agent agentCarr = getAgentDao().chercherAgent(avct.getIdAgent());
-					// on recupere la derniere carriere dans l'année
-					Carriere carr = Carriere.chercherDerniereCarriereAvecAgentEtAnnee(getTransaction(),
-							agentCarr.getNomatr(), avct.getAnnee().toString());
-					// si la carriere est bien la derniere de la liste
-					String dateDebAvct = sdf.format(avct.getDateProchainGrade());
-					String dateDebCarr = carr.getDateDebut();
-					if ((carr.getDateFin() == null || carr.getDateFin().equals("0")) && !dateDebAvct.equals(dateDebCarr)) {
-						// alors on fait les modifs sur avancement
-						avct.setEtat(EnumEtatAvancement.AFFECTE.getValue());
-						addZone(getNOM_ST_ETAT(i), avct.getEtat());
-						// on traite le numero et la date d'arrete
-						avct.setDateArrete(getVAL_EF_DATE_ARRETE(i).equals(Const.CHAINE_VIDE) ? null : sdf
-								.parse(getVAL_EF_DATE_ARRETE(i)));
-						avct.setNumArrete(getVAL_EF_NUM_ARRETE(i));
-						getAvancementContractuelsDao()
-								.modifierAvancementContractuels(avct.getIdAvct(), avct.getIdAgent(),
-										avct.getDateEmbauche(), avct.getNumFp(), avct.getPa(), avct.getDateGrade(),
-										avct.getDateProchainGrade(), avct.getIban(), avct.getInm(), avct.getIna(),
-										avct.getNouvIban(), avct.getNouvInm(), avct.getNouvIna(), avct.getEtat(),
-										avct.getDateArrete(), avct.getNumArrete(), avct.getCarriereSimu(),
-										avct.getAnnee(), avct.getDirectionService(), avct.getSectionService(),
-										avct.getCdcadr());
 
-						// on ferme cette carriere
-						carr.setDateFin(sdf.format(avct.getDateProchainGrade()));
-						// RG_AG_CA_A03
-						HistoCarriere histo = new HistoCarriere(carr);
-						getHistoCarriereDao().creerHistoCarriere(histo, user, EnumTypeHisto.MODIFICATION);
-						carr.modifierCarriere(getTransaction(), agentCarr, user);
+					// on crée une ligne de prime
+					Agent agent = getAgentDao().chercherAgent(avct.getIdAgent());
 
-						// on crée un nouvelle carriere
-						Carriere nouvelleCarriere = new Carriere();
-						nouvelleCarriere.setCodeCategorie(carr.getCodeCategorie());
-						nouvelleCarriere.setReferenceArrete(avct.getNumArrete().equals(Const.CHAINE_VIDE) ? Const.ZERO
-								: avct.getNumArrete());
-						nouvelleCarriere.setDateArrete(avct.getDateArrete() == null ? Const.ZERO : sdf.format(avct
-								.getDateArrete()));
-						nouvelleCarriere.setDateDebut(sdf.format(avct.getDateProchainGrade()));
-						nouvelleCarriere.setDateFin(Const.ZERO);
-						nouvelleCarriere.setIban(avct.getNouvIban());
-						// champ a remplir pour creer une carriere NB : on
-						// reprend ceux de la carriere precedente
-						nouvelleCarriere.setCodeBase(Const.CHAINE_VIDE);
-						nouvelleCarriere.setCodeTypeEmploi(carr.getCodeTypeEmploi());
-						nouvelleCarriere.setCodeGrade(carr.getCodeGrade());
-						nouvelleCarriere.setCodeBaseHoraire2(carr.getCodeBaseHoraire2());
-						nouvelleCarriere.setIdMotif(Const.ZERO);
-						nouvelleCarriere.setModeReglement(carr.getModeReglement());
-						nouvelleCarriere.setTypeContrat(carr.getTypeContrat());
+					Carriere carr = Carriere.chercherDerniereCarriereAvecAgentEtAnnee(getTransaction(), agent.getNomatr(), avct.getAnnee().toString());
+					// on check la si prime saisie en simu
+					if (avctService.isCarriereContractuelSimu(getTransaction(), agent, avct, carr)) {
+						// c'est qu'il existe une carriere pour cette date
 
-						// RG_AG_CA_A03
-						nouvelleCarriere.setNoMatricule(agentCarr.getNomatr().toString());
-						HistoCarriere histo2 = new HistoCarriere(nouvelleCarriere);
-						getHistoCarriereDao().creerHistoCarriere(histo2, user, EnumTypeHisto.CREATION);
-						nouvelleCarriere.creerCarriere(getTransaction(), agentCarr, user);
-
-						if (getTransaction().isErreur()) {
-							return false;
-						} else {
-							nbAgentAffectes += 1;
-						}
-					} else {
 						// si ce n'est pas la derniere carriere du tableau ie :
 						// si datfin!=0
 						// on met l'agent dans une variable et on affiche cette
 						// liste a l'ecran
-						agentEnErreur += agentCarr.getNomAgent() + " " + agentCarr.getPrenomAgent() + " ("
-								+ agentCarr.getNomatr() + "); ";
+						agentEnErreur += agent.getNomAgent() + " " + agent.getPrenomAgent() + " (" + agent.getNomatr() + "); ";
+						// on met un 'S' dans son avancement
+						avct.setCarriereSimu("S");
+						getAvancementContractuelsDao().modifierAvancementContractuels(avct.getIdAvct(), avct.getIdAgent(), avct.getDateEmbauche(), avct.getNumFp(), avct.getPa(), avct.getDateGrade(),
+								avct.getDateProchainGrade(), avct.getIban(), avct.getInm(), avct.getIna(), avct.getNouvIban(), avct.getNouvInm(), avct.getNouvIna(), avct.getEtat(),
+								avct.getDateArrete(), avct.getNumArrete(), avct.getCarriereSimu(), avct.getAnnee(), avct.getDirectionService(), avct.getSectionService(), avct.getCdcadr());
+						continue;
+					} else {
+						avct.setCarriereSimu(null);
+					}
+
+					// alors on fait les modifs sur avancement
+					avct.setEtat(EnumEtatAvancement.AFFECTE.getValue());
+					addZone(getNOM_ST_ETAT(i), avct.getEtat());
+					// on traite le numero et la date d'arrete
+					avct.setDateArrete(getVAL_EF_DATE_ARRETE(i).equals(Const.CHAINE_VIDE) ? null : sdf.parse(getVAL_EF_DATE_ARRETE(i)));
+					avct.setNumArrete(getVAL_EF_NUM_ARRETE(i));
+					getAvancementContractuelsDao().modifierAvancementContractuels(avct.getIdAvct(), avct.getIdAgent(), avct.getDateEmbauche(), avct.getNumFp(), avct.getPa(), avct.getDateGrade(),
+							avct.getDateProchainGrade(), avct.getIban(), avct.getInm(), avct.getIna(), avct.getNouvIban(), avct.getNouvInm(), avct.getNouvIna(), avct.getEtat(), avct.getDateArrete(),
+							avct.getNumArrete(), avct.getCarriereSimu(), avct.getAnnee(), avct.getDirectionService(), avct.getSectionService(), avct.getCdcadr());
+
+					// on ferme cette carriere
+					carr.setDateFin(sdf.format(avct.getDateProchainGrade()));
+					// RG_AG_CA_A03
+					HistoCarriere histo = new HistoCarriere(carr);
+					getHistoCarriereDao().creerHistoCarriere(histo, user, EnumTypeHisto.MODIFICATION);
+					carr.modifierCarriere(getTransaction(), agent, user);
+
+					Carriere nouvelleCarriere = avctService.getNewCarriereContractuel(getTransaction(), agent, avct, carr);
+
+					// RG_AG_CA_A03
+					nouvelleCarriere.setNoMatricule(agent.getNomatr().toString());
+					HistoCarriere histo2 = new HistoCarriere(nouvelleCarriere);
+					getHistoCarriereDao().creerHistoCarriere(histo2, user, EnumTypeHisto.CREATION);
+					nouvelleCarriere.creerCarriere(getTransaction(), agent, user);
+
+					if (getTransaction().isErreur()) {
+						return false;
+					} else {
+						nbAgentAffectes += 1;
 					}
 				}
 			}

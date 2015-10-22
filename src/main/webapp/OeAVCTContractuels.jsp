@@ -234,7 +234,7 @@ document.formu.elements[nom].focus();
 				<% if (!process.agentEnErreur.equals("")){ %>
 					<span style="color: red;" class="sigp2Mandatory">Agents en anomalies : <%=process.agentEnErreur %></span>
 					<BR/><BR/>
-					<span style="color: red;" class="sigp2Mandatory">Pour ces agents une ligne de carrière n'a pu être crée car il y avait déjà une carrière suivante de saisie. Merci de corriger manuellement les carrières de ces agents.</span>
+					<span style="color: red;" class="sigp2Mandatory">Pour ces agents, aucun avancement n'a pu être calculé.</span>
 				<%} %>
 				<script type="text/javascript">
 					$(document).ready(function() {

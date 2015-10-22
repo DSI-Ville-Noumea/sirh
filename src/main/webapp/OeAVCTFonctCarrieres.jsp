@@ -139,7 +139,7 @@ function activeAffecter() {
 				<% if (!process.agentEnErreur.equals("")){ %>
 					<span style="color: red;" class="sigp2Mandatory">Agents en anomalies : <%=process.agentEnErreur %></span>
 					<BR/><BR/> 
-					<span style="color: red;" class="sigp2Mandatory">Pour ces agents, la ligne de carrière n'a pu être créée car il y avait déjà une carrière suivante saisie. Merci de corriger manuellement les carrières de ces agents.</span>
+					<span style="color: red;" class="sigp2Mandatory">Pour ces agents, aucun avancement n'a pu être calculé.</span>
 				<%} %>
 				
 			<BR/><BR/><BR/>

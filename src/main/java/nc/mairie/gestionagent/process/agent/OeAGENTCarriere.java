@@ -16,6 +16,7 @@ import nc.mairie.metier.agent.Agent;
 import nc.mairie.metier.agent.Contrat;
 import nc.mairie.metier.agent.PositionAdmAgent;
 import nc.mairie.metier.agent.Prime;
+import nc.mairie.metier.avancement.AvancementContractuels;
 import nc.mairie.metier.avancement.AvancementConvCol;
 import nc.mairie.metier.avancement.AvancementFonctionnaires;
 import nc.mairie.metier.carriere.Bareme;
@@ -2395,11 +2396,11 @@ public class OeAGENTCarriere extends BasicProcess {
 			if (Services.estNumerique(posAdmn.getCdpadm())) {
 				if (carr != null && carr.getCodeCategorie().equals("7")) {
 					addZone(getNOM_ST_ACTION(), ACTION_AVCT_PREV_CC);
-					// alors on est dans les contractuels
+					// alors on est dans les conventions collectives
 					return performCalculConventionCollective(getAgentCourant());
 				} else if (carr != null && carr.getCodeCategorie().equals("4")) {
 					// alors on est dans les contractuels
-					performCalculContractuel(carr);
+					return performCalculContractuel(getAgentCourant());
 				} else if (carr != null && (carr.getCodeCategorie().equals("1") || carr.getCodeCategorie().equals("2") || carr.getCodeCategorie().equals("18") || carr.getCodeCategorie().equals("20"))) {
 					// alors on est dans les fonctionnaires
 					if (!performCalculFonctionnaire(carr)) {
@@ -2481,7 +2482,34 @@ public class OeAGENTCarriere extends BasicProcess {
 		return true;
 	}
 
-	private void performCalculContractuel(Carriere carr) throws Exception {
+	private boolean performCalculContractuel(Agent agent) throws Exception {
+		ReturnMessageDto result = avctService.isAvancementContractuel(getTransaction(), agent);
+
+		if (result.getErrors().size() > 0) {
+			String erreur = Const.CHAINE_VIDE;
+			for (String err : result.getErrors()) {
+				erreur += err;
+			}
+			getTransaction().declarerErreur(erreur);
+			return false;
+		}
+
+		String anneeCourante = Services.dateDuJour().substring(6, 10);
+
+		AvancementContractuels avct = avctService.calculAvancementContractuel(getTransaction(), agent, anneeCourante, adsService, getFichePosteDao(), getAffectationDao(), true);
+		if (avct == null) {
+			addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+			// "ERR189","Cet avancement ne peut être calculé @."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR189", Const.CHAINE_VIDE));
+			return false;
+		}  else if (avct.getIdAgent() == null) {
+			addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+			// le nombre de point d'avancement du grade est 0.
+			// "ERR189","Cet avancement ne peut être calculé @."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR189", ": le nombre de points d'avancement du grade de la FDP est 0"));
+			return false;
+		}
+
 		// on recupere le grade et la filiere du poste
 		Affectation aff = getAffectationDao().chercherAffectationActiveAvecAgent(getAgentCourant().getIdAgent());
 		FichePoste fp = getFichePosteDao().chercherFichePoste(aff.getIdFichePoste());
@@ -2493,44 +2521,19 @@ public class OeAGENTCarriere extends BasicProcess {
 			filiere = FiliereGrade.chercherFiliereGrade(getTransaction(), gg.getCdfili());
 		}
 
-		Bareme bareme = Bareme.chercherBareme(getTransaction(), carr.getIban());
-		if (getTransaction().isErreur()) {
-			getTransaction().traiterErreur();
-		}
-		// on recupere les points pour cette categorie (A,B,A+..)
-		int nbPointINM = 0;
-		if (bareme != null && bareme.getInm() != null) {
-			nbPointINM = Integer.valueOf(bareme.getInm());
-		}
-		int nbPointCAT = 0;
-		if (gg != null && gg.getNbPointsAvct() != null) {
-			nbPointCAT = Integer.valueOf(gg.getNbPointsAvct());
-		}
-		// on calcul le nouvel INM
-		String nouvINM = String.valueOf(nbPointINM + nbPointCAT);
-		// avec ce nouvel INM on recupere l'iban et l'ina correspondant
-		ArrayList<Bareme> listeBareme = Bareme.listerBaremeByINM(getTransaction(), nouvINM);
-		String Iban = Const.CHAINE_VIDE;
-		String Ina = Const.CHAINE_VIDE;
-		String Inm = Const.CHAINE_VIDE;
-		if (listeBareme != null && listeBareme.size() > 0) {
-			Bareme nouvBareme = (Bareme) listeBareme.get(0);
-			Iban = nouvBareme.getIban();
-			Ina = nouvBareme.getIna();
-			Inm = nouvBareme.getInm();
-		}
-
 		// on rempli les champs
+		Carriere carr = Carriere.chercherDerniereCarriereAvecAgent(getTransaction(), getAgentCourant());
 		addZone(getNOM_ST_GRADE(), carr.getCodeGrade());
 		addZone(getNOM_ST_FILIERE(), filiere == null ? Const.CHAINE_VIDE : filiere.getLibFiliere());
 
-		addZone(getNOM_EF_IBA(), Iban);
-		addZone(getNOM_ST_INA(), Ina);
-		addZone(getNOM_ST_INM(), Inm);
-		addZone(getNOM_EF_DATE_DEBUT(), Services.ajouteAnnee(Services.formateDate(carr.getDateDebut()), 2));
+		addZone(getNOM_EF_IBA(), avct.getNouvIban());
+		addZone(getNOM_ST_INA(), avct.getNouvIna().toString());
+		addZone(getNOM_ST_INM(), avct.getNouvInm().toString());
+		addZone(getNOM_EF_DATE_DEBUT(), sdf.format(avct.getDateProchainGrade()));
 
 		// on indique que les champs des fonctionnaires ne sont pas à afficher
 		showAccBM = false;
+		return true;
 	}
 
 	private boolean performCalculFonctionnaire(Carriere carr) throws Exception {

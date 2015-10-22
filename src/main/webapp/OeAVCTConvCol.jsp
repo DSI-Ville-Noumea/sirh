@@ -229,7 +229,7 @@ document.formu.elements[nom].focus();
 				<% if (!process.agentEnErreur.equals("")){ %>
 					<span style="color: red;" class="sigp2Mandatory">Agents en anomalies : <%=process.agentEnErreur %></span>
 					<BR/><BR/>
-					<span style="color: red;" class="sigp2Mandatory">Pour ces agents une ligne de prime n'a pu être crée car il y avait déjà une prime pour cette date. Merci de corriger manuellement les primes de ces agents.</span>
+					<span style="color: red;" class="sigp2Mandatory">Pour ces agents, aucun avancement n'a pu être calculé.</span>
 				<%} %>
 			<script type="text/javascript">
 				$(document).ready(function() {

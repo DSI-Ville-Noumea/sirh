@@ -50,7 +50,7 @@ function testClickEnrigistrer(){
 		<BR/>
 		
 	    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
-			<legend class="sigp2Legend">Délégation DP</legend>			
+			<legend class="sigp2Legend">Amicale VDN</legend>			
 				<div style="overflow: auto;height: 250px;width:1000px;">
 						<table class="sigp2NewTab" style="text-align:left;width:980px;">
 							<tr bgcolor="#EFEFEF">

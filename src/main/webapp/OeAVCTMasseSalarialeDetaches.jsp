@@ -142,6 +142,12 @@ function setfocus(nom)
 					<BR/><BR/> 
 					<span style="color: red;" class="sigp2Mandatory">Pour ces agents, un avancement n'a pu être calculé car ils sont en haut de grille.</span>
 				<%} %>
+				<BR/><BR/>
+				<% if (!process.agentEnErreur.equals("")){ %>
+					<span style="color: red;" class="sigp2Mandatory">Agents en anomalies : <%=process.agentEnErreur %></span>
+					<BR/><BR/>
+					<span style="color: red;" class="sigp2Mandatory">Pour ces agents, aucun avancement n'a pu être calculé.</span>
+				<%} %>
 			</FIELDSET>
 		
 	    <FIELDSET class="sigp2Fieldset" style="text-align:left;">
@@ -277,11 +283,6 @@ function setfocus(nom)
 					%>
 					</tbody>
 				</table>
-				<% if (!process.agentEnErreur.equals("")){ %>
-					<span style="color: red;" class="sigp2Mandatory">Agents en anomalies : <%=process.agentEnErreur %></span>
-					<BR/><BR/>
-					<span style="color: red;" class="sigp2Mandatory">Pour ces agents une ligne de carrière n'a pu être crée car il y avait déjà une carrière suivante de saisie. Merci de corriger manuellement les carrières de ces agents.</span>
-				<%} %>
 				<script type="text/javascript">
 					$(document).ready(function() {
 					    $('#tabAvctFonct').dataTable({
