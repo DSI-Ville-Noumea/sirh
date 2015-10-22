@@ -25,7 +25,7 @@ import nc.mairie.technique.UserAppli;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
-import nc.noumea.spring.service.ISirhService;
+import nc.noumea.spring.service.IAvancementService;
 
 import org.springframework.context.ApplicationContext;
 
@@ -52,7 +52,8 @@ public class OeAVCTConvCol extends BasicProcess {
 	private HistoPrimeDao histoPrimeDao;
 	private AgentDao agentDao;
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-	private ISirhService sirhService;
+
+	private IAvancementService avctService;
 
 	private void initialiseDao() {
 		// on initialise le dao
@@ -67,8 +68,8 @@ public class OeAVCTConvCol extends BasicProcess {
 		if (getAgentDao() == null) {
 			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
 		}
-		if (null == sirhService) {
-			sirhService = (ISirhService) context.getBean("sirhService");
+		if (null == avctService) {
+			avctService = (IAvancementService) context.getBean("avctService");
 		}
 	}
 
@@ -298,7 +299,7 @@ public class OeAVCTConvCol extends BasicProcess {
 					Agent agent = getAgentDao().chercherAgent(avct.getIdAgent());
 
 					// on check la si prime saisie en simu
-					if (sirhService.isPrimeAvctConvColSimu(getTransaction(), agent, avct)) {
+					if (avctService.isPrimeAvctConvColSimu(getTransaction(), agent, avct)) {
 						// c'est qu'il existe une prime pour cette date
 
 						// si ce n'est pas la derniere carriere du tableau ie :
@@ -342,7 +343,7 @@ public class OeAVCTConvCol extends BasicProcess {
 							getHistoPrimeDao().creerHistoPrime(histo, user, EnumTypeHisto.MODIFICATION);
 							prime.modifierPrime(getTransaction(), agent, user);
 
-							Prime newPrime = sirhService.getNewPrimeConventionCollective(getTransaction(), agent, avct);
+							Prime newPrime = avctService.getNewPrimeConventionCollective(getTransaction(), agent, avct);
 							// RG_AG_PR_A04
 							HistoPrime histo2 = new HistoPrime(newPrime);
 							getHistoPrimeDao().creerHistoPrime(histo2, user, EnumTypeHisto.CREATION);
@@ -350,7 +351,7 @@ public class OeAVCTConvCol extends BasicProcess {
 						}
 					} else {
 						getTransaction().traiterErreur();
-						Prime newPrime = sirhService.getNewPrimeConventionCollective(getTransaction(), agent, avct);
+						Prime newPrime = avctService.getNewPrimeConventionCollective(getTransaction(), agent, avct);
 						// RG_AG_PR_A04
 						HistoPrime histo2 = new HistoPrime(newPrime);
 						getHistoPrimeDao().creerHistoPrime(histo2, user, EnumTypeHisto.CREATION);

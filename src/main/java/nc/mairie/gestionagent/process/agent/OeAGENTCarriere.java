@@ -51,6 +51,7 @@ import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
 import nc.noumea.spring.service.AdsService;
 import nc.noumea.spring.service.IAdsService;
+import nc.noumea.spring.service.IAvancementService;
 import nc.noumea.spring.service.ISirhService;
 
 import org.springframework.context.ApplicationContext;
@@ -121,6 +122,8 @@ public class OeAGENTCarriere extends BasicProcess {
 	private AffectationDao affectationDao;
 
 	private ISirhService sirhService;
+
+	private IAvancementService avctService;
 
 	private IAdsService adsService;
 
@@ -209,6 +212,9 @@ public class OeAGENTCarriere extends BasicProcess {
 		}
 		if (null == sirhService) {
 			sirhService = (ISirhService) context.getBean("sirhService");
+		}
+		if (null == avctService) {
+			avctService = (IAvancementService) context.getBean("avctService");
 		}
 		if (null == adsService) {
 			adsService = (AdsService) context.getBean("adsService");
@@ -2429,7 +2435,7 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	private boolean performCalculConventionCollective(Agent agent) throws Exception {
-		ReturnMessageDto result = sirhService.isAvancementConventionCollective(getTransaction(), agent);
+		ReturnMessageDto result = avctService.isAvancementConventionCollective(getTransaction(), agent);
 
 		if (result.getErrors().size() > 0) {
 			String erreur = Const.CHAINE_VIDE;
@@ -2448,7 +2454,7 @@ public class OeAGENTCarriere extends BasicProcess {
 		if (getTransaction().isErreur()) {
 			getTransaction().traiterErreur();
 
-			AvancementConvCol avct = sirhService.calculAvancementConventionCollective(getTransaction(), agent, anneeCourante, adsService, getFichePosteDao(), getAffectationDao());
+			AvancementConvCol avct = avctService.calculAvancementConventionCollective(getTransaction(), agent, anneeCourante, adsService, getFichePosteDao(), getAffectationDao());
 			if (avct == null) {
 				addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 				// "ERR189","Cet avancement ne peut être calculé @."
@@ -2461,7 +2467,7 @@ public class OeAGENTCarriere extends BasicProcess {
 				return false;
 			}
 
-			Prime prime = sirhService.getNewPrimeConventionCollective(getTransaction(), agent, avct);
+			Prime prime = avctService.getNewPrimeConventionCollective(getTransaction(), agent, avct);
 			addZone(getNOM_EF_DATE_DEBUT(), "01/01/" + avct.getAnnee());
 			addZone(getNOM_ST_GRADE(), prime.getMtPri());
 		} else {
