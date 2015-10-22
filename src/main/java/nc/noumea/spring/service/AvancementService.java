@@ -337,14 +337,15 @@ public class AvancementService implements IAvancementService {
 			aTransaction.traiterErreur();
 			return null;
 		}
-
+		if (carr.getDateDebut().equals("06/10/2010")) {
+			System.out.println("ici");
+		}
 		if (!avctPrev) {
-			if (Services.compareDates(Services.ajouteAnnee(Services.formateDate(carr.getDateDebut()), 2), "01/01/" + annee) >= 0
-					&& Services.compareDates(Services.ajouteAnnee(Services.formateDate(carr.getDateDebut()), 2), "31/12/" + annee) <= 0) {
+			if (!(Services.compareDates(Services.ajouteAnnee(Services.formateDate(carr.getDateDebut()), 2), "31/12/" + annee) <= 0)) {
 				// L'agent doit avoir la date début de la nouvelle carriere
 				// comprise
 				// dans l'année d'avancement
-				return null;
+				return new AvancementContractuels();
 			}
 		}
 

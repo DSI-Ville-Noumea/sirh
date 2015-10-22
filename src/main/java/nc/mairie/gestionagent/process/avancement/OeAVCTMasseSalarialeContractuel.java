@@ -522,7 +522,7 @@ public class OeAVCTMasseSalarialeContractuel extends BasicProcess {
 				agentEnErreur += a.getNomAgent() + " " + a.getPrenomAgent() + " (" + a.getNomatr() + "); ";
 				continue;
 			} else if (avct.getIdAgent() == null) {
-				// l'agent n'a pas 3 ans d'ancienneté
+				// le nombre de point d'avancement du grade est 0.
 				continue;
 			}
 			avctService.creerAvancementContractuel(avct, getAvancementContractuelsDao());
