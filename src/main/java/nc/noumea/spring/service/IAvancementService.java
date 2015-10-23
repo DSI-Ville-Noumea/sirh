@@ -1,5 +1,6 @@
 package nc.noumea.spring.service;
 
+import java.util.Date;
 import java.util.List;
 
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
@@ -8,14 +9,18 @@ import nc.mairie.metier.agent.Prime;
 import nc.mairie.metier.avancement.AvancementContractuels;
 import nc.mairie.metier.avancement.AvancementConvCol;
 import nc.mairie.metier.avancement.AvancementDetaches;
+import nc.mairie.metier.avancement.AvancementFonctionnaires;
 import nc.mairie.metier.carriere.Carriere;
 import nc.mairie.spring.dao.metier.agent.AgentDao;
 import nc.mairie.spring.dao.metier.agent.AutreAdministrationAgentDao;
 import nc.mairie.spring.dao.metier.avancement.AvancementContractuelsDao;
 import nc.mairie.spring.dao.metier.avancement.AvancementConvColDao;
 import nc.mairie.spring.dao.metier.avancement.AvancementDetachesDao;
+import nc.mairie.spring.dao.metier.avancement.AvancementFonctionnairesDao;
+import nc.mairie.spring.dao.metier.parametrage.MotifAvancementDao;
 import nc.mairie.spring.dao.metier.poste.AffectationDao;
 import nc.mairie.spring.dao.metier.poste.FichePosteDao;
+import nc.mairie.spring.dao.metier.referentiel.AvisCapDao;
 import nc.mairie.technique.Transaction;
 
 public interface IAvancementService {
@@ -45,7 +50,7 @@ public interface IAvancementService {
 	AvancementContractuels calculAvancementContractuel(Transaction aTransaction, Agent agent, String annee, IAdsService adsService, FichePosteDao fichePosteDao, AffectationDao affectationDao,
 			boolean avctPrev) throws Exception;
 
-	boolean isCarriereContractuelSimu(Transaction aTransaction, Agent agent, AvancementContractuels avct, Carriere carr) throws Exception;
+	boolean isCarriereContractuelSimu(AvancementContractuels avct, Carriere carr) throws Exception;
 
 	Carriere getNewCarriereContractuel(Transaction aTransaction, Agent agent, AvancementContractuels avct, Carriere carr);
 
@@ -56,12 +61,31 @@ public interface IAvancementService {
 	List<Agent> listAgentAvctDetache(Transaction aTransaction, String idServiceAds, String annee, IAdsService adsService, AgentDao agentDao) throws Exception;
 
 	AvancementDetaches calculAvancementDetache(Transaction aTransaction, Agent a, String annee, IAdsService adsService, FichePosteDao fichePosteDao, AffectationDao affectationDao,
-			AutreAdministrationAgentDao autreAdministrationAgentDao) throws Exception;
+			AutreAdministrationAgentDao autreAdministrationAgentDao, boolean avctPrev) throws Exception;
 
 	boolean creerAvancementDetache(AvancementDetaches avct, AvancementDetachesDao avancementDetachesDao);
 
-	boolean isCarriereDetacheSimu(Transaction aTransaction, Agent agent, AvancementDetaches avct, Carriere carr);
+	boolean isCarriereDetacheSimu(AvancementDetaches avct, Carriere carr);
 
 	Carriere getNewCarriereDetache(Transaction aTransaction, Agent agent, AvancementDetaches avct, Carriere carr, String dateAvct) throws Exception;
+
+	// FONCTIONNAIRES
+
+	ReturnMessageDto isAvancementFonctionnaire(Transaction aTransaction, Agent agent) throws Exception;
+
+	List<Agent> listAgentAvctFonctionnaire(Transaction aTransaction, String idServiceAds, String annee, IAdsService adsService, AgentDao agentDao) throws Exception;
+
+	AvancementFonctionnaires calculAvancementFonctionnaire(Transaction aTransaction, Agent a, String annee, IAdsService adsService, FichePosteDao fichePosteDao, AffectationDao affectationDao,
+			AutreAdministrationAgentDao autreAdministrationAgentDao, MotifAvancementDao motifAvancementDao, AvisCapDao avisCapDao, boolean avctPrev) throws Exception;
+
+	boolean creerAvancementFonctionnaire(AvancementFonctionnaires avct, AvancementFonctionnairesDao avancementFonctionnairesDao);
+
+	boolean isCarriereFonctionnaireSimu(Carriere carr);
+
+	Carriere getNewCarriereFonctionnaire(Transaction aTransaction, Agent agent, AvancementFonctionnaires avct, Carriere carr, AvancementFonctionnairesDao avancementFonctionnairesDao,
+			String idAvisEmp, Date dateAvctFinale) throws Exception;
+
+	void calculAccBmFonctionnaire(Transaction aTransaction, AvancementFonctionnaires avct, Carriere ancienneCarriere, Carriere nouvelleCarriere, String libCourtAvisCap,
+			AvancementFonctionnairesDao avancementFonctionnaireDao) throws Exception;
 
 }

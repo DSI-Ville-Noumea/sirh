@@ -926,7 +926,7 @@ public class OeAVCTMasseSalarialeDetaches extends BasicProcess {
 					// on recupere la derniere carriere dans l'année
 					Carriere carr = Carriere.chercherDerniereCarriereAvecAgentEtAnnee(getTransaction(), agent.getNomatr(), avct.getAnnee().toString());
 					// on check il y a une carriere deja saisie
-					if (avancementService.isCarriereDetacheSimu(getTransaction(), agent, avct, carr)) {
+					if (!avancementService.isCarriereDetacheSimu(avct, carr)) {
 
 						// alors on fait les modifs sur avancement
 						avct.setEtat(EnumEtatAvancement.AFFECTE.getValue());
@@ -1264,7 +1264,8 @@ public class OeAVCTMasseSalarialeDetaches extends BasicProcess {
 
 		// Parcours des agents
 		for (Agent a : la) {
-			AvancementDetaches avct = avancementService.calculAvancementDetache(getTransaction(), a, annee, adsService, getFichePosteDao(), getAffectationDao(), getAutreAdministrationAgentDao());
+			AvancementDetaches avct = avancementService.calculAvancementDetache(getTransaction(), a, annee, adsService, getFichePosteDao(), getAffectationDao(), getAutreAdministrationAgentDao(),
+					false);
 			if (avct == null) {
 				continue;
 			} else if (avct.getIdAgent() == null) {

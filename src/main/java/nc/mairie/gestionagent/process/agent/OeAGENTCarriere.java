@@ -42,6 +42,7 @@ import nc.mairie.spring.dao.metier.parametrage.MotifAvancementDao;
 import nc.mairie.spring.dao.metier.parametrage.MotifCarriereDao;
 import nc.mairie.spring.dao.metier.poste.AffectationDao;
 import nc.mairie.spring.dao.metier.poste.FichePosteDao;
+import nc.mairie.spring.dao.metier.referentiel.AvisCapDao;
 import nc.mairie.spring.dao.metier.referentiel.TypeContratDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
@@ -117,6 +118,7 @@ public class OeAGENTCarriere extends BasicProcess {
 	private String calculPaye;
 
 	private MotifAvancementDao motifAvancementDao;
+	private AvisCapDao avisCapDao;
 	private MotifCarriereDao motifCarriereDao;
 	private TypeContratDao typeContratDao;
 	private ContratDao contratDao;
@@ -216,6 +218,9 @@ public class OeAGENTCarriere extends BasicProcess {
 		}
 		if (getAutreAdministrationAgentDao() == null) {
 			setAutreAdministrationAgentDao(new AutreAdministrationAgentDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getAvisCapDao() == null) {
+			setAvisCapDao(new AvisCapDao((SirhDao) context.getBean("sirhDao")));
 		}
 		if (null == sirhService) {
 			sirhService = (ISirhService) context.getBean("sirhService");
@@ -2409,10 +2414,7 @@ public class OeAGENTCarriere extends BasicProcess {
 					return performCalculContractuel(getAgentCourant());
 				} else if (carr != null && (carr.getCodeCategorie().equals("1") || carr.getCodeCategorie().equals("2") || carr.getCodeCategorie().equals("18") || carr.getCodeCategorie().equals("20"))) {
 					// alors on est dans les fonctionnaires
-					if (!performCalculFonctionnaire(carr)) {
-						addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
-						return false;
-					}
+					return performCalculFonctionnaire(getAgentCourant());
 				} else if (carr != null
 						&& (carr.getCodeCategorie().equals("6") || carr.getCodeCategorie().equals("16") || carr.getCodeCategorie().equals("17") || carr.getCodeCategorie().equals("19"))) {
 					// alors on est dans les détachés
@@ -2453,7 +2455,7 @@ public class OeAGENTCarriere extends BasicProcess {
 		String anneeCourante = Services.dateDuJour().substring(6, 10);
 
 		AvancementDetaches avct = avancementService.calculAvancementDetache(getTransaction(), agent, anneeCourante, adsService, getFichePosteDao(), getAffectationDao(),
-				getAutreAdministrationAgentDao());
+				getAutreAdministrationAgentDao(), true);
 		if (avct == null) {
 			addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 			// "ERR189","Cet avancement ne peut être calculé @."
@@ -2490,10 +2492,10 @@ public class OeAGENTCarriere extends BasicProcess {
 		FiliereGrade filiere = null;
 		if (gradeSuivant.getCodeGradeGenerique() != null) {
 			GradeGenerique gradeGeneriqueSuivant = GradeGenerique.chercherGradeGenerique(getTransaction(), gradeSuivant.getCodeGradeGenerique());
-			if(getTransaction().isErreur()){
+			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
 			}
-			if (gradeGeneriqueSuivant!=null && gradeGeneriqueSuivant.getCdfili() != null) {
+			if (gradeGeneriqueSuivant != null && gradeGeneriqueSuivant.getCdfili() != null) {
 				filiere = FiliereGrade.chercherFiliereGrade(getTransaction(), gradeGeneriqueSuivant.getCdfili());
 			}
 		}
@@ -2616,125 +2618,80 @@ public class OeAGENTCarriere extends BasicProcess {
 		return true;
 	}
 
-	private boolean performCalculFonctionnaire(Carriere carr) throws Exception {
-		// on regarde si il y a d'autre carrieres avec le meme grade
-		// si oui on prend la carriere plus lointaine
-		ArrayList<Carriere> listeCarrMemeGrade = Carriere.listerCarriereAvecGradeEtStatut(getTransaction(), getAgentCourant().getNomatr(), carr.getCodeGrade(), carr.getCodeCategorie());
-		if (listeCarrMemeGrade != null && listeCarrMemeGrade.size() > 0) {
-			carr = (Carriere) listeCarrMemeGrade.get(0);
+	private boolean performCalculFonctionnaire(Agent agent) throws Exception {
+		ReturnMessageDto result = avancementService.isAvancementFonctionnaire(getTransaction(), agent);
+
+		if (result.getErrors().size() > 0) {
+			String erreur = Const.CHAINE_VIDE;
+			for (String err : result.getErrors()) {
+				erreur += err;
+			}
+			getTransaction().declarerErreur(erreur);
+			return false;
 		}
 
-		String annee = carr.getDateDebut().substring(6, carr.getDateDebut().length());
-		Grade gradeActuel = Grade.chercherGrade(getTransaction(), carr.getCodeGrade());
-		// Si pas de grade suivant, agent non eligible
-		if (gradeActuel.getCodeGradeSuivant() != null && gradeActuel.getCodeGradeSuivant().length() != 0) {
-			// calcul BM/ACC applicables
-			int nbJoursBM = AvancementFonctionnaires.calculJourBM(gradeActuel, carr);
-			int nbJoursACC = AvancementFonctionnaires.calculJourACC(gradeActuel, carr);
+		String anneeCourante = Services.dateDuJour().substring(6, 10);
 
-			int nbJoursBonus = nbJoursBM + nbJoursACC;
+		AvancementFonctionnaires avct = avancementService.calculAvancementFonctionnaire(getTransaction(), agent, anneeCourante, adsService, getFichePosteDao(), getAffectationDao(),
+				getAutreAdministrationAgentDao(), getMotifAvancementDao(), getAvisCapDao(), true);
+		if (avct == null) {
+			addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+			// "ERR189","Cet avancement ne peut être calculé @."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR189", Const.CHAINE_VIDE));
+			return false;
+		} else if (avct.getIdAgent() == null) {
+			addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+			// "ERR189","Cet avancement ne peut être calculé @."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR189", ": le grade actuel de cet agent n'a pas de grade suivant"));
+			return false;
+		}
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		addZone(getNOM_EF_DATE_DEBUT(), sdf.format(avct.getDateAvctMoy()));
 
-			// Calcul date avancement au Grade actuel
-			if (gradeActuel.getDureeMoy() != null && gradeActuel.getDureeMoy().length() != 0) {
-				if (nbJoursBonus > Integer.parseInt(gradeActuel.getDureeMoy()) * 30) {
-					addZone(getNOM_EF_DATE_DEBUT(), carr.getDateDebut().substring(0, 6) + annee);
-					nbJoursBonus -= Integer.parseInt(gradeActuel.getDureeMoy()) * 30;
-				} else {
-					SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-					addZone(getNOM_EF_DATE_DEBUT(), sdf.format(AvancementFonctionnaires.calculDateAvctMoy(gradeActuel, carr)));
-					nbJoursBonus = 0;
-				}
-			}
+		addZone(getNOM_EF_IBA(), avct.getNouvIban());
+		addZone(getNOM_ST_INA(), avct.getNouvIna().toString());
+		addZone(getNOM_ST_INM(), avct.getNouvInm().toString());
 
-			// Calcul du grade suivant (BM/ACC)
-			Grade gradeSuivant = Grade.chercherGrade(getTransaction(), gradeActuel.getCodeGradeSuivant());
-			if (gradeSuivant.getDureeMoy() != null && gradeSuivant.getDureeMoy().length() > 0 && Services.estNumerique(gradeSuivant.getDureeMoy())) {
-				boolean isReliquatSuffisant = (nbJoursBonus > Integer.parseInt(gradeSuivant.getDureeMoy()) * 30);
-				while (isReliquatSuffisant && gradeSuivant.getCodeGradeSuivant() != null && gradeSuivant.getCodeGradeSuivant().length() > 0 && gradeSuivant.getDureeMoy() != null
-						&& gradeSuivant.getDureeMoy().length() > 0) {
-					nbJoursBonus -= Integer.parseInt(gradeSuivant.getDureeMoy()) * 30;
-					gradeSuivant = Grade.chercherGrade(getTransaction(), gradeSuivant.getCodeGradeSuivant());
-					isReliquatSuffisant = (nbJoursBonus > Integer.parseInt(gradeSuivant.getDureeMoy()) * 30);
-				}
-			}
+		addZone(getNOM_EF_BM_ANNEES(), avct.getNouvBmAnnee().toString());
+		addZone(getNOM_EF_BM_MOIS(), avct.getNouvBmMois().toString());
+		addZone(getNOM_EF_BM_JOURS(), avct.getNouvBmJour().toString());
 
-			int nbJoursRestantsBM = nbJoursBonus > nbJoursACC ? nbJoursBonus - nbJoursACC : Integer.parseInt(Const.ZERO);
-			int nbJoursRestantsACC = nbJoursBonus - nbJoursRestantsBM;
+		addZone(getNOM_EF_ACC_ANNEES(), avct.getNouvAccAnnee().toString());
+		addZone(getNOM_EF_ACC_MOIS(), avct.getNouvAccMois().toString());
+		addZone(getNOM_EF_ACC_JOURS(), avct.getNouvAccJour().toString());
 
+		Grade gradeSuivant = Grade.chercherGrade(getTransaction(), avct.getIdNouvGrade());
+		addZone(getNOM_ST_NOUV_GRADE(), avct.getIdNouvGrade());
+		addZone(getNOM_ST_NOUV_GRADE_GEN(), gradeSuivant.getCodeGradeGenerique() == null || gradeSuivant.getCodeGradeGenerique().length() == 0 ? null : gradeSuivant.getCodeGradeGenerique());
+		addZone(getNOM_ST_NOUV_CLASSE(), gradeSuivant.getCodeClasse() == null || gradeSuivant.getCodeClasse().length() == 0 ? null : gradeSuivant.getCodeClasse());
+		addZone(getNOM_ST_NOUV_ECHELON(), gradeSuivant.getCodeEchelon() == null || gradeSuivant.getCodeEchelon().length() == 0 ? null : gradeSuivant.getCodeEchelon());
+
+		addZone(getNOM_ST_GRADE(), avct.getGrade());
+		FiliereGrade filiere = null;
+		if (gradeSuivant.getCodeGradeGenerique() != null) {
 			GradeGenerique gradeGeneriqueSuivant = GradeGenerique.chercherGradeGenerique(getTransaction(), gradeSuivant.getCodeGradeGenerique());
-			FiliereGrade filiere = null;
-			if (gradeGeneriqueSuivant != null && gradeGeneriqueSuivant.getIdCadreEmploi() != null && gradeGeneriqueSuivant.getCdfili() != null) {
+			if (getTransaction().isErreur()) {
+				getTransaction().traiterErreur();
+			}
+			if (gradeGeneriqueSuivant != null && gradeGeneriqueSuivant.getCdfili() != null) {
 				filiere = FiliereGrade.chercherFiliereGrade(getTransaction(), gradeGeneriqueSuivant.getCdfili());
 			}
-
-			if ((carr.getCodeCategorie().equals("2") || carr.getCodeCategorie().equals("18")) && (!gradeActuel.getDureeMoy().equals("12"))) {
-				// la date d'avancement est la meme +1an
-				addZone(getNOM_EF_DATE_DEBUT(), Services.ajouteAnnee(carr.getDateDebut(), 1));
-
-				// on cherche le bareme
-				Bareme bareme = Bareme.chercherBareme(getTransaction(), gradeActuel.getIban());
-
-				addZone(getNOM_EF_IBA(), carr.getIban());
-				addZone(getNOM_ST_INA(), bareme.getIna());
-				addZone(getNOM_ST_INM(), bareme.getInm());
-
-				Integer nouvACCStage = Integer.valueOf(carr.getACCAnnee()) + 1;
-
-				addZone(getNOM_EF_BM_ANNEES(), carr.getBMAnnee());
-				addZone(getNOM_EF_BM_MOIS(), carr.getBMMois());
-				addZone(getNOM_EF_BM_JOURS(), carr.getBMJour());
-
-				addZone(getNOM_EF_ACC_ANNEES(), nouvACCStage.toString());
-				addZone(getNOM_EF_ACC_MOIS(), carr.getACCMois());
-				addZone(getNOM_EF_ACC_JOURS(), carr.getACCJour());
-
-				addZone(getNOM_ST_NOUV_GRADE(), gradeActuel.getCodeGrade() == null || gradeActuel.getCodeGrade().length() == 0 ? null : gradeActuel.getCodeGrade());
-				addZone(getNOM_ST_NOUV_GRADE_GEN(), gradeActuel.getCodeGradeGenerique() == null || gradeActuel.getCodeGradeGenerique().length() == 0 ? null : gradeActuel.getCodeGradeGenerique());
-				addZone(getNOM_ST_NOUV_CLASSE(), gradeActuel.getCodeClasse() == null || gradeActuel.getCodeClasse().length() == 0 ? null : gradeActuel.getCodeClasse());
-				addZone(getNOM_ST_NOUV_ECHELON(), gradeActuel.getCodeEchelon() == null || gradeActuel.getCodeEchelon().length() == 0 ? null : gradeActuel.getCodeEchelon());
-
-			} else {
-
-				// on cherche le nouveau bareme
-				Bareme nouvBareme = Bareme.chercherBareme(getTransaction(), gradeSuivant.getIban());
-
-				addZone(getNOM_EF_IBA(), nouvBareme.getIban());
-				addZone(getNOM_ST_INA(), nouvBareme.getIna());
-				addZone(getNOM_ST_INM(), nouvBareme.getInm());
-				addZone(getNOM_EF_BM_ANNEES(), String.valueOf(nbJoursRestantsBM / 365));
-				addZone(getNOM_EF_BM_MOIS(), String.valueOf((nbJoursRestantsBM % 365) / 30));
-				addZone(getNOM_EF_BM_JOURS(), String.valueOf((nbJoursRestantsBM % 365) % 30));
-
-				addZone(getNOM_EF_ACC_ANNEES(), String.valueOf(nbJoursRestantsACC / 365));
-				addZone(getNOM_EF_ACC_MOIS(), String.valueOf((nbJoursRestantsACC % 365) / 30));
-				addZone(getNOM_EF_ACC_JOURS(), String.valueOf((nbJoursRestantsACC % 365) % 30));
-
-				addZone(getNOM_ST_NOUV_GRADE(), gradeSuivant.getCodeGrade() == null || gradeSuivant.getCodeGrade().length() == 0 ? null : gradeSuivant.getCodeGrade());
-				addZone(getNOM_ST_NOUV_GRADE_GEN(), gradeSuivant.getCodeGradeGenerique() == null || gradeSuivant.getCodeGradeGenerique().length() == 0 ? null : gradeSuivant.getCodeGradeGenerique());
-				addZone(getNOM_ST_NOUV_CLASSE(), gradeSuivant.getCodeClasse() == null || gradeSuivant.getCodeClasse().length() == 0 ? null : gradeSuivant.getCodeClasse());
-				addZone(getNOM_ST_NOUV_ECHELON(), gradeSuivant.getCodeEchelon() == null || gradeSuivant.getCodeEchelon().length() == 0 ? null : gradeSuivant.getCodeEchelon());
-			}
-
-			addZone(getNOM_ST_GRADE(), carr.getCodeGrade());
-			addZone(getNOM_ST_FILIERE(), filiere == null ? Const.CHAINE_VIDE : filiere.getLibFiliere());
-
-			// motif de l'avancement
-			MotifAvancement motif = null;
-			if (gradeActuel.getCodeTava() != null && !gradeActuel.getCodeTava().equals(Const.CHAINE_VIDE)) {
-				try {
-					motif = getMotifAvancementDao().chercherMotifAvancement(Integer.valueOf(gradeActuel.getCodeTava()));
-				} catch (Exception e) {
-				}
-			}
-			addZone(getNOM_ST_TYPE_AVCT(), motif == null ? Const.CHAINE_VIDE : motif.getLibMotifAvct());
-
-			// on indique que les champs des fonctionnaires ne sont pas a
-			// afficher
-			showAccBM = true;
-		} else {
-			// addZone(getNOM_ST_INFO_AVCT_PREV(),
-			// "Le grade actuel de cet agent n'a pas de grade suivant, nous ne pouvons calculer son avancement.");
 		}
+		addZone(getNOM_ST_FILIERE(), filiere == null ? Const.CHAINE_VIDE : filiere.getLibFiliere());
+
+		// motif de l'avancement
+		MotifAvancement motif = null;
+		if (avct.getIdMotifAvct() != null) {
+			try {
+				motif = getMotifAvancementDao().chercherMotifAvancement(avct.getIdMotifAvct());
+			} catch (Exception e) {
+			}
+		}
+		addZone(getNOM_ST_TYPE_AVCT(), motif == null ? Const.CHAINE_VIDE : motif.getLibMotifAvct());
+
+		// on indique que les champs des fonctionnaires ne sont pas a
+		// afficher
+		showAccBM = true;
 		return true;
 	}
 
@@ -3266,5 +3223,13 @@ public class OeAGENTCarriere extends BasicProcess {
 
 	public void setAutreAdministrationAgentDao(AutreAdministrationAgentDao autreAdministrationAgentDao) {
 		this.autreAdministrationAgentDao = autreAdministrationAgentDao;
+	}
+
+	public AvisCapDao getAvisCapDao() {
+		return avisCapDao;
+	}
+
+	public void setAvisCapDao(AvisCapDao avisCapDao) {
+		this.avisCapDao = avisCapDao;
 	}
 }

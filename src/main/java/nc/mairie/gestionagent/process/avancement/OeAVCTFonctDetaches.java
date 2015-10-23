@@ -920,7 +920,7 @@ public class OeAVCTFonctDetaches extends BasicProcess {
 					// on recupere la derniere carriere dans l'année
 					Carriere carr = Carriere.chercherDerniereCarriereAvecAgentEtAnnee(getTransaction(), agent.getNomatr(), avct.getAnnee().toString());
 					// on check il y a une carriere deja saisie
-					if (avancementService.isCarriereDetacheSimu(getTransaction(), agent, avct, carr)) {
+					if (!avancementService.isCarriereDetacheSimu(avct, carr)) {
 
 						// alors on fait les modifs sur avancement
 						avct.setEtat(EnumEtatAvancement.AFFECTE.getValue());

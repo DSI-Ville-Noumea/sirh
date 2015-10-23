@@ -299,7 +299,7 @@ public class OeAVCTConvCol extends BasicProcess {
 					Agent agent = getAgentDao().chercherAgent(avct.getIdAgent());
 
 					// on check la si prime saisie en simu
-					if (avancementService.isPrimeAvctConvColSimu(getTransaction(), agent, avct)) {
+					if (!avancementService.isPrimeAvctConvColSimu(getTransaction(), agent, avct)) {
 						// c'est qu'il existe une prime pour cette date
 
 						// si ce n'est pas la derniere carriere du tableau ie :

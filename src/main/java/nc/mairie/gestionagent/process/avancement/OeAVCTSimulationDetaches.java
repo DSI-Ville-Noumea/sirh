@@ -258,7 +258,8 @@ public class OeAVCTSimulationDetaches extends BasicProcess {
 
 		// Parcours des agents
 		for (Agent a : la) {
-			AvancementDetaches avct = avancementService.calculAvancementDetache(getTransaction(), a, annee, adsService, getFichePosteDao(), getAffectationDao(), getAutreAdministrationAgentDao());
+			AvancementDetaches avct = avancementService.calculAvancementDetache(getTransaction(), a, annee, adsService, getFichePosteDao(), getAffectationDao(), getAutreAdministrationAgentDao(),
+					false);
 			if (avct == null) {
 				continue;
 			} else if (avct.getIdAgent() == null) {
