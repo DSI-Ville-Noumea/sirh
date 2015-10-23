@@ -53,7 +53,7 @@ public class OeAVCTConvCol extends BasicProcess {
 	private AgentDao agentDao;
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
-	private IAvancementService avctService;
+	private IAvancementService avancementService;
 
 	private void initialiseDao() {
 		// on initialise le dao
@@ -68,8 +68,8 @@ public class OeAVCTConvCol extends BasicProcess {
 		if (getAgentDao() == null) {
 			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
 		}
-		if (null == avctService) {
-			avctService = (IAvancementService) context.getBean("avctService");
+		if (null == avancementService) {
+			avancementService = (IAvancementService) context.getBean("avancementService");
 		}
 	}
 
@@ -299,7 +299,7 @@ public class OeAVCTConvCol extends BasicProcess {
 					Agent agent = getAgentDao().chercherAgent(avct.getIdAgent());
 
 					// on check la si prime saisie en simu
-					if (avctService.isPrimeAvctConvColSimu(getTransaction(), agent, avct)) {
+					if (avancementService.isPrimeAvctConvColSimu(getTransaction(), agent, avct)) {
 						// c'est qu'il existe une prime pour cette date
 
 						// si ce n'est pas la derniere carriere du tableau ie :
@@ -343,7 +343,7 @@ public class OeAVCTConvCol extends BasicProcess {
 							getHistoPrimeDao().creerHistoPrime(histo, user, EnumTypeHisto.MODIFICATION);
 							prime.modifierPrime(getTransaction(), agent, user);
 
-							Prime newPrime = avctService.getNewPrimeConventionCollective(getTransaction(), agent, avct);
+							Prime newPrime = avancementService.getNewPrimeConventionCollective(getTransaction(), agent, avct);
 							// RG_AG_PR_A04
 							HistoPrime histo2 = new HistoPrime(newPrime);
 							getHistoPrimeDao().creerHistoPrime(histo2, user, EnumTypeHisto.CREATION);
@@ -351,7 +351,7 @@ public class OeAVCTConvCol extends BasicProcess {
 						}
 					} else {
 						getTransaction().traiterErreur();
-						Prime newPrime = avctService.getNewPrimeConventionCollective(getTransaction(), agent, avct);
+						Prime newPrime = avancementService.getNewPrimeConventionCollective(getTransaction(), agent, avct);
 						// RG_AG_PR_A04
 						HistoPrime histo2 = new HistoPrime(newPrime);
 						getHistoPrimeDao().creerHistoPrime(histo2, user, EnumTypeHisto.CREATION);

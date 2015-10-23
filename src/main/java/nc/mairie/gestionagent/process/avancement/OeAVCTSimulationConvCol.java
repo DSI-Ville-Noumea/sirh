@@ -50,7 +50,7 @@ public class OeAVCTSimulationConvCol extends BasicProcess {
 	private AgentDao agentDao;
 
 	private IAdsService adsService;
-	private IAvancementService avctService;
+	private IAvancementService avancementService;
 	public String agentEnErreur = Const.CHAINE_VIDE;
 
 	/**
@@ -103,8 +103,8 @@ public class OeAVCTSimulationConvCol extends BasicProcess {
 		if (null == adsService) {
 			adsService = (IAdsService) context.getBean("adsService");
 		}
-		if (null == avctService) {
-			avctService = (IAvancementService) context.getBean("avctService");
+		if (null == avancementService) {
+			avancementService = (IAvancementService) context.getBean("avancementService");
 		}
 	}
 
@@ -238,7 +238,7 @@ public class OeAVCTSimulationConvCol extends BasicProcess {
 	private boolean performCalculConvCol(String idServiceAds, String annee, Agent agent) throws Exception {
 		ArrayList<Agent> la = new ArrayList<Agent>();
 		if (agent != null) {
-			ReturnMessageDto result = avctService.isAvancementConventionCollective(getTransaction(), agent);
+			ReturnMessageDto result = avancementService.isAvancementConventionCollective(getTransaction(), agent);
 			if (result.getErrors().size() > 0) {
 				String erreur = Const.CHAINE_VIDE;
 				for (String err : result.getErrors()) {
@@ -249,12 +249,12 @@ public class OeAVCTSimulationConvCol extends BasicProcess {
 			}
 			la.add(agent);
 		} else {
-			la = (ArrayList<Agent>) avctService.listAgentAvctConvCol(getTransaction(), idServiceAds, annee, adsService, getAgentDao());
+			la = (ArrayList<Agent>) avancementService.listAgentAvctConvCol(getTransaction(), idServiceAds, annee, adsService, getAgentDao());
 		}
 
 		// Parcours des agents
 		for (Agent a : la) {
-			AvancementConvCol avct = avctService.calculAvancementConventionCollective(getTransaction(), a, annee, adsService, getFichePosteDao(), getAffectationDao());
+			AvancementConvCol avct = avancementService.calculAvancementConventionCollective(getTransaction(), a, annee, adsService, getFichePosteDao(), getAffectationDao());
 			if (avct == null) {
 				// on informe les agents en erreur
 				agentEnErreur += a.getNomAgent() + " " + a.getPrenomAgent() + " (" + a.getNomatr() + "); ";
@@ -263,7 +263,7 @@ public class OeAVCTSimulationConvCol extends BasicProcess {
 				// l'agent n'a pas 3 ans d'ancienneté
 				continue;
 			}
-			avctService.creerAvancementConventionCollective(avct, getAvancementConvColDao());
+			avancementService.creerAvancementConventionCollective(avct, getAvancementConvColDao());
 		}
 		return true;
 	}

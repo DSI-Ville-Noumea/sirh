@@ -56,7 +56,7 @@ public class OeAVCTContractuels extends BasicProcess {
 	private FichePosteDao fichePosteDao;
 	private HistoCarriereDao histoCarriereDao;
 	private AgentDao agentDao;
-	private IAvancementService avctService;
+	private IAvancementService avancementService;
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyy");
 
 	/**
@@ -152,8 +152,8 @@ public class OeAVCTContractuels extends BasicProcess {
 		if (getAgentDao() == null) {
 			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
 		}
-		if (null == avctService) {
-			avctService = (IAvancementService) context.getBean("avctService");
+		if (null == avancementService) {
+			avancementService = (IAvancementService) context.getBean("avancementService");
 		}
 	}
 
@@ -324,7 +324,7 @@ public class OeAVCTContractuels extends BasicProcess {
 
 					Carriere carr = Carriere.chercherDerniereCarriereAvecAgentEtAnnee(getTransaction(), agent.getNomatr(), avct.getAnnee().toString());
 					// on check la si prime saisie en simu
-					if (avctService.isCarriereContractuelSimu(getTransaction(), agent, avct, carr)) {
+					if (avancementService.isCarriereContractuelSimu(getTransaction(), agent, avct, carr)) {
 						// c'est qu'il existe une carriere pour cette date
 
 						// si ce n'est pas la derniere carriere du tableau ie :
@@ -359,10 +359,8 @@ public class OeAVCTContractuels extends BasicProcess {
 					getHistoCarriereDao().creerHistoCarriere(histo, user, EnumTypeHisto.MODIFICATION);
 					carr.modifierCarriere(getTransaction(), agent, user);
 
-					Carriere nouvelleCarriere = avctService.getNewCarriereContractuel(getTransaction(), agent, avct, carr);
-
-					// RG_AG_CA_A03
-					nouvelleCarriere.setNoMatricule(agent.getNomatr().toString());
+					Carriere nouvelleCarriere = avancementService.getNewCarriereContractuel(getTransaction(), agent, avct, carr);
+					
 					HistoCarriere histo2 = new HistoCarriere(nouvelleCarriere);
 					getHistoCarriereDao().creerHistoCarriere(histo2, user, EnumTypeHisto.CREATION);
 					nouvelleCarriere.creerCarriere(getTransaction(), agent, user);

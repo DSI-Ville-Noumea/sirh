@@ -18,6 +18,7 @@ import nc.mairie.metier.agent.PositionAdmAgent;
 import nc.mairie.metier.agent.Prime;
 import nc.mairie.metier.avancement.AvancementContractuels;
 import nc.mairie.metier.avancement.AvancementConvCol;
+import nc.mairie.metier.avancement.AvancementDetaches;
 import nc.mairie.metier.avancement.AvancementFonctionnaires;
 import nc.mairie.metier.carriere.Bareme;
 import nc.mairie.metier.carriere.Carriere;
@@ -34,6 +35,7 @@ import nc.mairie.metier.poste.Affectation;
 import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.poste.Horaire;
 import nc.mairie.metier.referentiel.TypeContrat;
+import nc.mairie.spring.dao.metier.agent.AutreAdministrationAgentDao;
 import nc.mairie.spring.dao.metier.agent.ContratDao;
 import nc.mairie.spring.dao.metier.carriere.HistoCarriereDao;
 import nc.mairie.spring.dao.metier.parametrage.MotifAvancementDao;
@@ -121,10 +123,11 @@ public class OeAGENTCarriere extends BasicProcess {
 	private FichePosteDao fichePosteDao;
 	private HistoCarriereDao histoCarriereDao;
 	private AffectationDao affectationDao;
+	private AutreAdministrationAgentDao autreAdministrationAgentDao;
 
 	private ISirhService sirhService;
 
-	private IAvancementService avctService;
+	private IAvancementService avancementService;
 
 	private IAdsService adsService;
 
@@ -211,11 +214,14 @@ public class OeAGENTCarriere extends BasicProcess {
 		if (getAffectationDao() == null) {
 			setAffectationDao(new AffectationDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (getAutreAdministrationAgentDao() == null) {
+			setAutreAdministrationAgentDao(new AutreAdministrationAgentDao((SirhDao) context.getBean("sirhDao")));
+		}
 		if (null == sirhService) {
 			sirhService = (ISirhService) context.getBean("sirhService");
 		}
-		if (null == avctService) {
-			avctService = (IAvancementService) context.getBean("avctService");
+		if (null == avancementService) {
+			avancementService = (IAvancementService) context.getBean("avancementService");
 		}
 		if (null == adsService) {
 			adsService = (AdsService) context.getBean("adsService");
@@ -2410,10 +2416,7 @@ public class OeAGENTCarriere extends BasicProcess {
 				} else if (carr != null
 						&& (carr.getCodeCategorie().equals("6") || carr.getCodeCategorie().equals("16") || carr.getCodeCategorie().equals("17") || carr.getCodeCategorie().equals("19"))) {
 					// alors on est dans les détachés
-					if (!performCalculFonctionnaire(carr)) {
-						addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
-						return false;
-					}
+					return performCalculDetache(getAgentCourant());
 				} else {
 					// sinon on ne calcul pas d'avancement
 					// on affiche un message
@@ -2435,8 +2438,85 @@ public class OeAGENTCarriere extends BasicProcess {
 		return true;
 	}
 
+	private boolean performCalculDetache(Agent agent) throws Exception {
+		ReturnMessageDto result = avancementService.isAvancementDetache(getTransaction(), agent);
+
+		if (result.getErrors().size() > 0) {
+			String erreur = Const.CHAINE_VIDE;
+			for (String err : result.getErrors()) {
+				erreur += err;
+			}
+			getTransaction().declarerErreur(erreur);
+			return false;
+		}
+
+		String anneeCourante = Services.dateDuJour().substring(6, 10);
+
+		AvancementDetaches avct = avancementService.calculAvancementDetache(getTransaction(), agent, anneeCourante, adsService, getFichePosteDao(), getAffectationDao(),
+				getAutreAdministrationAgentDao());
+		if (avct == null) {
+			addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+			// "ERR189","Cet avancement ne peut être calculé @."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR189", Const.CHAINE_VIDE));
+			return false;
+		} else if (avct.getIdAgent() == null) {
+			addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+			// "ERR189","Cet avancement ne peut être calculé @."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR189", ": le grade actuel de cet agent n'a pas de grade suivant"));
+			return false;
+		}
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		addZone(getNOM_EF_DATE_DEBUT(), sdf.format(avct.getDateAvctMoy()));
+
+		addZone(getNOM_EF_IBA(), avct.getNouvIban());
+		addZone(getNOM_ST_INA(), avct.getNouvIna().toString());
+		addZone(getNOM_ST_INM(), avct.getNouvInm().toString());
+
+		addZone(getNOM_EF_BM_ANNEES(), avct.getNouvBmAnnee().toString());
+		addZone(getNOM_EF_BM_MOIS(), avct.getNouvBmMois().toString());
+		addZone(getNOM_EF_BM_JOURS(), avct.getNouvBmJour().toString());
+
+		addZone(getNOM_EF_ACC_ANNEES(), avct.getNouvAccAnnee().toString());
+		addZone(getNOM_EF_ACC_MOIS(), avct.getNouvAccMois().toString());
+		addZone(getNOM_EF_ACC_JOURS(), avct.getNouvAccJour().toString());
+
+		Grade gradeSuivant = Grade.chercherGrade(getTransaction(), avct.getIdNouvGrade());
+		addZone(getNOM_ST_NOUV_GRADE(), avct.getIdNouvGrade());
+		addZone(getNOM_ST_NOUV_GRADE_GEN(), gradeSuivant.getCodeGradeGenerique() == null || gradeSuivant.getCodeGradeGenerique().length() == 0 ? null : gradeSuivant.getCodeGradeGenerique());
+		addZone(getNOM_ST_NOUV_CLASSE(), gradeSuivant.getCodeClasse() == null || gradeSuivant.getCodeClasse().length() == 0 ? null : gradeSuivant.getCodeClasse());
+		addZone(getNOM_ST_NOUV_ECHELON(), gradeSuivant.getCodeEchelon() == null || gradeSuivant.getCodeEchelon().length() == 0 ? null : gradeSuivant.getCodeEchelon());
+
+		addZone(getNOM_ST_GRADE(), avct.getGrade());
+		FiliereGrade filiere = null;
+		if (gradeSuivant.getCodeGradeGenerique() != null) {
+			GradeGenerique gradeGeneriqueSuivant = GradeGenerique.chercherGradeGenerique(getTransaction(), gradeSuivant.getCodeGradeGenerique());
+			if(getTransaction().isErreur()){
+				getTransaction().traiterErreur();
+			}
+			if (gradeGeneriqueSuivant!=null && gradeGeneriqueSuivant.getCdfili() != null) {
+				filiere = FiliereGrade.chercherFiliereGrade(getTransaction(), gradeGeneriqueSuivant.getCdfili());
+			}
+		}
+		addZone(getNOM_ST_FILIERE(), filiere == null ? Const.CHAINE_VIDE : filiere.getLibFiliere());
+
+		// motif de l'avancement
+		MotifAvancement motif = null;
+		if (avct.getIdMotifAvct() != null) {
+			try {
+				motif = getMotifAvancementDao().chercherMotifAvancement(avct.getIdMotifAvct());
+			} catch (Exception e) {
+			}
+		}
+		addZone(getNOM_ST_TYPE_AVCT(), motif == null ? Const.CHAINE_VIDE : motif.getLibMotifAvct());
+
+		// on indique que les champs des fonctionnaires ne sont pas a
+		// afficher
+		showAccBM = true;
+		return true;
+	}
+
 	private boolean performCalculConventionCollective(Agent agent) throws Exception {
-		ReturnMessageDto result = avctService.isAvancementConventionCollective(getTransaction(), agent);
+		ReturnMessageDto result = avancementService.isAvancementConventionCollective(getTransaction(), agent);
 
 		if (result.getErrors().size() > 0) {
 			String erreur = Const.CHAINE_VIDE;
@@ -2455,7 +2535,7 @@ public class OeAGENTCarriere extends BasicProcess {
 		if (getTransaction().isErreur()) {
 			getTransaction().traiterErreur();
 
-			AvancementConvCol avct = avctService.calculAvancementConventionCollective(getTransaction(), agent, anneeCourante, adsService, getFichePosteDao(), getAffectationDao());
+			AvancementConvCol avct = avancementService.calculAvancementConventionCollective(getTransaction(), agent, anneeCourante, adsService, getFichePosteDao(), getAffectationDao());
 			if (avct == null) {
 				addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 				// "ERR189","Cet avancement ne peut être calculé @."
@@ -2468,7 +2548,7 @@ public class OeAGENTCarriere extends BasicProcess {
 				return false;
 			}
 
-			Prime prime = avctService.getNewPrimeConventionCollective(getTransaction(), agent, avct);
+			Prime prime = avancementService.getNewPrimeConventionCollective(getTransaction(), agent, avct);
 			addZone(getNOM_EF_DATE_DEBUT(), "01/01/" + avct.getAnnee());
 			addZone(getNOM_ST_GRADE(), prime.getMtPri());
 		} else {
@@ -2483,7 +2563,7 @@ public class OeAGENTCarriere extends BasicProcess {
 	}
 
 	private boolean performCalculContractuel(Agent agent) throws Exception {
-		ReturnMessageDto result = avctService.isAvancementContractuel(getTransaction(), agent);
+		ReturnMessageDto result = avancementService.isAvancementContractuel(getTransaction(), agent);
 
 		if (result.getErrors().size() > 0) {
 			String erreur = Const.CHAINE_VIDE;
@@ -2496,13 +2576,13 @@ public class OeAGENTCarriere extends BasicProcess {
 
 		String anneeCourante = Services.dateDuJour().substring(6, 10);
 
-		AvancementContractuels avct = avctService.calculAvancementContractuel(getTransaction(), agent, anneeCourante, adsService, getFichePosteDao(), getAffectationDao(), true);
+		AvancementContractuels avct = avancementService.calculAvancementContractuel(getTransaction(), agent, anneeCourante, adsService, getFichePosteDao(), getAffectationDao(), true);
 		if (avct == null) {
 			addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 			// "ERR189","Cet avancement ne peut être calculé @."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR189", Const.CHAINE_VIDE));
 			return false;
-		}  else if (avct.getIdAgent() == null) {
+		} else if (avct.getIdAgent() == null) {
 			addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 			// le nombre de point d'avancement du grade est 0.
 			// "ERR189","Cet avancement ne peut être calculé @."
@@ -2652,7 +2732,8 @@ public class OeAGENTCarriere extends BasicProcess {
 			// afficher
 			showAccBM = true;
 		} else {
-			addZone(getNOM_ST_INFO_AVCT_PREV(), "Le grade actuel de cet agent n'a pas de grade suivant, nous ne pouvons calculer son avancement.");
+			// addZone(getNOM_ST_INFO_AVCT_PREV(),
+			// "Le grade actuel de cet agent n'a pas de grade suivant, nous ne pouvons calculer son avancement.");
 		}
 		return true;
 	}
@@ -3123,14 +3204,6 @@ public class OeAGENTCarriere extends BasicProcess {
 		return getZone(getNOM_ST_TYPE_AVCT());
 	}
 
-	public String getNOM_ST_INFO_AVCT_PREV() {
-		return "NOM_ST_INFO_AVCT_PREV";
-	}
-
-	public String getVAL_ST_INFO_AVCT_PREV() {
-		return getZone(getNOM_ST_INFO_AVCT_PREV());
-	}
-
 	public MotifAvancementDao getMotifAvancementDao() {
 		return motifAvancementDao;
 	}
@@ -3185,5 +3258,13 @@ public class OeAGENTCarriere extends BasicProcess {
 
 	public void setAffectationDao(AffectationDao affectationDao) {
 		this.affectationDao = affectationDao;
+	}
+
+	public AutreAdministrationAgentDao getAutreAdministrationAgentDao() {
+		return autreAdministrationAgentDao;
+	}
+
+	public void setAutreAdministrationAgentDao(AutreAdministrationAgentDao autreAdministrationAgentDao) {
+		this.autreAdministrationAgentDao = autreAdministrationAgentDao;
 	}
 }

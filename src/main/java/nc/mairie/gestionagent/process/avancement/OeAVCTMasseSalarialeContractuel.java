@@ -64,7 +64,7 @@ public class OeAVCTMasseSalarialeContractuel extends BasicProcess {
 	private AgentDao agentDao;
 
 	private IAdsService adsService;
-	private IAvancementService avctService;
+	private IAvancementService avancementService;
 
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
@@ -124,8 +124,8 @@ public class OeAVCTMasseSalarialeContractuel extends BasicProcess {
 		if (null == adsService) {
 			adsService = (IAdsService) context.getBean("adsService");
 		}
-		if (null == avctService) {
-			avctService = (IAvancementService) context.getBean("avctService");
+		if (null == avancementService) {
+			avancementService = (IAvancementService) context.getBean("avancementService");
 		}
 	}
 
@@ -500,7 +500,7 @@ public class OeAVCTMasseSalarialeContractuel extends BasicProcess {
 	private boolean performCalculContractuel(String idServiceAds, String annee, Agent agent) throws Exception {
 		ArrayList<Agent> la = new ArrayList<Agent>();
 		if (agent != null) {
-			ReturnMessageDto result = avctService.isAvancementContractuel(getTransaction(), agent);
+			ReturnMessageDto result = avancementService.isAvancementContractuel(getTransaction(), agent);
 			if (result.getErrors().size() > 0) {
 				String erreur = Const.CHAINE_VIDE;
 				for (String err : result.getErrors()) {
@@ -511,12 +511,12 @@ public class OeAVCTMasseSalarialeContractuel extends BasicProcess {
 			}
 			la.add(agent);
 		} else {
-			la = (ArrayList<Agent>) avctService.listAgentAvctContractuel(getTransaction(), idServiceAds, annee, adsService, getAgentDao());
+			la = (ArrayList<Agent>) avancementService.listAgentAvctContractuel(getTransaction(), idServiceAds, annee, adsService, getAgentDao());
 		}
 
 		// Parcours des agents
 		for (Agent a : la) {
-			AvancementContractuels avct = avctService.calculAvancementContractuel(getTransaction(), a, annee, adsService, getFichePosteDao(), getAffectationDao(), false);
+			AvancementContractuels avct = avancementService.calculAvancementContractuel(getTransaction(), a, annee, adsService, getFichePosteDao(), getAffectationDao(), false);
 			if (avct == null) {
 				// on informe les agents en erreur
 				agentEnErreur += a.getNomAgent() + " " + a.getPrenomAgent() + " (" + a.getNomatr() + "); ";
@@ -525,7 +525,7 @@ public class OeAVCTMasseSalarialeContractuel extends BasicProcess {
 				// le nombre de point d'avancement du grade est 0.
 				continue;
 			}
-			avctService.creerAvancementContractuel(avct, getAvancementContractuelsDao());
+			avancementService.creerAvancementContractuel(avct, getAvancementContractuelsDao());
 		}
 		return true;
 	}
@@ -1031,7 +1031,7 @@ public class OeAVCTMasseSalarialeContractuel extends BasicProcess {
 
 					Carriere carr = Carriere.chercherDerniereCarriereAvecAgentEtAnnee(getTransaction(), agent.getNomatr(), avct.getAnnee().toString());
 					// on check la si prime saisie en simu
-					if (avctService.isCarriereContractuelSimu(getTransaction(), agent, avct, carr)) {
+					if (avancementService.isCarriereContractuelSimu(getTransaction(), agent, avct, carr)) {
 						// c'est qu'il existe une carriere pour cette date
 
 						// si ce n'est pas la derniere carriere du tableau ie :
@@ -1066,10 +1066,8 @@ public class OeAVCTMasseSalarialeContractuel extends BasicProcess {
 					getHistoCarriereDao().creerHistoCarriere(histo, user, EnumTypeHisto.MODIFICATION);
 					carr.modifierCarriere(getTransaction(), agent, user);
 
-					Carriere nouvelleCarriere = avctService.getNewCarriereContractuel(getTransaction(), agent, avct, carr);
+					Carriere nouvelleCarriere = avancementService.getNewCarriereContractuel(getTransaction(), agent, avct, carr);
 
-					// RG_AG_CA_A03
-					nouvelleCarriere.setNoMatricule(agent.getNomatr().toString());
 					HistoCarriere histo2 = new HistoCarriere(nouvelleCarriere);
 					getHistoCarriereDao().creerHistoCarriere(histo2, user, EnumTypeHisto.CREATION);
 					nouvelleCarriere.creerCarriere(getTransaction(), agent, user);

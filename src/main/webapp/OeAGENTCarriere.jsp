@@ -474,8 +474,6 @@
 			<FONT color="red"> Réouverture de la carrière précédente ?</FONT>
 		<% }else if(process.getVAL_ST_ACTION().equals(process.ACTION_AVCT_PREV)){ %>
 			<div>
-				<FONT color='red' style=" margin-left:20px;position:relative;"><%=process.getVAL_ST_INFO_AVCT_PREV()%></FONT>
-		    	<BR/><BR/>
 				<span class="sigp2" style="margin-left:20px;position:relative;width:150px;">Grade: </span>
 				<span class="sigp2-saisie"><%=process.getVAL_ST_GRADE()%></span>
 				<BR/><BR/>

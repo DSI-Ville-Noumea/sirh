@@ -50,7 +50,7 @@ public class OeAVCTSimulationContractuels extends BasicProcess {
 	private AgentDao agentDao;
 
 	private IAdsService adsService;
-	private IAvancementService avctService;
+	private IAvancementService avancementService;
 	public String agentEnErreur = Const.CHAINE_VIDE;
 
 	/**
@@ -102,8 +102,8 @@ public class OeAVCTSimulationContractuels extends BasicProcess {
 		if (null == adsService) {
 			adsService = (IAdsService) context.getBean("adsService");
 		}
-		if (null == avctService) {
-			avctService = (IAvancementService) context.getBean("avctService");
+		if (null == avancementService) {
+			avancementService = (IAvancementService) context.getBean("avancementService");
 		}
 	}
 
@@ -236,7 +236,7 @@ public class OeAVCTSimulationContractuels extends BasicProcess {
 	private boolean performCalculContractuel(String idServiceAds, String annee, Agent agent) throws Exception {
 		ArrayList<Agent> la = new ArrayList<Agent>();
 		if (agent != null) {
-			ReturnMessageDto result = avctService.isAvancementContractuel(getTransaction(), agent);
+			ReturnMessageDto result = avancementService.isAvancementContractuel(getTransaction(), agent);
 			if (result.getErrors().size() > 0) {
 				String erreur = Const.CHAINE_VIDE;
 				for (String err : result.getErrors()) {
@@ -247,12 +247,12 @@ public class OeAVCTSimulationContractuels extends BasicProcess {
 			}
 			la.add(agent);
 		} else {
-			la = (ArrayList<Agent>) avctService.listAgentAvctContractuel(getTransaction(), idServiceAds, annee, adsService, getAgentDao());
+			la = (ArrayList<Agent>) avancementService.listAgentAvctContractuel(getTransaction(), idServiceAds, annee, adsService, getAgentDao());
 		}
 
 		// Parcours des agents
 		for (Agent a : la) {
-			AvancementContractuels avct = avctService.calculAvancementContractuel(getTransaction(), a, annee, adsService, getFichePosteDao(), getAffectationDao(), false);
+			AvancementContractuels avct = avancementService.calculAvancementContractuel(getTransaction(), a, annee, adsService, getFichePosteDao(), getAffectationDao(), false);
 			if (avct == null) {
 				// on informe les agents en erreur
 				agentEnErreur += a.getNomAgent() + " " + a.getPrenomAgent() + " (" + a.getNomatr() + "); ";
@@ -261,7 +261,7 @@ public class OeAVCTSimulationContractuels extends BasicProcess {
 				// le nombre de point d'avancement du grade est 0.
 				continue;
 			}
-			avctService.creerAvancementContractuel(avct, getAvancementContractuelsDao());
+			avancementService.creerAvancementContractuel(avct, getAvancementContractuelsDao());
 		}
 		return true;
 	}

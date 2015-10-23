@@ -61,7 +61,7 @@ public class OeAVCTMasseSalarialeConvention extends BasicProcess {
 	private AgentDao agentDao;
 
 	private IAdsService adsService;
-	private IAvancementService avctService;
+	private IAvancementService avancementService;
 	public String agentEnErreur = Const.CHAINE_VIDE;
 
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
@@ -88,8 +88,8 @@ public class OeAVCTMasseSalarialeConvention extends BasicProcess {
 		if (null == adsService) {
 			adsService = (IAdsService) context.getBean("adsService");
 		}
-		if (null == avctService) {
-			avctService = (IAvancementService) context.getBean("avctService");
+		if (null == avancementService) {
+			avancementService = (IAvancementService) context.getBean("avancementService");
 		}
 	}
 
@@ -468,7 +468,7 @@ public class OeAVCTMasseSalarialeConvention extends BasicProcess {
 	private boolean performCalculConvCol(String idServiceAds, String annee, Agent agent) throws Exception {
 		ArrayList<Agent> la = new ArrayList<Agent>();
 		if (agent != null) {
-			ReturnMessageDto result = avctService.isAvancementConventionCollective(getTransaction(), agent);
+			ReturnMessageDto result = avancementService.isAvancementConventionCollective(getTransaction(), agent);
 			if (result.getErrors().size() > 0) {
 				String erreur = Const.CHAINE_VIDE;
 				for (String err : result.getErrors()) {
@@ -479,12 +479,12 @@ public class OeAVCTMasseSalarialeConvention extends BasicProcess {
 			}
 			la.add(agent);
 		} else {
-			la = (ArrayList<Agent>) avctService.listAgentAvctConvCol(getTransaction(), idServiceAds, annee, adsService, getAgentDao());
+			la = (ArrayList<Agent>) avancementService.listAgentAvctConvCol(getTransaction(), idServiceAds, annee, adsService, getAgentDao());
 		}
 
 		// Parcours des agents
 		for (Agent a : la) {
-			AvancementConvCol avct = avctService.calculAvancementConventionCollective(getTransaction(), a, annee, adsService, getFichePosteDao(), getAffectationDao());
+			AvancementConvCol avct = avancementService.calculAvancementConventionCollective(getTransaction(), a, annee, adsService, getFichePosteDao(), getAffectationDao());
 			if (avct == null) {
 				// on informe les agents en erreur
 				agentEnErreur += a.getNomAgent() + " " + a.getPrenomAgent() + " (" + a.getNomatr() + "); ";
@@ -493,7 +493,7 @@ public class OeAVCTMasseSalarialeConvention extends BasicProcess {
 				// l'agent n'a pas 3 ans d'ancienneté
 				continue;
 			}
-			avctService.creerAvancementConventionCollective(avct, getAvancementConvColDao());
+			avancementService.creerAvancementConventionCollective(avct, getAvancementConvColDao());
 		}
 		return true;
 	}
@@ -674,7 +674,7 @@ public class OeAVCTMasseSalarialeConvention extends BasicProcess {
 					Agent agent = getAgentDao().chercherAgent(avct.getIdAgent());
 
 					// on check la si prime saisie en simu
-					if (avctService.isPrimeAvctConvColSimu(getTransaction(), agent, avct)) {
+					if (avancementService.isPrimeAvctConvColSimu(getTransaction(), agent, avct)) {
 						// c'est qu'il existe une prime pour cette date
 
 						// si ce n'est pas la derniere carriere du tableau ie :
@@ -718,7 +718,7 @@ public class OeAVCTMasseSalarialeConvention extends BasicProcess {
 							getHistoPrimeDao().creerHistoPrime(histo, user, EnumTypeHisto.MODIFICATION);
 							prime.modifierPrime(getTransaction(), agent, user);
 
-							Prime newPrime = avctService.getNewPrimeConventionCollective(getTransaction(), agent, avct);
+							Prime newPrime = avancementService.getNewPrimeConventionCollective(getTransaction(), agent, avct);
 							// RG_AG_PR_A04
 							HistoPrime histo2 = new HistoPrime(newPrime);
 							getHistoPrimeDao().creerHistoPrime(histo2, user, EnumTypeHisto.CREATION);
@@ -727,7 +727,7 @@ public class OeAVCTMasseSalarialeConvention extends BasicProcess {
 					} else {
 						getTransaction().traiterErreur();
 
-						Prime newPrime = avctService.getNewPrimeConventionCollective(getTransaction(), agent, avct);
+						Prime newPrime = avancementService.getNewPrimeConventionCollective(getTransaction(), agent, avct);
 						// RG_AG_PR_A04
 						HistoPrime histo2 = new HistoPrime(newPrime);
 						getHistoPrimeDao().creerHistoPrime(histo2, user, EnumTypeHisto.CREATION);
