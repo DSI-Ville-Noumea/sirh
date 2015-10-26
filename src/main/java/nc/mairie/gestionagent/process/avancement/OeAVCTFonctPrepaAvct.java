@@ -367,7 +367,7 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 				+ EnumEtatAvancement.SGC.getValue() + "')";
 		setListeAvct(getAvancementFonctionnairesDao().listerAvancementAvecAnneeEtat(Integer.valueOf(annee), reqEtat,
 				filiere == null ? null : filiere.getLibFiliere(), agent == null ? null : agent.getIdAgent(),
-				listeSousService, null, null));
+				listeSousService, null, null,"non"));
 
 		afficheListeAvancement();
 
@@ -448,7 +448,7 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 							avct.getUserVerifArr(), avct.getDateVerifArr(), avct.getHeureVerifArr(), avct.getDateCap(),
 							avct.getObservationArr(), avct.getUserVerifArrImpr(), avct.getDateVerifArrImpr(),
 							avct.getHeureVerifArrImpr(), avct.isRegularisation(), avct.isAgentVdn(), avct.getIdCap(),
-							avct.getCodePa());
+							avct.getCodePa(),avct.isAutre());
 				}
 				// RG-EAE-25
 				// on regarde si il y a une campagne pour l'année en cours de
@@ -496,7 +496,7 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 							avct.getUserVerifArr(), avct.getDateVerifArr(), avct.getHeureVerifArr(), avct.getDateCap(),
 							avct.getObservationArr(), avct.getUserVerifArrImpr(), avct.getDateVerifArrImpr(),
 							avct.getHeureVerifArrImpr(), avct.isRegularisation(), avct.isAgentVdn(), avct.getIdCap(),
-							avct.getCodePa());
+							avct.getCodePa(),avct.isAutre());
 				}
 				// RG-EAE-25
 				// on regarde si il y a une campagne pour l'année en cours de

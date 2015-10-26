@@ -103,7 +103,7 @@ document.write(menuAgentEAE.afficher());
 //*               Le menu haut Gestion des avancements
 //***************************************************************
 var menuAVCTAvancementFonctionnaire = new MenuHaut("Module_avct_simulationFonctionnaires");
-menuAVCTAvancementFonctionnaire.ajouterFils(new Lien("AVCTSimulationFontionnaires", "SIMU FONCTIONNAIRES", "Simulation pour les fonctionnaires", true, false,"SIMULATION"));
+menuAVCTAvancementFonctionnaire.ajouterFils(new Lien("AVCTSimulationFonctionnaires", "SIMU FONCTIONNAIRES", "Simulation pour les fonctionnaires", true, false,"SIMULATION"));
 menuAVCTAvancementFonctionnaire.ajouterFils(new Lien("AVCTFonctPrepaAvct", "prepa avct", "Avancement des fonctionnaires", true, false,"PREPARATION AVANCEMENT"));
 <% 
 String affAvctCAP =  (String) ServletAgent.getMesParametres().get("AFFICHAGE_AVCT_CAP");
@@ -131,6 +131,11 @@ var menuAVCTAvancementDetaches = new MenuHaut("Module_avct_simulationDetaches");
 menuAVCTAvancementDetaches.ajouterFils(new Lien("AVCTSimulationDetaches", "SIMU DETACHES", "Simulation pour les fonctionnaires détachés", true, false,"SIMULATION"));
 menuAVCTAvancementDetaches.ajouterFils(new Lien("AVCTDetaches", "DETACHES", "Avancement des fonctionnaires détachés", true, false,"DETACHES"));
 document.write(menuAVCTAvancementDetaches.afficher());
+
+var menuAVCTAvancementFonctionnaireAutre = new MenuHaut("Module_avct_simulationFonctionnaireAutre");
+menuAVCTAvancementFonctionnaireAutre.ajouterFils(new Lien("AVCTSimulationFonctionnaireAutre", "SIMU FONCTIONNAIRES", "Simulation pour les fonctionnaires territoriaux et AUTOMATIQUE", true, false,"SIMULATION"));
+menuAVCTAvancementFonctionnaireAutre.ajouterFils(new Lien("AVCTFonctionnaireAutre", "FONCTIONNAIRES TERR & AUTO", "Avancement des fonctionnaires territoriaux et AUTOMATIQUE", true, false,"FONCTIONNAIRES TERR & AUTO"));
+document.write(menuAVCTAvancementFonctionnaireAutre.afficher());
 
 var menuAVCTAvancementConvCol = new MenuHaut("Module_avct_simulationConvCol");
 menuAVCTAvancementConvCol.ajouterFils(new Lien("AVCTSimulationConvCol", "SIMU CONVENTIONS", "Simulation pour les conventions collectives", true, false,"SIMULATION"));

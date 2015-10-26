@@ -81,7 +81,7 @@
 		listeDroits.add("FPGestionAutomatiseDuplication");
 		
 		/*Module AVANCEMENT*/
-		listeDroits.add("AVCTSimulationFontionnaires");
+		listeDroits.add("AVCTSimulationFonctionnaires");
 		listeDroits.add("AVCTSimulationContractuels");
 		listeDroits.add("AVCTSimulationConvCol");
 		listeDroits.add("AVCTFonctPrepaAvct");
@@ -99,6 +99,8 @@
 		listeDroits.add("AVCTMasseSalarialeConv");
 		listeDroits.add("AVCTMasseSalarialeDetaches");
 		listeDroits.add("AVCTSimulationDetaches");
+		listeDroits.add("AVCTSimulationFonctionnaireAutre");
+		listeDroits.add("AVCTFonctionnaireAutre");
 		listeDroits.add("AVCTDetaches");
 		
 		/*Module POINTAGE*/

@@ -50,6 +50,7 @@ import nc.mairie.gestionagent.process.avancement.OeAVCTFonctCarrieres;
 import nc.mairie.gestionagent.process.avancement.OeAVCTFonctDetaches;
 import nc.mairie.gestionagent.process.avancement.OeAVCTFonctPrepaAvct;
 import nc.mairie.gestionagent.process.avancement.OeAVCTFonctPrepaCAP;
+import nc.mairie.gestionagent.process.avancement.OeAVCTFonctionnaireAutre;
 import nc.mairie.gestionagent.process.avancement.OeAVCTMasseSalarialeContractuel;
 import nc.mairie.gestionagent.process.avancement.OeAVCTMasseSalarialeConvention;
 import nc.mairie.gestionagent.process.avancement.OeAVCTMasseSalarialeDetaches;
@@ -59,6 +60,7 @@ import nc.mairie.gestionagent.process.avancement.OeAVCTSelectionEvaluateur;
 import nc.mairie.gestionagent.process.avancement.OeAVCTSimulationContractuels;
 import nc.mairie.gestionagent.process.avancement.OeAVCTSimulationConvCol;
 import nc.mairie.gestionagent.process.avancement.OeAVCTSimulationDetaches;
+import nc.mairie.gestionagent.process.avancement.OeAVCTSimulationFonctionnaireAutre;
 import nc.mairie.gestionagent.process.avancement.OeAVCTSimulationFonctionnaires;
 import nc.mairie.gestionagent.process.election.OeELECSaisieCompteurA48;
 import nc.mairie.gestionagent.process.election.OeELECSaisieCompteurA52;
@@ -219,8 +221,12 @@ public class RobotAgent extends Robot {
 		} else if (activite.equals("FPGestionAutomatiseDuplication")) {
 			return new OePOSTEDuplicationFDP();
 		} // Module AVANCEMENT
-		else if (activite.equals("AVCTSimulationFontionnaires")) {
+		else if (activite.equals("AVCTSimulationFonctionnaires")) {
 			return new OeAVCTSimulationFonctionnaires();
+		} else if (activite.equals("AVCTSimulationFonctionnaireAutre")) {
+			return new OeAVCTSimulationFonctionnaireAutre();
+		} else if (activite.equals("AVCTFonctionnaireAutre")) {
+			return new OeAVCTFonctionnaireAutre();
 		} else if (activite.equals("AVCTSimulationContractuels")) {
 			return new OeAVCTSimulationContractuels();
 		} else if (activite.equals("AVCTSimulationConvCol")) {
@@ -257,13 +263,13 @@ public class RobotAgent extends Robot {
 			return new OeAVCTMasseSalarialeConvention();
 		} else if (activite.equals("AVCTMasseSalarialeDetaches")) {
 			return new OeAVCTMasseSalarialeDetaches();
-			
+
 		} // Module SUIVI MEDICAL
 		else if (activite.equals("SMConvocation")) {
 			return new OeSMConvocation();
 		} else if (activite.equals("SMHistorique")) {
 			return new OeSMHistorique();
-			
+
 		} // Module POINTAGE
 		else if (activite.equals("PTGSaisie")) {
 			return new OePTGVisualisation();
@@ -279,7 +285,7 @@ public class RobotAgent extends Robot {
 			return new OePTGPayeurFonct();
 		} else if (activite.equals("PTGPayeurContractuels")) {
 			return new OePTGPayeurContractuels();
-			
+
 		}// Module ABSENCE
 		else if (activite.equals("ABSVisualisation")) {
 			return new OeABSVisualisation();
@@ -287,7 +293,7 @@ public class RobotAgent extends Robot {
 			return new OeABSRestitution();
 		} else if (activite.equals("ABSAlimentationMensuelle")) {
 			return new OeABSAlimentationMensuelle();
-			
+
 			// Module ELECTION
 		} else if (activite.equals("ELECSaisieCompteurA48")) {
 			return new OeELECSaisieCompteurA48();
@@ -301,7 +307,7 @@ public class RobotAgent extends Robot {
 			return new OeELECSaisieCompteurA53();
 		} else if (activite.equals("ELECSaisieCompteurA52")) {
 			return new OeELECSaisieCompteurA52();
-			
+
 			// Modul ORGANIGRAMME
 		} else if (activite.equals("gestionOrganigramme")) {
 			return new OeORGAGestion();
@@ -377,481 +383,311 @@ public class RobotAgent extends Robot {
 		// ///////////////////
 		// AGENT - Emplois //
 		// ///////////////////
-		navigation.put(OeAGENTEmploisAffectation.class.getName() + OeAGENTEmploisAffectation.STATUT_RECHERCHE_FP,
-				OePOSTEFPRechercheAvancee.class.getName());
-		navigation.put(OeAGENTEmploisAffectation.class.getName() + OeAGENTEmploisAffectation.STATUT_HISTORIQUE,
-				OeAGENTEmploisAffHisto.class.getName());
-		navigation.put(OeAGENTEmploisAffectation.class.getName()
-				+ OeAGENTEmploisAffectation.STATUT_RECHERCHE_FP_SECONDAIRE, OePOSTEFPRechercheAvancee.class.getName());
+		navigation.put(OeAGENTEmploisAffectation.class.getName() + OeAGENTEmploisAffectation.STATUT_RECHERCHE_FP, OePOSTEFPRechercheAvancee.class.getName());
+		navigation.put(OeAGENTEmploisAffectation.class.getName() + OeAGENTEmploisAffectation.STATUT_HISTORIQUE, OeAGENTEmploisAffHisto.class.getName());
+		navigation.put(OeAGENTEmploisAffectation.class.getName() + OeAGENTEmploisAffectation.STATUT_RECHERCHE_FP_SECONDAIRE, OePOSTEFPRechercheAvancee.class.getName());
 
 		// Classe OeAGENTEtatCivil
-		navigation.put(OeAGENTEtatCivil.class.getName() + OeAGENTEtatCivil.STATUT_LIEU_NAISS,
-				OeCOMMUNESelection.class.getName());
-		navigation
-				.put(OeAGENTEtatCivil.class.getName() + OeAGENTEtatCivil.STATUT_VOIE, OeVOIESelection.class.getName());
-		navigation.put(OeAGENTEtatCivil.class.getName() + OeAGENTEtatCivil.STATUT_AGT_HOMONYME,
-				OeAGENTHomonyme.class.getName());
+		navigation.put(OeAGENTEtatCivil.class.getName() + OeAGENTEtatCivil.STATUT_LIEU_NAISS, OeCOMMUNESelection.class.getName());
+		navigation.put(OeAGENTEtatCivil.class.getName() + OeAGENTEtatCivil.STATUT_VOIE, OeVOIESelection.class.getName());
+		navigation.put(OeAGENTEtatCivil.class.getName() + OeAGENTEtatCivil.STATUT_AGT_HOMONYME, OeAGENTHomonyme.class.getName());
 
 		// Classe OeEnfantGestion
-		navigation.put(OeENFANTGestion.class.getName() + OeENFANTGestion.STATUT_RECHERCHER_AGENT,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OeENFANTGestion.class.getName() + OeENFANTGestion.STATUT_AUTRE_PARENT,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OeENFANTGestion.class.getName() + OeENFANTGestion.STATUT_LIEU_NAISS,
-				OeCOMMUNESelection.class.getName());
-		navigation.put(OeENFANTGestion.class.getName() + OeENFANTGestion.STATUT_ENFANT_HOMONYME,
-				OeAGENTEnfantHomonyme.class.getName());
+		navigation.put(OeENFANTGestion.class.getName() + OeENFANTGestion.STATUT_RECHERCHER_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OeENFANTGestion.class.getName() + OeENFANTGestion.STATUT_AUTRE_PARENT, OeAGENTRecherche.class.getName());
+		navigation.put(OeENFANTGestion.class.getName() + OeENFANTGestion.STATUT_LIEU_NAISS, OeCOMMUNESelection.class.getName());
+		navigation.put(OeENFANTGestion.class.getName() + OeENFANTGestion.STATUT_ENFANT_HOMONYME, OeAGENTEnfantHomonyme.class.getName());
 
 		// Classe OePOSTEFicheEmploi
-		navigation.put(OePOSTEFicheEmploi.class.getName() + OePOSTEFicheEmploi.STATUT_ACTI_PRINC,
-				OePOSTEFEActiviteSelection.class.getName());
-		navigation.put(OePOSTEFicheEmploi.class.getName() + OePOSTEFicheEmploi.STATUT_COMPETENCE,
-				OePOSTEFECompetenceSelection.class.getName());
-		navigation.put(OePOSTEFicheEmploi.class.getName() + OePOSTEFicheEmploi.STATUT_RECHERCHE_AVANCEE,
-				OePOSTEFERechercheAvancee.class.getName());
+		navigation.put(OePOSTEFicheEmploi.class.getName() + OePOSTEFicheEmploi.STATUT_ACTI_PRINC, OePOSTEFEActiviteSelection.class.getName());
+		navigation.put(OePOSTEFicheEmploi.class.getName() + OePOSTEFicheEmploi.STATUT_COMPETENCE, OePOSTEFECompetenceSelection.class.getName());
+		navigation.put(OePOSTEFicheEmploi.class.getName() + OePOSTEFicheEmploi.STATUT_RECHERCHE_AVANCEE, OePOSTEFERechercheAvancee.class.getName());
 
 		// Classe OePOSTEFichePoste
-		navigation.put(OePOSTEFichePoste.class.getName() + OePOSTEFichePoste.STATUT_COMPETENCE,
-				OePOSTEFECompetenceSelection.class.getName());
-		navigation.put(OePOSTEFichePoste.class.getName() + OePOSTEFichePoste.STATUT_ACTI_PRINC,
-				OePOSTEFEActiviteSelection.class.getName());
-		navigation.put(OePOSTEFichePoste.class.getName() + OePOSTEFichePoste.STATUT_RECHERCHE,
-				OePOSTEFichePoste.class.getName());
-		navigation.put(OePOSTEFichePoste.class.getName() + OePOSTEFichePoste.STATUT_DUPLIQUER,
-				OePOSTEFichePoste.class.getName());
-		navigation.put(OePOSTEFichePoste.class.getName() + OePOSTEFichePoste.STATUT_A_DUPLIQUER,
-				OePOSTEFichePoste.class.getName());
-		navigation.put(OePOSTEFichePoste.class.getName() + OePOSTEFichePoste.STATUT_RECHERCHE_AVANCEE,
-				OePOSTEFPRechercheAvancee.class.getName());
-		navigation.put(OePOSTEFichePoste.class.getName() + OePOSTEFichePoste.STATUT_EMPLOI_PRIMAIRE,
-				OePOSTEEmploiSelection.class.getName());
-		navigation.put(OePOSTEFichePoste.class.getName() + OePOSTEFichePoste.STATUT_EMPLOI_SECONDAIRE,
-				OePOSTEEmploiSelection.class.getName());
-		navigation.put(OePOSTEFichePoste.class.getName() + OePOSTEFichePoste.STATUT_SPECIFICITES,
-				OePOSTEFPSpecificites.class.getName());
-		navigation.put(OePOSTEFichePoste.class.getName() + OePOSTEFichePoste.STATUT_RESPONSABLE,
-				OePOSTEFPRechercheAvancee.class.getName());
-		navigation.put(OePOSTEFichePoste.class.getName() + OePOSTEFichePoste.STATUT_REMPLACEMENT,
-				OePOSTEFPRechercheAvancee.class.getName());
-		navigation.put(OePOSTEFichePoste.class.getName() + OePOSTEFichePoste.STATUT_FICHE_EMPLOI,
-				OePOSTEFicheEmploi.class.getName());
+		navigation.put(OePOSTEFichePoste.class.getName() + OePOSTEFichePoste.STATUT_COMPETENCE, OePOSTEFECompetenceSelection.class.getName());
+		navigation.put(OePOSTEFichePoste.class.getName() + OePOSTEFichePoste.STATUT_ACTI_PRINC, OePOSTEFEActiviteSelection.class.getName());
+		navigation.put(OePOSTEFichePoste.class.getName() + OePOSTEFichePoste.STATUT_RECHERCHE, OePOSTEFichePoste.class.getName());
+		navigation.put(OePOSTEFichePoste.class.getName() + OePOSTEFichePoste.STATUT_DUPLIQUER, OePOSTEFichePoste.class.getName());
+		navigation.put(OePOSTEFichePoste.class.getName() + OePOSTEFichePoste.STATUT_A_DUPLIQUER, OePOSTEFichePoste.class.getName());
+		navigation.put(OePOSTEFichePoste.class.getName() + OePOSTEFichePoste.STATUT_RECHERCHE_AVANCEE, OePOSTEFPRechercheAvancee.class.getName());
+		navigation.put(OePOSTEFichePoste.class.getName() + OePOSTEFichePoste.STATUT_EMPLOI_PRIMAIRE, OePOSTEEmploiSelection.class.getName());
+		navigation.put(OePOSTEFichePoste.class.getName() + OePOSTEFichePoste.STATUT_EMPLOI_SECONDAIRE, OePOSTEEmploiSelection.class.getName());
+		navigation.put(OePOSTEFichePoste.class.getName() + OePOSTEFichePoste.STATUT_SPECIFICITES, OePOSTEFPSpecificites.class.getName());
+		navigation.put(OePOSTEFichePoste.class.getName() + OePOSTEFichePoste.STATUT_RESPONSABLE, OePOSTEFPRechercheAvancee.class.getName());
+		navigation.put(OePOSTEFichePoste.class.getName() + OePOSTEFichePoste.STATUT_REMPLACEMENT, OePOSTEFPRechercheAvancee.class.getName());
+		navigation.put(OePOSTEFichePoste.class.getName() + OePOSTEFichePoste.STATUT_FICHE_EMPLOI, OePOSTEFicheEmploi.class.getName());
 
 		// Classe OePOSTESuiviRecrutement
-		navigation.put(OePOSTESuiviRecrutement.class.getName() + OePOSTESuiviRecrutement.STATUT_RECHERCHE_FP,
-				OePOSTEFPRechercheAvancee.class.getName());
+		navigation.put(OePOSTESuiviRecrutement.class.getName() + OePOSTESuiviRecrutement.STATUT_RECHERCHE_FP, OePOSTEFPRechercheAvancee.class.getName());
 
 		// Classe OePOSTEFPRechercheAvancee
-		navigation.put(OePOSTEFPRechercheAvancee.class.getName() + OePOSTEFPRechercheAvancee.STATUT_RECHERCHER_AGENT,
-				OeAGENTRecherche.class.getName());
+		navigation.put(OePOSTEFPRechercheAvancee.class.getName() + OePOSTEFPRechercheAvancee.STATUT_RECHERCHER_AGENT, OeAGENTRecherche.class.getName());
 
 		// Classe OeAGENTRecherche
-		navigation.put(OeAGENTRecherche.class.getName() + OeAGENTRecherche.STATUT_ETAT_CIVIL,
-				OeAGENTEtatCivil.class.getName());
+		navigation.put(OeAGENTRecherche.class.getName() + OeAGENTRecherche.STATUT_ETAT_CIVIL, OeAGENTEtatCivil.class.getName());
 
 		// ///////////////////
 		// AVANCEMENT //
 		// ///////////////////
 		// Classe OeAVCTSimulationConvCol
-		navigation.put(OeAVCTSimulationConvCol.class.getName() + OeAVCTSimulationConvCol.STATUT_RECHERCHER_AGENT,
-				OeAGENTRecherche.class.getName());
+		navigation.put(OeAVCTSimulationConvCol.class.getName() + OeAVCTSimulationConvCol.STATUT_RECHERCHER_AGENT, OeAGENTRecherche.class.getName());
 
 		// Classe OeAVCTSimulationContractuels
-		navigation.put(OeAVCTSimulationContractuels.class.getName()
-				+ OeAVCTSimulationContractuels.STATUT_RECHERCHER_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OeAVCTSimulationContractuels.class.getName() + OeAVCTSimulationContractuels.STATUT_RECHERCHER_AGENT, OeAGENTRecherche.class.getName());
 
 		// Classe OeAVCTSimulationDetaches
-		navigation.put(OeAVCTSimulationDetaches.class.getName() + OeAVCTSimulationDetaches.STATUT_RECHERCHER_AGENT,
-				OeAGENTRecherche.class.getName());
+		navigation.put(OeAVCTSimulationDetaches.class.getName() + OeAVCTSimulationDetaches.STATUT_RECHERCHER_AGENT, OeAGENTRecherche.class.getName());
 
 		// Classe OeAVCTSimulationFonctionnaires
-		navigation.put(OeAVCTSimulationFonctionnaires.class.getName()
-				+ OeAVCTSimulationFonctionnaires.STATUT_RECHERCHER_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OeAVCTSimulationFonctionnaires.class.getName() + OeAVCTSimulationFonctionnaires.STATUT_RECHERCHER_AGENT, OeAGENTRecherche.class.getName());
+
+		// Classe OeAVCTSimulationFonctionnaireAutre
+		navigation.put(OeAVCTSimulationFonctionnaireAutre.class.getName() + OeAVCTSimulationFonctionnaireAutre.STATUT_RECHERCHER_AGENT, OeAGENTRecherche.class.getName());
+
+		// Classe OeAVCTFonctionnaireAutre
+		navigation.put(OeAVCTFonctionnaireAutre.class.getName() + OeAVCTFonctionnaireAutre.STATUT_RECHERCHER_AGENT, OeAGENTRecherche.class.getName());
 
 		// Classe OeAVCTFonctPrepaAvct
-		navigation.put(OeAVCTFonctPrepaAvct.class.getName() + OeAVCTFonctPrepaAvct.STATUT_RECHERCHER_AGENT,
-				OeAGENTRecherche.class.getName());
+		navigation.put(OeAVCTFonctPrepaAvct.class.getName() + OeAVCTFonctPrepaAvct.STATUT_RECHERCHER_AGENT, OeAGENTRecherche.class.getName());
 
 		// Classe OeAVCTFonctPrepaCAP
-		navigation.put(OeAVCTFonctPrepaCAP.class.getName() + OeAVCTFonctPrepaCAP.STATUT_RECHERCHER_AGENT,
-				OeAGENTRecherche.class.getName());
+		navigation.put(OeAVCTFonctPrepaCAP.class.getName() + OeAVCTFonctPrepaCAP.STATUT_RECHERCHER_AGENT, OeAGENTRecherche.class.getName());
 
 		// Classe OeAVCTFonctArretes
-		navigation.put(OeAVCTFonctArretes.class.getName() + OeAVCTFonctArretes.STATUT_RECHERCHER_AGENT,
-				OeAGENTRecherche.class.getName());
+		navigation.put(OeAVCTFonctArretes.class.getName() + OeAVCTFonctArretes.STATUT_RECHERCHER_AGENT, OeAGENTRecherche.class.getName());
 
 		// Classe OeAVCTFonctCarrieres
-		navigation.put(OeAVCTFonctCarrieres.class.getName() + OeAVCTFonctCarrieres.STATUT_RECHERCHER_AGENT,
-				OeAGENTRecherche.class.getName());
+		navigation.put(OeAVCTFonctCarrieres.class.getName() + OeAVCTFonctCarrieres.STATUT_RECHERCHER_AGENT, OeAGENTRecherche.class.getName());
 
 		// Classe OeAVCTFonctPrepaAvct
-		navigation.put(OeAVCTFonctDetaches.class.getName() + OeAVCTFonctDetaches.STATUT_RECHERCHER_AGENT,
-				OeAGENTRecherche.class.getName());
+		navigation.put(OeAVCTFonctDetaches.class.getName() + OeAVCTFonctDetaches.STATUT_RECHERCHER_AGENT, OeAGENTRecherche.class.getName());
 
 		// Classe OeAVCTDetaches
-		navigation.put(OeAVCTFonctDetaches.class.getName() + OeAVCTFonctDetaches.STATUT_RECHERCHER_AGENT,
-				OeAGENTRecherche.class.getName());
+		navigation.put(OeAVCTFonctDetaches.class.getName() + OeAVCTFonctDetaches.STATUT_RECHERCHER_AGENT, OeAGENTRecherche.class.getName());
 
 		// Classe OeAVCTCampagnePlanification
-		navigation.put(OeAVCTCampagnePlanification.class.getName()
-				+ OeAVCTCampagnePlanification.STATUT_RECHERCHER_AGENT, OeAGENTRecherche.class.getName());
-		navigation.put(OeAVCTCampagnePlanification.class.getName() + OeAVCTCampagnePlanification.STATUT_DESTINATAIRE,
-				OeAVCTSelectionActeurs.class.getName());
+		navigation.put(OeAVCTCampagnePlanification.class.getName() + OeAVCTCampagnePlanification.STATUT_RECHERCHER_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OeAVCTCampagnePlanification.class.getName() + OeAVCTCampagnePlanification.STATUT_DESTINATAIRE, OeAVCTSelectionActeurs.class.getName());
 
 		// Classe OeAVCTCampagneGestionEAE
-		navigation.put(OeAVCTCampagneGestionEAE.class.getName() + OeAVCTCampagneGestionEAE.STATUT_EVALUATEUR,
-				OeAVCTSelectionEvaluateur.class.getName());
-		navigation.put(OeAVCTCampagneGestionEAE.class.getName()
-				+ OeAVCTCampagneGestionEAE.STATUT_RECHERCHER_AGENT_EVALUATEUR, OeAGENTRecherche.class.getName());
-		navigation.put(OeAVCTCampagneGestionEAE.class.getName()
-				+ OeAVCTCampagneGestionEAE.STATUT_RECHERCHER_AGENT_EVALUE, OeAGENTRecherche.class.getName());
-		navigation.put(OeAVCTCampagneGestionEAE.class.getName() + OeAVCTCampagneGestionEAE.STATUT_RECHERCHER_AGENT,
-				OeAGENTRecherche.class.getName());
+		navigation.put(OeAVCTCampagneGestionEAE.class.getName() + OeAVCTCampagneGestionEAE.STATUT_EVALUATEUR, OeAVCTSelectionEvaluateur.class.getName());
+		navigation.put(OeAVCTCampagneGestionEAE.class.getName() + OeAVCTCampagneGestionEAE.STATUT_RECHERCHER_AGENT_EVALUATEUR, OeAGENTRecherche.class.getName());
+		navigation.put(OeAVCTCampagneGestionEAE.class.getName() + OeAVCTCampagneGestionEAE.STATUT_RECHERCHER_AGENT_EVALUE, OeAGENTRecherche.class.getName());
+		navigation.put(OeAVCTCampagneGestionEAE.class.getName() + OeAVCTCampagneGestionEAE.STATUT_RECHERCHER_AGENT, OeAGENTRecherche.class.getName());
 
 		// Classe SIMULATION
-		navigation.put(OeAVCTMasseSalarialeContractuel.class.getName()
-				+ OeAVCTMasseSalarialeContractuel.STATUT_RECHERCHER_AGENT, OeAGENTRecherche.class.getName());
-		navigation.put(OeAVCTMasseSalarialeConvention.class.getName()
-				+ OeAVCTMasseSalarialeConvention.STATUT_RECHERCHER_AGENT, OeAGENTRecherche.class.getName());
-		navigation.put(OeAVCTMasseSalarialeFonctionnaire.class.getName()
-				+ OeAVCTMasseSalarialeFonctionnaire.STATUT_RECHERCHER_AGENT, OeAGENTRecherche.class.getName());
-		navigation.put(OeAVCTMasseSalarialeDetaches.class.getName()
-				+ OeAVCTMasseSalarialeDetaches.STATUT_RECHERCHER_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OeAVCTMasseSalarialeContractuel.class.getName() + OeAVCTMasseSalarialeContractuel.STATUT_RECHERCHER_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OeAVCTMasseSalarialeConvention.class.getName() + OeAVCTMasseSalarialeConvention.STATUT_RECHERCHER_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OeAVCTMasseSalarialeFonctionnaire.class.getName() + OeAVCTMasseSalarialeFonctionnaire.STATUT_RECHERCHER_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OeAVCTMasseSalarialeDetaches.class.getName() + OeAVCTMasseSalarialeDetaches.STATUT_RECHERCHER_AGENT, OeAGENTRecherche.class.getName());
 
 		// ///////////////////
 		// SUIVI MEDICAL //
 		// ///////////////////
 		// Classe OeSMConvocation
-		navigation.put(OeSMConvocation.class.getName() + OeSMConvocation.STATUT_RECHERCHER_AGENT,
-				OeAGENTRecherche.class.getName());
+		navigation.put(OeSMConvocation.class.getName() + OeSMConvocation.STATUT_RECHERCHER_AGENT, OeAGENTRecherche.class.getName());
 
 		// ///////////////////
 		// POINTAGE //
 		// ///////////////////
 
 		// Classe OePTGVisualisation
-		navigation.put(OePTGVisualisation.class.getName() + OePTGVisualisation.STATUT_RECHERCHER_AGENT_MIN,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OePTGVisualisation.class.getName() + OePTGVisualisation.STATUT_RECHERCHER_AGENT_MAX,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OePTGVisualisation.class.getName() + OePTGVisualisation.STATUT_RECHERCHER_AGENT_CREATE,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OePTGVisualisation.class.getName() + OePTGVisualisation.STATUT_SAISIE_PTG,
-				OePTGSaisie.class.getName());
+		navigation.put(OePTGVisualisation.class.getName() + OePTGVisualisation.STATUT_RECHERCHER_AGENT_MIN, OeAGENTRecherche.class.getName());
+		navigation.put(OePTGVisualisation.class.getName() + OePTGVisualisation.STATUT_RECHERCHER_AGENT_MAX, OeAGENTRecherche.class.getName());
+		navigation.put(OePTGVisualisation.class.getName() + OePTGVisualisation.STATUT_RECHERCHER_AGENT_CREATE, OeAGENTRecherche.class.getName());
+		navigation.put(OePTGVisualisation.class.getName() + OePTGVisualisation.STATUT_SAISIE_PTG, OePTGSaisie.class.getName());
 
 		// Classe OePTGVentilationFonct
-		navigation.put(OePTGVentilationFonct.class.getName() + OePTGVentilationFonct.STATUT_AGENT,
-				OePTGSelectionAgent.class.getName());
-		navigation.put(OePTGVentilationFonct.class.getName() + OePTGVentilationFonct.STATUT_RECHERCHER_AGENT_MIN,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OePTGVentilationFonct.class.getName() + OePTGVentilationFonct.STATUT_RECHERCHER_AGENT_MAX,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OePTGVentilationFonct.class.getName() + OePTGVentilationFonct.STATUT_SAISIE_PTG,
-				OePTGSaisie.class.getName());
+		navigation.put(OePTGVentilationFonct.class.getName() + OePTGVentilationFonct.STATUT_AGENT, OePTGSelectionAgent.class.getName());
+		navigation.put(OePTGVentilationFonct.class.getName() + OePTGVentilationFonct.STATUT_RECHERCHER_AGENT_MIN, OeAGENTRecherche.class.getName());
+		navigation.put(OePTGVentilationFonct.class.getName() + OePTGVentilationFonct.STATUT_RECHERCHER_AGENT_MAX, OeAGENTRecherche.class.getName());
+		navigation.put(OePTGVentilationFonct.class.getName() + OePTGVentilationFonct.STATUT_SAISIE_PTG, OePTGSaisie.class.getName());
 
 		// Classe OePTGVentilationContractuels
-		navigation.put(OePTGVentilationContractuels.class.getName() + OePTGVentilationContractuels.STATUT_AGENT,
-				OePTGSelectionAgent.class.getName());
-		navigation.put(OePTGVentilationContractuels.class.getName()
-				+ OePTGVentilationContractuels.STATUT_RECHERCHER_AGENT_MIN, OeAGENTRecherche.class.getName());
-		navigation.put(OePTGVentilationContractuels.class.getName()
-				+ OePTGVentilationContractuels.STATUT_RECHERCHER_AGENT_MAX, OeAGENTRecherche.class.getName());
-		navigation.put(OePTGVentilationContractuels.class.getName() + OePTGVentilationContractuels.STATUT_SAISIE_PTG,
-				OePTGSaisie.class.getName());
+		navigation.put(OePTGVentilationContractuels.class.getName() + OePTGVentilationContractuels.STATUT_AGENT, OePTGSelectionAgent.class.getName());
+		navigation.put(OePTGVentilationContractuels.class.getName() + OePTGVentilationContractuels.STATUT_RECHERCHER_AGENT_MIN, OeAGENTRecherche.class.getName());
+		navigation.put(OePTGVentilationContractuels.class.getName() + OePTGVentilationContractuels.STATUT_RECHERCHER_AGENT_MAX, OeAGENTRecherche.class.getName());
+		navigation.put(OePTGVentilationContractuels.class.getName() + OePTGVentilationContractuels.STATUT_SAISIE_PTG, OePTGSaisie.class.getName());
 		// Classe OePTGVentilationConvCol
-		navigation.put(OePTGVentilationConvCol.class.getName() + OePTGVentilationConvCol.STATUT_AGENT,
-				OePTGSelectionAgent.class.getName());
-		navigation.put(OePTGVentilationConvCol.class.getName() + OePTGVentilationConvCol.STATUT_RECHERCHER_AGENT_MIN,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OePTGVentilationConvCol.class.getName() + OePTGVentilationConvCol.STATUT_RECHERCHER_AGENT_MAX,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OePTGVentilationConvCol.class.getName() + OePTGVentilationConvCol.STATUT_SAISIE_PTG,
-				OePTGSaisie.class.getName());
+		navigation.put(OePTGVentilationConvCol.class.getName() + OePTGVentilationConvCol.STATUT_AGENT, OePTGSelectionAgent.class.getName());
+		navigation.put(OePTGVentilationConvCol.class.getName() + OePTGVentilationConvCol.STATUT_RECHERCHER_AGENT_MIN, OeAGENTRecherche.class.getName());
+		navigation.put(OePTGVentilationConvCol.class.getName() + OePTGVentilationConvCol.STATUT_RECHERCHER_AGENT_MAX, OeAGENTRecherche.class.getName());
+		navigation.put(OePTGVentilationConvCol.class.getName() + OePTGVentilationConvCol.STATUT_SAISIE_PTG, OePTGSaisie.class.getName());
 
 		// ///////////////////
 		// ABSENCE //
 		// ///////////////////
 
 		// Classe OeABSVisualisation
-		navigation.put(OeABSVisualisation.class.getName() + OeABSVisualisation.STATUT_RECHERCHER_AGENT_DEMANDE,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OeABSVisualisation.class.getName() + OeABSVisualisation.STATUT_RECHERCHER_AGENT_CREATION,
-				OeAGENTRecherche.class.getName());
+		navigation.put(OeABSVisualisation.class.getName() + OeABSVisualisation.STATUT_RECHERCHER_AGENT_DEMANDE, OeAGENTRecherche.class.getName());
+		navigation.put(OeABSVisualisation.class.getName() + OeABSVisualisation.STATUT_RECHERCHER_AGENT_CREATION, OeAGENTRecherche.class.getName());
 
 		// ///////////////////
 		// ELECTION //
 		// ///////////////////
 		// Classe OeELECSaisieCompteurA48
-		navigation.put(
-				OeELECSaisieCompteurA48.class.getName() + OeELECSaisieCompteurA48.STATUT_RECHERCHER_AGENT_CREATE,
-				OeAGENTRecherche.class.getName());
+		navigation.put(OeELECSaisieCompteurA48.class.getName() + OeELECSaisieCompteurA48.STATUT_RECHERCHER_AGENT_CREATE, OeAGENTRecherche.class.getName());
 		// Classe OeELECSaisieCompteurA54
-		navigation.put(
-				OeELECSaisieCompteurA54.class.getName() + OeELECSaisieCompteurA54.STATUT_RECHERCHER_AGENT_CREATE,
-				OeAGENTRecherche.class.getName());
+		navigation.put(OeELECSaisieCompteurA54.class.getName() + OeELECSaisieCompteurA54.STATUT_RECHERCHER_AGENT_CREATE, OeAGENTRecherche.class.getName());
 		// Classe OeELECSaisieCompteurA55
-		navigation.put(
-				OeELECSaisieCompteurA55.class.getName() + OeELECSaisieCompteurA55.STATUT_RECHERCHER_AGENT_CREATE,
-				OeAGENTRecherche.class.getName());
+		navigation.put(OeELECSaisieCompteurA55.class.getName() + OeELECSaisieCompteurA55.STATUT_RECHERCHER_AGENT_CREATE, OeAGENTRecherche.class.getName());
 		// Classe OeELECSaisieCompteurAmicale
-		navigation.put(
-				OeELECSaisieCompteurAmicale.class.getName() + OeELECSaisieCompteurAmicale.STATUT_RECHERCHER_AGENT_CREATE,
-				OeAGENTRecherche.class.getName());
+		navigation.put(OeELECSaisieCompteurAmicale.class.getName() + OeELECSaisieCompteurAmicale.STATUT_RECHERCHER_AGENT_CREATE, OeAGENTRecherche.class.getName());
 
 		// ///////////////////
 		// PARAMETRES //
 		// ///////////////////
 		// Classe OePARAMETRAGEKiosque
-		navigation.put(OePARAMETRAGEKiosque.class.getName() + OePARAMETRAGEKiosque.STATUT_RECHERCHER_AGENT_CREATE,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OePARAMETRAGEKiosque.class.getName() + OePARAMETRAGEKiosque.STATUT_RECHERCHER_AGENT_GLOBAL,
-				OeAGENTRecherche.class.getName());
+		navigation.put(OePARAMETRAGEKiosque.class.getName() + OePARAMETRAGEKiosque.STATUT_RECHERCHER_AGENT_CREATE, OeAGENTRecherche.class.getName());
+		navigation.put(OePARAMETRAGEKiosque.class.getName() + OePARAMETRAGEKiosque.STATUT_RECHERCHER_AGENT_GLOBAL, OeAGENTRecherche.class.getName());
 		// Classe OeELECSaisieCompteurA52
-		navigation.put(
-				OeELECSaisieCompteurA52.class.getName() + OeELECSaisieCompteurA52.STATUT_RECHERCHER_AGENT_CREATE,
-				OeAGENTRecherche.class.getName());
+		navigation.put(OeELECSaisieCompteurA52.class.getName() + OeELECSaisieCompteurA52.STATUT_RECHERCHER_AGENT_CREATE, OeAGENTRecherche.class.getName());
 
 		// ///////////////////
 		// DROITS //
 		// ///////////////////
 		// Classe OeDROITSKiosque
-		navigation.put(OeDROITSKiosque.class.getName() + OeDROITSKiosque.STATUT_APPROBATEUR,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OeDROITSKiosque.class.getName() + OeDROITSKiosque.STATUT_DELEGATAIRE_PTG,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OeDROITSKiosque.class.getName() + OeDROITSKiosque.STATUT_DELEGATAIRE_ABS,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OeDROITSKiosque.class.getName() + OeDROITSKiosque.STATUT_RECHERCHER_AGENT,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OeDROITSKiosque.class.getName() + OeDROITSKiosque.STATUT_VISEUR_APPROBATEUR_ABS,
-				OeAGENTRechercheDroitKiosque.class.getName());
-		navigation.put(OeDROITSKiosque.class.getName() + OeDROITSKiosque.STATUT_OPE_APPROBATEUR_ABS,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OeDROITSKiosque.class.getName() + OeDROITSKiosque.STATUT_AGENT_APPROBATEUR_ABS,
-				OeAGENTRechercheDroitKiosque.class.getName());
-		navigation.put(OeDROITSKiosque.class.getName() + OeDROITSKiosque.STATUT_OPE_APPROBATEUR_PTG,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OeDROITSKiosque.class.getName() + OeDROITSKiosque.STATUT_AGENT_APPROBATEUR_PTG,
-				OeAGENTRechercheDroitKiosque.class.getName());
-		navigation.put(OeDROITSKiosque.class.getName() + OeDROITSKiosque.STATUT_AGENT_OPE_APPROBATEUR_PTG,
-				OeAGENTRechercheDroitKiosqueAgentApprobateur.class.getName());
-		navigation.put(OeDROITSKiosque.class.getName() + OeDROITSKiosque.STATUT_AGENT_OPE_APPROBATEUR_ABS,
-				OeAGENTRechercheDroitKiosqueAgentApprobateur.class.getName());
-		navigation.put(OeDROITSKiosque.class.getName() + OeDROITSKiosque.STATUT_AGENT_VISEUR_APPROBATEUR_ABS,
-				OeAGENTRechercheDroitKiosqueAgentApprobateur.class.getName());
-		navigation.put(OeDROITSKiosque.class.getName() + OeDROITSKiosque.STATUT_AGENT_MAIRIE_APPROBATEUR_ABS,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OeDROITSKiosque.class.getName() + OeDROITSKiosque.STATUT_AGENT_MAIRIE_APPROBATEUR_PTG,
-				OeAGENTRecherche.class.getName());
+		navigation.put(OeDROITSKiosque.class.getName() + OeDROITSKiosque.STATUT_APPROBATEUR, OeAGENTRecherche.class.getName());
+		navigation.put(OeDROITSKiosque.class.getName() + OeDROITSKiosque.STATUT_DELEGATAIRE_PTG, OeAGENTRecherche.class.getName());
+		navigation.put(OeDROITSKiosque.class.getName() + OeDROITSKiosque.STATUT_DELEGATAIRE_ABS, OeAGENTRecherche.class.getName());
+		navigation.put(OeDROITSKiosque.class.getName() + OeDROITSKiosque.STATUT_RECHERCHER_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OeDROITSKiosque.class.getName() + OeDROITSKiosque.STATUT_VISEUR_APPROBATEUR_ABS, OeAGENTRechercheDroitKiosque.class.getName());
+		navigation.put(OeDROITSKiosque.class.getName() + OeDROITSKiosque.STATUT_OPE_APPROBATEUR_ABS, OeAGENTRecherche.class.getName());
+		navigation.put(OeDROITSKiosque.class.getName() + OeDROITSKiosque.STATUT_AGENT_APPROBATEUR_ABS, OeAGENTRechercheDroitKiosque.class.getName());
+		navigation.put(OeDROITSKiosque.class.getName() + OeDROITSKiosque.STATUT_OPE_APPROBATEUR_PTG, OeAGENTRecherche.class.getName());
+		navigation.put(OeDROITSKiosque.class.getName() + OeDROITSKiosque.STATUT_AGENT_APPROBATEUR_PTG, OeAGENTRechercheDroitKiosque.class.getName());
+		navigation.put(OeDROITSKiosque.class.getName() + OeDROITSKiosque.STATUT_AGENT_OPE_APPROBATEUR_PTG, OeAGENTRechercheDroitKiosqueAgentApprobateur.class.getName());
+		navigation.put(OeDROITSKiosque.class.getName() + OeDROITSKiosque.STATUT_AGENT_OPE_APPROBATEUR_ABS, OeAGENTRechercheDroitKiosqueAgentApprobateur.class.getName());
+		navigation.put(OeDROITSKiosque.class.getName() + OeDROITSKiosque.STATUT_AGENT_VISEUR_APPROBATEUR_ABS, OeAGENTRechercheDroitKiosqueAgentApprobateur.class.getName());
+		navigation.put(OeDROITSKiosque.class.getName() + OeDROITSKiosque.STATUT_AGENT_MAIRIE_APPROBATEUR_ABS, OeAGENTRecherche.class.getName());
+		navigation.put(OeDROITSKiosque.class.getName() + OeDROITSKiosque.STATUT_AGENT_MAIRIE_APPROBATEUR_PTG, OeAGENTRecherche.class.getName());
 
 		// //////////////////////////////////////
 		// pour la recherche d'un agent
 		// données perso
-		navigation.put(OeAGENTEtatCivil.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OeENFANTGestion.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OeAGENTDIPLOMEGestion.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OeAGENTADMINISTRATIONGestion.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OeAGENTContrat.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OeAGENTCasierJud.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OeAGENTActesDonneesPerso.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
+		navigation.put(OeAGENTEtatCivil.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OeENFANTGestion.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OeAGENTDIPLOMEGestion.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OeAGENTADMINISTRATIONGestion.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OeAGENTContrat.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OeAGENTCasierJud.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OeAGENTActesDonneesPerso.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 
 		// hsct
-		navigation.put(OeAGENTVisiteMed.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OeAGENTAccidentTravail.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OeAGENTHandicap.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OeAGENTActesHSCT.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
+		navigation.put(OeAGENTVisiteMed.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OeAGENTAccidentTravail.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OeAGENTHandicap.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OeAGENTActesHSCT.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 
 		// emplois
-		navigation.put(OeAGENTEmploisPoste.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OeAGENTEmploisAffectation.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
+		navigation.put(OeAGENTEmploisPoste.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OeAGENTEmploisAffectation.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 
 		// element salaire
-		navigation.put(OeAGENTPosAdm.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OeAGENTCarriere.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OeAGENTCharge.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
-		navigation
-				.put(OeAGENTPrime.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OeAGENTPosAdm.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OeAGENTCarriere.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OeAGENTCharge.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OeAGENTPrime.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 
 		// ABSENCES
-		navigation.put(OeAGENTAbsencesSolde.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OeAGENTAbsencesHisto.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OeAGENTAbsencesCompteur.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
+		navigation.put(OeAGENTAbsencesSolde.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OeAGENTAbsencesHisto.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OeAGENTAbsencesCompteur.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 
 		// EAE
 		navigation.put(OeAGENTEae.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 
 		// autres pages
 		// FE
-		navigation.put(OePOSTEFicheEmploi.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OePOSTEFEActivite.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OePOSTEFECompetence.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
+		navigation.put(OePOSTEFicheEmploi.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OePOSTEFEActivite.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OePOSTEFECompetence.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 
 		// FP
-		navigation.put(OePOSTEFichePoste.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OePOSTESupressionFDP.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OePOSTEActivationFDP.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OePOSTEDuplicationFDP.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
+		navigation.put(OePOSTEFichePoste.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OePOSTESupressionFDP.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OePOSTEActivationFDP.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OePOSTEDuplicationFDP.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 
 		// AVCT
-		navigation.put(OeAVCTContractuels.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OeAVCTConvCol.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OeAVCTFonctDetaches.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OeAVCTFonctPrepaAvct.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OeAVCTFonctPrepaCAP.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OeAVCTFonctArretes.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OeAVCTFonctCarrieres.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OeAVCTSimulationFonctionnaires.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OeAVCTSimulationContractuels.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OeAVCTSimulationConvCol.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OeAVCTSimulationDetaches.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OeAVCTCampagneEAE.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OeAVCTCampagnePlanification.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OeAVCTCampagneGestionEAE.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OeAVCTCampagneTableauBord.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
+		navigation.put(OeAVCTContractuels.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OeAVCTConvCol.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OeAVCTFonctDetaches.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OeAVCTFonctPrepaAvct.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OeAVCTFonctPrepaCAP.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OeAVCTFonctArretes.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OeAVCTFonctCarrieres.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OeAVCTSimulationFonctionnaires.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OeAVCTSimulationFonctionnaireAutre.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OeAVCTFonctionnaireAutre.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OeAVCTSimulationContractuels.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OeAVCTSimulationConvCol.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OeAVCTSimulationDetaches.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OeAVCTCampagneEAE.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OeAVCTCampagnePlanification.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OeAVCTCampagneGestionEAE.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OeAVCTCampagneTableauBord.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 		// SIMU
-		navigation.put(OeAVCTMasseSalarialeFonctionnaire.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OeAVCTMasseSalarialeContractuel.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OeAVCTMasseSalarialeConvention.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OeAVCTMasseSalarialeDetaches.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
+		navigation.put(OeAVCTMasseSalarialeFonctionnaire.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OeAVCTMasseSalarialeContractuel.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OeAVCTMasseSalarialeConvention.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OeAVCTMasseSalarialeDetaches.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 
 		// SM - Suivi Medical
-		navigation.put(OeSMConvocation.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OeSMHistorique.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
+		navigation.put(OeSMConvocation.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OeSMHistorique.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 
 		// POINTAGE
-		navigation.put(OePTGVisualisation.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OePTGVentilationConvCol.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OePTGVentilationFonct.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OePTGVentilationContractuels.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OePTGPayeurConvCol.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OePTGPayeurFonct.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OePTGPayeurContractuels.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
+		navigation.put(OePTGVisualisation.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OePTGVentilationConvCol.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OePTGVentilationFonct.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OePTGVentilationContractuels.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OePTGPayeurConvCol.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OePTGPayeurFonct.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OePTGPayeurContractuels.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 		navigation.put(OePTGSaisie.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 
 		// ABSENCE
-		navigation.put(OeABSVisualisation.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OeABSRestitution.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OeABSAlimentationMensuelle.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
+		navigation.put(OeABSVisualisation.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OeABSRestitution.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OeABSAlimentationMensuelle.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 
 		// ELECTION
-		navigation.put(OeELECSaisieCompteurA48.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OeELECSaisieCompteurA54.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OeELECSaisieCompteurA55.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OeELECSaisieCompteurAmicale.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OeELECSaisieCompteurA53.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OeELECSaisieCompteurA52.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
+		navigation.put(OeELECSaisieCompteurA48.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OeELECSaisieCompteurA54.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OeELECSaisieCompteurA55.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OeELECSaisieCompteurAmicale.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OeELECSaisieCompteurA53.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OeELECSaisieCompteurA52.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 
 		// ORGANIGRAMME
-		navigation.put(OeORGAGestion.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
+		navigation.put(OeORGAGestion.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 
 		// PARAM
-		navigation.put(OePARAMETRAGEFicheEmploi.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OePARAMETRAGEFichePoste.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OePARAMETRAGERecrutement.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OePARAMETRAGEDonneesPerso.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OePARAMETRAGEHSCT.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OePARAMETRAGEGradeRef.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OePARAMETRAGEGrade.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OePARAMETRAGEAvancement.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OePARAMETRAGECarriere.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OePARAMETRAGERubrique.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OePARAMETRAGEJour.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OePARAMETRAGEAbsence.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OePARAMETRAGEAbsenceCongesExceptionnels.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OePARAMETRAGEElection.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OePARAMETRAGEKiosque.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OePARAMETRAGEPointage.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
+		navigation.put(OePARAMETRAGEFicheEmploi.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OePARAMETRAGEFichePoste.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OePARAMETRAGERecrutement.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OePARAMETRAGEDonneesPerso.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OePARAMETRAGEHSCT.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OePARAMETRAGEGradeRef.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OePARAMETRAGEGrade.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OePARAMETRAGEAvancement.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OePARAMETRAGECarriere.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OePARAMETRAGERubrique.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OePARAMETRAGEJour.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OePARAMETRAGEAbsence.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OePARAMETRAGEAbsenceCongesExceptionnels.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OePARAMETRAGEElection.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OePARAMETRAGEKiosque.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OePARAMETRAGEPointage.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 
 		// DROITS
-		navigation.put(OeDROITSUtilisateurs.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OeDROITSGestion.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
-		navigation.put(OeDROITSKiosque.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
+		navigation.put(OeDROITSUtilisateurs.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OeDROITSGestion.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OeDROITSKiosque.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 
 		// PERSONEL MAIN
-		navigation.put(PersonnelMain.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
-				OeAGENTRecherche.class.getName());
+		navigation.put(PersonnelMain.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 
 		return navigation;
 	}

@@ -32,7 +32,7 @@ import org.springframework.context.ApplicationContext;
  * Process OeAVCTSimulation Date de création : (21/11/11 11:11:24)
  * 
  */
-public class OeAVCTSimulationFonctionnaires extends BasicProcess {
+public class OeAVCTSimulationFonctionnaireAutre extends BasicProcess {
 	/**
 	 * 
 	 */
@@ -186,7 +186,7 @@ public class OeAVCTSimulationFonctionnaires extends BasicProcess {
 	 * 11:11:24)
 	 * 
 	 */
-	public OeAVCTSimulationFonctionnaires() {
+	public OeAVCTSimulationFonctionnaireAutre() {
 		super();
 	}
 
@@ -196,7 +196,7 @@ public class OeAVCTSimulationFonctionnaires extends BasicProcess {
 	 * 
 	 */
 	public String getJSP() {
-		return "OeAVCTSimulationFonctionnaires.jsp";
+		return "OeAVCTSimulationFonctionnaireAutre.jsp";
 	}
 
 	/**
@@ -224,7 +224,7 @@ public class OeAVCTSimulationFonctionnaires extends BasicProcess {
 
 		// Suppression des avancements a l'etat 'Travail' de la categorie donnée
 		// et de l'année
-		getAvancementFonctionnairesDao().supprimerAvancementTravailAvecCategorie(Integer.valueOf(an), false);
+		getAvancementFonctionnairesDao().supprimerAvancementTravailAvecCategorie(Integer.valueOf(an), true);
 
 		// recuperation agent
 		Agent agent = null;
@@ -232,7 +232,7 @@ public class OeAVCTSimulationFonctionnaires extends BasicProcess {
 			agent = getAgentDao().chercherAgentParMatricule(Integer.valueOf(getVAL_ST_AGENT()));
 		}
 
-		if (!performCalculFonctionnaire(getVAL_ST_ID_SERVICE_ADS(), an, agent))
+		if (!performCalculFonctionnaireAutre(getVAL_ST_ID_SERVICE_ADS(), an, agent))
 			return false;
 
 		commitTransaction();
@@ -252,7 +252,7 @@ public class OeAVCTSimulationFonctionnaires extends BasicProcess {
 	 * @param agent
 	 * @throws Exception
 	 */
-	private boolean performCalculFonctionnaire(String idServiceAds, String annee, Agent agent) throws Exception {
+	private boolean performCalculFonctionnaireAutre(String idServiceAds, String annee, Agent agent) throws Exception {
 		ArrayList<Agent> la = new ArrayList<Agent>();
 		if (agent != null) {
 			ReturnMessageDto result = avancementService.isAvancementFonctionnaire(getTransaction(), agent);
@@ -275,12 +275,13 @@ public class OeAVCTSimulationFonctionnaires extends BasicProcess {
 					getAutreAdministrationAgentDao(), getMotifAvancementDao(), getAvisCapDao(), false);
 			if (avct == null) {
 				continue;
-			} else if (avct.getIdAgent() == null && !avct.isAutre()) {
+			} else if (avct.getIdAgent() == null && avct.isAutre()) {
 				// on informe les agents en erreur haut de grille
 				agentEnErreur += a.getNomAgent() + " " + a.getPrenomAgent() + " (" + a.getNomatr() + "); ";
 				continue;
 			}
-			if (!avct.isAutre()) {
+			if (avct.isAutre()) {
+
 				avancementService.creerAvancementFonctionnaire(avct, getAvancementFonctionnairesDao());
 			}
 		}

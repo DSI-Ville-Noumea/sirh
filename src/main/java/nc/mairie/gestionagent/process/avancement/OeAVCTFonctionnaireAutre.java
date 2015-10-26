@@ -1,17 +1,17 @@
 package nc.mairie.gestionagent.process.avancement;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Hashtable;
-import java.util.List;
-import java.util.ListIterator;
 
 import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.enums.EnumEtatAvancement;
 import nc.mairie.enums.EnumTypeHisto;
-import nc.mairie.gestionagent.dto.ReturnMessageDto;
 import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.Agent;
@@ -21,71 +21,69 @@ import nc.mairie.metier.carriere.Carriere;
 import nc.mairie.metier.carriere.Grade;
 import nc.mairie.metier.carriere.HistoCarriere;
 import nc.mairie.metier.parametrage.MotifAvancement;
-import nc.mairie.metier.referentiel.AvisCap;
 import nc.mairie.spring.dao.metier.agent.AgentDao;
-import nc.mairie.spring.dao.metier.agent.AutreAdministrationAgentDao;
 import nc.mairie.spring.dao.metier.avancement.AvancementFonctionnairesDao;
 import nc.mairie.spring.dao.metier.carriere.HistoCarriereDao;
 import nc.mairie.spring.dao.metier.parametrage.MotifAvancementDao;
-import nc.mairie.spring.dao.metier.poste.AffectationDao;
-import nc.mairie.spring.dao.metier.poste.FichePosteDao;
 import nc.mairie.spring.dao.metier.referentiel.AutreAdministrationDao;
 import nc.mairie.spring.dao.metier.referentiel.AvisCapDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
-import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.UserAppli;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
-import nc.mairie.utils.VariablesActivite;
-import nc.noumea.spring.service.IAdsService;
 import nc.noumea.spring.service.IAvancementService;
+import nc.noumea.spring.service.ISirhService;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.vfs2.FileObject;
+import org.apache.commons.vfs2.FileSystemException;
+import org.apache.commons.vfs2.FileSystemManager;
+import org.apache.commons.vfs2.VFS;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 
 /**
  * Process OeAVCTCampagneTableauBord Date de création : (21/11/11 09:55:36)
  * 
  */
-public class OeAVCTMasseSalarialeFonctionnaire extends BasicProcess {
+public class OeAVCTFonctionnaireAutre extends BasicProcess {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private String[] LB_ANNEE;
-	private String[] LB_AVIS_CAP;
+	public static final int STATUT_RECHERCHER_AGENT = 1;
 
-	private Hashtable<Integer, MotifAvancement> hashMotifAvct;
-	private Hashtable<Integer, AvisCap> hashAvisCAP;
-	private ArrayList<AvisCap> listeAvisCAP;
-	private ArrayList<MotifAvancement> listeMotifAvct;
+	private Logger logger = LoggerFactory.getLogger(OeAVCTFonctionnaireAutre.class);
+
+	private String[] LB_ANNEE;
 
 	private String[] listeAnnee;
+	private String anneeSelect;
+
+	private Hashtable<String, MotifAvancement> hashMotifAvct;
+	private ArrayList<MotifAvancement> listeMotifAvct;
 
 	private ArrayList<AvancementFonctionnaires> listeAvct;
 	public String agentEnErreur = Const.CHAINE_VIDE;
 
-	public String ACTION_CALCUL = "Calcul";
-
-	public static final int STATUT_RECHERCHER_AGENT = 1;
-	public String agentEnErreurHautGrille = Const.CHAINE_VIDE;
+	private ArrayList<String> listeDocuments;
+	private String urlFichier;
 
 	private MotifAvancementDao motifAvancementDao;
-	private AutreAdministrationDao autreAdministrationDao;
 	private AvisCapDao avisCapDao;
-	private AutreAdministrationAgentDao autreAdministrationAgentDao;
+	private AutreAdministrationDao autreAdministrationDao;
 	private AvancementFonctionnairesDao avancementFonctionnairesDao;
-	private FichePosteDao fichePosteDao;
 	private HistoCarriereDao histoCarriereDao;
-	private AffectationDao affectationDao;
 	private AgentDao agentDao;
 
-	private IAdsService adsService;
+	private ISirhService sirhService;
 	private IAvancementService avancementService;
 
 	private SimpleDateFormat sdfFormatDate = new SimpleDateFormat("dd/MM/yyyy");
@@ -110,15 +108,15 @@ public class OeAVCTMasseSalarialeFonctionnaire extends BasicProcess {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
-		initialiseDao();
 
+		initialiseDao();
 		initialiseListeDeroulante();
 
-		Agent agt = (Agent) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
-		VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
-		if (agt != null && agt.getIdAgent() != null) {
-			addZone(getNOM_ST_AGENT(), agt.getNomatr().toString());
-			performPB_LANCER(request);
+		// Initialisation de la liste des documents suivi medicaux
+		if (getListeDocuments() == null || getListeDocuments().size() == 0) {
+			setListeDocuments(listerDocumentsArretes());
+			afficheListeDocuments();
+
 		}
 	}
 
@@ -132,49 +130,36 @@ public class OeAVCTMasseSalarialeFonctionnaire extends BasicProcess {
 		if (getAutreAdministrationDao() == null) {
 			setAutreAdministrationDao(new AutreAdministrationDao((SirhDao) context.getBean("sirhDao")));
 		}
-		if (getAvisCapDao() == null) {
-			setAvisCapDao(new AvisCapDao((SirhDao) context.getBean("sirhDao")));
-		}
-		if (getAutreAdministrationAgentDao() == null) {
-			setAutreAdministrationAgentDao(new AutreAdministrationAgentDao((SirhDao) context.getBean("sirhDao")));
-		}
 		if (getAvancementFonctionnairesDao() == null) {
 			setAvancementFonctionnairesDao(new AvancementFonctionnairesDao((SirhDao) context.getBean("sirhDao")));
-		}
-		if (getFichePosteDao() == null) {
-			setFichePosteDao(new FichePosteDao((SirhDao) context.getBean("sirhDao")));
 		}
 		if (getHistoCarriereDao() == null) {
 			setHistoCarriereDao(new HistoCarriereDao((SirhDao) context.getBean("sirhDao")));
 		}
-		if (getAffectationDao() == null) {
-			setAffectationDao(new AffectationDao((SirhDao) context.getBean("sirhDao")));
-		}
 		if (getAgentDao() == null) {
 			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
 		}
-		if (null == adsService) {
-			adsService = (IAdsService) context.getBean("adsService");
+		if (null == sirhService) {
+			sirhService = (ISirhService) context.getBean("sirhService");
 		}
 		if (null == avancementService) {
 			avancementService = (IAvancementService) context.getBean("avancementService");
 		}
-	}
-
-	public String getCurrentWholeTreeJS(String serviceSaisi) {
-		return adsService.getCurrentWholeTreeActifTransitoireJS(null != serviceSaisi && !"".equals(serviceSaisi) ? serviceSaisi : null, false);
+		if (getAvisCapDao() == null) {
+			setAvisCapDao(new AvisCapDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	private void initialiseListeDeroulante() throws Exception {
-
 		// Si liste annee vide alors affectation
 		if (getLB_ANNEE() == LBVide) {
-			String anneeCourante = (String) ServletAgent.getMesParametres().get("ANNEE_MASSE_SALARIALE");
+			String anneeCourante = (String) ServletAgent.getMesParametres().get("ANNEE_AVCT");
 			setListeAnnee(new String[1]);
 			getListeAnnee()[0] = String.valueOf(Integer.parseInt(anneeCourante));
 
 			setLB_ANNEE(getListeAnnee());
 			addZone(getNOM_LB_ANNEE_SELECT(), Const.ZERO);
+			setAnneeSelect(String.valueOf(Integer.parseInt(anneeCourante) + 1));
 		}
 		// Si liste motifs avancement vide alors affectation
 		if (getListeMotifAvct() == null || getListeMotifAvct().size() == 0) {
@@ -184,29 +169,7 @@ public class OeAVCTMasseSalarialeFonctionnaire extends BasicProcess {
 			// remplissage de la hashTable
 			for (int i = 0; i < getListeMotifAvct().size(); i++) {
 				MotifAvancement m = (MotifAvancement) getListeMotifAvct().get(i);
-				getHashMotifAvancement().put(m.getIdMotifAvct(), m);
-			}
-		}
-
-		// Si liste avisCAP vide alors affectation
-		if (getListeAvisCAP() == null || getListeAvisCAP().size() == 0) {
-			ArrayList<AvisCap> avis = (ArrayList<AvisCap>) getAvisCapDao().listerAvisCap();
-			setListeAvisCAP(avis);
-
-			int[] tailles = { 7 };
-			FormateListe aFormat = new FormateListe(tailles);
-			for (ListIterator<AvisCap> list = getListeAvisCAP().listIterator(); list.hasNext();) {
-				AvisCap fili = (AvisCap) list.next();
-				String ligne[] = { fili.getLibLongAvisCap() };
-
-				aFormat.ajouteLigne(ligne);
-			}
-			setLB_AVIS_CAP(aFormat.getListeFormatee());
-
-			// remplissage de la hashTable
-			for (int i = 0; i < getListeAvisCAP().size(); i++) {
-				AvisCap ac = (AvisCap) getListeAvisCAP().get(i);
-				getHashAvisCAP().put(ac.getIdAvisCap(), ac);
+				getHashMotifAvancement().put(m.getIdMotifAvct().toString(), m);
 			}
 		}
 
@@ -221,30 +184,6 @@ public class OeAVCTMasseSalarialeFonctionnaire extends BasicProcess {
 
 		// Si on arrive de la JSP alors on traite le get
 		if (request.getParameter("JSP") != null && request.getParameter("JSP").equals(getJSP())) {
-			// Si clic sur le bouton PB_LANCER
-			if (testerParametre(request, getNOM_PB_LANCER())) {
-				return performPB_LANCER(request);
-			}
-
-			// Si clic sur le bouton PB_RECHERCHER_AGENT
-			if (testerParametre(request, getNOM_PB_RECHERCHER_AGENT())) {
-				return performPB_RECHERCHER_AGENT(request);
-			}
-
-			// Si clic sur le bouton PB_SUPPRIMER_RECHERCHER_AGENT
-			if (testerParametre(request, getNOM_PB_SUPPRIMER_RECHERCHER_AGENT())) {
-				return performPB_SUPPRIMER_RECHERCHER_AGENT(request);
-			}
-
-			// Si clic sur le bouton PB_SUPPRIMER_RECHERCHER_SERVICE
-			if (testerParametre(request, getNOM_PB_SUPPRIMER_RECHERCHER_SERVICE())) {
-				return performPB_SUPPRIMER_RECHERCHER_SERVICE(request);
-			}
-
-			// Si clic sur le bouton PB_CHANGER_ANNEE
-			if (testerParametre(request, getNOM_PB_CHANGER_ANNEE())) {
-				return performPB_CHANGER_ANNEE(request);
-			}
 
 			// Si clic sur le bouton PB_VALIDER
 			if (testerParametre(request, getNOM_PB_VALIDER())) {
@@ -260,6 +199,23 @@ public class OeAVCTMasseSalarialeFonctionnaire extends BasicProcess {
 			if (testerParametre(request, getNOM_PB_ANNULER())) {
 				return performPB_ANNULER(request);
 			}
+
+			// Si clic sur le bouton PB_FILTRER
+			if (testerParametre(request, getNOM_PB_FILTRER())) {
+				return performPB_FILTRER(request);
+			}
+
+			// Si clic sur le bouton PB_IMPRIMER
+			if (testerParametre(request, getNOM_PB_IMPRIMER())) {
+				return performPB_IMPRIMER(request);
+			}
+
+			// Si clic sur le bouton PB_VISUALISER pour les documents
+			for (int i = 0; i < getListeDocuments().size(); i++) {
+				if (testerParametre(request, getNOM_PB_VISUALISATION(i))) {
+					return performPB_VISUALISATION(request, i);
+				}
+			}
 		}
 		// Si TAG INPUT non géré par le process
 		setStatut(STATUT_MEME_PROCESS);
@@ -271,7 +227,7 @@ public class OeAVCTMasseSalarialeFonctionnaire extends BasicProcess {
 	 * (21/11/11 09:55:36)
 	 * 
 	 */
-	public OeAVCTMasseSalarialeFonctionnaire() {
+	public OeAVCTFonctionnaireAutre() {
 		super();
 	}
 
@@ -281,14 +237,14 @@ public class OeAVCTMasseSalarialeFonctionnaire extends BasicProcess {
 	 * 
 	 */
 	public String getJSP() {
-		return "OeAVCTMasseSalarialeFonctionnaire.jsp";
+		return "OeAVCTFonctionnaireAutre.jsp";
 	}
 
 	/**
 	 * Getter du nom de l'écran (pour la gestion des droits)
 	 */
 	public String getNomEcran() {
-		return "ECR-SIMU-MASSE-FONCT";
+		return "ECR-AVCT-FONCT-CARRIERES";
 	}
 
 	/**
@@ -347,42 +303,6 @@ public class OeAVCTMasseSalarialeFonctionnaire extends BasicProcess {
 	}
 
 	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_CODE_SERVICE Date de
-	 * création : (21/11/11 11:11:24)
-	 * 
-	 */
-	public String getNOM_ST_ID_SERVICE_ADS() {
-		return "NOM_ST_ID_SERVICE_ADS";
-	}
-
-	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_CODE_SERVICE
-	 * Date de création : (21/11/11 11:11:24)
-	 * 
-	 */
-	public String getVAL_ST_ID_SERVICE_ADS() {
-		return getZone(getNOM_ST_ID_SERVICE_ADS());
-	}
-
-	/**
-	 * Retourne le nom d'une zone de saisie pour la JSP : EF_SERVICE Date de
-	 * création : (21/11/11 11:11:24)
-	 * 
-	 */
-	public String getNOM_EF_SERVICE() {
-		return "NOM_EF_SERVICE";
-	}
-
-	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_SERVICE Date de création : (21/11/11 11:11:24)
-	 * 
-	 */
-	public String getVAL_EF_SERVICE() {
-		return getZone(getNOM_EF_SERVICE());
-	}
-
-	/**
 	 * Getter de la liste des années possibles de simulation.
 	 * 
 	 * @return listeAnnee
@@ -419,231 +339,6 @@ public class OeAVCTMasseSalarialeFonctionnaire extends BasicProcess {
 		return getZone(getNOM_ST_ACTION());
 	}
 
-	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_AGENT Date de
-	 * création : (02/08/11 09:40:42)
-	 * 
-	 */
-	public String getNOM_ST_AGENT() {
-		return "NOM_ST_AGENT";
-	}
-
-	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_AGENT Date de
-	 * création : (02/08/11 09:40:42)
-	 * 
-	 */
-	public String getVAL_ST_AGENT() {
-		return getZone(getNOM_ST_AGENT());
-	}
-
-	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_RECHERCHER_AGENT Date de
-	 * création : (02/08/11 09:42:00)
-	 * 
-	 */
-	public String getNOM_PB_RECHERCHER_AGENT() {
-		return "NOM_PB_RECHERCHER_AGENT";
-	}
-
-	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * regles de gestion du process - Positionne un statut en fonction de ces
-	 * regles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (02/08/11 09:42:00)
-	 * 
-	 */
-	public boolean performPB_RECHERCHER_AGENT(HttpServletRequest request) throws Exception {
-
-		// On met l'agent courant en var d'activité
-		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new Agent());
-
-		setStatut(STATUT_RECHERCHER_AGENT, true);
-		return true;
-	}
-
-	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMER_RECHERCHER_AGENT
-	 * Date de création : (13/07/11 09:49:02)
-	 * 
-	 * 
-	 */
-	public String getNOM_PB_SUPPRIMER_RECHERCHER_AGENT() {
-		return "NOM_PB_SUPPRIMER_RECHERCHER_AGENT";
-	}
-
-	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * regles de gestion du process - Positionne un statut en fonction de ces
-	 * regles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (25/03/03 15:33:11)
-	 * 
-	 */
-	public boolean performPB_SUPPRIMER_RECHERCHER_AGENT(HttpServletRequest request) throws Exception {
-		// On enleve l'agent selectionnée
-		addZone(getNOM_ST_AGENT(), Const.CHAINE_VIDE);
-		return true;
-	}
-
-	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMER_RECHERCHER_SERVICE
-	 * Date de création : (13/07/11 09:49:02)
-	 * 
-	 * 
-	 */
-	public String getNOM_PB_SUPPRIMER_RECHERCHER_SERVICE() {
-		return "NOM_PB_SUPPRIMER_RECHERCHER_SERVICE";
-	}
-
-	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * regles de gestion du process - Positionne un statut en fonction de ces
-	 * regles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (13/07/11 09:49:02)
-	 * 
-	 * 
-	 */
-
-	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * regles de gestion du process - Positionne un statut en fonction de ces
-	 * regles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (25/03/03 15:33:11)
-	 * 
-	 */
-	public boolean performPB_SUPPRIMER_RECHERCHER_SERVICE(HttpServletRequest request) throws Exception {
-		// On enleve le service selectionnée
-		addZone(getNOM_ST_ID_SERVICE_ADS(), Const.CHAINE_VIDE);
-		addZone(getNOM_EF_SERVICE(), Const.CHAINE_VIDE);
-		return true;
-	}
-
-	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_LANCER Date de création :
-	 * (21/11/11 11:11:24)
-	 * 
-	 */
-	public String getNOM_PB_LANCER() {
-		return "NOM_PB_LANCER";
-	}
-
-	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * regles de gestion du process - Positionne un statut en fonction de ces
-	 * regles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (21/11/11 11:11:24)
-	 * 
-	 */
-	public boolean performPB_LANCER(HttpServletRequest request) throws Exception {
-
-		// Mise à jour de l'action menee
-		addZone(getNOM_ST_ACTION(), ACTION_CALCUL);
-
-		String an = getListeAnnee()[0];
-
-		// Suppression des avancements a l'etat 'Travail' de la categorie donnée
-		// et de l'année
-		getAvancementFonctionnairesDao().supprimerAvancementTravailAvecCategorie(Integer.valueOf(an));
-
-		// recuperation agent
-		Agent agent = null;
-		if (getVAL_ST_AGENT().length() != 0) {
-			agent = getAgentDao().chercherAgentParMatricule(Integer.valueOf(getVAL_ST_AGENT()));
-		}
-
-		if (!performCalculFonctionnaire(getVAL_ST_ID_SERVICE_ADS(), an, agent))
-			return false;
-
-		commitTransaction();
-		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_ANNEE_SIMULATION_AVCT, an);
-
-		// "INF200","Simulation effectuee"
-		setStatut(STATUT_MEME_PROCESS, false, MessageUtils.getMessage("INF200"));
-
-		return true;
-	}
-
-	/**
-	 * méthode de calcul des avancements Fonctionnaires.
-	 * 
-	 * @param codeService
-	 * @param annee
-	 * @param agent
-	 * @throws Exception
-	 */
-	private boolean performCalculFonctionnaire(String idServiceAds, String annee, Agent agent) throws Exception {
-
-		ArrayList<Agent> la = new ArrayList<Agent>();
-		if (agent != null) {
-			ReturnMessageDto result = avancementService.isAvancementFonctionnaire(getTransaction(), agent);
-			if (result.getErrors().size() > 0) {
-				String erreur = Const.CHAINE_VIDE;
-				for (String err : result.getErrors()) {
-					erreur += err;
-				}
-				getTransaction().declarerErreur(erreur);
-				return false;
-			}
-			la.add(agent);
-		} else {
-			la = (ArrayList<Agent>) avancementService.listAgentAvctFonctionnaire(getTransaction(), idServiceAds, annee, adsService, getAgentDao());
-		}
-
-		// Parcours des agents
-		for (Agent a : la) {
-			AvancementFonctionnaires avct = avancementService.calculAvancementFonctionnaire(getTransaction(), a, annee, adsService, getFichePosteDao(), getAffectationDao(),
-					getAutreAdministrationAgentDao(), getMotifAvancementDao(), getAvisCapDao(), false);
-			if (avct == null) {
-				continue;
-			} else if (avct.getIdAgent() == null) {
-				// on informe les agents en erreur haut de grille
-				agentEnErreurHautGrille += a.getNomAgent() + " " + a.getPrenomAgent() + " (" + a.getNomatr() + "); ";
-				continue;
-			}
-			avancementService.creerAvancementFonctionnaire(avct, getAvancementFonctionnairesDao());
-		}
-		return true;
-	}
-
-	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_CHANGER_ANNEE Date de
-	 * création : (28/11/11)
-	 * 
-	 */
-	public String getNOM_PB_CHANGER_ANNEE() {
-		return "NOM_PB_CHANGER_ANNEE";
-	}
-
-	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * regles de gestion du process - Positionne un statut en fonction de ces
-	 * regles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (28/11/11)
-	 * 
-	 */
-	public boolean performPB_CHANGER_ANNEE(HttpServletRequest request) throws Exception {
-		agentEnErreur = Const.CHAINE_VIDE;
-		String annee = getListeAnnee()[0];
-
-		// recuperation du service
-		List<String> listeSousService = null;
-		if (getVAL_ST_ID_SERVICE_ADS().length() != 0) {
-			// on recupere les sous-service du service selectionne
-			listeSousService = adsService.getListSiglesWithEnfantsOfEntite(new Integer(getVAL_ST_ID_SERVICE_ADS()));
-		}
-
-		// recuperation agent
-		Agent agent = null;
-		if (getVAL_ST_AGENT().length() != 0) {
-			agent = getAgentDao().chercherAgentParMatricule(Integer.valueOf(getVAL_ST_AGENT()));
-		}
-
-		setListeAvct(getAvancementFonctionnairesDao().listerAvancementAvecAnneeEtat(Integer.valueOf(annee), null, null, agent == null ? null : agent.getIdAgent(), listeSousService, null, null, null));
-		afficherListeAvct(request);
-
-		return true;
-	}
-
 	private void afficherListeAvct(HttpServletRequest request) throws Exception {
 		for (int j = 0; j < getListeAvct().size(); j++) {
 			AvancementFonctionnaires av = (AvancementFonctionnaires) getListeAvct().get(j);
@@ -674,12 +369,10 @@ public class OeAVCTMasseSalarialeFonctionnaire extends BasicProcess {
 
 			addZone(getNOM_ST_NUM_AVCT(i), av.getIdAvct().toString());
 			addZone(getNOM_ST_PERIODE_STD(i), av.getPeriodeStandard().toString());
-			addZone(getNOM_ST_DATE_AVCT(i), (av.getDateAvctMini() == null ? "&nbsp;" : sdfFormatDate.format(av.getDateAvctMini())) + " <br> " + sdfFormatDate.format(av.getDateAvctMoy()) + " <br> "
-					+ (av.getDateAvctMaxi() == null ? "&nbsp;" : sdfFormatDate.format(av.getDateAvctMaxi())));
+			addZone(getNOM_ST_DATE_AVCT(i), sdfFormatDate.format(av.getDateAvctMoy()));
 
 			addZone(getNOM_CK_VALID_DRH(i), av.getEtat().equals(EnumEtatAvancement.TRAVAIL.getValue()) ? getCHECKED_OFF() : getCHECKED_ON());
-			addZone(getNOM_ST_MOTIF_AVCT(i), av.getIdMotifAvct() == null ? "&nbsp;" : getHashMotifAvancement().get(av.getIdMotifAvct()).getLibMotifAvct());
-			addZone(getNOM_LB_AVIS_CAP_SELECT(i), av.getIdAvisCap() == null ? Const.CHAINE_VIDE : String.valueOf(getListeAvisCAP().indexOf(getHashAvisCAP().get(av.getIdAvisCap()))));
+			addZone(getNOM_ST_MOTIF_AVCT(i), av.getIdMotifAvct() == null ? "&nbsp;" : getHashMotifAvancement().get(av.getIdMotifAvct().toString()).getLibMotifAvct());
 			addZone(getNOM_CK_PROJET_ARRETE(i), av.getEtat().equals(EnumEtatAvancement.TRAVAIL.getValue()) || av.getEtat().equals(EnumEtatAvancement.SGC.getValue()) ? getCHECKED_OFF()
 					: getCHECKED_ON());
 			addZone(getNOM_EF_NUM_ARRETE(i), av.getNumArrete());
@@ -689,6 +382,8 @@ public class OeAVCTMasseSalarialeFonctionnaire extends BasicProcess {
 
 			addZone(getNOM_ST_ETAT(i), av.getEtat());
 			addZone(getNOM_ST_CARRIERE_SIMU(i), av.getCarriereSimu() == null ? "&nbsp;" : av.getCarriereSimu());
+			addZone(getNOM_CK_VALID_ARR_IMPR(i), getCHECKED_OFF());
+			addZone(getNOM_CK_REGUL_ARR_IMPR(i), av.isRegularisation() ? getCHECKED_ON() : getCHECKED_OFF());
 
 		}
 	}
@@ -698,21 +393,10 @@ public class OeAVCTMasseSalarialeFonctionnaire extends BasicProcess {
 	 * 
 	 * @return Hashtable<String, MotifAvancement>
 	 */
-	private Hashtable<Integer, MotifAvancement> getHashMotifAvancement() {
+	private Hashtable<String, MotifAvancement> getHashMotifAvancement() {
 		if (hashMotifAvct == null)
-			hashMotifAvct = new Hashtable<Integer, MotifAvancement>();
+			hashMotifAvct = new Hashtable<String, MotifAvancement>();
 		return hashMotifAvct;
-	}
-
-	/**
-	 * Getter de la HashTable AvisCAP.
-	 * 
-	 * @return Hashtable<String, AvisCap>
-	 */
-	private Hashtable<Integer, AvisCap> getHashAvisCAP() {
-		if (hashAvisCAP == null)
-			hashAvisCAP = new Hashtable<Integer, AvisCap>();
-		return hashAvisCAP;
 	}
 
 	/**
@@ -1130,79 +814,6 @@ public class OeAVCTMasseSalarialeFonctionnaire extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_AVIS_CAP Date de création
-	 * : (21/11/11 09:55:36)
-	 * 
-	 */
-	public String getNOM_LB_AVIS_CAP(int i) {
-		return "NOM_LB_AVIS_CAP_" + i;
-	}
-
-	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_AVIS_CAP_SELECT Date de création : (21/11/11 09:55:36)
-	 * 
-	 */
-	public String getNOM_LB_AVIS_CAP_SELECT(int i) {
-		return "NOM_LB_AVIS_CAP_" + i + "_SELECT";
-	}
-
-	/**
-	 * Getter de la liste avec un lazy initialize : LB_AVIS_CAP Date de création
-	 * : (21/11/11 09:55:36)
-	 * 
-	 */
-	private String[] getLB_AVIS_CAP(int i) {
-		if (LB_AVIS_CAP == null)
-			LB_AVIS_CAP = initialiseLazyLB();
-		return LB_AVIS_CAP;
-	}
-
-	/**
-	 * Setter de la liste: LB_AVIS_CAP Date de création : (21/11/11 09:55:36)
-	 * 
-	 */
-	private void setLB_AVIS_CAP(String[] newLB_AVIS_CAP) {
-		LB_AVIS_CAP = newLB_AVIS_CAP;
-	}
-
-	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_AVIS_CAP Date de création : (21/11/11 09:55:36)
-	 * 
-	 */
-	public String[] getVAL_LB_AVIS_CAP(int i) {
-		return getLB_AVIS_CAP(i);
-	}
-
-	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
-	 * la JSP : LB_AVIS_CAP Date de création : (21/11/11 09:55:36)
-	 * 
-	 */
-	public String getVAL_LB_AVIS_CAP_SELECT(int i) {
-		return getZone(getNOM_LB_AVIS_CAP_SELECT(i));
-	}
-
-	/**
-	 * Getter de la liste des avis CAP.
-	 * 
-	 * @return listeAvisCAP
-	 */
-	private ArrayList<AvisCap> getListeAvisCAP() {
-		return listeAvisCAP;
-	}
-
-	/**
-	 * Setter de la liste des avis CAP.
-	 * 
-	 * @param listeAvisCAP
-	 */
-	private void setListeAvisCAP(ArrayList<AvisCap> listeAvisCAP) {
-		this.listeAvisCAP = listeAvisCAP;
-	}
-
-	/**
 	 * Getter de la liste des motifs d'avancement.
 	 * 
 	 * @return listeMotifAvct
@@ -1254,15 +865,16 @@ public class OeAVCTMasseSalarialeFonctionnaire extends BasicProcess {
 				} else {
 					avct.setEtat(EnumEtatAvancement.TRAVAIL.getValue());
 				}
-				// on traite l'avis CAP
-				int indiceAvisCap = (Services.estNumerique(getVAL_LB_AVIS_CAP_SELECT(i)) ? Integer.parseInt(getVAL_LB_AVIS_CAP_SELECT(i)) : -1);
-				if (indiceAvisCap != -1) {
-					Integer idAvisCap = ((AvisCap) getListeAvisCAP().get(indiceAvisCap)).getIdAvisCap();
-					avct.setIdAvisCap(idAvisCap);
-				}
 				// on traite le numero et la date d'arrete
 				avct.setDateArrete(getVAL_EF_DATE_ARRETE(i).equals(Const.CHAINE_VIDE) ? null : sdfFormatDate.parse(getVAL_EF_DATE_ARRETE(i)));
 				avct.setNumArrete(getVAL_EF_NUM_ARRETE(i));
+
+				// on traite la regularisation
+				if (getVAL_CK_REGUL_ARR_IMPR(i).equals(getCHECKED_ON())) {
+					avct.setRegularisation(true);
+				} else {
+					avct.setRegularisation(false);
+				}
 			}
 			getAvancementFonctionnairesDao().modifierAvancement(avct.getIdAvct(), avct.getIdAvisCap(), avct.getIdAgent(), avct.getIdMotifAvct(), avct.getDirectionService(), avct.getSectionService(),
 					avct.getFiliere(), avct.getGrade(), avct.getIdNouvGrade(), avct.getAnnee(), avct.getCdcadr(), avct.getBmAnnee(), avct.getBmMois(), avct.getBmJour(), avct.getAccAnnee(),
@@ -1272,12 +884,13 @@ public class OeAVCTMasseSalarialeFonctionnaire extends BasicProcess {
 					avct.getDateVerifSgc(), avct.getHeureVerifSgc(), avct.getUserVerifSef(), avct.getDateVerifSef(), avct.getHeureVerifSef(), avct.getOrdreMerite(), avct.getAvisShd(),
 					avct.getIdAvisArr(), avct.getIdAvisEmp(), avct.getUserVerifArr(), avct.getDateVerifArr(), avct.getHeureVerifArr(), avct.getDateCap(), avct.getObservationArr(),
 					avct.getUserVerifArrImpr(), avct.getDateVerifArrImpr(), avct.getHeureVerifArrImpr(), avct.isRegularisation(), avct.isAgentVdn(), avct.getIdCap(), avct.getCodePa(), avct.isAutre());
+
 			if (getTransaction().isErreur())
 				return false;
 		}
 		// on enregistre
 		commitTransaction();
-		performPB_CHANGER_ANNEE(request);
+		afficherListeAvct(request);
 		return true;
 	}
 
@@ -1441,7 +1054,7 @@ public class OeAVCTMasseSalarialeFonctionnaire extends BasicProcess {
 		}
 		// on valide les modifis
 		commitTransaction();
-		performPB_CHANGER_ANNEE(request);
+
 		// "INF201","@ agents ont été affectés."
 		setStatut(STATUT_MEME_PROCESS, false, MessageUtils.getMessage("INF201", String.valueOf(nbAgentAffectes)));
 		return true;
@@ -1467,6 +1080,364 @@ public class OeAVCTMasseSalarialeFonctionnaire extends BasicProcess {
 		setListeAvct(new ArrayList<AvancementFonctionnaires>());
 		afficherListeAvct(request);
 		return true;
+	}
+
+	/**
+	 * Retourne le nom d'un bouton pour la JSP : PB_CHANGER_ANNEE Date de
+	 * création : (28/11/11)
+	 * 
+	 */
+	public String getNOM_PB_FILTRER() {
+		return "NOM_PB_FILTRER";
+	}
+
+	/**
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (28/11/11)
+	 * 
+	 */
+	public boolean performPB_FILTRER(HttpServletRequest request) throws Exception {
+		int indiceAnnee = (Services.estNumerique(getVAL_LB_ANNEE_SELECT()) ? Integer.parseInt(getVAL_LB_ANNEE_SELECT()) : -1);
+		String annee = (String) getListeAnnee()[indiceAnnee];
+		setAnneeSelect(annee);
+
+		setListeAvct(getAvancementFonctionnairesDao().listerAvancementAvecAnneeEtat(Integer.valueOf(annee), null, null, null, null, null, null, "oui"));
+
+		afficherListeAvct(request);
+		return true;
+	}
+
+	/**
+	 * Retourne le nom de la case à cocher sélectionnée pour la JSP :
+	 * CK_VALID_ARR_IMPR Date de création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getNOM_CK_VALID_ARR_IMPR(int i) {
+		return "NOM_CK_VALID_ARR_IMPR_" + i;
+	}
+
+	/**
+	 * Retourne la valeur de la case à cocher à afficher par la JSP pour la case
+	 * a cocher : CK_VALID_SGC_ARR Date de création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getVAL_CK_VALID_ARR_IMPR(int i) {
+		return getZone(getNOM_CK_VALID_ARR_IMPR(i));
+	}
+
+	/**
+	 * Retourne le nom d'un bouton pour la JSP : PB_IMPRIMER Date de création :
+	 * (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getNOM_PB_IMPRIMER() {
+		return "NOM_PB_IMPRIMER";
+	}
+
+	/**
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public boolean performPB_IMPRIMER(HttpServletRequest request) throws Exception {
+
+		verifieRepertoire("Avancement");
+		String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ACTES");
+
+		// on supprime les documents existants
+		String docuChangementClasse = "Avancement/arretesChangementClasseDetaches.doc";
+		String docuAvctDiff = "Avancement/arretesAvancementDiffDetaches.doc";
+		// on verifie l'existance de chaque fichier
+		File chgtClasse = new File(repPartage.substring(8, repPartage.length()) + docuChangementClasse);
+		if (chgtClasse.exists()) {
+			chgtClasse.delete();
+		}
+		File avctDiff = new File(repPartage.substring(8, repPartage.length()) + docuAvctDiff);
+		if (avctDiff.exists()) {
+			avctDiff.delete();
+		}
+		ArrayList<Integer> listeImpressionChangementClasse = new ArrayList<Integer>();
+		ArrayList<Integer> listeImpressionAvancementDiff = new ArrayList<Integer>();
+
+		UserAppli user = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
+		SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+		String heureAction = sdf.format(new Date());
+
+		for (int j = 0; j < getListeAvct().size(); j++) {
+			AvancementFonctionnaires avct = (AvancementFonctionnaires) getListeAvct().get(j);
+			Integer idAvct = avct.getIdAvct();
+			if (getVAL_CK_VALID_ARR_IMPR(idAvct).equals(getCHECKED_ON())) {
+				if (avct.getIdMotifAvct() == 4) {
+					// on fait une liste des arretes changement classe
+					listeImpressionChangementClasse.add(avct.getIdAgent());
+				} else if (avct.getIdMotifAvct() == 7 || avct.getIdMotifAvct() == 6 || avct.getIdMotifAvct() == 3) {
+					// on fait une liste des arretes avancement diffe
+					listeImpressionAvancementDiff.add(avct.getIdAgent());
+				} else {
+					continue;
+				}
+				// si la ligne est cochée
+				// on regarde si l'etat est deja ARR
+				// --> oui on ne modifie pas le user
+				// --> non on passe l'etat a ARR et on met a jour le user
+				if (avct.getEtat().equals(EnumEtatAvancement.ARRETE.getValue())) {
+					// on sauvegarde qui a fait l'action
+					avct.setUserVerifArrImpr(user.getUserName());
+					avct.setDateVerifArrImpr(new Date());
+					avct.setHeureVerifArrImpr(heureAction);
+				}
+
+				// on sauvegarde les regularisations
+
+				if (getVAL_CK_REGUL_ARR_IMPR(idAvct).equals(getCHECKED_ON())) {
+					avct.setRegularisation(true);
+				} else {
+					avct.setRegularisation(false);
+				}
+				try {
+
+					getAvancementFonctionnairesDao().modifierAvancement(avct.getIdAvct(), avct.getIdAvisCap(), avct.getIdAgent(), avct.getIdMotifAvct(), avct.getDirectionService(),
+							avct.getSectionService(), avct.getFiliere(), avct.getGrade(), avct.getIdNouvGrade(), avct.getAnnee(), avct.getCdcadr(), avct.getBmAnnee(), avct.getBmMois(),
+							avct.getBmJour(), avct.getAccAnnee(), avct.getAccMois(), avct.getAccJour(), avct.getNouvBmAnnee(), avct.getNouvBmMois(), avct.getNouvBmJour(), avct.getNouvAccAnnee(),
+							avct.getNouvAccMois(), avct.getNouvAccJour(), avct.getIban(), avct.getInm(), avct.getIna(), avct.getNouvIban(), avct.getNouvInm(), avct.getNouvIna(), avct.getDateGrade(),
+							avct.getPeriodeStandard(), avct.getDateAvctMini(), avct.getDateAvctMoy(), avct.getDateAvctMaxi(), avct.getNumArrete(), avct.getDateArrete(), avct.getEtat(),
+							avct.getCodeCategorie(), avct.getCarriereSimu(), avct.getUserVerifSgc(), avct.getDateVerifSgc(), avct.getHeureVerifSgc(), avct.getUserVerifSef(), avct.getDateVerifSef(),
+							avct.getHeureVerifSef(), avct.getOrdreMerite(), avct.getAvisShd(), avct.getIdAvisArr(), avct.getIdAvisEmp(), avct.getUserVerifArr(), avct.getDateVerifArr(),
+							avct.getHeureVerifArr(), avct.getDateCap(), avct.getObservationArr(), avct.getUserVerifArrImpr(), avct.getDateVerifArrImpr(), avct.getHeureVerifArrImpr(),
+							avct.isRegularisation(), avct.isAgentVdn(), avct.getIdCap(), avct.getCodePa(), avct.isAutre());
+
+				} catch (Exception e) {
+					getTransaction().declarerErreur("Une erreur est survenue dans la sauvegarde des avancements. Merci de contacter le responsable du projet.");
+					return false;
+				}
+				commitTransaction();
+			}
+			addZone(getNOM_CK_VALID_ARR_IMPR(idAvct), getCHECKED_OFF());
+
+		}
+		if (listeImpressionChangementClasse.size() > 0) {
+
+			try {
+				byte[] fileAsBytes = sirhService.downloadArrete(listeImpressionChangementClasse.toString().replace("[", "").replace("]", "").replace(" ", ""), true, Integer.valueOf(getAnneeSelect()),
+						true);
+
+				if (!saveFileToRemoteFileSystem(fileAsBytes, repPartage, docuChangementClasse)) {
+					// "ERR185",
+					// "Une erreur est survenue dans la génération des documents. Merci de contacter le responsable du projet."
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR185"));
+					return false;
+				}
+			} catch (Exception e) {
+				// "ERR185",
+				// "Une erreur est survenue dans la génération des documents. Merci de contacter le responsable du projet."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR185"));
+				return false;
+			}
+
+		}
+		if (listeImpressionAvancementDiff.size() > 0) {
+			try {
+				byte[] fileAsBytes = sirhService.downloadArrete(listeImpressionAvancementDiff.toString().replace("[", "").replace("]", "").replace(" ", ""), false, Integer.valueOf(getAnneeSelect()),
+						true);
+				if (!saveFileToRemoteFileSystem(fileAsBytes, repPartage, docuAvctDiff)) {
+					// "ERR185",
+					// "Une erreur est survenue dans la génération des documents. Merci de contacter le responsable du projet."
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR185"));
+					return false;
+				}
+			} catch (Exception e) {
+				// "ERR185",
+				// "Une erreur est survenue dans la génération des documents. Merci de contacter le responsable du projet."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR185"));
+				return false;
+			}
+
+		}
+		setListeDocuments(null);
+		afficherListeAvct(request);
+		return true;
+	}
+
+	/**
+	 * Getter de l'annee sélectionnée.
+	 * 
+	 * @return anneeSelect
+	 */
+	public String getAnneeSelect() {
+		return anneeSelect;
+	}
+
+	/**
+	 * Setter de l'année sélectionnée
+	 * 
+	 * @param newAnneeSelect
+	 */
+	public void setAnneeSelect(String newAnneeSelect) {
+		this.anneeSelect = newAnneeSelect;
+	}
+
+	private void verifieRepertoire(String codTypeDoc) {
+		// on verifie déjà que le repertoire source existe
+		String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ACTES");
+
+		File dossierParent = new File(repPartage);
+		if (!dossierParent.exists()) {
+			dossierParent.mkdir();
+		}
+		File ssDossier = new File(repPartage + codTypeDoc + "/");
+		if (!ssDossier.exists()) {
+			ssDossier.mkdir();
+		}
+	}
+
+	public boolean saveFileToRemoteFileSystem(byte[] fileAsBytes, String chemin, String filename) throws Exception {
+
+		BufferedOutputStream bos = null;
+		FileObject pdfFile = null;
+
+		try {
+			FileSystemManager fsManager = VFS.getManager();
+			pdfFile = fsManager.resolveFile(String.format("%s", chemin + filename));
+			bos = new BufferedOutputStream(pdfFile.getContent().getOutputStream());
+			IOUtils.write(fileAsBytes, bos);
+			IOUtils.closeQuietly(bos);
+
+			if (pdfFile != null) {
+				try {
+					pdfFile.close();
+				} catch (FileSystemException e) {
+					// ignore the exception
+				}
+			}
+		} catch (Exception e) {
+			logger.error(String.format("An error occured while writing the report file to the following path  : " + chemin + filename + " : " + e));
+			return false;
+		}
+		return true;
+	}
+
+	public ArrayList<String> getListeDocuments() {
+		if (listeDocuments == null)
+			return new ArrayList<String>();
+		return listeDocuments;
+	}
+
+	public void setListeDocuments(ArrayList<String> listeDocuments) {
+		this.listeDocuments = listeDocuments;
+	}
+
+	/**
+	 * Retourne pour la JSP le nom de la zone statique : ST_NOM_DOC Date de
+	 * création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getNOM_ST_NOM_DOC(int i) {
+		return "NOM_ST_NOM_DOC_" + i;
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_NOM_DOC Date
+	 * de création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getVAL_ST_NOM_DOC(int i) {
+		return getZone(getNOM_ST_NOM_DOC(i));
+	}
+
+	/**
+	 * Retourne le nom d'un bouton pour la JSP : PB_VISUALISATION Date de
+	 * création : (29/09/11 10:03:38)
+	 * 
+	 */
+	public String getNOM_PB_VISUALISATION(int i) {
+		return "NOM_PB_VISUALISATION" + i;
+	}
+
+	/**
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * regles de gestion du process - Positionne un statut en fonction de ces
+	 * regles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (29/09/11 10:03:38)
+	 * 
+	 */
+	public boolean performPB_VISUALISATION(HttpServletRequest request, int indiceEltAConsulter) throws Exception {
+
+		String docSelection = getListeDocuments().get(indiceEltAConsulter);
+		String nomDoc = docSelection.substring(docSelection.lastIndexOf("/"), docSelection.length());
+
+		String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_LECTURE");
+		setURLFichier(getScriptOuverture(repertoireStockage + "Avancement" + nomDoc));
+
+		setStatut(STATUT_MEME_PROCESS);
+		return true;
+	}
+
+	private void afficheListeDocuments() {
+		for (int i = 0; i < getListeDocuments().size(); i++) {
+			String nomDoc = getListeDocuments().get(i);
+			addZone(getNOM_ST_NOM_DOC(i), nomDoc.substring(nomDoc.lastIndexOf("/") + 1, nomDoc.length()));
+		}
+	}
+
+	public String getScriptOuverture(String cheminFichier) throws Exception {
+		StringBuffer scriptOuvPDF = new StringBuffer("<script language=\"JavaScript\" type=\"text/javascript\">");
+		scriptOuvPDF.append("window.open('" + cheminFichier + "');");
+		scriptOuvPDF.append("</script>");
+		return scriptOuvPDF.toString();
+	}
+
+	public String getUrlFichier() {
+		String res = urlFichier;
+		setURLFichier(null);
+		if (res == null) {
+			return Const.CHAINE_VIDE;
+		} else {
+			return res;
+		}
+	}
+
+	private void setURLFichier(String scriptOuverture) {
+		urlFichier = scriptOuverture;
+	}
+
+	private ArrayList<String> listerDocumentsArretes() throws ParseException {
+		ArrayList<String> res = new ArrayList<String>();
+		String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ROOT");
+		String docuArreteChangementClasse = repPartage + "Avancement/arretesChangementClasseDetaches.doc";
+		String docuArreteAvctDiff = repPartage + "Avancement/arretesAvancementDiffDetaches.doc";
+
+		// on verifie l'existance de chaque fichier
+		boolean existsDocuArreteChangementClasse = new File(docuArreteChangementClasse).exists();
+		if (existsDocuArreteChangementClasse) {
+			res.add(docuArreteChangementClasse);
+		}
+		boolean existsDocuArreteAvctDiff = new File(docuArreteAvctDiff).exists();
+		if (existsDocuArreteAvctDiff) {
+			res.add(docuArreteAvctDiff);
+		}
+		return res;
+	}
+
+	/**
+	 * Retourne le nom de la case à cocher sélectionnée pour la JSP :
+	 * CK_REGUL_ARR_IMPR Date de création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getNOM_CK_REGUL_ARR_IMPR(int i) {
+		return "NOM_CK_REGUL_ARR_IMPR_" + i;
+	}
+
+	/**
+	 * Retourne la valeur de la case à cocher à afficher par la JSP pour la case
+	 * a cocher : CK_REGUL_SGC_ARR Date de création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getVAL_CK_REGUL_ARR_IMPR(int i) {
+		return getZone(getNOM_CK_REGUL_ARR_IMPR(i));
 	}
 
 	public String getNOM_ST_PA(int i) {
@@ -1517,20 +1488,20 @@ public class OeAVCTMasseSalarialeFonctionnaire extends BasicProcess {
 		this.autreAdministrationDao = autreAdministrationDao;
 	}
 
-	public AvisCapDao getAvisCapDao() {
-		return avisCapDao;
+	public HistoCarriereDao getHistoCarriereDao() {
+		return histoCarriereDao;
 	}
 
-	public void setAvisCapDao(AvisCapDao avisCapDao) {
-		this.avisCapDao = avisCapDao;
+	public void setHistoCarriereDao(HistoCarriereDao histoCarriereDao) {
+		this.histoCarriereDao = histoCarriereDao;
 	}
 
-	public AutreAdministrationAgentDao getAutreAdministrationAgentDao() {
-		return autreAdministrationAgentDao;
+	public AgentDao getAgentDao() {
+		return agentDao;
 	}
 
-	public void setAutreAdministrationAgentDao(AutreAdministrationAgentDao autreAdministrationAgentDao) {
-		this.autreAdministrationAgentDao = autreAdministrationAgentDao;
+	public void setAgentDao(AgentDao agentDao) {
+		this.agentDao = agentDao;
 	}
 
 	public AvancementFonctionnairesDao getAvancementFonctionnairesDao() {
@@ -1541,35 +1512,11 @@ public class OeAVCTMasseSalarialeFonctionnaire extends BasicProcess {
 		this.avancementFonctionnairesDao = avancementFonctionnairesDao;
 	}
 
-	public FichePosteDao getFichePosteDao() {
-		return fichePosteDao;
+	public AvisCapDao getAvisCapDao() {
+		return avisCapDao;
 	}
 
-	public void setFichePosteDao(FichePosteDao fichePosteDao) {
-		this.fichePosteDao = fichePosteDao;
-	}
-
-	public HistoCarriereDao getHistoCarriereDao() {
-		return histoCarriereDao;
-	}
-
-	public void setHistoCarriereDao(HistoCarriereDao histoCarriereDao) {
-		this.histoCarriereDao = histoCarriereDao;
-	}
-
-	public AffectationDao getAffectationDao() {
-		return affectationDao;
-	}
-
-	public void setAffectationDao(AffectationDao affectationDao) {
-		this.affectationDao = affectationDao;
-	}
-
-	public AgentDao getAgentDao() {
-		return agentDao;
-	}
-
-	public void setAgentDao(AgentDao agentDao) {
-		this.agentDao = agentDao;
+	public void setAvisCapDao(AvisCapDao avisCapDao) {
+		this.avisCapDao = avisCapDao;
 	}
 }

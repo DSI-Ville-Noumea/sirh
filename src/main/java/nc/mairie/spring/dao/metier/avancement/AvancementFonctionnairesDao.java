@@ -74,6 +74,8 @@ public class AvancementFonctionnairesDao extends SirhDao implements AvancementFo
 	public static final String CHAMP_AGENT_VDN = "AGENT_VDN";
 	public static final String CHAMP_ID_CAP = "ID_CAP";
 	public static final String CHAMP_CODE_PA = "CODE_PA";
+	// #19141 : on ajoute un champ pour savoir dans quel ecran on affiche
+	public static final String CHAMP_AUTRE = "AUTRE";
 
 	public AvancementFonctionnairesDao(SirhDao sirhDao) {
 		super.dataSource = sirhDao.getDataSource();
@@ -83,110 +85,73 @@ public class AvancementFonctionnairesDao extends SirhDao implements AvancementFo
 	}
 
 	@Override
-	public void supprimerAvancementTravailAvecCategorie(Integer annee) throws Exception {
-		String sql = "DELETE FROM " + NOM_TABLE + " where " + CHAMP_ANNEE + "=? and " + CHAMP_ETAT + "=?";
+	public void supprimerAvancementTravailAvecCategorie(Integer annee, boolean autre) throws Exception {
+		String sql = "DELETE FROM " + NOM_TABLE + " where " + CHAMP_ANNEE + "=? and " + CHAMP_ETAT + "=? and " + CHAMP_AUTRE + "=" + (autre ? "1" : "0");
 		jdbcTemplate.update(sql, new Object[] { annee, "T" });
 	}
 
 	@Override
-	public void modifierAvancement(Integer idAvct, Integer idAvisCap, Integer idAgent, Integer idMotifAvct,
-			String directionService, String sectionService, String filiere, String grade, String idNouvGrade,
-			Integer annee, String cdcadr, Integer bmAnnee, Integer bmMois, Integer bmJour, Integer accAnnee,
-			Integer accMois, Integer accJour, Integer nouvBmAnnee, Integer nouvBmMois, Integer nouvBmJour,
-			Integer nouvAccAnnee, Integer nouvAccMois, Integer nouvAccJour, String iban, Integer inm, Integer ina,
-			String nouvIban, Integer nouvInm, Integer nouvIna, Date dateGrade, Integer periodeStandard,
-			Date dateAvctMini, Date dateAvctMoy, Date dateAvctMaxi, String numArrete, Date dateArrete, String etat,
-			Integer codeCategorie, String carriereSimu, String userVerifSgc, Date dateVerifSgc, String heureVerifSgc,
-			String userVerifSef, Date dateVerifSef, String heureVerifSef, String ordreMerite, String avisSHD,
-			Integer idAvisArr, Integer idAvisEmp, String userVerifArr, Date dateVerifArr, String heureVerifArr,
-			Date dateCap, String observationArr, String userVerifArrImpr, Date dateVerifArrImpr,
-			String heureVerifArrImpr, boolean regularisation, boolean agentVdn, Integer idCap, String codePa)
-			throws Exception {
-		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_ID_AGENT + "=?," + CHAMP_ID_AVIS_CAP + "=?,"
-				+ CHAMP_ID_MOTIF_AVCT + "=?," + CHAMP_DIRECTION_SERVICE + "=?," + CHAMP_SECTION_SERVICE + "=?,"
-				+ CHAMP_FILIERE + "=?" + "," + CHAMP_GRADE + "=?," + CHAMP_ID_NOUV_GRADE + "=?," + CHAMP_CDCADR + "=?,"
-				+ CHAMP_ANNEE + "=?," + CHAMP_BM_ANNEE + "=?," + CHAMP_BM_MOIS + "=?," + CHAMP_BM_JOUR + "=?,"
-				+ CHAMP_ACC_ANNEE + "=?," + CHAMP_ACC_MOIS + "=?," + CHAMP_ACC_JOUR + "=?" + "," + CHAMP_NOUV_BM_ANNEE
-				+ "=?," + CHAMP_NOUV_BM_MOIS + "=?," + CHAMP_NOUV_BM_JOUR + "=?," + CHAMP_NOUV_ACC_ANNEE + "=?,"
-				+ CHAMP_NOUV_ACC_MOIS + "=?," + CHAMP_NOUV_ACC_JOUR + "=?" + "," + CHAMP_IBAN + "=?," + CHAMP_INM
-				+ "=?," + CHAMP_INA + "=?," + CHAMP_NOUV_IBAN + "=?," + CHAMP_NOUV_INM + "=?," + CHAMP_NOUV_INA + "=?,"
-				+ CHAMP_DATE_GRADE + "=?," + CHAMP_PERIODE_STANDARD + "=?," + CHAMP_DATE_AVCT_MINI + "=?" + ","
-				+ CHAMP_DATE_AVCT_MOY + "=?," + CHAMP_DATE_AVCT_MAXI + "=?," + CHAMP_NUM_ARRETE + "=?,"
-				+ CHAMP_DATE_ARRETE + "=?," + CHAMP_ETAT + "=?," + CHAMP_CODE_CATEGORIE + "=?," + CHAMP_CARRIERE_SIMU
-				+ "=?" + "," + CHAMP_USER_VERIF_SGC + "=?," + CHAMP_DATE_VERIF_SGC + "=?," + CHAMP_HEURE_VERIF_SGC
-				+ "=?," + CHAMP_USER_VERIF_SEF + "=?," + CHAMP_DATE_VERIF_SEF + "=?," + CHAMP_HEURE_VERIF_SEF + "=?"
-				+ "," + CHAMP_ORDRE_MERITE + "=?," + CHAMP_AVIS_SHD + "=?," + CHAMP_ID_AVIS_ARR + "=?,"
-				+ CHAMP_ID_AVIS_EMP + "=?," + CHAMP_USER_VERIF_ARR + "=?," + CHAMP_DATE_VERIF_ARR + "=?" + ","
-				+ CHAMP_HEURE_VERIF_ARR + "=?," + CHAMP_OBSERVATION_ARR + "=?," + CHAMP_USER_VERIF_ARR_IMPR + "=?,"
-				+ CHAMP_DATE_VERIF_ARR_IMPR + "=?," + CHAMP_HEURE_VERIF_ARR_IMPR + "=?" + "," + CHAMP_DATE_CAP + "=?,"
-				+ CHAMP_REGULARISATION + "=?," + CHAMP_AGENT_VDN + "=?," + CHAMP_ID_CAP + "=?," + CHAMP_CODE_PA
-				+ "=? where " + CHAMP_ID + "=?";
-		jdbcTemplate.update(sql, new Object[] { idAgent, idAvisCap, idMotifAvct, directionService, sectionService,
-				filiere, grade, idNouvGrade, cdcadr, annee, bmAnnee, bmMois, bmJour, accAnnee, accMois, accJour,
-				nouvBmAnnee, nouvBmMois, nouvBmJour, nouvAccAnnee, nouvAccMois, nouvAccJour, iban, inm, ina, nouvIban,
-				nouvInm, nouvIna, dateGrade, periodeStandard, dateAvctMini, dateAvctMoy, dateAvctMaxi, numArrete,
-				dateArrete, etat, codeCategorie, carriereSimu, userVerifSgc, dateVerifSgc, heureVerifSgc, userVerifSef,
-				dateVerifSef, heureVerifSef, ordreMerite, avisSHD, idAvisArr, idAvisEmp, userVerifArr, dateVerifArr,
-				heureVerifArr, observationArr, userVerifArrImpr, dateVerifArrImpr, heureVerifArrImpr, dateCap,
-				regularisation ? 1 : 0, agentVdn ? 1 : 0, idCap, codePa, idAvct });
+	public void modifierAvancement(Integer idAvct, Integer idAvisCap, Integer idAgent, Integer idMotifAvct, String directionService, String sectionService, String filiere, String grade,
+			String idNouvGrade, Integer annee, String cdcadr, Integer bmAnnee, Integer bmMois, Integer bmJour, Integer accAnnee, Integer accMois, Integer accJour, Integer nouvBmAnnee,
+			Integer nouvBmMois, Integer nouvBmJour, Integer nouvAccAnnee, Integer nouvAccMois, Integer nouvAccJour, String iban, Integer inm, Integer ina, String nouvIban, Integer nouvInm,
+			Integer nouvIna, Date dateGrade, Integer periodeStandard, Date dateAvctMini, Date dateAvctMoy, Date dateAvctMaxi, String numArrete, Date dateArrete, String etat, Integer codeCategorie,
+			String carriereSimu, String userVerifSgc, Date dateVerifSgc, String heureVerifSgc, String userVerifSef, Date dateVerifSef, String heureVerifSef, String ordreMerite, String avisSHD,
+			Integer idAvisArr, Integer idAvisEmp, String userVerifArr, Date dateVerifArr, String heureVerifArr, Date dateCap, String observationArr, String userVerifArrImpr, Date dateVerifArrImpr,
+			String heureVerifArrImpr, boolean regularisation, boolean agentVdn, Integer idCap, String codePa, boolean autre) throws Exception {
+		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_ID_AGENT + "=?," + CHAMP_ID_AVIS_CAP + "=?," + CHAMP_ID_MOTIF_AVCT + "=?," + CHAMP_DIRECTION_SERVICE + "=?," + CHAMP_SECTION_SERVICE
+				+ "=?," + CHAMP_FILIERE + "=?" + "," + CHAMP_GRADE + "=?," + CHAMP_ID_NOUV_GRADE + "=?," + CHAMP_CDCADR + "=?," + CHAMP_ANNEE + "=?," + CHAMP_BM_ANNEE + "=?," + CHAMP_BM_MOIS + "=?,"
+				+ CHAMP_BM_JOUR + "=?," + CHAMP_ACC_ANNEE + "=?," + CHAMP_ACC_MOIS + "=?," + CHAMP_ACC_JOUR + "=?" + "," + CHAMP_NOUV_BM_ANNEE + "=?," + CHAMP_NOUV_BM_MOIS + "=?,"
+				+ CHAMP_NOUV_BM_JOUR + "=?," + CHAMP_NOUV_ACC_ANNEE + "=?," + CHAMP_NOUV_ACC_MOIS + "=?," + CHAMP_NOUV_ACC_JOUR + "=?" + "," + CHAMP_IBAN + "=?," + CHAMP_INM + "=?," + CHAMP_INA
+				+ "=?," + CHAMP_NOUV_IBAN + "=?," + CHAMP_NOUV_INM + "=?," + CHAMP_NOUV_INA + "=?," + CHAMP_DATE_GRADE + "=?," + CHAMP_PERIODE_STANDARD + "=?," + CHAMP_DATE_AVCT_MINI + "=?" + ","
+				+ CHAMP_DATE_AVCT_MOY + "=?," + CHAMP_DATE_AVCT_MAXI + "=?," + CHAMP_NUM_ARRETE + "=?," + CHAMP_DATE_ARRETE + "=?," + CHAMP_ETAT + "=?," + CHAMP_CODE_CATEGORIE + "=?,"
+				+ CHAMP_CARRIERE_SIMU + "=?" + "," + CHAMP_USER_VERIF_SGC + "=?," + CHAMP_DATE_VERIF_SGC + "=?," + CHAMP_HEURE_VERIF_SGC + "=?," + CHAMP_USER_VERIF_SEF + "=?," + CHAMP_DATE_VERIF_SEF
+				+ "=?," + CHAMP_HEURE_VERIF_SEF + "=?" + "," + CHAMP_ORDRE_MERITE + "=?," + CHAMP_AVIS_SHD + "=?," + CHAMP_ID_AVIS_ARR + "=?," + CHAMP_ID_AVIS_EMP + "=?," + CHAMP_USER_VERIF_ARR
+				+ "=?," + CHAMP_DATE_VERIF_ARR + "=?" + "," + CHAMP_HEURE_VERIF_ARR + "=?," + CHAMP_OBSERVATION_ARR + "=?," + CHAMP_USER_VERIF_ARR_IMPR + "=?," + CHAMP_DATE_VERIF_ARR_IMPR + "=?,"
+				+ CHAMP_HEURE_VERIF_ARR_IMPR + "=?" + "," + CHAMP_DATE_CAP + "=?," + CHAMP_REGULARISATION + "=?," + CHAMP_AGENT_VDN + "=?," + CHAMP_ID_CAP + "=?," + CHAMP_CODE_PA + "=?,"
+				+ CHAMP_AUTRE + "=? where " + CHAMP_ID + "=?";
+		jdbcTemplate.update(sql, new Object[] { idAgent, idAvisCap, idMotifAvct, directionService, sectionService, filiere, grade, idNouvGrade, cdcadr, annee, bmAnnee, bmMois, bmJour, accAnnee,
+				accMois, accJour, nouvBmAnnee, nouvBmMois, nouvBmJour, nouvAccAnnee, nouvAccMois, nouvAccJour, iban, inm, ina, nouvIban, nouvInm, nouvIna, dateGrade, periodeStandard, dateAvctMini,
+				dateAvctMoy, dateAvctMaxi, numArrete, dateArrete, etat, codeCategorie, carriereSimu, userVerifSgc, dateVerifSgc, heureVerifSgc, userVerifSef, dateVerifSef, heureVerifSef, ordreMerite,
+				avisSHD, idAvisArr, idAvisEmp, userVerifArr, dateVerifArr, heureVerifArr, observationArr, userVerifArrImpr, dateVerifArrImpr, heureVerifArrImpr, dateCap, regularisation ? 1 : 0,
+				agentVdn ? 1 : 0, idCap, codePa, autre, idAvct });
 	}
 
 	@Override
-	public void creerAvancement(Integer idAvisCap, Integer idAgent, Integer idMotifAvct, String directionService,
-			String sectionService, String filiere, String grade, String idNouvGrade, Integer annee, String cdcadr,
-			Integer bmAnnee, Integer bmMois, Integer bmJour, Integer accAnnee, Integer accMois, Integer accJour,
-			Integer nouvBmAnnee, Integer nouvBmMois, Integer nouvBmJour, Integer nouvAccAnnee, Integer nouvAccMois,
-			Integer nouvAccJour, String iban, Integer inm, Integer ina, String nouvIban, Integer nouvInm,
-			Integer nouvIna, Date dateGrade, Integer periodeStandard, Date dateAvctMini, Date dateAvctMoy,
-			Date dateAvctMaxi, String numArrete, Date dateArrete, String etat, Integer codeCategorie,
-			String carriereSimu, String userVerifSgc, Date dateVerifSgc, String heureVerifSgc, String userVerifSef,
-			Date dateVerifSef, String heureVerifSef, String ordreMerite, String avisSHD, Integer idAvisArr,
-			Integer idAvisEmp, String userVerifArr, Date dateVerifArr, String heureVerifArr, Date dateCap,
-			String observationArr, String userVerifArrImpr, Date dateVerifArrImpr, String heureVerifArrImpr,
-			boolean regularisation, boolean agentVdn, Integer idCap, String codePa) throws Exception {
-		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_ID_AGENT + "," + CHAMP_ID_AVIS_CAP + ","
-				+ CHAMP_ID_MOTIF_AVCT + "," + CHAMP_DIRECTION_SERVICE + "," + CHAMP_SECTION_SERVICE + ","
-				+ CHAMP_FILIERE + "," + CHAMP_GRADE + "," + CHAMP_ID_NOUV_GRADE + "," + CHAMP_CDCADR + ","
-				+ CHAMP_ANNEE + "," + CHAMP_BM_ANNEE + "," + CHAMP_BM_MOIS + "," + CHAMP_BM_JOUR + ","
-				+ CHAMP_ACC_ANNEE + "," + CHAMP_ACC_MOIS + "," + CHAMP_ACC_JOUR + "," + CHAMP_NOUV_BM_ANNEE + ","
-				+ CHAMP_NOUV_BM_MOIS + "," + CHAMP_NOUV_BM_JOUR + "," + CHAMP_NOUV_ACC_ANNEE + ","
-				+ CHAMP_NOUV_ACC_MOIS + "," + CHAMP_NOUV_ACC_JOUR + "," + CHAMP_IBAN + "," + CHAMP_INM + ","
-				+ CHAMP_INA + "," + CHAMP_NOUV_IBAN + "," + CHAMP_NOUV_INM + "," + CHAMP_NOUV_INA + ","
-				+ CHAMP_DATE_GRADE + "," + CHAMP_PERIODE_STANDARD + "," + CHAMP_DATE_AVCT_MINI + ","
-				+ CHAMP_DATE_AVCT_MOY + "," + CHAMP_DATE_AVCT_MAXI + "," + CHAMP_NUM_ARRETE + "," + CHAMP_DATE_ARRETE
-				+ "," + CHAMP_ETAT + "," + CHAMP_CODE_CATEGORIE + "," + CHAMP_CARRIERE_SIMU + ","
-				+ CHAMP_USER_VERIF_SGC + "," + CHAMP_DATE_VERIF_SGC + "," + CHAMP_HEURE_VERIF_SGC + ","
-				+ CHAMP_USER_VERIF_SEF + "," + CHAMP_DATE_VERIF_SEF + "," + CHAMP_HEURE_VERIF_SEF + ","
-				+ CHAMP_ORDRE_MERITE + "," + CHAMP_AVIS_SHD + "," + CHAMP_ID_AVIS_ARR + "," + CHAMP_ID_AVIS_EMP + ","
-				+ CHAMP_USER_VERIF_ARR + "," + CHAMP_DATE_VERIF_ARR + "," + CHAMP_HEURE_VERIF_ARR + ","
-				+ CHAMP_OBSERVATION_ARR + "," + CHAMP_USER_VERIF_ARR_IMPR + "," + CHAMP_DATE_VERIF_ARR_IMPR + ","
-				+ CHAMP_HEURE_VERIF_ARR_IMPR + "," + CHAMP_DATE_CAP + "," + CHAMP_REGULARISATION + ","
-				+ CHAMP_AGENT_VDN + "," + CHAMP_ID_CAP + "," + CHAMP_CODE_PA
-				+ ") VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?"
-				+ ",?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-		jdbcTemplate.update(sql, new Object[] { idAgent, idAvisCap, idMotifAvct, directionService, sectionService,
-				filiere, grade, idNouvGrade, cdcadr, annee, bmAnnee, bmMois, bmJour, accAnnee, accMois, accJour,
-				nouvBmAnnee, nouvBmMois, nouvBmJour, nouvAccAnnee, nouvAccMois, nouvAccJour, iban, inm, ina, nouvIban,
-				nouvInm, nouvIna, dateGrade, periodeStandard, dateAvctMini, dateAvctMoy, dateAvctMaxi, numArrete,
-				dateArrete, etat, codeCategorie, carriereSimu, userVerifSgc, dateVerifSgc, heureVerifSgc, userVerifSef,
-				dateVerifSef, heureVerifSef, ordreMerite, avisSHD, idAvisArr, idAvisEmp, userVerifArr, dateVerifArr,
-				heureVerifArr, observationArr, userVerifArrImpr, dateVerifArrImpr, heureVerifArrImpr, dateCap,
-				regularisation ? 1 : 0, agentVdn ? 1 : 0, idCap, codePa });
+	public void creerAvancement(Integer idAvisCap, Integer idAgent, Integer idMotifAvct, String directionService, String sectionService, String filiere, String grade, String idNouvGrade,
+			Integer annee, String cdcadr, Integer bmAnnee, Integer bmMois, Integer bmJour, Integer accAnnee, Integer accMois, Integer accJour, Integer nouvBmAnnee, Integer nouvBmMois,
+			Integer nouvBmJour, Integer nouvAccAnnee, Integer nouvAccMois, Integer nouvAccJour, String iban, Integer inm, Integer ina, String nouvIban, Integer nouvInm, Integer nouvIna,
+			Date dateGrade, Integer periodeStandard, Date dateAvctMini, Date dateAvctMoy, Date dateAvctMaxi, String numArrete, Date dateArrete, String etat, Integer codeCategorie,
+			String carriereSimu, String userVerifSgc, Date dateVerifSgc, String heureVerifSgc, String userVerifSef, Date dateVerifSef, String heureVerifSef, String ordreMerite, String avisSHD,
+			Integer idAvisArr, Integer idAvisEmp, String userVerifArr, Date dateVerifArr, String heureVerifArr, Date dateCap, String observationArr, String userVerifArrImpr, Date dateVerifArrImpr,
+			String heureVerifArrImpr, boolean regularisation, boolean agentVdn, Integer idCap, String codePa, boolean autre) throws Exception {
+		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_ID_AGENT + "," + CHAMP_ID_AVIS_CAP + "," + CHAMP_ID_MOTIF_AVCT + "," + CHAMP_DIRECTION_SERVICE + "," + CHAMP_SECTION_SERVICE + ","
+				+ CHAMP_FILIERE + "," + CHAMP_GRADE + "," + CHAMP_ID_NOUV_GRADE + "," + CHAMP_CDCADR + "," + CHAMP_ANNEE + "," + CHAMP_BM_ANNEE + "," + CHAMP_BM_MOIS + "," + CHAMP_BM_JOUR + ","
+				+ CHAMP_ACC_ANNEE + "," + CHAMP_ACC_MOIS + "," + CHAMP_ACC_JOUR + "," + CHAMP_NOUV_BM_ANNEE + "," + CHAMP_NOUV_BM_MOIS + "," + CHAMP_NOUV_BM_JOUR + "," + CHAMP_NOUV_ACC_ANNEE + ","
+				+ CHAMP_NOUV_ACC_MOIS + "," + CHAMP_NOUV_ACC_JOUR + "," + CHAMP_IBAN + "," + CHAMP_INM + "," + CHAMP_INA + "," + CHAMP_NOUV_IBAN + "," + CHAMP_NOUV_INM + "," + CHAMP_NOUV_INA + ","
+				+ CHAMP_DATE_GRADE + "," + CHAMP_PERIODE_STANDARD + "," + CHAMP_DATE_AVCT_MINI + "," + CHAMP_DATE_AVCT_MOY + "," + CHAMP_DATE_AVCT_MAXI + "," + CHAMP_NUM_ARRETE + ","
+				+ CHAMP_DATE_ARRETE + "," + CHAMP_ETAT + "," + CHAMP_CODE_CATEGORIE + "," + CHAMP_CARRIERE_SIMU + "," + CHAMP_USER_VERIF_SGC + "," + CHAMP_DATE_VERIF_SGC + "," + CHAMP_HEURE_VERIF_SGC
+				+ "," + CHAMP_USER_VERIF_SEF + "," + CHAMP_DATE_VERIF_SEF + "," + CHAMP_HEURE_VERIF_SEF + "," + CHAMP_ORDRE_MERITE + "," + CHAMP_AVIS_SHD + "," + CHAMP_ID_AVIS_ARR + ","
+				+ CHAMP_ID_AVIS_EMP + "," + CHAMP_USER_VERIF_ARR + "," + CHAMP_DATE_VERIF_ARR + "," + CHAMP_HEURE_VERIF_ARR + "," + CHAMP_OBSERVATION_ARR + "," + CHAMP_USER_VERIF_ARR_IMPR + ","
+				+ CHAMP_DATE_VERIF_ARR_IMPR + "," + CHAMP_HEURE_VERIF_ARR_IMPR + "," + CHAMP_DATE_CAP + "," + CHAMP_REGULARISATION + "," + CHAMP_AGENT_VDN + "," + CHAMP_ID_CAP + "," + CHAMP_CODE_PA
+				+ "," + CHAMP_AUTRE + ") VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+		jdbcTemplate.update(sql, new Object[] { idAgent, idAvisCap, idMotifAvct, directionService, sectionService, filiere, grade, idNouvGrade, cdcadr, annee, bmAnnee, bmMois, bmJour, accAnnee,
+				accMois, accJour, nouvBmAnnee, nouvBmMois, nouvBmJour, nouvAccAnnee, nouvAccMois, nouvAccJour, iban, inm, ina, nouvIban, nouvInm, nouvIna, dateGrade, periodeStandard, dateAvctMini,
+				dateAvctMoy, dateAvctMaxi, numArrete, dateArrete, etat, codeCategorie, carriereSimu, userVerifSgc, dateVerifSgc, heureVerifSgc, userVerifSef, dateVerifSef, heureVerifSef, ordreMerite,
+				avisSHD, idAvisArr, idAvisEmp, userVerifArr, dateVerifArr, heureVerifArr, observationArr, userVerifArrImpr, dateVerifArrImpr, heureVerifArrImpr, dateCap, regularisation ? 1 : 0,
+				agentVdn ? 1 : 0, idCap, codePa, autre ? 1 : 0 });
 	}
 
 	@Override
-	public AvancementFonctionnaires chercherAvancementFonctionnaireAvecAnneeEtAgent(Integer annee, Integer idAgent)
-			throws Exception {
+	public AvancementFonctionnaires chercherAvancementFonctionnaireAvecAnneeEtAgent(Integer annee, Integer idAgent) throws Exception {
 		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ANNEE + " = ? and " + CHAMP_ID_AGENT + "=?";
-		AvancementFonctionnaires cadre = (AvancementFonctionnaires) jdbcTemplate.queryForObject(sql, new Object[] {
-				annee, idAgent }, new BeanPropertyRowMapper<AvancementFonctionnaires>(AvancementFonctionnaires.class));
+		AvancementFonctionnaires cadre = (AvancementFonctionnaires) jdbcTemplate.queryForObject(sql, new Object[] { annee, idAgent }, new BeanPropertyRowMapper<AvancementFonctionnaires>(
+				AvancementFonctionnaires.class));
 		return cadre;
 	}
 
 	@Override
-	public ArrayList<AvancementFonctionnaires> listerAvancementAvecAnneeEtat(Integer annee, String etat,
-			String filiere, Integer idAgent, List<String> listeSousService, String categorie, String idCap)
-			throws Exception {
+	public ArrayList<AvancementFonctionnaires> listerAvancementAvecAnneeEtat(Integer annee, String etat, String filiere, Integer idAgent, List<String> listeSousService, String categorie,
+			String idCap, String autreF) throws Exception {
 		String reqWhere = Const.CHAINE_VIDE;
 		if (filiere != null) {
 			reqWhere += " and " + CHAMP_FILIERE + " = '" + filiere + "' ";
@@ -215,12 +180,17 @@ public class AvancementFonctionnairesDao extends SirhDao implements AvancementFo
 			}
 			if (!list.equals(Const.CHAINE_VIDE))
 				list = list.substring(0, list.length() - 1);
-			reqWhere += " and (" + CHAMP_DIRECTION_SERVICE + " in (" + list + ") or " + CHAMP_SECTION_SERVICE + " in ("
-					+ list + ")) ";
+			reqWhere += " and (" + CHAMP_DIRECTION_SERVICE + " in (" + list + ") or " + CHAMP_SECTION_SERVICE + " in (" + list + ")) ";
+		}
+		if (autreF != null) {
+			if (autreF.equals("oui")) {
+				reqWhere += " and " + CHAMP_AUTRE + " =1 ";
+			} else {
+				reqWhere += " and " + CHAMP_AUTRE + " =0 ";
+			}
 		}
 
-		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ANNEE + "=? " + reqWhere + " order by "
-				+ CHAMP_ID_AGENT;
+		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ANNEE + "=? " + reqWhere + " order by " + CHAMP_ID_AGENT;
 
 		ArrayList<AvancementFonctionnaires> liste = new ArrayList<AvancementFonctionnaires>();
 
@@ -291,6 +261,8 @@ public class AvancementFonctionnairesDao extends SirhDao implements AvancementFo
 			a.setAgentVdn(agentVDN == 1 ? true : false);
 			a.setIdCap((Integer) row.get(CHAMP_ID_CAP));
 			a.setCodePa((String) row.get(CHAMP_CODE_PA));
+			Integer autre = (Integer) row.get(CHAMP_AUTRE);
+			a.setAutre(autre == 1 ? true : false);
 			liste.add(a);
 		}
 
@@ -304,12 +276,10 @@ public class AvancementFonctionnairesDao extends SirhDao implements AvancementFo
 
 	@Override
 	public Date getDateAvancementsMinimaleAncienne(Integer idAgent) {
-		String sql = "select avct.* from " + NOM_TABLE + " avct where avct." + CHAMP_ID_AVIS_EMP + "= 1 and avct."
-				+ CHAMP_ID_AGENT + "=? and avct.annee=(select max(avct2.annee) from " + NOM_TABLE
+		String sql = "select avct.* from " + NOM_TABLE + " avct where avct." + CHAMP_ID_AVIS_EMP + "= 1 and avct." + CHAMP_ID_AGENT + "=? and avct.annee=(select max(avct2.annee) from " + NOM_TABLE
 				+ " avct2 where avct2." + CHAMP_ID_AVIS_EMP + "= 1 and avct2." + CHAMP_ID_AGENT + "=?)";
 		try {
-			AvancementFonctionnaires avct = (AvancementFonctionnaires) jdbcTemplate.queryForObject(sql, new Object[] {
-					idAgent, idAgent }, new BeanPropertyRowMapper<AvancementFonctionnaires>(
+			AvancementFonctionnaires avct = (AvancementFonctionnaires) jdbcTemplate.queryForObject(sql, new Object[] { idAgent, idAgent }, new BeanPropertyRowMapper<AvancementFonctionnaires>(
 					AvancementFonctionnaires.class));
 			return avct.getDateAvctMini();
 		} catch (Exception e) {
