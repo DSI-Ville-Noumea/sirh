@@ -224,7 +224,7 @@ public class OeAVCTSimulationFonctionnaireAutre extends BasicProcess {
 
 		// Suppression des avancements a l'etat 'Travail' de la categorie donnée
 		// et de l'année
-		getAvancementFonctionnairesDao().supprimerAvancementTravailAvecCategorie(Integer.valueOf(an), true);
+		getAvancementFonctionnairesDao().supprimerAvancementTravailAvecCategorie(Integer.valueOf(an), "oui");
 
 		// recuperation agent
 		Agent agent = null;

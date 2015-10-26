@@ -85,8 +85,17 @@ public class AvancementFonctionnairesDao extends SirhDao implements AvancementFo
 	}
 
 	@Override
-	public void supprimerAvancementTravailAvecCategorie(Integer annee, boolean autre) throws Exception {
-		String sql = "DELETE FROM " + NOM_TABLE + " where " + CHAMP_ANNEE + "=? and " + CHAMP_ETAT + "=? and " + CHAMP_AUTRE + "=" + (autre ? "1" : "0");
+	public void supprimerAvancementTravailAvecCategorie(Integer annee, String autre) throws Exception {
+		String reqWhere = Const.CHAINE_VIDE;
+
+		if (autre != null) {
+			if (autre.equals("oui")) {
+				reqWhere = " and " + CHAMP_AUTRE + "=1 ";
+			} else {
+				reqWhere = " and " + CHAMP_AUTRE + "=0 ";
+			}
+		}
+		String sql = "DELETE FROM " + NOM_TABLE + " where " + CHAMP_ANNEE + "=? and " + CHAMP_ETAT + "=? " + reqWhere;
 		jdbcTemplate.update(sql, new Object[] { annee, "T" });
 	}
 

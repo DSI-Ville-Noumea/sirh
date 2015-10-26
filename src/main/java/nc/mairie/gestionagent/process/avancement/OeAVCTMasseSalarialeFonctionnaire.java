@@ -543,7 +543,7 @@ public class OeAVCTMasseSalarialeFonctionnaire extends BasicProcess {
 
 		// Suppression des avancements a l'etat 'Travail' de la categorie donnée
 		// et de l'année
-		getAvancementFonctionnairesDao().supprimerAvancementTravailAvecCategorie(Integer.valueOf(an));
+		getAvancementFonctionnairesDao().supprimerAvancementTravailAvecCategorie(Integer.valueOf(an), null);
 
 		// recuperation agent
 		Agent agent = null;

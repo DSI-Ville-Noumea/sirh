@@ -15,7 +15,7 @@ public interface AvancementFonctionnairesDaoInterface {
 
 	public AvancementFonctionnaires chercherAvancement(Integer idAvct) throws Exception;
 
-	public void supprimerAvancementTravailAvecCategorie(Integer annee, boolean autre) throws Exception;
+	public void supprimerAvancementTravailAvecCategorie(Integer annee, String autre) throws Exception;
 
 	public void modifierAvancement(Integer idAvct, Integer idAvisCap, Integer idAgent, Integer idMotifAvct, String directionService, String sectionService, String filiere, String grade,
 			String idNouvGrade, Integer annee, String cdcadr, Integer bmAnnee, Integer bmMois, Integer bmJour, Integer accAnnee, Integer accMois, Integer accJour, Integer nouvBmAnnee,
