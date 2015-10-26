@@ -86,7 +86,7 @@
 									<td><%= OePTGVentilationUtils.getHeureMinute(abs) %></td>
 									<td><%= OePTGVentilationUtils.getHeureMinute(absAs400) %></td>
 									<td><%= OePTGVentilationUtils.roundDecimal(weekBase, 2) %></td>
-									<td><%= OePTGVentilationUtils.getHeureMinute(minutesHorsContrat)%></td>
+									<td><%= OePTGVentilationUtils.getHeureMinuteWithAffichageZero(minutesHorsContrat)%></td>
 									<td><%= OePTGVentilationUtils.getHeureMinute(minutesNormales)%></td>
 									<td><%= OePTGVentilationUtils.getHeureMinute(minutesSimples)%></td>
 									<td><%= OePTGVentilationUtils.getHeureMinute(minutesComposees)%></td>

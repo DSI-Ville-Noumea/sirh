@@ -779,7 +779,7 @@ public class OePTGVentilationConvCol extends BasicProcess {
 					Const.CHAINE_VIDE) ? "&nbsp;" : OePTGVentilationUtils.getHeureMinute(abs.getMinutesNonConcertees());
 			ret[index][3] = OePTGVentilationUtils.getHeureMinute(abs.getMinutesImmediates()).equals(Const.CHAINE_VIDE) ? "&nbsp;"
 					: OePTGVentilationUtils.getHeureMinute(abs.getMinutesImmediates());
-			ret[index][4] = OePTGVentilationUtils.getHeureMinute(abs.getMinutesConcertees()
+			ret[index][4] = OePTGVentilationUtils.getHeureMinuteWithAffichageZero(abs.getMinutesConcertees()
 					+ abs.getMinutesNonConcertees() + abs.getMinutesImmediates());
 			index++;
 		}

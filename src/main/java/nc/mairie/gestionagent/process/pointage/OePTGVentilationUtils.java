@@ -91,6 +91,21 @@ public class OePTGVentilationUtils {
 
 		return res;
 	}
+	
+	public static String getHeureMinuteWithAffichageZero(int nombreMinute) {
+		int heure = nombreMinute / 60;
+		int minute = nombreMinute % 60;
+		String res = Const.CHAINE_VIDE;
+		if (heure > 0)
+			res += heure + "h";
+		if (minute > 0)
+			res += minute + "m";
+		
+		if(Const.CHAINE_VIDE.equals(res))
+			res = "0h";
+		
+		return res;
+	}
 
 	public static boolean canProcessDeversementPaie(String statut) {
 		return getPtgService().isValidAvailable(statut);

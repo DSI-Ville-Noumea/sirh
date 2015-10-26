@@ -57,7 +57,7 @@
 									<td><%= OePTGVentilationUtils.getHeureMinute(minutesConcertees) %></td>
 									<td><%= OePTGVentilationUtils.getHeureMinute(minutesNonConcertees) %></td>
 									<td><%= OePTGVentilationUtils.getHeureMinute(minutesImmediates)%></td>
-									<td><%= OePTGVentilationUtils.getHeureMinute(minutesConcertees + minutesNonConcertees + minutesImmediates)%></td>
+									<td><%= OePTGVentilationUtils.getHeureMinuteWithAffichageZero(minutesConcertees + minutesNonConcertees + minutesImmediates)%></td>
 									<td>
 										<img  src="images/loupe.gif" height="16px" width="16px" title="Voir le détail du mois" onClick="loadVentilationAbsHistory('<%=process.getValHistoryAbs(moisAnneeR,idAgent)%>', '<%=process.getHistoryAbs(moisAnneeR,idAgent)%>')">
 									</td>			
