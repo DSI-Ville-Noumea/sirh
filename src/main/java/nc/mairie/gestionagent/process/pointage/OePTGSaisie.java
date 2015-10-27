@@ -631,6 +631,7 @@ public class OePTGSaisie extends BasicProcess {
 			ret.append("<option value='" + val + "'" + (selected.equals(val) ? "selected" : "") + ">" + val
 					+ "</option>");
 		}
+		ret.append("<option value='48'" + (selected.equals("48") ? "selected" : "") + ">48</option>");
 		return ret.toString();
 	}
 
