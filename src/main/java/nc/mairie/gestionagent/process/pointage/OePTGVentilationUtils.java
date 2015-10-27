@@ -92,6 +92,11 @@ public class OePTGVentilationUtils {
 		return res;
 	}
 	
+	/**
+	 * #19323 
+	 * @param nombreMinute int
+	 * @return String
+	 */
 	public static String getHeureMinuteWithAffichageZero(int nombreMinute) {
 		int heure = nombreMinute / 60;
 		int minute = nombreMinute % 60;
