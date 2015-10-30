@@ -42,6 +42,7 @@ import nc.mairie.technique.Transaction;
 import nc.mairie.utils.MessageUtils;
 import nc.noumea.mairie.ads.dto.EntiteDto;
 
+import org.codehaus.jackson.map.introspect.BasicClassIntrospector.GetterMethodFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -695,7 +696,9 @@ public class AvancementService implements IAvancementService {
 
 						if (ggCarr != null && ggCarr.getCdfili() != null) {
 							FiliereGrade fil = FiliereGrade.chercherFiliereGrade(aTransaction, ggCarr.getCdfili());
-							avct.setFiliere(fil.getLibFiliere());
+							if (aTransaction.isErreur())
+								aTransaction.traiterErreur();
+							avct.setFiliere(fil == null ? null : fil.getLibFiliere());
 						}
 					}
 				}
