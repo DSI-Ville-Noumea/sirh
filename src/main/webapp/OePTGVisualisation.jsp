@@ -228,8 +228,13 @@
 			                <img border="0" src="images/suppression.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_SERVICE()%>');">
 			            	<INPUT type="hidden" id="idServiceADS" size="4" width="1px" name="<%=process.getNOM_ST_ID_SERVICE_ADS()%>" value="<%=process.getVAL_ST_ID_SERVICE_ADS()%>" class="sigp2-saisie">
                 		</td>
-                		<td>&nbsp;</td>
-                		<td>&nbsp;</td>
+                		<td>
+                 			<span class="sigp2">Date état : </span>
+                		</td>
+                		<td>
+			                <input id="<%=process.getNOM_ST_DATE_ETAT()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_ETAT()%>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_ETAT()%>" >
+			                <IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_ETAT()%>', 'dd/mm/y');">
+                		</td>
                 	</tr>
                 	<tr>
                 		<td colspan="10" class="sigp2">

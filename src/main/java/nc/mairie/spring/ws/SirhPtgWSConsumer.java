@@ -306,7 +306,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 
 	@Override
 	public List<ConsultPointageDto> getVisualisationPointage(String fromDate, String toDate, List<String> idAgents,
-			Integer idRefEtat, Integer idRefType, String typeHeureSup) {
+			Integer idRefEtat, Integer idRefType, String typeHeureSup,String dateEtat) {
 		String url = String.format(ptgWsBaseUrl + sirhPtgVisualisationPointage);
 
 		Map<String, String> parameters = new HashMap<String, String>();
@@ -333,6 +333,9 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 		}
 		if (typeHeureSup != null) {
 			parameters.put("typeHS", typeHeureSup);
+		}
+		if (dateEtat != null) {
+			parameters.put("dateEtat", dateEtat);
 		}
 
 		ClientResponse res = createAndFireRequest(parameters, url);

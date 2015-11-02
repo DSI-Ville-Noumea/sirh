@@ -169,8 +169,8 @@ public class PtgService implements IPtgService {
 
 	@Override
 	public List<ConsultPointageDto> getVisualisationPointage(String fromDate, String toDate, List<String> idAgents,
-			Integer idRefEtat, Integer idRefType, String typeHeureSup) {
-		return ptgConsumer.getVisualisationPointage(fromDate, toDate, idAgents, idRefEtat, idRefType, typeHeureSup);
+			Integer idRefEtat, Integer idRefType, String typeHeureSup,String dateEtat) {
+		return ptgConsumer.getVisualisationPointage(fromDate, toDate, idAgents, idRefEtat, idRefType, typeHeureSup,dateEtat);
 	}
 
 	@Override

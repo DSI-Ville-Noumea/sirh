@@ -45,11 +45,9 @@ public interface ISirhPtgWSConsumer {
 	ReturnMessageDto saveAgentsSaisisOperateur(Integer idAgent, Integer idOperateur, List<AgentDto> listSelect);
 
 	// Ventilation
-	<T> List<T> getVentilations(Class<T> targetClass, Integer idDateVentil, Integer idRefTypePointage,
-			String agentsJson, boolean allVentilation);
+	<T> List<T> getVentilations(Class<T> targetClass, Integer idDateVentil, Integer idRefTypePointage, String agentsJson, boolean allVentilation);
 
-	<T> List<T> getVentilationsHistory(Class<T> targetClass, Integer mois, Integer annee, Integer idRefTypePointage,
-			Integer idAgent, boolean allVentilation, Integer idVentilDate);
+	<T> List<T> getVentilationsHistory(Class<T> targetClass, Integer mois, Integer annee, Integer idRefTypePointage, Integer idAgent, boolean allVentilation, Integer idVentilDate);
 
 	boolean isVentilAvailable(String agentStatus);
 
@@ -57,8 +55,7 @@ public interface ISirhPtgWSConsumer {
 
 	VentilDateDto getVentilationEnCours(String statut);
 
-	boolean startVentilation(Integer idAgent, Date dateVentilation, String agentsJson, String statut,
-			String idRefTypePointage);
+	boolean startVentilation(Integer idAgent, Date dateVentilation, String agentsJson, String statut, String idRefTypePointage);
 
 	boolean isValidAvailable(String agentStatus);
 
@@ -76,12 +73,10 @@ public interface ISirhPtgWSConsumer {
 
 	List<VentilErreurDto> getErreursVentilation(String type);
 
-	List<Integer> getListeAgentsForShowVentilation(Integer idDateVentil, Integer idRefTypePointage, String statut,
-			Date ventilationDate, String agentMin, String agentMax, boolean allVentilation);
+	List<Integer> getListeAgentsForShowVentilation(Integer idDateVentil, Integer idRefTypePointage, String statut, Date ventilationDate, String agentMin, String agentMax, boolean allVentilation);
 
 	// Visualisation
-	List<ConsultPointageDto> getVisualisationPointage(String fromDate, String toDate, List<String> idAgents,
-			Integer idRefEtat, Integer idRefType, String typeHeureSup);
+	List<ConsultPointageDto> getVisualisationPointage(String fromDate, String toDate, List<String> idAgents, Integer idRefEtat, Integer idRefType, String typeHeureSup, String dateEtat);
 
 	List<ConsultPointageDto> getVisualisationHistory(Integer idAgents);
 

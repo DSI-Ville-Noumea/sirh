@@ -136,7 +136,7 @@ public class OePTGVisualisation extends BasicProcess {
 					+ opPtg.getIdAgent().toString().substring(3, opPtg.getIdAgent().toString().length()) + ")");
 
 			addZone(getNOM_ST_ETAT(i), EtatPointageEnum.getEtatPointageEnum(ptg.getIdRefEtat()).name());
-			addZone(getNOM_ST_DATE_SAISIE(i), sdf.format(ptg.getDateSaisie()) + " a " + hrs.format(ptg.getDateSaisie()));
+			addZone(getNOM_ST_DATE_SAISIE(i), sdf.format(ptg.getDateSaisie()) + " à " + hrs.format(ptg.getDateSaisie()));
 		}
 	}
 
@@ -416,6 +416,15 @@ public class OePTGVisualisation extends BasicProcess {
 	 * création : (21/11/11 09:55:36)
 	 * 
 	 */
+	public String getNOM_ST_DATE_ETAT() {
+		return "NOM_ST_DATE_ETAT";
+	}
+
+	/**
+	 * Retourne pour la JSP le nom de la zone statique : ST_DATE_CAP Date de
+	 * création : (21/11/11 09:55:36)
+	 * 
+	 */
 	public String getNOM_ST_DATE_MIN() {
 		return "NOM_ST_DATE_MIN";
 	}
@@ -628,6 +637,15 @@ public class OePTGVisualisation extends BasicProcess {
 	 */
 	public String getVAL_ST_DATE_MAX() {
 		return getZone(getNOM_ST_DATE_MAX());
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE_CAP Date
+	 * de création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getVAL_ST_DATE_ETAT() {
+		return getZone(getNOM_ST_DATE_ETAT());
 	}
 
 	/**
@@ -902,6 +920,7 @@ public class OePTGVisualisation extends BasicProcess {
 
 		String dateFin = getVAL_ST_DATE_MAX();
 		String dateMax = null;
+		String dateEtat = getVAL_ST_DATE_ETAT().equals(Const.CHAINE_VIDE)?null : Services.convertitDate(getVAL_ST_DATE_ETAT(), "dd/MM/yyyy", "yyyyMMdd");
 		if (!dateFin.equals(Const.CHAINE_VIDE)) {
 			dateMax = Services.convertitDate(dateFin, "dd/MM/yyyy", "yyyyMMdd");
 		} else {
@@ -1060,7 +1079,7 @@ public class OePTGVisualisation extends BasicProcess {
 
 		List<ConsultPointageDto> _listePointage = ptgService.getVisualisationPointage(dateMin, dateMax,
 				(List<String>) intersectionCollection, etat != null ? etat.getIdRefEtat() : null,
-				type != null ? type.getIdRefTypePointage() : null, typeHS);
+				type != null ? type.getIdRefTypePointage() : null, typeHS,dateEtat);
 		setListePointage((ArrayList<ConsultPointageDto>) _listePointage);
 		// loadHistory();
 

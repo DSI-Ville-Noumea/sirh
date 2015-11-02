@@ -84,7 +84,7 @@ public interface IPtgService {
 	List<Integer> getListeIdAgentPointage();
 
 	List<ConsultPointageDto> getVisualisationPointage(String fromDate, String toDate, List<String> idAgents,
-			Integer idRefEtat, Integer idRefType, String typeHeureSup);
+ Integer idRefEtat, Integer idRefType, String typeHeureSup, String dateEtat);
 
 	ReturnMessageDto setPtgState(ArrayList<Integer> idPtg, Integer idRefEtat, Integer idAgent);
 
