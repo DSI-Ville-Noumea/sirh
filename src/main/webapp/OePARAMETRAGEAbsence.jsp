@@ -62,9 +62,15 @@
 					</td>
 					<td>
 						<FIELDSET class="sigp2Fieldset"  style="text-align: left; ">
-					    	<legend class="sigp2Legend">Motifs d'alimentation manuelle des compteurs</legend>
+					    	<legend class="sigp2Legend">Motifs d'alimentation manuelle des compteurs</legend>    
+							<span>
+				    			<INPUT type="radio" onclick='executeBouton("<%=process.getNOM_PB_TRI() %>")'<%= process.forRadioHTML(process.getNOM_RG_TRI(),process.getNOM_RB_TRI_LIBELLE())%>>
+				    		</span>
 							<span class="sigp2-saisie" >Libellé</span>
-							<span class="sigp2-saisie" style="margin-left: 250px;">Famille d'absence</span>
+							<span style="margin-left: 200px;">
+				    			<INPUT type="radio" onclick='executeBouton("<%=process.getNOM_PB_TRI() %>")'<%= process.forRadioHTML(process.getNOM_RG_TRI(),process.getNOM_RB_TRI_FAMILLE())%>>
+							<span class="sigp2-saisie">Famille d'absence</span>
+				    		</span>
 							<SELECT name="<%= process.getNOM_LB_MOTIF_COMPTEUR() %>" size="10" style="width:100%;" class="sigp2-liste">
 								<%=process.forComboHTML(process.getVAL_LB_MOTIF_COMPTEUR(), process.getVAL_LB_MOTIF_COMPTEUR_SELECT()) %>
 							</SELECT>
@@ -88,7 +94,8 @@
 									<span class="sigp2"><INPUT type="submit" class="sigp2-Bouton-100" value="Valider" name="<%=process.getNOM_PB_VALIDER_MOTIF_COMPTEUR()%>"></span>
 									<span class="sigp2"><INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER_MOTIF_COMPTEUR()%>"></span>
 								</div>
-							<% } %>							
+							<% } %>		
+						<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_TRI()%>" value="TRI">			
 						</FIELDSET>	
 					</td>
 				</tr>

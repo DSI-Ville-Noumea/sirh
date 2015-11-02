@@ -1,6 +1,8 @@
 package nc.mairie.gestionagent.process.parametre;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -84,7 +86,7 @@ public class OePARAMETRAGEAbsence extends BasicProcess {
 		}
 
 		if (getListeMotifCompteur().size() == 0) {
-			initialiseListeMotifCompteur(request);
+			initialiseListeMotifCompteur(request, null);
 		}
 
 	}
@@ -97,9 +99,11 @@ public class OePARAMETRAGEAbsence extends BasicProcess {
 		}
 	}
 
-	private void initialiseListeMotifCompteur(HttpServletRequest request) {
-		// Liste depuis SIRH-ABS-WS
-		ArrayList<MotifCompteurDto> listeMotifs = (ArrayList<MotifCompteurDto>) absService.getListeMotifCompteur(null);
+	private void initialiseListeMotifCompteur(HttpServletRequest request, ArrayList<MotifCompteurDto> listeMotifs) {
+		if (listeMotifs == null || listeMotifs.size() == 0) {
+			// Liste depuis SIRH-ABS-WS
+			listeMotifs = (ArrayList<MotifCompteurDto>) absService.getListeMotifCompteur(null);
+		}
 
 		setListeMotifCompteur(listeMotifs);
 		if (getListeMotifCompteur().size() != 0) {
@@ -133,8 +137,7 @@ public class OePARAMETRAGEAbsence extends BasicProcess {
 			for (ListIterator<TypeAbsenceDto> list = listeComplete.listIterator(); list.hasNext();) {
 				TypeAbsenceDto type = (TypeAbsenceDto) list.next();
 				if (!getListeTypeAbsence().contains(type)) {
-					if (EnumTypeGroupeAbsence.CONGES_EXCEP.getValue() != type.getGroupeAbsence()
-							.getIdRefGroupeAbsence().intValue()) {
+					if (EnumTypeGroupeAbsence.CONGES_EXCEP.getValue() != type.getGroupeAbsence().getIdRefGroupeAbsence().intValue()) {
 						String ligne[] = { type.getLibelle() };
 
 						aFormat.ajouteLigne(ligne);
@@ -185,6 +188,11 @@ public class OePARAMETRAGEAbsence extends BasicProcess {
 
 		// Si on arrive de la JSP alors on traite le get
 		if (request.getParameter("JSP") != null && request.getParameter("JSP").equals(getJSP())) {
+
+			// Si clic sur le bouton PB_TRI
+			if (testerParametre(request, getNOM_PB_TRI())) {
+				return performPB_TRI(request);
+			}
 
 			// Si clic sur le bouton PB_ANNULER_MOTIF
 			if (testerParametre(request, getNOM_PB_ANNULER_MOTIF())) {
@@ -371,8 +379,7 @@ public class OePARAMETRAGEAbsence extends BasicProcess {
 	public boolean performPB_VALIDER_MOTIF(HttpServletRequest request) throws Exception {
 
 		if (getVAL_ST_ACTION_MOTIF() != null && getVAL_ST_ACTION_MOTIF() != Const.CHAINE_VIDE) {
-			if (getVAL_ST_ACTION_MOTIF().equals(ACTION_CREATION)
-					|| getVAL_ST_ACTION_MOTIF().equals(ACTION_MODIFICATION)) {
+			if (getVAL_ST_ACTION_MOTIF().equals(ACTION_CREATION) || getVAL_ST_ACTION_MOTIF().equals(ACTION_MODIFICATION)) {
 
 				if (!performControlerSaisieMotif(request))
 					return false;
@@ -383,8 +390,7 @@ public class OePARAMETRAGEAbsence extends BasicProcess {
 
 				} else {
 					// modification
-					int indiceMotif = (Services.estNumerique(getVAL_LB_MOTIF_SELECT()) ? Integer
-							.parseInt(getVAL_LB_MOTIF_SELECT()) : -1);
+					int indiceMotif = (Services.estNumerique(getVAL_LB_MOTIF_SELECT()) ? Integer.parseInt(getVAL_LB_MOTIF_SELECT()) : -1);
 					motif = getListeMotif().get(indiceMotif);
 				}
 
@@ -517,8 +523,7 @@ public class OePARAMETRAGEAbsence extends BasicProcess {
 
 	public boolean performPB_MODIFIER_MOTIF_COMPTEUR(HttpServletRequest request) throws Exception {
 
-		int indice = (Services.estNumerique(getVAL_LB_MOTIF_COMPTEUR_SELECT()) ? Integer
-				.parseInt(getVAL_LB_MOTIF_COMPTEUR_SELECT()) : -1);
+		int indice = (Services.estNumerique(getVAL_LB_MOTIF_COMPTEUR_SELECT()) ? Integer.parseInt(getVAL_LB_MOTIF_COMPTEUR_SELECT()) : -1);
 		if (indice != -1 && indice < getListeMotifCompteur().size()) {
 			MotifCompteurDto motifCompteur = getListeMotifCompteur().get(indice);
 			addZone(getNOM_EF_LIB_MOTIF_COMPTEUR(), motifCompteur.getLibelle());
@@ -545,8 +550,7 @@ public class OePARAMETRAGEAbsence extends BasicProcess {
 	public boolean performPB_VALIDER_MOTIF_COMPTEUR(HttpServletRequest request) throws Exception {
 
 		if (getVAL_ST_ACTION_MOTIF_COMPTEUR() != null && getVAL_ST_ACTION_MOTIF_COMPTEUR() != Const.CHAINE_VIDE) {
-			if (getVAL_ST_ACTION_MOTIF_COMPTEUR().equals(ACTION_CREATION)
-					|| getVAL_ST_ACTION_MOTIF_COMPTEUR().equals(ACTION_MODIFICATION)) {
+			if (getVAL_ST_ACTION_MOTIF_COMPTEUR().equals(ACTION_CREATION) || getVAL_ST_ACTION_MOTIF_COMPTEUR().equals(ACTION_MODIFICATION)) {
 
 				if (!performControlerSaisieMotifCompteur(request))
 					return false;
@@ -556,21 +560,18 @@ public class OePARAMETRAGEAbsence extends BasicProcess {
 					motifCompteur = new MotifCompteurDto();
 				} else {
 					// modification
-					int indiceMotif = (Services.estNumerique(getVAL_LB_MOTIF_COMPTEUR_SELECT()) ? Integer
-							.parseInt(getVAL_LB_MOTIF_COMPTEUR_SELECT()) : -1);
+					int indiceMotif = (Services.estNumerique(getVAL_LB_MOTIF_COMPTEUR_SELECT()) ? Integer.parseInt(getVAL_LB_MOTIF_COMPTEUR_SELECT()) : -1);
 					motifCompteur = getListeMotifCompteur().get(indiceMotif);
 				}
 
-				int indiceType = (Services.estNumerique(getVAL_LB_TYPE_ABSENCE_COMPTEUR_SELECT()) ? Integer
-						.parseInt(getVAL_LB_TYPE_ABSENCE_COMPTEUR_SELECT()) : -1);
+				int indiceType = (Services.estNumerique(getVAL_LB_TYPE_ABSENCE_COMPTEUR_SELECT()) ? Integer.parseInt(getVAL_LB_TYPE_ABSENCE_COMPTEUR_SELECT()) : -1);
 				TypeAbsenceDto typeAbsence = getListeTypeAbsence().get(indiceType);
 
 				motifCompteur.setLibelle(getVAL_EF_LIB_MOTIF_COMPTEUR());
 				motifCompteur.setIdRefTypeAbsence(typeAbsence.getIdRefTypeAbsence());
 
 				// on sauvegarde
-				ReturnMessageDto message = absService.saveMotifCompteur(new JSONSerializer().exclude("*.class")
-						.serialize(motifCompteur));
+				ReturnMessageDto message = absService.saveMotifCompteur(new JSONSerializer().exclude("*.class").serialize(motifCompteur));
 
 				if (message.getErrors().size() > 0) {
 					String err = Const.CHAINE_VIDE;
@@ -601,8 +602,7 @@ public class OePARAMETRAGEAbsence extends BasicProcess {
 			return false;
 		}
 		// Verification si A50 ou A49 alors pas de motif saisissable
-		int indiceType = (Services.estNumerique(getVAL_LB_TYPE_ABSENCE_COMPTEUR_SELECT()) ? Integer
-				.parseInt(getVAL_LB_TYPE_ABSENCE_COMPTEUR_SELECT()) : -1);
+		int indiceType = (Services.estNumerique(getVAL_LB_TYPE_ABSENCE_COMPTEUR_SELECT()) ? Integer.parseInt(getVAL_LB_TYPE_ABSENCE_COMPTEUR_SELECT()) : -1);
 		TypeAbsenceDto typeAbsence = getListeTypeAbsence().get(indiceType);
 		if (typeAbsence.getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.ASA_A49.getCode().toString())
 				|| typeAbsence.getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.ASA_A50.getCode().toString())) {
@@ -656,5 +656,49 @@ public class OePARAMETRAGEAbsence extends BasicProcess {
 
 	public String getVAL_LB_TYPE_ABSENCE_COMPTEUR_SELECT() {
 		return getZone(getNOM_LB_TYPE_ABSENCE_COMPTEUR_SELECT());
+	}
+
+	public String getNOM_RG_TRI() {
+		return "NOM_RG_TRI";
+	}
+
+	public String getVAL_RG_TRI() {
+		return getZone(getNOM_RG_TRI());
+	}
+
+	public String getNOM_RB_TRI_FAMILLE() {
+		return "NOM_RB_TRI_FAMILLE";
+	}
+
+	public String getNOM_RB_TRI_LIBELLE() {
+		return "NOM_RB_TRI_LIBELLE";
+	}
+
+	public String getNOM_PB_TRI() {
+		return "NOM_PB_TRI";
+	}
+
+	public boolean performPB_TRI(HttpServletRequest request) throws Exception {
+		if (getVAL_RG_TRI().equals(getNOM_RB_TRI_LIBELLE())) {
+			// on tri la liste
+			Collections.sort(getListeMotifCompteur(), new Comparator<MotifCompteurDto>() {
+				@Override
+				public int compare(MotifCompteurDto o1, MotifCompteurDto o2) {
+					return o1.getLibelle().compareTo(o2.getLibelle());
+				}
+
+			});
+		} else if (getVAL_RG_TRI().equals(getNOM_RB_TRI_FAMILLE())) {
+			// on tri la liste
+			Collections.sort(getListeMotifCompteur(), new Comparator<MotifCompteurDto>() {
+				@Override
+				public int compare(MotifCompteurDto o1, MotifCompteurDto o2) {
+					return o1.getIdRefTypeAbsence().toString().compareTo(o2.getIdRefTypeAbsence().toString());
+				}
+
+			});
+		}
+		initialiseListeMotifCompteur(request, getListeMotifCompteur());
+		return true;
 	}
 }
