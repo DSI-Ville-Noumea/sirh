@@ -473,7 +473,7 @@ public class OePTGTitreRepas extends BasicProcess {
 					.withMillisOfSecond(0).toDate());
 		
 		//////// APPEL WS /////////////
-		List<TitreRepasDemandeDto> listedemandeTR = ptgService.getListTitreRepas(getAgentConnecte(request).getIdAgent(), dateMin, dateMax, etat.getIdRefEtat(), 
+		List<TitreRepasDemandeDto> listedemandeTR = ptgService.getListTitreRepas(getAgentConnecte(request).getIdAgent(), dateMin, dateMax, EtatPointageEnum.SAISI.getCodeEtat(), 
 				Boolean.TRUE, dateJour, null, null != idAgentDemande ? new Integer(idAgentDemande) : null, null);
 
 		logger.debug("Taille liste Titre Repas : " + listedemandeTR.size());
