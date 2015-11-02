@@ -16,6 +16,7 @@ import nc.mairie.gestionagent.pointage.dto.MotifHeureSupDto;
 import nc.mairie.gestionagent.pointage.dto.RefEtatDto;
 import nc.mairie.gestionagent.pointage.dto.RefPrimeDto;
 import nc.mairie.gestionagent.pointage.dto.RefTypePointageDto;
+import nc.mairie.gestionagent.pointage.dto.TitreRepasDemandeDto;
 import nc.mairie.gestionagent.pointage.dto.VentilDateDto;
 import nc.mairie.gestionagent.pointage.dto.VentilErreurDto;
 
@@ -108,4 +109,15 @@ public interface IPtgService {
 
 	RefPrimeDto getPrimeDetailFromRefPrimeOptimise(
 			List<RefPrimeDto> listRefPrimeDto, Integer idRefPrime);
+
+	List<TitreRepasDemandeDto> getVisualisationTitreRepasHistory(
+			Integer idDemandeTR);
+
+	List<TitreRepasDemandeDto> getListTitreRepas(Integer idAgentConnecte,
+			String fromDate, String toDate, Integer idRefEtat,
+			Boolean commande, String dateMonth, Integer idServiceAds,
+			Integer idAgent, List<Integer> listIdsAgent);
+
+	ReturnMessageDto setTRState(
+			List<TitreRepasDemandeDto> listTitreRepasDemandeDto, Integer idAgent);
 }

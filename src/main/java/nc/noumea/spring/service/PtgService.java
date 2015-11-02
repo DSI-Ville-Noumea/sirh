@@ -16,6 +16,7 @@ import nc.mairie.gestionagent.pointage.dto.MotifHeureSupDto;
 import nc.mairie.gestionagent.pointage.dto.RefEtatDto;
 import nc.mairie.gestionagent.pointage.dto.RefPrimeDto;
 import nc.mairie.gestionagent.pointage.dto.RefTypePointageDto;
+import nc.mairie.gestionagent.pointage.dto.TitreRepasDemandeDto;
 import nc.mairie.gestionagent.pointage.dto.VentilDateDto;
 import nc.mairie.gestionagent.pointage.dto.VentilErreurDto;
 import nc.mairie.spring.ws.ISirhPtgWSConsumer;
@@ -179,8 +180,24 @@ public class PtgService implements IPtgService {
 	}
 
 	@Override
+	public ReturnMessageDto setTRState(List<TitreRepasDemandeDto> listTitreRepasDemandeDto, Integer idAgent) {
+		return ptgConsumer.setTRState(listTitreRepasDemandeDto, idAgent);
+	}
+
+	@Override
 	public List<ConsultPointageDto> getVisualisationHistory(Integer idAgents) {
 		return ptgConsumer.getVisualisationHistory(idAgents);
+	}
+
+	@Override
+	public List<TitreRepasDemandeDto> getVisualisationTitreRepasHistory(Integer idTrDemande) {
+		return ptgConsumer.getVisualisationTitreRepasHistory(idTrDemande);
+	}
+
+	@Override
+	public List<TitreRepasDemandeDto> getListTitreRepas(Integer idAgentConnecte, String fromDate, String toDate, 
+			Integer idRefEtat, Boolean commande, String dateMonth, Integer idServiceAds, Integer idAgent, List<Integer> listIdsAgent) {
+		return ptgConsumer.getListTitreRepas(idAgentConnecte, fromDate, toDate, idRefEtat, commande, dateMonth, idServiceAds, idAgent, listIdsAgent);
 	}
 
 	@Override

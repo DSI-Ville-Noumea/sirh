@@ -122,6 +122,7 @@ if (affPointage.equals("TRUE")){ %>
 	Module_pointage.ajouterFils(new Lien("saisiePointage", "PTGSaisie", "Visualisation et saisie", "Gestion des pointages", true));
 	Module_pointage.ajouterFils(new Lien("ventilationPointage", "PTGVentilationConvCol", "Ventilation et validation", "Gestion des pointages", true));
 	Module_pointage.ajouterFils(new Lien("payeurPointage", "PTGPayeurConvCol", "Editions du payeur", "Gestion des pointages", true));
+	Module_pointage.ajouterFils(new Lien("titreRepas", "PTGTitreRepas", "Titres repas", "Gestion des pointages", true));
 <%}%>
 
 

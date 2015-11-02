@@ -111,6 +111,7 @@
 		listeDroits.add("PTGPayeurConvCol");
 		listeDroits.add("PTGPayeurFonct");
 		listeDroits.add("PTGPayeurContractuels");
+		listeDroits.add("PTGTitreRepas");		
 		
 		
 		/*Module ABSENCE*/

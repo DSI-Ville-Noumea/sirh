@@ -91,6 +91,7 @@ import nc.mairie.gestionagent.process.pointage.OePTGPayeurConvCol;
 import nc.mairie.gestionagent.process.pointage.OePTGPayeurFonct;
 import nc.mairie.gestionagent.process.pointage.OePTGSaisie;
 import nc.mairie.gestionagent.process.pointage.OePTGSelectionAgent;
+import nc.mairie.gestionagent.process.pointage.OePTGTitreRepas;
 import nc.mairie.gestionagent.process.pointage.OePTGVentilationContractuels;
 import nc.mairie.gestionagent.process.pointage.OePTGVentilationConvCol;
 import nc.mairie.gestionagent.process.pointage.OePTGVentilationFonct;
@@ -285,6 +286,8 @@ public class RobotAgent extends Robot {
 			return new OePTGPayeurFonct();
 		} else if (activite.equals("PTGPayeurContractuels")) {
 			return new OePTGPayeurContractuels();
+		} else if (activite.equals("PTGTitreRepas")) {
+			return new OePTGTitreRepas();
 
 		}// Module ABSENCE
 		else if (activite.equals("ABSVisualisation")) {

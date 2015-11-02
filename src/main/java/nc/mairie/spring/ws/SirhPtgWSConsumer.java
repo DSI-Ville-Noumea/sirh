@@ -22,6 +22,7 @@ import nc.mairie.gestionagent.pointage.dto.MotifHeureSupDto;
 import nc.mairie.gestionagent.pointage.dto.RefEtatDto;
 import nc.mairie.gestionagent.pointage.dto.RefPrimeDto;
 import nc.mairie.gestionagent.pointage.dto.RefTypePointageDto;
+import nc.mairie.gestionagent.pointage.dto.TitreRepasDemandeDto;
 import nc.mairie.gestionagent.pointage.dto.VentilDateDto;
 import nc.mairie.gestionagent.pointage.dto.VentilErreurDto;
 import nc.mairie.metier.Const;
@@ -95,6 +96,10 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 	private static final String sirhPtgPrimeDetail = "primes/getPrime";
 	private static final String sirhPtgPrimeDetailFromIdRefPrime = "primes/getPrimeFromIdRefPrime";
 	private static final String sirhPtgPrimePointee = "primes/isPrimeUtilisee";
+	
+	// titre repas
+	private static final String sirhPtgVisualisationTitreRepasHistory = "titreRepas/historique";
+	private static final String sirhPtglistTitreRepas = "titreRepas/listTitreRepas";
 
 	private Logger logger = LoggerFactory.getLogger(SirhPtgWSConsumer.class);
 
@@ -163,6 +168,80 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 		parameters.put("idPointage", idPointage.toString());
 		ClientResponse res = createAndFireRequest(parameters, url);
 		return readResponseAsList(ConsultPointageDto.class, res, url);
+	}
+
+	@Override
+	public List<TitreRepasDemandeDto> getVisualisationTitreRepasHistory(Integer idTrDemande) {
+		String url = String.format(ptgWsBaseUrl + sirhPtgVisualisationTitreRepasHistory);
+		Map<String, String> parameters = new HashMap<String, String>();
+		parameters.put("idTrDemande", idTrDemande.toString());
+		ClientResponse res = createAndFireRequest(parameters, url);
+		return readResponseAsList(TitreRepasDemandeDto.class, res, url);
+	}
+
+	@Override
+	public List<TitreRepasDemandeDto> getListTitreRepas(Integer idAgentConnecte, String fromDate, String toDate, 
+			Integer idRefEtat, Boolean commande, String dateMonth, Integer idServiceAds, Integer idAgent,
+			List<Integer> listIdsAgent) {
+		
+		String url = String.format(ptgWsBaseUrl + sirhPtglistTitreRepas);
+
+		Map<String, String> parameters = new HashMap<String, String>();
+
+		if (toDate != null) {
+			parameters.put("idAgentConnecte", idAgentConnecte.toString());
+		}
+		if (toDate != null) {
+			parameters.put("fromDate", fromDate);
+		}
+		if (toDate != null) {
+			parameters.put("toDate", toDate);
+		}
+		if (idRefEtat != null) {
+			parameters.put("etat", idRefEtat.toString());
+		}
+		if (commande != null) {
+			parameters.put("commande", commande.toString());
+		}
+		if (dateMonth != null) {
+			parameters.put("dateMonth", dateMonth);
+		}
+		if (idServiceAds != null) {
+			parameters.put("idServiceADS", idServiceAds.toString());
+		}
+		if (idAgent != null) {
+			parameters.put("idAgent", idAgent.toString());
+		}
+		if (null != listIdsAgent
+				&& !listIdsAgent.isEmpty()) {
+
+			String csvId = Const.CHAINE_VIDE;
+			for (Integer id : listIdsAgent) {
+				csvId += id + ",";
+			}
+			if (csvId != Const.CHAINE_VIDE) {
+				csvId = csvId.substring(0, csvId.length() - 1);
+			}
+			parameters.put("listIdsAgent", csvId);
+		}
+		parameters.put("isFromSIRH", "true");
+
+		ClientResponse res = createAndFireRequest(parameters, url);
+
+		return readResponseAsList(TitreRepasDemandeDto.class, res, url);
+	}
+
+	@Override
+	public ReturnMessageDto setTRState(List<TitreRepasDemandeDto> listTitreRepasDemandeDto, Integer idAgent) {
+		String url = String.format(ptgWsBaseUrl + sirhPtgVisualisationSetState);
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idAgent", idAgent.toString());
+
+		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class)
+				.deepSerialize(listTitreRepasDemandeDto);
+		
+		ClientResponse res = createAndPostRequest(params, url, json);
+		return readResponseWithReturnMessageDto(ReturnMessageDto.class, res, url);
 	}
 
 	/**
