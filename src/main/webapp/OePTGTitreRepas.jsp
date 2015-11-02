@@ -276,7 +276,10 @@
                         %>
                         <tr id="tr<%=TR.getIdTrDemande() %>">
                             <td width="30px" align="center">
-                            	<img onkeydown="" onkeypress="" onkeyup="" src="images/modifier.gif" height="15px" width="15px" title="Editer le pointage" onClick="executeBouton('<%=process.getSAISIE_TR(indiceTR)%>')" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>">
+                            <% if(TR.getIdRefEtat()!=EtatPointageEnum.JOURNALISE.getCodeEtat()){ %>
+                            	<img onkeydown="" onkeypress="" onkeyup="" src="images/modifier.gif" height="15px" width="15px" title="Editer le pointage" onClick="executeBouton('<%=process.getNOM_PB_SAISIE_TR(indiceTR)%>')" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>">
+                            	<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_SAISIE_TR(indiceTR)%>" value="">
+                            <% } %>
                             </td>
                             <td width="30px" align="center">
                             	<img onkeydown="" onkeypress="" onkeyup="" src="images/loupe.gif" height="16px" width="16px" title="Voir l'historique de la demande" onClick="loadTitreRepasHistory('<%=TR.getIdTrDemande() %>')">
@@ -308,10 +311,10 @@
                 <BR/>	
             </FIELDSET>
             
-            <INPUT type="submit" style="display:none;" name="<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_SERVICE()%>" value="SUPPRECHERCHERSERVICE">	
+            <INPUT type="submit" style="display:none;" name="<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_SERVICE()%>" value="SUPPRECHERCHERSERVICE">
 			<INPUT type="submit" style="display:none;" name="<%=process.getNOM_PB_RECHERCHER_AGENT_DEMANDE()%>" value="RECHERCHERAGENTDEMANDE">
             <INPUT type="submit" style="display:none;" name="<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_DEMANDE()%>" value="SUPPRECHERCHERAGENTDEMANDE">
-            <INPUT type="submit" style="display:none;" name="<%=process.getNOM_PB_AJOUTER_DEMANDE_TR()%>" value="AJOUTERABSENCE">        
+            <INPUT type="submit" style="display:none;" name="<%=process.getNOM_PB_AJOUTER_DEMANDE_TR()%>" value="AJOUTERABSENCE">
             <INPUT type="submit" style="display:none;" name="<%=process.getNOM_PB_RECHERCHER_AGENT_CREATION()%>" value="RECHERCHERAGENTCREATION">
         
             <%if(process.getVAL_ST_ACTION().equals(process.ACTION_CREATION)){ %>
@@ -328,6 +331,25 @@
 	                    <BR/>
 	                    <div align="center">
 		                    <INPUT onkeydown="" onkeypress="" onkeyup="" type="submit" class="sigp2-Bouton-100" value="Creer" name="<%=process.getNOM_PB_CREATION()%>">
+		                    <INPUT onkeydown="" onkeypress="" onkeyup="" type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
+	                    </div>
+	            </FIELDSET>
+            <%} %>
+            
+            <%if(process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION)){ %>
+            
+				<FIELDSET class="sigp2Fieldset" style="text-align:left;" id="<%=process.ACTION_MODIFICATION %>">
+					<legend class="sigp2Legend">Modification d'une demande de titre repas pour le mois en cours</legend>
+           				<INPUT name="<%= process.getNOM_ST_INDICE_TR() %>" type="hidden" value="<%= process.getVAL_ST_INDICE_TR()%>">
+           				<INPUT name="JSP" type="hidden" value="<%= process.getJSP()%>">
+	                    <span class="sigp2Mandatory" style="width:50px;margin-left: 20px;">Agent :</span>
+	                    <INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_AGENT_MODIFICATION()%>" size="10" type="text" value="<%= process.getVAL_ST_AGENT_MODIFICATION()%>" style="margin-right:10px;" readonly="readonly">
+	                    
+	                    <INPUT type="radio" <%= process.forRadioHTML(process.getNOM_RG_COMMANDE(), process.getNOM_RB_OUI()) %> ><span class="sigp2Mandatory">Oui</span>
+						<INPUT type="radio" <%= process.forRadioHTML(process.getNOM_RG_COMMANDE(), process.getNOM_RB_NON()) %> ><span class="sigp2Mandatory">Non</span>
+	                    <BR/>
+	                    <div align="center">
+		                    <INPUT onkeydown="" onkeypress="" onkeyup="" type="submit" class="sigp2-Bouton-100" value="Modifier" name="<%=process.getNOM_PB_MODIFICATION()%>">
 		                    <INPUT onkeydown="" onkeypress="" onkeyup="" type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
 	                    </div>
 	            </FIELDSET>

@@ -54,7 +54,6 @@ public class OePTGTitreRepas extends BasicProcess {
 
 	public static final int STATUT_RECHERCHER_AGENT_DEMANDE = 1;
 	public static final int STATUT_RECHERCHER_AGENT_CREATION = 2;
-	public static final int STATUT_SAISIE_TR = 3;
 
 	public String focus = null;
 	private String[] LB_ETAT;
@@ -80,6 +79,7 @@ public class OePTGTitreRepas extends BasicProcess {
 	
 	
 	public String ACTION_CREATION = "Creation_demande";
+	public String ACTION_MODIFICATION = "Modification_demande";
 	public String ACTION_MOTIF_REJET = "Motif_rejet_demande";
 
 	@Override
@@ -301,7 +301,9 @@ public class OePTGTitreRepas extends BasicProcess {
 		setListeDemandeTR((ArrayList<TitreRepasDemandeDto>) listedemandeTR);
 
 		afficheListeDemandesTR();
-
+		
+		setTypeFiltre("GLOBAL");
+		
 		return true;
 	}
 	
@@ -685,7 +687,84 @@ public class OePTGTitreRepas extends BasicProcess {
 		return true;
 	}
 	
+	public boolean performPB_MODIFICATION(HttpServletRequest request, Integer indiceTR) throws Exception {
+		
+		TitreRepasDemandeDto dto = getListeDemandeTR().get(indiceTR);
+
+		addZone(getNOM_ST_INDICE_TR(), indiceTR.toString());
+		addZone(getNOM_ST_AGENT_MODIFICATION(), new Integer(dto.getAgent().getIdAgent() - 9000000).toString());
+		addZone(getNOM_RG_COMMANDE(), dto.getCommande() ? getNOM_RB_OUI() : getNOM_RB_NON());
+		
+		// On nomme l'action
+		addZone(getNOM_ST_ACTION(), ACTION_MODIFICATION);
+		
+		return true;
+	}
 	
+	public boolean performPB_VALIDER_MODIFICATION(HttpServletRequest request) throws Exception {
+		
+		String idAgent = Const.CHAINE_VIDE;
+		if (getVAL_ST_AGENT_MODIFICATION().equals(Const.CHAINE_VIDE)) {
+			// "ERR002","La zone @ est obligatoire."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "agent"));
+			return false;
+		} else {
+			idAgent = "900" + getVAL_ST_AGENT_MODIFICATION();
+			try {
+				agentDao.chercherAgent(Integer.valueOf(idAgent));
+			} catch (Exception e) {
+				// "ERR503",
+				// "L'agent @ n'existe pas. Merci de saisir un matricule existant."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR503", idAgent));
+				return false;
+			}
+		}
+		
+		if(getZone(getNOM_RG_COMMANDE()).equals(Const.CHAINE_VIDE)) {
+			// "ERR002","La zone @ est obligatoire."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "Oui ou Non"));
+			return false;
+		}
+		
+		Integer indiceTR = new Integer(getVAL_ST_INDICE_TR());
+		
+		TitreRepasDemandeDto dto = getListeDemandeTR().get(indiceTR);
+		
+		dto.setCommande(getZone(getNOM_RG_COMMANDE()).equals(getNOM_RB_OUI()));
+		dto.setIdRefEtat(EtatPointageEnum.APPROUVE.getCodeEtat());
+
+		List<TitreRepasDemandeDto> listDto = new ArrayList<TitreRepasDemandeDto>();
+		listDto.add(dto);
+		
+		ReturnMessageDto srm = ptgService.enregistreTitreRepas(listDto, getAgentConnecte(request).getIdAgent());
+		
+		if (srm.getErrors().size() > 0) {
+			String err = Const.CHAINE_VIDE;
+			for (String erreur : srm.getErrors()) {
+				err += " " + erreur;
+			}
+			getTransaction().declarerErreur("ERREUR : " + err);
+			return false;
+		}
+		if (srm.getInfos().size() > 0) {
+			String info = Const.CHAINE_VIDE;
+			for (String erreur : srm.getInfos()) {
+				info += " " + erreur;
+			}
+			getTransaction().declarerErreur("Demande modifiée : " + info);
+		}
+		// On nomme l'action
+		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+
+		setStatut(STATUT_MEME_PROCESS);
+		if (getTypeFiltre().equals("GLOBAL")) {
+			performPB_FILTRER(request);
+		} else {
+			performPB_FILTRER_DEMANDE_A_APPROUVER(request);
+		}
+		
+		return true;
+	}
 	
 	
 	
@@ -989,6 +1068,14 @@ public class OePTGTitreRepas extends BasicProcess {
 		return getZone(getNOM_ST_AGENT_CREATION());
 	}
 
+	public String getNOM_ST_AGENT_MODIFICATION() {
+		return "NOM_ST_AGENT_MODIFICATION";
+	}
+
+	public String getVAL_ST_AGENT_MODIFICATION() {
+		return getZone(getNOM_ST_AGENT_MODIFICATION());
+	}
+
 	public String getNOM_PB_RECHERCHER_AGENT_CREATION() {
 		return "NOM_PB_RECHERCHER_AGENT_CREATION";
 	}
@@ -1003,6 +1090,10 @@ public class OePTGTitreRepas extends BasicProcess {
 
 	public String getNOM_PB_CREATION() {
 		return "NOM_PB_CREATION";
+	}
+
+	public String getNOM_PB_MODIFICATION() {
+		return "NOM_PB_MODIFICATION";
 	}
 
 	public String getNOM_PB_ANNULER() {
@@ -1048,8 +1139,8 @@ public class OePTGTitreRepas extends BasicProcess {
 	/**
      *
      */
-	public String getSAISIE_TR(int i) {
-		return "getSAISIE_TR_" + i;
+	public String getNOM_PB_SAISIE_TR(int i) {
+		return "NOM_PB_SAISIE_TR_" + i;
 	}
 
 	public String getNOM_ST_OPERATEUR(int i) {
@@ -1074,6 +1165,14 @@ public class OePTGTitreRepas extends BasicProcess {
 
 	public String getNOM_RB_NON() {
 		return "NOM_RB_NON";
+	}
+
+	public String getNOM_ST_INDICE_TR() {
+		return "NOM_ST_INDICE_TR";
+	}
+
+	public String getVAL_ST_INDICE_TR() {
+		return getZone(getNOM_ST_INDICE_TR());
 	}
 	
 	
@@ -1124,79 +1223,79 @@ public class OePTGTitreRepas extends BasicProcess {
 	@Override
 	public boolean recupererStatut(HttpServletRequest request) throws Exception {
 		// Si on arrive de la JSP alors on traite le get
-				if (request.getParameter("JSP") != null && request.getParameter("JSP").equals(getJSP())) {
+		if (request.getParameter("JSP") != null && request.getParameter("JSP").equals(getJSP())) {
 
-					// Si clic sur le bouton PB_FILTRER_DEMANDE_A_VALIDER
-					if (testerParametre(request, getNOM_PB_FILTRER_DEMANDE_A_VALIDER())) {
-						return performPB_FILTRER_DEMANDE_A_APPROUVER(request);
-					}
+			// Si clic sur le bouton PB_FILTRER_DEMANDE_A_VALIDER
+			if (testerParametre(request, getNOM_PB_FILTRER_DEMANDE_A_VALIDER())) {
+				return performPB_FILTRER_DEMANDE_A_APPROUVER(request);
+			}
 
-					// Si clic sur le bouton PB_RECHERCHER_AGENT_DEMANDE
-					if (testerParametre(request, getNOM_PB_RECHERCHER_AGENT_DEMANDE())) {
-						return performPB_RECHERCHER_AGENT_DEMANDE(request);
-					}
-					// Si clic sur le bouton PB_SUPPRIMER_RECHERCHER_AGENT_DEMANDE
-					if (testerParametre(request, getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_DEMANDE())) {
-						return performPB_SUPPRIMER_RECHERCHER_AGENT_DEMANDE(request);
-					}
-					// Si clic sur le bouton PB_SUPPRIMER_RECHERCHER_SERVICE
-					if (testerParametre(request, getNOM_PB_SUPPRIMER_RECHERCHER_SERVICE())) {
-						return performPB_SUPPRIMER_RECHERCHER_SERVICE(request);
-					}
-					// Si clic sur le bouton PB_FILTRER
-					if (testerParametre(request, getNOM_PB_FILTRER())) {
-						return performPB_FILTRER(request);
-					}
-					// Si clic sur le bouton PB_AJOUTER_ABSENCE
-					if (testerParametre(request, getNOM_PB_AJOUTER_DEMANDE_TR())) {
-						return performPB_AJOUTER_DEMANDE_TR(request);
-					}
+			// Si clic sur le bouton PB_RECHERCHER_AGENT_DEMANDEperformPB_MODIFICATION
+			if (testerParametre(request, getNOM_PB_RECHERCHER_AGENT_DEMANDE())) {
+				return performPB_RECHERCHER_AGENT_DEMANDE(request);
+			}
+			// Si clic sur le bouton PB_SUPPRIMER_RECHERCHER_AGENT_DEMANDE
+			if (testerParametre(request, getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_DEMANDE())) {
+				return performPB_SUPPRIMER_RECHERCHER_AGENT_DEMANDE(request);
+			}
+			// Si clic sur le bouton PB_SUPPRIMER_RECHERCHER_SERVICE
+			if (testerParametre(request, getNOM_PB_SUPPRIMER_RECHERCHER_SERVICE())) {
+				return performPB_SUPPRIMER_RECHERCHER_SERVICE(request);
+			}
+			// Si clic sur le bouton PB_FILTRER
+			if (testerParametre(request, getNOM_PB_FILTRER())) {
+				return performPB_FILTRER(request);
+			}
+			// Si clic sur le bouton PB_AJOUTER_ABSENCE
+			if (testerParametre(request, getNOM_PB_AJOUTER_DEMANDE_TR())) {
+				return performPB_AJOUTER_DEMANDE_TR(request);
+			}
 //					// Si clic sur le bouton PB_RECHERCHER_AGENT_CREATION
-					if (testerParametre(request, getNOM_PB_RECHERCHER_AGENT_CREATION())) {
-						return performPB_RECHERCHER_AGENT_CREATION(request);
-					}
-					// Si clic sur le bouton PB_CREATION
-					if (testerParametre(request, getNOM_PB_CREATION())) {
-						return performPB_CREATION(request);
-					}
-					// Si clic sur le bouton PB_ANNULER
-					if (testerParametre(request, getNOM_PB_ANNULER())) {
-						return performPB_ANNULER(request);
-					}
+			if (testerParametre(request, getNOM_PB_RECHERCHER_AGENT_CREATION())) {
+				return performPB_RECHERCHER_AGENT_CREATION(request);
+			}
+			// Si clic sur le bouton PB_CREATION
+			if (testerParametre(request, getNOM_PB_CREATION())) {
+				return performPB_CREATION(request);
+			}
+			// Si clic sur le bouton PB_ANNULER
+			if (testerParametre(request, getNOM_PB_ANNULER())) {
+				return performPB_ANNULER(request);
+			}
 
-					// Si clic sur les boutons du tableau
-					for (Integer indiceTR : getListeDemandeTR().keySet()) {
-						// Si clic sur le bouton PB_VALIDER
-						if (testerParametre(request, getNOM_PB_APPROUVER(indiceTR))) {
-							return performPB_APPROUVER(request, indiceTR);
-						}
-						// Si clic sur le bouton PB_REJETER
-						if (testerParametre(request, getNOM_PB_REJETER(indiceTR))) {
-							return performPB_REJETER(request, indiceTR);
-						}
-
-						if (testerParametre(request, getSAISIE_TR(indiceTR))) {
-							VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_PTG,
-									Integer.valueOf(getVAL_ST_MATRICULE(indiceTR)));
-							setStatut(STATUT_SAISIE_TR, true);
-							return true;
-						}
-					}
-					// Si clic sur le bouton PB_VALIDER_ALL
-					if (testerParametre(request, getNOM_PB_VALIDER_ALL())) {
-						return performPB_APPROUVER_ALL(request);
-					}
-					// Si clic sur le bouton PB_REJETER_ALL
-					if (testerParametre(request, getNOM_PB_REJETER_ALL())) {
-						return performPB_REJETER_ALL(request);
-					}
-					// Si clic sur le bouton PB_VALIDER_MOTIF_ANNULATION
-					if (testerParametre(request, getNOM_PB_VALIDER_MOTIF_REJET())) {
-						return performPB_VALIDER_MOTIF_REJET(request);
-					}
+			// Si clic sur les boutons du tableau
+			for (Integer indiceTR : getListeDemandeTR().keySet()) {
+				// Si clic sur le bouton PB_VALIDER
+				if (testerParametre(request, getNOM_PB_APPROUVER(indiceTR))) {
+					return performPB_APPROUVER(request, indiceTR);
 				}
-				// Si TAG INPUT non géré par le process
-				setStatut(STATUT_MEME_PROCESS);
-				return true;
+				// Si clic sur le bouton PB_REJETER
+				if (testerParametre(request, getNOM_PB_REJETER(indiceTR))) {
+					return performPB_REJETER(request, indiceTR);
+				}
+				if (testerParametre(request, getNOM_PB_SAISIE_TR(indiceTR))) {
+					return performPB_MODIFICATION(request, indiceTR);
+				}
+			}
+			// Si clic sur le bouton PB_VALIDER_ALL
+			if (testerParametre(request, getNOM_PB_VALIDER_ALL())) {
+				return performPB_APPROUVER_ALL(request);
+			}
+			// Si clic sur le bouton PB_REJETER_ALL
+			if (testerParametre(request, getNOM_PB_REJETER_ALL())) {
+				return performPB_REJETER_ALL(request);
+			}
+			// Si clic sur le bouton PB_VALIDER_MOTIF_ANNULATION
+			if (testerParametre(request, getNOM_PB_VALIDER_MOTIF_REJET())) {
+				return performPB_VALIDER_MOTIF_REJET(request);
+			}
+			// Si clic sur le bouton PB_VALIDER_MOTIF_ANNULATION
+			if (testerParametre(request, getNOM_PB_MODIFICATION())) {
+				return performPB_VALIDER_MODIFICATION(request);
+			}
+		}
+		// Si TAG INPUT non géré par le process
+		setStatut(STATUT_MEME_PROCESS);
+		return true;
 	}
 }
