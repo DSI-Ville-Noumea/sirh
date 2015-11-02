@@ -122,8 +122,7 @@ public class OeELECSaisieCompteurA55 extends BasicProcess {
 	private void initialiseListeDeroulante() {
 		// Si liste motifs vide alors affectation
 		if (getLB_MOTIF() == LBVide) {
-			ArrayList<MotifCompteurDto> listeMotifs = (ArrayList<MotifCompteurDto>) absService
-					.getListeMotifCompteur(EnumTypeAbsence.ASA_A55.getCode());
+			ArrayList<MotifCompteurDto> listeMotifs = (ArrayList<MotifCompteurDto>) absService.getListeMotifCompteur(EnumTypeAbsence.ASA_A55.getCode());
 			setListeMotifCompteur(listeMotifs);
 
 			int[] tailles = { 50 };
@@ -170,14 +169,10 @@ public class OeELECSaisieCompteurA55 extends BasicProcess {
 			addZone(getNOM_ST_AGENT(indiceLigne), vo.getAgent().getNomAgent() + " " + vo.getAgent().getPrenomAgent());
 			addZone(getNOM_ST_DATE_DEBUT(indiceLigne), sdf.format(vo.getCompteur().getDateDebut()));
 			addZone(getNOM_ST_DATE_FIN(indiceLigne), sdf.format(vo.getCompteur().getDateFin()));
-			String soldeAsaA55Heure = (vo.getCompteur().getDureeAAjouter().intValue() / 60) == 0 ? Const.CHAINE_VIDE
-					: vo.getCompteur().getDureeAAjouter().intValue() / 60 + "h ";
-			String soldeAsaA55Minute = (vo.getCompteur().getDureeAAjouter().intValue() % 60) == 0 ? "&nbsp;" : vo
-					.getCompteur().getDureeAAjouter().intValue()
-					% 60 + "m";
+			String soldeAsaA55Heure = (vo.getCompteur().getDureeAAjouter().intValue() / 60) == 0 ? Const.CHAINE_VIDE : vo.getCompteur().getDureeAAjouter().intValue() / 60 + "h ";
+			String soldeAsaA55Minute = (vo.getCompteur().getDureeAAjouter().intValue() % 60) == 0 ? "&nbsp;" : vo.getCompteur().getDureeAAjouter().intValue() % 60 + "m";
 			addZone(getNOM_ST_NB_HEURES(indiceLigne), soldeAsaA55Heure + soldeAsaA55Minute);
-			addZone(getNOM_ST_MOTIF(indiceLigne), vo.getCompteur().getMotifCompteurDto() == null ? Const.CHAINE_VIDE
-					: vo.getCompteur().getMotifCompteurDto().getLibelle());
+			addZone(getNOM_ST_MOTIF(indiceLigne), vo.getCompteur().getMotifCompteurDto() == null ? Const.CHAINE_VIDE : vo.getCompteur().getMotifCompteurDto().getLibelle());
 
 			indiceLigne++;
 
@@ -282,6 +277,7 @@ public class OeELECSaisieCompteurA55 extends BasicProcess {
 
 	private void videZonesDeSaisie(HttpServletRequest request) throws Exception {
 		addZone(getNOM_ST_NB_HEURES(), Const.CHAINE_VIDE);
+		addZone(getNOM_ST_NB_MINUTES(), Const.CHAINE_VIDE);
 		addZone(getNOM_ST_DATE_DEBUT(), Const.CHAINE_VIDE);
 		addZone(getNOM_ST_DATE_FIN(), Const.CHAINE_VIDE);
 		addZone(getNOM_ST_AGENT_CREATE(), Const.CHAINE_VIDE);
@@ -327,16 +323,22 @@ public class OeELECSaisieCompteurA55 extends BasicProcess {
 
 		addZone(getNOM_ST_DATE_DEBUT(), sdf.format(dto.getDateDebut()));
 		addZone(getNOM_ST_DATE_FIN(), sdf.format(dto.getDateFin()));
-		String soldeAsaA55Heure = (dto.getDureeAAjouter().intValue() / 60) == 0 ? Const.CHAINE_VIDE : dto
-				.getDureeAAjouter().intValue() / 60 + Const.CHAINE_VIDE;
-		String soldeAsaA55Minute = (dto.getDureeAAjouter().intValue() % 60) == 0 ? Const.CHAINE_VIDE : "."
-				+ dto.getDureeAAjouter().intValue() % 60;
-		addZone(getNOM_ST_NB_HEURES(), soldeAsaA55Heure + soldeAsaA55Minute);
-		addZone(getNOM_ST_AGENT_CREATE(), dto.getIdAgent().toString()
-				.substring(3, dto.getIdAgent().toString().length()));
+		String soldeAsaA55Heure = (dto.getDureeAAjouter().intValue() / 60) == 0 ? Const.CHAINE_VIDE : dto.getDureeAAjouter().intValue() / 60 + Const.CHAINE_VIDE;
+		String soldeAsaA55Minute = (dto.getDureeAAjouter().intValue() % 60) == 0 ? Const.CHAINE_VIDE : dto.getDureeAAjouter().intValue() % 60 + Const.CHAINE_VIDE;
+		addZone(getNOM_ST_NB_HEURES(), soldeAsaA55Heure);
+		addZone(getNOM_ST_NB_MINUTES(), soldeAsaA55Minute);
+		addZone(getNOM_ST_AGENT_CREATE(), dto.getIdAgent().toString().substring(3, dto.getIdAgent().toString().length()));
 		int ligneMotif = getListeMotifCompteur().indexOf(dto.getMotifCompteurDto());
 		addZone(getNOM_LB_MOTIF_SELECT(), String.valueOf(ligneMotif + 1));
 		return true;
+	}
+
+	public String getNOM_ST_NB_MINUTES() {
+		return "NOM_ST_NB_MINUTES";
+	}
+
+	public String getVAL_ST_NB_MINUTES() {
+		return getZone(getNOM_ST_NB_MINUTES());
 	}
 
 	public String getNOM_ST_NB_HEURES() {
@@ -389,11 +391,22 @@ public class OeELECSaisieCompteurA55 extends BasicProcess {
 
 	private boolean performControlerChamps(HttpServletRequest request) {
 
-		// nbheures numerique
-		if (!Services.estNumerique(getZone(getNOM_ST_NB_HEURES()))) {
-			// "ERR992", "La zone @ doit être numérique.");
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "nb heures"));
-			return false;
+		if (!getVAL_ST_NB_HEURES().equals(Const.CHAINE_VIDE)) {
+			// nbheures numerique
+			if (!Services.estNumerique(getZone(getNOM_ST_NB_HEURES()))) {
+				// "ERR992", "La zone @ doit être numérique.");
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "nb heures"));
+				return false;
+			}
+		}
+
+		if (!getVAL_ST_NB_MINUTES().equals(Const.CHAINE_VIDE)) {
+			// nbminutes numerique
+			if (!Services.estNumerique(getZone(getNOM_ST_NB_MINUTES()))) {
+				// "ERR992", "La zone @ doit être numérique.");
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "nb minutes"));
+				return false;
+			}
 		}
 
 		// idAgent numerique
@@ -404,8 +417,7 @@ public class OeELECSaisieCompteurA55 extends BasicProcess {
 		}
 
 		// motif obligatoire
-		int indiceMotif = (Services.estNumerique(getVAL_LB_MOTIF_SELECT()) ? Integer.parseInt(getVAL_LB_MOTIF_SELECT())
-				: -1);
+		int indiceMotif = (Services.estNumerique(getVAL_LB_MOTIF_SELECT()) ? Integer.parseInt(getVAL_LB_MOTIF_SELECT()) : -1);
 		if (indiceMotif <= 0) {
 			// "ERR002", "La zone @ est obligatoire."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "motif"));
@@ -434,7 +446,7 @@ public class OeELECSaisieCompteurA55 extends BasicProcess {
 		}
 
 		// nb heures obligatoire
-		if (getVAL_ST_NB_HEURES().equals(Const.CHAINE_VIDE)) {
+		if (getVAL_ST_NB_HEURES().equals(Const.CHAINE_VIDE) && getVAL_ST_NB_MINUTES().equals(Const.CHAINE_VIDE)) {
 			// "ERR002", "La zone @ est obligatoire."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "nb heures"));
 			return false;
@@ -465,12 +477,18 @@ public class OeELECSaisieCompteurA55 extends BasicProcess {
 		Agent agCompteur = getAgentDao().chercherAgentParMatricule(Integer.valueOf(nomatr));
 
 		// motif
-		int indiceMotif = (Services.estNumerique(getVAL_LB_MOTIF_SELECT()) ? Integer.parseInt(getVAL_LB_MOTIF_SELECT())
-				: -1);
+		int indiceMotif = (Services.estNumerique(getVAL_LB_MOTIF_SELECT()) ? Integer.parseInt(getVAL_LB_MOTIF_SELECT()) : -1);
 		MotifCompteurDto motif = null;
 		if (indiceMotif > 0) {
 			motif = getListeMotifCompteur().get(indiceMotif - 1);
 		}
+
+		// on recupere la saisie
+		String dureeHeure = getVAL_ST_NB_HEURES().equals(Const.CHAINE_VIDE) ? "0" : getVAL_ST_NB_HEURES();
+		String dureeMin = getVAL_ST_NB_MINUTES().equals(Const.CHAINE_VIDE) ? "0" : getVAL_ST_NB_MINUTES();
+
+		int dureeTotaleSaisie = (Integer.valueOf(dureeHeure) * 60) + (Integer.valueOf(dureeMin));
+
 		String dateDeb = Services.formateDate(getVAL_ST_DATE_DEBUT()) + " 00:00:00";
 		String dateFin = Services.formateDate(getVAL_ST_DATE_FIN()) + " 23:59:59";
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
@@ -479,13 +497,12 @@ public class OeELECSaisieCompteurA55 extends BasicProcess {
 		MotifCompteurDto motifDto = new MotifCompteurDto();
 		motifDto.setIdMotifCompteur(motif.getIdMotifCompteur());
 		compteurDto.setMotifCompteurDto(motifDto);
-		compteurDto.setDureeAAjouter(new Double(Integer.valueOf(getVAL_ST_NB_HEURES()) * 60));
+		compteurDto.setDureeAAjouter(new Double(dureeTotaleSaisie));
 		compteurDto.setDateDebut(sdf.parse(dateDeb));
 		compteurDto.setDateFin(sdf.parse(dateFin));
 
 		// on sauvegarde
-		message = absService.addCompteurAsaA55(agentConnecte.getIdAgent(), new JSONSerializer().exclude("*.class")
-				.transform(new MSDateTransformer(), Date.class).serialize(compteurDto));
+		message = absService.addCompteurAsaA55(agentConnecte.getIdAgent(), new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class).serialize(compteurDto));
 
 		if (message.getErrors().size() > 0) {
 			String err = Const.CHAINE_VIDE;
@@ -512,8 +529,7 @@ public class OeELECSaisieCompteurA55 extends BasicProcess {
 			return null;
 		}
 		try {
-			agentConnecte = getAgentDao().chercherAgentParMatricule(
-					radiService.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
+			agentConnecte = getAgentDao().chercherAgentParMatricule(radiService.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
 		} catch (Exception e) {
 			return null;
 		}

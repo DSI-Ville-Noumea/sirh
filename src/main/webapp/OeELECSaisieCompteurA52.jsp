@@ -129,10 +129,11 @@ function testClickEnrigistrer(){
 				</tr>
 				<tr>
 					<td>
-						<span class="sigp2Mandatory">Nb heures :</span>
+						<span class="sigp2Mandatory">Nb heures/min :</span>
 					</td>
 					<td>
 						<INPUT class="sigp2-saisie" maxlength="4" name="<%= process.getNOM_ST_NB_HEURES() %>" size="4" type="text"  value="<%= process.getVAL_ST_NB_HEURES() %>">
+						<INPUT class="sigp2-saisie" maxlength="4" name="<%= process.getNOM_ST_NB_MINUTES() %>" size="4" type="text"  value="<%= process.getVAL_ST_NB_MINUTES() %>">
 					</td>
 				</tr>
 				<tr>
@@ -233,8 +234,10 @@ function testClickEnrigistrer(){
 							<td>
 								<%if(process.getVAL_ST_ACTION_COMPTEUR().equals(process.ACTION_MODIFIER_COMPTEUR)){ %>
 									<INPUT class="sigp2-saisie" maxlength="4" name="<%= process.getNOM_ST_NB_HEURES() %>" size="4" type="text"  value="<%= process.getVAL_ST_NB_HEURES() %>">
+									<INPUT class="sigp2-saisie" maxlength="4" name="<%= process.getNOM_ST_NB_MINUTES() %>" size="4" type="text"  value="<%= process.getVAL_ST_NB_MINUTES() %>">
 								<%}else{%>
 									<INPUT disabled="disabled" class="sigp2-saisie" maxlength="4" name="<%= process.getNOM_ST_NB_HEURES() %>" size="4" type="text"  value="<%= process.getVAL_ST_NB_HEURES() %>">
+									<INPUT disabled="disabled" class="sigp2-saisie" maxlength="4" name="<%= process.getNOM_ST_NB_MINUTES() %>" size="4" type="text"  value="<%= process.getVAL_ST_NB_MINUTES() %>">
 								<%} %>								
 							</td>
 						</tr>

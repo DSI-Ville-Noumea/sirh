@@ -329,6 +329,7 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 
 	private void videZonesDeSaisie(HttpServletRequest request) throws Exception {
 		addZone(getNOM_ST_NB_HEURES(), Const.CHAINE_VIDE);
+		addZone(getNOM_ST_NB_MINUTES(), Const.CHAINE_VIDE);
 		addZone(getNOM_ST_DATE_DEBUT(), Const.CHAINE_VIDE);
 		addZone(getNOM_ST_DATE_FIN(), Const.CHAINE_VIDE);
 		addZone(getNOM_LB_MOTIF_SELECT(), Const.ZERO);
@@ -417,6 +418,14 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 		return true;
 	}
 
+	public String getNOM_ST_NB_MINUTES() {
+		return "NOM_ST_NB_MINUTES";
+	}
+
+	public String getVAL_ST_NB_MINUTES() {
+		return getZone(getNOM_ST_NB_MINUTES());
+	}
+
 	public String getNOM_ST_NB_HEURES() {
 		return "NOM_ST_NB_HEURES";
 	}
@@ -447,11 +456,22 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 
 	private boolean performControlerChamps(HttpServletRequest request) {
 
-		// nbheures numerique
-		if (!Services.estNumerique(getZone(getNOM_ST_NB_HEURES()))) {
-			// "ERR992", "La zone @ doit être numérique.");
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "nb heures"));
-			return false;
+		if (!getVAL_ST_NB_HEURES().equals(Const.CHAINE_VIDE)) {
+			// nbheures numerique
+			if (!Services.estNumerique(getZone(getNOM_ST_NB_HEURES()))) {
+				// "ERR992", "La zone @ doit être numérique.");
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "nb heures"));
+				return false;
+			}
+		}
+
+		if (!getVAL_ST_NB_MINUTES().equals(Const.CHAINE_VIDE)) {
+			// nbminutes numerique
+			if (!Services.estNumerique(getZone(getNOM_ST_NB_MINUTES()))) {
+				// "ERR992", "La zone @ doit être numérique.");
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "nb minutes"));
+				return false;
+			}
 		}
 
 		// organisation syndicale obligatoire
@@ -485,7 +505,7 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 		}
 
 		// nb heures obligatoire
-		if (getVAL_ST_NB_HEURES().equals(Const.CHAINE_VIDE)) {
+		if (getVAL_ST_NB_HEURES().equals(Const.CHAINE_VIDE) && getVAL_ST_NB_MINUTES().equals(Const.CHAINE_VIDE)) {
 			// "ERR002", "La zone @ est obligatoire."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "nb heures"));
 			return false;
@@ -525,6 +545,12 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 			os = getListeOrganisationSyndicale().get(indiceOS - 1);
 		}
 
+		// on recupere la saisie
+		String dureeHeure = getVAL_ST_NB_HEURES().equals(Const.CHAINE_VIDE) ? "0" : getVAL_ST_NB_HEURES();
+		String dureeMin = getVAL_ST_NB_MINUTES().equals(Const.CHAINE_VIDE) ? "0" : getVAL_ST_NB_MINUTES();
+
+		int dureeTotaleSaisie = (Integer.valueOf(dureeHeure) * 60) + (Integer.valueOf(dureeMin));
+
 		String dateDeb = Services.formateDate(getVAL_ST_DATE_DEBUT()) + " 00:00:00";
 		String dateFin = Services.formateDate(getVAL_ST_DATE_FIN()) + " 23:59:59";
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
@@ -537,7 +563,7 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 		MotifCompteurDto motifDto = new MotifCompteurDto();
 		motifDto.setIdMotifCompteur(motif.getIdMotifCompteur());
 		compteurDto.setMotifCompteurDto(motifDto);
-		compteurDto.setDureeAAjouter(new Double(Integer.valueOf(getVAL_ST_NB_HEURES()) * 60));
+		compteurDto.setDureeAAjouter(new Double(dureeTotaleSaisie));
 		compteurDto.setDateDebut(sdf.parse(dateDeb));
 		compteurDto.setDateFin(sdf.parse(dateFin));
 
@@ -684,7 +710,6 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 		OrganisationSyndicaleDto osCourant = (OrganisationSyndicaleDto) getListeOrganisationSyndicaleExistante().get(getListeOrganisationSyndicaleExistante().indexOf(dto));
 		setOrganisationCourante(osCourant);
 
-
 		ArrayList<AgentOrganisationSyndicaleDto> listeAgent = (ArrayList<AgentOrganisationSyndicaleDto>) absService.getListeRepresentantA52(getOrganisationCourante().getIdOrganisation());
 
 		setListeRepresentant(listeAgent);
@@ -714,7 +739,6 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 
 		OrganisationSyndicaleDto osCourant = (OrganisationSyndicaleDto) getListeOrganisationSyndicaleExistante().get(getListeOrganisationSyndicaleExistante().indexOf(dto));
 		setOrganisationCourante(osCourant);
-
 
 		ArrayList<AgentOrganisationSyndicaleDto> listeAgent = (ArrayList<AgentOrganisationSyndicaleDto>) absService.getListeRepresentantA52(getOrganisationCourante().getIdOrganisation());
 
@@ -1070,8 +1094,9 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 		addZone(getNOM_ST_DATE_DEBUT(), sdf.format(dto.getDateDebut()));
 		addZone(getNOM_ST_DATE_FIN(), sdf.format(dto.getDateFin()));
 		String soldeAsaA52Heure = (dto.getDureeAAjouter().intValue() / 60) == 0 ? Const.CHAINE_VIDE : dto.getDureeAAjouter().intValue() / 60 + Const.CHAINE_VIDE;
-		String soldeAsaA52Minute = (dto.getDureeAAjouter().intValue() % 60) == 0 ? Const.CHAINE_VIDE : "." + dto.getDureeAAjouter().intValue() % 60;
-		addZone(getNOM_ST_NB_HEURES(), soldeAsaA52Heure + soldeAsaA52Minute);
+		String soldeAsaA52Minute = (dto.getDureeAAjouter().intValue() % 60) == 0 ? Const.CHAINE_VIDE : dto.getDureeAAjouter().intValue() % 60 + Const.CHAINE_VIDE;
+		addZone(getNOM_ST_NB_HEURES(), soldeAsaA52Heure);
+		addZone(getNOM_ST_NB_MINUTES(), soldeAsaA52Minute);
 		return true;
 	}
 

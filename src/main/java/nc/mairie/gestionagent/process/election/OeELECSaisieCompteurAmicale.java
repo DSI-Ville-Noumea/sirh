@@ -293,6 +293,7 @@ public class OeELECSaisieCompteurAmicale extends BasicProcess {
 
 	private void videZonesDeSaisie(HttpServletRequest request) throws Exception {
 		addZone(getNOM_ST_NB_HEURES(), Const.CHAINE_VIDE);
+		addZone(getNOM_ST_NB_MINUTES(), Const.CHAINE_VIDE);
 		addZone(getNOM_ST_ANNEE(), Const.CHAINE_VIDE);
 		addZone(getNOM_ST_AGENT_CREATE(), Const.CHAINE_VIDE);
 		addZone(getNOM_LB_MOTIF_SELECT(), Const.ZERO);
@@ -344,13 +345,22 @@ public class OeELECSaisieCompteurAmicale extends BasicProcess {
 		addZone(getNOM_LB_ANNEE_SELECT(), String.valueOf(ligneAnnee));
 		addZone(getNOM_ST_ANNEE(), annee.toString());
 		String soldeAsaAmicaleHeure = (dto.getDureeAAjouter().intValue() / 60) == 0 ? Const.CHAINE_VIDE : dto.getDureeAAjouter().intValue() / 60 + Const.CHAINE_VIDE;
-		String soldeAsaAmicaleMinute = (dto.getDureeAAjouter().intValue() % 60) == 0 ? Const.CHAINE_VIDE : "." + dto.getDureeAAjouter().intValue() % 60;
-		addZone(getNOM_ST_NB_HEURES(), soldeAsaAmicaleHeure + soldeAsaAmicaleMinute);
+		String soldeAsaAmicaleMinute = (dto.getDureeAAjouter().intValue() % 60) == 0 ? Const.CHAINE_VIDE : dto.getDureeAAjouter().intValue() % 60 + Const.CHAINE_VIDE;
+		addZone(getNOM_ST_NB_HEURES(), soldeAsaAmicaleHeure);
+		addZone(getNOM_ST_NB_MINUTES(), soldeAsaAmicaleMinute);
 		addZone(getNOM_ST_AGENT_CREATE(), dto.getIdAgent().toString().substring(3, dto.getIdAgent().toString().length()));
 		int ligneMotif = getListeMotifCompteur().indexOf(dto.getMotifCompteurDto());
 		addZone(getNOM_LB_MOTIF_SELECT(), String.valueOf(ligneMotif + 1));
 		addZone(getNOM_RG_AGENT_INACTIF(), dto.isActif() ? getNOM_RB_OUI() : getNOM_RB_NON());
 		return true;
+	}
+
+	public String getNOM_ST_NB_MINUTES() {
+		return "NOM_ST_NB_MINUTES";
+	}
+
+	public String getVAL_ST_NB_MINUTES() {
+		return getZone(getNOM_ST_NB_MINUTES());
 	}
 
 	public String getNOM_ST_NB_HEURES() {
@@ -395,11 +405,22 @@ public class OeELECSaisieCompteurAmicale extends BasicProcess {
 
 	private boolean performControlerChamps(HttpServletRequest request) {
 
-		// nbheures numerique
-		if (!Services.estNumerique(getZone(getNOM_ST_NB_HEURES()))) {
-			// "ERR992", "La zone @ doit être numérique.");
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "nb heures"));
-			return false;
+		if (!getVAL_ST_NB_HEURES().equals(Const.CHAINE_VIDE)) {
+			// nbheures numerique
+			if (!Services.estNumerique(getZone(getNOM_ST_NB_HEURES()))) {
+				// "ERR992", "La zone @ doit être numérique.");
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "nb heures"));
+				return false;
+			}
+		}
+
+		if (!getVAL_ST_NB_MINUTES().equals(Const.CHAINE_VIDE)) {
+			// nbminutes numerique
+			if (!Services.estNumerique(getZone(getNOM_ST_NB_MINUTES()))) {
+				// "ERR992", "La zone @ doit être numérique.");
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "nb minutes"));
+				return false;
+			}
 		}
 
 		// idAgent numerique
@@ -442,7 +463,7 @@ public class OeELECSaisieCompteurAmicale extends BasicProcess {
 		}
 
 		// nb heures obligatoire
-		if (getVAL_ST_NB_HEURES().equals(Const.CHAINE_VIDE)) {
+		if (getVAL_ST_NB_HEURES().equals(Const.CHAINE_VIDE) && getVAL_ST_NB_MINUTES().equals(Const.CHAINE_VIDE)) {
 			// "ERR002", "La zone @ est obligatoire."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "nb heures"));
 			return false;
@@ -490,12 +511,18 @@ public class OeELECSaisieCompteurAmicale extends BasicProcess {
 			annee = Integer.valueOf(getVAL_ST_ANNEE());
 		}
 
+		// on recupere la saisie
+		String dureeHeure = getVAL_ST_NB_HEURES().equals(Const.CHAINE_VIDE) ? "0" : getVAL_ST_NB_HEURES();
+		String dureeMin = getVAL_ST_NB_MINUTES().equals(Const.CHAINE_VIDE) ? "0" : getVAL_ST_NB_MINUTES();
+
+		int dureeTotaleSaisie = (Integer.valueOf(dureeHeure) * 60) + (Integer.valueOf(dureeMin));
+
 		CompteurDto compteurDto = new CompteurDto();
 		compteurDto.setIdAgent(agCompteur.getIdAgent());
 		MotifCompteurDto motifDto = new MotifCompteurDto();
 		motifDto.setIdMotifCompteur(motif.getIdMotifCompteur());
 		compteurDto.setMotifCompteurDto(motifDto);
-		compteurDto.setDureeAAjouter(new Double(Integer.valueOf(getVAL_ST_NB_HEURES()) * 60));
+		compteurDto.setDureeAAjouter(new Double(dureeTotaleSaisie));
 		compteurDto.setDateDebut(new DateTime(annee, 1, 1, 0, 0, 0).toDate());
 		compteurDto.setDateFin(new DateTime(annee, 12, 31, 23, 59, 0).toDate());
 		Boolean actif = getZone(getNOM_RG_AGENT_INACTIF()).equals(getNOM_RB_OUI());
