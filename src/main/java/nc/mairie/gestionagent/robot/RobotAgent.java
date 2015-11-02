@@ -511,11 +511,16 @@ public class RobotAgent extends Robot {
 		navigation.put(OePTGVentilationContractuels.class.getName() + OePTGVentilationContractuels.STATUT_RECHERCHER_AGENT_MIN, OeAGENTRecherche.class.getName());
 		navigation.put(OePTGVentilationContractuels.class.getName() + OePTGVentilationContractuels.STATUT_RECHERCHER_AGENT_MAX, OeAGENTRecherche.class.getName());
 		navigation.put(OePTGVentilationContractuels.class.getName() + OePTGVentilationContractuels.STATUT_SAISIE_PTG, OePTGSaisie.class.getName());
+		
 		// Classe OePTGVentilationConvCol
 		navigation.put(OePTGVentilationConvCol.class.getName() + OePTGVentilationConvCol.STATUT_AGENT, OePTGSelectionAgent.class.getName());
 		navigation.put(OePTGVentilationConvCol.class.getName() + OePTGVentilationConvCol.STATUT_RECHERCHER_AGENT_MIN, OeAGENTRecherche.class.getName());
 		navigation.put(OePTGVentilationConvCol.class.getName() + OePTGVentilationConvCol.STATUT_RECHERCHER_AGENT_MAX, OeAGENTRecherche.class.getName());
 		navigation.put(OePTGVentilationConvCol.class.getName() + OePTGVentilationConvCol.STATUT_SAISIE_PTG, OePTGSaisie.class.getName());
+		
+		// Classe OePTGTitreRepas
+		navigation.put(OePTGTitreRepas.class.getName() + OePTGTitreRepas.STATUT_RECHERCHER_AGENT_DEMANDE, OeAGENTRecherche.class.getName());
+		navigation.put(OePTGTitreRepas.class.getName() + OePTGTitreRepas.STATUT_RECHERCHER_AGENT_CREATION, OeAGENTRecherche.class.getName());
 
 		// ///////////////////
 		// ABSENCE //

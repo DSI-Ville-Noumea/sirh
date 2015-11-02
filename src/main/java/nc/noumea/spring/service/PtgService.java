@@ -275,4 +275,10 @@ public class PtgService implements IPtgService {
 		return ptgConsumer.saveMotifHeureSup(json);
 	}
 
+	@Override
+	public ReturnMessageDto enregistreTitreRepas(
+			List<TitreRepasDemandeDto> dto, Integer idAgent) {
+		return ptgConsumer.enregistreTitreRepas(dto, idAgent);
+	}
+
 }

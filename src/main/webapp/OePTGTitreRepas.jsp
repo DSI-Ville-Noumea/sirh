@@ -251,9 +251,9 @@
                     <thead>
                         <tr>
                             <th width="20px" align="center">
-                            	<img src="images/ajout.gif" height="16px" width="16px" title="Creer une demande de titre repas" onClick="executeBouton('<%=process.getNOM_PB_AJOUTER_DEMANDE_TR()%>')" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>">
+                            	<img src="images/ajout.gif" height="16px" width="16px" title="Créer une demande de titre repas" onClick="executeBouton('<%=process.getNOM_PB_AJOUTER_DEMANDE_TR()%>')" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>">
             				</th>  
-                            <th align="center"> <img src="images/loupe.gif" height="16px" width="16px" title="Voir l'historique de l'absence" onkeydown="" onkeypress="" onkeyup=""></th>
+                            <th align="center"> <img src="images/loupe.gif" height="16px" width="16px" title="Voir l'historique de la demande" onkeydown="" onkeypress="" onkeyup=""></th>
                             <th>Matr</th>
                             <th>Agent</th>
                             <th>Date demande</th>
@@ -312,12 +312,15 @@
             <%if(process.getVAL_ST_ACTION().equals(process.ACTION_CREATION)){ %>
             
 				<FIELDSET class="sigp2Fieldset" style="text-align:left;" id="<%=process.ACTION_CREATION %>">
-					<legend class="sigp2Legend">Création d'une demande de titre repas</legend>
+					<legend class="sigp2Legend">Création d'une demande de titre repas pour le mois en cours</legend>
            				<INPUT name="JSP" type="hidden" value="<%= process.getJSP()%>">
 	                    <span class="sigp2Mandatory" style="width:50px;margin-left: 20px;">Agent :</span>
 	                    <INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_AGENT_CREATION()%>" size="10" type="text" value="<%= process.getVAL_ST_AGENT_CREATION()%>" style="margin-right:10px;">
 	                    <img onkeydown="" onkeypress="" onkeyup="" border="0" src="images/loupe.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_RECHERCHER_AGENT_CREATION()%>');">
-	                    <BR/><BR/>
+	                
+	                    <INPUT type="radio" <%= process.forRadioHTML(process.getNOM_RG_COMMANDE(), process.getNOM_RB_OUI()) %> ><span class="sigp2Mandatory">Oui</span>
+						<INPUT type="radio" <%= process.forRadioHTML(process.getNOM_RG_COMMANDE(), process.getNOM_RB_NON()) %> ><span class="sigp2Mandatory">Non</span>
+	                    <BR/>
 	                    <div align="center">
 		                    <INPUT onkeydown="" onkeypress="" onkeyup="" type="submit" class="sigp2-Bouton-100" value="Creer" name="<%=process.getNOM_PB_CREATION()%>">
 		                    <INPUT onkeydown="" onkeypress="" onkeyup="" type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">

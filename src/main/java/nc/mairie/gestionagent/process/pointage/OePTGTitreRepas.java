@@ -109,6 +109,21 @@ public class OePTGTitreRepas extends BasicProcess {
 			initialiseDonnees();
 		}
 
+		if (etatStatut() == STATUT_RECHERCHER_AGENT_DEMANDE) {
+			Agent agt = (Agent) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
+			VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
+			if (agt != null) {
+				addZone(getNOM_ST_AGENT_DEMANDE(), agt.getNomatr().toString());
+			}
+		}
+		if (etatStatut() == STATUT_RECHERCHER_AGENT_CREATION) {
+			Agent agt = (Agent) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
+			VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
+			if (agt != null) {
+				addZone(getNOM_ST_AGENT_CREATION(), agt.getNomatr().toString());
+			}
+		}
+
 		// Initialisation des listes deroulantes
 		initialiseListeDeroulante();
 	}
@@ -458,13 +473,6 @@ public class OePTGTitreRepas extends BasicProcess {
 		String dateFin = getVAL_ST_DATE_MAX();
 		String dateMax = dateFin.equals(Const.CHAINE_VIDE) ? null : Services.convertitDate(dateFin, "dd/MM/yyyy", "yyyyMMdd");
 
-		// etat
-		int numEtat = (Services.estNumerique(getZone(getNOM_LB_ETAT_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_ETAT_SELECT())) : -1);
-		RefEtatDto etat = null;
-		if (numEtat != -1 && numEtat != 0) {
-			etat = (RefEtatDto) getListeEtats().get(numEtat - 1);
-		}
-
 		String idAgentDemande = getVAL_ST_AGENT_DEMANDE().equals(Const.CHAINE_VIDE) ? null : "900" + getVAL_ST_AGENT_DEMANDE();
 
 		String dateJour = sdfyyyyMMdd.format(
@@ -552,8 +560,12 @@ public class OePTGTitreRepas extends BasicProcess {
 			ret[index][0] = formatDate(tr.getDateMonth());
 			ret[index][1] = null == tr.getCommentaire() ? "" : tr.getCommentaire();
 			AgentDto opPtg = tr.getOperateur();
-			ret[index][2] = opPtg.getNom() + " " + opPtg.getPrenom() + " ("
+			if(null != opPtg) {
+				ret[index][2] = opPtg.getNom() + " " + opPtg.getPrenom() + " ("
 					+ opPtg.getIdAgent().toString().substring(3, opPtg.getIdAgent().toString().length()) + ")";
+			}else{
+				ret[index][2] = "";
+			}
 			ret[index][3] = EtatPointageEnum.getEtatPointageEnum(tr.getIdRefEtat()).name();
 			ret[index][4] = formatDate(tr.getDateSaisie()) + " a " + formatHeure(tr.getDateSaisie());
 			index++;
@@ -587,12 +599,89 @@ public class OePTGTitreRepas extends BasicProcess {
 			return "00:00";
 		}
 	}
+
+	public boolean performPB_AJOUTER_DEMANDE_TR(HttpServletRequest request) throws Exception {
+		viderZoneSaisie(request);
+		// On nomme l'action
+		addZone(getNOM_ST_ACTION(), ACTION_CREATION);
+		addZone(getNOM_RG_COMMANDE(), Const.CHAINE_VIDE);
+
+		setStatut(STATUT_MEME_PROCESS);
+		return true;
+	}
+
+	public boolean performPB_RECHERCHER_AGENT_CREATION(HttpServletRequest request) throws Exception {
+
+		// On met l'agent courant en var d'activité
+		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new Agent());
+		setStatut(STATUT_RECHERCHER_AGENT_CREATION, true);
+		return true;
+	}
 	
-	
-	
-	
-	
-	
+	public boolean performPB_CREATION(HttpServletRequest request) throws Exception {
+		
+		String idAgent = Const.CHAINE_VIDE;
+		if (getVAL_ST_AGENT_CREATION().equals(Const.CHAINE_VIDE)) {
+			// "ERR002","La zone @ est obligatoire."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "agent"));
+			return false;
+		} else {
+			idAgent = "900" + getVAL_ST_AGENT_CREATION();
+			try {
+				agentDao.chercherAgent(Integer.valueOf(idAgent));
+			} catch (Exception e) {
+				// "ERR503",
+				// "L'agent @ n'existe pas. Merci de saisir un matricule existant."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR503", idAgent));
+				return false;
+			}
+		}
+		
+		if(getZone(getNOM_RG_COMMANDE()).equals(Const.CHAINE_VIDE)) {
+			// "ERR002","La zone @ est obligatoire."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "Oui ou Non"));
+			return false;
+		}
+		
+		AgentDto agentDto = new AgentDto();
+		agentDto.setIdAgent(new Integer(idAgent));
+		
+		Date dateMonth = new DateTime()
+			.withDayOfMonth(1).withHourOfDay(0).withMinuteOfHour(0)
+			.withSecondOfMinute(0).withMillisOfSecond(0).toDate();
+		
+		TitreRepasDemandeDto dto = new TitreRepasDemandeDto();
+		
+		dto.setAgent(agentDto);
+		dto.setCommande(getZone(getNOM_RG_COMMANDE()).equals(getNOM_RB_OUI()));
+		dto.setDateMonth(dateMonth);
+		dto.setIdRefEtat(EtatPointageEnum.APPROUVE.getCodeEtat());
+
+		List<TitreRepasDemandeDto> listDto = new ArrayList<TitreRepasDemandeDto>();
+		listDto.add(dto);
+		
+		ReturnMessageDto srm = ptgService.enregistreTitreRepas(listDto, getAgentConnecte(request).getIdAgent());
+		
+		if (srm.getErrors().size() > 0) {
+			String err = Const.CHAINE_VIDE;
+			for (String erreur : srm.getErrors()) {
+				err += " " + erreur;
+			}
+			getTransaction().declarerErreur("ERREUR : " + err);
+			return false;
+		}
+		if (srm.getInfos().size() > 0) {
+			String info = Const.CHAINE_VIDE;
+			for (String erreur : srm.getInfos()) {
+				info += " " + erreur;
+			}
+			getTransaction().declarerErreur("Demande créée : " + info);
+		}
+		// On nomme l'action
+		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+		
+		return true;
+	}
 	
 	
 	
@@ -960,6 +1049,22 @@ public class OePTGTitreRepas extends BasicProcess {
 	public String getVAL_ST_OPERATEUR(int i) {
 		return getZone(getNOM_ST_OPERATEUR(i));
 	}
+
+	public String getNOM_RG_COMMANDE() {
+		return "NOM_RG_COMMANDE";
+	}
+
+	public String getVAL_RG_COMMANDE() {
+		return getZone(getNOM_RG_COMMANDE());
+	}
+
+	public String getNOM_RB_OUI() {
+		return "NOM_RB_OUI";
+	}
+
+	public String getNOM_RB_NON() {
+		return "NOM_RB_NON";
+	}
 	
 	
 
@@ -1033,17 +1138,16 @@ public class OePTGTitreRepas extends BasicProcess {
 						return performPB_FILTRER(request);
 					}
 					// Si clic sur le bouton PB_AJOUTER_ABSENCE
-//					if (testerParametre(request, getNOM_PB_AJOUTER_DEMANDE_TR()())) {
-//						return performPB_AJOUTER_DEMANDE_TR(request);
-//					}
+					if (testerParametre(request, getNOM_PB_AJOUTER_DEMANDE_TR())) {
+						return performPB_AJOUTER_DEMANDE_TR(request);
+					}
 //					// Si clic sur le bouton PB_RECHERCHER_AGENT_CREATION
-//					if (testerParametre(request, getNOM_PB_RECHERCHER_AGENT_CREATION())) {
-//						return performPB_RECHERCHER_AGENT_CREATION(request);
-//					}
+					if (testerParametre(request, getNOM_PB_RECHERCHER_AGENT_CREATION())) {
+						return performPB_RECHERCHER_AGENT_CREATION(request);
+					}
 					// Si clic sur le bouton PB_CREATION
 					if (testerParametre(request, getNOM_PB_CREATION())) {
-//						return performPB_CREATION(request);
-						//TODO
+						return performPB_CREATION(request);
 					}
 					// Si clic sur le bouton PB_ANNULER
 					if (testerParametre(request, getNOM_PB_ANNULER())) {

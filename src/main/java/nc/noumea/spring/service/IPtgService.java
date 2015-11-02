@@ -120,4 +120,7 @@ public interface IPtgService {
 
 	ReturnMessageDto setTRState(
 			List<TitreRepasDemandeDto> listTitreRepasDemandeDto, Integer idAgent);
+
+	ReturnMessageDto enregistreTitreRepas(List<TitreRepasDemandeDto> dto,
+			Integer idAgent);
 }

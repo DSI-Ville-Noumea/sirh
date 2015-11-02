@@ -100,7 +100,8 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 	// titre repas
 	private static final String sirhPtgVisualisationTitreRepasHistory = "titreRepas/historique";
 	private static final String sirhPtglistTitreRepas = "titreRepas/listTitreRepas";
-
+	private static final String sirhPtgEnregistreTitreRepas = "titreRepas/enregistreListTitreDemande";
+	
 	private Logger logger = LoggerFactory.getLogger(SirhPtgWSConsumer.class);
 
 	@Override
@@ -188,10 +189,10 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 
 		Map<String, String> parameters = new HashMap<String, String>();
 
-		if (toDate != null) {
+		if (idAgentConnecte != null) {
 			parameters.put("idAgentConnecte", idAgentConnecte.toString());
 		}
-		if (toDate != null) {
+		if (fromDate != null) {
 			parameters.put("fromDate", fromDate);
 		}
 		if (toDate != null) {
@@ -229,6 +230,21 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 		ClientResponse res = createAndFireRequest(parameters, url);
 
 		return readResponseAsList(TitreRepasDemandeDto.class, res, url);
+	}
+
+	@Override
+	public ReturnMessageDto enregistreTitreRepas(List<TitreRepasDemandeDto> dto, Integer idAgent) {
+		
+		String url = String.format(ptgWsBaseUrl + sirhPtgEnregistreTitreRepas);
+		Map<String, String> parameters = new HashMap<String, String>();
+		parameters.put("idAgentConnecte", idAgent.toString());
+		parameters.put("isFromSIRH", "true");
+		
+		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class)
+				.deepSerialize(dto);
+		
+		ClientResponse res = createAndPostRequest(parameters, url, json);
+		return readResponseWithReturnMessageDto(ReturnMessageDto.class, res, url);
 	}
 
 	@Override
