@@ -316,6 +316,7 @@ public class OePTGTitreRepas extends BasicProcess {
 				addZone(getNOM_ST_MATRICULE(i), null != ag ? ag.getNomatr().toString() : "");
 				addZone(getNOM_ST_AGENT(i), ag.getNomAgent() + " " + ag.getPrenomAgent());
 				addZone(getNOM_ST_DATE_MONTH(i), sdf.format(TR.getDateMonth()));
+				addZone(getNOM_ST_COMMANDE(i), TR.getCommande() ? "Oui" : "Non");
 				
 				String commentaire = TR.getCommentaire();
 				addZone(getNOM_ST_COMMENTAIRE(i), commentaire);
@@ -553,21 +554,22 @@ public class OePTGTitreRepas extends BasicProcess {
 	public String getHistory(int idDemandeTR) {
 
 		List<TitreRepasDemandeDto> data = getPtgService().getVisualisationTitreRepasHistory(idDemandeTR);
-		int numParams = 5;
+		int numParams = 6;
 		String[][] ret = new String[data.size()][numParams];
 		int index = 0;
 		for (TitreRepasDemandeDto tr : data) {
 			ret[index][0] = formatDate(tr.getDateMonth());
-			ret[index][1] = null == tr.getCommentaire() ? "" : tr.getCommentaire();
+			ret[index][1] = tr.getCommande() ? "Oui" : "Non";
+			ret[index][2] = null == tr.getCommentaire() ? "" : tr.getCommentaire();
 			AgentDto opPtg = tr.getOperateur();
 			if(null != opPtg) {
-				ret[index][2] = opPtg.getNom() + " " + opPtg.getPrenom() + " ("
+				ret[index][3] = opPtg.getNom() + " " + opPtg.getPrenom() + " ("
 					+ opPtg.getIdAgent().toString().substring(3, opPtg.getIdAgent().toString().length()) + ")";
 			}else{
-				ret[index][2] = "";
+				ret[index][3] = "";
 			}
-			ret[index][3] = EtatPointageEnum.getEtatPointageEnum(tr.getIdRefEtat()).name();
-			ret[index][4] = formatDate(tr.getDateSaisie()) + " a " + formatHeure(tr.getDateSaisie());
+			ret[index][4] = EtatPointageEnum.getEtatPointageEnum(tr.getIdRefEtat()).name();
+			ret[index][5] = formatDate(tr.getDateSaisie()) + " a " + formatHeure(tr.getDateSaisie());
 			index++;
 		}
 
@@ -897,6 +899,14 @@ public class OePTGTitreRepas extends BasicProcess {
 
 	public String getVAL_ST_DATE_MONTH(int i) {
 		return getZone(getNOM_ST_DATE_MONTH(i));
+	}
+
+	public String getNOM_ST_COMMANDE(int i) {
+		return "NOM_ST_COMMANDE_" + i;
+	}
+
+	public String getVAL_ST_COMMANDE(int i) {
+		return getZone(getNOM_ST_COMMANDE(i));
 	}
 
 	public String getNOM_ST_DATE_ETAT(int i) {

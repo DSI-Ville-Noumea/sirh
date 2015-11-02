@@ -65,6 +65,7 @@
                            {"bSearchable": false,"bSortable": false,"sWidth": "30px","sClass" : "center"},
                            {"bSortable": true,"sWidth": "30px"},
                            {"bSortable": true,"sWidth": "150px"},
+                           {"bSortable": true,"sWidth": "40px"},
                            {"sType": "date-francais", "bSortable": true, "sWidth": "60px","sClass" : "center" },
                            {"bSortable": true,"sWidth": "150px"},
                            {"bSortable": true,"sWidth": "150px"},
@@ -142,6 +143,7 @@
                             .attr("width", "750px")
                             .append($(document.createElement("thead")).append($(document.createElement("tr"))
                             		.append($(document.createElement("td")).html("Date demande").attr("style", "width: 180px;text-align: center;"))
+                            		.append($(document.createElement("td")).html("Commande").attr("style", "width: 90px;text-align: center;"))
                             		.append($(document.createElement("td")).html("Commentaire").attr("style", "width: 150px;text-align: center;"))
                             		.append($(document.createElement("td")).html("Opérateur").attr("style", "width: 150px;text-align: center;"))
                             		.append($(document.createElement("td")).html("Etat").attr("style", "width: 90px;text-align: center;"))
@@ -162,6 +164,7 @@
                                 .append($(document.createElement("td")).html(donnees[2]))
                                 .append($(document.createElement("td")).html(donnees[3]))
                                 .append($(document.createElement("td")).html(donnees[4]))
+                                .append($(document.createElement("td")).html(donnees[5]))
                                 );
                     }
                     // Append the detail table into the detail container
@@ -257,6 +260,7 @@
                             <th>Matr</th>
                             <th>Agent</th>
                             <th>Date demande</th>
+                            <th>Commande</th>
                             <th>Commentaire</th>
                             <th>Opérateur</th>
                             <th>Etat</th>
@@ -280,6 +284,7 @@
                             <td width="30px"><%=process.getVAL_ST_MATRICULE(indiceTR)%></td>
                             <td width="150px"><%=process.getVAL_ST_AGENT(indiceTR)%></td>
                             <td width="60px"><%=process.getVAL_ST_DATE_MONTH(indiceTR)%></td>
+                            <td width="60px"><%=process.getVAL_ST_COMMANDE(indiceTR)%></td>
                             <td width="120px"><%=process.getVAL_ST_COMMENTAIRE(indiceTR)%></td>
                             <td width="120px"><%=process.getVAL_ST_OPERATEUR(indiceTR)%></td>
                             <td width="60px"><%=process.getVAL_ST_ETAT(indiceTR)%></td>
