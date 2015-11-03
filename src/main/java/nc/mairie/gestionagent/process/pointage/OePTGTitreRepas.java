@@ -402,10 +402,14 @@ public class OePTGTitreRepas extends BasicProcess {
 		if (getAgentConnecte(request) == null) {
 			return false;
 		}
-		// on recupere la demande
-		TitreRepasDemandeDto demandeTR = getListeDemandeTR().get(idDemandeTR);
-		changeState(request, demandeTR, EtatPointageEnum.REJETE, null);
 
+		String info = "Veuillez saisir un motif de rejet de titre repas.";
+		addZone(getNOM_ST_INFO_MOTIF_REJET(), info);
+		addZone(getNOM_ST_MOTIF_REJET(), Const.CHAINE_VIDE);
+		addZone(getNOM_ST_ID_DEMANDE_REJET(), new Integer(idDemandeTR).toString());
+
+		addZone(getNOM_ST_ACTION(), ACTION_MOTIF_REJET);
+		
 		// On pose le statut
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
@@ -493,21 +497,6 @@ public class OePTGTitreRepas extends BasicProcess {
 		}
 
 		changeState(request, getListeDemandeTR().values(), EtatPointageEnum.APPROUVE, null);
-
-		// On pose le statut
-		setStatut(STATUT_MEME_PROCESS);
-		return true;
-	}
-
-	public boolean performPB_REJETER_ALL(HttpServletRequest request) throws Exception {
-
-		// On nomme l'action
-		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
-		if (getAgentConnecte(request) == null) {
-			return false;
-		}
-
-		changeState(request, getListeDemandeTR().values(), EtatPointageEnum.REJETE, null);
 
 		// On pose le statut
 		setStatut(STATUT_MEME_PROCESS);
@@ -1358,10 +1347,6 @@ public class OePTGTitreRepas extends BasicProcess {
 			// Si clic sur le bouton PB_VALIDER_ALL
 			if (testerParametre(request, getNOM_PB_VALIDER_ALL())) {
 				return performPB_APPROUVER_ALL(request);
-			}
-			// Si clic sur le bouton PB_REJETER_ALL
-			if (testerParametre(request, getNOM_PB_REJETER_ALL())) {
-				return performPB_REJETER_ALL(request);
 			}
 			// Si clic sur le bouton PB_VALIDER_MOTIF_ANNULATION
 			if (testerParametre(request, getNOM_PB_VALIDER_MOTIF_REJET())) {

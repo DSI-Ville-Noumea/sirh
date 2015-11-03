@@ -285,7 +285,7 @@
                             <th>Etat</th>
                             <th>Date saisie</th>
                             <th><img onkeydown="" onkeypress="" onkeyup="" title="Valider" type="image" src="images/hand-vert.png"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_VALIDER_ALL()%>" onclick="executeBouton('<%=process.getNOM_PB_VALIDER_ALL()%>');"></th>
-                            <th><img onkeydown="" onkeypress="" onkeyup="" title="Rejeter" type="image" src="images/hand-rouge.png"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_REJETER_ALL()%>" onclick="executeBouton('<%=process.getNOM_PB_REJETER_ALL()%>');"></th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -375,7 +375,7 @@
             <%} %>
             <%if(process.getVAL_ST_ACTION().equals(process.ACTION_MOTIF_REJET)){ %>
 				<FIELDSET class="sigp2Fieldset" style="text-align:left;" id="<%=process.ACTION_MOTIF_REJET %>">
-	            <legend class="sigp2Legend"><span style="color: red;">Motif pour l'annulation de l'absence</span></legend>
+	            <legend class="sigp2Legend"><span style="color: red;">Motif pour le rejet de titre repas</span></legend>
            				<INPUT name="JSP" type="hidden" value="<%= process.getJSP()%>">
 						<span class="sigp2Mandatory">Informations : <%= process.getVAL_ST_INFO_MOTIF_REJET() %></span>
 						<INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_ID_DEMANDE_REJET() %>" disabled="disabled" style="visibility: hidden;" type="text" value="<%= process.getVAL_ST_ID_DEMANDE_REJET() %>">
