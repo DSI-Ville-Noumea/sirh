@@ -159,6 +159,16 @@ public class PtgService implements IPtgService {
 	}
 
 	@Override
+	public List<RefEtatDto> getEtatsTitreRepas() {
+		return ptgConsumer.getEtatsTitreRepas();
+	}
+
+	@Override
+	public List<Date> getFiltreListeMois() {
+		return ptgConsumer.getFiltreListeMois();
+	}
+
+	@Override
 	public List<RefTypePointageDto> getTypesPointage() {
 		return ptgConsumer.getTypesPointage();
 	}

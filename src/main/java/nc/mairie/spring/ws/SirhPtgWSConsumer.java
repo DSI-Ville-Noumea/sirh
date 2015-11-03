@@ -101,6 +101,9 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 	private static final String sirhPtgVisualisationTitreRepasHistory = "titreRepas/historique";
 	private static final String sirhPtglistTitreRepas = "titreRepas/listTitreRepas";
 	private static final String sirhPtgEnregistreTitreRepas = "titreRepas/enregistreListTitreDemande";
+	private static final String sirhPtgUpdateEtatForListTitreRepasDemande = "titreRepas/updateEtatForListTitreRepasDemande";
+	private static final String sirhPtgFiltreEtatTitreRepas = "titreRepas/getEtats";
+	private static final String sirhPtgFiltreDateMoisTitreRepas = "titreRepas/getListeMoisTitreRepasSaisie";
 	
 	private Logger logger = LoggerFactory.getLogger(SirhPtgWSConsumer.class);
 
@@ -248,10 +251,30 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 	}
 
 	@Override
+	public List<RefEtatDto> getEtatsTitreRepas() {
+		
+		String url = String.format(ptgWsBaseUrl + sirhPtgFiltreEtatTitreRepas);
+
+		ClientResponse res = createAndFireRequest(new HashMap<String, String>(), url);
+
+		return readResponseAsList(RefEtatDto.class, res, url);
+	}
+	
+	@Override
+	public List<Date> getFiltreListeMois() {
+		
+		String url = String.format(ptgWsBaseUrl + sirhPtgFiltreDateMoisTitreRepas);
+
+		ClientResponse res = createAndFireRequest(new HashMap<String, String>(), url);
+
+		return readResponseAsListDate(res, url);
+	}
+
+	@Override
 	public ReturnMessageDto setTRState(List<TitreRepasDemandeDto> listTitreRepasDemandeDto, Integer idAgent) {
-		String url = String.format(ptgWsBaseUrl + sirhPtgVisualisationSetState);
+		String url = String.format(ptgWsBaseUrl + sirhPtgUpdateEtatForListTitreRepasDemande);
 		HashMap<String, String> params = new HashMap<>();
-		params.put("idAgent", idAgent.toString());
+		params.put("idAgentConnecte", idAgent.toString());
 
 		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class)
 				.deepSerialize(listTitreRepasDemandeDto);
@@ -376,6 +399,25 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 		logger.trace("json recu:" + output);
 		result = new JSONDeserializer<List<T>>().use(Date.class, new MSDateTransformer()).use(null, ArrayList.class)
 				.use("values", targetClass).deserialize(output);
+		return result;
+	}
+
+	public <T> List<T> readResponseAsListDate(ClientResponse response, String url) {
+		List<T> result = null;
+		result = new ArrayList<T>();
+
+		if (response.getStatus() == HttpStatus.NO_CONTENT.value()) {
+			return result;
+		}
+
+		if (response.getStatus() != HttpStatus.OK.value()) {
+			throw new BaseWsConsumerException(String.format("An error occured when querying '%s'. Return code is : %s",
+					url, response.getStatus()));
+		}
+
+		String output = response.getEntity(String.class);
+		logger.trace("json recu:" + output);
+		result = new JSONDeserializer<List<T>>().use("values", new MSDateTransformer()).use(null, ArrayList.class).deserialize(output);
 		return result;
 	}
 

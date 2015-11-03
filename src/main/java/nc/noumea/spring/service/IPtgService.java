@@ -123,4 +123,8 @@ public interface IPtgService {
 
 	ReturnMessageDto enregistreTitreRepas(List<TitreRepasDemandeDto> dto,
 			Integer idAgent);
+
+	List<RefEtatDto> getEtatsTitreRepas();
+
+	List<Date> getFiltreListeMois();
 }

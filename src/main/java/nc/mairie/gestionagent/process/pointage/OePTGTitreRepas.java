@@ -57,6 +57,8 @@ public class OePTGTitreRepas extends BasicProcess {
 
 	public String focus = null;
 	private String[] LB_ETAT;
+	private String[] LB_COMMANDE;
+	private String[] LB_DATE_MOIS;
 	
 	private IPtgService ptgService;
 
@@ -67,6 +69,7 @@ public class OePTGTitreRepas extends BasicProcess {
 	private AgentDao agentDao;
 
 	private ArrayList<RefEtatDto> listeEtats;
+	private ArrayList<Date> listeDateMois;
 
 	private TreeMap<Integer, TitreRepasDemandeDto> listeDemandeTR;
 	private HashMap<Integer, List<TitreRepasDemandeDto>> history = new HashMap<>();
@@ -75,6 +78,7 @@ public class OePTGTitreRepas extends BasicProcess {
 
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 	private SimpleDateFormat sdfyyyyMMdd = new SimpleDateFormat("yyyyMMdd");
+	private SimpleDateFormat sdfMMyyyy = new SimpleDateFormat("MM/yyyy");
 	private SimpleDateFormat sdfHrs = new SimpleDateFormat("HH:mm");
 	
 	
@@ -105,9 +109,6 @@ public class OePTGTitreRepas extends BasicProcess {
 		
 		initialiseDao();
 		setFocus(getDefaultFocus());
-		if (!getTransaction().isErreur()) {
-			initialiseDonnees();
-		}
 
 		if (etatStatut() == STATUT_RECHERCHER_AGENT_DEMANDE) {
 			Agent agt = (Agent) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
@@ -129,22 +130,15 @@ public class OePTGTitreRepas extends BasicProcess {
 	}
 
 	/**
-	 * Initialisation des données.
-	 */
-	private void initialiseDonnees() throws Exception {
-		
-	}
-
-	/**
 	 * Initialisation des liste deroulantes de l'écran convocation du suivi
 	 * médical.
 	 */
 	private void initialiseListeDeroulante() throws Exception {
 		// Si liste etat vide alors affectation
 		if (getLB_ETAT() == LBVide) {
-			List<RefEtatDto> etats = ptgService.getEtatsPointage();
+			List<RefEtatDto> etats = ptgService.getEtatsTitreRepas();
 			setListeEtats((ArrayList<RefEtatDto>) etats);
-			int[] tailles = { 50 };
+			int[] tailles = { 30 };
 			FormateListe aFormat = new FormateListe(tailles);
 			for (RefEtatDto etat : etats) {
 				String ligne[] = { etat.getLibelle() };
@@ -152,6 +146,30 @@ public class OePTGTitreRepas extends BasicProcess {
 			}
 			setLB_ETAT(aFormat.getListeFormatee(true));
 			addZone(getNOM_LB_ETAT_SELECT(), Const.ZERO);
+		}
+		
+		if (getLB_COMMANDE() == LBVide) {
+			int[] tailles = { 3 };
+			FormateListe aFormat = new FormateListe(tailles);
+			String ligneOui[] = { "Oui" };
+			String ligneNon[] = { "Non" };
+			aFormat.ajouteLigne(ligneOui);
+			aFormat.ajouteLigne(ligneNon);
+			setLB_COMMANDE(aFormat.getListeFormatee(true));
+			addZone(getNOM_LB_COMMANDE_SELECT(), Const.ZERO);
+		}
+		
+		if (getLB_DATE_MOIS() == LBVide) {
+			List<Date> listeDateMois = ptgService.getFiltreListeMois();
+			setListeDateMois((ArrayList<Date>) listeDateMois);
+			int[] tailles = { 30 };
+			FormateListe aFormat = new FormateListe(tailles);
+			for (Date dateMois : listeDateMois) {
+				String ligne[] = { sdfMMyyyy.format(dateMois) };
+				aFormat.ajouteLigne(ligne);
+			}
+			setLB_DATE_MOIS(aFormat.getListeFormatee(true));
+			addZone(getNOM_LB_DATE_MOIS_SELECT(), Const.ZERO);
 		}
 	}
 
@@ -172,35 +190,6 @@ public class OePTGTitreRepas extends BasicProcess {
 			radiService = (IRadiService) context.getBean("radiService");
 		}
 	}
-	
-	
-
-
-	private boolean performControlerFiltres() throws Exception {
-		String dateDeb = getVAL_ST_DATE_MIN();
-		if (dateDeb.equals(Const.CHAINE_VIDE)) {
-			// "ERR500",
-			// "Le champ date de début est obligatoire."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR500"));
-			return false;
-		}
-
-		// on controle que le service saisie est bien un service
-		String sigleService = getVAL_EF_SERVICE().toUpperCase();
-		if (!sigleService.equals(Const.CHAINE_VIDE)) {
-
-			// on cherche le code service associé
-			EntiteDto serv = adsService.getEntiteBySigle(sigleService);
-			if (null == serv || 0 == serv.getIdEntite()) {
-				// ERR502", "Le sigle service saisie ne permet pas de trouver le
-				// service associé."
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR502"));
-				return false;
-			}
-		}
-
-		return true;
-	}
 
 	/**
 	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
@@ -211,13 +200,12 @@ public class OePTGTitreRepas extends BasicProcess {
 	 */
 	public boolean performPB_FILTRER(HttpServletRequest request) throws Exception {
 		
-		if (!performControlerFiltres()) {
-			return false;
-		}
-
 		String dateDeb = getVAL_ST_DATE_MIN();
-		String dateMin = Services.convertitDate(dateDeb, "dd/MM/yyyy", "yyyyMMdd");
-
+		String dateMin = null;
+		if (!dateDeb.equals(Const.CHAINE_VIDE)) {
+			dateMin = Services.convertitDate(dateDeb, "dd/MM/yyyy", "yyyyMMdd");
+		}
+		
 		String dateFin = getVAL_ST_DATE_MAX();
 		String dateMax = null;
 		if (!dateFin.equals(Const.CHAINE_VIDE)) {
@@ -227,6 +215,16 @@ public class OePTGTitreRepas extends BasicProcess {
 			dateMax = dateMin;
 			addZone(getNOM_ST_DATE_MAX(), getVAL_ST_DATE_MIN());
 		}
+		
+		// date mois
+		int numDateMois = (Services.estNumerique(getZone(getNOM_LB_DATE_MOIS_SELECT())) ? Integer
+				.parseInt(getZone(getNOM_LB_DATE_MOIS_SELECT())) : -1);
+		String dateMoisStr = null;
+		if (numDateMois != -1 && numDateMois != 0) {
+			Date dateMois = (Date) getListeDateMois().get(numDateMois - 1);
+			dateMoisStr = sdfyyyyMMdd.format(dateMois);
+		}
+		
 		// etat
 		int numEtat = (Services.estNumerique(getZone(getNOM_LB_ETAT_SELECT())) ? Integer
 				.parseInt(getZone(getNOM_LB_ETAT_SELECT())) : -1);
@@ -289,14 +287,13 @@ public class OePTGTitreRepas extends BasicProcess {
 		Boolean isCommande = null ;
 		if(commande == 1) {
 			isCommande = true;
-		}else if(commande == 0){
+		}else if(commande == 2){
 			isCommande = false;
 		}
 		
 		List<TitreRepasDemandeDto> listedemandeTR = ptgService.getListTitreRepas(agentConnecte.getIdAgent(), dateMin, dateMax, etat != null ? etat.getIdRefEtat() : null, 
-				isCommande, null, !idServiceAds.equals(Const.CHAINE_VIDE) ? new Integer(idServiceAds) : null, null != idAgentDemande ? new Integer(idAgentDemande) : null,
+				isCommande, dateMoisStr, !idServiceAds.equals(Const.CHAINE_VIDE) ? new Integer(idServiceAds) : null, null != idAgentDemande ? new Integer(idAgentDemande) : null,
 				listIdAgentService);
-		
 		
 		setListeDemandeTR((ArrayList<TitreRepasDemandeDto>) listedemandeTR);
 
@@ -683,6 +680,13 @@ public class OePTGTitreRepas extends BasicProcess {
 		}
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+
+		setStatut(STATUT_MEME_PROCESS);
+		if (getTypeFiltre().equals("GLOBAL")) {
+			performPB_FILTRER(request);
+		} else {
+			performPB_FILTRER_DEMANDE_A_APPROUVER(request);
+		}
 		
 		return true;
 	}
@@ -816,6 +820,14 @@ public class OePTGTitreRepas extends BasicProcess {
 		this.listeEtats = listeEtats;
 	}
 
+	public ArrayList<Date> getListeDateMois() {
+		return listeDateMois;
+	}
+
+	public void setListeDateMois(ArrayList<Date> pListeDateMois) {
+		this.listeDateMois = pListeDateMois;
+	}
+
 	/**
 	 * Setter de la liste: LB_ETAT Date de création : (28/11/11)
 	 * 
@@ -834,6 +846,26 @@ public class OePTGTitreRepas extends BasicProcess {
 			LB_ETAT = initialiseLazyLB();
 		}
 		return LB_ETAT;
+	}
+
+	/**
+	 * Setter de la liste: LB_ETAT Date de création : (28/11/11)
+	 * 
+	 */
+	private void setLB_COMMANDE(String[] newLB_COMMANDE) {
+		LB_COMMANDE = newLB_COMMANDE;
+	}
+
+	/**
+	 * Getter de la liste avec un lazy initialize : LB_ETAT Date de création :
+	 * (28/11/11)
+	 * 
+	 */
+	private String[] getLB_COMMANDE() {
+		if (LB_COMMANDE == null) {
+			LB_COMMANDE = initialiseLazyLB();
+		}
+		return LB_COMMANDE;
 	}
 
 	public String getNOM_PB_VALIDATION() {
@@ -877,12 +909,39 @@ public class OePTGTitreRepas extends BasicProcess {
 	}
 
 	/**
+	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
+	 * NOM_LB_ETAT_SELECT Date de création : (28/11/11)
+	 * 
+	 */
+	public String getNOM_LB_DATE_MOIS_SELECT() {
+		return "NOM_LB_DATE_MOIS_SELECT";
+	}
+
+	/**
+	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_ETAT Date de création : (28/11/11)
+	 * 
+	 */
+	public String getVAL_LB_DATE_MOIS_SELECT() {
+		return getZone(getNOM_LB_DATE_MOIS_SELECT());
+	}
+
+	/**
 	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE_CAP Date
 	 * de création : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_ST_DATE_MAX() {
 		return getZone(getNOM_ST_DATE_MAX());
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE_CAP Date
+	 * de création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String[] getVAL_LB_DATE_MOIS() {
+		return getLB_DATE_MOIS();
 	}
 
 	/**
@@ -901,6 +960,26 @@ public class OePTGTitreRepas extends BasicProcess {
 	 */
 	public String getNOM_ST_DATE_MAX() {
 		return "NOM_ST_DATE_MAX";
+	}
+	
+	/**
+	 * Setter de la liste: LB_ETAT Date de création : (28/11/11)
+	 * 
+	 */
+	private void setLB_DATE_MOIS(String[] newLB_DATE_MOIS) {
+		LB_DATE_MOIS = newLB_DATE_MOIS;
+	}
+
+	/**
+	 * Getter de la liste avec un lazy initialize : LB_ETAT Date de création :
+	 * (28/11/11)
+	 * 
+	 */
+	private String[] getLB_DATE_MOIS() {
+		if (LB_DATE_MOIS == null) {
+			LB_DATE_MOIS = initialiseLazyLB();
+		}
+		return LB_DATE_MOIS;
 	}
 
 	/**
@@ -1008,8 +1087,20 @@ public class OePTGTitreRepas extends BasicProcess {
 		return getLB_ETAT();
 	}
 
+	public String[] getVAL_LB_COMMANDE() {
+		return getLB_COMMANDE();
+	}
+
 	public String getNOM_LB_ETAT() {
 		return "NOM_LB_ETAT";
+	}
+
+	public String getNOM_LB_COMMANDE() {
+		return "NOM_LB_COMMANDE";
+	}
+
+	public String getNOM_LB_DATE_MOIS() {
+		return "NOM_LB_DATE_MOIS";
 	}
 
 	public String getNOM_ST_ETAT(int i) {

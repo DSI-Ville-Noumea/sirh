@@ -124,4 +124,8 @@ public interface ISirhPtgWSConsumer {
 	ReturnMessageDto enregistreTitreRepas(List<TitreRepasDemandeDto> dto,
 			Integer idAgent);
 
+	List<RefEtatDto> getEtatsTitreRepas();
+
+	List<Date> getFiltreListeMois();
+
 }

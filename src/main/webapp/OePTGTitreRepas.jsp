@@ -205,16 +205,22 @@
 			                <img onkeydown="" onkeypress="" onkeyup="" border="0" src="images/suppression.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_SERVICE()%>');">
 			            	<INPUT type="hidden" id="idServiceADS" size="4" width="1px" name="<%=process.getNOM_ST_ID_SERVICE_ADS()%>" value="<%=process.getVAL_ST_ID_SERVICE_ADS()%>" class="sigp2-saisie">
                 		</td>
-                		<td width="70px">
+                		<td width="60px">
                 			<span class="sigp2">Etat : </span>
                 		</td>
-                		<td width="80px">
+                		<td width="180px">
 			                <SELECT class="sigp2-saisie" name="<%=process.getNOM_LB_ETAT()%>" style="width:140px;"> 
 			                    <%=process.forComboHTML(process.getVAL_LB_ETAT(), process.getVAL_LB_ETAT_SELECT())%>
 			                </SELECT>
                 		</td>
-                		<td width="120px">&nbsp;</td>
-                		<td>&nbsp;</td>
+                		<td>
+                			<span class="sigp2">Commandé : </span>
+                		</td>
+                		<td width="80px">
+			                <SELECT class="sigp2-saisie" name="<%=process.getNOM_LB_COMMANDE()%>" style="width:140px;"> 
+			                    <%=process.forComboHTML(process.getVAL_LB_COMMANDE(), process.getVAL_LB_COMMANDE_SELECT())%>
+			                </SELECT>
+                		</td>
                 	</tr>
                 	<tr>
                 		<td colspan="8" class="sigp2">
@@ -238,8 +244,14 @@
 			                <input id="<%=process.getNOM_ST_DATE_MAX()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_MAX()%>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_MAX()%>" >
 			                <IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_MAX()%>', 'dd/mm/y');">
                 		</td>
-                		<td></td>
-                		<td></td> 
+                		<td>
+               				<span class="sigp2">Date mois : </span>
+                		</td>
+                		<td> 
+			                <SELECT class="sigp2-saisie" name="<%=process.getNOM_LB_DATE_MOIS()%>" style="width:140px;"> 
+			                    <%=process.forComboHTML(process.getVAL_LB_DATE_MOIS(), process.getVAL_LB_DATE_MOIS_SELECT())%>
+			                </SELECT>
+                		</td>
                 	</tr>
                 </table>
                 <BR/>         	
@@ -293,13 +305,13 @@
                             <td width="60px"><%=process.getVAL_ST_ETAT(indiceTR)%></td>
                             <td width="60px"><%=process.getVAL_ST_DATE_ETAT(indiceTR)%></td>
                             <td width="20px" align="center">
-                            <%if(TR.getIdRefEtat()==EtatPointageEnum.SAISI.getCodeEtat() || TR.getIdRefEtat()==EtatPointageEnum.REJETE.getCodeEtat()){ %>
+                            <%if((TR.getIdRefEtat()==EtatPointageEnum.SAISI.getCodeEtat() || TR.getIdRefEtat()==EtatPointageEnum.REJETE.getCodeEtat()) && TR.getCommande()){ %>
                             	<img onkeydown="" onkeypress="" onkeyup="" title="Appouver" type="image" src="images/hand-vert.png"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_APPROUVER(indiceTR)%>" onclick="executeBouton('<%=process.getNOM_PB_APPROUVER(indiceTR)%>');">
 								<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_APPROUVER(indiceTR)%>" value="">
                             <%} %>
 							</td>  
                             <td width="20px" align="center">
-                            <%if(TR.getIdRefEtat()==EtatPointageEnum.SAISI.getCodeEtat() || TR.getIdRefEtat()==EtatPointageEnum.APPROUVE.getCodeEtat()){ %>
+                            <%if((TR.getIdRefEtat()==EtatPointageEnum.SAISI.getCodeEtat() || TR.getIdRefEtat()==EtatPointageEnum.APPROUVE.getCodeEtat()) && TR.getCommande()){ %>
                             	<img onkeydown="" onkeypress="" onkeyup="" title="Rejeter" type="image" src="images/hand-rouge.png"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_REJETER(indiceTR)%>" onclick="executeBouton('<%=process.getNOM_PB_REJETER(indiceTR)%>');">
 								<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_REJETER(indiceTR)%>" value="">
                             <%} %>
