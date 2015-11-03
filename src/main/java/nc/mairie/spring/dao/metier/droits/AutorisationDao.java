@@ -17,9 +17,7 @@ public class AutorisationDao extends SirhDao implements AutorisationDaoInterface
 	@Override
 	public ArrayList<Autorisation> listerAutorisationAvecUtilisateur(String userName) throws Exception {
 		String sql = "select concat(concat(de.lib_element, '-'),SUBSTR(td.lib_type_droit,1,1)) as LIB_AUTORISATION "
-				+ "from droits_element de, droits d, groupe_utilisateur gu, utilisateur u, r_type_droit td "
-				+ "where u.login_utilisateur='"
-				+ userName
+				+ "from droits_element de, droits d, groupe_utilisateur gu, utilisateur u, r_type_droit td " + "where upper(u.login_utilisateur)='" + userName.toUpperCase()
 				+ "' and d.id_type_droit is not null "
 				+ "and d.id_type_droit = td.id_type_droit and u.id_utilisateur = gu.id_utilisateur and gu.id_groupe = d.id_groupe and d.id_element = de.id_element";
 
