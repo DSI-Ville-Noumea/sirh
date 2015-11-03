@@ -42,7 +42,6 @@ import nc.mairie.technique.Transaction;
 import nc.mairie.utils.MessageUtils;
 import nc.noumea.mairie.ads.dto.EntiteDto;
 
-import org.codehaus.jackson.map.introspect.BasicClassIntrospector.GetterMethodFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -349,9 +348,6 @@ public class AvancementService implements IAvancementService {
 		if (aTransaction.isErreur() || paAgent == null || paAgent.getCdpadm() == null || paAgent.estPAInactive(aTransaction)) {
 			aTransaction.traiterErreur();
 			return null;
-		}
-		if (carr.getDateDebut().equals("06/10/2010")) {
-			System.out.println("ici");
 		}
 		if (!avctPrev) {
 			if (!(Services.compareDates(Services.ajouteAnnee(Services.formateDate(carr.getDateDebut()), 2), "31/12/" + annee) <= 0)) {
