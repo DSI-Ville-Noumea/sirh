@@ -43,14 +43,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 
 public class OePTGTitreRepas extends BasicProcess {
-	
+
 	private Logger logger = LoggerFactory.getLogger(OePTGTitreRepas.class);
-	
+
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 4481591314447007514L;
-	
 
 	public static final int STATUT_RECHERCHER_AGENT_DEMANDE = 1;
 	public static final int STATUT_RECHERCHER_AGENT_CREATION = 2;
@@ -59,13 +58,13 @@ public class OePTGTitreRepas extends BasicProcess {
 	private String[] LB_ETAT;
 	private String[] LB_COMMANDE;
 	private String[] LB_DATE_MOIS;
-	
+
 	private IPtgService ptgService;
 
 	private IAdsService adsService;
 
 	private IRadiService radiService;
-	
+
 	private AgentDao agentDao;
 
 	private ArrayList<RefEtatDto> listeEtats;
@@ -80,8 +79,7 @@ public class OePTGTitreRepas extends BasicProcess {
 	private SimpleDateFormat sdfyyyyMMdd = new SimpleDateFormat("yyyyMMdd");
 	private SimpleDateFormat sdfMMyyyy = new SimpleDateFormat("MM/yyyy");
 	private SimpleDateFormat sdfHrs = new SimpleDateFormat("HH:mm");
-	
-	
+
 	public String ACTION_CREATION = "Creation_demande";
 	public String ACTION_MODIFICATION = "Modification_demande";
 	public String ACTION_MOTIF_REJET = "Motif_rejet_demande";
@@ -106,7 +104,7 @@ public class OePTGTitreRepas extends BasicProcess {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
-		
+
 		initialiseDao();
 		setFocus(getDefaultFocus());
 
@@ -147,7 +145,7 @@ public class OePTGTitreRepas extends BasicProcess {
 			setLB_ETAT(aFormat.getListeFormatee(true));
 			addZone(getNOM_LB_ETAT_SELECT(), Const.ZERO);
 		}
-		
+
 		if (getLB_COMMANDE() == LBVide) {
 			int[] tailles = { 3 };
 			FormateListe aFormat = new FormateListe(tailles);
@@ -158,7 +156,7 @@ public class OePTGTitreRepas extends BasicProcess {
 			setLB_COMMANDE(aFormat.getListeFormatee(true));
 			addZone(getNOM_LB_COMMANDE_SELECT(), Const.ZERO);
 		}
-		
+
 		if (getLB_DATE_MOIS() == LBVide) {
 			List<Date> listeDateMois = ptgService.getFiltreListeMois();
 			setListeDateMois((ArrayList<Date>) listeDateMois);
@@ -199,13 +197,13 @@ public class OePTGTitreRepas extends BasicProcess {
 	 * 
 	 */
 	public boolean performPB_FILTRER(HttpServletRequest request) throws Exception {
-		
+
 		String dateDeb = getVAL_ST_DATE_MIN();
 		String dateMin = null;
 		if (!dateDeb.equals(Const.CHAINE_VIDE)) {
 			dateMin = Services.convertitDate(dateDeb, "dd/MM/yyyy", "yyyyMMdd");
 		}
-		
+
 		String dateFin = getVAL_ST_DATE_MAX();
 		String dateMax = null;
 		if (!dateFin.equals(Const.CHAINE_VIDE)) {
@@ -215,29 +213,27 @@ public class OePTGTitreRepas extends BasicProcess {
 			dateMax = dateMin;
 			addZone(getNOM_ST_DATE_MAX(), getVAL_ST_DATE_MIN());
 		}
-		
+
 		// date mois
-		int numDateMois = (Services.estNumerique(getZone(getNOM_LB_DATE_MOIS_SELECT())) ? Integer
-				.parseInt(getZone(getNOM_LB_DATE_MOIS_SELECT())) : -1);
+		int numDateMois = (Services.estNumerique(getZone(getNOM_LB_DATE_MOIS_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_DATE_MOIS_SELECT())) : -1);
 		String dateMoisStr = null;
 		if (numDateMois != -1 && numDateMois != 0) {
 			Date dateMois = (Date) getListeDateMois().get(numDateMois - 1);
 			dateMoisStr = sdfyyyyMMdd.format(dateMois);
 		}
-		
+
 		// etat
-		int numEtat = (Services.estNumerique(getZone(getNOM_LB_ETAT_SELECT())) ? Integer
-				.parseInt(getZone(getNOM_LB_ETAT_SELECT())) : -1);
+		int numEtat = (Services.estNumerique(getZone(getNOM_LB_ETAT_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_ETAT_SELECT())) : -1);
 		RefEtatDto etat = null;
 		if (numEtat != -1 && numEtat != 0) {
 			etat = (RefEtatDto) getListeEtats().get(numEtat - 1);
 		}
-		
+
 		// agent
 		String idAgentDemande = getVAL_ST_AGENT_DEMANDE().equals(Const.CHAINE_VIDE) ? null : "900" + getVAL_ST_AGENT_DEMANDE();
 		if (!getVAL_ST_AGENT_DEMANDE().equals(Const.CHAINE_VIDE)) {
 			addZone(getNOM_ST_AGENT_DEMANDE(), getVAL_ST_AGENT_DEMANDE());
-		}else{
+		} else {
 			idAgentDemande = null;
 		}
 
@@ -256,7 +252,7 @@ public class OePTGTitreRepas extends BasicProcess {
 		if (!sigle.equals(Const.CHAINE_VIDE) && null == idAgentDemande) {
 			EntiteDto service = adsService.getEntiteBySigle(sigle);
 			idServiceAds = new Long(service.getIdEntite()).toString();
-		
+
 			// Récupération des agents
 			// on recupere les sous-service du service selectionne
 			List<Integer> listeSousService = adsService.getListIdsEntiteWithEnfantsOfEntite(new Integer(idServiceAds));
@@ -277,33 +273,31 @@ public class OePTGTitreRepas extends BasicProcess {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR501"));
 			return false;
 		}
-		
+
 		// agent SIRH connecte
 		Agent agentConnecte = getAgentConnecte(request);
-		
+
 		// COMMANDE ou pas
-		int commande = (Services.estNumerique(getZone(getNOM_LB_COMMANDE_SELECT())) ? Integer
-				.parseInt(getZone(getNOM_LB_COMMANDE_SELECT())) : -1);
-		Boolean isCommande = null ;
-		if(commande == 1) {
+		int commande = (Services.estNumerique(getZone(getNOM_LB_COMMANDE_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_COMMANDE_SELECT())) : -1);
+		Boolean isCommande = null;
+		if (commande == 1) {
 			isCommande = true;
-		}else if(commande == 2){
+		} else if (commande == 2) {
 			isCommande = false;
 		}
-		
-		List<TitreRepasDemandeDto> listedemandeTR = ptgService.getListTitreRepas(agentConnecte.getIdAgent(), dateMin, dateMax, etat != null ? etat.getIdRefEtat() : null, 
-				isCommande, dateMoisStr, !idServiceAds.equals(Const.CHAINE_VIDE) ? new Integer(idServiceAds) : null, null != idAgentDemande ? new Integer(idAgentDemande) : null,
-				listIdAgentService);
-		
+
+		List<TitreRepasDemandeDto> listedemandeTR = ptgService.getListTitreRepas(agentConnecte.getIdAgent(), dateMin, dateMax, etat != null ? etat.getIdRefEtat() : null, isCommande, dateMoisStr,
+				!idServiceAds.equals(Const.CHAINE_VIDE) ? new Integer(idServiceAds) : null, null != idAgentDemande ? new Integer(idAgentDemande) : null, listIdAgentService);
+
 		setListeDemandeTR((ArrayList<TitreRepasDemandeDto>) listedemandeTR);
 
 		afficheListeDemandesTR();
-		
+
 		setTypeFiltre("GLOBAL");
-		
+
 		return true;
 	}
-	
+
 	private void afficheListeDemandesTR() throws Exception {
 
 		for (Entry<Integer, TitreRepasDemandeDto> TRMap : getListeDemandeTR().entrySet()) {
@@ -316,10 +310,11 @@ public class OePTGTitreRepas extends BasicProcess {
 				addZone(getNOM_ST_AGENT(i), ag.getNomAgent() + " " + ag.getPrenomAgent());
 				addZone(getNOM_ST_DATE_MONTH(i), sdf.format(TR.getDateMonth()));
 				addZone(getNOM_ST_COMMANDE(i), TR.getCommande() ? "Oui" : "Non");
-				
+
 				String commentaire = TR.getCommentaire();
 				addZone(getNOM_ST_COMMENTAIRE(i), commentaire);
-				addZone(getNOM_ST_OPERATEUR(i), null == TR.getOperateur() ? "" : TR.getOperateur().getPrenom() + " " + TR.getOperateur().getNom() + " (" + (TR.getOperateur().getIdAgent()-9000000) + ")");
+				addZone(getNOM_ST_OPERATEUR(i), null == TR.getOperateur() ? "" : TR.getOperateur().getPrenom() + " " + TR.getOperateur().getNom() + " (" + (TR.getOperateur().getIdAgent() - 9000000)
+						+ ")");
 				addZone(getNOM_ST_ETAT(i), EtatPointageEnum.getDisplayableEtatPointageEnum(TR.getIdRefEtat()));
 				addZone(getNOM_ST_DATE_ETAT(i), sdf.format(TR.getDateSaisie()));
 			} catch (Exception e) {
@@ -353,9 +348,6 @@ public class OePTGTitreRepas extends BasicProcess {
 
 		return agent;
 	}
-	
-	
-
 
 	public boolean performPB_SUPPRIMER_RECHERCHER_SERVICE(HttpServletRequest request) throws Exception {
 		// On enleve le service selectionnée
@@ -464,7 +456,7 @@ public class OePTGTitreRepas extends BasicProcess {
 			}
 		}
 	}
-	
+
 	public boolean performPB_FILTRER_DEMANDE_A_APPROUVER(HttpServletRequest request) throws Exception {
 
 		String dateDeb = getVAL_ST_DATE_MIN();
@@ -475,14 +467,11 @@ public class OePTGTitreRepas extends BasicProcess {
 
 		String idAgentDemande = getVAL_ST_AGENT_DEMANDE().equals(Const.CHAINE_VIDE) ? null : "900" + getVAL_ST_AGENT_DEMANDE();
 
-		String dateJour = sdfyyyyMMdd.format(
-				new DateTime().withDayOfMonth(1).withHourOfDay(0)
-					.withMinuteOfHour(0).withSecondOfMinute(0)
-					.withMillisOfSecond(0).toDate());
-		
-		//////// APPEL WS /////////////
-		List<TitreRepasDemandeDto> listedemandeTR = ptgService.getListTitreRepas(getAgentConnecte(request).getIdAgent(), dateMin, dateMax, EtatPointageEnum.SAISI.getCodeEtat(), 
-				Boolean.TRUE, dateJour, null, null != idAgentDemande ? new Integer(idAgentDemande) : null, null);
+		String dateJour = sdfyyyyMMdd.format(new DateTime().withDayOfMonth(1).withHourOfDay(0).withMinuteOfHour(0).withSecondOfMinute(0).withMillisOfSecond(0).toDate());
+
+		// ////// APPEL WS /////////////
+		List<TitreRepasDemandeDto> listedemandeTR = ptgService.getListTitreRepas(getAgentConnecte(request).getIdAgent(), dateMin, dateMax, EtatPointageEnum.SAISI.getCodeEtat(), Boolean.TRUE,
+				dateJour, null, null != idAgentDemande ? new Integer(idAgentDemande) : null, null);
 
 		logger.debug("Taille liste Titre Repas : " + listedemandeTR.size());
 
@@ -503,7 +492,7 @@ public class OePTGTitreRepas extends BasicProcess {
 			return false;
 		}
 
-		changeState(request, getListeDemandeTR().values(), EtatPointageEnum.REJETE, null);
+		changeState(request, getListeDemandeTR().values(), EtatPointageEnum.APPROUVE, null);
 
 		// On pose le statut
 		setStatut(STATUT_MEME_PROCESS);
@@ -561,10 +550,9 @@ public class OePTGTitreRepas extends BasicProcess {
 			ret[index][1] = tr.getCommande() ? "Oui" : "Non";
 			ret[index][2] = null == tr.getCommentaire() ? "" : tr.getCommentaire();
 			AgentDto opPtg = tr.getOperateur();
-			if(null != opPtg) {
-				ret[index][3] = opPtg.getNom() + " " + opPtg.getPrenom() + " ("
-					+ opPtg.getIdAgent().toString().substring(3, opPtg.getIdAgent().toString().length()) + ")";
-			}else{
+			if (null != opPtg) {
+				ret[index][3] = opPtg.getNom() + " " + opPtg.getPrenom() + " (" + opPtg.getIdAgent().toString().substring(3, opPtg.getIdAgent().toString().length()) + ")";
+			} else {
 				ret[index][3] = "";
 			}
 			ret[index][4] = EtatPointageEnum.getEtatPointageEnum(tr.getIdRefEtat()).name();
@@ -618,9 +606,9 @@ public class OePTGTitreRepas extends BasicProcess {
 		setStatut(STATUT_RECHERCHER_AGENT_CREATION, true);
 		return true;
 	}
-	
+
 	public boolean performPB_CREATION(HttpServletRequest request) throws Exception {
-		
+
 		String idAgent = Const.CHAINE_VIDE;
 		if (getVAL_ST_AGENT_CREATION().equals(Const.CHAINE_VIDE)) {
 			// "ERR002","La zone @ est obligatoire."
@@ -637,22 +625,20 @@ public class OePTGTitreRepas extends BasicProcess {
 				return false;
 			}
 		}
-		
-		if(getZone(getNOM_RG_COMMANDE()).equals(Const.CHAINE_VIDE)) {
+
+		if (getZone(getNOM_RG_COMMANDE()).equals(Const.CHAINE_VIDE)) {
 			// "ERR002","La zone @ est obligatoire."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "Oui ou Non"));
 			return false;
 		}
-		
+
 		AgentDto agentDto = new AgentDto();
 		agentDto.setIdAgent(new Integer(idAgent));
-		
-		Date dateMonth = new DateTime()
-			.withDayOfMonth(1).withHourOfDay(0).withMinuteOfHour(0)
-			.withSecondOfMinute(0).withMillisOfSecond(0).toDate();
-		
+
+		Date dateMonth = new DateTime().withDayOfMonth(1).withHourOfDay(0).withMinuteOfHour(0).withSecondOfMinute(0).withMillisOfSecond(0).toDate();
+
 		TitreRepasDemandeDto dto = new TitreRepasDemandeDto();
-		
+
 		dto.setAgent(agentDto);
 		dto.setCommande(getZone(getNOM_RG_COMMANDE()).equals(getNOM_RB_OUI()));
 		dto.setDateMonth(dateMonth);
@@ -660,9 +646,9 @@ public class OePTGTitreRepas extends BasicProcess {
 
 		List<TitreRepasDemandeDto> listDto = new ArrayList<TitreRepasDemandeDto>();
 		listDto.add(dto);
-		
+
 		ReturnMessageDto srm = ptgService.enregistreTitreRepas(listDto, getAgentConnecte(request).getIdAgent());
-		
+
 		if (srm.getErrors().size() > 0) {
 			String err = Const.CHAINE_VIDE;
 			for (String erreur : srm.getErrors()) {
@@ -687,26 +673,26 @@ public class OePTGTitreRepas extends BasicProcess {
 		} else {
 			performPB_FILTRER_DEMANDE_A_APPROUVER(request);
 		}
-		
+
 		return true;
 	}
-	
+
 	public boolean performPB_MODIFICATION(HttpServletRequest request, Integer indiceTR) throws Exception {
-		
+
 		TitreRepasDemandeDto dto = getListeDemandeTR().get(indiceTR);
 
 		addZone(getNOM_ST_INDICE_TR(), indiceTR.toString());
 		addZone(getNOM_ST_AGENT_MODIFICATION(), new Integer(dto.getAgent().getIdAgent() - 9000000).toString());
 		addZone(getNOM_RG_COMMANDE(), dto.getCommande() ? getNOM_RB_OUI() : getNOM_RB_NON());
-		
+
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION(), ACTION_MODIFICATION);
-		
+
 		return true;
 	}
-	
+
 	public boolean performPB_VALIDER_MODIFICATION(HttpServletRequest request) throws Exception {
-		
+
 		String idAgent = Const.CHAINE_VIDE;
 		if (getVAL_ST_AGENT_MODIFICATION().equals(Const.CHAINE_VIDE)) {
 			// "ERR002","La zone @ est obligatoire."
@@ -723,24 +709,24 @@ public class OePTGTitreRepas extends BasicProcess {
 				return false;
 			}
 		}
-		
-		if(getZone(getNOM_RG_COMMANDE()).equals(Const.CHAINE_VIDE)) {
+
+		if (getZone(getNOM_RG_COMMANDE()).equals(Const.CHAINE_VIDE)) {
 			// "ERR002","La zone @ est obligatoire."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "Oui ou Non"));
 			return false;
 		}
-		
+
 		Integer indiceTR = new Integer(getVAL_ST_INDICE_TR());
-		
+
 		TitreRepasDemandeDto dto = getListeDemandeTR().get(indiceTR);
-		
+
 		dto.setCommande(getZone(getNOM_RG_COMMANDE()).equals(getNOM_RB_OUI()));
 
 		List<TitreRepasDemandeDto> listDto = new ArrayList<TitreRepasDemandeDto>();
 		listDto.add(dto);
-		
+
 		ReturnMessageDto srm = ptgService.enregistreTitreRepas(listDto, getAgentConnecte(request).getIdAgent());
-		
+
 		if (srm.getErrors().size() > 0) {
 			String err = Const.CHAINE_VIDE;
 			for (String erreur : srm.getErrors()) {
@@ -791,32 +777,6 @@ public class OePTGTitreRepas extends BasicProcess {
 
 		return true;
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 
 	public String getDefaultFocus() {
 		return getNOM_PB_VALIDATION();
@@ -982,7 +942,7 @@ public class OePTGTitreRepas extends BasicProcess {
 	public String getNOM_ST_DATE_MAX() {
 		return "NOM_ST_DATE_MAX";
 	}
-	
+
 	/**
 	 * Setter de la liste: LB_ETAT Date de création : (28/11/11)
 	 * 
@@ -1290,8 +1250,6 @@ public class OePTGTitreRepas extends BasicProcess {
 	public String getVAL_ST_INDICE_TR() {
 		return getZone(getNOM_ST_INDICE_TR());
 	}
-	
-	
 
 	public TreeMap<Integer, TitreRepasDemandeDto> getListeDemandeTR() {
 		return listeDemandeTR == null ? new TreeMap<Integer, TitreRepasDemandeDto>() : listeDemandeTR;
@@ -1335,7 +1293,6 @@ public class OePTGTitreRepas extends BasicProcess {
 		return ptgService;
 	}
 
-
 	@Override
 	public boolean recupererStatut(HttpServletRequest request) throws Exception {
 		// Si on arrive de la JSP alors on traite le get
@@ -1346,7 +1303,8 @@ public class OePTGTitreRepas extends BasicProcess {
 				return performPB_FILTRER_DEMANDE_A_APPROUVER(request);
 			}
 
-			// Si clic sur le bouton PB_RECHERCHER_AGENT_DEMANDEperformPB_MODIFICATION
+			// Si clic sur le bouton
+			// PB_RECHERCHER_AGENT_DEMANDE
 			if (testerParametre(request, getNOM_PB_RECHERCHER_AGENT_DEMANDE())) {
 				return performPB_RECHERCHER_AGENT_DEMANDE(request);
 			}
@@ -1370,7 +1328,7 @@ public class OePTGTitreRepas extends BasicProcess {
 			if (testerParametre(request, getNOM_PB_RECHERCHER_AGENT_CREATION())) {
 				return performPB_RECHERCHER_AGENT_CREATION(request);
 			}
-			// Si clic sur le bouton PB_RECHERCHER_AGENT_CREATION
+			// Si clic sur le bouton PB_GENERER
 			if (testerParametre(request, getNOM_PB_GENERER())) {
 				return performPB_GENERER(request);
 			}
