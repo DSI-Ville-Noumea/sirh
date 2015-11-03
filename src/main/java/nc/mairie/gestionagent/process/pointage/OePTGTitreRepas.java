@@ -656,7 +656,7 @@ public class OePTGTitreRepas extends BasicProcess {
 		dto.setAgent(agentDto);
 		dto.setCommande(getZone(getNOM_RG_COMMANDE()).equals(getNOM_RB_OUI()));
 		dto.setDateMonth(dateMonth);
-		dto.setIdRefEtat(EtatPointageEnum.APPROUVE.getCodeEtat());
+		dto.setIdRefEtat(EtatPointageEnum.SAISI.getCodeEtat());
 
 		List<TitreRepasDemandeDto> listDto = new ArrayList<TitreRepasDemandeDto>();
 		listDto.add(dto);
@@ -735,7 +735,6 @@ public class OePTGTitreRepas extends BasicProcess {
 		TitreRepasDemandeDto dto = getListeDemandeTR().get(indiceTR);
 		
 		dto.setCommande(getZone(getNOM_RG_COMMANDE()).equals(getNOM_RB_OUI()));
-		dto.setIdRefEtat(EtatPointageEnum.APPROUVE.getCodeEtat());
 
 		List<TitreRepasDemandeDto> listDto = new ArrayList<TitreRepasDemandeDto>();
 		listDto.add(dto);
@@ -770,6 +769,28 @@ public class OePTGTitreRepas extends BasicProcess {
 		return true;
 	}
 	
+	public boolean performPB_GENERER(HttpServletRequest request) throws Exception {
+		
+		ReturnMessageDto srm = ptgService.genereEtatPayeurTitreRepas(getAgentConnecte(request).getIdAgent());
+		
+		if (srm.getErrors().size() > 0) {
+			String err = Const.CHAINE_VIDE;
+			for (String erreur : srm.getErrors()) {
+				err += " " + erreur;
+			}
+			getTransaction().declarerErreur("ERREUR : " + err);
+			return false;
+		}
+		if (srm.getInfos().size() > 0) {
+			String info = Const.CHAINE_VIDE;
+			for (String erreur : srm.getInfos()) {
+				info += " " + erreur;
+			}
+			getTransaction().declarerErreur("Génération : " + info);
+		}
+
+		return true;
+	}
 	
 	
 	
@@ -1131,6 +1152,10 @@ public class OePTGTitreRepas extends BasicProcess {
 		return "NOM_PB_FILTRER_DEMANDE_A_VALIDER";
 	}
 
+	public String getNOM_PB_GENERER() {
+		return "NOM_PB_GENERER";
+	}
+
 	public String getNOM_PB_VALIDER_ALL() {
 		return "NOM_PB_VALIDER_ALL";
 	}
@@ -1341,9 +1366,13 @@ public class OePTGTitreRepas extends BasicProcess {
 			if (testerParametre(request, getNOM_PB_AJOUTER_DEMANDE_TR())) {
 				return performPB_AJOUTER_DEMANDE_TR(request);
 			}
-//					// Si clic sur le bouton PB_RECHERCHER_AGENT_CREATION
+			// Si clic sur le bouton PB_RECHERCHER_AGENT_CREATION
 			if (testerParametre(request, getNOM_PB_RECHERCHER_AGENT_CREATION())) {
 				return performPB_RECHERCHER_AGENT_CREATION(request);
+			}
+			// Si clic sur le bouton PB_RECHERCHER_AGENT_CREATION
+			if (testerParametre(request, getNOM_PB_GENERER())) {
+				return performPB_GENERER(request);
 			}
 			// Si clic sur le bouton PB_CREATION
 			if (testerParametre(request, getNOM_PB_CREATION())) {

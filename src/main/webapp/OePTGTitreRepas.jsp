@@ -177,6 +177,11 @@
                 		executeBouton('NOM_PB_FILTRER');
                 	}
                 }
+                function ConfirmMessage(nom) {
+                    if (confirm("Attention, les saisies ne seront plus possibles sur ce mois. Confirmez la génération?")) { // Clic sur OK
+                		executeBouton(nom);
+                    }
+                }
             </SCRIPT>
             <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
         </HEAD>
@@ -255,9 +260,11 @@
                 	</tr>
                 </table>
                 <BR/>         	
-                <INPUT type="submit" class="sigp2-Bouton-100" value="Afficher" name="<%=process.getNOM_PB_FILTRER()%>">		
-                <INPUT type="submit" class="sigp2-Bouton-200" value="Demandes à valider" name="<%=process.getNOM_PB_FILTRER_DEMANDE_A_VALIDER()%>">	
-             </FIELDSET>             
+                <INPUT type="submit" class="sigp2-Bouton-100" value="Afficher" name="<%=process.getNOM_PB_FILTRER()%>">
+                <INPUT type="submit" class="sigp2-Bouton-200" value="Demandes à valider" name="<%=process.getNOM_PB_FILTRER_DEMANDE_A_VALIDER()%>">
+                <INPUT type="button" class="sigp2-Bouton-200" value="Générer les états payeurs" onclick="ConfirmMessage('<%=process.getNOM_PB_GENERER()%>');">
+                <INPUT type="submit"  style="display:none;" value="Générer les états payeurs" name="<%=process.getNOM_PB_GENERER()%>">
+             </FIELDSET>
             
             <FIELDSET class="sigp2Fieldset" style="text-align:left;">
                 <legend class="sigp2Legend">Visualisation des demandes de titre repas</legend>

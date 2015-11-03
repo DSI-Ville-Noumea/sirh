@@ -127,4 +127,6 @@ public interface IPtgService {
 	List<RefEtatDto> getEtatsTitreRepas();
 
 	List<Date> getFiltreListeMois();
+
+	ReturnMessageDto genereEtatPayeurTitreRepas(Integer idAgent);
 }

@@ -104,6 +104,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 	private static final String sirhPtgUpdateEtatForListTitreRepasDemande = "titreRepas/updateEtatForListTitreRepasDemande";
 	private static final String sirhPtgFiltreEtatTitreRepas = "titreRepas/getEtats";
 	private static final String sirhPtgFiltreDateMoisTitreRepas = "titreRepas/getListeMoisTitreRepasSaisie";
+	private static final String sirhPtgGenereEtatPayeurTitreRepas = "titreRepas/genereEtatPayeur";
 	
 	private Logger logger = LoggerFactory.getLogger(SirhPtgWSConsumer.class);
 
@@ -268,6 +269,17 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 		ClientResponse res = createAndFireRequest(new HashMap<String, String>(), url);
 
 		return readResponseAsListDate(res, url);
+	}
+	
+	@Override
+	public ReturnMessageDto genereEtatPayeurTitreRepas(Integer idAgent) {
+		
+		String url = String.format(ptgWsBaseUrl + sirhPtgGenereEtatPayeurTitreRepas);
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idAgentConnecte", idAgent.toString());
+
+		ClientResponse res = createAndFireRequest(params, url);
+		return readResponseWithReturnMessageDto(ReturnMessageDto.class, res, url);
 	}
 
 	@Override

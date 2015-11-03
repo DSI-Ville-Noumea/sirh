@@ -288,6 +288,8 @@ public class RobotAgent extends Robot {
 			return new OePTGPayeurContractuels();
 		} else if (activite.equals("PTGTitreRepas")) {
 			return new OePTGTitreRepas();
+		} else if (activite.equals("PTGTitreRepasEtatPayeur")) {
+				return new OePTGTitreRepas();
 
 		}// Module ABSENCE
 		else if (activite.equals("ABSVisualisation")) {

@@ -180,6 +180,11 @@ menuPTGPayeur.ajouterFils(new Lien("PTGPayeurFonct", "PAYEUR", "Editions du paye
 menuPTGPayeur.ajouterFils(new Lien("PTGPayeurContractuels", "PAYEUR", "Editions du payeur", true, false,"CONTRACTUELS"));
 document.write(menuPTGPayeur.afficher());
 
+var menuPTGTitreRepas = new MenuHaut("Module_pointage_titreRepas");
+menuPTGTitreRepas.ajouterFils(new Lien("PTGTitreRepas", "TITRE REPAS", "Titres repas", true, false,"TITRES REPAS"));
+menuPTGTitreRepas.ajouterFils(new Lien("PTGTitreRepasEtatPayeur", "TITRE REPAS", "Titres repas", true, false,"ETATS PAYEUR"));
+document.write(menuPTGTitreRepas.afficher());
+
 //***************************************************************
 //*               Le menu haut Election
 //***************************************************************

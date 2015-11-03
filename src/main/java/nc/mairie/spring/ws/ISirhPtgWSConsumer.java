@@ -128,4 +128,6 @@ public interface ISirhPtgWSConsumer {
 
 	List<Date> getFiltreListeMois();
 
+	ReturnMessageDto genereEtatPayeurTitreRepas(Integer idAgent);
+
 }

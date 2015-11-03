@@ -291,4 +291,9 @@ public class PtgService implements IPtgService {
 		return ptgConsumer.enregistreTitreRepas(dto, idAgent);
 	}
 
+	@Override
+	public ReturnMessageDto genereEtatPayeurTitreRepas(Integer idAgent) {
+		return ptgConsumer.genereEtatPayeurTitreRepas(idAgent);
+	}
+
 }
