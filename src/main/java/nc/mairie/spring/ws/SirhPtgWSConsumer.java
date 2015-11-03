@@ -23,6 +23,7 @@ import nc.mairie.gestionagent.pointage.dto.RefEtatDto;
 import nc.mairie.gestionagent.pointage.dto.RefPrimeDto;
 import nc.mairie.gestionagent.pointage.dto.RefTypePointageDto;
 import nc.mairie.gestionagent.pointage.dto.TitreRepasDemandeDto;
+import nc.mairie.gestionagent.pointage.dto.TitreRepasEtatPayeurDto;
 import nc.mairie.gestionagent.pointage.dto.VentilDateDto;
 import nc.mairie.gestionagent.pointage.dto.VentilErreurDto;
 import nc.mairie.metier.Const;
@@ -105,6 +106,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 	private static final String sirhPtgFiltreEtatTitreRepas = "titreRepas/getEtats";
 	private static final String sirhPtgFiltreDateMoisTitreRepas = "titreRepas/getListeMoisTitreRepasSaisie";
 	private static final String sirhPtgGenereEtatPayeurTitreRepas = "titreRepas/genereEtatPayeur";
+	private static final String sirhPtgListTitreRepasEtatPayeur = "titreRepas/listTitreRepasEtatPayeur";
 	
 	private Logger logger = LoggerFactory.getLogger(SirhPtgWSConsumer.class);
 
@@ -280,6 +282,18 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 
 		ClientResponse res = createAndFireRequest(params, url);
 		return readResponseWithReturnMessageDto(ReturnMessageDto.class, res, url);
+	}
+
+	@Override
+	public List<TitreRepasEtatPayeurDto> getListTitreRepasEtatPayeur(Integer idAgent) {
+		
+		String url = String.format(ptgWsBaseUrl + sirhPtgListTitreRepasEtatPayeur);
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idAgentConnecte", idAgent.toString());
+
+		ClientResponse res = createAndFireRequest(params, url);
+
+		return readResponseAsList(TitreRepasEtatPayeurDto.class, res, url);
 	}
 
 	@Override

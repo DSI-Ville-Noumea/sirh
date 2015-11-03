@@ -17,6 +17,7 @@ import nc.mairie.gestionagent.pointage.dto.RefEtatDto;
 import nc.mairie.gestionagent.pointage.dto.RefPrimeDto;
 import nc.mairie.gestionagent.pointage.dto.RefTypePointageDto;
 import nc.mairie.gestionagent.pointage.dto.TitreRepasDemandeDto;
+import nc.mairie.gestionagent.pointage.dto.TitreRepasEtatPayeurDto;
 import nc.mairie.gestionagent.pointage.dto.VentilDateDto;
 import nc.mairie.gestionagent.pointage.dto.VentilErreurDto;
 
@@ -129,4 +130,6 @@ public interface IPtgService {
 	List<Date> getFiltreListeMois();
 
 	ReturnMessageDto genereEtatPayeurTitreRepas(Integer idAgent);
+
+	List<TitreRepasEtatPayeurDto> getListTitreRepasEtatPayeur(Integer idAgent);
 }

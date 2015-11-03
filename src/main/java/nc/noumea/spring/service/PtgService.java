@@ -17,6 +17,7 @@ import nc.mairie.gestionagent.pointage.dto.RefEtatDto;
 import nc.mairie.gestionagent.pointage.dto.RefPrimeDto;
 import nc.mairie.gestionagent.pointage.dto.RefTypePointageDto;
 import nc.mairie.gestionagent.pointage.dto.TitreRepasDemandeDto;
+import nc.mairie.gestionagent.pointage.dto.TitreRepasEtatPayeurDto;
 import nc.mairie.gestionagent.pointage.dto.VentilDateDto;
 import nc.mairie.gestionagent.pointage.dto.VentilErreurDto;
 import nc.mairie.spring.ws.ISirhPtgWSConsumer;
@@ -294,6 +295,11 @@ public class PtgService implements IPtgService {
 	@Override
 	public ReturnMessageDto genereEtatPayeurTitreRepas(Integer idAgent) {
 		return ptgConsumer.genereEtatPayeurTitreRepas(idAgent);
+	}
+
+	@Override
+	public List<TitreRepasEtatPayeurDto> getListTitreRepasEtatPayeur(Integer idAgent) {
+		return ptgConsumer.getListTitreRepasEtatPayeur(idAgent);
 	}
 
 }
