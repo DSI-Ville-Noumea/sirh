@@ -281,10 +281,10 @@ function activeRegul() {
 											type="text" value="<%= process.getVAL_EF_DATE_ARRETE(indiceAvct) %>">
 									</td>	
 									<td>
-										<INPUT type="checkbox" disabled="disabled" <%= process.forCheckBoxHTML(process.getNOM_CK_REGUL_ARR_IMPR(indiceAvct),process.getVAL_CK_REGUL_ARR_IMPR(indiceAvct))%>>
+										<INPUT type="checkbox" style="visibility: hidden;" <%= process.forCheckBoxHTML(process.getNOM_CK_REGUL_ARR_IMPR(indiceAvct),process.getVAL_CK_REGUL_ARR_IMPR(indiceAvct))%>>
 									</td>									
 									<td>	
-										<INPUT disabled="disabled" type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_VALID_ARR_IMPR(indiceAvct),process.getVAL_CK_VALID_ARR_IMPR(indiceAvct))%>>
+										<INPUT type="checkbox" style="visibility: hidden;" <%= process.forCheckBoxHTML(process.getNOM_CK_VALID_ARR_IMPR(indiceAvct),process.getVAL_CK_VALID_ARR_IMPR(indiceAvct))%>>
 									</td>
 									<td><INPUT type="checkbox" style="visibility:hidden" <%= process.forCheckBoxHTML(process.getNOM_CK_AFFECTER(indiceAvct),process.getVAL_CK_AFFECTER(indiceAvct))%> onClick='validAffecter("<%=indiceAvct %>")'></td>								
 								<%}else{ %>
@@ -300,10 +300,10 @@ function activeRegul() {
 											type="text" value="<%= process.getVAL_EF_DATE_ARRETE(indiceAvct) %>">
 									</td>	
 									<td>
-										<INPUT type="checkbox" disabled="disabled" <%= process.forCheckBoxHTML(process.getNOM_CK_REGUL_ARR_IMPR(indiceAvct),process.getVAL_CK_REGUL_ARR_IMPR(indiceAvct))%>>
+										<INPUT type="checkbox" style="visibility: hidden;" <%= process.forCheckBoxHTML(process.getNOM_CK_REGUL_ARR_IMPR(indiceAvct),process.getVAL_CK_REGUL_ARR_IMPR(indiceAvct))%>>
 									</td>									
 									<td>	
-										<INPUT disabled="disabled" type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_VALID_ARR_IMPR(indiceAvct),process.getVAL_CK_VALID_ARR_IMPR(indiceAvct))%>>
+										<INPUT type="checkbox" style="visibility: hidden;" <%= process.forCheckBoxHTML(process.getNOM_CK_VALID_ARR_IMPR(indiceAvct),process.getVAL_CK_VALID_ARR_IMPR(indiceAvct))%>>
 									</td>
 									<td><INPUT type="checkbox" style="visibility:hidden" <%= process.forCheckBoxHTML(process.getNOM_CK_AFFECTER(indiceAvct),process.getVAL_CK_AFFECTER(indiceAvct))%> onClick='validAffecter("<%=indiceAvct %>")'></td>
 								<%} %>

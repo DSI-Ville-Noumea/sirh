@@ -34,6 +34,15 @@ function validProjet(indice)
 	    document.formu.elements['NOM_EF_NUM_ARRETE_'+indice].style.visibility = "visible";
 	    document.formu.elements['NOM_EF_DATE_ARRETE_'+indice].style.visibility = "visible";
 	    document.formu.elements['NOM_CK_AFFECTER_'+indice].style.visibility = "visible";
+	    if (document.formu.elements['NOM_CK_REGUL_ARR_IMPR_'+indice] != null)
+	    {
+	    	document.formu.elements['NOM_CK_REGUL_ARR_IMPR_'+indice].style.visibility = "visible";
+	    }
+	    if (document.formu.elements['NOM_CK_VALID_ARR_IMPR_'+indice] != null)
+	    {
+	    	document.formu.elements['NOM_CK_VALID_ARR_IMPR_'+indice].style.visibility = "visible";
+	    }	    
+	    
 	  }
 	  else
 	  {
@@ -45,6 +54,14 @@ function validProjet(indice)
 	    document.formu.elements['NOM_EF_NUM_ARRETE_'+indice].style.visibility = "hidden";
 	    document.formu.elements['NOM_EF_DATE_ARRETE_'+indice].style.visibility = "hidden";
 	    document.formu.elements['NOM_CK_AFFECTER_'+indice].style.visibility = "hidden";
+	    if (document.formu.elements['NOM_CK_REGUL_ARR_IMPR_'+indice] != null)
+	    {
+	    	document.formu.elements['NOM_CK_REGUL_ARR_IMPR_'+indice].style.visibility = "hidden";
+	    }
+	    if (document.formu.elements['NOM_CK_VALID_ARR_IMPR_'+indice] != null)
+	    {
+	    	document.formu.elements['NOM_CK_VALID_ARR_IMPR_'+indice].style.visibility = "hidden";
+	    }	
 	  }
 }
 
@@ -57,11 +74,27 @@ function validAffecter(indice)
 		document.formu.elements['NOM_CK_PROJET_ARRETE_'+indice].disabled = true;   
 		document.formu.elements['NOM_EF_NUM_ARRETE_'+indice].disabled = true; 
 		document.formu.elements['NOM_EF_DATE_ARRETE_'+indice].disabled = true; 
+	    if (document.formu.elements['NOM_CK_REGUL_ARR_IMPR_'+indice] != null)
+	    {
+	    	document.formu.elements['NOM_CK_REGUL_ARR_IMPR_'+indice].disabled = true;   
+	    }	
+	    if (document.formu.elements['NOM_CK_VALID_ARR_IMPR_'+indice] != null)
+	    {
+	    	document.formu.elements['NOM_CK_VALID_ARR_IMPR_'+indice].disabled = true;   
+	    }	
 	  }
 	  else
 	  {
 		document.formu.elements['NOM_CK_PROJET_ARRETE_'+indice].disabled = false;   
 		document.formu.elements['NOM_EF_NUM_ARRETE_'+indice].disabled = false; 
 		document.formu.elements['NOM_EF_DATE_ARRETE_'+indice].disabled = false; 
+	    if (document.formu.elements['NOM_CK_REGUL_ARR_IMPR_'+indice] != null)
+	    {
+	    	document.formu.elements['NOM_CK_REGUL_ARR_IMPR_'+indice].disabled = false;   
+	    }	
+	    if (document.formu.elements['NOM_CK_VALID_ARR_IMPR_'+indice] != null)
+	    {
+	    	document.formu.elements['NOM_CK_VALID_ARR_IMPR_'+indice].disabled = false;   
+	    }
 	  }
 }

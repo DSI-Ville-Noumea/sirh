@@ -1223,7 +1223,7 @@ public class OeAVCTFonctionnaireAutre extends BasicProcess {
 
 			try {
 				byte[] fileAsBytes = sirhService.downloadArrete(listeImpressionChangementClasse.toString().replace("[", "").replace("]", "").replace(" ", ""), true, Integer.valueOf(getAnneeSelect()),
-						true);
+						false);
 
 				if (!saveFileToRemoteFileSystem(fileAsBytes, repPartage, docuChangementClasse)) {
 					// "ERR185",
@@ -1242,7 +1242,7 @@ public class OeAVCTFonctionnaireAutre extends BasicProcess {
 		if (listeImpressionAvancementDiff.size() > 0) {
 			try {
 				byte[] fileAsBytes = sirhService.downloadArrete(listeImpressionAvancementDiff.toString().replace("[", "").replace("]", "").replace(" ", ""), false, Integer.valueOf(getAnneeSelect()),
-						true);
+						false);
 				if (!saveFileToRemoteFileSystem(fileAsBytes, repPartage, docuAvctDiff)) {
 					// "ERR185",
 					// "Une erreur est survenue dans la génération des documents. Merci de contacter le responsable du projet."
