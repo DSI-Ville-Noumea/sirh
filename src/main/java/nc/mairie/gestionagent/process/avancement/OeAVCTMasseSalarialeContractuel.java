@@ -525,7 +525,7 @@ public class OeAVCTMasseSalarialeContractuel extends BasicProcess {
 				// le nombre de point d'avancement du grade est 0.
 				continue;
 			} else if (avct.getGrade() == null) {
-				//il n'y a pas de gradeSuivant
+				// il n'y a pas de gradeSuivant
 				// on informe les agents en erreur
 				agentEnErreur += a.getNomAgent() + " " + a.getPrenomAgent() + " (" + a.getNomatr() + "); ";
 				continue;
@@ -1036,7 +1036,7 @@ public class OeAVCTMasseSalarialeContractuel extends BasicProcess {
 
 					Carriere carr = Carriere.chercherDerniereCarriereAvecAgentEtAnnee(getTransaction(), agent.getNomatr(), avct.getAnnee().toString());
 					// on check la si prime saisie en simu
-					if (!avancementService.isCarriereContractuelSimu(avct, carr)) {
+					if (avancementService.isCarriereContractuelSimu(avct, carr)) {
 						// c'est qu'il existe une carriere pour cette date
 
 						// si ce n'est pas la derniere carriere du tableau ie :

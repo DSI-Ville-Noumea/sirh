@@ -324,7 +324,7 @@ public class OeAVCTContractuels extends BasicProcess {
 
 					Carriere carr = Carriere.chercherDerniereCarriereAvecAgentEtAnnee(getTransaction(), agent.getNomatr(), avct.getAnnee().toString());
 					// on check la si prime saisie en simu
-					if (!avancementService.isCarriereContractuelSimu(avct, carr)) {
+					if (avancementService.isCarriereContractuelSimu(avct, carr)) {
 						// c'est qu'il existe une carriere pour cette date
 
 						// si ce n'est pas la derniere carriere du tableau ie :
