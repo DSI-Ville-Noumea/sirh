@@ -492,7 +492,7 @@ public class AvancementService implements IAvancementService {
 		// reprend ceux de la carriere precedente
 		nouvelleCarriere.setCodeBase(Const.CHAINE_VIDE);
 		nouvelleCarriere.setCodeTypeEmploi(carr.getCodeTypeEmploi());
-		nouvelleCarriere.setCodeGrade(carr.getCodeGrade());
+		nouvelleCarriere.setCodeGrade(avct.getIdNouvGrade());
 		nouvelleCarriere.setCodeBaseHoraire2(carr.getCodeBaseHoraire2());
 		nouvelleCarriere.setIdMotif(Const.ZERO);
 		nouvelleCarriere.setModeReglement(carr.getModeReglement());
