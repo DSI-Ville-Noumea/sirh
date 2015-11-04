@@ -336,7 +336,8 @@ public class OeAVCTContractuels extends BasicProcess {
 						avct.setCarriereSimu("S");
 						getAvancementContractuelsDao().modifierAvancementContractuels(avct.getIdAvct(), avct.getIdAgent(), avct.getDateEmbauche(), avct.getNumFp(), avct.getPa(), avct.getDateGrade(),
 								avct.getDateProchainGrade(), avct.getIban(), avct.getInm(), avct.getIna(), avct.getNouvIban(), avct.getNouvInm(), avct.getNouvIna(), avct.getEtat(),
-								avct.getDateArrete(), avct.getNumArrete(), avct.getCarriereSimu(), avct.getAnnee(), avct.getDirectionService(), avct.getSectionService(), avct.getCdcadr());
+								avct.getDateArrete(), avct.getNumArrete(), avct.getCarriereSimu(), avct.getAnnee(), avct.getDirectionService(), avct.getSectionService(), avct.getCdcadr(),
+								avct.getGrade(), avct.getIdNouvGrade());
 						continue;
 					} else {
 						avct.setCarriereSimu(null);
@@ -350,7 +351,8 @@ public class OeAVCTContractuels extends BasicProcess {
 					avct.setNumArrete(getVAL_EF_NUM_ARRETE(i));
 					getAvancementContractuelsDao().modifierAvancementContractuels(avct.getIdAvct(), avct.getIdAgent(), avct.getDateEmbauche(), avct.getNumFp(), avct.getPa(), avct.getDateGrade(),
 							avct.getDateProchainGrade(), avct.getIban(), avct.getInm(), avct.getIna(), avct.getNouvIban(), avct.getNouvInm(), avct.getNouvIna(), avct.getEtat(), avct.getDateArrete(),
-							avct.getNumArrete(), avct.getCarriereSimu(), avct.getAnnee(), avct.getDirectionService(), avct.getSectionService(), avct.getCdcadr());
+							avct.getNumArrete(), avct.getCarriereSimu(), avct.getAnnee(), avct.getDirectionService(), avct.getSectionService(), avct.getCdcadr(), avct.getGrade(),
+							avct.getIdNouvGrade());
 
 					// on ferme cette carriere
 					carr.setDateFin(sdf.format(avct.getDateProchainGrade()));
@@ -431,7 +433,7 @@ public class OeAVCTContractuels extends BasicProcess {
 			}
 			getAvancementContractuelsDao().modifierAvancementContractuels(avct.getIdAvct(), avct.getIdAgent(), avct.getDateEmbauche(), avct.getNumFp(), avct.getPa(), avct.getDateGrade(),
 					avct.getDateProchainGrade(), avct.getIban(), avct.getInm(), avct.getIna(), avct.getNouvIban(), avct.getNouvInm(), avct.getNouvIna(), avct.getEtat(), avct.getDateArrete(),
-					avct.getNumArrete(), avct.getCarriereSimu(), avct.getAnnee(), avct.getDirectionService(), avct.getSectionService(), avct.getCdcadr());
+					avct.getNumArrete(), avct.getCarriereSimu(), avct.getAnnee(), avct.getDirectionService(), avct.getSectionService(), avct.getCdcadr(), avct.getGrade(), avct.getIdNouvGrade());
 			if (getTransaction().isErreur())
 				return false;
 		}

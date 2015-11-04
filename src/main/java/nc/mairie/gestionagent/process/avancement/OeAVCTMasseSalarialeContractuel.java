@@ -524,6 +524,11 @@ public class OeAVCTMasseSalarialeContractuel extends BasicProcess {
 			} else if (avct.getIdAgent() == null) {
 				// le nombre de point d'avancement du grade est 0.
 				continue;
+			} else if (avct.getGrade() == null) {
+				//il n'y a pas de gradeSuivant
+				// on informe les agents en erreur
+				agentEnErreur += a.getNomAgent() + " " + a.getPrenomAgent() + " (" + a.getNomatr() + "); ";
+				continue;
 			}
 			avancementService.creerAvancementContractuel(avct, getAvancementContractuelsDao());
 		}
@@ -997,7 +1002,7 @@ public class OeAVCTMasseSalarialeContractuel extends BasicProcess {
 			}
 			getAvancementContractuelsDao().modifierAvancementContractuels(avct.getIdAvct(), avct.getIdAgent(), avct.getDateEmbauche(), avct.getNumFp(), avct.getPa(), avct.getDateGrade(),
 					avct.getDateProchainGrade(), avct.getIban(), avct.getInm(), avct.getIna(), avct.getNouvIban(), avct.getNouvInm(), avct.getNouvIna(), avct.getEtat(), avct.getDateArrete(),
-					avct.getNumArrete(), avct.getCarriereSimu(), avct.getAnnee(), avct.getDirectionService(), avct.getSectionService(), avct.getCdcadr());
+					avct.getNumArrete(), avct.getCarriereSimu(), avct.getAnnee(), avct.getDirectionService(), avct.getSectionService(), avct.getCdcadr(), avct.getGrade(), avct.getIdNouvGrade());
 			if (getTransaction().isErreur())
 				return false;
 		}
@@ -1043,7 +1048,8 @@ public class OeAVCTMasseSalarialeContractuel extends BasicProcess {
 						avct.setCarriereSimu("S");
 						getAvancementContractuelsDao().modifierAvancementContractuels(avct.getIdAvct(), avct.getIdAgent(), avct.getDateEmbauche(), avct.getNumFp(), avct.getPa(), avct.getDateGrade(),
 								avct.getDateProchainGrade(), avct.getIban(), avct.getInm(), avct.getIna(), avct.getNouvIban(), avct.getNouvInm(), avct.getNouvIna(), avct.getEtat(),
-								avct.getDateArrete(), avct.getNumArrete(), avct.getCarriereSimu(), avct.getAnnee(), avct.getDirectionService(), avct.getSectionService(), avct.getCdcadr());
+								avct.getDateArrete(), avct.getNumArrete(), avct.getCarriereSimu(), avct.getAnnee(), avct.getDirectionService(), avct.getSectionService(), avct.getCdcadr(),
+								avct.getGrade(), avct.getIdNouvGrade());
 						continue;
 					} else {
 						avct.setCarriereSimu(null);
@@ -1057,7 +1063,8 @@ public class OeAVCTMasseSalarialeContractuel extends BasicProcess {
 					avct.setNumArrete(getVAL_EF_NUM_ARRETE(i));
 					getAvancementContractuelsDao().modifierAvancementContractuels(avct.getIdAvct(), avct.getIdAgent(), avct.getDateEmbauche(), avct.getNumFp(), avct.getPa(), avct.getDateGrade(),
 							avct.getDateProchainGrade(), avct.getIban(), avct.getInm(), avct.getIna(), avct.getNouvIban(), avct.getNouvInm(), avct.getNouvIna(), avct.getEtat(), avct.getDateArrete(),
-							avct.getNumArrete(), avct.getCarriereSimu(), avct.getAnnee(), avct.getDirectionService(), avct.getSectionService(), avct.getCdcadr());
+							avct.getNumArrete(), avct.getCarriereSimu(), avct.getAnnee(), avct.getDirectionService(), avct.getSectionService(), avct.getCdcadr(), avct.getGrade(),
+							avct.getIdNouvGrade());
 
 					// on ferme cette carriere
 					carr.setDateFin(sdf.format(avct.getDateProchainGrade()));

@@ -18,6 +18,8 @@ public class AvancementContractuelsDao extends SirhDao implements AvancementCont
 	public static final String CHAMP_PA = "PA";
 	public static final String CHAMP_DATE_GRADE = "DATE_GRADE";
 	public static final String CHAMP_DATE_PROCHAIN_GRADE = "DATE_PROCHAIN_GRADE";
+	public static final String CHAMP_GRADE = "GRADE";
+	public static final String CHAMP_ID_NOUV_GRADE = "ID_NOUV_GRADE";
 	public static final String CHAMP_IBAN = "IBAN";
 	public static final String CHAMP_INM = "INM";
 	public static final String CHAMP_INA = "INA";
@@ -47,51 +49,40 @@ public class AvancementContractuelsDao extends SirhDao implements AvancementCont
 	}
 
 	@Override
-	public void modifierAvancementContractuels(Integer idAvct, Integer idAgent, Date dateEmbauche, String numFp,
-			String pa, Date dateGrade, Date dateProchainGrade, String iban, Integer inm, Integer ina, String nouvIban,
-			Integer nouvInm, Integer nouvIna, String etat, Date dateArrete, String numArrete, String carriereSimu,
-			Integer annee, String directionService, String sectionService, String codeCadre) {
-		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_ID_AGENT + "=?," + CHAMP_DATE_EMBAUCHE + "=?,"
-				+ CHAMP_NUM_FP + "=?," + CHAMP_PA + "=?," + CHAMP_DATE_GRADE + "=?," + CHAMP_DATE_PROCHAIN_GRADE
-				+ "=?," + CHAMP_IBAN + "=?," + CHAMP_INM + "=?," + CHAMP_INA + "=?," + CHAMP_NOUV_IBAN + "=?,"
-				+ CHAMP_NOUV_INM + "=?," + CHAMP_NOUV_INA + "=?," + CHAMP_ETAT + "=?," + CHAMP_DATE_ARRETE + "=?,"
-				+ CHAMP_NUM_ARRETE + "=?," + CHAMP_CARRIERE_SIMU + "=?," + CHAMP_ANNEE + "=?,"
-				+ CHAMP_DIRECTION_SERVICE + "=?," + CHAMP_SECTION_SERVICE + "=?," + CHAMP_CDCADR + "=? where "
-				+ CHAMP_ID + "=?";
-		jdbcTemplate.update(sql, new Object[] { idAgent, dateEmbauche, numFp, pa, dateGrade, dateProchainGrade, iban,
-				inm, ina, nouvIban, nouvInm, nouvIna, etat, dateArrete, numArrete, carriereSimu, annee,
-				directionService, sectionService, codeCadre, idAvct });
+	public void modifierAvancementContractuels(Integer idAvct, Integer idAgent, Date dateEmbauche, String numFp, String pa, Date dateGrade, Date dateProchainGrade, String iban, Integer inm,
+			Integer ina, String nouvIban, Integer nouvInm, Integer nouvIna, String etat, Date dateArrete, String numArrete, String carriereSimu, Integer annee, String directionService,
+			String sectionService, String codeCadre, String grade, String idNouvGrade) {
+		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_ID_AGENT + "=?," + CHAMP_DATE_EMBAUCHE + "=?," + CHAMP_NUM_FP + "=?," + CHAMP_PA + "=?," + CHAMP_DATE_GRADE + "=?,"
+				+ CHAMP_DATE_PROCHAIN_GRADE + "=?," + CHAMP_IBAN + "=?," + CHAMP_INM + "=?," + CHAMP_INA + "=?," + CHAMP_NOUV_IBAN + "=?," + CHAMP_NOUV_INM + "=?," + CHAMP_NOUV_INA + "=?,"
+				+ CHAMP_ETAT + "=?," + CHAMP_DATE_ARRETE + "=?," + CHAMP_NUM_ARRETE + "=?," + CHAMP_CARRIERE_SIMU + "=?," + CHAMP_ANNEE + "=?," + CHAMP_DIRECTION_SERVICE + "=?,"
+				+ CHAMP_SECTION_SERVICE + "=?," + CHAMP_CDCADR + "=?," + CHAMP_GRADE + "=?," + CHAMP_ID_NOUV_GRADE + "=? where " + CHAMP_ID + "=?";
+		jdbcTemplate.update(sql, new Object[] { idAgent, dateEmbauche, numFp, pa, dateGrade, dateProchainGrade, iban, inm, ina, nouvIban, nouvInm, nouvIna, etat, dateArrete, numArrete, carriereSimu,
+				annee, directionService, sectionService, codeCadre, grade, idNouvGrade, idAvct });
 	}
 
 	@Override
-	public void creerAvancementContractuels(Integer idAgent, Date dateEmbauche, String numFp, String pa,
-			Date dateGrade, Date dateProchainGrade, String iban, Integer inm, Integer ina, String nouvIban,
-			Integer nouvInm, Integer nouvIna, String etat, Date dateArrete, String numArrete, String carriereSimu,
-			Integer annee, String directionService, String sectionService, String codeCadre) throws Exception {
-		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_ID_AGENT + "," + CHAMP_DATE_EMBAUCHE + ","
-				+ CHAMP_NUM_FP + "," + CHAMP_PA + "," + CHAMP_DATE_GRADE + "," + CHAMP_DATE_PROCHAIN_GRADE + ","
-				+ CHAMP_IBAN + "," + CHAMP_INM + "," + CHAMP_INA + "," + CHAMP_NOUV_IBAN + "," + CHAMP_NOUV_INM + ","
-				+ CHAMP_NOUV_INA + "," + CHAMP_ETAT + "," + CHAMP_DATE_ARRETE + "," + CHAMP_NUM_ARRETE + ","
-				+ CHAMP_CARRIERE_SIMU + "," + CHAMP_ANNEE + "," + CHAMP_DIRECTION_SERVICE + "," + CHAMP_SECTION_SERVICE
-				+ "," + CHAMP_CDCADR + ") VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-		jdbcTemplate.update(sql, new Object[] { idAgent, dateEmbauche, numFp, pa, dateGrade, dateProchainGrade, iban,
-				inm, ina, nouvIban, nouvInm, nouvIna, etat, dateArrete, numArrete, carriereSimu, annee,
-				directionService, sectionService, codeCadre });
+	public void creerAvancementContractuels(Integer idAgent, Date dateEmbauche, String numFp, String pa, Date dateGrade, Date dateProchainGrade, String iban, Integer inm, Integer ina,
+			String nouvIban, Integer nouvInm, Integer nouvIna, String etat, Date dateArrete, String numArrete, String carriereSimu, Integer annee, String directionService, String sectionService,
+			String codeCadre, String grade, String idNouvGrade) throws Exception {
+		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_ID_AGENT + "," + CHAMP_DATE_EMBAUCHE + "," + CHAMP_NUM_FP + "," + CHAMP_PA + "," + CHAMP_DATE_GRADE + "," + CHAMP_DATE_PROCHAIN_GRADE
+				+ "," + CHAMP_IBAN + "," + CHAMP_INM + "," + CHAMP_INA + "," + CHAMP_NOUV_IBAN + "," + CHAMP_NOUV_INM + "," + CHAMP_NOUV_INA + "," + CHAMP_ETAT + "," + CHAMP_DATE_ARRETE + ","
+				+ CHAMP_NUM_ARRETE + "," + CHAMP_CARRIERE_SIMU + "," + CHAMP_ANNEE + "," + CHAMP_DIRECTION_SERVICE + "," + CHAMP_SECTION_SERVICE + "," + CHAMP_CDCADR + "," + CHAMP_GRADE + ","
+				+ CHAMP_ID_NOUV_GRADE + ") VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+		jdbcTemplate.update(sql, new Object[] { idAgent, dateEmbauche, numFp, pa, dateGrade, dateProchainGrade, iban, inm, ina, nouvIban, nouvInm, nouvIna, etat, dateArrete, numArrete, carriereSimu,
+				annee, directionService, sectionService, codeCadre, grade, idNouvGrade });
 	}
 
 	@Override
-	public AvancementContractuels chercherAvancementContractuelsAvecAnneeEtAgent(Integer annee, Integer idAgent)
-			throws Exception {
+	public AvancementContractuels chercherAvancementContractuelsAvecAnneeEtAgent(Integer annee, Integer idAgent) throws Exception {
 		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ANNEE + " = ? and " + CHAMP_ID_AGENT + "=?";
-		AvancementContractuels cadre = (AvancementContractuels) jdbcTemplate.queryForObject(sql, new Object[] { annee,
-				idAgent }, new BeanPropertyRowMapper<AvancementContractuels>(AvancementContractuels.class));
+		AvancementContractuels cadre = (AvancementContractuels) jdbcTemplate.queryForObject(sql, new Object[] { annee, idAgent }, new BeanPropertyRowMapper<AvancementContractuels>(
+				AvancementContractuels.class));
 		return cadre;
 	}
 
 	@Override
 	public ArrayList<AvancementContractuels> listerAvancementContractuelsAnnee(Integer annee) throws Exception {
-		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ANNEE + "=? order by "
-				+ CHAMP_DATE_PROCHAIN_GRADE;
+		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ANNEE + "=? order by " + CHAMP_DATE_PROCHAIN_GRADE;
 
 		ArrayList<AvancementContractuels> liste = new ArrayList<AvancementContractuels>();
 
@@ -105,6 +96,8 @@ public class AvancementContractuelsDao extends SirhDao implements AvancementCont
 			a.setPa((String) row.get(CHAMP_PA));
 			a.setDateGrade((Date) row.get(CHAMP_DATE_GRADE));
 			a.setDateProchainGrade((Date) row.get(CHAMP_DATE_PROCHAIN_GRADE));
+			a.setGrade((String) row.get(CHAMP_GRADE));
+			a.setIdNouvGrade((String) row.get(CHAMP_ID_NOUV_GRADE));
 			a.setIban((String) row.get(CHAMP_IBAN));
 			a.setInm((Integer) row.get(CHAMP_INM));
 			a.setIna((Integer) row.get(CHAMP_INA));

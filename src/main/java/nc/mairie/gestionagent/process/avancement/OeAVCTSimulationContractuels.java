@@ -260,6 +260,11 @@ public class OeAVCTSimulationContractuels extends BasicProcess {
 			}else if (avct.getIdAgent() == null) {
 				// le nombre de point d'avancement du grade est 0.
 				continue;
+			}else if (avct.getGrade() == null) {
+				//il n'y a pas de gradeSuivant
+				// on informe les agents en erreur
+				agentEnErreur += a.getNomAgent() + " " + a.getPrenomAgent() + " (" + a.getNomatr() + "); ";
+				continue;
 			}
 			avancementService.creerAvancementContractuel(avct, getAvancementContractuelsDao());
 		}

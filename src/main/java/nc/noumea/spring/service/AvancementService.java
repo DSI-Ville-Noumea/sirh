@@ -324,7 +324,7 @@ public class AvancementService implements IAvancementService {
 			try {
 				avancementContractuelsDao.creerAvancementContractuels(avct.getIdAgent(), avct.getDateEmbauche(), avct.getNumFp(), avct.getPa(), avct.getDateGrade(), avct.getDateProchainGrade(),
 						avct.getIban(), avct.getInm(), avct.getIna(), avct.getNouvIban(), avct.getNouvInm(), avct.getNouvIna(), avct.getEtat(), avct.getDateArrete(), avct.getNumArrete(),
-						avct.getCarriereSimu(), avct.getAnnee(), avct.getDirectionService(), avct.getSectionService(), avct.getCdcadr());
+						avct.getCarriereSimu(), avct.getAnnee(), avct.getDirectionService(), avct.getSectionService(), avct.getCdcadr(), avct.getGrade(), avct.getIdNouvGrade());
 
 				return true;
 			} catch (Exception e2) {
@@ -368,7 +368,6 @@ public class AvancementService implements IAvancementService {
 		PositionAdm pa = PositionAdm.chercherPositionAdm(aTransaction, paAgent.getCdpadm());
 		avct.setPa(pa.getLiPAdm());
 
-		// on recupere le grade du poste
 		Affectation aff = null;
 		try {
 			aff = affectationDao.chercherAffectationActiveAvecAgent(agent.getIdAgent());
@@ -380,25 +379,64 @@ public class AvancementService implements IAvancementService {
 		}
 		FichePoste fp = fichePosteDao.chercherFichePoste(aff.getIdFichePoste());
 		avct.setNumFp(fp.getNumFp());
-		// on cherche a quelle categorie appartient l'agent
-		// (A,B,A+..;)
-		Grade g = Grade.chercherGrade(aTransaction, fp.getCodeGrade());
-		GradeGenerique gg = GradeGenerique.chercherGradeGenerique(aTransaction, g.getCodeGradeGenerique());
-		if (aTransaction.isErreur() || gg == null || gg.getNbPointsAvct() == null || gg.getNbPointsAvct().equals("0")) {
-			aTransaction.traiterErreur();
-			return new AvancementContractuels();
-		}
+
+		// IBA,INM,INA
 		Bareme bareme = Bareme.chercherBareme(aTransaction, carr.getIban());
-		avct.setCdcadr(gg.getCodCadre());
-		// on calcul le nouvel INM
-		String nouvINM = String.valueOf(Integer.valueOf(bareme.getInm()) + Integer.valueOf(gg.getNbPointsAvct()));
-		// avec ce nouvel INM on recupere l'iban et l'ina
-		// correspondant
-		Bareme nouvBareme = (Bareme) Bareme.listerBaremeByINM(aTransaction, nouvINM).get(0);
-		// on rempli les champs
-		avct.setNouvIban(nouvBareme.getIban());
-		avct.setNouvInm(Integer.valueOf(nouvBareme.getInm()));
-		avct.setNouvIna(Integer.valueOf(nouvBareme.getIna()));
+		if (aTransaction.isErreur()) {
+			aTransaction.traiterErreur();
+		}
+		// si la carriere à un grade (contractualisation des conventions
+		// collectives)
+		if (carr.getCodeGrade() != null && !carr.getCodeGrade().equals(Const.CHAINE_VIDE)) {
+
+			Grade gradeActuel = Grade.chercherGrade(aTransaction, carr.getCodeGrade());
+			if (aTransaction.isErreur()) {
+				aTransaction.traiterErreur();
+				return avct;
+			}
+
+			Grade gradeSuivant = Grade.chercherGrade(aTransaction, gradeActuel.getCodeGradeSuivant());
+			if (aTransaction.isErreur()) {
+				aTransaction.traiterErreur();
+				return avct;
+			}
+			avct.setIdNouvGrade(gradeSuivant.getCodeGrade() == null || gradeSuivant.getCodeGrade().length() == 0 ? null : gradeSuivant.getCodeGrade());
+			avct.setCdcadr(gradeActuel.getCodeCadre());
+
+			avct.setIban(carr.getIban());
+			avct.setInm(Integer.valueOf(bareme.getInm()));
+			avct.setIna(Integer.valueOf(bareme.getIna()));
+
+			// on cherche le nouveau bareme
+			if (gradeSuivant != null && gradeSuivant.getIban() != null) {
+				Bareme nouvBareme = Bareme.chercherBareme(aTransaction, gradeSuivant.getIban());
+				// on rempli les champs
+				avct.setNouvIban(nouvBareme.getIban());
+				avct.setNouvInm(Integer.valueOf(nouvBareme.getInm()));
+				avct.setNouvIna(Integer.valueOf(nouvBareme.getIna()));
+			}
+		} else {
+			// on recupere le grade du poste
+			// on cherche a quelle categorie appartient l'agent
+			// (A,B,A+..;)
+			Grade g = Grade.chercherGrade(aTransaction, fp.getCodeGrade());
+			GradeGenerique gg = GradeGenerique.chercherGradeGenerique(aTransaction, g.getCodeGradeGenerique());
+			if (aTransaction.isErreur() || gg == null || gg.getNbPointsAvct() == null || gg.getNbPointsAvct().equals("0")) {
+				aTransaction.traiterErreur();
+				return new AvancementContractuels();
+			}
+			avct.setCdcadr(gg.getCodCadre());
+			// on calcul le nouvel INM
+			String nouvINM = String.valueOf(Integer.valueOf(bareme.getInm()) + Integer.valueOf(gg.getNbPointsAvct()));
+			// avec ce nouvel INM on recupere l'iban et l'ina
+			// correspondant
+			Bareme nouvBareme = (Bareme) Bareme.listerBaremeByINM(aTransaction, nouvINM).get(0);
+			// on rempli les champs
+			avct.setNouvIban(nouvBareme.getIban());
+			avct.setNouvInm(Integer.valueOf(nouvBareme.getInm()));
+			avct.setNouvIna(Integer.valueOf(nouvBareme.getIna()));
+
+		}
 		avct.setDateProchainGrade(sdf.parse(Services.ajouteAnnee(Services.formateDate(carr.getDateDebut()), 2)));
 
 		avct.setDateArrete(sdf.parse("01/01/" + annee));
@@ -410,6 +448,7 @@ public class AvancementService implements IAvancementService {
 		avct.setDirectionService(direction == null ? Const.CHAINE_VIDE : direction.getSigle());
 		avct.setSectionService(section == null ? Const.CHAINE_VIDE : section.getSigle());
 		avct.setDateGrade(sdf.parse(carr.getDateDebut()));
+		avct.setGrade(carr.getCodeGrade());
 		avct.setIban(carr.getIban());
 		avct.setInm(Integer.valueOf(bareme.getInm()));
 		avct.setIna(Integer.valueOf(bareme.getIna()));

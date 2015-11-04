@@ -931,6 +931,16 @@ public class OeAGENTCarriere extends BasicProcess {
 			getCarriereCourante().setCodeGrade(g != null && g.getCodeGrade() != null ? g.getCodeGrade() : Const.CHAINE_VIDE);
 		} else {
 			getCarriereCourante().setCodeGrade(Const.CHAINE_VIDE);
+			try {
+				Grade g = getSelectedGrade();
+				if (getTransaction().isErreur()) {
+					getTransaction().traiterErreur();
+				} else {
+					getCarriereCourante().setCodeGrade(g != null && g.getCodeGrade() != null ? g.getCodeGrade() : Const.CHAINE_VIDE);
+				}
+			} catch (Exception e) {
+
+			}
 		}
 
 		// satut
@@ -1045,7 +1055,6 @@ public class OeAGENTCarriere extends BasicProcess {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR007", "d'arrêté"));
 			return false;
 		}
-
 		return true;
 	}
 
@@ -1973,32 +1982,46 @@ public class OeAGENTCarriere extends BasicProcess {
 		if (estFonctionnaire(codeStatut)) {
 			showIBA = true;
 			IBAEditable = false;
+			alimenteIBAn(grade);
 
-			if (grade != null && grade.getIban() != null && !Const.CHAINE_VIDE.equals(grade.getIban())) {
-				if (Services.estNumerique(grade.getIban())) {
-					addZone(getNOM_EF_IBA(), Services.lpad(grade.getIban(), 7, "0"));
-				} else {
-					addZone(getNOM_EF_IBA(), grade.getIban());
-				}
-				Bareme bareme = null;
-				if (Services.estNumerique(grade.getIban())) {
-					bareme = Bareme.chercherBareme(getTransaction(), Services.lpad(grade.getIban(), 7, "0"));
-				} else {
-					bareme = Bareme.chercherBareme(getTransaction(), grade.getIban());
-				}
+		} else if (codeStatut.equals("4") && getCarriereCourante() != null && getCarriereCourante().getCodeGrade() != null) {
+			// #19533 : cas des contractuels sur grille
+			showIBA = true;
+			IBAEditable = false;
+			alimenteIBAn(grade);
 
-				if (getTransaction().isErreur())
-					getTransaction().traiterErreur();
-
-				if (bareme != null) {
-					addZone(getNOM_ST_INA(), bareme.getIna());
-					addZone(getNOM_ST_INM(), bareme.getInm());
-				}
-			}
 		} else if (codeStatut.equals("4") || codeStatut.equals("9") || codeStatut.equals("10") || codeStatut.equals("11")) {
 			showIBA = true;
 			IBAEditable = true;
 		}
+	}
+
+	private void alimenteIBAn(Grade grade) throws Exception {
+		showIBA = true;
+		IBAEditable = false;
+
+		if (grade != null && grade.getIban() != null && !Const.CHAINE_VIDE.equals(grade.getIban())) {
+			if (Services.estNumerique(grade.getIban())) {
+				addZone(getNOM_EF_IBA(), Services.lpad(grade.getIban(), 7, "0"));
+			} else {
+				addZone(getNOM_EF_IBA(), grade.getIban());
+			}
+			Bareme bareme = null;
+			if (Services.estNumerique(grade.getIban())) {
+				bareme = Bareme.chercherBareme(getTransaction(), Services.lpad(grade.getIban(), 7, "0"));
+			} else {
+				bareme = Bareme.chercherBareme(getTransaction(), grade.getIban());
+			}
+
+			if (getTransaction().isErreur())
+				getTransaction().traiterErreur();
+
+			if (bareme != null) {
+				addZone(getNOM_ST_INA(), bareme.getIna());
+				addZone(getNOM_ST_INM(), bareme.getInm());
+			}
+		}
+
 	}
 
 	/**
@@ -2590,6 +2613,11 @@ public class OeAGENTCarriere extends BasicProcess {
 			// "ERR189","Cet avancement ne peut être calculé @."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR189", ": le nombre de points d'avancement du grade de la FDP est 0"));
 			return false;
+		}else if (avct.getGrade() == null) {
+			addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+			// "ERR189","Cet avancement ne peut être calculé @."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR189", ": le grade actuel de cet agent n'a pas de grade suivant"));
+			return false;
 		}
 
 		// on recupere le grade et la filiere du poste
@@ -2604,8 +2632,7 @@ public class OeAGENTCarriere extends BasicProcess {
 		}
 
 		// on rempli les champs
-		Carriere carr = Carriere.chercherDerniereCarriereAvecAgent(getTransaction(), getAgentCourant());
-		addZone(getNOM_ST_GRADE(), carr.getCodeGrade());
+		addZone(getNOM_ST_GRADE(), avct.getIdNouvGrade());
 		addZone(getNOM_ST_FILIERE(), filiere == null ? Const.CHAINE_VIDE : filiere.getLibFiliere());
 
 		addZone(getNOM_EF_IBA(), avct.getNouvIban());
