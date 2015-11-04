@@ -45,7 +45,7 @@ public class OeAVCTSimulationDetaches extends BasicProcess {
 	public String focus = null;
 	public String ACTION_CALCUL = "Calcul";
 
-	public String agentEnErreur = Const.CHAINE_VIDE;
+	public String agentEnErreurHautGrille = Const.CHAINE_VIDE;
 	private AutreAdministrationAgentDao autreAdministrationAgentDao;
 	private AvancementDetachesDao avancementDetachesDao;
 	private FichePosteDao fichePosteDao;
@@ -264,8 +264,8 @@ public class OeAVCTSimulationDetaches extends BasicProcess {
 				continue;
 			} else if (avct.getIdAgent() == null) {
 				// on informe les agents en erreur haut de grille
-				agentEnErreur += a.getNomAgent() + " " + a.getPrenomAgent() + " (" + a.getNomatr() + "); ";
-				continue;
+				agentEnErreurHautGrille += a.getNomAgent() + " " + a.getPrenomAgent() + " (" + a.getNomatr() + "); ";
+				continue;				
 			}
 			avancementService.creerAvancementDetache(avct, getAvancementDetachesDao());
 		}

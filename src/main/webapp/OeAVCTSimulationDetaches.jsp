@@ -58,6 +58,13 @@
           		<img border="0" src="images/suppression.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT()%>');">
           		<BR/><BR/><BR/>
 				<INPUT type="submit" value="Lancer" class="sigp2-Bouton-100" name="<%=process.getNOM_PB_LANCER()%>">
+				<BR/><BR/>
+		    
+				<% if (!process.agentEnErreurHautGrille.equals("")){ %>
+					<span style="color: red;" class="sigp2Mandatory">Agents en anomalies :<br/><br/> <%=process.agentEnErreurHautGrille %></span>
+					<BR/><BR/> 
+					<span style="color: red;" class="sigp2Mandatory">Pour ces agents, un avancement n'a pu être calculé car ils sont en haut de grille.</span>
+				<%} %>
 				<BR><BR>
 		    
 				<% if (!process.agentEnErreur.equals("")){ %>

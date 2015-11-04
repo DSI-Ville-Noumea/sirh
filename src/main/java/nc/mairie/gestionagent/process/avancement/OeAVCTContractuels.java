@@ -87,7 +87,6 @@ public class OeAVCTContractuels extends BasicProcess {
 
 		// Si liste avancements vide alors initialisation.
 		if (getListeAvct().size() == 0) {
-			agentEnErreur = Const.CHAINE_VIDE;
 			int indiceAnnee = (Services.estNumerique(getVAL_LB_ANNEE_SELECT()) ? Integer.parseInt(getVAL_LB_ANNEE_SELECT()) : -1);
 			String annee = (String) getListeAnnee()[indiceAnnee];
 			setListeAvct(getAvancementContractuelsDao().listerAvancementContractuelsAnnee(Integer.valueOf(annee)));

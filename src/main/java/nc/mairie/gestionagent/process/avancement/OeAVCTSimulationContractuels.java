@@ -52,6 +52,7 @@ public class OeAVCTSimulationContractuels extends BasicProcess {
 	private IAdsService adsService;
 	private IAvancementService avancementService;
 	public String agentEnErreur = Const.CHAINE_VIDE;
+	public String agentEnErreurHautGrille = Const.CHAINE_VIDE;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -261,9 +262,9 @@ public class OeAVCTSimulationContractuels extends BasicProcess {
 				// le nombre de point d'avancement du grade est 0.
 				continue;
 			}else if (avct.getGrade() == null) {
-				//il n'y a pas de gradeSuivant
-				// on informe les agents en erreur
-				agentEnErreur += a.getNomAgent() + " " + a.getPrenomAgent() + " (" + a.getNomatr() + "); ";
+				// il n'y a pas de gradeSuivant
+				// on informe les agents en erreur haut de grille
+				agentEnErreurHautGrille += a.getNomAgent() + " " + a.getPrenomAgent() + " (" + a.getNomatr() + "); ";
 				continue;
 			}
 			avancementService.creerAvancementContractuel(avct, getAvancementContractuelsDao());

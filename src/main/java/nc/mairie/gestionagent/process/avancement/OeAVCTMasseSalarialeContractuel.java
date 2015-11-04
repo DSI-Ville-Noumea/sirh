@@ -52,6 +52,7 @@ public class OeAVCTMasseSalarialeContractuel extends BasicProcess {
 
 	private ArrayList<AvancementContractuels> listeAvct;
 	public String agentEnErreur = Const.CHAINE_VIDE;
+	public String agentEnErreurHautGrille = Const.CHAINE_VIDE;
 
 	public String ACTION_CALCUL = "Calcul";
 	public static final int STATUT_RECHERCHER_AGENT = 1;
@@ -526,8 +527,8 @@ public class OeAVCTMasseSalarialeContractuel extends BasicProcess {
 				continue;
 			} else if (avct.getGrade() == null) {
 				// il n'y a pas de gradeSuivant
-				// on informe les agents en erreur
-				agentEnErreur += a.getNomAgent() + " " + a.getPrenomAgent() + " (" + a.getNomatr() + "); ";
+				// on informe les agents en erreur haut de grille
+				agentEnErreurHautGrille += a.getNomAgent() + " " + a.getPrenomAgent() + " (" + a.getNomatr() + "); ";
 				continue;
 			}
 			avancementService.creerAvancementContractuel(avct, getAvancementContractuelsDao());
