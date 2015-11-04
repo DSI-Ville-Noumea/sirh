@@ -253,6 +253,7 @@ public class OeAVCTSimulationContractuels extends BasicProcess {
 
 		// Parcours des agents
 		for (Agent a : la) {
+
 			AvancementContractuels avct = avancementService.calculAvancementContractuel(getTransaction(), a, annee, adsService, getFichePosteDao(), getAffectationDao(), false);
 			if (avct == null) {
 				// on informe les agents en erreur
