@@ -140,6 +140,13 @@ function setfocus(nom)
 					<BR/><BR/> 
 					<span style="color: red;" class="sigp2Mandatory">Pour ces agents, aucun avancement n'a pu être calculé.</span>
 				<%} %>
+				<BR><BR>
+		    
+				<% if (!process.agentEnErreurPrime.equals("")){ %>
+					<span style="color: red;" class="sigp2Mandatory">Agents en anomalies :<br/><br/> <%=process.agentEnErreurPrime %></span>
+					<BR/><BR/> 
+					<span style="color: red;" class="sigp2Mandatory">Pour ces agents, un avancement n'a pu être calculé car ils n'ont pas de prime 1200 ouverte.</span>
+				<%} %>
 			</FIELDSET>
 			<FIELDSET class="sigp2Fieldset" style="text-align:left;">
 		    <legend class="sigp2Legend">Gestion des avancements des conventions collectives</legend>

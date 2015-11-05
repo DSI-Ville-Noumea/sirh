@@ -145,13 +145,23 @@ public class AvancementService implements IAvancementService {
 				Prime prime1200 = Prime.chercherDernierePrimeOuverteAvecRubrique(aTransaction, a.getNomatr(), "1200");
 				if (aTransaction.isErreur()) {
 					aTransaction.traiterErreur();
-					avct.setMontantPrime1200("3");
+					// 19539 : on regarde si c'est un nouveau ou non
+					List<Prime> listPrime1200 = Prime.listerPrime1200ByAgent(aTransaction, a.getNomatr());
+					if (aTransaction.isErreur()) {
+						aTransaction.traiterErreur();
+					}
+					if (listPrime1200.size() == 0) {
+						avct.setMontantPrime1200("3");
+					} else {
+						avct.setMontantPrime1200(null);
+						return avct;
+					}
 				} else {
 					if (prime1200 != null && prime1200.getMtPri() != null) {
-						if (Integer.valueOf(prime1200.getMtPri()) > 30) {
+						if (Integer.valueOf(prime1200.getMtPri()) >= 30) {
 							avct.setMontantPrime1200("30");
 						} else {
-							avct.setMontantPrime1200(prime1200.getMtPri());
+							avct.setMontantPrime1200(String.valueOf(Integer.valueOf(prime1200.getMtPri()) + 1));
 						}
 					}
 				}

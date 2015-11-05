@@ -63,6 +63,7 @@ public class OeAVCTMasseSalarialeConvention extends BasicProcess {
 	private IAdsService adsService;
 	private IAvancementService avancementService;
 	public String agentEnErreur = Const.CHAINE_VIDE;
+	public String agentEnErreurPrime = Const.CHAINE_VIDE;
 
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
@@ -492,6 +493,10 @@ public class OeAVCTMasseSalarialeConvention extends BasicProcess {
 			} else if (avct.getIdAgent() == null) {
 				// l'agent n'a pas 3 ans d'ancienneté
 				continue;
+			} else if (avct.getMontantPrime1200() == null) {
+				// l'agent n'a pas de prime ouverte
+				agentEnErreurPrime += a.getNomAgent() + " " + a.getPrenomAgent() + " (" + a.getNomatr() + "); ";
+				continue;
 			}
 			avancementService.creerAvancementConventionCollective(avct, getAvancementConvColDao());
 		}
@@ -584,9 +589,9 @@ public class OeAVCTMasseSalarialeConvention extends BasicProcess {
 			addZone(getNOM_CK_AFFECTER(i), av.getEtat().equals(EnumEtatAvancement.VALIDE.getValue()) || av.getEtat().equals(EnumEtatAvancement.AFFECTE.getValue()) ? getCHECKED_ON() : getCHECKED_OFF());
 			addZone(getNOM_ST_ETAT(i), av.getEtat());
 			addZone(getNOM_ST_CARRIERE_SIMU(i), av.getCarriereSimu() == null ? "&nbsp;" : av.getCarriereSimu());
-			addZone(getNOM_ST_MONTANT_PRIME(i),
-					(av.getMontantPrime1200() == null ? "&nbsp;" : av.getMontantPrime1200()) + " <br> "
-							+ (av.getMontantPrime1200() == null ? "&nbsp;" : Integer.valueOf(av.getMontantPrime1200()) == 30 ? "30" : String.valueOf(Integer.valueOf(av.getMontantPrime1200()) + 1)));
+			addZone(getNOM_ST_MONTANT_PRIME(i), (av.getMontantPrime1200() == null || av.getMontantPrime1200().equals(Const.CHAINE_VIDE) ? "&nbsp;"
+					: Integer.valueOf(av.getMontantPrime1200()) == 30 ? "30" : String.valueOf(Integer.valueOf(av.getMontantPrime1200()) - 1))
+					+ " <br> " + (av.getMontantPrime1200() == null ? "&nbsp;" : av.getMontantPrime1200()));
 		}
 	}
 
@@ -674,7 +679,7 @@ public class OeAVCTMasseSalarialeConvention extends BasicProcess {
 					Agent agent = getAgentDao().chercherAgent(avct.getIdAgent());
 
 					// on check la si prime saisie en simu
-					if (!avancementService.isPrimeAvctConvColSimu(getTransaction(), agent, avct)) {
+					if (avancementService.isPrimeAvctConvColSimu(getTransaction(), agent, avct)) {
 						// c'est qu'il existe une prime pour cette date
 
 						// si ce n'est pas la derniere carriere du tableau ie :

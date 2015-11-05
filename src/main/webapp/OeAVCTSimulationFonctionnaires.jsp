@@ -64,13 +64,6 @@
 					<BR/><BR/> 
 					<span style="color: red;" class="sigp2Mandatory">Pour ces agents, un avancement n'a pu être calculé car ils sont en haut de grille.</span>
 				<%} %>
-				<BR><BR>
-		    
-				<% if (!process.agentEnErreur.equals("")){ %>
-					<span style="color: red;" class="sigp2Mandatory">Agents en anomalies :<br/><br/> <%=process.agentEnErreur %></span>
-					<BR/><BR/> 
-					<span style="color: red;" class="sigp2Mandatory">Pour ces agents, un avancement n'a pu être calculé car ils sont en haut de grille.</span>
-				<%} %>
 			</FIELDSET>
 
 			<INPUT name="JSP" type="hidden" value="<%= process.getJSP() %>">

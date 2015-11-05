@@ -52,6 +52,7 @@ public class OeAVCTSimulationConvCol extends BasicProcess {
 	private IAdsService adsService;
 	private IAvancementService avancementService;
 	public String agentEnErreur = Const.CHAINE_VIDE;
+	public String agentEnErreurPrime = Const.CHAINE_VIDE;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -261,6 +262,10 @@ public class OeAVCTSimulationConvCol extends BasicProcess {
 				continue;
 			} else if (avct.getIdAgent() == null) {
 				// l'agent n'a pas 3 ans d'ancienneté
+				continue;
+			}else if(avct.getMontantPrime1200()==null){
+				//l'agent n'a pas de prime ouverte
+				agentEnErreurPrime += a.getNomAgent() + " " + a.getPrenomAgent() + " (" + a.getNomatr() + "); ";
 				continue;
 			}
 			avancementService.creerAvancementConventionCollective(avct, getAvancementConvColDao());

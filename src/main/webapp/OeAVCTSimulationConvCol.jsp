@@ -64,6 +64,13 @@
 					<BR/><BR/> 
 					<span style="color: red;" class="sigp2Mandatory">Pour ces agents, aucun avancement n'a pu être calculé.</span>
 				<%} %>
+				<BR><BR>
+		    
+				<% if (!process.agentEnErreurPrime.equals("")){ %>
+					<span style="color: red;" class="sigp2Mandatory">Agents en anomalies :<br/><br/> <%=process.agentEnErreurPrime %></span>
+					<BR/><BR/> 
+					<span style="color: red;" class="sigp2Mandatory">Pour ces agents, un avancement n'a pu être calculé car ils n'ont pas de prime 1200 ouverte.</span>
+				<%} %>
 			</FIELDSET>
 
 			<INPUT name="JSP" type="hidden" value="<%= process.getJSP() %>">

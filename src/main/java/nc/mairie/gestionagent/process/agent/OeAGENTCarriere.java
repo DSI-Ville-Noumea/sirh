@@ -2554,35 +2554,27 @@ public class OeAGENTCarriere extends BasicProcess {
 
 		String anneeCourante = Services.dateDuJour().substring(6, 10);
 
-		// on regarde si la prime existe deja ou pas
-		@SuppressWarnings("unused")
-		Prime primeExist = Prime.chercherPrime1200ByRubrAndDate(getTransaction(), agent.getNomatr(), anneeCourante + "0101");
-		if (getTransaction().isErreur()) {
-			getTransaction().traiterErreur();
-
-			AvancementConvCol avct = avancementService.calculAvancementConventionCollective(getTransaction(), agent, anneeCourante, adsService, getFichePosteDao(), getAffectationDao());
-			if (avct == null) {
-				addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
-				// "ERR189","Cet avancement ne peut être calculé @."
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR189", Const.CHAINE_VIDE));
-				return false;
-			} else if (avct.getIdAgent() == null) {
-				addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
-				// "ERR189","Cet avancement ne peut être calculé @."
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR189", ": l'agent n'a pas 3 ans d'ancienneté."));
-				return false;
-			}
-
-			Prime prime = avancementService.getNewPrimeConventionCollective(getTransaction(), agent, avct);
-			addZone(getNOM_EF_DATE_DEBUT(), "01/01/" + avct.getAnnee());
-			addZone(getNOM_ST_GRADE(), prime.getMtPri());
-		} else {
+		AvancementConvCol avct = avancementService.calculAvancementConventionCollective(getTransaction(), agent, anneeCourante, adsService, getFichePosteDao(), getAffectationDao());
+		if (avct == null) {
 			addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
-			// c'est qu'il existe une prime pour cette date
 			// "ERR189","Cet avancement ne peut être calculé @."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR189", ": une prime 1200 existe dejà dans le futur."));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR189", Const.CHAINE_VIDE));
+			return false;
+		} else if (avct.getIdAgent() == null) {
+			addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+			// "ERR189","Cet avancement ne peut être calculé @."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR189", ": l'agent n'a pas 3 ans d'ancienneté"));
+			return false;
+		} else if (avct.getMontantPrime1200() == null) {
+			addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+			// "ERR189","Cet avancement ne peut être calculé @."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR189", ": l'agent n'a pas de prime ouverte"));
 			return false;
 		}
+
+		Prime prime = avancementService.getNewPrimeConventionCollective(getTransaction(), agent, avct);
+		addZone(getNOM_EF_DATE_DEBUT(), "01/01/" + avct.getAnnee());
+		addZone(getNOM_ST_GRADE(), prime.getMtPri());
 
 		return true;
 	}
@@ -2613,7 +2605,7 @@ public class OeAGENTCarriere extends BasicProcess {
 			// "ERR189","Cet avancement ne peut être calculé @."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR189", ": le nombre de points d'avancement du grade de la FDP est 0"));
 			return false;
-		}else if (avct.getGrade() == null) {
+		} else if (avct.getGrade() == null) {
 			addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 			// "ERR189","Cet avancement ne peut être calculé @."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR189", ": le grade actuel de cet agent n'a pas de grade suivant"));

@@ -127,11 +127,10 @@ public class OeAVCTConvCol extends BasicProcess {
 						: getCHECKED_OFF());
 				addZone(getNOM_ST_ETAT(i), av.getEtat());
 				addZone(getNOM_ST_CARRIERE_SIMU(i), av.getCarriereSimu() == null ? "&nbsp;" : av.getCarriereSimu());
-				addZone(getNOM_ST_MONTANT_PRIME(i),
-						(av.getMontantPrime1200() == null ? "&nbsp;" : av.getMontantPrime1200())
-								+ " <br> "
-								+ (av.getMontantPrime1200() == null || av.getMontantPrime1200().equals(Const.CHAINE_VIDE) ? "&nbsp;" : Integer.valueOf(av.getMontantPrime1200()) == 30 ? "30" : String
-										.valueOf(Integer.valueOf(av.getMontantPrime1200()) + 1)));
+				addZone(getNOM_ST_MONTANT_PRIME(i), (av.getMontantPrime1200() == null || av.getMontantPrime1200().equals(Const.CHAINE_VIDE) ? "&nbsp;"
+						: Integer.valueOf(av.getMontantPrime1200()) == 30 ? "30" : String.valueOf(Integer.valueOf(av.getMontantPrime1200()) - 1))
+						+ " <br> "
+						+ (av.getMontantPrime1200() == null ? "&nbsp;" : av.getMontantPrime1200()));
 			}
 		}
 	}
@@ -299,7 +298,7 @@ public class OeAVCTConvCol extends BasicProcess {
 					Agent agent = getAgentDao().chercherAgent(avct.getIdAgent());
 
 					// on check la si prime saisie en simu
-					if (!avancementService.isPrimeAvctConvColSimu(getTransaction(), agent, avct)) {
+					if (avancementService.isPrimeAvctConvColSimu(getTransaction(), agent, avct)) {
 						// c'est qu'il existe une prime pour cette date
 
 						// si ce n'est pas la derniere carriere du tableau ie :
