@@ -565,6 +565,7 @@ public class OeAVCTFonctCarrieres extends BasicProcess {
 
 		// on valide les modifis
 		commitTransaction();
+		afficheListeAvancement();
 
 		// "INF201","@ agents ont été affectés."
 		setStatut(STATUT_MEME_PROCESS, false, MessageUtils.getMessage("INF201", String.valueOf(nbAgentAffectes)));

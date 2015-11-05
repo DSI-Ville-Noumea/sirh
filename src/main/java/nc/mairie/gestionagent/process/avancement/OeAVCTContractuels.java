@@ -377,6 +377,7 @@ public class OeAVCTContractuels extends BasicProcess {
 		}
 		// on valide les modifis
 		commitTransaction();
+		performPB_CHANGER_ANNEE(request);
 
 		// "INF201","@ agents ont été affectés."
 		setStatut(STATUT_MEME_PROCESS, false, MessageUtils.getMessage("INF201", String.valueOf(nbAgentAffectes)));
