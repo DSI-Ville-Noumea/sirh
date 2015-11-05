@@ -175,11 +175,12 @@ function activeRegul() {
 							<th colspan="3">BM <br> Ancien <br> Nouveau</th>
 							<th colspan="3">ACC <br> Ancien <br> Nouveau</th>
 							<th rowspan="2">Durée Std</th>
-							<th rowspan="2">Date Avct Moy</th>
+							<th rowspan="2">Date Avct Mini <br> Moy <br> Maxi</th>
 							<th rowspan="2">Valid. DRH							
 								<INPUT type="checkbox" name="CHECK_ALL_DRH" onClick='activeDRH()'>
 							</th>
 							<th rowspan="2">Motif Avct</th>
+							<th rowspan="2">Avis CAP</th>
 							<th rowspan="2">Projet Arrete
 								<INPUT type="checkbox" name="CHECK_ALL_PROJET" onClick='activeProjet()'>
 							</th>
@@ -228,7 +229,12 @@ function activeRegul() {
 								<td><%=process.getVAL_ST_DATE_AVCT(indiceAvct)%></td>
 								<% if (process.getVAL_CK_AFFECTER(indiceAvct).equals(process.getCHECKED_ON())){ %>
 									<td><INPUT type="checkbox" disabled="disabled" <%= process.forCheckBoxHTML(process.getNOM_CK_VALID_DRH(indiceAvct),process.getVAL_CK_VALID_DRH(indiceAvct))%> onClick='validDRH("<%=indiceAvct %>")'></td>								
-									<td><%=process.getVAL_ST_MOTIF_AVCT(indiceAvct)%></td>	
+									<td><%=process.getVAL_ST_MOTIF_AVCT(indiceAvct)%></td>							
+									<td>
+										<SELECT name="<%= process.getNOM_LB_AVIS_CAP(indiceAvct) %>" class="sigp2-liste" disabled="disabled">
+											<%=process.forComboHTML(process.getVAL_LB_AVIS_CAP(indiceAvct), process.getVAL_LB_AVIS_CAP_SELECT(indiceAvct)) %>
+										</SELECT>
+									</td>
 									<td><INPUT type="checkbox" disabled="disabled" <%= process.forCheckBoxHTML(process.getNOM_CK_PROJET_ARRETE(indiceAvct),process.getVAL_CK_PROJET_ARRETE(indiceAvct))%> onClick='validProjet("<%=indiceAvct %>")'></td>
 									<td>
 										<INPUT disabled="disabled" class="sigp2-saisie" maxlength="8" name="<%= process.getNOM_EF_NUM_ARRETE(indiceAvct) %>" size="8"
@@ -251,7 +257,12 @@ function activeRegul() {
 									<%} %>
 								<%}else if(process.getVAL_CK_PROJET_ARRETE(indiceAvct).equals(process.getCHECKED_ON())){ %>
 									<td><INPUT type="checkbox" disabled="disabled" <%= process.forCheckBoxHTML(process.getNOM_CK_VALID_DRH(indiceAvct),process.getVAL_CK_VALID_DRH(indiceAvct))%> onClick='validDRH("<%=indiceAvct %>")'></td>								
-									<td><%=process.getVAL_ST_MOTIF_AVCT(indiceAvct)%></td>		
+									<td><%=process.getVAL_ST_MOTIF_AVCT(indiceAvct)%></td>							
+									<td>
+										<SELECT name="<%= process.getNOM_LB_AVIS_CAP(indiceAvct) %>" class="sigp2-liste" disabled="disabled">
+											<%=process.forComboHTML(process.getVAL_LB_AVIS_CAP(indiceAvct), process.getVAL_LB_AVIS_CAP_SELECT(indiceAvct)) %>
+										</SELECT>
+									</td>	
 									<td><INPUT type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_PROJET_ARRETE(indiceAvct),process.getVAL_CK_PROJET_ARRETE(indiceAvct))%> onClick='validProjet("<%=indiceAvct %>")'></td>
 									<td>
 										<INPUT class="sigp2-saisie" maxlength="8" name="<%= process.getNOM_EF_NUM_ARRETE(indiceAvct) %>" size="8"
@@ -270,7 +281,12 @@ function activeRegul() {
 									<td><INPUT type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_AFFECTER(indiceAvct),process.getVAL_CK_AFFECTER(indiceAvct))%> onClick='validAffecter("<%=indiceAvct %>")'></td>																
 								<%}else if(process.getVAL_CK_VALID_DRH(indiceAvct).equals(process.getCHECKED_ON())){ %>
 									<td><INPUT type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_VALID_DRH(indiceAvct),process.getVAL_CK_VALID_DRH(indiceAvct))%> onClick='validDRH("<%=indiceAvct %>")'></td>								
-									<td><%=process.getVAL_ST_MOTIF_AVCT(indiceAvct)%></td>	
+									<td><%=process.getVAL_ST_MOTIF_AVCT(indiceAvct)%></td>							
+									<td>
+										<SELECT name="<%= process.getNOM_LB_AVIS_CAP(indiceAvct) %>" class="sigp2-liste">
+											<%=process.forComboHTML(process.getVAL_LB_AVIS_CAP(indiceAvct), process.getVAL_LB_AVIS_CAP_SELECT(indiceAvct)) %>
+										</SELECT>
+									</td>
 									<td><INPUT type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_PROJET_ARRETE(indiceAvct),process.getVAL_CK_PROJET_ARRETE(indiceAvct))%> onClick='validProjet("<%=indiceAvct %>")'></td>
 									<td>
 										<INPUT class="sigp2-saisie" maxlength="8" name="<%= process.getNOM_EF_NUM_ARRETE(indiceAvct) %>" size="8" style="visibility:hidden"
@@ -289,7 +305,12 @@ function activeRegul() {
 									<td><INPUT type="checkbox" style="visibility:hidden" <%= process.forCheckBoxHTML(process.getNOM_CK_AFFECTER(indiceAvct),process.getVAL_CK_AFFECTER(indiceAvct))%> onClick='validAffecter("<%=indiceAvct %>")'></td>								
 								<%}else{ %>
 									<td><INPUT type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_VALID_DRH(indiceAvct),process.getVAL_CK_VALID_DRH(indiceAvct))%> onClick='validDRH("<%=indiceAvct %>")'></td>								
-									<td><%=process.getVAL_ST_MOTIF_AVCT(indiceAvct)%></td>		
+									<td><%=process.getVAL_ST_MOTIF_AVCT(indiceAvct)%></td>							
+									<td>
+										<SELECT name="<%= process.getNOM_LB_AVIS_CAP(indiceAvct) %>" class="sigp2-liste" style="visibility:hidden">
+											<%=process.forComboHTML(process.getVAL_LB_AVIS_CAP(indiceAvct), process.getVAL_LB_AVIS_CAP_SELECT(indiceAvct)) %>
+										</SELECT>
+									</td>		
 									<td><INPUT type="checkbox" style="visibility:hidden" <%= process.forCheckBoxHTML(process.getNOM_CK_PROJET_ARRETE(indiceAvct),process.getVAL_CK_PROJET_ARRETE(indiceAvct))%> onClick='validProjet("<%=indiceAvct %>")'></td>
 									<td>
 										<INPUT class="sigp2-saisie" maxlength="8" name="<%= process.getNOM_EF_NUM_ARRETE(indiceAvct) %>" size="8" style="visibility:hidden"
@@ -323,7 +344,7 @@ function activeRegul() {
 					$(document).ready(function() {
 					    $('#tabAvctFonct').dataTable({
 							"oLanguage": {"sUrl": "media/dataTables/language/fr_FR.txt"},
-							"aoColumns": [{"bSearchable":false, "bVisible":false},null,null,null,{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSortable":false,"bSearchable":false},{"bSortable":false,"bSearchable":false},{"bSortable":false,"bSearchable":false},{"bSortable":false,"bSearchable":false},{"bSortable":false,"bSearchable":false},{"bSortable":false,"bSearchable":false},{"bSortable":false,"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSortable":false,"bSearchable":false},{"bSearchable":false},{"bSortable":false,"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSortable":false,"bSearchable":false},{"bSortable":false,"bSearchable":false},{"bSortable":false,"bSearchable":false}],
+							"aoColumns": [{"bSearchable":false, "bVisible":false},null,null,null,{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSortable":false,"bSearchable":false},{"bSortable":false,"bSearchable":false},{"bSortable":false,"bSearchable":false},{"bSortable":false,"bSearchable":false},{"bSortable":false,"bSearchable":false},{"bSortable":false,"bSearchable":false},{"bSortable":false,"bSearchable":false},{"bSortable":false,"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSortable":false,"bSearchable":false},{"bSearchable":false},{"bSortable":false,"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSortable":false,"bSearchable":false},{"bSortable":false,"bSearchable":false},{"bSortable":false,"bSearchable":false}],
 							"sDom": '<"H"fl>t<"F"iT>',
 							"sScrollY": "375px",
 							"bPaginate": false,

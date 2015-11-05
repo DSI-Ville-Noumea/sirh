@@ -1341,6 +1341,11 @@ public class OeAVCTMasseSalarialeFonctionnaire extends BasicProcess {
 								continue;
 							}
 						}
+						
+						if(dateAvctFinale==null){
+							agentEnErreur += agent.getNomAgent() + " " + agent.getPrenomAgent() + " (" + agent.getNomatr() + "); ";
+							continue;
+						}
 
 						// il faut faire attention qu'il n'y a pas de carriere
 						// de simu deja en cours

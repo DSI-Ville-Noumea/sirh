@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Hashtable;
+import java.util.ListIterator;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -21,6 +22,7 @@ import nc.mairie.metier.carriere.Carriere;
 import nc.mairie.metier.carriere.Grade;
 import nc.mairie.metier.carriere.HistoCarriere;
 import nc.mairie.metier.parametrage.MotifAvancement;
+import nc.mairie.metier.referentiel.AvisCap;
 import nc.mairie.spring.dao.metier.agent.AgentDao;
 import nc.mairie.spring.dao.metier.avancement.AvancementFonctionnairesDao;
 import nc.mairie.spring.dao.metier.carriere.HistoCarriereDao;
@@ -30,6 +32,7 @@ import nc.mairie.spring.dao.metier.referentiel.AvisCapDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
+import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.UserAppli;
 import nc.mairie.technique.VariableGlobale;
@@ -63,12 +66,15 @@ public class OeAVCTFonctionnaireAutre extends BasicProcess {
 	private Logger logger = LoggerFactory.getLogger(OeAVCTFonctionnaireAutre.class);
 
 	private String[] LB_ANNEE;
+	private String[] LB_AVIS_CAP;
 
 	private String[] listeAnnee;
 	private String anneeSelect;
 
 	private Hashtable<String, MotifAvancement> hashMotifAvct;
 	private ArrayList<MotifAvancement> listeMotifAvct;
+	private Hashtable<Integer, AvisCap> hashAvisCAP;
+	private ArrayList<AvisCap> listeAvisCAP;
 
 	private ArrayList<AvancementFonctionnaires> listeAvct;
 	public String agentEnErreur = Const.CHAINE_VIDE;
@@ -170,6 +176,28 @@ public class OeAVCTFonctionnaireAutre extends BasicProcess {
 			for (int i = 0; i < getListeMotifAvct().size(); i++) {
 				MotifAvancement m = (MotifAvancement) getListeMotifAvct().get(i);
 				getHashMotifAvancement().put(m.getIdMotifAvct().toString(), m);
+			}
+		}
+
+		// Si liste avisCAP vide alors affectation
+		if (getListeAvisCAP() == null || getListeAvisCAP().size() == 0) {
+			ArrayList<AvisCap> avis = (ArrayList<AvisCap>) getAvisCapDao().listerAvisCap();
+			setListeAvisCAP(avis);
+
+			int[] tailles = { 7 };
+			FormateListe aFormat = new FormateListe(tailles);
+			for (ListIterator<AvisCap> list = getListeAvisCAP().listIterator(); list.hasNext();) {
+				AvisCap fili = (AvisCap) list.next();
+				String ligne[] = { fili.getLibLongAvisCap() };
+
+				aFormat.ajouteLigne(ligne);
+			}
+			setLB_AVIS_CAP(aFormat.getListeFormatee());
+
+			// remplissage de la hashTable
+			for (int i = 0; i < getListeAvisCAP().size(); i++) {
+				AvisCap ac = (AvisCap) getListeAvisCAP().get(i);
+				getHashAvisCAP().put(ac.getIdAvisCap(), ac);
 			}
 		}
 
@@ -369,10 +397,12 @@ public class OeAVCTFonctionnaireAutre extends BasicProcess {
 
 			addZone(getNOM_ST_NUM_AVCT(i), av.getIdAvct().toString());
 			addZone(getNOM_ST_PERIODE_STD(i), av.getPeriodeStandard().toString());
-			addZone(getNOM_ST_DATE_AVCT(i), sdfFormatDate.format(av.getDateAvctMoy()));
+			addZone(getNOM_ST_DATE_AVCT(i), (av.getDateAvctMini() == null ? "&nbsp;" : sdfFormatDate.format(av.getDateAvctMini())) + " <br> " + sdfFormatDate.format(av.getDateAvctMoy()) + " <br> "
+					+ (av.getDateAvctMaxi() == null ? "&nbsp;" : sdfFormatDate.format(av.getDateAvctMaxi())));
 
 			addZone(getNOM_CK_VALID_DRH(i), av.getEtat().equals(EnumEtatAvancement.TRAVAIL.getValue()) ? getCHECKED_OFF() : getCHECKED_ON());
 			addZone(getNOM_ST_MOTIF_AVCT(i), av.getIdMotifAvct() == null ? "&nbsp;" : getHashMotifAvancement().get(av.getIdMotifAvct().toString()).getLibMotifAvct());
+			addZone(getNOM_LB_AVIS_CAP_SELECT(i), av.getIdAvisCap() == null ? Const.CHAINE_VIDE : String.valueOf(getListeAvisCAP().indexOf(getHashAvisCAP().get(av.getIdAvisCap()))));
 			addZone(getNOM_CK_PROJET_ARRETE(i), av.getEtat().equals(EnumEtatAvancement.TRAVAIL.getValue()) || av.getEtat().equals(EnumEtatAvancement.SGC.getValue()) ? getCHECKED_OFF()
 					: getCHECKED_ON());
 			addZone(getNOM_EF_NUM_ARRETE(i), av.getNumArrete());
@@ -865,6 +895,15 @@ public class OeAVCTFonctionnaireAutre extends BasicProcess {
 				} else {
 					avct.setEtat(EnumEtatAvancement.TRAVAIL.getValue());
 				}
+				//#19513
+				// on traite l'avis CAP
+				int indiceAvisCap = (Services.estNumerique(getVAL_LB_AVIS_CAP_SELECT(i)) ? Integer.parseInt(getVAL_LB_AVIS_CAP_SELECT(i)) : -1);
+				if (indiceAvisCap != -1) {
+					Integer idAvisCap = ((AvisCap) getListeAvisCAP().get(indiceAvisCap)).getIdAvisCap();
+					avct.setIdAvisCap(idAvisCap);
+					//on met aussi sur avis_emp pour pouvoir generer la carriere ensuite
+					avct.setIdAvisEmp(idAvisCap);
+				}
 				// on traite le numero et la date d'arrete
 				avct.setDateArrete(getVAL_EF_DATE_ARRETE(i).equals(Const.CHAINE_VIDE) ? null : sdfFormatDate.parse(getVAL_EF_DATE_ARRETE(i)));
 				avct.setNumArrete(getVAL_EF_NUM_ARRETE(i));
@@ -954,7 +993,11 @@ public class OeAVCTFonctionnaireAutre extends BasicProcess {
 								continue;
 							}
 						}
-
+						
+						if(dateAvctFinale==null){
+							agentEnErreur += agent.getNomAgent() + " " + agent.getPrenomAgent() + " (" + agent.getNomatr() + "); ";
+							continue;
+						}
 						// il faut faire attention qu'il n'y a pas de carriere
 						// de simu deja en cours
 						@SuppressWarnings("unused")
@@ -1054,6 +1097,7 @@ public class OeAVCTFonctionnaireAutre extends BasicProcess {
 		}
 		// on valide les modifis
 		commitTransaction();
+		afficherListeAvct(request);
 
 		// "INF201","@ agents ont été affectés."
 		setStatut(STATUT_MEME_PROCESS, false, MessageUtils.getMessage("INF201", String.valueOf(nbAgentAffectes)));
@@ -1518,5 +1562,45 @@ public class OeAVCTFonctionnaireAutre extends BasicProcess {
 
 	public void setAvisCapDao(AvisCapDao avisCapDao) {
 		this.avisCapDao = avisCapDao;
+	}
+
+	public String getNOM_LB_AVIS_CAP(int i) {
+		return "NOM_LB_AVIS_CAP_" + i;
+	}
+
+	public String getNOM_LB_AVIS_CAP_SELECT(int i) {
+		return "NOM_LB_AVIS_CAP_" + i + "_SELECT";
+	}
+
+	private String[] getLB_AVIS_CAP(int i) {
+		if (LB_AVIS_CAP == null)
+			LB_AVIS_CAP = initialiseLazyLB();
+		return LB_AVIS_CAP;
+	}
+
+	private void setLB_AVIS_CAP(String[] newLB_AVIS_CAP) {
+		LB_AVIS_CAP = newLB_AVIS_CAP;
+	}
+
+	public String[] getVAL_LB_AVIS_CAP(int i) {
+		return getLB_AVIS_CAP(i);
+	}
+
+	public String getVAL_LB_AVIS_CAP_SELECT(int i) {
+		return getZone(getNOM_LB_AVIS_CAP_SELECT(i));
+	}
+
+	private ArrayList<AvisCap> getListeAvisCAP() {
+		return listeAvisCAP;
+	}
+
+	private void setListeAvisCAP(ArrayList<AvisCap> listeAvisCAP) {
+		this.listeAvisCAP = listeAvisCAP;
+	}
+
+	private Hashtable<Integer, AvisCap> getHashAvisCAP() {
+		if (hashAvisCAP == null)
+			hashAvisCAP = new Hashtable<Integer, AvisCap>();
+		return hashAvisCAP;
 	}
 }
