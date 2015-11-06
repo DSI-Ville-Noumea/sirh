@@ -5257,9 +5257,10 @@ public class OePOSTEFichePoste extends BasicProcess {
 		addZone(getNOM_ST_ACTION(), ACTION_IMPRESSION);
 		// on fait appel a CREER pour valider les modifications et afficher le
 		// message "FDP imprimee"
-		if (!performPB_CREER(request)) {
-			return false;
-		}
+//#19571 : on ne sauvegarde plus pour pouvoir imprimer de vieille FDP
+//		if (!performPB_CREER(request)) {
+//			return false;
+//		}
 
 		if (!imprimeModele(request)) {
 			return false;
