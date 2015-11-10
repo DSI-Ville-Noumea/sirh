@@ -111,9 +111,9 @@
 	<!-- AVANCEMENT / SIMULATION -->
 	<!-- -->
 	<Parameter description="Année pour la calcul des avancements"
-		name="ANNEE_AVCT" override="false" value="2015" />
+		name="ANNEE_AVCT" override="false" value="2016" />
 	<Parameter description="Année pour la calcul des avancements"
-		name="ANNEE_MASSE_SALARIALE" override="false" value="2016" />
+		name="ANNEE_MASSE_SALARIALE" override="false" value="2017" />
 
 	<!-- -->
 	<!-- AUTRE PARAM -->
