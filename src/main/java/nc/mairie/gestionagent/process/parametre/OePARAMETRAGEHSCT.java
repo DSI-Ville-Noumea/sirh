@@ -6,7 +6,7 @@ import java.util.ListIterator;
 import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.metier.Const;
-import nc.mairie.metier.hsct.MaladiePro;
+import nc.mairie.metier.hsct.TypeMaladiePro;
 import nc.mairie.metier.hsct.Medecin;
 import nc.mairie.metier.hsct.Recommandation;
 import nc.mairie.metier.hsct.SiegeLesion;
@@ -17,7 +17,7 @@ import nc.mairie.spring.dao.metier.agent.DocumentDao;
 import nc.mairie.spring.dao.metier.hsct.AccidentTravailDao;
 import nc.mairie.spring.dao.metier.hsct.HandicapDao;
 import nc.mairie.spring.dao.metier.hsct.InaptitudeDao;
-import nc.mairie.spring.dao.metier.hsct.MaladieProDao;
+import nc.mairie.spring.dao.metier.hsct.TypeMaladieProDao;
 import nc.mairie.spring.dao.metier.hsct.MedecinDao;
 import nc.mairie.spring.dao.metier.hsct.RecommandationDao;
 import nc.mairie.spring.dao.metier.hsct.SiegeLesionDao;
@@ -68,8 +68,8 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	private ArrayList<SiegeLesion> listeLesion;
 	private SiegeLesion lesionCourant;
 
-	private ArrayList<MaladiePro> listeMaladie;
-	private MaladiePro maladieCourante;
+	private ArrayList<TypeMaladiePro> listeMaladie;
+	private TypeMaladiePro maladieCourante;
 
 	private ArrayList<TypeDocument> listeTypeDocument;
 	private TypeDocument typeDocumentCourant;
@@ -80,7 +80,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	private TypeDocumentDao typeDocumentDao;
 	private AccidentTravailDao accidentTravailDao;
 	private HandicapDao handicapDao;
-	private MaladieProDao maladieProDao;
+	private TypeMaladieProDao maladieProDao;
 	private MedecinDao medecinDao;
 	private RecommandationDao recommandationDao;
 	private SiegeLesionDao siegeLesionDao;
@@ -153,7 +153,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 
 		if (getListeMaladie() == null) {
 			// Recherche des des maladies professionnelles
-			ArrayList<MaladiePro> listeMaladie = getMaladieProDao().listerMaladiePro();
+			ArrayList<TypeMaladiePro> listeMaladie = getMaladieProDao().listerMaladiePro();
 			setListeMaladie(listeMaladie);
 			initialiseListeMaladie(request);
 		}
@@ -179,7 +179,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 			setHandicapDao(new HandicapDao((SirhDao) context.getBean("sirhDao")));
 		}
 		if (getMaladieProDao() == null) {
-			setMaladieProDao(new MaladieProDao((SirhDao) context.getBean("sirhDao")));
+			setMaladieProDao(new TypeMaladieProDao((SirhDao) context.getBean("sirhDao")));
 		}
 		if (getMedecinDao() == null) {
 			setMedecinDao(new MedecinDao((SirhDao) context.getBean("sirhDao")));
@@ -330,8 +330,8 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 			int tailles[] = { 20, 50 };
 			String padding[] = { "G", "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
-			for (ListIterator<MaladiePro> list = getListeMaladie().listIterator(); list.hasNext();) {
-				MaladiePro mp = (MaladiePro) list.next();
+			for (ListIterator<TypeMaladiePro> list = getListeMaladie().listIterator(); list.hasNext();) {
+				TypeMaladiePro mp = (TypeMaladiePro) list.next();
 				String ligne[] = { mp.getCodeMaladiePro(), mp.getLibMaladiePro() };
 
 				aFormat.ajouteLigne(ligne);
@@ -923,7 +923,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 				: -1);
 
 		if (indice != -1 && indice < getListeMaladie().size()) {
-			MaladiePro mp = getListeMaladie().get(indice);
+			TypeMaladiePro mp = getListeMaladie().get(indice);
 			setMaladieCourante(mp);
 			addZone(getNOM_EF_CODE_MALADIE(), mp.getCodeMaladiePro());
 			addZone(getNOM_EF_LIBELLE_MALADIE(), mp.getLibMaladiePro());
@@ -1322,7 +1322,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 
 		if (getVAL_ST_ACTION_MALADIE() != null && getVAL_ST_ACTION_MALADIE() != Const.CHAINE_VIDE) {
 			if (getVAL_ST_ACTION_MALADIE().equals(ACTION_CREATION)) {
-				setMaladieCourante(new MaladiePro());
+				setMaladieCourante(new TypeMaladiePro());
 				getMaladieCourante().setCodeMaladiePro(getVAL_EF_CODE_MALADIE());
 				getMaladieCourante().setLibMaladiePro(getVAL_EF_LIBELLE_MALADIE());
 				getMaladieProDao().creerMaladiePro(getMaladieCourante().getCodeMaladiePro(),
@@ -1391,7 +1391,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 		// Vérification des contraintes d'unicité de la maladie professionnelle
 		if (getVAL_ST_ACTION_MALADIE().equals(ACTION_CREATION)) {
 
-			for (MaladiePro maladie : getListeMaladie()) {
+			for (TypeMaladiePro maladie : getListeMaladie()) {
 				if (maladie.getCodeMaladiePro().equals(getVAL_EF_CODE_MALADIE().toUpperCase())) {
 					// "ERR974",
 					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
@@ -2279,11 +2279,11 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 		this.listeLesion = listeLesion;
 	}
 
-	private ArrayList<MaladiePro> getListeMaladie() {
+	private ArrayList<TypeMaladiePro> getListeMaladie() {
 		return listeMaladie;
 	}
 
-	private void setListeMaladie(ArrayList<MaladiePro> listeMaladie) {
+	private void setListeMaladie(ArrayList<TypeMaladiePro> listeMaladie) {
 		this.listeMaladie = listeMaladie;
 	}
 
@@ -2303,11 +2303,11 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 		this.listeRecommandation = listeRecommandation;
 	}
 
-	private MaladiePro getMaladieCourante() {
+	private TypeMaladiePro getMaladieCourante() {
 		return maladieCourante;
 	}
 
-	private void setMaladieCourante(MaladiePro maladieCourante) {
+	private void setMaladieCourante(TypeMaladiePro maladieCourante) {
 		this.maladieCourante = maladieCourante;
 	}
 
@@ -2701,11 +2701,11 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 		this.handicapDao = handicapDao;
 	}
 
-	public MaladieProDao getMaladieProDao() {
+	public TypeMaladieProDao getMaladieProDao() {
 		return maladieProDao;
 	}
 
-	public void setMaladieProDao(MaladieProDao maladieProDao) {
+	public void setMaladieProDao(TypeMaladieProDao maladieProDao) {
 		this.maladieProDao = maladieProDao;
 	}
 

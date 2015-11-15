@@ -16,10 +16,10 @@ public interface AccidentTravailDaoInterface {
 	public AccidentTravail chercherAccidentTravail(Integer idAT) throws Exception;
 
 	public void creerAccidentTravail(Integer idTypeAT, Integer idSiege, Integer idAgent, Date dateAT,
-			Date dateInitiale, Integer nbJoursITT) throws Exception;
+			Date dateInitiale, Integer nbJoursITT, Date dateFin, Integer avisCommission, Integer idAtReference, Boolean rechute) throws Exception;
 
 	public void modifierAccidentTravail(Integer idAT, Integer idTypeAT, Integer idSiege, Integer idAgent, Date dateAT,
-			Date dateInitiale, Integer nbJoursITT) throws Exception;
+			Date dateInitiale, Integer nbJoursITT, Date dateFin, Integer avisCommission, Integer idAtReference, Boolean rechute) throws Exception;
 
 	public void supprimerAccidentTravail(Integer idAT) throws Exception;
 

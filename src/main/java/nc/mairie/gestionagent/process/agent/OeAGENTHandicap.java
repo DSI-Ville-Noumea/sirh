@@ -24,13 +24,13 @@ import nc.mairie.metier.agent.Agent;
 import nc.mairie.metier.agent.Document;
 import nc.mairie.metier.agent.DocumentAgent;
 import nc.mairie.metier.hsct.Handicap;
-import nc.mairie.metier.hsct.MaladiePro;
+import nc.mairie.metier.hsct.TypeMaladiePro;
 import nc.mairie.metier.hsct.NomHandicap;
 import nc.mairie.metier.parametrage.TypeDocument;
 import nc.mairie.spring.dao.metier.agent.DocumentAgentDao;
 import nc.mairie.spring.dao.metier.agent.DocumentDao;
 import nc.mairie.spring.dao.metier.hsct.HandicapDao;
-import nc.mairie.spring.dao.metier.hsct.MaladieProDao;
+import nc.mairie.spring.dao.metier.hsct.TypeMaladieProDao;
 import nc.mairie.spring.dao.metier.hsct.NomHandicapDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeDocumentDao;
 import nc.mairie.spring.dao.utils.SirhDao;
@@ -71,10 +71,10 @@ public class OeAGENTHandicap extends BasicProcess {
 
 	private ArrayList<Handicap> listeHandicap;
 	private ArrayList<NomHandicap> listeNomHandicap;
-	private ArrayList<MaladiePro> listeMaladiePro;
+	private ArrayList<TypeMaladiePro> listeMaladiePro;
 
 	private Hashtable<Integer, NomHandicap> hashNomHandicap;
-	private Hashtable<String, MaladiePro> hashMaladiePro;
+	private Hashtable<String, TypeMaladiePro> hashMaladiePro;
 
 	public String ACTION_SUPPRESSION = "Suppression d'une fiche handicap.";
 	public String ACTION_CONSULTATION = "Consultation d'une fiche handicap.";
@@ -97,7 +97,7 @@ public class OeAGENTHandicap extends BasicProcess {
 
 	private TypeDocumentDao typeDocumentDao;
 	private HandicapDao handicapDao;
-	private MaladieProDao maladieProDao;
+	private TypeMaladieProDao maladieProDao;
 	private NomHandicapDao nomHandicapDao;
 	private DocumentAgentDao lienDocumentAgentDao;
 	private DocumentDao documentDao;
@@ -152,14 +152,14 @@ public class OeAGENTHandicap extends BasicProcess {
 		// Si hashtable des maladies pro vide
 		// RG_AG_HC_C05
 		if (getHashMaladiePro().size() == 0) {
-			ArrayList<MaladiePro> listeMaladiePro = getMaladieProDao().listerMaladiePro();
+			ArrayList<TypeMaladiePro> listeMaladiePro = getMaladieProDao().listerMaladiePro();
 			setListeMaladiePro(listeMaladiePro);
 
 			if (getListeMaladiePro().size() != 0) {
 				int[] tailles = { 255 };
 				FormateListe aFormat = new FormateListe(tailles);
 				for (int i = 0; i < getListeMaladiePro().size(); i++) {
-					MaladiePro m = (MaladiePro) getListeMaladiePro().get(i);
+					TypeMaladiePro m = (TypeMaladiePro) getListeMaladiePro().get(i);
 					getHashMaladiePro().put(m.getIdMaladiePro().toString(), m);
 					String ligne[] = { m.getLibMaladiePro() };
 					aFormat.ajouteLigne(ligne);
@@ -193,7 +193,7 @@ public class OeAGENTHandicap extends BasicProcess {
 			setHandicapDao(new HandicapDao((SirhDao) context.getBean("sirhDao")));
 		}
 		if (getMaladieProDao() == null) {
-			setMaladieProDao(new MaladieProDao((SirhDao) context.getBean("sirhDao")));
+			setMaladieProDao(new TypeMaladieProDao((SirhDao) context.getBean("sirhDao")));
 		}
 		if (getNomHandicapDao() == null) {
 			setNomHandicapDao(new NomHandicapDao((SirhDao) context.getBean("sirhDao")));
@@ -353,9 +353,9 @@ public class OeAGENTHandicap extends BasicProcess {
 	private boolean initialiseHandicapCourant(HttpServletRequest request) throws Exception {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		NomHandicap nom = (NomHandicap) getHashNomHandicap().get(getHandicapCourant().getIdTypeHandicap());
-		MaladiePro maladiePro = null;
+		TypeMaladiePro maladiePro = null;
 		if (getHandicapCourant().isReconnaissanceMp())
-			maladiePro = (MaladiePro) getHashMaladiePro().get(getHandicapCourant().getIdMaladiePro().toString());
+			maladiePro = (TypeMaladiePro) getHashMaladiePro().get(getHandicapCourant().getIdMaladiePro().toString());
 
 		// Alim zones
 		int ligneNom = getListeNomHandicap().indexOf(nom);
@@ -413,10 +413,10 @@ public class OeAGENTHandicap extends BasicProcess {
 	private boolean initialiseHandicapSuppression(HttpServletRequest request) throws Exception {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		NomHandicap nom = (NomHandicap) getHashNomHandicap().get(getHandicapCourant().getIdTypeHandicap());
-		MaladiePro maladiePro = null;
+		TypeMaladiePro maladiePro = null;
 
 		if (getHandicapCourant().isReconnaissanceMp())
-			maladiePro = (MaladiePro) getHashMaladiePro().get(getHandicapCourant().getIdMaladiePro().toString());
+			maladiePro = (TypeMaladiePro) getHashMaladiePro().get(getHandicapCourant().getIdMaladiePro().toString());
 
 		// Alim zones
 		addZone(getNOM_ST_NOM(), nom.getNomTypeHandicap());
@@ -499,7 +499,7 @@ public class OeAGENTHandicap extends BasicProcess {
 
 			Boolean recoMP = getVAL_RG_RECO_MP().equals(getNOM_RB_RECO_MP_OUI());
 
-			MaladiePro maladiePro = null;
+			TypeMaladiePro maladiePro = null;
 
 			if (recoMP) {
 				int numLigneMP = (Services.estNumerique(getZone(getNOM_LB_NOM_MP_SELECT())) ? Integer
@@ -510,7 +510,7 @@ public class OeAGENTHandicap extends BasicProcess {
 					return false;
 				}
 
-				maladiePro = (MaladiePro) getListeMaladiePro().get(numLigneMP - 1);
+				maladiePro = (TypeMaladiePro) getListeMaladiePro().get(numLigneMP - 1);
 			}
 
 			Boolean recoCRDHNC = getZone(getNOM_RG_RECO_CRDHNC()).equals(getNOM_RB_RECO_CRDHNC_OUI());
@@ -1155,9 +1155,9 @@ public class OeAGENTHandicap extends BasicProcess {
 	 * 
 	 * @return Hashtable<String, MaladiePro>
 	 */
-	private Hashtable<String, MaladiePro> getHashMaladiePro() {
+	private Hashtable<String, TypeMaladiePro> getHashMaladiePro() {
 		if (hashMaladiePro == null)
-			hashMaladiePro = new Hashtable<String, MaladiePro>();
+			hashMaladiePro = new Hashtable<String, TypeMaladiePro>();
 		return hashMaladiePro;
 	}
 
@@ -1195,7 +1195,7 @@ public class OeAGENTHandicap extends BasicProcess {
 	 * 
 	 * @return ArrayList<MaladiePro>
 	 */
-	private ArrayList<MaladiePro> getListeMaladiePro() {
+	private ArrayList<TypeMaladiePro> getListeMaladiePro() {
 		return listeMaladiePro;
 	}
 
@@ -1204,7 +1204,7 @@ public class OeAGENTHandicap extends BasicProcess {
 	 * 
 	 * @param listeMaladiePro
 	 */
-	private void setListeMaladiePro(ArrayList<MaladiePro> listeMaladiePro) {
+	private void setListeMaladiePro(ArrayList<TypeMaladiePro> listeMaladiePro) {
 		this.listeMaladiePro = listeMaladiePro;
 	}
 
@@ -2546,11 +2546,11 @@ public class OeAGENTHandicap extends BasicProcess {
 		this.handicapDao = handicapDao;
 	}
 
-	public MaladieProDao getMaladieProDao() {
+	public TypeMaladieProDao getMaladieProDao() {
 		return maladieProDao;
 	}
 
-	public void setMaladieProDao(MaladieProDao maladieProDao) {
+	public void setMaladieProDao(TypeMaladieProDao maladieProDao) {
 		this.maladieProDao = maladieProDao;
 	}
 
