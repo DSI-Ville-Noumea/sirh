@@ -136,7 +136,7 @@
 								&& process.getVoAccidentTravailMaladieProCourant().getRechute())
 								&& process.getVoAccidentTravailMaladieProCourant().isTypeAT()) { %>
 							<SELECT class="sigp2-saisie" name="<%=process.getNOM_LB_AT_REFERENCE() %>">
-								<%=process.forComboHTML(process.getVAL_LB_AT_REFERENCE(), process.getVAL_LB_AT_REFERENCE_SELECT()) %>
+								<%=process.forComboHTML(process.getLB_AT_REFERENCE(), process.getVAL_LB_AT_REFERENCE_SELECT()) %>
 							</SELECT>
 						<% } %>
 					</td>
@@ -184,7 +184,7 @@
 					</td>
 					<td>
 						<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_AVIS_COMMISSION() %>">
-							<%=process.forComboHTML(process.getVAL_LB_AVIS_COMMISSION(), process.getVAL_LB_AVIS_COMMISSION_SELECT()) %>
+							<%=process.forComboHTML(process.getLB_AVIS_COMMISSION(), process.getVAL_LB_AVIS_COMMISSION_SELECT()) %>
 						</SELECT>
 					</td>
 				</tr>
@@ -337,17 +337,52 @@
 		    <span class="sigp2" style="width:150px">Date : </span>
 			<span class="sigp2-saisie"><%=process.getVAL_EF_DATE()%></span>
 			<BR/>
+			<% if((null == process.getVoAccidentTravailMaladieProCourant().getRechute()
+							|| !process.getVoAccidentTravailMaladieProCourant().getRechute())
+								&& process.getVoAccidentTravailMaladieProCourant().isTypeMP()) { %>
 		    <span class="sigp2" style="width:150px">Date de fin : </span>
 			<span class="sigp2-saisie"><%=process.getVAL_EF_DATE_FIN()%></span>
 			<BR/>
+			<% } %>
+			<span class="sigp2" style="width:150px">Rechute : </span>
+			<span class="sigp2-saisie"><%= null != process.getVAL_CK_RECHUTE() && process.getCHECKED_ON().equals(process.getVAL_CK_RECHUTE()) ? "Oui" : "Non" %></span>
+			<BR/>
+			<% if((null != process.getVoAccidentTravailMaladieProCourant().getRechute()
+								&& process.getVoAccidentTravailMaladieProCourant().getRechute())
+								&& process.getVoAccidentTravailMaladieProCourant().isTypeAT()) { %>
+			<span class="sigp2" style="width:150px">AT de référence : </span>
+			<span class="sigp2-saisie"><%=process.getVAL_LB_AT_REFERENCE()%></span>
+			<BR/>
+			<% } %>
 			<span class="sigp2" style="width:150px">Durée ITT(jours) : </span>
 			<span class="sigp2-saisie"><%=process.getVAL_EF_NB_JOUR_ITT()%></span>
 			<BR/>
 			<span class="sigp2" style="width:150px">Type : </span>
 			<span class="sigp2-saisie"><%=process.getVAL_ST_TYPE()%></span>
 			<BR/>
+			<% if(process.getVoAccidentTravailMaladieProCourant().isTypeAT()) { %>
 			<span class="sigp2" style="width:150px">Siège des lésions : </span>
 			<span class="sigp2-saisie"><%=process.getVAL_ST_SIEGE_LESION()%></span>
+			<BR/>
+			<% } %>
+			<span class="sigp2" style="width:150px">Avis commission : </span>
+			<span class="sigp2-saisie"><%=process.getVAL_LB_AVIS_COMMISSION() %></span>
+			<BR/>
+			<!-- suivi CAFAT pour les maladies pro -->
+			<% if(process.getVoAccidentTravailMaladieProCourant().isTypeMP()) { %>
+			<span class="sigp2" style="width:150px">Date de transmission CAFAT : </span>
+			<span class="sigp2-saisie"><%=process.getVAL_EF_DATE_TRANSMISSION_CAFAT()%></span>
+			<BR/>
+			<span class="sigp2" style="width:150px">Date de décision CAFAT : </span>
+			<span class="sigp2-saisie"><%=process.getVAL_EF_DATE_DECISION_CAFAT()%></span>
+			<BR/>
+			<span class="sigp2" style="width:150px">Taux de prise en charge par la CAFAT : </span>
+			<span class="sigp2-saisie"><%=process.getVAL_EF_TAUX_CAFAT()%></span>
+			<BR/>
+			<span class="sigp2" style="width:150px">Date de transmission de la commission d'aptitude : </span>
+			<span class="sigp2-saisie"><%=process.getVAL_EF_DATE_COMMISSION_APTITUDE()%></span>
+			<BR/>
+			<% } %>
 		</div>
 		<%} %>
 			<BR/>

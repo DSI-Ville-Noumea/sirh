@@ -506,7 +506,10 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 				: getVoAccidentTravailMaladieProCourant().getNbJoursItt().toString());
 		addZone(getNOM_LB_AVIS_COMMISSION(), (null != getVoAccidentTravailMaladieProCourant().getAvisCommission() 
 				&& getVoAccidentTravailMaladieProCourant().getAvisCommission().equals(1))
-				? "Accepté" : "Refus");
+				? "Accepté" : 
+					(null != getVoAccidentTravailMaladieProCourant().getAvisCommission() 
+						&& getVoAccidentTravailMaladieProCourant().getAvisCommission().equals(0) 
+							? "Refus" : ""));
 		
 		Integer avisCommission = getVoAccidentTravailMaladieProCourant().getAvisCommission();
 		String avisCommissionLB = null;
@@ -682,10 +685,10 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 					dateFin = null;
 				}
 				
-				getVoAccidentTravailMaladieProCourant().setDateTransmissionCafat(sdf.parse(dateTransmissionCafat));
-				getVoAccidentTravailMaladieProCourant().setDateDecisionCafat(sdf.parse(dateDecisionCafat));
-				getVoAccidentTravailMaladieProCourant().setDateTransmissionAptitude(sdf.parse(dateTransmissionAptitude));
-				getVoAccidentTravailMaladieProCourant().setTauxPrisEnChargeCafat(new Integer(tauxPrisEnChargeCafat));
+				getVoAccidentTravailMaladieProCourant().setDateTransmissionCafat(null != dateTransmissionCafat && !"".equals(dateTransmissionCafat) ? sdf.parse(dateTransmissionCafat) : null);
+				getVoAccidentTravailMaladieProCourant().setDateDecisionCafat(null != dateDecisionCafat && !"".equals(dateDecisionCafat) ? sdf.parse(dateDecisionCafat) : null);
+				getVoAccidentTravailMaladieProCourant().setDateTransmissionAptitude(null != dateTransmissionAptitude && !"".equals(dateTransmissionAptitude) ? sdf.parse(dateTransmissionAptitude) : null );
+				getVoAccidentTravailMaladieProCourant().setTauxPrisEnChargeCafat(null != tauxPrisEnChargeCafat && !"".equals(tauxPrisEnChargeCafat) ? new Integer(tauxPrisEnChargeCafat) : null);
 			}
 
 			// Création de l'objet VisiteMedicale a créer/modifier
@@ -1967,7 +1970,7 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 		return getZone(getNOM_LB_SIEGE_LESION_SELECT());
 	}
 
-	private String[] getLB_AVIS_COMMISSION() {
+	public String[] getLB_AVIS_COMMISSION() {
 		if (LB_AVIS_COMMISSION == null)
 			LB_AVIS_COMMISSION = initialiseLazyLB();
 		return LB_AVIS_COMMISSION;
@@ -1985,8 +1988,8 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 		return "NOM_LB_AVIS_COMMISSION_SELECT";
 	}
 
-	public String[] getVAL_LB_AVIS_COMMISSION() {
-		return getLB_AVIS_COMMISSION();
+	public String getVAL_LB_AVIS_COMMISSION() {
+		return getZone(getNOM_LB_AVIS_COMMISSION());
 	}
 
 	public String getVAL_LB_AVIS_COMMISSION_SELECT() {
@@ -2033,7 +2036,7 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 		return getZone(getNOM_LB_TYPE_SELECT());
 	}
 
-	private String[] getLB_AT_REFERENCE() {
+	public String[] getLB_AT_REFERENCE() {
 		if (LB_AT_REFERENCE == null)
 			LB_AT_REFERENCE = initialiseLazyLB();
 		return LB_AT_REFERENCE;
@@ -2047,12 +2050,12 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 		return "NOM_LB_AT_REFERENCE";
 	}
 
-	public String getNOM_LB_AT_REFERENCE_SELECT() {
-		return "NOM_LB_AT_REFERENCE_SELECT";
+	public String getVAL_LB_AT_REFERENCE() {
+		return getZone(getNOM_LB_AT_REFERENCE());
 	}
 
-	public String[] getVAL_LB_AT_REFERENCE() {
-		return getLB_AT_REFERENCE();
+	public String getNOM_LB_AT_REFERENCE_SELECT() {
+		return "NOM_LB_AT_REFERENCE_SELECT";
 	}
 
 	public String getVAL_LB_AT_REFERENCE_SELECT() {
