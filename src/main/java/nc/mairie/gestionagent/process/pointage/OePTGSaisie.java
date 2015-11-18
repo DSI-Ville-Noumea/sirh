@@ -44,6 +44,7 @@ import nc.noumea.spring.service.IPtgService;
 import nc.noumea.spring.service.IRadiService;
 import nc.noumea.spring.service.PtgService;
 
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -266,6 +267,14 @@ public class OePTGSaisie extends BasicProcess {
 							cal.add(Calendar.DATE, 1);
 
 							primeAajouter.setHeureFin(cal.getTime());
+						}
+					}
+					// # HEURE RENFORT DE GARDE
+					// Vérification date debut > date fin
+					if (primeAajouter.getNumRubrique() == 7717 && primeAajouter.getHeureDebut() != null) {
+						if (primeAajouter.getHeureDebut().getTime() >= primeAajouter.getHeureFin().getTime()) {
+							DateTime dateTimeFin = new DateTime(primeAajouter.getHeureFin()).plusDays(1);
+							primeAajouter.setHeureFin(dateTimeFin.toDate());
 						}
 					}
 
