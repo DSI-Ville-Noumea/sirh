@@ -789,7 +789,12 @@ public class OeAGENTActesHSCT extends BasicProcess {
 					// on recupere l'id du document
 					nomDoc = nomDoc.substring(nomDoc.indexOf("_") + 1, nomDoc.length());
 					String id = nomDoc.substring(0, nomDoc.indexOf("_"));
-					VisiteMedicale vm = getVisiteMedicaleDao().chercherVisiteMedicale(Integer.valueOf(id));
+					VisiteMedicale vm = null;
+					try {
+						vm = getVisiteMedicaleDao().chercherVisiteMedicale(Integer.valueOf(id));
+					} catch(org.springframework.dao.EmptyResultDataAccessException e) {
+						
+					}
 					if (vm != null && vm.getDateDerniereVisite() != null) {
 						info = "VM du : " + sdf.format(vm.getDateDerniereVisite());
 					}

@@ -72,7 +72,7 @@ document.write(menuAgentDonneesPerso.afficher());
 
 var menuAgentHSCT = new MenuHaut("Module_agent_hsct");
 menuAgentHSCT.ajouterFils(new Lien("VisiteMedicaleGestion", "VISITES MEDICALES", "Gestion des visites médicales d'un agent", true, false,"VISITES MEDICALES"));
-menuAgentHSCT.ajouterFils(new Lien("AccidentTravailGestion", "ACCIDENTS DU TRAVAIL", "Gestions des accidents du travail d'un agent", true, false,"AT / MP"));
+menuAgentHSCT.ajouterFils(new Lien("AccidentTravailGestion", "ACCIDENTS DU TRAVAIL", "Gestions des accidents du travail d'un agent", true, false,"ACCIDENTS DE TRAVAIL"));
 menuAgentHSCT.ajouterFils(new Lien("HandicapGestion", "HANDICAPS", "Gestion des handicaps pour un agent", true, false,"HANDICAPS"));
 menuAgentHSCT.ajouterFils(new Lien("AgentActesHSCT", "ACTES", "Gestion des documents HSCT d'un agent",true, false,"ACTES"));
 document.write(menuAgentHSCT.afficher());

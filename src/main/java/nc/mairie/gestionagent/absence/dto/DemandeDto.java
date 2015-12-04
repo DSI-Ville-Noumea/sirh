@@ -36,8 +36,10 @@ public class DemandeDto implements IJSONDeserialize<DemandeDto> {
 	private boolean isAffichageBoutonSupprimer;
 	private boolean isAffichageBoutonImprimer;
 	private boolean isAffichageBoutonAnnuler;
-	private boolean isAffichageVisa;
-	private boolean isAffichageApprobation;
+	private boolean isAffichageValidation;
+	private boolean isAffichageBoutonRejeter;
+	private boolean isAffichageEnAttente;
+	private boolean isAffichageBoutonDupliquer;
 	// permet de viser ou approuver
 	private boolean isModifierVisa;
 	private boolean isModifierApprobation;
@@ -205,22 +207,6 @@ public class DemandeDto implements IJSONDeserialize<DemandeDto> {
 		this.isAffichageBoutonAnnuler = isAffichageBoutonAnnuler;
 	}
 
-	public boolean isAffichageVisa() {
-		return isAffichageVisa;
-	}
-
-	public void setAffichageVisa(boolean isAffichageVisa) {
-		this.isAffichageVisa = isAffichageVisa;
-	}
-
-	public boolean isAffichageApprobation() {
-		return isAffichageApprobation;
-	}
-
-	public void setAffichageApprobation(boolean isAffichageApprobation) {
-		this.isAffichageApprobation = isAffichageApprobation;
-	}
-
 	public boolean isModifierVisa() {
 		return isModifierVisa;
 	}
@@ -354,4 +340,36 @@ public class DemandeDto implements IJSONDeserialize<DemandeDto> {
 		this.etatDto = etatDto;
 	}
 
+	public boolean isAffichageBoutonDupliquer() {
+		return isAffichageBoutonDupliquer;
+	}
+
+	public void setAffichageBoutonDupliquer(boolean isAffichageBoutonDupliquer) {
+		this.isAffichageBoutonDupliquer = isAffichageBoutonDupliquer;
+	}
+
+	public boolean isAffichageValidation() {
+		return isAffichageValidation;
+	}
+
+	public void setAffichageValidation(boolean isAffichageValidation) {
+		this.isAffichageValidation = isAffichageValidation;
+	}
+
+	public boolean isAffichageEnAttente() {
+		return isAffichageEnAttente;
+	}
+
+	public void setAffichageEnAttente(boolean isAffichageEnAttente) {
+		this.isAffichageEnAttente = isAffichageEnAttente;
+	}
+
+	public boolean isAffichageBoutonRejeter() {
+		return isAffichageBoutonRejeter;
+	}
+
+	public void setAffichageBoutonRejeter(boolean isAffichageBoutonRejeter) {
+		this.isAffichageBoutonRejeter = isAffichageBoutonRejeter;
+	}
+	
 }
