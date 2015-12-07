@@ -1963,7 +1963,13 @@ public class OeABSVisualisation extends BasicProcess {
 				return false;
 			}
 			dto.setCommentaire(getVAL_ST_MOTIF_CREATION());
-
+			
+			if(null != getVAL_ST_DUREE()
+					&& !"".equals(getVAL_ST_DUREE())
+					&& Services.estFloat(getVAL_ST_DUREE())) {
+				dto.setDuree(new Double(getVAL_ST_DUREE()));
+				dto.setForceSaisieManuelleDuree(true);
+			}
 		}
 
 		dto.setDateDebut(dateDebut);

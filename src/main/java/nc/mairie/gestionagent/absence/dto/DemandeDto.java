@@ -24,12 +24,14 @@ public class DemandeDto implements IJSONDeserialize<DemandeDto> {
 	private boolean isDateFinPM;
 	private Date dateReprise;
 	private Double duree;
+	private boolean forceSaisieManuelleDuree;
 	private boolean isSamediOffert;
 
 	private Integer idRefEtat;
 	private RefEtatDto etatDto;
 	private Date dateSaisie;
 	private String motif;
+	private AgentWithServiceDto agentEtat;
 
 	// permet d'afficher ou non les icones correspondants
 	private boolean isAffichageBoutonModifier;
@@ -37,7 +39,6 @@ public class DemandeDto implements IJSONDeserialize<DemandeDto> {
 	private boolean isAffichageBoutonImprimer;
 	private boolean isAffichageBoutonAnnuler;
 	private boolean isAffichageValidation;
-	private boolean isAffichageBoutonRejeter;
 	private boolean isAffichageEnAttente;
 	private boolean isAffichageBoutonDupliquer;
 	// permet de viser ou approuver
@@ -56,6 +57,16 @@ public class DemandeDto implements IJSONDeserialize<DemandeDto> {
 
 	private RefTypeSaisiDto typeSaisi;
 	private RefTypeSaisiCongeAnnuelDto typeSaisiCongeAnnuel;
+
+	// Pour les soldes des demandes
+	private Double totalJoursNew;
+	private Double totalJoursOld;
+	private Double totalJoursAnneeN1New;
+	private Double totalJoursAnneeN1Old;
+	private Integer totalMinutesNew;
+	private Integer totalMinutesOld;
+	private Integer totalMinutesAnneeN1New;
+	private Integer totalMinutesAnneeN1Old;
 	
 	// #15586 restitution massive
 	private boolean affichageBoutonHistorique;
@@ -364,12 +375,84 @@ public class DemandeDto implements IJSONDeserialize<DemandeDto> {
 		this.isAffichageEnAttente = isAffichageEnAttente;
 	}
 
-	public boolean isAffichageBoutonRejeter() {
-		return isAffichageBoutonRejeter;
+	public AgentWithServiceDto getAgentEtat() {
+		return agentEtat;
 	}
 
-	public void setAffichageBoutonRejeter(boolean isAffichageBoutonRejeter) {
-		this.isAffichageBoutonRejeter = isAffichageBoutonRejeter;
+	public void setAgentEtat(AgentWithServiceDto agentEtat) {
+		this.agentEtat = agentEtat;
+	}
+
+	public Double getTotalJoursNew() {
+		return totalJoursNew;
+	}
+
+	public void setTotalJoursNew(Double totalJoursNew) {
+		this.totalJoursNew = totalJoursNew;
+	}
+
+	public Double getTotalJoursOld() {
+		return totalJoursOld;
+	}
+
+	public void setTotalJoursOld(Double totalJoursOld) {
+		this.totalJoursOld = totalJoursOld;
+	}
+
+	public Double getTotalJoursAnneeN1New() {
+		return totalJoursAnneeN1New;
+	}
+
+	public void setTotalJoursAnneeN1New(Double totalJoursAnneeN1New) {
+		this.totalJoursAnneeN1New = totalJoursAnneeN1New;
+	}
+
+	public Double getTotalJoursAnneeN1Old() {
+		return totalJoursAnneeN1Old;
+	}
+
+	public void setTotalJoursAnneeN1Old(Double totalJoursAnneeN1Old) {
+		this.totalJoursAnneeN1Old = totalJoursAnneeN1Old;
+	}
+
+	public Integer getTotalMinutesNew() {
+		return totalMinutesNew;
+	}
+
+	public void setTotalMinutesNew(Integer totalMinutesNew) {
+		this.totalMinutesNew = totalMinutesNew;
+	}
+
+	public Integer getTotalMinutesOld() {
+		return totalMinutesOld;
+	}
+
+	public void setTotalMinutesOld(Integer totalMinutesOld) {
+		this.totalMinutesOld = totalMinutesOld;
+	}
+
+	public Integer getTotalMinutesAnneeN1New() {
+		return totalMinutesAnneeN1New;
+	}
+
+	public void setTotalMinutesAnneeN1New(Integer totalMinutesAnneeN1New) {
+		this.totalMinutesAnneeN1New = totalMinutesAnneeN1New;
+	}
+
+	public Integer getTotalMinutesAnneeN1Old() {
+		return totalMinutesAnneeN1Old;
+	}
+
+	public void setTotalMinutesAnneeN1Old(Integer totalMinutesAnneeN1Old) {
+		this.totalMinutesAnneeN1Old = totalMinutesAnneeN1Old;
+	}
+
+	public boolean isForceSaisieManuelleDuree() {
+		return forceSaisieManuelleDuree;
+	}
+
+	public void setForceSaisieManuelleDuree(boolean forceSaisieManuelleDuree) {
+		this.forceSaisieManuelleDuree = forceSaisieManuelleDuree;
 	}
 	
 }
