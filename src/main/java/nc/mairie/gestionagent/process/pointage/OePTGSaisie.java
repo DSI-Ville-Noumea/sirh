@@ -8,6 +8,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -207,6 +208,14 @@ public class OePTGSaisie extends BasicProcess {
 				}
 				getTransaction().declarerErreur("ERREUR : " + err);
 				return false;
+			}
+			if (message.getInfos().size() > 0) {
+				String infos = Const.CHAINE_VIDE;
+				for (String info : message.getInfos()) {
+					infos += " " + info;
+				}
+				VariableGlobale.ajouter(request, "MESSAGE_INFO_SAISIE_POINTAGE", infos);
+				return true;
 			}
 		}
 
