@@ -33,19 +33,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientHandlerException;
 import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
 
-import flexjson.JSONDeserializer;
 import flexjson.JSONSerializer;
 
 @Service
-public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
+public class SirhPtgWSConsumer extends BaseWsConsumer implements ISirhPtgWSConsumer {
 
 	@Autowired
 	@Qualifier("ptgWsBaseUrl")
@@ -97,7 +92,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 	private static final String sirhPtgPrimeDetail = "primes/getPrime";
 	private static final String sirhPtgPrimeDetailFromIdRefPrime = "primes/getPrimeFromIdRefPrime";
 	private static final String sirhPtgPrimePointee = "primes/isPrimeUtilisee";
-	
+
 	// titre repas
 	private static final String sirhPtgVisualisationTitreRepasHistory = "titreRepas/historique";
 	private static final String sirhPtglistTitreRepas = "titreRepas/listTitreRepas";
@@ -107,7 +102,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 	private static final String sirhPtgFiltreDateMoisTitreRepas = "titreRepas/getListeMoisTitreRepasSaisie";
 	private static final String sirhPtgGenereEtatPayeurTitreRepas = "titreRepas/genereEtatPayeur";
 	private static final String sirhPtgListTitreRepasEtatPayeur = "titreRepas/listTitreRepasEtatPayeur";
-	
+
 	private Logger logger = LoggerFactory.getLogger(SirhPtgWSConsumer.class);
 
 	@Override
@@ -187,10 +182,9 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 	}
 
 	@Override
-	public List<TitreRepasDemandeDto> getListTitreRepas(Integer idAgentConnecte, String fromDate, String toDate, 
-			Integer idRefEtat, Boolean commande, String dateMonth, Integer idServiceAds, Integer idAgent,
-			List<Integer> listIdsAgent) {
-		
+	public List<TitreRepasDemandeDto> getListTitreRepas(Integer idAgentConnecte, String fromDate, String toDate, Integer idRefEtat, Boolean commande, String dateMonth, Integer idServiceAds,
+			Integer idAgent, List<Integer> listIdsAgent) {
+
 		String url = String.format(ptgWsBaseUrl + sirhPtglistTitreRepas);
 
 		Map<String, String> parameters = new HashMap<String, String>();
@@ -219,8 +213,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 		if (idAgent != null) {
 			parameters.put("idAgent", idAgent.toString());
 		}
-		if (null != listIdsAgent
-				&& !listIdsAgent.isEmpty()) {
+		if (null != listIdsAgent && !listIdsAgent.isEmpty()) {
 
 			String csvId = Const.CHAINE_VIDE;
 			for (Integer id : listIdsAgent) {
@@ -240,42 +233,43 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 
 	@Override
 	public ReturnMessageDto enregistreTitreRepas(List<TitreRepasDemandeDto> dto, Integer idAgent) {
-		
+
 		String url = String.format(ptgWsBaseUrl + sirhPtgEnregistreTitreRepas);
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put("idAgentConnecte", idAgent.toString());
 		parameters.put("isFromSIRH", "true");
-		
-		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class)
-				.deepSerialize(dto);
-		
+
+		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class).deepSerialize(dto);
+
 		ClientResponse res = createAndPostRequest(parameters, url, json);
 		return readResponseWithReturnMessageDto(ReturnMessageDto.class, res, url);
 	}
 
 	@Override
 	public List<RefEtatDto> getEtatsTitreRepas() {
-		
+
 		String url = String.format(ptgWsBaseUrl + sirhPtgFiltreEtatTitreRepas);
 
 		ClientResponse res = createAndFireRequest(new HashMap<String, String>(), url);
 
 		return readResponseAsList(RefEtatDto.class, res, url);
 	}
-	
+
 	@Override
 	public List<Date> getFiltreListeMois() {
-		
+
 		String url = String.format(ptgWsBaseUrl + sirhPtgFiltreDateMoisTitreRepas);
 
 		ClientResponse res = createAndFireRequest(new HashMap<String, String>(), url);
 
+		// cas particulier des dates
 		return readResponseAsListDate(res, url);
+
 	}
-	
+
 	@Override
 	public ReturnMessageDto genereEtatPayeurTitreRepas(Integer idAgent) {
-		
+
 		String url = String.format(ptgWsBaseUrl + sirhPtgGenereEtatPayeurTitreRepas);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgentConnecte", idAgent.toString());
@@ -286,7 +280,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 
 	@Override
 	public List<TitreRepasEtatPayeurDto> getListTitreRepasEtatPayeur(Integer idAgent) {
-		
+
 		String url = String.format(ptgWsBaseUrl + sirhPtgListTitreRepasEtatPayeur);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgentConnecte", idAgent.toString());
@@ -302,174 +296,14 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgentConnecte", idAgent.toString());
 
-		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class)
-				.deepSerialize(listTitreRepasDemandeDto);
-		
+		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class).deepSerialize(listTitreRepasDemandeDto);
+
 		ClientResponse res = createAndPostRequest(params, url, json);
 		return readResponseWithReturnMessageDto(ReturnMessageDto.class, res, url);
 	}
 
-	/**
-	 * POST
-	 */
-	private ClientResponse createAndPostRequest(String url, String json) {
-		return createAndPostRequest(new HashMap<String, String>(), url, json);
-	}
-
-	private ClientResponse createAndPostRequest(Map<String, String> parameters, String url, String json) {
-
-		Client client = Client.create();
-		WebResource webResource = client.resource(url);
-
-		for (String key : parameters.keySet()) {
-			webResource = webResource.queryParam(key, parameters.get(key));
-		}
-
-		ClientResponse response = null;
-		logger.trace("json poste:" + json);
-		try {
-			response = webResource.type("application/json").post(ClientResponse.class, json);
-
-		} catch (ClientHandlerException ex) {
-			throw new BaseWsConsumerException(String.format("An error occured when querying '%s'.", url), ex);
-		}
-
-		return response;
-	}
-
-	/**
-	 * GET
-	 */
-	public ClientResponse createAndFireRequest(Map<String, String> parameters, String url) {
-		Client client = Client.create();
-		WebResource webResource = client.resource(url);
-
-		for (String key : parameters.keySet()) {
-			webResource = webResource.queryParam(key, parameters.get(key));
-		}
-
-		ClientResponse response = null;
-
-		try {
-			response = webResource.accept(MediaType.APPLICATION_JSON_VALUE).get(ClientResponse.class);
-		} catch (ClientHandlerException ex) {
-			throw new BaseWsConsumerException(String.format("An error occured when querying '%s'.", url), ex);
-		}
-		return response;
-	}
-
-	public void readResponse(ClientResponse response, String url) {
-
-		if (response.getStatus() == HttpStatus.OK.value())
-			return;
-
-		throw new BaseWsConsumerException(String.format(
-				"An error occured when querying '%s'. Return code is : %s, content is %s", url, response.getStatus(),
-				response.getEntity(String.class)));
-	}
-
-	public <T> T readResponse(Class<T> targetClass, ClientResponse response, String url) {
-
-		T result = null;
-
-		try {
-			result = targetClass.newInstance();
-		} catch (Exception ex) {
-			throw new BaseWsConsumerException(
-					"An error occured when instantiating return type when deserializing JSON from SIRH WS request.", ex);
-		}
-
-		if (response.getStatus() == HttpStatus.NO_CONTENT.value()) {
-			return null;
-		}
-
-		if (response.getStatus() != HttpStatus.OK.value()) {
-			throw new BaseWsConsumerException(String.format("An error occured when querying '%s'. Return code is : %s",
-					url, response.getStatus()));
-		}
-
-		String output = response.getEntity(String.class);
-		logger.trace("json recu:" + output);
-		result = new JSONDeserializer<T>().use(Date.class, new MSDateTransformer()).deserializeInto(output, result);
-		return result;
-	}
-
-	public byte[] readResponseWithFile(ClientResponse response, String url) {
-
-		if (response.getStatus() == HttpStatus.NO_CONTENT.value()) {
-			return null;
-		}
-
-		if (response.getStatus() != HttpStatus.OK.value()) {
-			throw new BaseWsConsumerException(String.format("An error occured when querying '%s'. Return code is : %s",
-					url, response.getStatus()));
-		}
-
-		return response.getEntity(byte[].class);
-	}
-
-	public <T> List<T> readResponseAsList(Class<T> targetClass, ClientResponse response, String url) {
-		List<T> result = null;
-		result = new ArrayList<T>();
-
-		if (response.getStatus() == HttpStatus.NO_CONTENT.value()) {
-			return result;
-		}
-
-		if (response.getStatus() != HttpStatus.OK.value()) {
-			throw new BaseWsConsumerException(String.format("An error occured when querying '%s'. Return code is : %s",
-					url, response.getStatus()));
-		}
-
-		String output = response.getEntity(String.class);
-		logger.trace("json recu:" + output);
-		result = new JSONDeserializer<List<T>>().use(Date.class, new MSDateTransformer()).use(null, ArrayList.class)
-				.use("values", targetClass).deserialize(output);
-		return result;
-	}
-
-	public <T> List<T> readResponseAsListDate(ClientResponse response, String url) {
-		List<T> result = null;
-		result = new ArrayList<T>();
-
-		if (response.getStatus() == HttpStatus.NO_CONTENT.value()) {
-			return result;
-		}
-
-		if (response.getStatus() != HttpStatus.OK.value()) {
-			throw new BaseWsConsumerException(String.format("An error occured when querying '%s'. Return code is : %s",
-					url, response.getStatus()));
-		}
-
-		String output = response.getEntity(String.class);
-		logger.trace("json recu:" + output);
-		result = new JSONDeserializer<List<T>>().use("values", new MSDateTransformer()).use(null, ArrayList.class).deserialize(output);
-		return result;
-	}
-
-	public <K, V> Map<K, V> readResponseAsMap(Class<K> targetClassKey, Class<V> targetClassValue,
-			ClientResponse response, String url) {
-		Map<K, V> result = null;
-		result = new HashMap<K, V>();
-
-		if (response.getStatus() == HttpStatus.NO_CONTENT.value()) {
-			return result;
-		}
-
-		if (response.getStatus() != HttpStatus.OK.value()) {
-			throw new BaseWsConsumerException(String.format("An error occured when querying '%s'. Return code is : %s",
-					url, response.getStatus()));
-		}
-
-		String output = response.getEntity(String.class);
-		result = new JSONDeserializer<Map<K, V>>().use(Date.class, new MSDateTransformer()).use(null, HashMap.class)
-				.deserialize(output);
-		return result;
-	}
-
 	@Override
-	public List<ConsultPointageDto> getVisualisationPointage(String fromDate, String toDate, List<String> idAgents,
-			Integer idRefEtat, Integer idRefType, String typeHeureSup,String dateEtat) {
+	public List<ConsultPointageDto> getVisualisationPointage(String fromDate, String toDate, List<String> idAgents, Integer idRefEtat, Integer idRefType, String typeHeureSup, String dateEtat) {
 		String url = String.format(ptgWsBaseUrl + sirhPtgVisualisationPointage);
 
 		Map<String, String> parameters = new HashMap<String, String>();
@@ -563,11 +397,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 		String url = String.format(ptgWsBaseUrl + sirhPtgSaisie);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgent.toString());
-		ClientResponse res = createAndPostRequest(
-				params,
-				url,
-				new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class)
-						.deepSerialize(toSerialize));
+		ClientResponse res = createAndPostRequest(params, url, new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class).deepSerialize(toSerialize));
 		return readResponseWithReturnMessageDto(ReturnMessageDto.class, res, url);
 	}
 
@@ -586,8 +416,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 	}
 
 	@Override
-	public <T> List<T> getVentilations(Class<T> targetClass, Integer idDateVentil, Integer idRefTypePointage,
-			String agentsJson, boolean allVentilation) {
+	public <T> List<T> getVentilations(Class<T> targetClass, Integer idDateVentil, Integer idRefTypePointage, String agentsJson, boolean allVentilation) {
 		String url = String.format(ptgWsBaseUrl + sirhPtgVentilationsShow);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idDateVentil", idDateVentil.toString());
@@ -600,8 +429,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 	}
 
 	@Override
-	public <T> List<T> getVentilationsHistory(Class<T> targetClass, Integer mois, Integer annee,
-			Integer idRefTypePointage, Integer idAgent, boolean allVentilation, Integer idVentilDate) {
+	public <T> List<T> getVentilationsHistory(Class<T> targetClass, Integer mois, Integer annee, Integer idRefTypePointage, Integer idAgent, boolean allVentilation, Integer idVentilDate) {
 		String url = String.format(ptgWsBaseUrl + sirhPtgVentilationsHistory);
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put("mois", mois.toString());
@@ -660,8 +488,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 	}
 
 	@Override
-	public boolean startVentilation(Integer idAgent, Date dateVentilation, String agentsJson, String statut,
-			String idRefTypePointage) {
+	public boolean startVentilation(Integer idAgent, Date dateVentilation, String agentsJson, String statut, String idRefTypePointage) {
 		String url = String.format(ptgWsBaseUrl + sirhPtgStartVentilation);
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 		HashMap<String, String> params = new HashMap<>();
@@ -727,7 +554,11 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 		params.put("idEtatPayeur", idEtatPayeur.toString());
 		ClientResponse res = createAndFireRequest(params, url);
 
-		return readResponseWithFile(res, url);
+		try {
+			return readResponseAsByteArray(res, url);
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
 	@Override
@@ -804,35 +635,8 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 		}
 	}
 
-	public <T> T readResponseWithReturnMessageDto(Class<T> targetClass, ClientResponse response, String url) {
-
-		T result = null;
-
-		try {
-			result = targetClass.newInstance();
-		} catch (Exception ex) {
-			throw new BaseWsConsumerException(
-					"An error occured when instantiating return type when deserializing JSON from SIRH PTG WS request.",
-					ex);
-		}
-
-		if (response.getStatus() == HttpStatus.NO_CONTENT.value()) {
-			return null;
-		}
-
-		if (response.getStatus() == HttpStatus.INTERNAL_SERVER_ERROR.value()) {
-			return null;
-		}
-
-		String output = response.getEntity(String.class);
-		logger.trace("json recu:" + output);
-		result = new JSONDeserializer<T>().use(Date.class, new MSDateTransformer()).deserializeInto(output, result);
-		return result;
-	}
-
 	@Override
-	public List<Integer> getListeAgentsForShowVentilation(Integer idDateVentil, Integer idRefTypePointage,
-			String statut, Date ventilationDate, String agentMin, String agentMax, boolean allVentilation) {
+	public List<Integer> getListeAgentsForShowVentilation(Integer idDateVentil, Integer idRefTypePointage, String statut, Date ventilationDate, String agentMin, String agentMax, boolean allVentilation) {
 		String url = String.format(ptgWsBaseUrl + sirhPtgListeAgentsForShowVentilation);
 
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
@@ -908,14 +712,13 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgent.toString());
 
-		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class)
-				.deepSerialize(listSelect);
+		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class).deepSerialize(listSelect);
 
 		ClientResponse res = createAndPostRequest(params, url, json);
 
 		ReturnMessageDto dto = new ReturnMessageDto();
 		try {
-			readResponse(res, url);
+			readResponse(ReturnMessageDto.class, res, url);
 		} catch (BaseWsConsumerException e) {
 			dto.setErrors(Arrays.asList("Une erreur est survenue lors de la sauvegarde des agents à approuver."));
 		}
@@ -929,8 +732,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgent.toString());
 
-		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class)
-				.deepSerialize(dto);
+		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class).deepSerialize(dto);
 
 		ClientResponse res = createAndPostRequest(params, url, json);
 		return readResponse(ReturnMessageDto.class, res, url);
@@ -955,13 +757,12 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 		params.put("idAgent", idAgent.toString());
 		params.put("idOperateur", idOperateur.toString());
 
-		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class)
-				.deepSerialize(listSelect);
+		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class).deepSerialize(listSelect);
 
 		ClientResponse res = createAndPostRequest(params, url, json);
 		ReturnMessageDto dto = new ReturnMessageDto();
 		try {
-			readResponse(res, url);
+			readResponse(ReturnMessageDto.class, res, url);
 		} catch (BaseWsConsumerException e) {
 			dto.setErrors(Arrays.asList("Une erreur est survenue lors de la sauvegarde des agents à approuver."));
 		}

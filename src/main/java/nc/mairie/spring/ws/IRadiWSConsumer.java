@@ -6,8 +6,6 @@ public interface IRadiWSConsumer {
 
 	public boolean asAgentCompteAD(Integer nomatr);
 
-	public LightUserDto getAgentCompteAD(Integer nomatr);
-
 	public LightUserDto getAgentCompteADByLogin(String login);
 
 	public Integer getEmployeeNumberWithNomatr(Integer nomatr);

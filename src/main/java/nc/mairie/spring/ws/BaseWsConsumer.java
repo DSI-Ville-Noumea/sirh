@@ -1,10 +1,14 @@
 package nc.mairie.spring.ws;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -21,9 +25,35 @@ public abstract class BaseWsConsumer {
 
 	private Logger logger = LoggerFactory.getLogger(BaseWsConsumer.class);
 
+	protected byte[] readResponseAsByteArray(ClientResponse response, String url) throws Exception {
+
+		if (response.getStatus() != HttpStatus.OK.value()) {
+			throw new BaseWsConsumerException(String.format("An error occured when querying '%s'. Return code is : %s", url, response.getStatus()));
+		}
+
+		byte[] reponseData = null;
+		File reportFile = null;
+
+		try {
+			reportFile = response.getEntity(File.class);
+			reponseData = IOUtils.toByteArray(new FileInputStream(reportFile));
+		} catch (Exception e) {
+			throw new Exception("An error occured while reading the downloaded report.", e);
+		} finally {
+			if (reportFile != null && reportFile.exists())
+				reportFile.delete();
+		}
+
+		return reponseData;
+	}
+
 	/**
 	 * POST
 	 */
+	protected ClientResponse createAndPostRequest(String url, String json) {
+		return createAndPostRequest(new HashMap<String, String>(), url, json);
+	}
+
 	protected ClientResponse createAndPostRequest(Map<String, String> parameters, String url, String json) {
 
 		Client client = Client.create();
@@ -39,7 +69,7 @@ public abstract class BaseWsConsumer {
 			response = webResource.type("application/json").post(ClientResponse.class, json);
 
 		} catch (ClientHandlerException ex) {
-			throw new RuntimeException(String.format("An error occured when querying '%s'.", url), ex);
+			throw new BaseWsConsumerException(String.format("An error occured when querying '%s'.", url), ex);
 		}
 
 		return response;
@@ -62,9 +92,27 @@ public abstract class BaseWsConsumer {
 		try {
 			response = webResource.accept(MediaType.APPLICATION_JSON_VALUE).get(ClientResponse.class);
 		} catch (ClientHandlerException ex) {
-			throw new RuntimeException(String.format("An error occured when querying '%s'.", url), ex);
+			throw new BaseWsConsumerException(String.format("An error occured when querying '%s'.", url), ex);
 		}
 		return response;
+	}
+
+	protected <T> List<T> readResponseAsListDate(ClientResponse response, String url) {
+		List<T> result = null;
+		result = new ArrayList<T>();
+
+		if (response.getStatus() == HttpStatus.NO_CONTENT.value()) {
+			return result;
+		}
+
+		if (response.getStatus() != HttpStatus.OK.value()) {
+			throw new BaseWsConsumerException(String.format("An error occured when querying '%s'. Return code is : %s", url, response.getStatus()));
+		}
+
+		String output = response.getEntity(String.class);
+		logger.trace("json recu:" + output);
+		result = new JSONDeserializer<List<T>>().use("values", new MSDateTransformer()).use(null, ArrayList.class).deserialize(output);
+		return result;
 	}
 
 	protected <T> List<T> readResponseAsList(Class<T> targetClass, ClientResponse response, String url) {
@@ -76,14 +124,12 @@ public abstract class BaseWsConsumer {
 		}
 
 		if (response.getStatus() != HttpStatus.OK.value()) {
-			throw new RuntimeException(String.format("An error occured when querying '%s'. Return code is : %s", url,
-					response.getStatus()));
+			throw new BaseWsConsumerException(String.format("An error occured when querying '%s'. Return code is : %s", url, response.getStatus()));
 		}
 
 		String output = response.getEntity(String.class);
 		logger.trace("json recu:" + output);
-		result = new JSONDeserializer<List<T>>().use(Date.class, new MSDateTransformer()).use(null, ArrayList.class)
-				.use("values", targetClass).deserialize(output);
+		result = new JSONDeserializer<List<T>>().use(Date.class, new MSDateTransformer()).use(null, ArrayList.class).use("values", targetClass).deserialize(output);
 		return result;
 	}
 
@@ -94,9 +140,7 @@ public abstract class BaseWsConsumer {
 		try {
 			result = targetClass.newInstance();
 		} catch (Exception ex) {
-			throw new BaseWsConsumerException(
-					"An error occured when instantiating return type when deserializing JSON from SIRH ABS WS request.",
-					ex);
+			throw new BaseWsConsumerException("An error occured when instantiating return type when deserializing JSON from SIRH ABS WS request.", ex);
 		}
 
 		if (response.getStatus() == HttpStatus.NO_CONTENT.value()) {
@@ -104,8 +148,7 @@ public abstract class BaseWsConsumer {
 		}
 
 		if (response.getStatus() != HttpStatus.OK.value()) {
-			throw new BaseWsConsumerException(String.format("An error occured when querying '%s'. Return code is : %s",
-					url, response.getStatus()));
+			throw new BaseWsConsumerException(String.format("An error occured when querying '%s'. Return code is : %s", url, response.getStatus()));
 		}
 
 		String output = response.getEntity(String.class);
@@ -121,9 +164,7 @@ public abstract class BaseWsConsumer {
 		try {
 			result = targetClass.newInstance();
 		} catch (Exception ex) {
-			throw new BaseWsConsumerException(
-					"An error occured when instantiating return type when deserializing JSON from SIRH ABS WS request.",
-					ex);
+			throw new BaseWsConsumerException("An error occured when instantiating return type when deserializing JSON from SIRH ABS WS request.", ex);
 		}
 
 		if (response.getStatus() == HttpStatus.NO_CONTENT.value()) {
