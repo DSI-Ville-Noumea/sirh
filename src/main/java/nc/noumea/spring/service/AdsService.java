@@ -3,6 +3,8 @@ package nc.noumea.spring.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import nc.mairie.gestionagent.dto.AgentWithServiceDto;
+import nc.mairie.gestionagent.dto.EntiteWithAgentWithServiceDto;
 import nc.mairie.metier.Const;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.ws.IADSWSConsumer;
@@ -105,20 +107,16 @@ public class AdsService implements IAdsService {
 			for (EntiteDto enfant : entite.getEnfants()) {
 				// #16520 : on ne prends que les actifs ou transitoires
 				if (enfant.getIdStatut() != null
-						&& (enfant.getIdStatut().toString()
-								.equals(String.valueOf(StatutEntiteEnum.ACTIF.getIdRefStatutEntite())) || enfant
-								.getIdStatut().toString()
+						&& (enfant.getIdStatut().toString().equals(String.valueOf(StatutEntiteEnum.ACTIF.getIdRefStatutEntite())) || enfant.getIdStatut().toString()
 								.equals(String.valueOf(StatutEntiteEnum.TRANSITOIRE.getIdRefStatutEntite())))) {
 					String transitoire = "";
 					String style = "";
-					if (enfant.getIdStatut().toString()
-							.equals(String.valueOf(StatutEntiteEnum.TRANSITOIRE.getIdRefStatutEntite()))) {
+					if (enfant.getIdStatut().toString().equals(String.valueOf(StatutEntiteEnum.TRANSITOIRE.getIdRefStatutEntite()))) {
 						transitoire = " (T)";
 						style = "font-style:italic;";
 					}
 
-					result.append(ajouteNoeud(entite.getNfa(), entite, enfant, withSelectionRadioBouton, transitoire,
-							style));
+					result.append(ajouteNoeud(entite.getNfa(), entite, enfant, withSelectionRadioBouton, transitoire, style));
 					result.append(buildTreeEntitiesActifTransitoire(enfant, withSelectionRadioBouton));
 				}
 			}
@@ -288,8 +286,7 @@ public class AdsService implements IAdsService {
 		StringBuilder result = new StringBuilder();
 		result.append("<div id=\"treeHierarchy\" style=\"display: ");
 		result.append(withSelectionRadioBouton ? "block" : "none");
-		result.append("; height: 360; width: 500; overflow:auto; "
-				+ "background-color: #f4f4f4; border-width: 1px; border-style: solid;z-index:1;\">");
+		result.append("; height: 360; width: 500; overflow:auto; " + "background-color: #f4f4f4; border-width: 1px; border-style: solid;z-index:1;\">");
 
 		result.append("<script type=\"text/javascript\">");
 		// afin d afficher la hierarchie des services
@@ -332,25 +329,19 @@ public class AdsService implements IAdsService {
 				// #16520 : on ne prends que les actifs ou transitoires ou
 				// provisoires pour les FDP
 				if (enfant.getIdStatut() != null
-						&& (enfant.getIdStatut().toString()
-								.equals(String.valueOf(StatutEntiteEnum.ACTIF.getIdRefStatutEntite())) || enfant
-								.getIdStatut().toString()
+						&& (enfant.getIdStatut().toString().equals(String.valueOf(StatutEntiteEnum.ACTIF.getIdRefStatutEntite())) || enfant.getIdStatut().toString()
 								.equals(String.valueOf(StatutEntiteEnum.TRANSITOIRE.getIdRefStatutEntite())))
-						|| enfant.getIdStatut().toString()
-								.equals(String.valueOf(StatutEntiteEnum.PREVISION.getIdRefStatutEntite()))) {
+						|| enfant.getIdStatut().toString().equals(String.valueOf(StatutEntiteEnum.PREVISION.getIdRefStatutEntite()))) {
 					String transitoire = "";
 					String style = "";
-					if (enfant.getIdStatut().toString()
-							.equals(String.valueOf(StatutEntiteEnum.TRANSITOIRE.getIdRefStatutEntite()))) {
+					if (enfant.getIdStatut().toString().equals(String.valueOf(StatutEntiteEnum.TRANSITOIRE.getIdRefStatutEntite()))) {
 						transitoire = " (T)";
 						style = "font-style:italic;";
-					} else if (enfant.getIdStatut().toString()
-							.equals(String.valueOf(StatutEntiteEnum.PREVISION.getIdRefStatutEntite()))) {
+					} else if (enfant.getIdStatut().toString().equals(String.valueOf(StatutEntiteEnum.PREVISION.getIdRefStatutEntite()))) {
 						transitoire = " (P)";
 						style = "font-weight: bold;";
 					}
-					result.append(ajouteNoeud(entite.getNfa(), entite, enfant, withSelectionRadioBouton, transitoire,
-							style));
+					result.append(ajouteNoeud(entite.getNfa(), entite, enfant, withSelectionRadioBouton, transitoire, style));
 					result.append(buildTreeEntitiesProvisoireActifTransitoire(enfant, withSelectionRadioBouton));
 				}
 
@@ -360,18 +351,14 @@ public class AdsService implements IAdsService {
 		return result.toString();
 	}
 
-	private Object ajouteNoeud(String nfa, EntiteDto entite, EntiteDto enfant, boolean withSelectionRadioBouton,
-			String transitoire, String style) {
+	private Object ajouteNoeud(String nfa, EntiteDto entite, EntiteDto enfant, boolean withSelectionRadioBouton, String transitoire, String style) {
 		String result = "";
 		if (nfa == null || nfa.equals(Const.CHAINE_VIDE)) {
-			result = "d.add(" + enfant.getIdEntite() + "," + entite.getIdEntite() + ",\"" + transitoire
-					+ enfant.getSigle() + " " + enfant.getLabel().replace("'", " ") + "\",'" + enfant.getSigle()
+			result = "d.add(" + enfant.getIdEntite() + "," + entite.getIdEntite() + ",\"" + transitoire + enfant.getSigle() + " " + enfant.getLabel().replace("'", " ") + "\",'" + enfant.getSigle()
 					+ "','" + enfant.getIdEntite() + "','',\"" + style + "\",'" + withSelectionRadioBouton + "');";
 		} else {
-			result = "d.add(" + enfant.getIdEntite() + "," + entite.getIdEntite() + ",\"" + transitoire
-					+ enfant.getSigle() + " " + enfant.getLabel().replace("'", " ") + "\",'" + enfant.getSigle()
-					+ "','" + enfant.getIdEntite() + "','" + nfa + "',\"" + style + "\",'" + withSelectionRadioBouton
-					+ "');";
+			result = "d.add(" + enfant.getIdEntite() + "," + entite.getIdEntite() + ",\"" + transitoire + enfant.getSigle() + " " + enfant.getLabel().replace("'", " ") + "\",'" + enfant.getSigle()
+					+ "','" + enfant.getIdEntite() + "','" + nfa + "',\"" + style + "\",'" + withSelectionRadioBouton + "');";
 		}
 		return result;
 	}
@@ -405,15 +392,15 @@ public class AdsService implements IAdsService {
 		}
 		return adsConsumer.getParentOfEntiteByTypeEntite(idEntite, type.getId());
 	}
-	
-	@Override 
+
+	@Override
 	public List<EntiteDto> getListEntiteDto(EntiteDto entiteWithChildren) {
-		
+
 		List<EntiteDto> result = new ArrayList<EntiteDto>();
-		
+
 		result.add(entiteWithChildren);
 		getListEntiteDtoRecursive(entiteWithChildren, result);
-		
+
 		return result;
 	}
 
@@ -426,20 +413,102 @@ public class AdsService implements IAdsService {
 			}
 		}
 	}
-	
+
 	@Override
 	public EntiteDto getListEntiteDtoByIdService(List<EntiteDto> listEntiteDto, Integer idService) {
-		
-		if(null != listEntiteDto
-				&& null != idService) {
-			for(EntiteDto entite : listEntiteDto) {
-				if(entite.getIdEntite().equals(idService)) {
+
+		if (null != listEntiteDto && null != idService) {
+			for (EntiteDto entite : listEntiteDto) {
+				if (entite.getIdEntite().equals(idService)) {
 					return entite;
 				}
 			}
 		}
-		
+
 		return null;
+	}
+
+	@Override
+	public String getCurrentWholeTreeWithAgent(EntiteWithAgentWithServiceDto tree, boolean withSelectionRadioBouton) {
+
+		logger.debug("Debut construction Arbre Des Service avec agents");
+
+		StringBuffer result = new StringBuffer();
+		result.append(construitDebutArbreWithAgent(tree, withSelectionRadioBouton));
+
+		result.append(buildTreeEntitiesWithAgent(tree, withSelectionRadioBouton));
+
+		result.append(construitFinArbre(tree, null));
+
+		logger.debug("Fin construction Arbre Des Service avec agents");
+
+		return result.toString();
+	}
+
+	private String construitDebutArbreWithAgent(EntiteWithAgentWithServiceDto tree, boolean withSelectionRadioBouton) {
+		StringBuilder result = new StringBuilder();
+		result.append("<div id=\"treeHierarchy\" style=\"display: ");
+		result.append(withSelectionRadioBouton ? "block" : "none");
+		result.append("; height: 360; width: 500; overflow:auto; " + "background-color: #f4f4f4; border-width: 1px; border-style: solid;z-index:1;\">");
+
+		result.append("<script type=\"text/javascript\">");
+		// afin d afficher la hierarchie des services
+		result.append("function agrandirHierarchy() {");
+		result.append("		hier = 	document.getElementById('treeHierarchy');");
+
+		result.append("		if (hier.style.display!=\"none\") {");
+		result.append("			reduireHierarchy();");
+		result.append("		} else {");
+		result.append("			hier.style.display=\"block\";");
+		result.append("		}");
+		result.append("	}");
+		// ou reduire
+		result.append("	function reduireHierarchy() {");
+		result.append("		hier = 	document.getElementById('treeHierarchy');");
+		result.append("		hier.style.display=\"none\";");
+		result.append("	}");
+
+		result.append("function selectService(id, sigle) {	");
+		result.append(selectServiceWithRadioBouton(tree));
+		result.append("}");
+
+		result.append("</script>");
+
+		// generation de l arbre
+		result.append("<SCRIPT language=\"javascript\" src=\"js/dtree.js\"></SCRIPT>");
+		result.append("<script type=\"text/javascript\">");
+
+		result.append("d = new dTree('d');");
+		result.append("d.add(" + tree.getIdEntite() + ",-1,\"Services\");");
+		return result.toString();
+	}
+
+	private String buildTreeEntitiesWithAgent(EntiteWithAgentWithServiceDto entite, boolean withSelectionRadioBouton) {
+		StringBuffer result = new StringBuffer();
+		if (null != entite) {
+			// on ajoute les agents
+			for (AgentWithServiceDto ag : entite.getListAgentWithServiceDto()) {
+				String styleAgent = "font-weight: normal;";
+				result.append(ajouteNoeudAgent(ag, entite, withSelectionRadioBouton, styleAgent));
+			}
+			if (entite.getEntiteEnfantWithAgents() != null) {
+				for (EntiteWithAgentWithServiceDto enfant : entite.getEntiteEnfantWithAgents()) {
+
+					result.append(ajouteNoeud(entite.getNfa(), entite, enfant, withSelectionRadioBouton, "", ""));
+					result.append(buildTreeEntitiesWithAgent(enfant, withSelectionRadioBouton));
+				}
+			}
+		}
+
+		return result.toString();
+	}
+
+	private Object ajouteNoeudAgent(AgentWithServiceDto ag, EntiteDto entite, boolean withSelectionRadioBouton, String style) {
+		String result = "";
+		result = "d.add(" + ag.getIdAgent() + "," + entite.getIdEntite() + ",\"" + ag.getNom().replace("'", " ") + " " + ag.getPrenom().replace("'", " ") + "\",'" + ag.getNom() + "','"
+				+ ag.getIdAgent() + "','',\"" + style + "\",'" + withSelectionRadioBouton + "');";
+
+		return result;
 	}
 
 }

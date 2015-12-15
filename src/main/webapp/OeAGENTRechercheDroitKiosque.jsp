@@ -54,6 +54,15 @@
 			
 			<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;" title="Sélection d'un agent">
 				<LEGEND class="sigp2Legend">Sélection d'agents</LEGEND>
+										
+				<BR/><BR/>
+				<INPUT type="hidden" id="service" size="4" name="SERVICE_CACHE" value="" class="sigp2-saisie">
+				<INPUT type="hidden" id="idServiceADS" size="4" name="ENCORE_CACHE" value="" class="sigp2-saisie">
+														
+				<!-- ////////// ARBRE DES SERVICES - ADS ///////////// -->
+				<%=process.getTreeAgent() %>
+				<!-- ////////// ARBRE DES SERVICES - ADS ///////////// -->
+														
 				<BR/><BR/>
                	<%if(process.getListeAgents()!= null && process.getListeAgents().size()>0){ %>      
 						<div style="overflow: auto;height: 250px;width:700px;margin-right: 0px;margin-left: 0px;">

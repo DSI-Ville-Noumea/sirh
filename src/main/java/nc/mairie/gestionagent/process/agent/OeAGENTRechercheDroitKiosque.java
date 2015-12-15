@@ -9,12 +9,20 @@ import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.gestionagent.dto.AgentDto;
 import nc.mairie.gestionagent.dto.AgentWithServiceDto;
+import nc.mairie.gestionagent.dto.EntiteWithAgentWithServiceDto;
+import nc.mairie.metier.poste.Affectation;
+import nc.mairie.metier.poste.FichePoste;
+import nc.mairie.spring.dao.metier.poste.AffectationDao;
+import nc.mairie.spring.dao.metier.poste.FichePosteDao;
+import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.VariableActivite;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
 import nc.mairie.utils.VariablesActivite;
+import nc.noumea.spring.service.AdsService;
+import nc.noumea.spring.service.IAdsService;
 import nc.noumea.spring.service.ISirhService;
 
 import org.springframework.context.ApplicationContext;
@@ -28,7 +36,12 @@ public class OeAGENTRechercheDroitKiosque extends BasicProcess {
 	private static final long serialVersionUID = 1L;
 	private List<AgentDto> listeAgents;
 
+	private String treeAgent;
+
 	private ISirhService sirhService;
+	private IAdsService adsService;
+	private AffectationDao affectationDao;
+	private FichePosteDao fichePosteDao;
 
 	public void initialiseZones(HttpServletRequest request) throws Exception {
 
@@ -44,14 +57,12 @@ public class OeAGENTRechercheDroitKiosque extends BasicProcess {
 		initialiseDao();
 
 		// Récup de l'agent activité, s'il existe
-		AgentWithServiceDto approbateur = (AgentWithServiceDto) VariableActivite.recuperer(this,
-				VariableActivite.ACTIVITE_AGENT_MAIRIE);
+		AgentWithServiceDto approbateur = (AgentWithServiceDto) VariableActivite.recuperer(this, VariableActivite.ACTIVITE_AGENT_MAIRIE);
 		VariableActivite.enlever(this, VariableActivite.ACTIVITE_AGENT_MAIRIE);
 
 		// Récup des agents dejà affectés
 		@SuppressWarnings("unchecked")
-		List<AgentDto> listAgentExistant = (List<AgentDto>) VariableActivite.recuperer(this,
-				VariablesActivite.ACTIVITE_AGENT_MAIRIE_DROIT);
+		List<AgentDto> listAgentExistant = (List<AgentDto>) VariableActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE_DROIT);
 		VariableActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE_DROIT);
 
 		// on charge les sous agents de l'approbateur
@@ -73,6 +84,19 @@ public class OeAGENTRechercheDroitKiosque extends BasicProcess {
 		});
 		afficheListe();
 
+		try {
+			// on cherche le service de l'approbateur
+			Affectation affCourante = getAffectationDao().chercherAffectationActiveAvecAgent(approbateur.getIdAgent());
+			FichePoste fpCourante = getFichePosteDao().chercherFichePoste(affCourante.getIdFichePoste());
+
+			EntiteWithAgentWithServiceDto tree = sirhService.getListeEntiteWithAgentWithServiceDtoByIdServiceAds(fpCourante.getIdServiceAds());
+
+			setTreeAgent(adsService.getCurrentWholeTreeWithAgent(tree, true));
+
+		} catch (Exception e) {
+			// l'agent n' pas d'entite ADS ou d'affectation active
+		}
+
 	}
 
 	private void initialiseDao() {
@@ -81,6 +105,15 @@ public class OeAGENTRechercheDroitKiosque extends BasicProcess {
 		if (null == sirhService) {
 			sirhService = (ISirhService) context.getBean("sirhService");
 		}
+		if (null == adsService) {
+			adsService = (AdsService) context.getBean("adsService");
+		}
+		if (getAffectationDao() == null) {
+			setAffectationDao(new AffectationDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getFichePosteDao() == null) {
+			setFichePosteDao(new FichePosteDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	private void afficheListe() {
@@ -88,8 +121,7 @@ public class OeAGENTRechercheDroitKiosque extends BasicProcess {
 			for (int i = 0; i < getListeAgents().size(); i++) {
 				AgentDto agent = (AgentDto) getListeAgents().get(i);
 
-				addZone(getNOM_ST_MATR(agent.getIdAgent()),
-						agent.getIdAgent().toString().substring(3, agent.getIdAgent().toString().length()));
+				addZone(getNOM_ST_MATR(agent.getIdAgent()), agent.getIdAgent().toString().substring(3, agent.getIdAgent().toString().length()));
 				addZone(getNOM_ST_NOM(agent.getIdAgent()), agent.getNom());
 				addZone(getNOM_ST_PRENOM(agent.getIdAgent()), agent.getPrenom());
 
@@ -202,5 +234,29 @@ public class OeAGENTRechercheDroitKiosque extends BasicProcess {
 
 	public String getVAL_CK_AGENT(int i) {
 		return getZone(getNOM_CK_AGENT(i));
+	}
+
+	public AffectationDao getAffectationDao() {
+		return affectationDao;
+	}
+
+	public void setAffectationDao(AffectationDao affectationDao) {
+		this.affectationDao = affectationDao;
+	}
+
+	public FichePosteDao getFichePosteDao() {
+		return fichePosteDao;
+	}
+
+	public void setFichePosteDao(FichePosteDao fichePosteDao) {
+		this.fichePosteDao = fichePosteDao;
+	}
+
+	public String getTreeAgent() {
+		return treeAgent;
+	}
+
+	public void setTreeAgent(String treeAgent) {
+		this.treeAgent = treeAgent;
 	}
 }

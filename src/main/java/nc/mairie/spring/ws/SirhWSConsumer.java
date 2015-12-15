@@ -11,6 +11,7 @@ import java.util.Map;
 import nc.mairie.gestionagent.dto.AgentDto;
 import nc.mairie.gestionagent.dto.BaseHorairePointageDto;
 import nc.mairie.gestionagent.dto.DateAvctDto;
+import nc.mairie.gestionagent.dto.EntiteWithAgentWithServiceDto;
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
 import nc.mairie.gestionagent.eae.dto.AutreAdministrationAgentDto;
 import nc.mairie.gestionagent.eae.dto.CalculEaeInfosDto;
@@ -51,6 +52,7 @@ public class SirhWSConsumer extends BaseWsConsumer implements ISirhWSConsumer {
 
 	// pour la gestion des droits
 	private static final String sirhAgentSubordonnesUrl = "agents/agentsSubordonnes";
+	private static final String sirhArbreServicesWithListAgentsByServiceUrl = "agents/arbreServicesWithListAgentsByService";
 
 	private Logger logger = LoggerFactory.getLogger(SirhWSConsumer.class);
 
@@ -261,6 +263,16 @@ public class SirhWSConsumer extends BaseWsConsumer implements ISirhWSConsumer {
 		ClientResponse res = createAndFireRequest(parameters, url);
 
 		return readResponseAsList(AutreAdministrationAgentDto.class, res, url);
+	}
+
+	@Override
+	public EntiteWithAgentWithServiceDto getListeEntiteWithAgentWithServiceDtoByIdServiceAds(Integer idServiceAds) {
+		String url = String.format(sirhWsBaseUrl + sirhArbreServicesWithListAgentsByServiceUrl);
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idServiceADS", idServiceAds.toString());
+
+		ClientResponse res = createAndFireRequest(params, url);
+		return readResponse(EntiteWithAgentWithServiceDto.class, res, url);
 	}
 
 }

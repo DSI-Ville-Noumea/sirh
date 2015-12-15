@@ -140,7 +140,7 @@ public abstract class BaseWsConsumer {
 		try {
 			result = targetClass.newInstance();
 		} catch (Exception ex) {
-			throw new BaseWsConsumerException("An error occured when instantiating return type when deserializing JSON from SIRH ABS WS request.", ex);
+			throw new BaseWsConsumerException("An error occured when instantiating return type when deserializing JSON from WS request.", ex);
 		}
 
 		if (response.getStatus() == HttpStatus.NO_CONTENT.value()) {
@@ -153,7 +153,9 @@ public abstract class BaseWsConsumer {
 
 		String output = response.getEntity(String.class);
 		logger.trace("json recu:" + output);
-		result = new JSONDeserializer<T>().use(Date.class, new MSDateTransformer()).deserializeInto(output, result);
+		if(!output.equals("")){
+			result = new JSONDeserializer<T>().use(Date.class, new MSDateTransformer()).deserializeInto(output, result);
+		}
 		return result;
 	}
 

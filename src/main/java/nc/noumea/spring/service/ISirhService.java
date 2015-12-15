@@ -6,6 +6,7 @@ import java.util.List;
 import nc.mairie.gestionagent.dto.AgentDto;
 import nc.mairie.gestionagent.dto.BaseHorairePointageDto;
 import nc.mairie.gestionagent.dto.DateAvctDto;
+import nc.mairie.gestionagent.dto.EntiteWithAgentWithServiceDto;
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
 import nc.mairie.gestionagent.eae.dto.AutreAdministrationAgentDto;
 import nc.mairie.gestionagent.eae.dto.CalculEaeInfosDto;
@@ -39,4 +40,6 @@ public interface ISirhService {
 	CalculEaeInfosDto getDetailAffectationActiveByAgent(Integer idAgent, Integer anneeFormation);
 
 	List<AutreAdministrationAgentDto> getListeAutreAdministrationAgent(Integer idAgent);
+
+	EntiteWithAgentWithServiceDto getListeEntiteWithAgentWithServiceDtoByIdServiceAds(Integer idServiceAds);
 }

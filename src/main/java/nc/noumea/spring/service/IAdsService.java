@@ -2,6 +2,7 @@ package nc.noumea.spring.service;
 
 import java.util.List;
 
+import nc.mairie.gestionagent.dto.EntiteWithAgentWithServiceDto;
 import nc.noumea.mairie.ads.dto.EntiteDto;
 
 public interface IAdsService {
@@ -36,6 +37,7 @@ public interface IAdsService {
 
 	List<EntiteDto> getListEntiteDto(EntiteDto entiteWithChildren);
 
-	EntiteDto getListEntiteDtoByIdService(List<EntiteDto> listEntiteDto,
-			Integer idService);
+	EntiteDto getListEntiteDtoByIdService(List<EntiteDto> listEntiteDto, Integer idService);
+
+	String getCurrentWholeTreeWithAgent(EntiteWithAgentWithServiceDto tree, boolean withSelectionRadioBouton);
 }
