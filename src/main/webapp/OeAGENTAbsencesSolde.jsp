@@ -1,3 +1,4 @@
+<%@page import="nc.mairie.gestionagent.absence.dto.MoisAlimAutoCongesAnnuelsDto"%>
 <%@ page contentType="text/html; charset=UTF-8" %> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <%@page import="nc.mairie.enums.EnumTypeAbsence"%>
 <%@page import="nc.mairie.enums.EnumTypeDroit"%>
@@ -12,7 +13,13 @@
 		<META name="GENERATOR" content="IBM WebSphere Page Designer V3.5.3 for Windows">
 		<META http-equiv="Content-Style-Type" content="text/css">
 		<LINK href="theme/sigp2.css" rel="stylesheet" type="text/css">
+		<LINK href="theme/dataTables.css" rel="stylesheet" type="text/css">
+		<LINK href="TableTools-2.0.1/media/css/TableTools.css" rel="stylesheet" type="text/css">
 		<TITLE>Gestion des absences</TITLE>
+
+		<script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
+		<script type="text/javascript" src="js/jquery.dataTables.js"></script>
+		<script type="text/javascript" src="TableTools-2.0.1/media/js/TableTools.min.js"></script>
 		<SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT>
 		
 		<SCRIPT language="JavaScript">
@@ -175,25 +182,45 @@
 						
 						<%if(process.getListeHistoriqueAlimPaie().size()!=0){ %>
 						<span>Historique des alimentations automatiques lors de la paie</span>
-						<BR/><BR/>
-						<div style="overflow: auto;height: 250px;width:1000px;margin-right: 0px;margin-left: 0px;">
-							<table class="sigp2NewTab" style="text-align:left;width:980px;">
-								<tr bgcolor="#EFEFEF">
-									<td align="center" width="90px;">Mois</td>
-									<td align="center" width="50px;">Nb</td>
-									<td>Commentaire</td>
+						<BR/><BR/>						
+							<table class="display" id="tabAlimPaie">
+							<thead>
+								<tr>
+									<th>Mois</th>
+									<th>Nb</th>
+									<th>Commentaire</th>					
 								</tr>
-								<%
+							</thead>
+							<tbody>
+							<%
 								for (int i = 0;i<process.getListeHistoriqueAlimPaie().size();i++){
-								%>
+									MoisAlimAutoCongesAnnuelsDto avct = (MoisAlimAutoCongesAnnuelsDto) process.getListeHistoriqueAlimPaie().get(i);
+							%>
 									<tr>
-										<td class="sigp2NewTab-liste" style="text-align: center;"><%=process.getVAL_ST_MOIS(i)%></td>
-										<td class="sigp2NewTab-liste" style="text-align: center;"><%=process.getVAL_ST_NB_JOUR(i)%></td>
-										<td class="sigp2NewTab-liste"><%=process.getVAL_ST_COMMENTAIRE(i)%></td>
+										<td><%=process.getVAL_ST_MOIS(i)%></td>
+										<td><%=process.getVAL_ST_NB_JOUR(i)%></td>
+										<td><%=process.getVAL_ST_COMMENTAIRE(i)%></td>										
 									</tr>
-								<%}%>
-							</table>	
-						</div>
+							<%
+								}
+							%>
+							</tbody>
+						</table>
+						<script type="text/javascript">
+							$(document).ready(function() {
+							    $('#tabAlimPaie').dataTable({
+									"oLanguage": {"sUrl": "media/dataTables/language/fr_FR.txt"},
+									"aoColumns": [null,null,null],
+									"sDom": '<"H"l>t<"F"iT>',
+									"sScrollY": "250px",
+									"bPaginate": false,
+									"oTableTools": {
+										"aButtons": [{"sExtends":"xls","sButtonText":"Export Excel","mColumns":"visible","sTitle":"alimPaieRecup","sFileName":"*.xls"}], //OU : "mColumns":[0,1,2,3,4]
+										"sSwfPath": "TableTools-2.0.1/media/swf/copy_cvs_xls_pdf.swf"
+									}
+							    });
+							} );
+						</script>	
 						<BR/><BR/>
 						<%} %>
 						
