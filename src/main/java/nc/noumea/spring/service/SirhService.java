@@ -98,8 +98,8 @@ public class SirhService implements ISirhService {
 	}
 
 	@Override
-	public EntiteWithAgentWithServiceDto getListeEntiteWithAgentWithServiceDtoByIdServiceAds(Integer idServiceAds) {
-		return sirhConsumer.getListeEntiteWithAgentWithServiceDtoByIdServiceAds(idServiceAds);
+	public EntiteWithAgentWithServiceDto getListeEntiteWithAgentWithServiceDtoByIdServiceAdsWithoutAgentConnecte(Integer idServiceAds,Integer idAgent) {
+		return sirhConsumer.getListeEntiteWithAgentWithServiceDtoByIdServiceAds(idServiceAds, idAgent);
 	}
 
 }

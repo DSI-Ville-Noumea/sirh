@@ -39,5 +39,5 @@ public interface IAdsService {
 
 	EntiteDto getListEntiteDtoByIdService(List<EntiteDto> listEntiteDto, Integer idService);
 
-	String getCurrentWholeTreeWithAgent(EntiteWithAgentWithServiceDto tree, boolean withSelectionRadioBouton);
+	String getCurrentWholeTreeWithAgent(EntiteWithAgentWithServiceDto tree, boolean withSelectionRadioBouton, ISirhService sirhService, Integer idAgent);
 }

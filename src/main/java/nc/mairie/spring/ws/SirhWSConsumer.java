@@ -52,7 +52,7 @@ public class SirhWSConsumer extends BaseWsConsumer implements ISirhWSConsumer {
 
 	// pour la gestion des droits
 	private static final String sirhAgentSubordonnesUrl = "agents/agentsSubordonnes";
-	private static final String sirhArbreServicesWithListAgentsByServiceUrl = "agents/arbreServicesWithListAgentsByService";
+	private static final String sirhArbreServicesWithListAgentsByServiceUrl = "agents/arbreServicesWithListAgentsByServiceWithoutAgentConnecte";
 
 	private Logger logger = LoggerFactory.getLogger(SirhWSConsumer.class);
 
@@ -266,10 +266,11 @@ public class SirhWSConsumer extends BaseWsConsumer implements ISirhWSConsumer {
 	}
 
 	@Override
-	public EntiteWithAgentWithServiceDto getListeEntiteWithAgentWithServiceDtoByIdServiceAds(Integer idServiceAds) {
+	public EntiteWithAgentWithServiceDto getListeEntiteWithAgentWithServiceDtoByIdServiceAds(Integer idServiceAds,Integer idAgent) {
 		String url = String.format(sirhWsBaseUrl + sirhArbreServicesWithListAgentsByServiceUrl);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idServiceADS", idServiceAds.toString());
+		params.put("idAgent", String.valueOf(idAgent));
 
 		ClientResponse res = createAndFireRequest(params, url);
 		return readResponse(EntiteWithAgentWithServiceDto.class, res, url);

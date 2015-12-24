@@ -89,9 +89,9 @@ public class OeAGENTRechercheDroitKiosque extends BasicProcess {
 			Affectation affCourante = getAffectationDao().chercherAffectationActiveAvecAgent(approbateur.getIdAgent());
 			FichePoste fpCourante = getFichePosteDao().chercherFichePoste(affCourante.getIdFichePoste());
 
-			EntiteWithAgentWithServiceDto tree = sirhService.getListeEntiteWithAgentWithServiceDtoByIdServiceAds(fpCourante.getIdServiceAds());
+			EntiteWithAgentWithServiceDto tree = sirhService.getListeEntiteWithAgentWithServiceDtoByIdServiceAdsWithoutAgentConnecte(fpCourante.getIdServiceAds(), approbateur.getIdAgent());
 
-			setTreeAgent(adsService.getCurrentWholeTreeWithAgent(tree, true));
+			setTreeAgent(adsService.getCurrentWholeTreeWithAgent(tree, true, sirhService, approbateur.getIdAgent()));
 
 		} catch (Exception e) {
 			// l'agent n' pas d'entite ADS ou d'affectation active

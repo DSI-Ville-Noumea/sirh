@@ -41,5 +41,5 @@ public interface ISirhService {
 
 	List<AutreAdministrationAgentDto> getListeAutreAdministrationAgent(Integer idAgent);
 
-	EntiteWithAgentWithServiceDto getListeEntiteWithAgentWithServiceDtoByIdServiceAds(Integer idServiceAds);
+	EntiteWithAgentWithServiceDto getListeEntiteWithAgentWithServiceDtoByIdServiceAdsWithoutAgentConnecte(Integer idServiceAds, Integer idAgent);
 }

@@ -429,14 +429,14 @@ public class AdsService implements IAdsService {
 	}
 
 	@Override
-	public String getCurrentWholeTreeWithAgent(EntiteWithAgentWithServiceDto tree, boolean withSelectionRadioBouton) {
+	public String getCurrentWholeTreeWithAgent(EntiteWithAgentWithServiceDto tree, boolean withSelectionRadioBouton, ISirhService sirhService, Integer idAgent) {
 
 		logger.debug("Debut construction Arbre Des Service avec agents");
 
 		StringBuffer result = new StringBuffer();
-		result.append(construitDebutArbreWithAgent(tree, withSelectionRadioBouton));
+		result.append(construitDebutArbreWithAgent(tree, withSelectionRadioBouton, sirhService));
 
-		result.append(buildTreeEntitiesWithAgent(tree, withSelectionRadioBouton));
+		result.append(buildTreeEntitiesWithAgent(tree, withSelectionRadioBouton, sirhService, idAgent));
 
 		result.append(construitFinArbre(tree, null));
 
@@ -445,7 +445,7 @@ public class AdsService implements IAdsService {
 		return result.toString();
 	}
 
-	private String construitDebutArbreWithAgent(EntiteWithAgentWithServiceDto tree, boolean withSelectionRadioBouton) {
+	private String construitDebutArbreWithAgent(EntiteWithAgentWithServiceDto tree, boolean withSelectionRadioBouton, ISirhService sirhService) {
 		StringBuilder result = new StringBuilder();
 		result.append("<div id=\"treeHierarchy\" style=\"display: ");
 		result.append(withSelectionRadioBouton ? "block" : "none");
@@ -469,13 +469,13 @@ public class AdsService implements IAdsService {
 		result.append("	}");
 
 		result.append("function selectService(id, sigle) {	");
-		result.append(selectServiceWithRadioBouton(tree));
+		result.append(selectServiceWithCheckBoxBouton(tree, sirhService));
 		result.append("}");
 
 		result.append("</script>");
 
 		// generation de l arbre
-		result.append("<SCRIPT language=\"javascript\" src=\"js/dtree.js\"></SCRIPT>");
+		result.append("<SCRIPT language=\"javascript\" src=\"js/dtreeCheckBox.js\"></SCRIPT>");
 		result.append("<script type=\"text/javascript\">");
 
 		result.append("d = new dTree('d');");
@@ -483,7 +483,37 @@ public class AdsService implements IAdsService {
 		return result.toString();
 	}
 
-	private String buildTreeEntitiesWithAgent(EntiteWithAgentWithServiceDto entite, boolean withSelectionRadioBouton) {
+	private String selectServiceWithCheckBoxBouton(EntiteWithAgentWithServiceDto entite, ISirhService sirhService) {
+
+		StringBuffer result = new StringBuffer();
+
+		if (null != entite && null != entite.getEntiteEnfantWithAgents()) {
+			for (EntiteWithAgentWithServiceDto enfant : entite.getEntiteEnfantWithAgents()) {
+				result.append("		var box = document.formu.elements['chkd" + enfant.getIdEntite() + "'];");
+				result.append("		if(box!=null){");
+				result.append("			box.checked = false;");
+				result.append("		}");
+
+				// // on selectionne les agents
+				// for (AgentWithServiceDto ag :
+				// enfant.getListAgentWithServiceDto()) {
+				// result.append("		var box = document.formu.elements['chkd" +
+				// ag.getIdAgent() + "'];");
+				// result.append("		if(box!=null){");
+				// result.append("			box.checked = true;");
+				// result.append("		}");
+				// }
+
+				// EntiteWithAgentWithServiceDto tree =
+				// sirhService.getListeEntiteWithAgentWithServiceDtoByIdServiceAds(enfant.getIdEntite());
+				result.append(selectServiceWithCheckBoxBouton(enfant, sirhService));
+			}
+		}
+
+		return result.toString();
+	}
+
+	private String buildTreeEntitiesWithAgent(EntiteWithAgentWithServiceDto entite, boolean withSelectionRadioBouton, ISirhService sirhService, Integer idAgent) {
 		StringBuffer result = new StringBuffer();
 		if (null != entite) {
 			// on ajoute les agents
@@ -492,10 +522,12 @@ public class AdsService implements IAdsService {
 				result.append(ajouteNoeudAgent(ag, entite, withSelectionRadioBouton, styleAgent));
 			}
 			if (entite.getEntiteEnfantWithAgents() != null) {
-				for (EntiteWithAgentWithServiceDto enfant : entite.getEntiteEnfantWithAgents()) {
+				for (EntiteWithAgentWithServiceDto enfant2 : entite.getEntiteEnfantWithAgents()) {
 
-					result.append(ajouteNoeud(entite.getNfa(), entite, enfant, withSelectionRadioBouton, "", ""));
-					result.append(buildTreeEntitiesWithAgent(enfant, withSelectionRadioBouton));
+					EntiteWithAgentWithServiceDto tree = sirhService.getListeEntiteWithAgentWithServiceDtoByIdServiceAdsWithoutAgentConnecte(enfant2.getIdEntite(), idAgent);
+
+					result.append(ajouteNoeud(entite.getNfa(), entite, tree, withSelectionRadioBouton, "", ""));
+					result.append(buildTreeEntitiesWithAgent(tree, withSelectionRadioBouton, sirhService, idAgent));
 				}
 			}
 		}
