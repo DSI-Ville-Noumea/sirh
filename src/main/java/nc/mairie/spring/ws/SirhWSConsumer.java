@@ -266,11 +266,12 @@ public class SirhWSConsumer extends BaseWsConsumer implements ISirhWSConsumer {
 	}
 
 	@Override
-	public EntiteWithAgentWithServiceDto getListeEntiteWithAgentWithServiceDtoByIdServiceAds(Integer idServiceAds,Integer idAgent) {
+	public EntiteWithAgentWithServiceDto getListeEntiteWithAgentWithServiceDtoByIdServiceAds(Integer idServiceAds, Integer idAgent) {
 		String url = String.format(sirhWsBaseUrl + sirhArbreServicesWithListAgentsByServiceUrl);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idServiceADS", idServiceAds.toString());
-		params.put("idAgent", String.valueOf(idAgent));
+		if (idAgent != null)
+			params.put("idAgent", String.valueOf(idAgent));
 
 		ClientResponse res = createAndFireRequest(params, url);
 		return readResponse(EntiteWithAgentWithServiceDto.class, res, url);
