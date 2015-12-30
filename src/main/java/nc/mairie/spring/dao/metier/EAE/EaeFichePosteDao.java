@@ -53,7 +53,7 @@ public class EaeFichePosteDao extends EaeDao implements EaeFichePosteDaoInterfac
 				+ CHAMP_GRADE_POSTE + "," + CHAMP_LOCALISATION + "," + CHAMP_MISSIONS + "," + CHAMP_FONCTION_RESP + ","
 				+ CHAMP_DATE_ENTREE_SERVICE_RESP + "," + CHAMP_DATE_ENTREE_COLLECT_RESP + ","
 				+ CHAMP_DATE_ENTREE_FONCTION_RESP + "," + CHAMP_ID_SERVICE_ADS + "," + CHAMP_CODE_SERVICE + ","
-				+ CHAMP_ID_SIRH_FICHE_POSTE + ") " + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+				+ CHAMP_ID_SIRH_FICHE_POSTE + ") " + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 		jdbcTemplate.update(sql, new Object[] { id, idEae, idSHD, typeFDP, direction, service, section, emploi,
 				fonction, dateEntreeFonction, grade, localisation, mission, fonctionResp, dateEntreeServiceResp,
