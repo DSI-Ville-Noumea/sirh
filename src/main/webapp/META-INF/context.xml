@@ -28,7 +28,7 @@
 		jdbcInterceptors="org.apache.tomcat.jdbc.pool.interceptor.ConnectionState; 
 		org.apache.tomcat.jdbc.pool.interceptor.StatementFinalizer"
 		username="opensirh" password="***REMOVED***" driverClassName="com.ibm.as400.access.AS400JDBCDriver"
-		url="jdbc:as400://noumea;naming=system;libraries=MAIRIE,SIRH,SYSIBM;errors=full;date format=iso;" />
+		url="jdbc:as400://robinnw;naming=system;libraries=MAIRIE,SIRH,SYSIBM;errors=full;date format=iso;" />
 
 	<Resource name="jdbc/SIRH_DS1" auth="Container" type="javax.sql.DataSource"
 		factory="org.apache.tomcat.dbcp.dbcp.BasicDataSourceFactory"
@@ -39,7 +39,7 @@
 		removeAbandoned="true" logAbandoned="true" minEvictableIdleTimeMillis="30000"
 		jmxEnabled="true" username="opensirh" password="***REMOVED***"
 		driverClassName="com.ibm.as400.access.AS400JDBCDriver"
-		url="jdbc:as400://noumea;naming=system;libraries=MAIRIE,SIRH,SYSIBM;errors=full;date format=iso;" />
+		url="jdbc:as400://robinnw;naming=system;libraries=MAIRIE,SIRH,SYSIBM;errors=full;date format=iso;" />
 
 	<Resource name="jdbc/SIRH_DS3" auth="Container" type="javax.sql.DataSource"
 		maxActive="100" maxIdle="30" minIdle="0" validationQuery="select 1"
@@ -71,13 +71,13 @@
 	<!-- WS SIRH -->
 	<!-- -->
 	<Environment description="SIRH WS url" name="SIRH_WS_URL"
-		type="java.lang.String" override="false" value="http://localhost:8090/sirhws/" />
+		type="java.lang.String" override="false" value="http://svi-tomcat0:8085/sirhws/" />
 
 	<!-- -->
 	<!-- WS DE ADS -->
 	<!-- -->
 	<Environment name="ADS_WS_URL" type="java.lang.String"
-		description="ADS WS endpoint url" value="http://localhost:8090/ADS/"
+		description="ADS WS endpoint url" value="http://svi-tomcat0:8077/"
 		override="false" />
 
 
@@ -200,7 +200,7 @@
 	<Parameter description="parametre utile au framework" name="HOST_SGBD"
 		override="false" value="SIRH_DS2" />
 	<Parameter description="parametre pour accès à la DTAARA_CALC"
-		name="HOST_SGBD_PAYE" override="false" value="noumea" />
+		name="HOST_SGBD_PAYE" override="false" value="robinnw" />
 	<Parameter description="Login pour accès à la DTAARA_CALC"
 		name="HOST_SGBD_ADMIN" override="false" value="opensirh" />
 	<Parameter description="Pws pour accès à la DTAARA_CALC"
