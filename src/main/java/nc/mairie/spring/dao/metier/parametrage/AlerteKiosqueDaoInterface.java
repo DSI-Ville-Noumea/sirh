@@ -12,4 +12,6 @@ public interface AlerteKiosqueDaoInterface {
 
 	public void modifierAlerteKiosque(Integer idAlerte, AlerteKiosque alerte) throws Exception;
 
+	public void supprimerAlerteKiosque(Integer idAlerte) throws Exception;
+
 }

@@ -249,9 +249,11 @@
 							<div class=<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>>
 								<INPUT type="image" src="images/ajout.gif" height="20px" width="20px" name="<%=process.getNOM_PB_CREER_ALERTE_KIOSQUE()%>">
 			    	        	<INPUT type="image" src="images/modifier.gif" height="20px" width="20px" name="<%=process.getNOM_PB_MODIFIER_ALERTE_KIOSQUE()%>">
-			    	        </div>
+			    	        	<INPUT type="image" src="images/suppression.gif" height="20px" width="20px" name="<%=process.getNOM_PB_SUPPRIMER_ALERTE_KIOSQUE()%>">
+				            </div>
 			            	
-			            	<% if (process.getVAL_ST_ACTION_ALERTE_KIOSQUE()!= null && !process.getVAL_ST_ACTION_ALERTE_KIOSQUE().equals(Const.CHAINE_VIDE)) {%>		
+			            	<% if (process.getVAL_ST_ACTION_ALERTE_KIOSQUE()!= null && !process.getVAL_ST_ACTION_ALERTE_KIOSQUE().equals(Const.CHAINE_VIDE)) {%>			            
+							<% if (!process.ACTION_SUPPRESSION.equals(process.getVAL_ST_ACTION_ALERTE_KIOSQUE())) { %>	
 							<table>
 								<tr>
 									<td>
@@ -298,7 +300,31 @@
 										<INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER_ALERTE_KIOSQUE()%>">
 									</td>
 								</tr>
-							</table>							
+							</table>	
+							<%}else{ %>
+							<table>
+								<tr>
+									<td>
+										<label class="sigp2Mandatory">Titre :</label>
+										<br>
+										<label class="sigp2-saisie" ><%= process.getVAL_EF_TITRE_ALERTE_KIOSQUE() %></label>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<label class="sigp2Mandatory">Texte :</label>
+										<br>
+										<label class="sigp2-saisie" ><%= process.getVAL_EF_ALERTE_KIOSQUE() %></label>
+									</td>
+								</tr>
+								<tr>
+									<td align="center">
+										<INPUT type="submit" class="sigp2-Bouton-100" value="Supprimer" name="<%=process.getNOM_PB_VALIDER_ALERTE_KIOSQUE()%>">
+										<INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER_ALERTE_KIOSQUE()%>">
+									</td>
+								</tr>
+							</table>
+							<%} %>						
 							<% } %>
 					    </FIELDSET>
 					</td>

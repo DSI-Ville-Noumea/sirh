@@ -55,27 +55,24 @@ public class AlerteKiosqueDao extends SirhDao implements AlerteKiosqueDaoInterfa
 
 	@Override
 	public void creerAlerteKiosque(AlerteKiosque alerte) throws Exception {
-		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_TITRE + "," + CHAMP_TEXTE_ALERTE_KIOSQUE + ","
-				+ CHAMP_DATE_DEBUT + "," + CHAMP_DATE_FIN + "," + CHAMP_AGENT + "," + CHAMP_APPRO_ABS + ","
-				+ CHAMP_APPRO_PTG + "," + CHAMP_OPE_ABS + "," + CHAMP_OPE_PTG + "," + CHAMP_VISEUR_ABS + ") "
-				+ "VALUES (?,?,?,?,?,?,?,?,?,?)";
-		jdbcTemplate.update(
-				sql,
-				new Object[] { alerte.getTitre(), alerte.getTexteAlerteKiosque(), alerte.getDateDebut(),
-						alerte.getDateFin(), alerte.isAgent(), alerte.isApprobateurABS(), alerte.isApprobateurPTG(),
+		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_TITRE + "," + CHAMP_TEXTE_ALERTE_KIOSQUE + "," + CHAMP_DATE_DEBUT + "," + CHAMP_DATE_FIN + "," + CHAMP_AGENT + "," + CHAMP_APPRO_ABS
+				+ "," + CHAMP_APPRO_PTG + "," + CHAMP_OPE_ABS + "," + CHAMP_OPE_PTG + "," + CHAMP_VISEUR_ABS + ") " + "VALUES (?,?,?,?,?,?,?,?,?,?)";
+		jdbcTemplate.update(sql,
+				new Object[] { alerte.getTitre(), alerte.getTexteAlerteKiosque(), alerte.getDateDebut(), alerte.getDateFin(), alerte.isAgent(), alerte.isApprobateurABS(), alerte.isApprobateurPTG(),
 						alerte.isOperateurABS(), alerte.isOperateurPTG(), alerte.isViseurABS() });
 	}
 
 	@Override
 	public void modifierAlerteKiosque(Integer idAlerte, AlerteKiosque alerte) throws Exception {
-		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_TITRE + "=?," + CHAMP_TEXTE_ALERTE_KIOSQUE + "=?,"
-				+ CHAMP_DATE_DEBUT + "=?," + CHAMP_DATE_FIN + "=?," + CHAMP_AGENT + "=?," + CHAMP_APPRO_ABS + "=?,"
-				+ CHAMP_APPRO_PTG + "=?," + CHAMP_OPE_ABS + "=?," + CHAMP_OPE_PTG + "=?," + CHAMP_VISEUR_ABS
-				+ "=? where " + CHAMP_ID + " =?";
-		jdbcTemplate.update(
-				sql,
-				new Object[] { alerte.getTitre(), alerte.getTexteAlerteKiosque(), alerte.getDateDebut(),
-						alerte.getDateFin(), alerte.isAgent(), alerte.isApprobateurABS(), alerte.isApprobateurPTG(),
+		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_TITRE + "=?," + CHAMP_TEXTE_ALERTE_KIOSQUE + "=?," + CHAMP_DATE_DEBUT + "=?," + CHAMP_DATE_FIN + "=?," + CHAMP_AGENT + "=?,"
+				+ CHAMP_APPRO_ABS + "=?," + CHAMP_APPRO_PTG + "=?," + CHAMP_OPE_ABS + "=?," + CHAMP_OPE_PTG + "=?," + CHAMP_VISEUR_ABS + "=? where " + CHAMP_ID + " =?";
+		jdbcTemplate.update(sql,
+				new Object[] { alerte.getTitre(), alerte.getTexteAlerteKiosque(), alerte.getDateDebut(), alerte.getDateFin(), alerte.isAgent(), alerte.isApprobateurABS(), alerte.isApprobateurPTG(),
 						alerte.isOperateurABS(), alerte.isOperateurPTG(), alerte.isViseurABS(), idAlerte });
+	}
+
+	@Override
+	public void supprimerAlerteKiosque(Integer idAlerte) throws Exception {
+		super.supprimerObject(idAlerte);
 	}
 }

@@ -143,8 +143,7 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 	}
 
 	public String getCurrentWholeTreeJS(String serviceSaisi) {
-		return adsService.getCurrentWholeTreeActifTransitoireJS(
-				null != serviceSaisi && !"".equals(serviceSaisi) ? serviceSaisi : null, true);
+		return adsService.getCurrentWholeTreeActifTransitoireJS(null != serviceSaisi && !"".equals(serviceSaisi) ? serviceSaisi : null, true);
 	}
 
 	private void initialiseReferentRhGlobal(HttpServletRequest request) {
@@ -267,8 +266,7 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 						getReferentRhCourant().setIdServiceAds(serv.getIdEntite());
 						EntiteDto serviceAs400 = adsService.getInfoSiservByIdEntite(serv.getIdEntite());
 						getReferentRhCourant().setServi(serviceAs400 == null ? null : serviceAs400.getCodeServi());
-						getReferentRhDao().creerReferentRh(getReferentRhCourant().getIdAgentReferent(),
-								getReferentRhCourant().getNumeroTelephone(), getReferentRhCourant().getIdServiceAds(),
+						getReferentRhDao().creerReferentRh(getReferentRhCourant().getIdAgentReferent(), getReferentRhCourant().getNumeroTelephone(), getReferentRhCourant().getIdServiceAds(),
 								getReferentRhCourant().getServi());
 					}
 				} catch (Exception e) {
@@ -279,14 +277,12 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 				}
 			} else if (getVAL_ST_ACTION_REFERENT_RH().equals(ACTION_SUPPRESSION)) {
 				// on supprime toutes les entrées
-				for (ReferentRh ref : getReferentRhDao().listerServiceAvecReferentRh(
-						getReferentRhCourant().getIdAgentReferent())) {
+				for (ReferentRh ref : getReferentRhDao().listerServiceAvecReferentRh(getReferentRhCourant().getIdAgentReferent())) {
 					getReferentRhDao().supprimerReferentRh(ref.getIdReferentRh());
 				}
 			} else if (getVAL_ST_ACTION_REFERENT_RH().equals(ACTION_MODIFICATION)) {
 				// on supprime toutes les entrées
-				for (ReferentRh ref : getReferentRhDao().listerServiceAvecReferentRh(
-						getReferentRhCourant().getIdAgentReferent())) {
+				for (ReferentRh ref : getReferentRhDao().listerServiceAvecReferentRh(getReferentRhCourant().getIdAgentReferent())) {
 					getReferentRhDao().supprimerReferentRh(ref.getIdReferentRh());
 				}
 				// on crée les entrées
@@ -297,8 +293,7 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 					getReferentRhCourant().setIdServiceAds(serv.getIdEntite().intValue());
 					EntiteDto serviceAs400 = adsService.getInfoSiservByIdEntite(serv.getIdEntite());
 					getReferentRhCourant().setServi(serviceAs400 == null ? null : serviceAs400.getCodeServi());
-					getReferentRhDao().creerReferentRh(getReferentRhCourant().getIdAgentReferent(),
-							getReferentRhCourant().getNumeroTelephone(), getReferentRhCourant().getIdServiceAds(),
+					getReferentRhDao().creerReferentRh(getReferentRhCourant().getIdAgentReferent(), getReferentRhCourant().getNumeroTelephone(), getReferentRhCourant().getIdServiceAds(),
 							getReferentRhCourant().getServi());
 				}
 			}
@@ -368,8 +363,7 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 		addZone(getNOM_EF_NUMERO_TELEPHONE(), getReferentRhCourant().getNumeroTelephone().toString());
 
 		ArrayList<EntiteDto> listeServ = new ArrayList<EntiteDto>();
-		for (ReferentRh ref : getReferentRhDao().listerServiceAvecReferentRh(
-				getReferentRhCourant().getIdAgentReferent())) {
+		for (ReferentRh ref : getReferentRhDao().listerServiceAvecReferentRh(getReferentRhCourant().getIdAgentReferent())) {
 			EntiteDto serv = adsService.getEntiteByIdEntite(ref.getIdServiceAds());
 			listeServ.add(serv);
 		}
@@ -384,8 +378,7 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 
 	public boolean performPB_MODIFIER_REFERENT_RH(HttpServletRequest request) throws Exception {
 
-		int indice = (Services.estNumerique(getVAL_LB_REFERENT_RH_SELECT()) ? Integer
-				.parseInt(getVAL_LB_REFERENT_RH_SELECT()) : -1);
+		int indice = (Services.estNumerique(getVAL_LB_REFERENT_RH_SELECT()) ? Integer.parseInt(getVAL_LB_REFERENT_RH_SELECT()) : -1);
 		if (indice != -1 && indice < getListeReferentRh().size()) {
 			ReferentRh ref = getListeReferentRh().get(indice);
 			setReferentRhCourant(ref);
@@ -404,8 +397,7 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 	}
 
 	public boolean performPB_SUPPRIMER_REFERENT_RH(HttpServletRequest request) throws Exception {
-		int indice = (Services.estNumerique(getVAL_LB_REFERENT_RH_SELECT()) ? Integer
-				.parseInt(getVAL_LB_REFERENT_RH_SELECT()) : -1);
+		int indice = (Services.estNumerique(getVAL_LB_REFERENT_RH_SELECT()) ? Integer.parseInt(getVAL_LB_REFERENT_RH_SELECT()) : -1);
 		if (indice != -1 && indice < getListeReferentRh().size()) {
 			ReferentRh ref = getListeReferentRh().get(indice);
 			setReferentRhCourant(ref);
@@ -571,6 +563,11 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 			// Si clic sur le bouton PB_MODIFIER_ALERTE_KIOSQUE
 			if (testerParametre(request, getNOM_PB_MODIFIER_ALERTE_KIOSQUE())) {
 				return performPB_MODIFIER_ALERTE_KIOSQUE(request);
+			}
+
+			// Si clic sur le bouton PB_SUPPRIMER_ALERTE_KIOSQUE
+			if (testerParametre(request, getNOM_PB_SUPPRIMER_ALERTE_KIOSQUE())) {
+				return performPB_SUPPRIMER_ALERTE_KIOSQUE(request);
 			}
 			// Si clic sur le bouton PB_VALIDER_ALERTE_KIOSQUE
 			if (testerParametre(request, getNOM_PB_VALIDER_ALERTE_KIOSQUE())) {
@@ -768,10 +765,8 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 
 	public boolean performPB_RETIRER_SERVICE(HttpServletRequest request) throws Exception {
 		// Recup du groupe sélectionné
-		int numLigne = (Services.estNumerique(getZone(getNOM_LB_SERVICE_UTILISATEUR_SELECT())) ? Integer
-				.parseInt(getZone(getNOM_LB_SERVICE_UTILISATEUR_SELECT())) : -1);
-		if (numLigne == -1 || getListeServiceUtilisateur().size() == 0
-				|| numLigne > getListeServiceUtilisateur().size()) {
+		int numLigne = (Services.estNumerique(getZone(getNOM_LB_SERVICE_UTILISATEUR_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_SERVICE_UTILISATEUR_SELECT())) : -1);
+		if (numLigne == -1 || getListeServiceUtilisateur().size() == 0 || numLigne > getListeServiceUtilisateur().size()) {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "Services de l'utilisateur"));
 			return false;
 		}
@@ -789,10 +784,8 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 
 	public boolean performPB_RETIRER_TOUT(HttpServletRequest request) throws Exception {
 		// Recup du groupe sélectionné
-		int numLigne = (Services.estNumerique(getZone(getNOM_LB_SERVICE_UTILISATEUR_SELECT())) ? Integer
-				.parseInt(getZone(getNOM_LB_SERVICE_UTILISATEUR_SELECT())) : -1);
-		if (numLigne == -1 || getListeServiceUtilisateur().size() == 0
-				|| numLigne > getListeServiceUtilisateur().size()) {
+		int numLigne = (Services.estNumerique(getZone(getNOM_LB_SERVICE_UTILISATEUR_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_SERVICE_UTILISATEUR_SELECT())) : -1);
+		if (numLigne == -1 || getListeServiceUtilisateur().size() == 0 || numLigne > getListeServiceUtilisateur().size()) {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "Services de l'utilisateur"));
 			return false;
 		}
@@ -910,8 +903,7 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 	public boolean performPB_MODIFIER_TEXTE_KIOSQUE(HttpServletRequest request) throws Exception {
 		viderFormulaire();
 
-		int indice = (Services.estNumerique(getVAL_LB_TEXTE_KIOSQUE_SELECT()) ? Integer
-				.parseInt(getVAL_LB_TEXTE_KIOSQUE_SELECT()) : -1);
+		int indice = (Services.estNumerique(getVAL_LB_TEXTE_KIOSQUE_SELECT()) ? Integer.parseInt(getVAL_LB_TEXTE_KIOSQUE_SELECT()) : -1);
 		if (indice != -1 && indice < getListeAccueilKiosque().size()) {
 			AccueilKiosque ref = getListeAccueilKiosque().get(indice);
 			setAccueilKiosqueCourant(ref);
@@ -932,8 +924,7 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 
 	public boolean performPB_SUPPRIMER_TEXTE_KIOSQUE(HttpServletRequest request) throws Exception {
 		viderFormulaire();
-		int indice = (Services.estNumerique(getVAL_LB_TEXTE_KIOSQUE_SELECT()) ? Integer
-				.parseInt(getVAL_LB_TEXTE_KIOSQUE_SELECT()) : -1);
+		int indice = (Services.estNumerique(getVAL_LB_TEXTE_KIOSQUE_SELECT()) ? Integer.parseInt(getVAL_LB_TEXTE_KIOSQUE_SELECT()) : -1);
 		if (indice != -1 && indice < getListeAccueilKiosque().size()) {
 			AccueilKiosque ref = getListeAccueilKiosque().get(indice);
 			setAccueilKiosqueCourant(ref);
@@ -997,15 +988,14 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 			if (getVAL_ST_ACTION_TEXTE_KIOSQUE().equals(ACTION_CREATION)) {
 				getAccueilKiosqueCourant().setTitre(getVAL_EF_TITRE_ACCUEIL_KIOSQUE());
 				getAccueilKiosqueCourant().setTexteAccueilKiosque(getVAL_EF_TEXTE_KIOSQUE());
-				getAccueilKiosqueDao().creerAccueilKiosque(getAccueilKiosqueCourant().getTitre(),
-						getAccueilKiosqueCourant().getTexteAccueilKiosque());
+				getAccueilKiosqueDao().creerAccueilKiosque(getAccueilKiosqueCourant().getTitre(), getAccueilKiosqueCourant().getTexteAccueilKiosque());
 			} else if (getVAL_ST_ACTION_TEXTE_KIOSQUE().equals(ACTION_SUPPRESSION)) {
 				getAccueilKiosqueDao().supprimerAccueilKiosque(getAccueilKiosqueCourant().getIdAccueilKiosque());
 			} else if (getVAL_ST_ACTION_TEXTE_KIOSQUE().equals(ACTION_MODIFICATION)) {
 				getAccueilKiosqueCourant().setTitre(getVAL_EF_TITRE_ACCUEIL_KIOSQUE());
 				getAccueilKiosqueCourant().setTexteAccueilKiosque(getVAL_EF_TEXTE_KIOSQUE());
-				getAccueilKiosqueDao().modifierAccueilKiosque(getAccueilKiosqueCourant().getIdAccueilKiosque(),
-						getAccueilKiosqueCourant().getTitre(), getAccueilKiosqueCourant().getTexteAccueilKiosque());
+				getAccueilKiosqueDao().modifierAccueilKiosque(getAccueilKiosqueCourant().getIdAccueilKiosque(), getAccueilKiosqueCourant().getTitre(),
+						getAccueilKiosqueCourant().getTexteAccueilKiosque());
 
 			}
 			initialiseListeAccueilKiosque(request);
@@ -1111,8 +1101,7 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 		getReferentRhGlobalCourant().setNumeroTelephone(Integer.valueOf(getVAL_EF_NUMERO_TELEPHONE_GLOBAL()));
 		getReferentRhGlobalCourant().setIdServiceAds(null);
 		getReferentRhGlobalCourant().setServi(null);
-		getReferentRhDao().creerReferentRh(getReferentRhGlobalCourant().getIdAgentReferent(),
-				getReferentRhGlobalCourant().getNumeroTelephone(), getReferentRhCourant().getIdServiceAds(),
+		getReferentRhDao().creerReferentRh(getReferentRhGlobalCourant().getIdAgentReferent(), getReferentRhGlobalCourant().getNumeroTelephone(), getReferentRhCourant().getIdServiceAds(),
 				getReferentRhCourant().getServi());
 
 		initialiseReferentRhGlobal(request);
@@ -1235,24 +1224,18 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 	public boolean performPB_MODIFIER_ALERTE_KIOSQUE(HttpServletRequest request) throws Exception {
 		viderZoneSaisieAlerte(request);
 
-		int indice = (Services.estNumerique(getVAL_LB_ALERTE_KIOSQUE_SELECT()) ? Integer
-				.parseInt(getVAL_LB_ALERTE_KIOSQUE_SELECT()) : -1);
+		int indice = (Services.estNumerique(getVAL_LB_ALERTE_KIOSQUE_SELECT()) ? Integer.parseInt(getVAL_LB_ALERTE_KIOSQUE_SELECT()) : -1);
 		if (indice != -1 && indice < getListeAlerteKiosque().size()) {
 			AlerteKiosque ref = getListeAlerteKiosque().get(indice);
 			setAlerteKiosqueCourant(ref);
 			addZone(getNOM_EF_ALERTE_KIOSQUE(), getAlerteKiosqueCourant().getTexteAlerteKiosque());
 			addZone(getNOM_EF_TITRE_ALERTE_KIOSQUE(), getAlerteKiosqueCourant().getTitre());
 			addZone(getNOM_CK_AGENT(), getAlerteKiosqueCourant().isAgent() ? getCHECKED_ON() : getCHECKED_OFF());
-			addZone(getNOM_CK_APPRO_ABS(), getAlerteKiosqueCourant().isApprobateurABS() ? getCHECKED_ON()
-					: getCHECKED_OFF());
-			addZone(getNOM_CK_APPRO_PTG(), getAlerteKiosqueCourant().isApprobateurPTG() ? getCHECKED_ON()
-					: getCHECKED_OFF());
-			addZone(getNOM_CK_OPE_ABS(), getAlerteKiosqueCourant().isOperateurABS() ? getCHECKED_ON()
-					: getCHECKED_OFF());
-			addZone(getNOM_CK_OPE_PTG(), getAlerteKiosqueCourant().isOperateurPTG() ? getCHECKED_ON()
-					: getCHECKED_OFF());
-			addZone(getNOM_CK_VISEUR_ABS(), getAlerteKiosqueCourant().isViseurABS() ? getCHECKED_ON()
-					: getCHECKED_OFF());
+			addZone(getNOM_CK_APPRO_ABS(), getAlerteKiosqueCourant().isApprobateurABS() ? getCHECKED_ON() : getCHECKED_OFF());
+			addZone(getNOM_CK_APPRO_PTG(), getAlerteKiosqueCourant().isApprobateurPTG() ? getCHECKED_ON() : getCHECKED_OFF());
+			addZone(getNOM_CK_OPE_ABS(), getAlerteKiosqueCourant().isOperateurABS() ? getCHECKED_ON() : getCHECKED_OFF());
+			addZone(getNOM_CK_OPE_PTG(), getAlerteKiosqueCourant().isOperateurPTG() ? getCHECKED_ON() : getCHECKED_OFF());
+			addZone(getNOM_CK_VISEUR_ABS(), getAlerteKiosqueCourant().isViseurABS() ? getCHECKED_ON() : getCHECKED_OFF());
 			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 			addZone(getNOM_EF_DATE_DEBUT(), sdf.format(getAlerteKiosqueCourant().getDateDebut()));
 			addZone(getNOM_EF_DATE_FIN(), sdf.format(getAlerteKiosqueCourant().getDateFin()));
@@ -1263,6 +1246,27 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 
 		setFocus(getNOM_PB_ANNULER_ALERTE_KIOSQUE());
 		return true;
+	}
+
+	public String getNOM_PB_SUPPRIMER_ALERTE_KIOSQUE() {
+		return "NOM_PB_SUPPRIMER_ALERTE_KIOSQUE";
+	}
+
+	public boolean performPB_SUPPRIMER_ALERTE_KIOSQUE(HttpServletRequest request) throws Exception {
+		int indice = (Services.estNumerique(getVAL_LB_ALERTE_KIOSQUE_SELECT()) ? Integer.parseInt(getVAL_LB_ALERTE_KIOSQUE_SELECT()) : -1);
+		if (indice != -1 && indice < getListeAlerteKiosque().size()) {
+			AlerteKiosque ref = getListeAlerteKiosque().get(indice);
+			setAlerteKiosqueCourant(ref);
+			addZone(getNOM_EF_ALERTE_KIOSQUE(), getAlerteKiosqueCourant().getTexteAlerteKiosque());
+			addZone(getNOM_EF_TITRE_ALERTE_KIOSQUE(), getAlerteKiosqueCourant().getTitre());
+			addZone(getNOM_ST_ACTION_ALERTE_KIOSQUE(), ACTION_SUPPRESSION);
+		} else {
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "texte d'alerte"));
+		}
+
+		setFocus(getNOM_PB_ANNULER_REFERENT_RH());
+		return true;
+
 	}
 
 	private void viderZoneSaisieAlerte(HttpServletRequest request) {
@@ -1325,29 +1329,32 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 
 		if (getVAL_ST_ACTION_ALERTE_KIOSQUE() != null && getVAL_ST_ACTION_ALERTE_KIOSQUE() != Const.CHAINE_VIDE) {
 
-			// Vérification de la validité du formulaire
-			if (!performControlerChampsAlerte(request))
-				return false;
+			if (!getVAL_ST_ACTION_ALERTE_KIOSQUE().equals(ACTION_SUPPRESSION)) {
+				// Vérification de la validité du formulaire
+				if (!performControlerChampsAlerte(request))
+					return false;
 
-			// on rempli l'objet
-			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-			getAlerteKiosqueCourant().setTitre(getVAL_EF_TITRE_ALERTE_KIOSQUE());
-			getAlerteKiosqueCourant().setTexteAlerteKiosque(getVAL_EF_ALERTE_KIOSQUE());
-			getAlerteKiosqueCourant().setAgent(getVAL_CK_AGENT().equals(getCHECKED_ON()));
-			getAlerteKiosqueCourant().setApprobateurABS(getVAL_CK_APPRO_ABS().equals(getCHECKED_ON()));
-			getAlerteKiosqueCourant().setApprobateurPTG(getVAL_CK_APPRO_PTG().equals(getCHECKED_ON()));
-			getAlerteKiosqueCourant().setOperateurABS(getVAL_CK_OPE_ABS().equals(getCHECKED_ON()));
-			getAlerteKiosqueCourant().setOperateurPTG(getVAL_CK_OPE_PTG().equals(getCHECKED_ON()));
-			getAlerteKiosqueCourant().setViseurABS(getVAL_CK_VISEUR_ABS().equals(getCHECKED_ON()));
-			getAlerteKiosqueCourant().setDateDebut(sdf.parse(Services.formateDate(getVAL_EF_DATE_DEBUT())));
-			getAlerteKiosqueCourant().setDateFin(sdf.parse(Services.formateDate(getVAL_EF_DATE_FIN())));
+				// on rempli l'objet
+				SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+				getAlerteKiosqueCourant().setTitre(getVAL_EF_TITRE_ALERTE_KIOSQUE());
+				getAlerteKiosqueCourant().setTexteAlerteKiosque(getVAL_EF_ALERTE_KIOSQUE());
+				getAlerteKiosqueCourant().setAgent(getVAL_CK_AGENT().equals(getCHECKED_ON()));
+				getAlerteKiosqueCourant().setApprobateurABS(getVAL_CK_APPRO_ABS().equals(getCHECKED_ON()));
+				getAlerteKiosqueCourant().setApprobateurPTG(getVAL_CK_APPRO_PTG().equals(getCHECKED_ON()));
+				getAlerteKiosqueCourant().setOperateurABS(getVAL_CK_OPE_ABS().equals(getCHECKED_ON()));
+				getAlerteKiosqueCourant().setOperateurPTG(getVAL_CK_OPE_PTG().equals(getCHECKED_ON()));
+				getAlerteKiosqueCourant().setViseurABS(getVAL_CK_VISEUR_ABS().equals(getCHECKED_ON()));
+				getAlerteKiosqueCourant().setDateDebut(sdf.parse(Services.formateDate(getVAL_EF_DATE_DEBUT())));
+				getAlerteKiosqueCourant().setDateFin(sdf.parse(Services.formateDate(getVAL_EF_DATE_FIN())));
 
-			if (getVAL_ST_ACTION_ALERTE_KIOSQUE().equals(ACTION_CREATION)) {
-				getAlerteKiosqueDao().creerAlerteKiosque(getAlerteKiosqueCourant());
-			} else if (getVAL_ST_ACTION_ALERTE_KIOSQUE().equals(ACTION_MODIFICATION)) {
-				getAlerteKiosqueDao().modifierAlerteKiosque(getAlerteKiosqueCourant().getIdAlerteKiosque(),
-						getAlerteKiosqueCourant());
+				if (getVAL_ST_ACTION_ALERTE_KIOSQUE().equals(ACTION_CREATION)) {
+					getAlerteKiosqueDao().creerAlerteKiosque(getAlerteKiosqueCourant());
+				} else if (getVAL_ST_ACTION_ALERTE_KIOSQUE().equals(ACTION_MODIFICATION)) {
+					getAlerteKiosqueDao().modifierAlerteKiosque(getAlerteKiosqueCourant().getIdAlerteKiosque(), getAlerteKiosqueCourant());
 
+				}
+			} else if (getVAL_ST_ACTION_ALERTE_KIOSQUE().equals(ACTION_SUPPRESSION)) {
+				getAlerteKiosqueDao().supprimerAlerteKiosque(getAlerteKiosqueCourant().getIdAlerteKiosque());
 			}
 			initialiseListeAlerteKiosque(request);
 			setAlerteKiosqueCourant(null);
