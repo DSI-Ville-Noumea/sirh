@@ -377,9 +377,10 @@
 							}
 						%>
                 		<span class="sigp2Mandatory" style="width:50px;margin-left:50px;">Type :</span>
-                        <INPUT type="radio" <%=MairieUtils.getDisabled(request, process.getNomEcran())%> <%=process.forRadioHTML(process.getNOM_RG_TYPE(),process.getNOM_RB_TYPE_HS())%>>Heures supplémentaires
-						<INPUT type="radio" <%=MairieUtils.getDisabled(request, process.getNomEcran())%> <%=process.forRadioHTML(process.getNOM_RG_TYPE(),process.getNOM_RB_TYPE_PRIME())%>>Primes
-						<INPUT type="radio" <%=MairieUtils.getDisabled(request, process.getNomEcran())%> <%=process.forRadioHTML(process.getNOM_RG_TYPE(),process.getNOM_RB_TYPE_ABS())%>>Absences
+<!--                 		bug #21052 -->
+<%--                         <INPUT type="radio" <%=MairieUtils.getDisabled(request, process.getNomEcran())%> <%=process.forRadioHTML(process.getNOM_RG_TYPE(),process.getNOM_RB_TYPE_HS())%>>Heures supplémentaires --%>
+<%-- 						<INPUT type="radio" <%=MairieUtils.getDisabled(request, process.getNomEcran())%> <%=process.forRadioHTML(process.getNOM_RG_TYPE(),process.getNOM_RB_TYPE_PRIME())%>>Primes --%>
+<%-- 						<INPUT type="radio" <%=MairieUtils.getDisabled(request, process.getNomEcran())%> <%=process.forRadioHTML(process.getNOM_RG_TYPE(),process.getNOM_RB_TYPE_ABS())%>>Absences --%>
 						<INPUT type="radio" <%=MairieUtils.getDisabled(request, process.getNomEcran())%> <%=process.forRadioHTML(process.getNOM_RG_TYPE(),process.getNOM_RB_TYPE_TOUT())%>>Tout
 						<BR/><BR/>
                 		<span class="sigp2" style="width:50px;margin-left:20px;">Agents :</span>
