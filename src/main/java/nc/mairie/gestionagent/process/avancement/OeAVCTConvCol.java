@@ -334,6 +334,8 @@ public class OeAVCTConvCol extends BasicProcess {
 					// nouvelle
 					if (!getTransaction().isErreur()) {
 						if (!prime.getDatDeb().equals("01/01/" + avct.getAnnee())) {
+							// #21179 : laisser cette ligne en haut
+							Prime newPrime = avancementService.getNewPrimeConventionCollective(getTransaction(), agent, avct);
 							prime.setDatFin("01/01/" + avct.getAnnee());
 							prime.setNoRubr(prime.getNoRubr());
 							prime.setDatDeb(prime.getDatDeb());
@@ -342,7 +344,6 @@ public class OeAVCTConvCol extends BasicProcess {
 							getHistoPrimeDao().creerHistoPrime(histo, user, EnumTypeHisto.MODIFICATION);
 							prime.modifierPrime(getTransaction(), agent, user);
 
-							Prime newPrime = avancementService.getNewPrimeConventionCollective(getTransaction(), agent, avct);
 							// RG_AG_PR_A04
 							HistoPrime histo2 = new HistoPrime(newPrime);
 							getHistoPrimeDao().creerHistoPrime(histo2, user, EnumTypeHisto.CREATION);
