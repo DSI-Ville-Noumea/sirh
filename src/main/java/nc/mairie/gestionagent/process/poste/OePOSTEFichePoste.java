@@ -329,9 +329,9 @@ public class OePOSTEFichePoste extends BasicProcess {
 		// #17320 provient de la page Agent > Emplois > Affectations
 		String numFP = (String) request.getParameter("numFP");
 		if (null != numFP && !numFP.equals("")) {
-			ArrayList<FichePoste> fp = getFichePosteDao().listerFichePosteAvecCriteresAvances(new ArrayList<Integer>(),
-					null, null, numFP, null, false);
-			setFichePosteCourante(fp.get(0));
+			// correction bug #28412
+			FichePoste fp = getFichePosteDao().chercherFichePosteAvecNumeroFP(numFP);
+			setFichePosteCourante(fp);
 			afficheFicheCourante();
 			addZone(getNOM_ST_ACTION(), ACTION_MODIFICATION);
 		}
