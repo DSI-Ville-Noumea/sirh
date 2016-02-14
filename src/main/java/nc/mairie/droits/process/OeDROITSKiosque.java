@@ -146,6 +146,15 @@ public class OeDROITSKiosque extends BasicProcess {
 		if (getVAL_RG_TRI().equals(Const.CHAINE_VIDE)) {
 			addZone(getNOM_RG_TRI(), getNOM_RB_TRI_AGENT());
 		}
+		
+		// on gere ici le click sur le bouton annuler provenant de OeAgentRechercheDroitKiosque
+		// afin de ne pas supprimer tous les agents
+		Boolean isClickAnnule = (Boolean) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE_DROIT_ANNULATION);
+		if(null != isClickAnnule) {
+			VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE_DROIT_ANNULATION);
+			if(isClickAnnule) 
+				return;
+		}
 
 		if (etatStatut() == STATUT_APPROBATEUR) {
 			saveAjoutApprobateurs(request);
@@ -182,8 +191,11 @@ public class OeDROITSKiosque extends BasicProcess {
 		if (etatStatut() == STATUT_AGENT_MAIRIE_APPROBATEUR_ABS) {
 			Agent agt = (Agent) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
 			VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
-			saveAgentApprobateurAbs(request,
+			
+			if(null != agt) {
+				saveAgentApprobateurAbs(request,
 					agt == null ? new ArrayList<AgentDto>() : Arrays.asList(new AgentDto(agt)), false);
+			}
 		}
 
 		if (etatStatut() == STATUT_OPE_APPROBATEUR_ABS) {
@@ -2044,9 +2056,13 @@ public class OeDROITSKiosque extends BasicProcess {
 		ope.setIdAgent(indiceEltAGerer);
 		setOperateurCourant(getListeAgentsOperateurPtg().get(getListeAgentsOperateurPtg().indexOf(ope)));
 
-		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE_DROIT, getListeAgentsApprobateurPtg());
-		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE_DROIT_EXIST, ptgService
+		// on a besoin de l approbateur pour recuperer l arbre des services et agents associe a celui-ci
+		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, getApprobateurCourant());
+		// on a besoin des agents deja affectes a l operateur
+		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE_DROIT, ptgService
 				.getAgentsSaisisOperateur(getApprobateurCourant().getIdAgent(), getOperateurCourant().getIdAgent()));
+		// et des agents affectes a l approbateur
+		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE_DROIT_EXIST, getListeAgentsApprobateurPtg());
 		setStatut(STATUT_AGENT_OPE_APPROBATEUR_PTG, true);
 		return true;
 	}
@@ -2069,12 +2085,16 @@ public class OeDROITSKiosque extends BasicProcess {
 		AgentDto ope = new AgentDto();
 		ope.setIdAgent(indiceEltAGerer);
 		setOperateurCourant(getListeAgentsOperateurAbs().get(getListeAgentsOperateurAbs().indexOf(ope)));
-
-		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE_DROIT, getListeAgentsApprobateurAbs());
+		// on a besoin de l approbateur pour recuperer l arbre des services et agents associe a celui-ci
+		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, getApprobateurCourant());
+		// on a besoin des agents deja affectes a l operateur
+		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE_DROIT, absService.getAgentsOperateur(
+				getApprobateurCourant().getIdAgent(), getOperateurCourant().getIdAgent()));
+		// et des agents affectes a l approbateur
 		VariablesActivite
-				.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE_DROIT_EXIST, absService.getAgentsOperateur(
-						getApprobateurCourant().getIdAgent(), getOperateurCourant().getIdAgent()));
+				.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE_DROIT_EXIST, getListeAgentsApprobateurAbs());
 		setStatut(STATUT_AGENT_OPE_APPROBATEUR_ABS, true);
+		
 		return true;
 	}
 
@@ -2089,9 +2109,13 @@ public class OeDROITSKiosque extends BasicProcess {
 		ope.setIdAgent(indiceEltAGerer);
 		setViseurCourant(getListeAgentsViseurAbs().get(getListeAgentsViseurAbs().indexOf(ope)));
 
-		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE_DROIT, getListeAgentsApprobateurAbs());
-		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE_DROIT_EXIST,
+		// on a besoin de l approbateur pour recuperer l arbre des services et agents associe a celui-ci
+		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, getApprobateurCourant());
+		// on a besoin des agents deja affectes a l operateur
+		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE_DROIT, 
 				absService.getAgentsViseur(getApprobateurCourant().getIdAgent(), getViseurCourant().getIdAgent()));
+		// et des agents affectes a l approbateur
+		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE_DROIT_EXIST, getListeAgentsApprobateurAbs());
 		setStatut(STATUT_AGENT_VISEUR_APPROBATEUR_ABS, true);
 		return true;
 	}

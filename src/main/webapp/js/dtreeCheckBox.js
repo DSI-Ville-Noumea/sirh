@@ -8,77 +8,75 @@
 |                                                   |
 | Updated: 17.04.2003                               |
 |--------------------------------------------------*/
-//LUC alim de la zonefunction alimZone(id,url, title, nfa, info, isSelection) {	//alert(p);	d.openTo(id,true);	document.getElementById('service').value = url;	document.getElementById('idServiceADS').value = title;		if (document.getElementById('infoService') != null)		document.getElementById('infoService').value = info;		if (document.getElementById('nfa') != null)		document.getElementById('nfa').value = nfa;	var boxSelect = document.formu.elements['chkd' + id];	if(boxSelect.checked) {		alert("selectService for id "+ id);		selectService(id,title);	}else{		alert("de-selectService for id "+ id);		deselectService(id,title);	}		document.getElementById('service').focus();}
-// Node object
-function Node(id, pid, name, url, title, nfa,style, selection, target, icon, iconOpen, open) {
-	this.id = id;
-	this.pid = pid;
-	this.name = name;
-	this.url = url;
-	this.title = title;	this.nfa = nfa;	this.style = style;		this.isSelection = selection
-	this.target = target;
-	this.icon = icon;
-	this.iconOpen = iconOpen;
-	this._io = open || false;
-	this._is = false;
-	this._ls = false;
-	this._hc = false;
-	this._ai = 0;
-	this._p;
+//LUC alim de la zonefunction alimZone(id, url, title, nfa, info, isSelection, idParent) {	d.openTo(id,true);	var boxSelect = document.formu.elements['NOM_CK_AGENT_' + id];	if(boxSelect.checked) {		selectService(id,title);	}else{		deselectService(id,title);	}		document.getElementById('service').focus();}
+// Node object
+function Node(id, pid, name, url, title, nfa, style, selection, check, open, iconOpen, target, icon) {
+	this.id = id;	// noeud parent
+	this.pid = pid;
+	this.name = name;
+	this.url = url;
+	this.title = title;	this.nfa = nfa;	this.style = style;	// permet d afficher une checkbox	this.isSelection = selection;	// permet de cocher la checkbox	this.check = check;
+	this.target = target;
+	this.icon = icon;
+	this.iconOpen = iconOpen;
+	this._io = open || false;
+	this._is = false;
+	this._ls = false;
+	this._hc = false;
+	this._ai = 0;
+	this._p;
 };
-
-// Tree object
+// Tree objec
 function dTree(objName) {
-	this.config = {
-		target					: null,
-		folderLinks			: true,
-		useSelection		: true,
-		useCookies			: true,
-		useLines				: true,
-		useIcons				: true,
-		useStatusText		: false,
-		closeSameLevel	: false,
-		inOrder					: false
+	this.config = {
+		target					: null,
+		folderLinks			: true,
+		useSelection		: true,
+		useCookies			: true,
+		useLines				: true,
+		useIcons				: true,
+		useStatusText		: false,
+		closeSameLevel	: false,
+		inOrder					: false
 	};
-	this.icon = {
-		root				: 'images/Arbre_Services/base.gif',
-		folder			: 'images/Arbre_Services/folder.gif',
-		folderOpen	: 'images/Arbre_Services/folderopen.gif',
-		node				: 'images/Arbre_Services/page.gif',
-		empty				: 'images/Arbre_Services/empty.gif',
-		line				: 'images/Arbre_Services/line.gif',
-		join				: 'images/Arbre_Services/join.gif',
-		joinBottom	: 'images/Arbre_Services/joinbottom.gif',
-		plus				: 'images/Arbre_Services/plus.gif',
-		plusBottom	: 'images/Arbre_Services/plusbottom.gif',
-		minus				: 'images/Arbre_Services/minus.gif',
-		minusBottom	: 'images/Arbre_Services/minusbottom.gif',
-		nlPlus			: 'images/Arbre_Services/nolines_plus.gif',
-		nlMinus			: 'images/Arbre_Services/nolines_minus.gif'
+	this.icon = {
+		root				: 'images/Arbre_Services/base.gif',
+		folder			: 'images/Arbre_Services/folder.gif',
+		folderOpen	: 'images/Arbre_Services/folderopen.gif',
+		node				: 'images/Arbre_Services/page.gif',
+		empty				: 'images/Arbre_Services/empty.gif',
+		line				: 'images/Arbre_Services/line.gif',
+		join				: 'images/Arbre_Services/join.gif',
+		joinBottom	: 'images/Arbre_Services/joinbottom.gif',
+		plus				: 'images/Arbre_Services/plus.gif',
+		plusBottom	: 'images/Arbre_Services/plusbottom.gif',
+		minus				: 'images/Arbre_Services/minus.gif',
+		minusBottom	: 'images/Arbre_Services/minusbottom.gif',
+		nlPlus			: 'images/Arbre_Services/nolines_plus.gif',
+		nlMinus			: 'images/Arbre_Services/nolines_minus.gif'
 	};
-	this.obj = objName;
-	this.aNodes = [];
-	this.aIndent = [];
-	this.root = new Node(-1);
-	this.selectedNode = null;
-	this.selectedFound = false;
-	this.completed = false;
+	this.obj = objName;
+	this.aNodes = [];
+	this.aIndent = [];
+	this.root = new Node(-1);
+	this.selectedNode = null;
+	this.selectedFound = false;
+	this.completed = false;
 };
 
-// Adds a new node to the node array
-dTree.prototype.add = function(id, pid, name, url, title, nfa, style, selection, target, icon, iconOpen, open) {
-	this.aNodes[this.aNodes.length] = new Node(id, pid, name, url, title, nfa ,style , selection, target, icon, iconOpen, open);
+// Adds a new node to the node array
+dTree.prototype.add = function(id, pid, name, url, title, nfa, style, selection, ckeck, open, iconOpen, target, icon) {
+	this.aNodes[this.aNodes.length] = new Node(id, pid, name, url, title, nfa, style, selection, ckeck, open, iconOpen, target, icon);
 };
-
-// Open/close all nodes
-dTree.prototype.openAll = function() {
-	this.oAll(true);
+// Open/close all nodes
+dTree.prototype.openAll = function() {
+	this.oAll(true);
 };
-dTree.prototype.closeAll = function() {
-	this.oAll(false);
+dTree.prototype.closeAll = function() {
+	this.oAll(false);
 };
-
-// Outputs the tree to the page
+
+// Outputs the tree to the page
 dTree.prototype.toString = function() {
 	var str = '<div class="dtree">\n';
 	if (document.getElementById) {
@@ -88,67 +86,64 @@ dTree.prototype.toString = function() {
 	str += '</div>';
 	if (!this.selectedFound) this.selectedNode = null;
 	this.completed = true;
-	return str;
-};
-
-// Creates the tree structure
+	return str;
+};
+// Creates the tree structure
 dTree.prototype.addNode = function(pNode) {
-	var str = '';
+	var str = '';
 	var n=0;
 	if (this.config.inOrder) n = pNode._ai;
 	for (n; n<this.aNodes.length; n++) {
 		if (this.aNodes[n].pid == pNode.id) {
-			var cn = this.aNodes[n];
-			cn._p = pNode;
-			cn._ai = n;
+			var cn = this.aNodes[n];
+			cn._p = pNode;
+			cn._ai = n;
 			this.setCS(cn);
 			if (!cn.target && this.config.target) cn.target = this.config.target;
 			if (cn._hc && !cn._io && this.config.useCookies) cn._io = this.isOpen(cn.id);
 			if (!this.config.folderLinks && cn._hc) cn.url = null;
 			if (this.config.useSelection && cn.id == this.selectedNode && !this.selectedFound) {
-					cn._is = true;
-					this.selectedNode = n;
-					this.selectedFound = true;
+					cn._is = true;
+					this.selectedNode = n;
+					this.selectedFound = true;
 			}
 			str += this.node(cn, n);
-			if (cn._ls) break;
-		}
+			if (cn._ls) break;
+		}
 	}
-	return str;
-};
-
-// Creates the node icon, url and text
+	return str;
+};
+// Creates the node icon, url and text
 dTree.prototype.node = function(node, nodeId) {
 	var str = '<div class="dTreeNode">' + this.indent(node, nodeId);
 	if (this.config.useIcons) {
 		if (!node.icon) node.icon = (this.root.id == node.pid) ? this.icon.root : ((node._hc) ? this.icon.folder : this.icon.node);
 		if (!node.iconOpen) node.iconOpen = (node._hc) ? this.icon.folderOpen : this.icon.node;
 		if (this.root.id == node.pid) {
-			node.icon = this.icon.root;
-			node.iconOpen = this.icon.root;
+			node.icon = this.icon.root;
+			node.iconOpen = this.icon.root;
 		}
-		str += '<img id="i' + this.obj + nodeId + '" src="' + ((node._io) ? node.iconOpen : node.icon) + '" alt="" />';
+		str += '<img id="i' + this.obj + nodeId + '" src="' + ((node._io) ? node.iconOpen : node.icon) + '" alt="" />';
 	}
-	if (node.url) {
-		//LUCstr += '<a id="s' + this.obj + nodeId + '" class="' + ((this.config.useSelection) ? ((node._is ? 'nodeSel' : 'node')) : 'node') + '" href="' + node.url + '"';				if(node.isSelection == 'true') {			str += '<a style="'+ node.style +'" id="s' + this.obj + nodeId + '"  class="' + ((this.config.useSelection) ? ((node._is ? 'nodeSel' : 'node')) : 'node') + '" >';			//on ajoute un checkBoxButton			str += '<input type="checkbox" name="chk' + this.obj + node.id + '" value="\''+node.url+'\'" onclick="alimZone(\''+node.id+'\',\''+node.url+'\',\''+node.title+'\', \''+node.nfa+'\',\''+node.name+'\',\''+node.isSelection+'\')"';		}else{			str += '<a style="'+ node.style +'" id="s' + this.obj + nodeId + '"  class="' + ((this.config.useSelection) ? ((node._is ? 'nodeSel' : 'node')) : 'node') + '" onclick="alimZone(\''+node.id+'\',\''+node.url+'\',\''+node.title+'\', \''+node.nfa+'\', \''+node.name+'\',\''+node.isSelection+'\')"';		}		if (node.title) str += ' title="' + node.title + '"';
+	if (node.url) {				if(node.isSelection == 'true') {			str += '<a style="'+ node.style +'" id="s' + this.obj + nodeId + '"  class="' + ((this.config.useSelection) ? ((node._is ? 'nodeSel' : 'node')) : 'node') + '" >';			//on ajoute un checkBoxButton			str += '<input type="checkbox" name="NOM_CK_AGENT_' + node.id + '" title="'+node.pid+'" value="" onclick="alimZone(\''+node.id+'\',\''+node.url+'\',\''+node.title+'\', \''+node.nfa+'\',\''+node.name+'\',\''+node.isSelection+'\',\''+node.pid+'\')"';						if(node.check == 'true')				str += ' checked="checked" ';		}else{			str += '<a style="'+ node.style +'" id="s' + this.obj + nodeId + '"  class="' + ((this.config.useSelection) ? ((node._is ? 'nodeSel' : 'node')) : 'node') + '" onclick="alimZone(\''+node.id+'\',\''+node.url+'\',\''+node.title+'\', \''+node.nfa+'\', \''+node.name+'\',\''+node.isSelection+'\',\''+node.pid+'\')"';		}		if (node.title) str += ' title="' + node.title + '"';
 		if (node.target) str += ' target="' + node.target + '"';
 		if (this.config.useStatusText) str += ' onmouseover="window.status=\'' + node.name + '\';return true;" onmouseout="window.status=\'\';return true;" ';
 		if (this.config.useSelection && ((node._hc && this.config.folderLinks) || !node._hc))
 			str += ' onclick="javascript: ' + this.obj + '.s(' + nodeId + ');"';
-		str += '>';
+		str += '>';
 	}
 	else if ((!this.config.folderLinks || !node.url) && node._hc && node.pid != this.root.id)
 		str += '<a href="javascript: ' + this.obj + '.o(' + nodeId + ');" class="node">';
 	str += node.name;
 	if (node.url || ((!this.config.folderLinks || !node.url) && node._hc)) str += '</a>';
 	str += '</div>';
-	if (node._hc) {
-		str += '<div id="d' + this.obj + nodeId + '" class="clip" style="display:' + ((this.root.id == node.pid || node._io) ? "block" : "none") + ';">';
-		str += this.addNode(node);
-		str += '</div>';
+	if (node._hc) {
+		str += '<div id="d' + this.obj + nodeId + '" class="clip" style="display:' + ((this.root.id == node.pid || node._io) ? "block" : "none") + ';">';
+		str += this.addNode(node);
+		str += '</div>';
 	}
 	this.aIndent.pop();
-	return str;
+	return str;
 };
 
 // Adds the empty and line icons
@@ -165,40 +160,38 @@ dTree.prototype.indent = function(node, nodeId) {
 			str += '" alt="" /></a>';
 		} else str += '<img src="' + ( (this.config.useLines) ? ((node._ls) ? this.icon.joinBottom : this.icon.join ) : this.icon.empty) + '" alt="" />';
 	}
-	return str;
+	return str;
 };
-
-// Checks if a node has any children and if it is the last sibling
+
+// Checks if a node has any children and if it is the last sibling
 dTree.prototype.setCS = function(node) {
 	var lastId;
 	for (var n=0; n<this.aNodes.length; n++) {
 		if (this.aNodes[n].pid == node.id) node._hc = true;
-		if (this.aNodes[n].pid == node.pid) lastId = this.aNodes[n].id;
+		if (this.aNodes[n].pid == node.pid) lastId = this.aNodes[n].id;
 	}
-	if (lastId==node.id) node._ls = true;
+	if (lastId==node.id) node._ls = true;
 };
-
-// Returns the selected node
+// Returns the selected node
 dTree.prototype.getSelected = function() {
-	var sn = this.getCookie('cs' + this.obj);
-	return (sn) ? sn : null;
+	var sn = this.getCookie('cs' + this.obj);
+	return (sn) ? sn : null;
 };
-
-// Highlights the selected node
+// Highlights the selected node
 dTree.prototype.s = function(id) {
 	if (!this.config.useSelection) return;
 	var cn = this.aNodes[id];
 	if (cn._hc && !this.config.folderLinks) return;
 	if (this.selectedNode != id) {
 		if (this.selectedNode || this.selectedNode==0) {
-			eOld = document.getElementById("s" + this.obj + this.selectedNode);
-			eOld.className = "node";
+			eOld = document.getElementById("s" + this.obj + this.selectedNode);
+			eOld.className = "node";
 		}
 		var eNew = document.getElementById("s" + this.obj + id);
-		eNew.className = "nodeSel";
+		eNew.className = "nodeSel";
 		this.selectedNode = id;
-		if (this.config.useCookies) this.setCookie('cs' + this.obj, cn.id);
-	}
+		if (this.config.useCookies) this.setCookie('cs' + this.obj, cn.id);
+	}
 };
 
 // Toggle Open or close
@@ -214,133 +207,122 @@ dTree.prototype.o = function(id) {
 dTree.prototype.oAll = function(status) {
 	for (var n=0; n<this.aNodes.length; n++) {
 		if (this.aNodes[n]._hc && this.aNodes[n].pid != this.root.id) {
-			this.nodeStatus(status, n, this.aNodes[n]._ls);
-			this.aNodes[n]._io = status;
-		}
+			this.nodeStatus(status, n, this.aNodes[n]._ls);
+			this.aNodes[n]._io = status;
+		}
 	}
-	if (this.config.useCookies) this.updateCookie();
-};
-
-// Opens the tree to a specific node
+	if (this.config.useCookies) this.updateCookie();
+};
+// Opens the tree to a specific node
 dTree.prototype.openTo = function(nId, bSelect, bFirst) {
 	if (!bFirst) {
 		for (var n=0; n<this.aNodes.length; n++) {
 			if (this.aNodes[n].id == nId) {
-				nId=n;
-				break;
-			}
-		}
+				nId=n;
+				break;
+			}
+		}
 	}
 	var cn=this.aNodes[nId];
 	if (cn.pid==this.root.id || !cn._p) return;
-	cn._io = true;
+	cn._io = true;
 	cn._is = bSelect;
 	if (this.completed && cn._hc) this.nodeStatus(true, cn._ai, cn._ls);
 	if (this.completed && bSelect) this.s(cn._ai);
 	else if (bSelect) this._sn=cn._ai;
-	this.openTo(cn._p._ai, false, true);
+	this.openTo(cn._p._ai, false, true);
 };
-
-// Closes all nodes on the same level as certain node
+// Closes all nodes on the same level as certain node
 dTree.prototype.closeLevel = function(node) {
 	for (var n=0; n<this.aNodes.length; n++) {
 		if (this.aNodes[n].pid == node.pid && this.aNodes[n].id != node.id && this.aNodes[n]._hc) {
-			this.nodeStatus(false, n, this.aNodes[n]._ls);
-			this.aNodes[n]._io = false;
-			this.closeAllChildren(this.aNodes[n]);
-		}
-	}
+			this.nodeStatus(false, n, this.aNodes[n]._ls);
+			this.aNodes[n]._io = false;
+			this.closeAllChildren(this.aNodes[n]);
+		}
+	}
 };
-
-// Closes all children of a node
+// Closes all children of a node
 dTree.prototype.closeAllChildren = function(node) {
 	for (var n=0; n<this.aNodes.length; n++) {
 		if (this.aNodes[n].pid == node.id && this.aNodes[n]._hc) {
 			if (this.aNodes[n]._io) this.nodeStatus(false, n, this.aNodes[n]._ls);
-			this.aNodes[n]._io = false;
-			this.closeAllChildren(this.aNodes[n]);		
-		}
-	}
+			this.aNodes[n]._io = false;
+			this.closeAllChildren(this.aNodes[n]);		
+		}
+	}
 };
-
-// Change the status of a node(open or closed)
+// Change the status of a node(open or closed)
 dTree.prototype.nodeStatus = function(status, id, bottom) {
-	eDiv	= document.getElementById('d' + this.obj + id);
+	eDiv	= document.getElementById('d' + this.obj + id);
 	eJoin	= document.getElementById('j' + this.obj + id);
 	if (this.config.useIcons) {
-		eIcon	= document.getElementById('i' + this.obj + id);
-		eIcon.src = (status) ? this.aNodes[id].iconOpen : this.aNodes[id].icon;
+		eIcon	= document.getElementById('i' + this.obj + id);
+		eIcon.src = (status) ? this.aNodes[id].iconOpen : this.aNodes[id].icon;
 	}
 	eJoin.src = (this.config.useLines)?
 	((status)?((bottom)?this.icon.minusBottom:this.icon.minus):((bottom)?this.icon.plusBottom:this.icon.plus)):
 	((status)?this.icon.nlMinus:this.icon.nlPlus);
-	eDiv.style.display = (status) ? "block": "none";
+	eDiv.style.display = (status) ? "block": "none";
 };
-
-
-// [Cookie] Clears a cookie
+// [Cookie] Clears a cookie
 dTree.prototype.clearCookie = function() {
-	var now = new Date();
-	var yesterday = new Date(now.getTime() - 1000 * 60 * 60 * 24);
-	this.setCookie('co'+this.obj, 'cookieValue', yesterday);
-	this.setCookie('cs'+this.obj, 'cookieValue', yesterday);
+	var now = new Date();
+	var yesterday = new Date(now.getTime() - 1000 * 60 * 60 * 24);
+	this.setCookie('co'+this.obj, 'cookieValue', yesterday);
+	this.setCookie('cs'+this.obj, 'cookieValue', yesterday);
 };
-
-// [Cookie] Sets value in a cookie
-dTree.prototype.setCookie = function(cookieName, cookieValue, expires, path, domain, secure) {
-	document.cookie =
-		escape(cookieName) + '=' + escape(cookieValue)
-		+ (expires ? '; expires=' + expires.toGMTString() : '')
-		+ (path ? '; path=' + path : '')
-		+ (domain ? '; domain=' + domain : '')
+// [Cookie] Sets value in a cookie
+dTree.prototype.setCookie = function(cookieName, cookieValue, expires, path, domain, secure) {
+	document.cookie =
+		escape(cookieName) + '=' + escape(cookieValue)
+		+ (expires ? '; expires=' + expires.toGMTString() : '')
+		+ (path ? '; path=' + path : '')
+		+ (domain ? '; domain=' + domain : '')
 		+ (secure ? '; secure' : '');
 };
-
-// [Cookie] Gets a value from a cookie
+// [Cookie] Gets a value from a cookie
 dTree.prototype.getCookie = function(cookieName) {
-	var cookieValue = '';
+	var cookieValue = '';
 	var posName = document.cookie.indexOf(escape(cookieName) + '=');
 	if (posName != -1) {
-		var posValue = posName + (escape(cookieName) + '=').length;
+		var posValue = posName + (escape(cookieName) + '=').length;
 		var endPos = document.cookie.indexOf(';', posValue);
 		if (endPos != -1) cookieValue = unescape(document.cookie.substring(posValue, endPos));
 		else cookieValue = unescape(document.cookie.substring(posValue));
 	}
-	return (cookieValue);
+	return (cookieValue);
 };
-
-// [Cookie] Returns ids of open nodes as a string
+// [Cookie] Returns ids of open nodes as a string
 dTree.prototype.updateCookie = function() {
 	var str = '';
-	for (var n=0; n<this.aNodes.length; n++) {
+	for (var n=0; n<this.aNodes.length; n++) {
 		if (this.aNodes[n]._io && this.aNodes[n].pid != this.root.id) {
 			if (str) str += '.';
-			str += this.aNodes[n].id;
-		}
+			str += this.aNodes[n].id;
+		}
 	}
-	this.setCookie('co' + this.obj, str);
+	this.setCookie('co' + this.obj, str);
 };
-
-// [Cookie] Checks if a node id is in a cookie
+// [Cookie] Checks if a node id is in a cookie
 dTree.prototype.isOpen = function(id) {
 	var aOpen = this.getCookie('co' + this.obj).split('.');
-	for (var n=0; n<aOpen.length; n++)
+	for (var n=0; n<aOpen.length; n++)
 		if (aOpen[n] == id) return true;
 	return false;
 };
-
-// If Push and pop is not implemented by the browser
+// If Push and pop is not implemented by the browser
 if (!Array.prototype.push) {
 	Array.prototype.push = function array_push() {
-		for(var i=0;i<arguments.length;i++)
+		for(var i=0;i<arguments.length;i++)
 			this[this.length]=arguments[i];
 		return this.length;
-	};
+	};
 };
-if (!Array.prototype.pop) {
+if (!Array.prototype.pop) {
 	Array.prototype.pop = function array_pop() {
-		lastElement = this[this.length-1];
+		lastElement = this[this.length-1];
 		this.length = Math.max(this.length-1,0);
-		return lastElement;
-	};
+		return lastElement;
+	};
 };

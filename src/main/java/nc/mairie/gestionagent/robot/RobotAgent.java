@@ -567,9 +567,9 @@ public class RobotAgent extends Robot {
 		navigation.put(OeDROITSKiosque.class.getName() + OeDROITSKiosque.STATUT_AGENT_APPROBATEUR_ABS, OeAGENTRechercheDroitKiosque.class.getName());
 		navigation.put(OeDROITSKiosque.class.getName() + OeDROITSKiosque.STATUT_OPE_APPROBATEUR_PTG, OeAGENTRecherche.class.getName());
 		navigation.put(OeDROITSKiosque.class.getName() + OeDROITSKiosque.STATUT_AGENT_APPROBATEUR_PTG, OeAGENTRechercheDroitKiosque.class.getName());
-		navigation.put(OeDROITSKiosque.class.getName() + OeDROITSKiosque.STATUT_AGENT_OPE_APPROBATEUR_PTG, OeAGENTRechercheDroitKiosqueAgentApprobateur.class.getName());
-		navigation.put(OeDROITSKiosque.class.getName() + OeDROITSKiosque.STATUT_AGENT_OPE_APPROBATEUR_ABS, OeAGENTRechercheDroitKiosqueAgentApprobateur.class.getName());
-		navigation.put(OeDROITSKiosque.class.getName() + OeDROITSKiosque.STATUT_AGENT_VISEUR_APPROBATEUR_ABS, OeAGENTRechercheDroitKiosqueAgentApprobateur.class.getName());
+		navigation.put(OeDROITSKiosque.class.getName() + OeDROITSKiosque.STATUT_AGENT_OPE_APPROBATEUR_PTG, OeAGENTRechercheDroitKiosque.class.getName());
+		navigation.put(OeDROITSKiosque.class.getName() + OeDROITSKiosque.STATUT_AGENT_OPE_APPROBATEUR_ABS, OeAGENTRechercheDroitKiosque.class.getName());
+		navigation.put(OeDROITSKiosque.class.getName() + OeDROITSKiosque.STATUT_AGENT_VISEUR_APPROBATEUR_ABS, OeAGENTRechercheDroitKiosque.class.getName());
 		navigation.put(OeDROITSKiosque.class.getName() + OeDROITSKiosque.STATUT_AGENT_MAIRIE_APPROBATEUR_ABS, OeAGENTRecherche.class.getName());
 		navigation.put(OeDROITSKiosque.class.getName() + OeDROITSKiosque.STATUT_AGENT_MAIRIE_APPROBATEUR_PTG, OeAGENTRecherche.class.getName());
 

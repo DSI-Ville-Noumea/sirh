@@ -17,6 +17,13 @@ public class AgentDto {
 		prenom = agent.getPrenomAgent();
 		idAgent = agent.getIdAgent();
 	}
+	
+	public AgentDto(AgentWithServiceDto agent) {
+		this();
+		nom = agent.getNom();
+		prenom = agent.getPrenom();
+		idAgent = agent.getIdAgent();
+	}
 
 	public String getNom() {
 		return nom;

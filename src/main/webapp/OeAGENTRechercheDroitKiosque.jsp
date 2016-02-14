@@ -1,4 +1,4 @@
-<%@page import="nc.mairie.gestionagent.dto.AgentDto"%>
+<%@page import="nc.mairie.gestionagent.dto.AgentWithServiceDto"%>
 <%@ page contentType="text/html; charset=UTF-8" %> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <HTML>
 	<jsp:useBean class="nc.mairie.gestionagent.process.agent.OeAGENTRechercheDroitKiosque" id="process" scope="session"></jsp:useBean>
@@ -13,36 +13,7 @@
 			//afin de sélectionner un élément dans une liste
 			function executeBouton(nom)
 			{
-			document.formu.elements[nom].click();
-			}
-			
-			//function pour changement couleur arriere plan ligne du tableau
-			function SelectLigne(id,tailleTableau)
-			{
-				for (i=0; i<tailleTableau; i++){
-			 		document.getElementById(i).className="";
-				} 
-			 document.getElementById(id).className="selectLigne";
-			}
-
-			
-			function activeAgent() {						
-				<%
-				for (int j = 0;j<process.getListeAgents().size();j++){
-					AgentDto ag = (AgentDto) process.getListeAgents().get(j);
-					Integer i = ag.getIdAgent();
-				%>
-				var box = document.formu.elements['NOM_CK_AGENT_' + <%=i%>];
-				if (document.formu.elements['CHECK_ALL_AGENT'].checked) {
-					if (box != null && !box.disabled) {
-						box.checked = true;
-					}
-				} else {
-					if (box != null && !box.disabled) {
-						box.checked = false;
-					}
-				}
-				<%}%>
+				document.formu.elements[nom].click();
 			}
 		</SCRIPT>
 		<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -62,39 +33,7 @@
 				<!-- ////////// ARBRE DES SERVICES - ADS ///////////// -->
 				<%=process.getTreeAgent() %>
 				<!-- ////////// ARBRE DES SERVICES - ADS ///////////// -->
-														
-				<BR/><BR/>
-               	<%if(process.getListeAgents()!= null && process.getListeAgents().size()>0){ %>      
-						<div style="overflow: auto;height: 250px;width:700px;margin-right: 0px;margin-left: 0px;">
-							<table class="sigp2NewTab" style="text-align:left;width:680px;">
-								<tr>
-									<td style="text-align: center;"><INPUT type="checkbox" name="CHECK_ALL_AGENT" onClick='activeAgent()'></td>
-									<td><span>Matricule</span></td>
-									<td><span>Nom</span></td>
-									<td><span>Prenom</span></td>					
-								</tr>
-								<%
-								if (process.getListeAgents()!=null){
-									for (int i = 0;i<process.getListeAgents().size();i++){
-										int indiceAgent = process.getListeAgents().get(i).getIdAgent();
-								%>
-									<tr id="<%=indiceAgent%>" onmouseover="SelectLigne(<%=indiceAgent%>,<%=process.getListeAgents().size()%>)" >
-										<td class="sigp2NewTab-liste" style="position:relative;width:50px;text-align: center;">
-											<INPUT type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_AGENT(indiceAgent),process.getVAL_CK_AGENT(indiceAgent))%> >
-										</td>	
-										<td class="sigp2NewTab-liste" style="position:relative;width:70px;text-align: left;"><%=process.getVAL_ST_MATR(indiceAgent)%></td>
-										<td class="sigp2NewTab-liste" style="position:relative;width:200px;text-align: left;"><%=process.getVAL_ST_NOM(indiceAgent)%></td>
-										<td class="sigp2NewTab-liste" style="position:relative;width:200px;text-align: left;"><%=process.getVAL_ST_PRENOM(indiceAgent)%></td>
-									</tr>
-										<%
-									}
-								}%>
-							</table>	
-						</div>
-	            <%} else{ %>
-				    <span>Aucun agent disponible</span>	  
-	            	<BR>          
-	            <%} %>
+				
 	            <BR/><BR/>
 	            <TABLE border="0" style="text-align : center;" cellpadding="0" cellspacing="0">
 					<TBODY>

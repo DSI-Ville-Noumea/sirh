@@ -1,8 +1,6 @@
 package nc.mairie.gestionagent.process.agent;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -34,7 +32,7 @@ import org.springframework.context.ApplicationContext;
 public class OeAGENTRechercheDroitKiosque extends BasicProcess {
 
 	private static final long serialVersionUID = 1L;
-	private List<AgentDto> listeAgents;
+	private List<AgentWithServiceDto> listeAgents;
 
 	private String treeAgent;
 
@@ -65,25 +63,12 @@ public class OeAGENTRechercheDroitKiosque extends BasicProcess {
 		List<AgentDto> listAgentExistant = (List<AgentDto>) VariableActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE_DROIT);
 		VariableActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE_DROIT);
 
-		// on charge les sous agents de l'approbateur
-		List<AgentDto> result = sirhService.getAgentsSubordonnes(approbateur.getIdAgent());
-		for (AgentDto exist : listAgentExistant) {
-			if (result.contains(exist))
-				result.remove(exist);
-		}
-
-		setListeAgents(result);
-
-		// on tri la liste
-		Collections.sort(getListeAgents(), new Comparator<AgentDto>() {
-			@Override
-			public int compare(AgentDto o1, AgentDto o2) {
-				return o1.getNom().compareTo(o2.getNom());
-			}
-
-		});
-		afficheListe();
-
+		// recup des agents affectes a l approbateur 
+		// dans le cas ou on gere les agents d un operateur ou viseur
+		@SuppressWarnings("unchecked")
+		List<AgentDto> filtreAgents = (List<AgentDto>) VariableActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE_DROIT_EXIST);
+		VariableActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE_DROIT_EXIST);
+		
 		try {
 			// on cherche le service de l'approbateur
 			Affectation affCourante = getAffectationDao().chercherAffectationActiveAvecAgent(approbateur.getIdAgent());
@@ -91,12 +76,42 @@ public class OeAGENTRechercheDroitKiosque extends BasicProcess {
 
 			EntiteWithAgentWithServiceDto tree = sirhService.getListeEntiteWithAgentWithServiceDtoByIdServiceAdsWithoutAgentConnecte(fpCourante.getIdServiceAds(), approbateur.getIdAgent());
 
-			setTreeAgent(adsService.getCurrentWholeTreeWithAgent(tree, true, sirhService, approbateur.getIdAgent()));
+			setTreeAgent(adsService.getCurrentWholeTreeWithAgent(tree, true, listAgentExistant, filtreAgents));
+			
+			setListeAgents(getListeAgentsOfEntiteTree(tree));
 
 		} catch (Exception e) {
 			// l'agent n' pas d'entite ADS ou d'affectation active
 		}
-
+	}
+	
+	private List<AgentWithServiceDto> getListeAgentsOfEntiteTree(EntiteWithAgentWithServiceDto tree) {
+		
+		List<AgentWithServiceDto> result = new ArrayList<AgentWithServiceDto>();
+		
+		for(AgentWithServiceDto agent : tree.getListAgentWithServiceDto()) {
+			if(!result.contains(agent)) {
+				result.add(agent);
+			}
+		}
+		
+		parcoursTreeToAddAgent(tree, result);
+		
+		return result;
+	}
+	
+	private void parcoursTreeToAddAgent(EntiteWithAgentWithServiceDto tree, List<AgentWithServiceDto> result) {
+		
+		for(EntiteWithAgentWithServiceDto nodeEnfant : tree.getEntiteEnfantWithAgents()) {
+			
+			for(AgentWithServiceDto agent : nodeEnfant.getListAgentWithServiceDto()) {
+				if(!result.contains(agent)) {
+					result.add(agent);
+				}
+			}
+			
+			parcoursTreeToAddAgent(nodeEnfant, result);
+		}
 	}
 
 	private void initialiseDao() {
@@ -116,20 +131,6 @@ public class OeAGENTRechercheDroitKiosque extends BasicProcess {
 		}
 	}
 
-	private void afficheListe() {
-		if (getListeAgents() != null) {
-			for (int i = 0; i < getListeAgents().size(); i++) {
-				AgentDto agent = (AgentDto) getListeAgents().get(i);
-
-				addZone(getNOM_ST_MATR(agent.getIdAgent()), agent.getIdAgent().toString().substring(3, agent.getIdAgent().toString().length()));
-				addZone(getNOM_ST_NOM(agent.getIdAgent()), agent.getNom());
-				addZone(getNOM_ST_PRENOM(agent.getIdAgent()), agent.getPrenom());
-
-			}
-		}
-
-	}
-
 	public String getNOM_PB_ANNULER() {
 		return "NOM_PB_ANNULER";
 	}
@@ -140,6 +141,7 @@ public class OeAGENTRechercheDroitKiosque extends BasicProcess {
 
 	public boolean performPB_ANNULER(HttpServletRequest request) throws Exception {
 		setStatut(STATUT_PROCESS_APPELANT);
+		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE_DROIT_ANNULATION, true);
 		return true;
 	}
 
@@ -207,10 +209,10 @@ public class OeAGENTRechercheDroitKiosque extends BasicProcess {
 
 	public boolean performPB_OK(HttpServletRequest request) throws Exception {
 		List<AgentDto> listeRetour = new ArrayList<AgentDto>();
-		for (AgentDto list : getListeAgents()) {
+		for (AgentWithServiceDto agentCoche : getListeAgents()) {
 			// si l'agent est coché
-			if (getVAL_CK_AGENT(list.getIdAgent()).equals(getCHECKED_ON())) {
-				listeRetour.add(list);
+			if (getVAL_CK_AGENT_TREE(agentCoche.getIdAgent()).equals(getCHECKED_ON())) {
+				listeRetour.add(new AgentDto(agentCoche));
 			}
 		}
 
@@ -220,11 +222,11 @@ public class OeAGENTRechercheDroitKiosque extends BasicProcess {
 		return true;
 	}
 
-	public List<AgentDto> getListeAgents() {
+	public List<AgentWithServiceDto> getListeAgents() {
 		return listeAgents;
 	}
 
-	public void setListeAgents(List<AgentDto> listeAgents) {
+	public void setListeAgents(List<AgentWithServiceDto> listeAgents) {
 		this.listeAgents = listeAgents;
 	}
 
@@ -234,6 +236,14 @@ public class OeAGENTRechercheDroitKiosque extends BasicProcess {
 
 	public String getVAL_CK_AGENT(int i) {
 		return getZone(getNOM_CK_AGENT(i));
+	}
+
+	public String getNOM_CK_AGENT_TREE(int i) {
+		return "NOM_CK_AGENT_" + i;
+	}
+
+	public String getVAL_CK_AGENT_TREE(int i) {
+		return getZone(getNOM_CK_AGENT_TREE(i));
 	}
 
 	public AffectationDao getAffectationDao() {
