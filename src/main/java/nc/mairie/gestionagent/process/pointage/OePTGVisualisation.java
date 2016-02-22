@@ -810,9 +810,15 @@ public class OePTGVisualisation extends BasicProcess {
 
 		if (etatStatut() == STATUT_SAISIE_PTG) {
 			performPB_FILTRER();
-			
+			if(getTransaction().isErreur()) {
+				getTransaction().setErreur(false);
+			}
 			String infos = (String) VariableGlobale.recuperer(request, "MESSAGE_INFO_SAISIE_POINTAGE");
-			getTransaction().declarerErreur("INFO : " + infos);
+			if(null != infos
+					&& !"".equals(infos.trim())) {
+				getTransaction().declarerErreur("INFO : " + infos);
+				VariableGlobale.enlever(request, "MESSAGE_INFO_SAISIE_POINTAGE");
+			}
 		}
 		if (etatStatut() == STATUT_RECHERCHER_AGENT_MIN) {
 			Agent agt = (Agent) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
