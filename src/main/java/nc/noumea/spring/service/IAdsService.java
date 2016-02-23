@@ -41,6 +41,5 @@ public interface IAdsService {
 	EntiteDto getListEntiteDtoByIdService(List<EntiteDto> listEntiteDto, Integer idService);
 
 	String getCurrentWholeTreeWithAgent(EntiteWithAgentWithServiceDto tree, boolean withCkeckBox, 
-			List<AgentDto> listAgentsExistants, List<AgentDto> filtreAgents, 
-			List<EntiteWithAgentWithServiceDto> treeWithAgentsOthersServices);
+			List<AgentDto> listAgentsExistants, List<AgentDto> filtreAgents);
 }

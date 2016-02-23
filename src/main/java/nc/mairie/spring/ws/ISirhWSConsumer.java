@@ -45,8 +45,10 @@ public interface ISirhWSConsumer {
 
 	List<AutreAdministrationAgentDto> getListeAutreAdministrationAgent(Integer idAgent);
 
-	EntiteWithAgentWithServiceDto getListeEntiteWithAgentWithServiceDtoByIdServiceAds(Integer idServiceAds, Integer idAgent);
-
 	List<AgentWithServiceDto> getListAgentsWithService(
 			List<Integer> listAgentDto, Date date);
+
+	EntiteWithAgentWithServiceDto getListeEntiteWithAgentWithServiceDtoByIdServiceAds(
+			Integer idServiceAds, Integer idAgent,
+			List<AgentDto> listAgentsAInclure);
 }

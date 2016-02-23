@@ -3,6 +3,7 @@ package nc.mairie.spring.ws;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -270,14 +271,30 @@ public class SirhWSConsumer extends BaseWsConsumer implements ISirhWSConsumer {
 	}
 
 	@Override
-	public EntiteWithAgentWithServiceDto getListeEntiteWithAgentWithServiceDtoByIdServiceAds(Integer idServiceAds, Integer idAgent) {
+	public EntiteWithAgentWithServiceDto getListeEntiteWithAgentWithServiceDtoByIdServiceAds(
+			Integer idServiceAds, Integer idAgent, List<AgentDto> listAgentsAInclureDansArbre) {
+		
 		String url = String.format(sirhWsBaseUrl + sirhArbreServicesWithListAgentsByServiceUrl);
+		
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idServiceADS", idServiceAds.toString());
+		
 		if (idAgent != null)
 			params.put("idAgent", String.valueOf(idAgent));
+		
+		String json = null;
+		if(null != listAgentsAInclureDansArbre
+				&& !listAgentsAInclureDansArbre.isEmpty()) {
+			
+			List<Integer> listIdsAgent = new ArrayList<Integer>();
+			for(AgentDto agent : listAgentsAInclureDansArbre) {
+				listIdsAgent.add(agent.getIdAgent());
+			}
+			
+			json = new JSONSerializer().exclude("*.class").deepSerialize(listIdsAgent);
+		}
 
-		ClientResponse res = createAndFireRequest(params, url);
+		ClientResponse res = createAndPostRequest(params, url, json);
 		return readResponse(EntiteWithAgentWithServiceDto.class, res, url);
 	}
 

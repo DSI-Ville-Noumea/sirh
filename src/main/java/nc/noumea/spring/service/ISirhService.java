@@ -42,7 +42,8 @@ public interface ISirhService {
 
 	List<AutreAdministrationAgentDto> getListeAutreAdministrationAgent(Integer idAgent);
 
-	EntiteWithAgentWithServiceDto getListeEntiteWithAgentWithServiceDtoByIdServiceAdsWithoutAgentConnecte(Integer idServiceAds, Integer idAgent);
+	EntiteWithAgentWithServiceDto getListeEntiteWithAgentWithServiceDtoByIdServiceAdsWithoutAgentConnecte(
+			Integer idServiceAds, Integer idAgent, List<AgentDto> listAgentsAInclureDansArbre);
 
 	List<AgentWithServiceDto> getListAgentsWithService(
 			List<Integer> listAgentDto, Date date);

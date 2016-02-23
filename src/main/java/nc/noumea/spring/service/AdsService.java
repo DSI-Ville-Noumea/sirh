@@ -447,15 +447,14 @@ public class AdsService implements IAdsService {
 	 */
 	@Override
 	public String getCurrentWholeTreeWithAgent(EntiteWithAgentWithServiceDto tree, boolean withCkeckBox, 
-			List<AgentDto> listAgentsExistants, List<AgentDto> filtreAgents, 
-			List<EntiteWithAgentWithServiceDto> treeWithAgentsOthersServices) {
+			List<AgentDto> listAgentsExistants, List<AgentDto> filtreAgents) {
 
 		logger.debug("Debut construction Arbre Des Service avec agents");
 
 		List<Integer> listIdNodeOpen = new ArrayList<Integer>();
 		
 		StringBuffer result = new StringBuffer();
-		result.append(construitDebutArbreWithAgent(tree, withCkeckBox, treeWithAgentsOthersServices));
+		result.append(construitDebutArbreWithAgent(tree, withCkeckBox));
 
 		// cette partie ajoute le premier dossier Se"rvice dans l arbre sous le noeud Services
 		EntiteDto entiteService = new EntiteDto();
@@ -468,21 +467,6 @@ public class AdsService implements IAdsService {
 		}
 		
 		result.append(buildTreeEntitiesWithAgent(tree, withCkeckBox, listAgentsExistants, filtreAgents, listIdNodeOpen));
-
-		// cette partie les services et agents ne faisant pas parti du service de l approbateur 
-		// et ajouter a la main par la DRH
-		if(null != treeWithAgentsOthersServices) {
-			for(EntiteWithAgentWithServiceDto newTree : treeWithAgentsOthersServices) {
-				result.append(ajouteNoeud(newTree.getNfa(), entiteService, newTree, withCkeckBox, "", "", 
-						isAllAgentsCheck(newTree, filtreAgents, listAgentsExistants)));
-				
-				if(isOneAgentCheck(newTree, filtreAgents, listAgentsExistants)) {
-					listIdNodeOpen.add(newTree.getIdEntite());
-				}
-				
-				result.append(buildTreeEntitiesWithAgent(newTree, withCkeckBox, listAgentsExistants, filtreAgents, listIdNodeOpen));
-			}
-		}
 
 		result.append(construitFinArbre(tree, null, listIdNodeOpen));
 
@@ -499,8 +483,7 @@ public class AdsService implements IAdsService {
 	 * 		 a la main par la DRH mais ne faisant pas partie de l arbre principal
 	 * @return Le debut du Javascript pour l affichage de l arbre
 	 */
-	private String construitDebutArbreWithAgent(EntiteWithAgentWithServiceDto tree, boolean withCkeckBox,
-			List<EntiteWithAgentWithServiceDto> treeWithAgentsOthersServices) {
+	private String construitDebutArbreWithAgent(EntiteWithAgentWithServiceDto tree, boolean withCkeckBox) {
 		StringBuilder result = new StringBuilder();
 		result.append("<div id=\"treeHierarchy\" style=\"display: ");
 		result.append(withCkeckBox ? "block" : "none");
@@ -525,11 +508,6 @@ public class AdsService implements IAdsService {
 
 		result.append("function selectService(id, sigle) {	 \n");
 		result.append(selectServiceWithCheckBoxBouton(tree));
-		if(null != treeWithAgentsOthersServices) {
-			for(EntiteWithAgentWithServiceDto otherTree : treeWithAgentsOthersServices) {
-				result.append(selectServiceWithCheckBoxBouton(otherTree));
-			}
-		}
 		result.append("} \n");
 
 		result.append("function deselectService(id, sigle) {	");
@@ -543,11 +521,6 @@ public class AdsService implements IAdsService {
 		result.append("	}");
 		result.append(" if(id < 9000000) { ");
 		result.append(	deselectServiceWithCheckBoxBouton(tree));
-		if(null != treeWithAgentsOthersServices) {
-			for(EntiteWithAgentWithServiceDto otherTree : treeWithAgentsOthersServices) {
-				result.append(deselectServiceWithCheckBoxBouton(otherTree));
-			}
-		}
 		result.append("	}");
 		result.append("}");
 

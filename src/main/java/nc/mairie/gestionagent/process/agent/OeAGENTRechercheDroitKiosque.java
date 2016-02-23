@@ -75,78 +75,16 @@ public class OeAGENTRechercheDroitKiosque extends BasicProcess {
 			Affectation affCourante = getAffectationDao().chercherAffectationActiveAvecAgent(approbateur.getIdAgent());
 			FichePoste fpCourante = getFichePosteDao().chercherFichePoste(affCourante.getIdFichePoste());
 
-			EntiteWithAgentWithServiceDto tree = sirhService.getListeEntiteWithAgentWithServiceDtoByIdServiceAdsWithoutAgentConnecte(fpCourante.getIdServiceAds(), approbateur.getIdAgent());
+			EntiteWithAgentWithServiceDto tree = sirhService.getListeEntiteWithAgentWithServiceDtoByIdServiceAdsWithoutAgentConnecte(
+					fpCourante.getIdServiceAds(), approbateur.getIdAgent(), (null != filtreAgents ? filtreAgents : listAgentExistant));
 
-			// on recupere tous les agents n etant pas dans le service de l approbateur
+			setTreeAgent(adsService.getCurrentWholeTreeWithAgent(tree, true, listAgentExistant, filtreAgents));
+			
 			setListeAgents(getListeAgentsOfEntiteTree(tree));
-			
-			List<EntiteWithAgentWithServiceDto> treeWithAgentsOthersServices = null;
-			if(null != filtreAgents) {
-				List<Integer> listIdsAgentsNotInSameServiceOfApprobateur = new ArrayList<Integer>();
-				for(AgentDto agentAffecteAppro : filtreAgents) {
-					if(!getListeAgents().contains(agentAffecteAppro)) {
-						listIdsAgentsNotInSameServiceOfApprobateur.add(agentAffecteAppro.getIdAgent());
-					}
-				}
-				
-				List<AgentWithServiceDto> listAgentsNotInSameServiceOfApprobateur = sirhService
-						.getListAgentsWithService(listIdsAgentsNotInSameServiceOfApprobateur, null);
-				
-				setListeAgentsOtherService(listAgentsNotInSameServiceOfApprobateur);
-				
-				// on construit un arbre de EntiteWithAgentWithServiceDto avec ces agents
-				treeWithAgentsOthersServices = getArbrewithAgentsNotInSameServiceOfApprobateur(listAgentsNotInSameServiceOfApprobateur);
-			}else{
-				// dans le cas de l approbateur
-				List<Integer> listIdsAgentsNotInSameServiceOfApprobateur = new ArrayList<Integer>();
-				for(AgentDto agentAffecteAppro : listAgentExistant) {
-					if(!getListeAgents().contains(agentAffecteAppro)) {
-						listIdsAgentsNotInSameServiceOfApprobateur.add(agentAffecteAppro.getIdAgent());
-					}
-				}
-				
-				List<AgentWithServiceDto> listAgentsNotInSameServiceOfApprobateur = sirhService
-						.getListAgentsWithService(listIdsAgentsNotInSameServiceOfApprobateur, null);
-				
-				setListeAgentsOtherService(listAgentsNotInSameServiceOfApprobateur);
-				
-				// on construit un arbre de EntiteWithAgentWithServiceDto avec ces agents
-				treeWithAgentsOthersServices = getArbrewithAgentsNotInSameServiceOfApprobateur(listAgentsNotInSameServiceOfApprobateur);
-			}
-			
-			setTreeAgent(adsService.getCurrentWholeTreeWithAgent(tree, true, listAgentExistant, filtreAgents, treeWithAgentsOthersServices));
 			
 		} catch (Exception e) {
 			// l'agent n' pas d'entite ADS ou d'affectation active
 		}
-	}
-	
-	private List<EntiteWithAgentWithServiceDto> getArbrewithAgentsNotInSameServiceOfApprobateur(
-			List<AgentWithServiceDto> listAgentsNotInSameServiceOfApprobateur) {
-		
-		List<EntiteWithAgentWithServiceDto> result = new ArrayList<EntiteWithAgentWithServiceDto>();
-		
-		if(null != listAgentsNotInSameServiceOfApprobateur) {
-			for(AgentWithServiceDto agent : listAgentsNotInSameServiceOfApprobateur) {
-				boolean isTrouve = false;
-				for(EntiteWithAgentWithServiceDto entite : result) {
-					if(entite.getIdEntite().equals(agent.getIdServiceADS())) {
-						entite.getListAgentWithServiceDto().add(agent);
-						isTrouve = true;
-						break;
-					}
-				}
-				if(!isTrouve) {
-					EntiteWithAgentWithServiceDto newEntite = new EntiteWithAgentWithServiceDto();
-					newEntite.setIdEntite(agent.getIdServiceADS());
-					newEntite.setSigle(agent.getSigleService());
-					newEntite.getListAgentWithServiceDto().add(agent);
-					result.add(newEntite);
-				}
-			}
-		}
-		
-		return result;
 	}
 	
 	private List<AgentDto> getListeAgentsOfEntiteTree(EntiteWithAgentWithServiceDto tree) {
@@ -179,7 +117,7 @@ public class OeAGENTRechercheDroitKiosque extends BasicProcess {
 			parcoursTreeToAddAgent(nodeEnfant, result);
 		}
 	}
-
+	
 	private void initialiseDao() {
 		// on initialise le dao
 		ApplicationContext context = ApplicationContextProvider.getContext();

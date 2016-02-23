@@ -99,8 +99,9 @@ public class SirhService implements ISirhService {
 	}
 
 	@Override
-	public EntiteWithAgentWithServiceDto getListeEntiteWithAgentWithServiceDtoByIdServiceAdsWithoutAgentConnecte(Integer idServiceAds,Integer idAgent) {
-		return sirhConsumer.getListeEntiteWithAgentWithServiceDtoByIdServiceAds(idServiceAds, idAgent);
+	public EntiteWithAgentWithServiceDto getListeEntiteWithAgentWithServiceDtoByIdServiceAdsWithoutAgentConnecte(
+			Integer idServiceAds,Integer idAgent, List<AgentDto> listAgentsAInclureDansArbre) {
+		return sirhConsumer.getListeEntiteWithAgentWithServiceDtoByIdServiceAds(idServiceAds, idAgent, listAgentsAInclureDansArbre);
 	}
 	
 	@Override
