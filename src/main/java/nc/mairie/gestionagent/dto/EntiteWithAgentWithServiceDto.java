@@ -24,6 +24,7 @@ package nc.mairie.gestionagent.dto;
  * #L%
  */
 
+import java.util.ArrayList;
 import java.util.List;
 
 import nc.noumea.mairie.ads.dto.EntiteDto;
@@ -33,6 +34,11 @@ public class EntiteWithAgentWithServiceDto extends EntiteDto {
 	private List<AgentWithServiceDto> listAgentWithServiceDto;
 
 	private List<EntiteWithAgentWithServiceDto> entiteEnfantWithAgents;
+	
+	public EntiteWithAgentWithServiceDto() {
+		listAgentWithServiceDto = new ArrayList<AgentWithServiceDto>();
+		entiteEnfantWithAgents = new ArrayList<EntiteWithAgentWithServiceDto>();
+	}
 
 	public List<AgentWithServiceDto> getListAgentWithServiceDto() {
 		return listAgentWithServiceDto;

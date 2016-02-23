@@ -37,7 +37,6 @@ import nc.mairie.gestionagent.process.agent.OeAGENTPosAdm;
 import nc.mairie.gestionagent.process.agent.OeAGENTPrime;
 import nc.mairie.gestionagent.process.agent.OeAGENTRecherche;
 import nc.mairie.gestionagent.process.agent.OeAGENTRechercheDroitKiosque;
-import nc.mairie.gestionagent.process.agent.OeAGENTRechercheDroitKiosqueAgentApprobateur;
 import nc.mairie.gestionagent.process.agent.OeAGENTVisiteMed;
 import nc.mairie.gestionagent.process.avancement.OeAVCTCampagneEAE;
 import nc.mairie.gestionagent.process.avancement.OeAVCTCampagneGestionEAE;

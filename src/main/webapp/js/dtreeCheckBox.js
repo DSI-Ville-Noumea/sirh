@@ -8,7 +8,7 @@
 |                                                   |
 | Updated: 17.04.2003                               |
 |--------------------------------------------------*/
-//LUC alim de la zonefunction alimZone(id, url, title, nfa, info, isSelection, idParent) {	d.openTo(id,true);	var boxSelect = document.formu.elements['NOM_CK_AGENT_' + id];	if(boxSelect.checked) {		selectService(id,title);	}else{		deselectService(id,title);	}		document.getElementById('service').focus();}
+//LUC alim de la zonefunction alimZone(id, url, title, nfa, info, isSelection, idParent) {	d.openTo(id, true);	var boxSelect = document.formu.elements['NOM_CK_AGENT_' + id];	if(boxSelect.checked) {		selectService(id,title);	}else{		deselectService(id,title);	}		document.getElementById('service').focus();}
 // Node object
 function Node(id, pid, name, url, title, nfa, style, selection, check, open, iconOpen, target, icon) {
 	this.id = id;	// noeud parent

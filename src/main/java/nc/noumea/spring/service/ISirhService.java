@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import nc.mairie.gestionagent.dto.AgentDto;
+import nc.mairie.gestionagent.dto.AgentWithServiceDto;
 import nc.mairie.gestionagent.dto.BaseHorairePointageDto;
 import nc.mairie.gestionagent.dto.DateAvctDto;
 import nc.mairie.gestionagent.dto.EntiteWithAgentWithServiceDto;
@@ -42,4 +43,7 @@ public interface ISirhService {
 	List<AutreAdministrationAgentDto> getListeAutreAdministrationAgent(Integer idAgent);
 
 	EntiteWithAgentWithServiceDto getListeEntiteWithAgentWithServiceDtoByIdServiceAdsWithoutAgentConnecte(Integer idServiceAds, Integer idAgent);
+
+	List<AgentWithServiceDto> getListAgentsWithService(
+			List<Integer> listAgentDto, Date date);
 }

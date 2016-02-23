@@ -185,7 +185,7 @@ public class OeDROITSKiosque extends BasicProcess {
 			List<AgentDto> listAgt = (List<AgentDto>) VariablesActivite.recuperer(this,
 					VariablesActivite.ACTIVITE_AGENT_MAIRIE_DROIT);
 			VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE_DROIT);
-			saveAgentApprobateurAbs(request, listAgt == null ? new ArrayList<AgentDto>() : listAgt, false);
+			saveAgentApprobateurAbs(request, listAgt == null ? new ArrayList<AgentDto>() : listAgt, false, true);
 		}
 
 		if (etatStatut() == STATUT_AGENT_MAIRIE_APPROBATEUR_ABS) {
@@ -194,7 +194,7 @@ public class OeDROITSKiosque extends BasicProcess {
 			
 			if(null != agt) {
 				saveAgentApprobateurAbs(request,
-					agt == null ? new ArrayList<AgentDto>() : Arrays.asList(new AgentDto(agt)), false);
+					agt == null ? new ArrayList<AgentDto>() : Arrays.asList(new AgentDto(agt)), false, false);
 			}
 		}
 
@@ -217,14 +217,16 @@ public class OeDROITSKiosque extends BasicProcess {
 			List<AgentDto> listAgt = (List<AgentDto>) VariablesActivite.recuperer(this,
 					VariablesActivite.ACTIVITE_AGENT_MAIRIE_DROIT);
 			VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE_DROIT);
-			saveAgentApprobateurPtg(request, listAgt == null ? new ArrayList<AgentDto>() : listAgt, false);
+			saveAgentApprobateurPtg(request, listAgt == null ? new ArrayList<AgentDto>() : listAgt, false, true);
 		}
 
 		if (etatStatut() == STATUT_AGENT_MAIRIE_APPROBATEUR_PTG) {
 			Agent agt = (Agent) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
 			VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
-			saveAgentApprobateurPtg(request,
-					agt == null ? new ArrayList<AgentDto>() : Arrays.asList(new AgentDto(agt)), false);
+			if(null != agt) {
+				saveAgentApprobateurPtg(request,
+					agt == null ? new ArrayList<AgentDto>() : Arrays.asList(new AgentDto(agt)), false, false);
+			}
 		}
 
 		if (etatStatut() == STATUT_OPE_APPROBATEUR_PTG) {
@@ -453,11 +455,15 @@ public class OeDROITSKiosque extends BasicProcess {
 		performPB_GERER_DROIT_ABS(request, getApprobateurCourant().getIdAgent());
 	}
 
-	private void saveAgentApprobateurAbs(HttpServletRequest request, List<AgentDto> listAgtAAjouter, boolean suppression)
+	private void saveAgentApprobateurAbs(HttpServletRequest request, List<AgentDto> listAgtAAjouter, boolean suppression, boolean fromRechercheAbreServiceWithAgents)
 			throws Exception {
 
 		if (!suppression) {
 			if (getApprobateurCourant() != null) {
+				
+				if(fromRechercheAbreServiceWithAgents)
+					getListeAgentsApprobateurAbs().clear();
+				
 				for (AgentDto ajout : listAgtAAjouter) {
 					if (!getListeAgentsApprobateurAbs().contains(ajout))
 						getListeAgentsApprobateurAbs().add(ajout);
@@ -1797,7 +1803,7 @@ public class OeDROITSKiosque extends BasicProcess {
 		AgentDto agToDelete = new AgentDto();
 		agToDelete.setIdAgent(indiceEltASuprimer);
 
-		saveAgentApprobateurAbs(request, Arrays.asList(agToDelete), true);
+		saveAgentApprobateurAbs(request, Arrays.asList(agToDelete), true, false);
 
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
@@ -1901,7 +1907,7 @@ public class OeDROITSKiosque extends BasicProcess {
 		AgentDto agToDelete = new AgentDto();
 		agToDelete.setIdAgent(indiceEltASuprimer);
 
-		saveAgentApprobateurPtg(request, Arrays.asList(agToDelete), true);
+		saveAgentApprobateurPtg(request, Arrays.asList(agToDelete), true, false);
 
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
@@ -1921,11 +1927,15 @@ public class OeDROITSKiosque extends BasicProcess {
 		return true;
 	}
 
-	private void saveAgentApprobateurPtg(HttpServletRequest request, List<AgentDto> listAgtAAjouter, boolean suppression)
+	private void saveAgentApprobateurPtg(HttpServletRequest request, List<AgentDto> listAgtAAjouter, boolean suppression, boolean fromRechercheAbreServiceWithAgents)
 			throws Exception {
 
 		if (!suppression) {
 			if (getApprobateurCourant() != null) {
+				
+				if(fromRechercheAbreServiceWithAgents)
+					getListeAgentsApprobateurPtg().clear();
+				
 				for (AgentDto ajout : listAgtAAjouter) {
 					if (!getListeAgentsApprobateurPtg().contains(ajout))
 						getListeAgentsApprobateurPtg().add(ajout);

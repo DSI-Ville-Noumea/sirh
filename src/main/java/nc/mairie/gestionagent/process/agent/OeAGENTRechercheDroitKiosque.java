@@ -32,7 +32,8 @@ import org.springframework.context.ApplicationContext;
 public class OeAGENTRechercheDroitKiosque extends BasicProcess {
 
 	private static final long serialVersionUID = 1L;
-	private List<AgentWithServiceDto> listeAgents;
+	private List<AgentDto> listeAgents;
+	private List<AgentWithServiceDto> listeAgentsOtherService;
 
 	private String treeAgent;
 
@@ -76,22 +77,86 @@ public class OeAGENTRechercheDroitKiosque extends BasicProcess {
 
 			EntiteWithAgentWithServiceDto tree = sirhService.getListeEntiteWithAgentWithServiceDtoByIdServiceAdsWithoutAgentConnecte(fpCourante.getIdServiceAds(), approbateur.getIdAgent());
 
-			setTreeAgent(adsService.getCurrentWholeTreeWithAgent(tree, true, listAgentExistant, filtreAgents));
-			
+			// on recupere tous les agents n etant pas dans le service de l approbateur
 			setListeAgents(getListeAgentsOfEntiteTree(tree));
-
+			
+			List<EntiteWithAgentWithServiceDto> treeWithAgentsOthersServices = null;
+			if(null != filtreAgents) {
+				List<Integer> listIdsAgentsNotInSameServiceOfApprobateur = new ArrayList<Integer>();
+				for(AgentDto agentAffecteAppro : filtreAgents) {
+					if(!getListeAgents().contains(agentAffecteAppro)) {
+						listIdsAgentsNotInSameServiceOfApprobateur.add(agentAffecteAppro.getIdAgent());
+					}
+				}
+				
+				List<AgentWithServiceDto> listAgentsNotInSameServiceOfApprobateur = sirhService
+						.getListAgentsWithService(listIdsAgentsNotInSameServiceOfApprobateur, null);
+				
+				setListeAgentsOtherService(listAgentsNotInSameServiceOfApprobateur);
+				
+				// on construit un arbre de EntiteWithAgentWithServiceDto avec ces agents
+				treeWithAgentsOthersServices = getArbrewithAgentsNotInSameServiceOfApprobateur(listAgentsNotInSameServiceOfApprobateur);
+			}else{
+				// dans le cas de l approbateur
+				List<Integer> listIdsAgentsNotInSameServiceOfApprobateur = new ArrayList<Integer>();
+				for(AgentDto agentAffecteAppro : listAgentExistant) {
+					if(!getListeAgents().contains(agentAffecteAppro)) {
+						listIdsAgentsNotInSameServiceOfApprobateur.add(agentAffecteAppro.getIdAgent());
+					}
+				}
+				
+				List<AgentWithServiceDto> listAgentsNotInSameServiceOfApprobateur = sirhService
+						.getListAgentsWithService(listIdsAgentsNotInSameServiceOfApprobateur, null);
+				
+				setListeAgentsOtherService(listAgentsNotInSameServiceOfApprobateur);
+				
+				// on construit un arbre de EntiteWithAgentWithServiceDto avec ces agents
+				treeWithAgentsOthersServices = getArbrewithAgentsNotInSameServiceOfApprobateur(listAgentsNotInSameServiceOfApprobateur);
+			}
+			
+			setTreeAgent(adsService.getCurrentWholeTreeWithAgent(tree, true, listAgentExistant, filtreAgents, treeWithAgentsOthersServices));
+			
 		} catch (Exception e) {
 			// l'agent n' pas d'entite ADS ou d'affectation active
 		}
 	}
 	
-	private List<AgentWithServiceDto> getListeAgentsOfEntiteTree(EntiteWithAgentWithServiceDto tree) {
+	private List<EntiteWithAgentWithServiceDto> getArbrewithAgentsNotInSameServiceOfApprobateur(
+			List<AgentWithServiceDto> listAgentsNotInSameServiceOfApprobateur) {
 		
-		List<AgentWithServiceDto> result = new ArrayList<AgentWithServiceDto>();
+		List<EntiteWithAgentWithServiceDto> result = new ArrayList<EntiteWithAgentWithServiceDto>();
+		
+		if(null != listAgentsNotInSameServiceOfApprobateur) {
+			for(AgentWithServiceDto agent : listAgentsNotInSameServiceOfApprobateur) {
+				boolean isTrouve = false;
+				for(EntiteWithAgentWithServiceDto entite : result) {
+					if(entite.getIdEntite().equals(agent.getIdServiceADS())) {
+						entite.getListAgentWithServiceDto().add(agent);
+						isTrouve = true;
+						break;
+					}
+				}
+				if(!isTrouve) {
+					EntiteWithAgentWithServiceDto newEntite = new EntiteWithAgentWithServiceDto();
+					newEntite.setIdEntite(agent.getIdServiceADS());
+					newEntite.setSigle(agent.getSigleService());
+					newEntite.getListAgentWithServiceDto().add(agent);
+					result.add(newEntite);
+				}
+			}
+		}
+		
+		return result;
+	}
+	
+	private List<AgentDto> getListeAgentsOfEntiteTree(EntiteWithAgentWithServiceDto tree) {
+		
+		List<AgentDto> result = new ArrayList<AgentDto>();
 		
 		for(AgentWithServiceDto agent : tree.getListAgentWithServiceDto()) {
-			if(!result.contains(agent)) {
-				result.add(agent);
+			AgentDto agentTmp = new AgentDto(agent);
+			if(!result.contains(agentTmp)) {
+				result.add(agentTmp);
 			}
 		}
 		
@@ -100,13 +165,14 @@ public class OeAGENTRechercheDroitKiosque extends BasicProcess {
 		return result;
 	}
 	
-	private void parcoursTreeToAddAgent(EntiteWithAgentWithServiceDto tree, List<AgentWithServiceDto> result) {
+	private void parcoursTreeToAddAgent(EntiteWithAgentWithServiceDto tree, List<AgentDto> result) {
 		
 		for(EntiteWithAgentWithServiceDto nodeEnfant : tree.getEntiteEnfantWithAgents()) {
 			
 			for(AgentWithServiceDto agent : nodeEnfant.getListAgentWithServiceDto()) {
-				if(!result.contains(agent)) {
-					result.add(agent);
+				AgentDto agentTmp = new AgentDto(agent);
+				if(!result.contains(agentTmp)) {
+					result.add(agentTmp);
 				}
 			}
 			
@@ -209,10 +275,18 @@ public class OeAGENTRechercheDroitKiosque extends BasicProcess {
 
 	public boolean performPB_OK(HttpServletRequest request) throws Exception {
 		List<AgentDto> listeRetour = new ArrayList<AgentDto>();
-		for (AgentWithServiceDto agentCoche : getListeAgents()) {
+		for (AgentDto agentCoche : getListeAgents()) {
 			// si l'agent est coché
 			if (getVAL_CK_AGENT_TREE(agentCoche.getIdAgent()).equals(getCHECKED_ON())) {
-				listeRetour.add(new AgentDto(agentCoche));
+				listeRetour.add(agentCoche);
+			}
+		}
+		if(null != getListeAgentsOtherService()) {
+			for (AgentWithServiceDto agentCoche : getListeAgentsOtherService()) {
+				// si l'agent est coché
+				if (getVAL_CK_AGENT_TREE(agentCoche.getIdAgent()).equals(getCHECKED_ON())) {
+					listeRetour.add(new AgentDto(agentCoche));
+				}
 			}
 		}
 
@@ -222,11 +296,11 @@ public class OeAGENTRechercheDroitKiosque extends BasicProcess {
 		return true;
 	}
 
-	public List<AgentWithServiceDto> getListeAgents() {
+	public List<AgentDto> getListeAgents() {
 		return listeAgents;
 	}
 
-	public void setListeAgents(List<AgentWithServiceDto> listeAgents) {
+	public void setListeAgents(List<AgentDto> listeAgents) {
 		this.listeAgents = listeAgents;
 	}
 
@@ -269,4 +343,13 @@ public class OeAGENTRechercheDroitKiosque extends BasicProcess {
 	public void setTreeAgent(String treeAgent) {
 		this.treeAgent = treeAgent;
 	}
+
+	public List<AgentWithServiceDto> getListeAgentsOtherService() {
+		return listeAgentsOtherService;
+	}
+
+	public void setListeAgentsOtherService(List<AgentWithServiceDto> listeAgentsOtherService) {
+		this.listeAgentsOtherService = listeAgentsOtherService;
+	}
+	
 }

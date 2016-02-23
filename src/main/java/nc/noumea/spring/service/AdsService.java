@@ -60,7 +60,7 @@ public class AdsService implements IAdsService {
 
 		result.append(buildTreeEntitiesActifTransitoire(getCurrentTree(), withSelectionRadioBouton));
 
-		result.append(construitFinArbre(getCurrentTree(), serviceSaisi));
+		result.append(construitFinArbre(getCurrentTree(), serviceSaisi, null));
 
 		logger.debug("Fin construction Arbre Des Service avec actifs et transitoires");
 
@@ -117,7 +117,7 @@ public class AdsService implements IAdsService {
 						style = "font-style:italic;";
 					}
 
-					result.append(ajouteNoeud(entite.getNfa(), entite, enfant, withSelectionRadioBouton, transitoire, style, null, null));
+					result.append(ajouteNoeud(entite.getNfa(), entite, enfant, withSelectionRadioBouton, transitoire, style, null));
 					result.append(buildTreeEntitiesActifTransitoire(enfant, withSelectionRadioBouton));
 				}
 			}
@@ -263,20 +263,33 @@ public class AdsService implements IAdsService {
 
 		result.append(buildTreeEntitiesProvisoireActifTransitoire(getCurrentTree(), withSelectionRadioBouton));
 
-		result.append(construitFinArbre(getCurrentTree(), serviceSaisi));
+		result.append(construitFinArbre(getCurrentTree(), serviceSaisi, null));
 
 		logger.debug("Fin construction Arbre Des Service avec provisoires, actifs et transitoires");
 
 		return result.toString();
 	}
 
-	private String construitFinArbre(EntiteDto currentTree, String serviceSaisi) {
+	/**
+	 * 
+	 * @param currentTree L arbre a afficher
+	 * @param serviceSaisi Le service pre selectionne et donc ouvrir l arbre sur ce service
+	 * @param listIdNodeOpen Les nodes de l arbre a ouvrir
+	 * @return
+	 */
+	private String construitFinArbre(EntiteDto currentTree, String serviceSaisi, List<Integer> listIdNodeOpen) {
 		StringBuilder result = new StringBuilder();
 
 		result.append("document.write(d);");
 		result.append("d.closeAll();");
 
 		result.append(openToServiceSaisi(currentTree, serviceSaisi));
+		
+		if(null != listIdNodeOpen) {
+			for(Integer idNode : listIdNodeOpen) {
+				result.append("d.openTo('" + idNode + "', 'true'); ");
+			}
+		}
 
 		result.append("</script>");
 		result.append("</div>");
@@ -342,7 +355,7 @@ public class AdsService implements IAdsService {
 						transitoire = " (P)";
 						style = "font-weight: bold;";
 					}
-					result.append(ajouteNoeud(entite.getNfa(), entite, enfant, withSelectionRadioBouton, transitoire, style, null, null));
+					result.append(ajouteNoeud(entite.getNfa(), entite, enfant, withSelectionRadioBouton, transitoire, style, null));
 					result.append(buildTreeEntitiesProvisoireActifTransitoire(enfant, withSelectionRadioBouton));
 				}
 
@@ -352,14 +365,14 @@ public class AdsService implements IAdsService {
 		return result.toString();
 	}
 
-	private Object ajouteNoeud(String nfa, EntiteDto entite, EntiteDto enfant, boolean withSelectionRadioBouton, String transitoire, String style, Boolean check, Boolean open) {
+	private Object ajouteNoeud(String nfa, EntiteDto entite, EntiteDto enfant, boolean withSelectionRadioBouton, String transitoire, String style, Boolean check) {
 		String result = "";
 		if (nfa == null || nfa.equals(Const.CHAINE_VIDE)) {
-			result = "d.add(" + enfant.getIdEntite() + "," + entite.getIdEntite() + ",\"" + transitoire + enfant.getSigle() + " " + enfant.getLabel().replace("'", " ") + "\",'" + enfant.getSigle()
-					+ "','" + enfant.getIdEntite() + "','',\"" + style + "\",'" + withSelectionRadioBouton + "', '" + check + "', '" + open + "');";
+			result = "d.add(" + enfant.getIdEntite() + "," + entite.getIdEntite() + ",\"" + transitoire + enfant.getSigle() + " " + (null != enfant.getLabel() ? enfant.getLabel().replace("'", " ") : "") + "\",'" + enfant.getSigle()
+					+ "','" + enfant.getIdEntite() + "','',\"" + style + "\",'" + withSelectionRadioBouton + "', '" + check + "');";
 		} else {
-			result = "d.add(" + enfant.getIdEntite() + "," + entite.getIdEntite() + ",\"" + transitoire + enfant.getSigle() + " " + enfant.getLabel().replace("'", " ") + "\",'" + enfant.getSigle()
-					+ "','" + enfant.getIdEntite() + "','" + nfa + "',\"" + style + "\",'" + withSelectionRadioBouton + "', '" + check + "', '" + open + "');";
+			result = "d.add(" + enfant.getIdEntite() + "," + entite.getIdEntite() + ",\"" + transitoire + enfant.getSigle() + " " + (null != enfant.getLabel() ? enfant.getLabel().replace("'", " ") : "") + "\",'" + enfant.getSigle()
+					+ "','" + enfant.getIdEntite() + "','" + nfa + "',\"" + style + "\",'" + withSelectionRadioBouton + "', '" + check + "');";
 		}
 		return result;
 	}
@@ -429,25 +442,65 @@ public class AdsService implements IAdsService {
 		return null;
 	}
 
+	/**
+	 * Est appele depuis la gestion des droits du kiosque
+	 */
 	@Override
 	public String getCurrentWholeTreeWithAgent(EntiteWithAgentWithServiceDto tree, boolean withCkeckBox, 
-			List<AgentDto> listAgentsExistants, List<AgentDto> filtreAgents) {
+			List<AgentDto> listAgentsExistants, List<AgentDto> filtreAgents, 
+			List<EntiteWithAgentWithServiceDto> treeWithAgentsOthersServices) {
 
 		logger.debug("Debut construction Arbre Des Service avec agents");
 
+		List<Integer> listIdNodeOpen = new ArrayList<Integer>();
+		
 		StringBuffer result = new StringBuffer();
-		result.append(construitDebutArbreWithAgent(tree, withCkeckBox));
+		result.append(construitDebutArbreWithAgent(tree, withCkeckBox, treeWithAgentsOthersServices));
 
-		result.append(buildTreeEntitiesWithAgent(tree, withCkeckBox, listAgentsExistants, filtreAgents));
+		// cette partie ajoute le premier dossier Se"rvice dans l arbre sous le noeud Services
+		EntiteDto entiteService = new EntiteDto();
+		entiteService.setIdEntite(0);
+		result.append(ajouteNoeud(tree.getNfa(), entiteService, tree, withCkeckBox, "", "", 
+				isAllAgentsCheck(tree, filtreAgents, listAgentsExistants)));
+		
+		if(isOneAgentCheck(tree, filtreAgents, listAgentsExistants)) {
+			listIdNodeOpen.add(tree.getIdEntite());
+		}
+		
+		result.append(buildTreeEntitiesWithAgent(tree, withCkeckBox, listAgentsExistants, filtreAgents, listIdNodeOpen));
 
-		result.append(construitFinArbre(tree, null));
+		// cette partie les services et agents ne faisant pas parti du service de l approbateur 
+		// et ajouter a la main par la DRH
+		if(null != treeWithAgentsOthersServices) {
+			for(EntiteWithAgentWithServiceDto newTree : treeWithAgentsOthersServices) {
+				result.append(ajouteNoeud(newTree.getNfa(), entiteService, newTree, withCkeckBox, "", "", 
+						isAllAgentsCheck(newTree, filtreAgents, listAgentsExistants)));
+				
+				if(isOneAgentCheck(newTree, filtreAgents, listAgentsExistants)) {
+					listIdNodeOpen.add(newTree.getIdEntite());
+				}
+				
+				result.append(buildTreeEntitiesWithAgent(newTree, withCkeckBox, listAgentsExistants, filtreAgents, listIdNodeOpen));
+			}
+		}
+
+		result.append(construitFinArbre(tree, null, listIdNodeOpen));
 
 		logger.debug("Fin construction Arbre Des Service avec agents");
 
 		return result.toString();
 	}
 
-	private String construitDebutArbreWithAgent(EntiteWithAgentWithServiceDto tree, boolean withCkeckBox) {
+	/**
+	 * 
+	 * @param tree l arbre principal
+	 * @param withCkeckBox avec ou sans checkbox
+	 * @param treeWithAgentsOthersServices les services et agents ajoutes
+	 * 		 a la main par la DRH mais ne faisant pas partie de l arbre principal
+	 * @return Le debut du Javascript pour l affichage de l arbre
+	 */
+	private String construitDebutArbreWithAgent(EntiteWithAgentWithServiceDto tree, boolean withCkeckBox,
+			List<EntiteWithAgentWithServiceDto> treeWithAgentsOthersServices) {
 		StringBuilder result = new StringBuilder();
 		result.append("<div id=\"treeHierarchy\" style=\"display: ");
 		result.append(withCkeckBox ? "block" : "none");
@@ -472,6 +525,11 @@ public class AdsService implements IAdsService {
 
 		result.append("function selectService(id, sigle) {	 \n");
 		result.append(selectServiceWithCheckBoxBouton(tree));
+		if(null != treeWithAgentsOthersServices) {
+			for(EntiteWithAgentWithServiceDto otherTree : treeWithAgentsOthersServices) {
+				result.append(selectServiceWithCheckBoxBouton(otherTree));
+			}
+		}
 		result.append("} \n");
 
 		result.append("function deselectService(id, sigle) {	");
@@ -485,6 +543,11 @@ public class AdsService implements IAdsService {
 		result.append("	}");
 		result.append(" if(id < 9000000) { ");
 		result.append(	deselectServiceWithCheckBoxBouton(tree));
+		if(null != treeWithAgentsOthersServices) {
+			for(EntiteWithAgentWithServiceDto otherTree : treeWithAgentsOthersServices) {
+				result.append(deselectServiceWithCheckBoxBouton(otherTree));
+			}
+		}
 		result.append("	}");
 		result.append("}");
 
@@ -495,7 +558,7 @@ public class AdsService implements IAdsService {
 		result.append("<script type=\"text/javascript\"> \n");
 
 		result.append("d = new dTree('d'); \n");
-		result.append("d.add(" + tree.getIdEntite() + ",-1,\"Services\"); \n");
+		result.append("d.add(0,-1,\"Services\"); \n");
 		return result.toString();
 	}
 
@@ -503,16 +566,17 @@ public class AdsService implements IAdsService {
 
 		StringBuffer result = new StringBuffer();
 
-		if (null != entite && null != entite.getEntiteEnfantWithAgents()) {
-			for (EntiteWithAgentWithServiceDto enfant : entite.getEntiteEnfantWithAgents()) {
-				
-				for(AgentWithServiceDto agent : enfant.getListAgentWithServiceDto()) {
-					result.append("		var box = document.formu.elements['NOM_CK_AGENT_" + agent.getIdAgent() + "']; \n");
-					result.append("		if(box!=null && box.title == id){ \n");
-					result.append("			box.checked = true; \n");
-					result.append("		} \n");
+		if (null != entite) {
+			for(AgentWithServiceDto agent : entite.getListAgentWithServiceDto()) {
+				result.append("		var box = document.formu.elements['NOM_CK_AGENT_" + agent.getIdAgent() + "']; \n");
+				result.append("		if(box!=null && box.title == id){ \n");
+				result.append("			box.checked = true; \n");
+				result.append("		} \n");
+			}
+			if(null != entite.getEntiteEnfantWithAgents()) {
+				for (EntiteWithAgentWithServiceDto enfant : entite.getEntiteEnfantWithAgents()) {
+					result.append(selectServiceWithCheckBoxBouton(enfant));
 				}
-				result.append(selectServiceWithCheckBoxBouton(enfant));
 			}
 		}
 
@@ -523,16 +587,25 @@ public class AdsService implements IAdsService {
 
 		StringBuffer result = new StringBuffer();
 		
-		if (null != entite && null != entite.getEntiteEnfantWithAgents()) {
-			for (EntiteWithAgentWithServiceDto enfant : entite.getEntiteEnfantWithAgents()) {
-				for(AgentWithServiceDto agent : enfant.getListAgentWithServiceDto()) {
-					result.append("		var box = document.formu.elements['NOM_CK_AGENT_" + agent.getIdAgent() + "']; \n");
-					result.append("		if(box!=null && box.title == id){  \n");
-					result.append("			box.checked = false; \n");
-					result.append("		} \n");
+		if (null != entite) { 
+			for(AgentWithServiceDto agent : entite.getListAgentWithServiceDto()) {
+				result.append("		var box = document.formu.elements['NOM_CK_AGENT_" + agent.getIdAgent() + "']; \n");
+				result.append("		if(box!=null && box.title == id){  \n");
+				result.append("			box.checked = false; \n");
+				result.append("		} \n");
+			}
+			
+			if(null != entite.getEntiteEnfantWithAgents()) {
+				for (EntiteWithAgentWithServiceDto enfant : entite.getEntiteEnfantWithAgents()) {
+//					for(AgentWithServiceDto agent : enfant.getListAgentWithServiceDto()) {
+//						result.append("		var box = document.formu.elements['NOM_CK_AGENT_" + agent.getIdAgent() + "']; \n");
+//						result.append("		if(box!=null && box.title == id){  \n");
+//						result.append("			box.checked = false; \n");
+//						result.append("		} \n");
+//					}
+					
+					result.append(deselectServiceWithCheckBoxBouton(enfant));
 				}
-				
-				result.append(deselectServiceWithCheckBoxBouton(enfant));
 			}
 		}
 
@@ -540,10 +613,11 @@ public class AdsService implements IAdsService {
 	}
 
 	private String buildTreeEntitiesWithAgent(EntiteWithAgentWithServiceDto entite, boolean withCkeckBox, 
-			List<AgentDto> listAgentsExistants, List<AgentDto> filtreAgents) {
+			List<AgentDto> listAgentsExistants, List<AgentDto> filtreAgents, List<Integer> listIdNodeOpen) {
 		
 		StringBuffer result = new StringBuffer();
 		if (null != entite) {
+			
 			// on ajoute les agents
 			for (AgentWithServiceDto ag : entite.getListAgentWithServiceDto()) {
 				AgentDto agentTmpDto = new AgentDto(ag);
@@ -560,8 +634,13 @@ public class AdsService implements IAdsService {
 					// sinon on affiche pas le service
 					if(isOneAgentInService(enfant, filtreAgents)) {
 						result.append(ajouteNoeud(entite.getNfa(), entite, enfant, withCkeckBox, "", "", 
-								isAllAgentsCheck(enfant, filtreAgents, listAgentsExistants), isOneAgentCheck(enfant, filtreAgents, listAgentsExistants)));
-						result.append(buildTreeEntitiesWithAgent(enfant, withCkeckBox, listAgentsExistants, filtreAgents));
+								isAllAgentsCheck(enfant, filtreAgents, listAgentsExistants)));
+						
+						if(isOneAgentCheck(enfant, filtreAgents, listAgentsExistants)) {
+							listIdNodeOpen.add(enfant.getIdEntite());
+						}
+						
+						result.append(buildTreeEntitiesWithAgent(enfant, withCkeckBox, listAgentsExistants, filtreAgents, listIdNodeOpen));
 					}
 				}
 			}
@@ -571,7 +650,7 @@ public class AdsService implements IAdsService {
 	}
 	
 	/**
-	 * Permet de savoir s il y a au moins un agent dans le service a afficher
+	 * Permet de savoir s il y a au moins un agent dans le service et ses sous services a afficher
 	 * et ainsi on affiche ou non le service dans l arbre
 	 * 
 	 * Inutile d'afficher un service si celui est vide
@@ -587,6 +666,12 @@ public class AdsService implements IAdsService {
 			if(null == filtreAgents
 					|| filtreAgents.contains(agentTmpDto)) {
 				return true;
+			}
+			
+			for(EntiteWithAgentWithServiceDto enfant : entite.getEntiteEnfantWithAgents()) {
+				boolean result = isOneAgentInService(enfant, filtreAgents);
+				if(result)
+					return result;
 			}
 		}
 		
@@ -604,7 +689,9 @@ public class AdsService implements IAdsService {
 	private boolean isAllAgentsCheck(EntiteWithAgentWithServiceDto entite, List<AgentDto> filtreAgents, List<AgentDto> listAgentsExistants) {
 		
 		if(null != listAgentsExistants
-				&& !listAgentsExistants.isEmpty()) {
+				&& !listAgentsExistants.isEmpty()
+				&& null != entite.getListAgentWithServiceDto()
+				&& !entite.getListAgentWithServiceDto().isEmpty()) {
 			for (AgentWithServiceDto ag : entite.getListAgentWithServiceDto()) {
 				AgentDto agentTmpDto = new AgentDto(ag);
 				if((null == filtreAgents

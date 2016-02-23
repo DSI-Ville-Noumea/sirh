@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import nc.mairie.gestionagent.dto.AgentDto;
+import nc.mairie.gestionagent.dto.AgentWithServiceDto;
 import nc.mairie.gestionagent.dto.BaseHorairePointageDto;
 import nc.mairie.gestionagent.dto.DateAvctDto;
 import nc.mairie.gestionagent.dto.EntiteWithAgentWithServiceDto;
@@ -25,6 +26,8 @@ import org.springframework.stereotype.Service;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
+
+import flexjson.JSONSerializer;
 
 @Service
 public class SirhWSConsumer extends BaseWsConsumer implements ISirhWSConsumer {
@@ -53,6 +56,7 @@ public class SirhWSConsumer extends BaseWsConsumer implements ISirhWSConsumer {
 	// pour la gestion des droits
 	private static final String sirhAgentSubordonnesUrl = "agents/agentsSubordonnes";
 	private static final String sirhArbreServicesWithListAgentsByServiceUrl = "agents/arbreServicesWithListAgentsByServiceWithoutAgentConnecte";
+	private static final String sirhListAgentsWithServiceUrl = "services/listAgentsWithService";
 
 	private Logger logger = LoggerFactory.getLogger(SirhWSConsumer.class);
 
@@ -275,6 +279,25 @@ public class SirhWSConsumer extends BaseWsConsumer implements ISirhWSConsumer {
 
 		ClientResponse res = createAndFireRequest(params, url);
 		return readResponse(EntiteWithAgentWithServiceDto.class, res, url);
+	}
+
+	@Override
+	public List<AgentWithServiceDto> getListAgentsWithService(List<Integer> listAgentDto, Date date) {
+
+		String url = String.format(sirhWsBaseUrl + sirhListAgentsWithServiceUrl);
+
+		Map<String, String> parameters = new HashMap<String, String>();
+
+		String json = new JSONSerializer().exclude("*.class").deepSerialize(listAgentDto);
+
+		if (date != null) {
+			SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd");
+			parameters.put("date", sf.format(date));
+		}
+
+		ClientResponse res = createAndPostRequest(parameters, url, json);
+
+		return readResponseAsList(AgentWithServiceDto.class, res, url);
 	}
 
 }
