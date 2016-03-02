@@ -169,11 +169,9 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		// RG_AG_EC_C11
 		CommunePostal newCommune = null;
 		if (getVAL_RG_VILLE_DOMICILE().equals(getNOM_RB_VILLE_DOMICILE_NOUMEA())) {
-			newCommune = (CommunePostal) getListeCommuneDomNoumea().get(
-					Integer.parseInt(getVAL_LB_COMMUNE_DOM_SELECT()));
+			newCommune = (CommunePostal) getListeCommuneDomNoumea().get(Integer.parseInt(getVAL_LB_COMMUNE_DOM_SELECT()));
 		} else {
-			newCommune = (CommunePostal) getListeCommuneDomAutre()
-					.get(Integer.parseInt(getVAL_LB_COMMUNE_DOM_SELECT()));
+			newCommune = (CommunePostal) getListeCommuneDomAutre().get(Integer.parseInt(getVAL_LB_COMMUNE_DOM_SELECT()));
 		}
 		setCommuneDomCourant(newCommune);
 		addZone(getNOM_EF_CODE_POSTAL_DOM(), getCommuneDomCourant().getCodCodePostal());
@@ -293,8 +291,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		if (creation) {
 			String dateNaiss = Services.formateDate(getVAL_EF_DATE_NAISSANCE());
 
-			ArrayList<Agent> listAgent = getAgentDao().listerAgentHomonyme(getAgentCourant().getNomUsage(),
-					getAgentCourant().getPrenomUsage(), sdf.parse(dateNaiss));
+			ArrayList<Agent> listAgent = getAgentDao().listerAgentHomonyme(getAgentCourant().getNomUsage(), getAgentCourant().getPrenomUsage(), sdf.parse(dateNaiss));
 			listAgent.remove(getAgentCourant());
 			if (listAgent.size() > 0) {
 				VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_LST_AGT_HOMONYME, listAgent);
@@ -306,8 +303,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 
 		// Création de l'agent
 		ArrayList<Contact> lContact = getContactDao().listerContactAgent(getAgentCourant().getIdAgent());
-		SituationFamiliale situFam = getSituationFamilialeDao().chercherSituationFamilialeById(
-				getAgentCourant().getIdSituationFamiliale());
+		SituationFamiliale situFam = getSituationFamilialeDao().chercherSituationFamilialeById(getAgentCourant().getIdSituationFamiliale());
 		getAgentDao().creerAgent(getTransaction(), getAgentCourant(), lContact, situFam);
 		if (getTransaction().isErreur()) {
 			return false;
@@ -317,13 +313,11 @@ public class OeAGENTEtatCivil extends BasicProcess {
 
 		for (Contact contact : getListeContactAAjouter()) {
 			contact.setIdAgent(getAgentCourant().getIdAgent());
-			getContactDao().creerContact(contact.getIdAgent(), contact.getIdTypeContact(), contact.getDescription(),
-					contact.isDiffusable(), contact.isPrioritaire());
+			getContactDao().creerContact(contact.getIdAgent(), contact.getIdTypeContact(), contact.getDescription(), contact.isDiffusable(), contact.isPrioritaire());
 		}
 
 		for (Contact contact : getListeContactAModifier()) {
-			getContactDao().modifierContact(contact.getIdContact(), contact.getIdAgent(), contact.getIdTypeContact(),
-					contact.getDescription(), contact.isDiffusable(), contact.isPrioritaire());
+			getContactDao().modifierContact(contact.getIdContact(), contact.getIdAgent(), contact.getIdTypeContact(), contact.getDescription(), contact.isDiffusable(), contact.isPrioritaire());
 		}
 
 		for (Contact contact : getListeContactASupprimer()) {
@@ -350,14 +344,10 @@ public class OeAGENTEtatCivil extends BasicProcess {
 
 		if (creation) // "INF001","Agent @ créé"
 		{
-			setStatut(STATUT_PROCESS_APPELANT, false,
-					MessageUtils.getMessage("INF001", getAgentCourant().getNomatr().toString()) + " " + message + " "
-							+ messageDateEmbauche);
+			setStatut(STATUT_PROCESS_APPELANT, false, MessageUtils.getMessage("INF001", getAgentCourant().getNomatr().toString()) + " " + message + " " + messageDateEmbauche);
 		} else // "INF001","Agent @ modifié"
 		{
-			setStatut(STATUT_MEME_PROCESS, false,
-					MessageUtils.getMessage("INF002", getAgentCourant().getNomatr().toString()) + " "
-							+ messageDateEmbauche);
+			setStatut(STATUT_MEME_PROCESS, false, MessageUtils.getMessage("INF002", getAgentCourant().getNomatr().toString()) + " " + messageDateEmbauche);
 		}
 
 		return true;
@@ -379,8 +369,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		getAgentCourant().setSexe(getVAL_ST_SEXE().substring(0, 1));
 		getAgentCourant().setNomPatronymique(getVAL_EF_NOM_PATRONYMIQUE());
 		getAgentCourant().setPrenom(getVAL_EF_PRENOM());
-		getAgentCourant().setPrenomUsage(
-				getVAL_EF_PRENOM_USAGE().length() == 0 ? getVAL_EF_PRENOM() : getVAL_EF_PRENOM_USAGE());
+		getAgentCourant().setPrenomUsage(getVAL_EF_PRENOM_USAGE().length() == 0 ? getVAL_EF_PRENOM() : getVAL_EF_PRENOM_USAGE());
 
 		/**
 		 * FIX CLV https://redmine.ville-noumea.nc/issues/2424 *
@@ -398,47 +387,34 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		/**
 		 * FIN FIX CLV https://redmine.ville-noumea.nc/issues/2424 *
 		 */
-		int indiceCol = (Services.estNumerique(getVAL_LB_COLLECTIVITE_SELECT()) ? Integer
-				.parseInt(getVAL_LB_COLLECTIVITE_SELECT()) : -1);
+		int indiceCol = (Services.estNumerique(getVAL_LB_COLLECTIVITE_SELECT()) ? Integer.parseInt(getVAL_LB_COLLECTIVITE_SELECT()) : -1);
 		getAgentCourant().setIdCollectivite(((Collectivite) getListeCollectivite().get(indiceCol)).getIdCollectivite());
 
-		int indiceSitu = (Services.estNumerique(getVAL_LB_SITUATION_SELECT()) ? Integer
-				.parseInt(getVAL_LB_SITUATION_SELECT()) : -1);
-		getAgentCourant().setIdSituationFamiliale(
-				((SituationFamiliale) getListeSituation().get(indiceSitu)).getIdSituation());
+		int indiceSitu = (Services.estNumerique(getVAL_LB_SITUATION_SELECT()) ? Integer.parseInt(getVAL_LB_SITUATION_SELECT()) : -1);
+		getAgentCourant().setIdSituationFamiliale(((SituationFamiliale) getListeSituation().get(indiceSitu)).getIdSituation());
 
-		int indiceNation = (Services.estNumerique(getVAL_LB_NATIONALITE_SELECT()) ? Integer
-				.parseInt(getVAL_LB_NATIONALITE_SELECT()) : -1);
-		getAgentCourant().setNationalite(
-				getLB_NATIONALITE()[indiceNation].length() == 0 ? null : getLB_NATIONALITE()[indiceNation].substring(0,
-						1));
+		int indiceNation = (Services.estNumerique(getVAL_LB_NATIONALITE_SELECT()) ? Integer.parseInt(getVAL_LB_NATIONALITE_SELECT()) : -1);
+		getAgentCourant().setNationalite(getLB_NATIONALITE()[indiceNation].length() == 0 ? null : getLB_NATIONALITE()[indiceNation].substring(0, 1));
 
 		getAgentCourant().setDateNaissance(sdf.parse(getVAL_EF_DATE_NAISSANCE()));
 
 		if (getPaysNaissanceCourant() != null) {
 			getAgentCourant().setCodePaysNaissEt(Integer.valueOf(getPaysNaissanceCourant().getCodPays()));
-			getAgentCourant().setCodeCommuneNaissEt(
-					Integer.valueOf(((CommuneEtrangere) getCommNaissanceCourant()).getCodCommuneEtrangere()));
+			getAgentCourant().setCodeCommuneNaissEt(Integer.valueOf(((CommuneEtrangere) getCommNaissanceCourant()).getCodCommuneEtrangere()));
 		} else {
-			getAgentCourant().setCodeCommuneNaissFr(
-					Integer.valueOf(((Commune) getCommNaissanceCourant()).getCodCommune()));
+			getAgentCourant().setCodeCommuneNaissFr(Integer.valueOf(((Commune) getCommNaissanceCourant()).getCodCommune()));
 		}
 
 		getAgentCourant().setDatePremiereEmbauche(sdf.parse(getVAL_EF_DATE_PREM_EMB()));
 		// RG_AG_EC_C06
-		getAgentCourant().setDateDerniereEmbauche(
-				getVAL_EF_DATE_DERN_EMB().equals(Const.CHAINE_VIDE) ? sdf.parse(getVAL_EF_DATE_PREM_EMB()) : sdf
-						.parse(getVAL_EF_DATE_DERN_EMB()));
+		getAgentCourant().setDateDerniereEmbauche(getVAL_EF_DATE_DERN_EMB().equals(Const.CHAINE_VIDE) ? sdf.parse(getVAL_EF_DATE_PREM_EMB()) : sdf.parse(getVAL_EF_DATE_DERN_EMB()));
 		getAgentCourant().setNumCarteSejour(getVAL_EF_NUM_CARTE_SEJOUR());
-		getAgentCourant().setDateValiditeCarteSejour(
-				getVAL_EF_DATE_VALIDITE_CARTE_SEJOUR().equals(Const.CHAINE_VIDE) ? null : sdf
-						.parse(getVAL_EF_DATE_VALIDITE_CARTE_SEJOUR()));
+		getAgentCourant().setDateValiditeCarteSejour(getVAL_EF_DATE_VALIDITE_CARTE_SEJOUR().equals(Const.CHAINE_VIDE) ? null : sdf.parse(getVAL_EF_DATE_VALIDITE_CARTE_SEJOUR()));
 
 		// Adresse
 		if (getVAL_RG_VILLE_DOMICILE().equals(getNOM_RB_VILLE_DOMICILE_NOUMEA())) {
 			// Adresse noumea, voie obligatoire
-			getAgentCourant().setIdVoie(
-					getVoieQuartierCourant() == null ? null : Integer.valueOf(getVoieQuartierCourant().getCodVoie()));
+			getAgentCourant().setIdVoie(getVoieQuartierCourant() == null ? null : Integer.valueOf(getVoieQuartierCourant().getCodVoie()));
 			getAgentCourant().setRueNonNoumea(null);
 		} else {
 			getAgentCourant().setIdVoie(null);
@@ -451,19 +427,14 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		getAgentCourant().setCposVilleDom(Integer.valueOf(getCommuneDomCourant().getCodCodePostal()));
 		getAgentCourant().setCcomVilleDom(Integer.valueOf(getCommuneDomCourant().getCodCommune()));
 		getAgentCourant().setBp(getVAL_EF_BP());
-		getAgentCourant().setCposVilleBp(
-				getVAL_EF_CODE_POSTAL_BP().equals(Const.CHAINE_VIDE) ? null : Integer
-						.valueOf(getVAL_EF_CODE_POSTAL_BP()));
-		getAgentCourant().setCcomVilleBp(
-				getCommuneBPCourant() != null && getCommuneBPCourant().getCodCommune() != null ? Integer
-						.valueOf(getCommuneBPCourant().getCodCommune()) : null);
+		getAgentCourant().setCposVilleBp(getVAL_EF_CODE_POSTAL_BP().equals(Const.CHAINE_VIDE) ? null : Integer.valueOf(getVAL_EF_CODE_POSTAL_BP()));
+		getAgentCourant().setCcomVilleBp(getCommuneBPCourant() != null && getCommuneBPCourant().getCodCommune() != null ? Integer.valueOf(getCommuneBPCourant().getCodCommune()) : null);
 
 		// /////////////////////////////////////////////////////////////////////////
 		// ////////////////////// ALIMENTATION DU COMPTE
 		// ///////////////////////////
 		// /////////////////////////////////////////////////////////////////////////
-		int indiceBanqueGuichet = (Services.estNumerique(getVAL_LB_BANQUE_GUICHET_SELECT()) ? Integer
-				.parseInt(getVAL_LB_BANQUE_GUICHET_SELECT()) : -1);
+		int indiceBanqueGuichet = (Services.estNumerique(getVAL_LB_BANQUE_GUICHET_SELECT()) ? Integer.parseInt(getVAL_LB_BANQUE_GUICHET_SELECT()) : -1);
 		if (indiceBanqueGuichet != 0) {
 			BanqueGuichet bg = (BanqueGuichet) getListeBanqueGuichet().get(indiceBanqueGuichet);
 			getAgentCourant().setCdGuichet(Integer.valueOf(bg.getCodGuichet()));
@@ -484,8 +455,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		// ////////////////////// ALIMENTATION DU SERVICE NATIONAL
 		// /////////////////
 		// /////////////////////////////////////////////////////////////////////////
-		int indiceEtatService = (Services.estNumerique(getVAL_LB_TYPE_SERVICE_SELECT()) ? Integer
-				.parseInt(getVAL_LB_TYPE_SERVICE_SELECT()) : -1);
+		int indiceEtatService = (Services.estNumerique(getVAL_LB_TYPE_SERVICE_SELECT()) ? Integer.parseInt(getVAL_LB_TYPE_SERVICE_SELECT()) : -1);
 		EtatServiceMilitaire aEtatService;
 		if (indiceEtatService == 0) {
 			getAgentCourant().setIdEtatService(null);
@@ -494,10 +464,8 @@ public class OeAGENTEtatCivil extends BasicProcess {
 			getAgentCourant().setIdEtatService(aEtatService.getIdEtatService());
 		}
 		getAgentCourant().setVcat(getVAL_RG_VCAT().equals(getNOM_RB_VCAT_OUI()) ? "O" : "N");
-		getAgentCourant().setDebutService(
-				getVAL_EF_SERVICE_DEBUT().equals(Const.CHAINE_VIDE) ? null : sdf.parse(getVAL_EF_SERVICE_DEBUT()));
-		getAgentCourant().setFinService(
-				getVAL_EF_SERVICE_FIN().equals(Const.CHAINE_VIDE) ? null : sdf.parse(getVAL_EF_SERVICE_FIN()));
+		getAgentCourant().setDebutService(getVAL_EF_SERVICE_DEBUT().equals(Const.CHAINE_VIDE) ? null : sdf.parse(getVAL_EF_SERVICE_DEBUT()));
+		getAgentCourant().setFinService(getVAL_EF_SERVICE_FIN().equals(Const.CHAINE_VIDE) ? null : sdf.parse(getVAL_EF_SERVICE_FIN()));
 
 		// /////////////////////////////////////////////////////////////////////////
 		// ////////////////////// ALIMENTATION DES CHARGES
@@ -604,8 +572,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		}
 
 		// Controle format date validite carte de sejour
-		if (getVAL_EF_DATE_VALIDITE_CARTE_SEJOUR().length() != 0
-				&& !Services.estUneDate(getVAL_EF_DATE_VALIDITE_CARTE_SEJOUR())) {
+		if (getVAL_EF_DATE_VALIDITE_CARTE_SEJOUR().length() != 0 && !Services.estUneDate(getVAL_EF_DATE_VALIDITE_CARTE_SEJOUR())) {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR007", "de validité de la carte de séjour"));
 			setFocus(getNOM_EF_DATE_VALIDITE_CARTE_SEJOUR());
 			result &= false;
@@ -622,8 +589,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		// La date de premiere entrée doit être posterieure à la date de
 		// naissance + 16 ans
 		// RG_AG_EC_C05
-		if (Services.compareDates(getVAL_EF_DATE_PREM_EMB(),
-				Services.ajouteAnnee(Services.formateDate(getVAL_EF_DATE_NAISSANCE()), 16)) <= 0) {
+		if (Services.compareDates(getVAL_EF_DATE_PREM_EMB(), Services.ajouteAnnee(Services.formateDate(getVAL_EF_DATE_NAISSANCE()), 16)) <= 0) {
 			// "ERR015","La date d'embauche doit être posterieure à la date de naissance"
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR015"));
 			result &= false;
@@ -673,8 +639,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		// RG_AG_EC_C09
 		if (Services.compareDates(getVAL_EF_SERVICE_DEBUT(), getVAL_EF_SERVICE_FIN()) > 0) {
 			// "ERR204", "La date @ doit être inferieure à la date @.");
-			getTransaction().declarerErreur(
-					MessageUtils.getMessage("ERR204", "de début de service", " de fin de service"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR204", "de début de service", " de fin de service"));
 			result &= false;
 		}
 
@@ -719,8 +684,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 			result &= false;
 		}
 
-		if (getVAL_EF_CODE_POSTAL_BP().length() != 0 && Integer.parseInt(getVAL_LB_COMMUNE_BP_SELECT()) > 0
-				&& getVAL_EF_BP().length() == 0) {
+		if (getVAL_EF_CODE_POSTAL_BP().length() != 0 && Integer.parseInt(getVAL_LB_COMMUNE_BP_SELECT()) > 0 && getVAL_EF_BP().length() == 0) {
 			// "ERR019",
 			// "La BP est obligatoire si le code postal et la ville de la boite postale sont renseignés."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR019"));
@@ -743,8 +707,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		// Vérification des coordonnées bancaires
 		// **************************************
 		// si au moins 1 champ rempli les autres sont obligatoires
-		if (getVAL_EF_NUM_COMPTE().length() != 0 || getVAL_EF_RIB().length() != 0
-				|| getVAL_EF_INTITULE_COMPTE().length() != 0) {
+		if (getVAL_EF_NUM_COMPTE().length() != 0 || getVAL_EF_RIB().length() != 0 || getVAL_EF_INTITULE_COMPTE().length() != 0) {
 			// Code banque/Guichet obligatoire
 			if (getVAL_LB_BANQUE_GUICHET_SELECT().equals("0")) {
 				// "ERR002", "La zone @ est obligatoire."
@@ -754,22 +717,18 @@ public class OeAGENTEtatCivil extends BasicProcess {
 			}
 
 			// n° compte obligatoire
-			if (getVAL_EF_NUM_COMPTE().length() == 0 || getVAL_EF_RIB().length() == 0
-					|| getVAL_EF_INTITULE_COMPTE().length() == 0) {
+			if (getVAL_EF_NUM_COMPTE().length() == 0 || getVAL_EF_RIB().length() == 0 || getVAL_EF_INTITULE_COMPTE().length() == 0) {
 				// "ERR002", "La zone @ est obligatoire."
-				getTransaction().declarerErreur(
-						MessageUtils.getMessage("ERR002", "N° de compte, RIB et Intitulé de compte"));
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "N° de compte, RIB et Intitulé de compte"));
 				setFocus(getNOM_EF_NUM_COMPTE());
 				result &= false;
 			}
 
 		}
 		if (!getVAL_LB_BANQUE_GUICHET_SELECT().equals("0")) {
-			if (getVAL_EF_NUM_COMPTE().length() == 0 || getVAL_EF_RIB().length() == 0
-					|| getVAL_EF_INTITULE_COMPTE().length() == 0) {
+			if (getVAL_EF_NUM_COMPTE().length() == 0 || getVAL_EF_RIB().length() == 0 || getVAL_EF_INTITULE_COMPTE().length() == 0) {
 				// "ERR002", "La zone @ est obligatoire."
-				getTransaction().declarerErreur(
-						MessageUtils.getMessage("ERR002", "N° de compte, RIB et Intitulé de compte"));
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "N° de compte, RIB et Intitulé de compte"));
 				setFocus(getNOM_EF_NUM_COMPTE());
 				result &= false;
 			}
@@ -841,8 +800,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 
 		if (getVAL_EF_NUM_MUTUELLE().length() != 0) {
 			try {
-				Agent mutuelleAg = getAgentDao().chercherMutuelle(getVAL_EF_NUM_MUTUELLE(),
-						getAgentCourant().getIdAgent());
+				Agent mutuelleAg = getAgentDao().chercherMutuelle(getVAL_EF_NUM_MUTUELLE(), getAgentCourant().getIdAgent());
 
 				if (mutuelleAg != null && mutuelleAg.getIdAgent() != null) {
 					// "ERR997",
@@ -899,8 +857,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		if (getVAL_EF_NUM_IRCAFEX().length() != 0) {
 
 			try {
-				Agent ircafexAg = getAgentDao()
-						.chercherIrcafex(getVAL_EF_NUM_IRCAFEX(), getAgentCourant().getIdAgent());
+				Agent ircafexAg = getAgentDao().chercherIrcafex(getVAL_EF_NUM_IRCAFEX(), getAgentCourant().getIdAgent());
 
 				if (ircafexAg != null && ircafexAg.getIdAgent() != null) {
 					// "ERR997",
@@ -933,29 +890,24 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		} // Tous les types de contact doivent faire 6 caracteres sauf Email
 			// (jusqu'a 50)
 		else {
-			int indiceTypeContact = (Services.estNumerique(getVAL_LB_TCONTACT_SELECT()) ? Integer
-					.parseInt(getVAL_LB_TCONTACT_SELECT()) : -1);
-			if (indiceTypeContact == -1 || getListeTypeContact().size() == 0
-					|| indiceTypeContact > getListeTypeContact().size()) {
+			int indiceTypeContact = (Services.estNumerique(getVAL_LB_TCONTACT_SELECT()) ? Integer.parseInt(getVAL_LB_TCONTACT_SELECT()) : -1);
+			if (indiceTypeContact == -1 || getListeTypeContact().size() == 0 || indiceTypeContact > getListeTypeContact().size()) {
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "Type contact"));
 				return false;
 			}
 			if (indiceTypeContact >= 0) {
 				TypeContact tc = (TypeContact) getListeTypeContact().get(indiceTypeContact);
-				if ((!EnumTypeContact.EMAIL.getCode().toString().equals(tc.getIdTypeContact().toString()))
-						&& getVAL_EF_LIBELLE_CONTACT().length() > 6) {
+				if ((!EnumTypeContact.EMAIL.getCode().toString().equals(tc.getIdTypeContact().toString())) && getVAL_EF_LIBELLE_CONTACT().length() > 6) {
 					// "ERR018",
 					// "Les contacts Tel, Fax, Mobile, Mobile pro et ligne directe ne doivent pas dépasser 6 caracteres. Seul l'Email peut faire jusqu'a 50 caracteres."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR018"));
 					return false;
 				}
-				if (EnumTypeContact.EMAIL.getCode().toString().equals(tc.getIdTypeContact().toString())
-						&& Services.estNumerique(getVAL_EF_LIBELLE_CONTACT())) {
+				if (EnumTypeContact.EMAIL.getCode().toString().equals(tc.getIdTypeContact().toString()) && Services.estNumerique(getVAL_EF_LIBELLE_CONTACT())) {
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "contact"));
 					return false;
 				}
-				if ((!EnumTypeContact.EMAIL.getCode().toString().equals(tc.getIdTypeContact().toString()))
-						&& !Services.estNumerique(getVAL_EF_LIBELLE_CONTACT())) {
+				if ((!EnumTypeContact.EMAIL.getCode().toString().equals(tc.getIdTypeContact().toString())) && !Services.estNumerique(getVAL_EF_LIBELLE_CONTACT())) {
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "contact"));
 					return false;
 				}
@@ -965,16 +917,14 @@ public class OeAGENTEtatCivil extends BasicProcess {
 					if (getListeContactAAjouter() != null) {
 						for (int i = 0; i < getListeContactAAjouter().size(); i++) {
 							Contact contactAAjouter = getListeContactAAjouter().get(i);
-							if (contactAAjouter.getIdTypeContact().toString()
-									.equals(EnumTypeContact.LIGNE_DIRECTE.getCode().toString())) {
+							if (contactAAjouter.getIdTypeContact().toString().equals(EnumTypeContact.LIGNE_DIRECTE.getCode().toString())) {
 								dejaLigneDirecte = true;
 								break;
 							}
 						}
 					}
 					if (!dejaLigneDirecte) {
-						ArrayList<Contact> contactExist = getContactDao().listerContactAgentAvecTypeContact(
-								getAgentCourant().getIdAgent(), EnumTypeContact.LIGNE_DIRECTE.getCode());
+						ArrayList<Contact> contactExist = getContactDao().listerContactAgentAvecTypeContact(getAgentCourant().getIdAgent(), EnumTypeContact.LIGNE_DIRECTE.getCode());
 						if (contactExist != null && contactExist.size() > 0) {
 							dejaLigneDirecte = true;
 						}
@@ -1120,12 +1070,10 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		} else if (getZone(getNOM_ST_ACTION_CONTACT()).equals(ACTION_MODIFICATION)) {
 
 			// Récup des zones saisies
-			TypeContact newType = (TypeContact) getListeTypeContact().get(
-					Integer.parseInt(getZone(getNOM_LB_TCONTACT_SELECT())));
+			TypeContact newType = (TypeContact) getListeTypeContact().get(Integer.parseInt(getZone(getNOM_LB_TCONTACT_SELECT())));
 			String newLibContact = getZone(getNOM_EF_LIBELLE_CONTACT());
 			boolean diffusable = getZone(getNOM_RG_CONTACT_DIFF()).equals(getNOM_RB_CONTACT_DIFF_OUI()) ? true : false;
-			boolean prioritaire = getZone(getNOM_RG_CONTACT_PRIORITAIRE()).equals(getNOM_RB_CONTACT_PRIORITAIRE_OUI()) ? true
-					: false;
+			boolean prioritaire = getZone(getNOM_RG_CONTACT_PRIORITAIRE()).equals(getNOM_RB_CONTACT_PRIORITAIRE_OUI()) ? true : false;
 
 			if (performControlerSaisieContact(request)) {
 				// Affectation des attributs
@@ -1143,12 +1091,10 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		} else if (getZone(getNOM_ST_ACTION_CONTACT()).equals(ACTION_CREATION)) {
 
 			// Récup des zones saisies
-			TypeContact newType = (TypeContact) getListeTypeContact().get(
-					Integer.parseInt(getZone(getNOM_LB_TCONTACT_SELECT())));
+			TypeContact newType = (TypeContact) getListeTypeContact().get(Integer.parseInt(getZone(getNOM_LB_TCONTACT_SELECT())));
 			String newLibContact = getZone(getNOM_EF_LIBELLE_CONTACT());
 			boolean diffusable = getZone(getNOM_RG_CONTACT_DIFF()).equals(getNOM_RB_CONTACT_DIFF_OUI()) ? true : false;
-			boolean prioritaire = getZone(getNOM_RG_CONTACT_PRIORITAIRE()).equals(getNOM_RB_CONTACT_PRIORITAIRE_OUI()) ? true
-					: false;
+			boolean prioritaire = getZone(getNOM_RG_CONTACT_PRIORITAIRE()).equals(getNOM_RB_CONTACT_PRIORITAIRE_OUI()) ? true : false;
 
 			if (performControlerSaisieContact(request)) {
 				setContactCourant(new Contact());
@@ -2121,16 +2067,12 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		if (etatStatut() == STATUT_LIEU_NAISS) {
 			setPaysNaissanceCourant((Pays) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_PAYS));
 			if (getPaysNaissanceCourant() != null) {
-				setCommNaissanceCourant((CommuneEtrangere) VariablesActivite.recuperer(this,
-						VariablesActivite.ACTIVITE_COMMUNE_ET));
-				setLieuNaissance(((CommuneEtrangere) getCommNaissanceCourant()).getLibCommuneEtrangere() + " - "
-						+ getPaysNaissanceCourant().getLibPays());
+				setCommNaissanceCourant((CommuneEtrangere) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_COMMUNE_ET));
+				setLieuNaissance(((CommuneEtrangere) getCommNaissanceCourant()).getLibCommuneEtrangere() + " - " + getPaysNaissanceCourant().getLibPays());
 			} else {
-				setCommNaissanceCourant((Commune) VariablesActivite.recuperer(this,
-						VariablesActivite.ACTIVITE_COMMUNE_FR));
+				setCommNaissanceCourant((Commune) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_COMMUNE_FR));
 				if (getCommNaissanceCourant() != null) {
-					setLieuNaissance(((Commune) getCommNaissanceCourant()).getLibCommune() + " - "
-							+ Const.COMMUNE_FRANCE);
+					setLieuNaissance(((Commune) getCommNaissanceCourant()).getLibCommune() + " - " + Const.COMMUNE_FRANCE);
 				}
 			}
 
@@ -2139,11 +2081,9 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		}
 
 		if (etatStatut() == STATUT_VOIE) {
-			setVoieQuartierCourant((VoieQuartier) VariablesActivite.recuperer(this,
-					VariablesActivite.ACTIVITE_VOIE_QUARTIER));
+			setVoieQuartierCourant((VoieQuartier) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_VOIE_QUARTIER));
 			VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_VOIE_QUARTIER);
-			addZone(getNOM_ST_VOIE(), getVoieQuartierCourant() == null ? Const.CHAINE_VIDE : getVoieQuartierCourant()
-					.getLibVoie());
+			addZone(getNOM_ST_VOIE(), getVoieQuartierCourant() == null ? Const.CHAINE_VIDE : getVoieQuartierCourant().getLibVoie());
 			return;
 		}
 
@@ -2251,8 +2191,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		// Init a "Mairie"
 		int indiceCol = 0;
 		for (int i = 0; i < getListeCollectivite().size(); i++) {
-			if (((Collectivite) getListeCollectivite().get(i)).getCodeCollectivite().equals(
-					EnumCollectivite.MAIRIE.getCode())) {
+			if (((Collectivite) getListeCollectivite().get(i)).getCodeCollectivite().equals(EnumCollectivite.MAIRIE.getCode())) {
 				indiceCol = i;
 				break;
 			}
@@ -2321,8 +2260,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 			// Init a "Mairie"
 			int indiceCol = 0;
 			for (int i = 0; i < getListeCollectivite().size(); i++) {
-				if (((Collectivite) getListeCollectivite().get(i)).getCodeCollectivite().equals(
-						EnumCollectivite.MAIRIE.getCode())) {
+				if (((Collectivite) getListeCollectivite().get(i)).getCodeCollectivite().equals(EnumCollectivite.MAIRIE.getCode())) {
 					indiceCol = i;
 					break;
 				}
@@ -2333,8 +2271,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		// Si liste situation vide alors affectation
 		// RG_AG_EC_A03
 		if (getLB_SITUATION() == LBVide) {
-			ArrayList<SituationFamiliale> sf = (ArrayList<SituationFamiliale>) getSituationFamilialeDao()
-					.listerSituationFamiliale();
+			ArrayList<SituationFamiliale> sf = (ArrayList<SituationFamiliale>) getSituationFamilialeDao().listerSituationFamiliale();
 			setListeSituation(sf);
 
 			int[] tailles = { 12 };
@@ -2371,8 +2308,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 
 		// Si liste commune BP vide alors affectation
 		if (getLB_COMMUNE_BP() == LBVide) {
-			ArrayList<CommunePostal> a = CommunePostal.listerCommunePostalAvecCodCommuneCommencant(getTransaction(),
-					"988");
+			ArrayList<CommunePostal> a = CommunePostal.listerCommunePostalAvecCodCommuneCommencant(getTransaction(), "988");
 			CommunePostal commVide = new CommunePostal();
 			a.add(0, commVide);
 			setListeCommuneBP(a);
@@ -2429,11 +2365,8 @@ public class OeAGENTEtatCivil extends BasicProcess {
 
 		addZone(getNOM_LB_CIVILITE_SELECT(), getAgentCourant().getCivilite());
 
-		addZone(getNOM_ST_AGENT(), getAgentCourant().getNomatr() + " " + getAgentCourant().getNomAgent() + " "
-				+ getAgentCourant().getPrenomAgent());
-		addZone(getNOM_ST_SEXE(),
-				(getAgentCourant().getCivilite().equals(EnumCivilite.M.getCode()) ? EnumSexe.MASCULIN.getValue()
-						: EnumSexe.FEMININ.getValue()));
+		addZone(getNOM_ST_AGENT(), getAgentCourant().getNomatr() + " " + getAgentCourant().getNomAgent() + " " + getAgentCourant().getPrenomAgent());
+		addZone(getNOM_ST_SEXE(), (getAgentCourant().getCivilite().equals(EnumCivilite.M.getCode()) ? EnumSexe.MASCULIN.getValue() : EnumSexe.FEMININ.getValue()));
 		addZone(getNOM_EF_NOM_PATRONYMIQUE(), getAgentCourant().getNomPatronymique());
 		addZone(getNOM_EF_NOM_MARITAL(), getAgentCourant().getNomMarital());
 		addZone(getNOM_EF_NOM_USAGE(), getAgentCourant().getNomUsage());
@@ -2443,8 +2376,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		// Situation familiale
 		int indiceSitu = 0;
 		for (int i = 0; i < getListeSituation().size(); i++) {
-			if (((SituationFamiliale) getListeSituation().get(i)).getIdSituation().toString()
-					.equals(getAgentCourant().getIdSituationFamiliale().toString())) {
+			if (((SituationFamiliale) getListeSituation().get(i)).getIdSituation().toString().equals(getAgentCourant().getIdSituationFamiliale().toString())) {
 				indiceSitu = i;
 				break;
 			}
@@ -2454,8 +2386,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		// Collectivite
 		int indiceCol = 0;
 		for (int i = 0; i < getListeCollectivite().size(); i++) {
-			if (((Collectivite) getListeCollectivite().get(i)).getIdCollectivite().toString()
-					.equals(getAgentCourant().getIdCollectivite().toString())) {
+			if (((Collectivite) getListeCollectivite().get(i)).getIdCollectivite().toString().equals(getAgentCourant().getIdCollectivite().toString())) {
 				indiceCol = i;
 				break;
 			}
@@ -2474,17 +2405,11 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		}
 		addZone(getNOM_LB_NATIONALITE_SELECT(), String.valueOf(indiceNat));
 
-		addZone(getNOM_EF_DATE_NAISSANCE(),
-				getAgentCourant().getDateNaissance() == null ? Const.CHAINE_VIDE : sdf.format(getAgentCourant()
-						.getDateNaissance()));
-		addZone(getNOM_EF_DATE_PREM_EMB(), getAgentCourant().getDatePremiereEmbauche() == null ? Const.CHAINE_VIDE
-				: sdf.format(getAgentCourant().getDatePremiereEmbauche()));
-		addZone(getNOM_EF_DATE_DERN_EMB(), getAgentCourant().getDateDerniereEmbauche() == null ? Const.CHAINE_VIDE
-				: sdf.format(getAgentCourant().getDateDerniereEmbauche()));
+		addZone(getNOM_EF_DATE_NAISSANCE(), getAgentCourant().getDateNaissance() == null ? Const.CHAINE_VIDE : sdf.format(getAgentCourant().getDateNaissance()));
+		addZone(getNOM_EF_DATE_PREM_EMB(), getAgentCourant().getDatePremiereEmbauche() == null ? Const.CHAINE_VIDE : sdf.format(getAgentCourant().getDatePremiereEmbauche()));
+		addZone(getNOM_EF_DATE_DERN_EMB(), getAgentCourant().getDateDerniereEmbauche() == null ? Const.CHAINE_VIDE : sdf.format(getAgentCourant().getDateDerniereEmbauche()));
 		addZone(getNOM_EF_NUM_CARTE_SEJOUR(), getAgentCourant().getNumCarteSejour());
-		addZone(getNOM_EF_DATE_VALIDITE_CARTE_SEJOUR(),
-				getAgentCourant().getDateValiditeCarteSejour() == null ? Const.CHAINE_VIDE : sdf
-						.format(getAgentCourant().getDateValiditeCarteSejour()));
+		addZone(getNOM_EF_DATE_VALIDITE_CARTE_SEJOUR(), getAgentCourant().getDateValiditeCarteSejour() == null ? Const.CHAINE_VIDE : sdf.format(getAgentCourant().getDateValiditeCarteSejour()));
 
 		// //////////////////////////////////////////////////////////////////////////////////////
 		// Zones de l'adresse
@@ -2500,22 +2425,17 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		// //////////////////////////////////////////////////////////////////////////////////////
 		for (int i = 0; i < getListeBanqueGuichet().size(); i++) {
 			BanqueGuichet bg = (BanqueGuichet) getListeBanqueGuichet().get(i);
-			if (bg != null && getAgentCourant().getCdBanque() != null
-					&& bg.getCodBanque().equals(getAgentCourant().getCdBanque().toString())
+			if (bg != null && getAgentCourant().getCdBanque() != null && bg.getCodBanque().equals(getAgentCourant().getCdBanque().toString())
 					&& bg.getCodGuichet().equals(getAgentCourant().getCdGuichet().toString())) {
 				addZone(getNOM_LB_BANQUE_GUICHET_SELECT(), String.valueOf(i));
-				addZone(getNOM_ST_BANQUE_GUICHET(),
-						bg == null ? Const.CHAINE_VIDE : bg.getLibBanque() + " - " + bg.getLibGuichet());
+				addZone(getNOM_ST_BANQUE_GUICHET(), bg == null ? Const.CHAINE_VIDE : bg.getLibBanque() + " - " + bg.getLibGuichet());
 				break;
 			}
 		}
 
-		addZone(getNOM_EF_NUM_COMPTE(), getAgentCourant().getNumCompte() == null ? Const.CHAINE_VIDE
-				: getAgentCourant().getNumCompte());
-		addZone(getNOM_EF_RIB(), getAgentCourant().getRib() == null ? Const.CHAINE_VIDE : getAgentCourant().getRib()
-				.toString());
-		addZone(getNOM_EF_INTITULE_COMPTE(), getAgentCourant().getIntituleCompte() == null ? Const.CHAINE_VIDE
-				: getAgentCourant().getIntituleCompte());
+		addZone(getNOM_EF_NUM_COMPTE(), getAgentCourant().getNumCompte() == null ? Const.CHAINE_VIDE : getAgentCourant().getNumCompte());
+		addZone(getNOM_EF_RIB(), getAgentCourant().getRib() == null ? Const.CHAINE_VIDE : getAgentCourant().getRib().toString());
+		addZone(getNOM_EF_INTITULE_COMPTE(), getAgentCourant().getIntituleCompte() == null ? Const.CHAINE_VIDE : getAgentCourant().getIntituleCompte());
 
 		// //////////////////////////////////////////////////////////////////////////////////////
 		// Zones du service militaire
@@ -2524,38 +2444,25 @@ public class OeAGENTEtatCivil extends BasicProcess {
 			addZone(getNOM_LB_TYPE_SERVICE_SELECT(), "0");
 		} else {
 			for (int i = 0; i < getListeTypeServiceMilitaire().size(); i++) {
-				if (((EtatServiceMilitaire) getListeTypeServiceMilitaire().get(i)).getIdEtatService().toString()
-						.equals(getAgentCourant().getIdEtatService())) {
+				if (((EtatServiceMilitaire) getListeTypeServiceMilitaire().get(i)).getIdEtatService().toString().equals(getAgentCourant().getIdEtatService())) {
 					addZone(getNOM_LB_TYPE_SERVICE_SELECT(), String.valueOf(i + 1));
 					break;
 				}
 			}
 		}
-		addZone(getNOM_RG_VCAT(),
-				(getAgentCourant().getVcat() != null && getAgentCourant().getVcat().equals("O")) ? getNOM_RB_VCAT_OUI()
-						: getNOM_RB_VCAT_NON());
-		addZone(getNOM_EF_SERVICE_DEBUT(),
-				getAgentCourant().getDebutService() == null ? Const.CHAINE_VIDE : sdf.format(getAgentCourant()
-						.getDebutService()));
-		addZone(getNOM_EF_SERVICE_FIN(),
-				getAgentCourant().getFinService() == null ? Const.CHAINE_VIDE : sdf.format(getAgentCourant()
-						.getFinService()));
+		addZone(getNOM_RG_VCAT(), (getAgentCourant().getVcat() != null && getAgentCourant().getVcat().equals("O")) ? getNOM_RB_VCAT_OUI() : getNOM_RB_VCAT_NON());
+		addZone(getNOM_EF_SERVICE_DEBUT(), getAgentCourant().getDebutService() == null ? Const.CHAINE_VIDE : sdf.format(getAgentCourant().getDebutService()));
+		addZone(getNOM_EF_SERVICE_FIN(), getAgentCourant().getFinService() == null ? Const.CHAINE_VIDE : sdf.format(getAgentCourant().getFinService()));
 
 		// //////////////////////////////////////////////////////////////////////////////////////
 		// Zones Couverture
 		// //////////////////////////////////////////////////////////////////////////////////////
-		addZone(getNOM_EF_NUM_CAFAT(), getAgentCourant().getNumCafat() == null ? Const.CHAINE_VIDE : getAgentCourant()
-				.getNumCafat());
-		addZone(getNOM_EF_NUM_RUAMM(), getAgentCourant().getNumRuamm() == null ? Const.CHAINE_VIDE : getAgentCourant()
-				.getNumRuamm());
-		addZone(getNOM_EF_NUM_MUTUELLE(), getAgentCourant().getNumMutuelle() == null ? Const.CHAINE_VIDE
-				: getAgentCourant().getNumMutuelle());
-		addZone(getNOM_EF_NUM_CRE(), getAgentCourant().getNumCre() == null ? Const.CHAINE_VIDE : getAgentCourant()
-				.getNumCre());
-		addZone(getNOM_EF_NUM_IRCAFEX(), getAgentCourant().getNumIrcafex() == null ? Const.CHAINE_VIDE
-				: getAgentCourant().getNumIrcafex());
-		addZone(getNOM_EF_NUM_CLR(), getAgentCourant().getNumClr() == null ? Const.CHAINE_VIDE : getAgentCourant()
-				.getNumClr());
+		addZone(getNOM_EF_NUM_CAFAT(), getAgentCourant().getNumCafat() == null ? Const.CHAINE_VIDE : getAgentCourant().getNumCafat());
+		addZone(getNOM_EF_NUM_RUAMM(), getAgentCourant().getNumRuamm() == null ? Const.CHAINE_VIDE : getAgentCourant().getNumRuamm());
+		addZone(getNOM_EF_NUM_MUTUELLE(), getAgentCourant().getNumMutuelle() == null ? Const.CHAINE_VIDE : getAgentCourant().getNumMutuelle());
+		addZone(getNOM_EF_NUM_CRE(), getAgentCourant().getNumCre() == null ? Const.CHAINE_VIDE : getAgentCourant().getNumCre());
+		addZone(getNOM_EF_NUM_IRCAFEX(), getAgentCourant().getNumIrcafex() == null ? Const.CHAINE_VIDE : getAgentCourant().getNumIrcafex());
+		addZone(getNOM_EF_NUM_CLR(), getAgentCourant().getNumClr() == null ? Const.CHAINE_VIDE : getAgentCourant().getNumClr());
 	}
 
 	/**
@@ -2576,8 +2483,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 					String colonnes[] = { Const.CHAINE_VIDE, Const.CHAINE_VIDE, Const.CHAINE_VIDE };
 					aListeFormatee.ajouteLigne(colonnes);
 				} else {
-					String colonnes[] = { Services.lpad(b.getCodBanque(), 5, "0"), "/",
-							Services.lpad(b.getCodGuichet(), 5, "0") };
+					String colonnes[] = { Services.lpad(b.getCodBanque(), 5, "0"), "/", Services.lpad(b.getCodGuichet(), 5, "0") };
 					aListeFormatee.ajouteLigne(colonnes);
 				}
 			}
@@ -2593,15 +2499,12 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		// recup du lieu de naissance
 		if (getLieuNaissance() == null && getAgentCourant() != null) {
 			if (getAgentCourant().getCodePaysNaissEt() == null) {
-				setCommNaissanceCourant(Commune.chercherCommune(getTransaction(), getAgentCourant()
-						.getCodeCommuneNaissFr()));
+				setCommNaissanceCourant(Commune.chercherCommune(getTransaction(), getAgentCourant().getCodeCommuneNaissFr()));
 				setLieuNaissance(((Commune) getCommNaissanceCourant()).getLibCommune() + " - " + Const.COMMUNE_FRANCE);
 			} else {
 				setPaysNaissanceCourant(Pays.chercherPays(getTransaction(), getAgentCourant().getCodePaysNaissEt()));
-				setCommNaissanceCourant(CommuneEtrangere.chercherCommuneEtrangere(getTransaction(),
-						getPaysNaissanceCourant().getCodPays(), getAgentCourant().getCodeCommuneNaissEt()));
-				setLieuNaissance(((CommuneEtrangere) getCommNaissanceCourant()).getLibCommuneEtrangere() + " - "
-						+ getPaysNaissanceCourant().getLibPays());
+				setCommNaissanceCourant(CommuneEtrangere.chercherCommuneEtrangere(getTransaction(), getPaysNaissanceCourant().getCodPays(), getAgentCourant().getCodeCommuneNaissEt()));
+				setLieuNaissance(((CommuneEtrangere) getCommNaissanceCourant()).getLibCommuneEtrangere() + " - " + getPaysNaissanceCourant().getLibPays());
 			}
 		}
 		addZone(getNOM_ST_LIEU_NAISSANCE(), getLieuNaissance() == null ? Const.CHAINE_VIDE : getLieuNaissance());
@@ -2624,8 +2527,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 
 		// La commune adresse courante
 		if (getCommuneDomCourant() == null && getAgentCourant() != null && getAgentCourant().getCcomVilleDom() != null) {
-			setCommuneDomCourant(CommunePostal.chercherCommunePostal(getTransaction(), getAgentCourant()
-					.getCposVilleDom(), getAgentCourant().getCcomVilleDom()));
+			setCommuneDomCourant(CommunePostal.chercherCommunePostal(getTransaction(), getAgentCourant().getCposVilleDom(), getAgentCourant().getCcomVilleDom()));
 		}
 
 		if (getCommuneDomCourant() != null) {
@@ -2635,8 +2537,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 				// a l'indice 1
 				for (int i = 1; i < listeCommunes.size(); i++) {
 					CommunePostal comPostDom = (CommunePostal) listeCommunes.get(i);
-					if (comPostDom.getCodCodePostal() != null
-							&& comPostDom.getCodCodePostal().equals(getCommuneDomCourant().getCodCodePostal())
+					if (comPostDom.getCodCodePostal() != null && comPostDom.getCodCodePostal().equals(getCommuneDomCourant().getCodCodePostal())
 							&& comPostDom.getCodCommune().equals(getCommuneDomCourant().getCodCommune())) {
 						indiceCommuneDom = i;
 						break;
@@ -2653,16 +2554,21 @@ public class OeAGENTEtatCivil extends BasicProcess {
 
 		// La commune boite postale
 		if (getAgentCourant() != null && getAgentCourant().getCcomVilleBp() != null) {
-			setCommuneBPCourant(CommunePostal.chercherCommunePostal(getTransaction(), getAgentCourant()
-					.getCposVilleBp(), getAgentCourant().getCcomVilleBp()));
-			if (getTransaction().isErreur()) {
+			//#
+			try {
+				CommunePostal communePostale = CommunePostal.chercherCommunePostal(getTransaction(), getAgentCourant().getCposVilleBp(), getAgentCourant().getCcomVilleBp());
+
+				if (getTransaction().isErreur()) {
+					return;
+				}
+				setCommuneBPCourant(communePostale);
+			} catch (Exception e) {
 				return;
 			}
 			int indiceCommuneBp = 0;
 			for (int i = 0; i < getListeCommuneBP().size(); i++) {
 				CommunePostal comPostBp = (CommunePostal) getListeCommuneBP().get(i);
-				if (comPostBp.getCodCodePostal() != null
-						&& comPostBp.getCodCodePostal().equals(getCommuneBPCourant().getCodCodePostal())
+				if (comPostBp.getCodCodePostal() != null && comPostBp.getCodCodePostal().equals(getCommuneBPCourant().getCodCodePostal())
 						&& comPostBp.getCodCommune().equals(getCommuneBPCourant().getCodCommune())) {
 					indiceCommuneBp = i;
 					break;
@@ -2680,14 +2586,12 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		// Si la liste des Types de Service vide alors
 		// RG_AG_EC_A06
 		if (getLB_TYPE_SERVICE() == LBVide) {
-			ArrayList<EtatServiceMilitaire> esm = (ArrayList<EtatServiceMilitaire>) getEtatServiceMilitaireDao()
-					.listerEtatServiceMilitaire();
+			ArrayList<EtatServiceMilitaire> esm = (ArrayList<EtatServiceMilitaire>) getEtatServiceMilitaireDao().listerEtatServiceMilitaire();
 			setListeTypeServiceMilitaire(esm);
 
 			int[] tailles = { 20 };
 			FormateListe aFormat = new FormateListe(tailles);
-			for (ListIterator<EtatServiceMilitaire> list = getListeTypeServiceMilitaire().listIterator(); list
-					.hasNext();) {
+			for (ListIterator<EtatServiceMilitaire> list = getListeTypeServiceMilitaire().listIterator(); list.hasNext();) {
 				EtatServiceMilitaire fili = (EtatServiceMilitaire) list.next();
 				String ligne[] = { fili.getLibEtatService() };
 
@@ -2709,16 +2613,14 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		// recup du champ voie-quartier
 		if (getVoieQuartierCourant() == null && getAgentCourant() != null) {
 			if (getAgentCourant().getIdVoie() != null) {
-				setVoieQuartierCourant(VoieQuartier.chercherVoieQuartierAvecCodVoie(getTransaction(), getAgentCourant()
-						.getIdVoie().toString()));
+				setVoieQuartierCourant(VoieQuartier.chercherVoieQuartierAvecCodVoie(getTransaction(), getAgentCourant().getIdVoie().toString()));
 				addZone(getNOM_RG_VILLE_DOMICILE(), getNOM_RB_VILLE_DOMICILE_NOUMEA());
 			} else if (getAgentCourant().getIdVoie() == null) {
 				addZone(getNOM_RG_VILLE_DOMICILE(), getNOM_RB_VILLE_DOMICILE_AUTRE());
 			}
 		}
 
-		addZone(getNOM_ST_VOIE(), getVoieQuartierCourant() == null ? Const.CHAINE_VIDE : getVoieQuartierCourant()
-				.getLibVoie());
+		addZone(getNOM_ST_VOIE(), getVoieQuartierCourant() == null ? Const.CHAINE_VIDE : getVoieQuartierCourant().getLibVoie());
 	}
 
 	/**
@@ -2774,14 +2676,10 @@ public class OeAGENTEtatCivil extends BasicProcess {
 				Contact aContact = (Contact) getListeContact().get(i);
 				TypeContact aType = getTypeContactDao().chercherTypeContact(aContact.getIdTypeContact());
 
-				addZone(getNOM_ST_TYPE_CONTACT(indiceContact), aType.getLibelle().equals(Const.CHAINE_VIDE) ? "&nbsp;"
-						: aType.getLibelle());
-				addZone(getNOM_ST_DIFFUSABLE_CONTACT(indiceContact), aContact.isDiffusable() ? "Diffusable"
-						: "Non diffusable");
-				addZone(getNOM_ST_DESCRIPTION_CONTACT(indiceContact),
-						aContact.getDescription().equals(Const.CHAINE_VIDE) ? "&nbsp;" : aContact.getDescription());
-				addZone(getNOM_ST_PRIORITAIRE_CONTACT(indiceContact), aContact.isPrioritaire() ? "Prioritaire"
-						: "Non prioritaire");
+				addZone(getNOM_ST_TYPE_CONTACT(indiceContact), aType.getLibelle().equals(Const.CHAINE_VIDE) ? "&nbsp;" : aType.getLibelle());
+				addZone(getNOM_ST_DIFFUSABLE_CONTACT(indiceContact), aContact.isDiffusable() ? "Diffusable" : "Non diffusable");
+				addZone(getNOM_ST_DESCRIPTION_CONTACT(indiceContact), aContact.getDescription().equals(Const.CHAINE_VIDE) ? "&nbsp;" : aContact.getDescription());
+				addZone(getNOM_ST_PRIORITAIRE_CONTACT(indiceContact), aContact.isPrioritaire() ? "Prioritaire" : "Non prioritaire");
 
 				indiceContact++;
 			}
@@ -2810,8 +2708,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	public boolean performPB_CIVILITE(HttpServletRequest request) throws Exception {
 		// RG_AG_EC_C07
 		String civilite = getLB_CIVILITE()[Integer.parseInt(getVAL_LB_CIVILITE_SELECT())];
-		addZone(getNOM_ST_SEXE(), (civilite.equals(EnumCivilite.M.getValue()) ? EnumSexe.MASCULIN.getValue()
-				: EnumSexe.FEMININ.getValue()));
+		addZone(getNOM_ST_SEXE(), (civilite.equals(EnumCivilite.M.getValue()) ? EnumSexe.MASCULIN.getValue() : EnumSexe.FEMININ.getValue()));
 		return true;
 	}
 
@@ -3059,8 +2956,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		int indice = Integer.parseInt(getVAL_LB_BANQUE_GUICHET_SELECT());
 		BanqueGuichet b = (BanqueGuichet) getListeBanqueGuichet().get(indice);
 
-		addZone(getNOM_ST_BANQUE_GUICHET(),
-				b == null ? Const.CHAINE_VIDE : b.getLibBanque() + " - " + b.getLibGuichet());
+		addZone(getNOM_ST_BANQUE_GUICHET(), b == null ? Const.CHAINE_VIDE : b.getLibBanque() + " - " + b.getLibGuichet());
 
 		return true;
 	}
@@ -3639,8 +3535,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 
 		// Création/Modification de l'agent
 		ArrayList<Contact> lContact = getContactDao().listerContactAgent(getAgentCourant().getIdAgent());
-		SituationFamiliale situFam = getSituationFamilialeDao().chercherSituationFamilialeById(
-				getAgentCourant().getIdSituationFamiliale());
+		SituationFamiliale situFam = getSituationFamilialeDao().chercherSituationFamilialeById(getAgentCourant().getIdSituationFamiliale());
 		getAgentDao().creerAgent(getTransaction(), getAgentCourant(), lContact, situFam);
 
 		if (!getTransaction().isErreur()) {
@@ -3861,8 +3756,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	 * 
 	 */
 	public boolean performPB_COMMUNE_BP(HttpServletRequest request) throws Exception {
-		CommunePostal newCommune = (CommunePostal) getListeCommuneBP().get(
-				Integer.parseInt(getVAL_LB_COMMUNE_BP_SELECT()));
+		CommunePostal newCommune = (CommunePostal) getListeCommuneBP().get(Integer.parseInt(getVAL_LB_COMMUNE_BP_SELECT()));
 		setCommuneBPCourant(newCommune);
 		addZone(getNOM_EF_CODE_POSTAL_BP(), getCommuneBPCourant().getCodCodePostal());
 		return true;
@@ -4329,8 +4223,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	 */
 	public boolean performPB_SELECT_TCONTACT(HttpServletRequest request) throws Exception {
 		// si ligne directe choisie alors par defaut diffusable="OUI"
-		TypeContact newType = (TypeContact) getListeTypeContact().get(
-				Integer.parseInt(getZone(getNOM_LB_TCONTACT_SELECT())));
+		TypeContact newType = (TypeContact) getListeTypeContact().get(Integer.parseInt(getZone(getNOM_LB_TCONTACT_SELECT())));
 		setFocus(getNOM_PB_VALIDER_CONTACT());
 		if (newType.getIdTypeContact() == 6) {
 			addZone(getNOM_RG_CONTACT_DIFF(), getNOM_RB_CONTACT_DIFF_OUI());
@@ -4478,10 +4371,8 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		int ligneType = getListeTypeContact().indexOf(t);
 		addZone(getNOM_EF_LIBELLE_CONTACT(), getContactCourant().getDescription());
 		addZone(getNOM_LB_TCONTACT_SELECT(), String.valueOf(ligneType));
-		addZone(getNOM_RG_CONTACT_DIFF(), (c != null && c.isDiffusable()) ? getNOM_RB_CONTACT_DIFF_OUI()
-				: getNOM_RB_CONTACT_DIFF_NON());
-		addZone(getNOM_RG_CONTACT_PRIORITAIRE(), (c != null && c.isPrioritaire()) ? getNOM_RB_CONTACT_PRIORITAIRE_OUI()
-				: getNOM_RB_CONTACT_PRIORITAIRE_NON());
+		addZone(getNOM_RG_CONTACT_DIFF(), (c != null && c.isDiffusable()) ? getNOM_RB_CONTACT_DIFF_OUI() : getNOM_RB_CONTACT_DIFF_NON());
+		addZone(getNOM_RG_CONTACT_PRIORITAIRE(), (c != null && c.isPrioritaire()) ? getNOM_RB_CONTACT_PRIORITAIRE_OUI() : getNOM_RB_CONTACT_PRIORITAIRE_NON());
 
 		setStatut(STATUT_MEME_PROCESS);
 		setFocus(getNOM_PB_VALIDER_CONTACT());
@@ -4508,10 +4399,8 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		// Alim zones
 		addZone(getNOM_ST_LIBELLE_CONTACT(), c.getDescription());
 		addZone(getNOM_ST_TCONTACT(), t.getLibelle());
-		addZone(getNOM_RG_CONTACT_DIFF(), (c != null && c.isDiffusable()) ? getNOM_RB_CONTACT_DIFF_OUI()
-				: getNOM_RB_CONTACT_DIFF_NON());
-		addZone(getNOM_RG_CONTACT_PRIORITAIRE(), (c != null && c.isPrioritaire()) ? getNOM_RB_CONTACT_PRIORITAIRE_OUI()
-				: getNOM_RB_CONTACT_PRIORITAIRE_NON());
+		addZone(getNOM_RG_CONTACT_DIFF(), (c != null && c.isDiffusable()) ? getNOM_RB_CONTACT_DIFF_OUI() : getNOM_RB_CONTACT_DIFF_NON());
+		addZone(getNOM_RG_CONTACT_PRIORITAIRE(), (c != null && c.isPrioritaire()) ? getNOM_RB_CONTACT_PRIORITAIRE_OUI() : getNOM_RB_CONTACT_PRIORITAIRE_NON());
 
 		setFocus(getNOM_PB_VALIDER_CONTACT());
 		setStatut(STATUT_MEME_PROCESS);
