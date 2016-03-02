@@ -2554,7 +2554,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 
 		// La commune boite postale
 		if (getAgentCourant() != null && getAgentCourant().getCcomVilleBp() != null) {
-			//#
+			//#29001 : cas de null pointer
 			try {
 				CommunePostal communePostale = CommunePostal.chercherCommunePostal(getTransaction(), getAgentCourant().getCposVilleBp(), getAgentCourant().getCcomVilleBp());
 
