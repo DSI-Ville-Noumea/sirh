@@ -100,11 +100,11 @@
 									<tr id="<%=indicePrime%>" onmouseover="SelectLigne(<%=indicePrime%>,<%=process.getListePrimes().size()%>)">
 										<td class="sigp2NewTab-liste" style="position:relative;width:70px;" align="center">
 											<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, "") %>" name="<%=process.getNOM_PB_CONSULTER(indicePrime)%>">											
-				    						<%if(process.getCalculPaye().equals("")){ %>
+				    						<%if(process.getCalculPaye().equals("") && !process.isPrimePointage(process.getVAL_ST_CODE_RUBR(indicePrime))){ %>
 											<INPUT title="modifier" type="image" src="images/modifier.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_MODIFIER(indicePrime)%>">
 											<%}%>
 											<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_CONSULTER(indicePrime)%>">				
-											<%if(process.getCalculPaye().equals("")){ %>
+											<%if(process.getCalculPaye().equals("") && !process.isPrimePointage(process.getVAL_ST_CODE_RUBR(indicePrime))){ %>
 											<INPUT title="supprimer" type="image" src="images/suppression.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_SUPPRIMER(indicePrime)%>">
 											<%}%>
 										</td>

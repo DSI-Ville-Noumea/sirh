@@ -2,10 +2,12 @@ package nc.mairie.gestionagent.process.agent;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.enums.EnumTypeHisto;
+import nc.mairie.gestionagent.pointage.dto.RefPrimeDto;
 import nc.mairie.gestionagent.robot.MaClasse;
 import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
@@ -25,6 +27,8 @@ import nc.mairie.technique.UserAppli;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
+import nc.noumea.spring.service.IPtgService;
+import nc.noumea.spring.service.PtgService;
 
 import org.springframework.context.ApplicationContext;
 
@@ -68,6 +72,10 @@ public class OeAGENTPrime extends BasicProcess {
 	private RubriqueDao rubriqueDao;
 	private HistoPrimeDao histoPrimeDao;
 
+	private IPtgService ptgService;
+	
+	private List<RefPrimeDto> listPrimesPointage;
+
 	private void initialiseDao() {
 		// on initialise le dao
 		ApplicationContext context = ApplicationContextProvider.getContext();
@@ -77,6 +85,9 @@ public class OeAGENTPrime extends BasicProcess {
 		}
 		if (getHistoPrimeDao() == null) {
 			setHistoPrimeDao(new HistoPrimeDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (null == ptgService) {
+			ptgService = (PtgService) context.getBean("ptgService");
 		}
 	}
 
@@ -144,7 +155,9 @@ public class OeAGENTPrime extends BasicProcess {
 				return;
 			}
 		}
-
+		
+		// #28331 on bloque les primes des pointages
+		setListPrimesPointage(ptgService.getPrimes());
 	}
 
 	/**
@@ -194,6 +207,30 @@ public class OeAGENTPrime extends BasicProcess {
 				indicePrime++;
 			}
 		}
+	}
+	
+	/**
+	 * Verifie sur le noRubr en parametre est une prime pointage
+	 * 
+	 * @param listPrimesPointage List<RefPrimeDto>
+	 * @param noRubr Integer
+	 * @return boolean
+	 */
+	public boolean isPrimePointage(String noRubr) {
+		
+		if(null == noRubr
+				|| null == getListPrimesPointage()) {
+			return false;
+		}
+		
+		Integer noRubrInt = new Integer(noRubr);
+		
+		for(RefPrimeDto primePtg : getListPrimesPointage()) {
+			if(primePtg.getNumRubrique().equals(noRubrInt)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -471,6 +508,22 @@ public class OeAGENTPrime extends BasicProcess {
 		if (getZone(getNOM_ST_ACTION()).length() == 0) {
 			// "Vous ne pouvez pas valider, il n'y a pas d'action en cours."
 			setStatut(STATUT_MEME_PROCESS, true, MessageUtils.getMessage("ERR006"));
+			return false;
+		}
+		
+		// #28331 on verifie que l action ne concerne pas une prime pointage
+		String noRubr = null;
+		Prime prime = getPrimeCourante();
+		if(null != prime) {
+			noRubr = prime.getNoRubr();
+		}
+		Rubrique rubr = getSelectedRubrique();
+		if(null != rubr) {
+			noRubr = rubr.getNorubr().toString();
+		}
+		if(null != noRubr 
+				&& isPrimePointage(noRubr)) {
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR063"));
 			return false;
 		}
 
@@ -1087,6 +1140,14 @@ public class OeAGENTPrime extends BasicProcess {
 
 	public void setHistoPrimeDao(HistoPrimeDao histoPrimeDao) {
 		this.histoPrimeDao = histoPrimeDao;
+	}
+
+	public List<RefPrimeDto> getListPrimesPointage() {
+		return listPrimesPointage;
+	}
+
+	public void setListPrimesPointage(List<RefPrimeDto> listPrimesPointage) {
+		this.listPrimesPointage = listPrimesPointage;
 	}
 
 }
