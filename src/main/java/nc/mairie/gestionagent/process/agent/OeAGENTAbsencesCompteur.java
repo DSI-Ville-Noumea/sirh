@@ -449,6 +449,7 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 
 		// on sauvegarde les données
 		ReturnMessageDto message = new ReturnMessageDto();
+		boolean soldeNegatif = false;
 
 		if (getZone(getNOM_ST_ACTION()).equals(ACTION_CREATION_RECUP) && getTypeAbsenceCourant().getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.RECUP.getCode().toString())) {
 			// on recupere la saisie
@@ -595,18 +596,14 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 			if (ajout) {
 				// cas de l'ajout
 				if (ancienSolde + dureeTotaleSaisie < 0) {
-					// "ERR801",
-					// "Le nouveau solde du compteur ne peut être negatif."
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR801"));
-					return false;
+					// #20612
+					soldeNegatif = true;
 				}
 			} else {
 				// cas du retrait
 				if (ancienSolde - dureeTotaleSaisie < 0) {
-					// "ERR801",
-					// "Le nouveau solde du compteur ne peut être negatif."
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR801"));
-					return false;
+					// #20612
+					soldeNegatif = true;
 				}
 			}
 
@@ -638,8 +635,14 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 			}
 			getTransaction().declarerErreur("ERREUR : " + err);
 		} else {
-			// "INF010", "Le compteur @ a bien été mis a jour."
-			setStatut(STATUT_MEME_PROCESS, false, MessageUtils.getMessage("INF010", getTypeAbsenceCourant().getLibelle()));
+			if (soldeNegatif) {
+				// "ERR808",
+				// "ATTENTION : Le compteur @ a bien été mis à jour mais il est NEGATIF ."
+				setStatut(STATUT_MEME_PROCESS, false, MessageUtils.getMessage("ERR808", getTypeAbsenceCourant().getLibelle()));
+			} else {
+				// "INF010", "Le compteur @ a bien été mis a jour."
+				setStatut(STATUT_MEME_PROCESS, false, MessageUtils.getMessage("INF010", getTypeAbsenceCourant().getLibelle()));
+			}
 		}
 
 		// On nomme l'action
