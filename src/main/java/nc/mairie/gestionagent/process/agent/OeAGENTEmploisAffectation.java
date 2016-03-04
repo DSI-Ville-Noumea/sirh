@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.connecteur.Connecteur;
 import nc.mairie.enums.EnumImpressionAffectation;
+import nc.mairie.enums.EnumStatutFichePoste;
 import nc.mairie.enums.EnumTempsTravail;
 import nc.mairie.enums.EnumTypeGroupeAbsence;
 import nc.mairie.enums.EnumTypeHisto;
@@ -40,6 +41,7 @@ import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.poste.HistoAffectation;
 import nc.mairie.metier.poste.HistoFichePoste;
 import nc.mairie.metier.poste.Horaire;
+import nc.mairie.metier.poste.StatutFP;
 import nc.mairie.metier.specificites.AvantageNature;
 import nc.mairie.metier.specificites.AvantageNatureAFF;
 import nc.mairie.metier.specificites.Delegation;
@@ -63,6 +65,7 @@ import nc.mairie.spring.dao.metier.poste.AffectationDao;
 import nc.mairie.spring.dao.metier.poste.FichePosteDao;
 import nc.mairie.spring.dao.metier.poste.HistoAffectationDao;
 import nc.mairie.spring.dao.metier.poste.HistoFichePosteDao;
+import nc.mairie.spring.dao.metier.poste.StatutFPDao;
 import nc.mairie.spring.dao.metier.poste.TitrePosteDao;
 import nc.mairie.spring.dao.metier.specificites.AvantageNatureAffDao;
 import nc.mairie.spring.dao.metier.specificites.AvantageNatureDao;
@@ -204,6 +207,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	private DocumentDao documentDao;
 	private TitrePosteDao titrePosteDao;
 	private FichePosteDao fichePosteDao;
+	private StatutFPDao statutFPDao;
 	private HistoFichePosteDao histoFichePosteDao;
 	private HistoAffectationDao histoAffectationDao;
 	private AffectationDao affectationDao;
@@ -3122,6 +3126,9 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		if (getAgentDao() == null) {
 			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (getStatutFPDao() == null) {
+			setStatutFPDao(new StatutFPDao((SirhDao) context.getBean("sirhDao")));
+		}
 		if (null == adsService) {
 			adsService = (AdsService) context.getBean("adsService");
 		}
@@ -3167,7 +3174,6 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	 *             RG_AG_AF_A11
 	 */
 	public boolean performControlerRG() throws Exception {
-
 		// Vérification du non-chevauchement des dates des affectations
 		for (ListIterator<Affectation> list = getListeAffectation().listIterator(); list.hasNext();) {
 			Affectation aAff = (Affectation) list.next();
@@ -4198,6 +4204,13 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 				return false;
 			}
 
+			// #29145 : controle affectation pas sur FDP inactive
+			if (getZone(getNOM_ST_ACTION()).equals(ACTION_CREATION)) {
+				if (!performControleStatutFDP()) {
+					return false;
+				}
+			}
+
 			if (!performControlerRG()) {
 				return false;
 			}
@@ -4478,9 +4491,60 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			// On supprime la fiche de poste
 			setFichePosteCourant(null);
 
+			// #29145 : on regarde si la FDP est en statut transitoire --> alors
+			// on informe
+			StatutFP statutFDPPrincipale = getStatutFPDao().chercherStatutFP(getFichePosteCourant().getIdStatutFp());
+			if (statutFDPPrincipale.getLibStatutFp().equals(EnumStatutFichePoste.TRANSITOIRE.getLibLong())) {
+				// "INF011", "Attention : la fiche de poste @ est @."O
+				getTransaction().declarerErreur(MessageUtils.getMessage("INF011", getFichePosteCourant().getNumFp(), EnumStatutFichePoste.TRANSITOIRE.getLibLong()));
+			}
+			if (getFichePosteSecondaireCourant() != null) {
+				StatutFP statutFDPSecondaire = getStatutFPDao().chercherStatutFP(getFichePosteSecondaireCourant().getIdStatutFp());
+				if (statutFDPSecondaire.getLibStatutFp().equals(EnumStatutFichePoste.TRANSITOIRE.getLibLong())) {
+					// "INF011", "Attention : la fiche de poste @ est @."
+					getTransaction().declarerErreur(MessageUtils.getMessage("INF011", "secondaire " + getFichePosteSecondaireCourant().getNumFp(), EnumStatutFichePoste.INACTIVE.getLibLong()));
+				}
+			}
+
 			addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 			addZone(getNOM_ST_ACTION_spec(), Const.CHAINE_VIDE);
 			setStatut(STATUT_MEME_PROCESS);
+		}
+		return true;
+	}
+
+	private boolean performControleStatutFDP() throws Exception {
+		// #29145 : controle affectation pas sur FDP inactive
+		StatutFP statutFDPPrincipale = getStatutFPDao().chercherStatutFP(getFichePosteCourant().getIdStatutFp());
+		if (statutFDPPrincipale.getLibStatutFp().equals(EnumStatutFichePoste.INACTIVE.getLibLong())) {
+			// "ERR089",
+			// "La fiche de poste @ est @. Vous ne pouvez pas créer d'affectation"
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR089", getFichePosteCourant().getNumFp(), EnumStatutFichePoste.INACTIVE.getLibLong()));
+			setFocus(getNOM_PB_AJOUTER());
+			return false;
+		} else if (statutFDPPrincipale.getLibStatutFp().equals(EnumStatutFichePoste.EN_CREATION.getLibLong())) {
+			// "ERR089",
+			// "La fiche de poste @ est @. Vous ne pouvez pas créer d'affectation"
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR089", getFichePosteCourant().getNumFp(), EnumStatutFichePoste.INACTIVE.getLibLong()));
+			setFocus(getNOM_PB_AJOUTER());
+			return false;
+		}
+
+		if (getFichePosteSecondaireCourant() != null) {
+			StatutFP statutFDPSecondaire = getStatutFPDao().chercherStatutFP(getFichePosteSecondaireCourant().getIdStatutFp());
+			if (statutFDPSecondaire.getLibStatutFp().equals(EnumStatutFichePoste.INACTIVE.getLibLong())) {
+				// "ERR089",
+				// "La fiche de poste @ est @. Vous ne pouvez pas créer d'affectation"
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR089", "secondaire " + getFichePosteSecondaireCourant().getNumFp(), EnumStatutFichePoste.INACTIVE.getLibLong()));
+				setFocus(getNOM_PB_AJOUTER());
+				return false;
+			} else if (statutFDPSecondaire.getLibStatutFp().equals(EnumStatutFichePoste.EN_CREATION.getLibLong())) {
+				// "ERR089",
+				// "La fiche de poste @ est @. Vous ne pouvez pas créer d'affectation"
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR089", "secondaire " + getFichePosteSecondaireCourant().getNumFp(), EnumStatutFichePoste.INACTIVE.getLibLong()));
+				setFocus(getNOM_PB_AJOUTER());
+				return false;
+			}
 		}
 		return true;
 	}
@@ -5412,6 +5476,14 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	public void setFichePosteDao(FichePosteDao fichePosteDao) {
 		this.fichePosteDao = fichePosteDao;
+	}
+
+	public StatutFPDao getStatutFPDao() {
+		return statutFPDao;
+	}
+
+	public void setStatutFPDao(StatutFPDao statutFPDao) {
+		this.statutFPDao = statutFPDao;
 	}
 
 	public HistoFichePosteDao getHistoFichePosteDao() {
