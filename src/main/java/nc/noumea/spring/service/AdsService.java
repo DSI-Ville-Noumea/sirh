@@ -456,7 +456,7 @@ public class AdsService implements IAdsService {
 		StringBuffer result = new StringBuffer();
 		result.append(construitDebutArbreWithAgent(tree, withCkeckBox));
 
-		// cette partie ajoute le premier dossier Se"rvice dans l arbre sous le noeud Services
+		// cette partie ajoute le premier dossier Service dans l arbre sous le noeud Services
 		EntiteDto entiteService = new EntiteDto();
 		entiteService.setIdEntite(0);
 		result.append(ajouteNoeud(tree.getNfa(), entiteService, tree, withCkeckBox, "", "", 
@@ -709,8 +709,8 @@ public class AdsService implements IAdsService {
 		
 		String isCheck = isAgentChecke(ag, listAgentsAffectes);
 		String result = "";
-		result = "d.add(" + ag.getIdAgent() + "," + entite.getIdEntite() + ",\"" + ag.getNom().replace("'", " ") + " " + ag.getPrenom().replace("'", " ") + "\",'" + ag.getNom() + "','"
-				+ ag.getIdAgent() + "','',\"" + style + "\",'" + withCkeckBox + "', '" + isCheck + "', '" + isCheck + "');";
+		result = "d.add(" + ag.getIdAgent() + "," + entite.getIdEntite() + ",\"" + ag.getNom().replace("'", " ") + " " + ag.getPrenom().replace("'", " ") + "\",\"" + ag.getNom().replace("'", " ") + "\",\""
+				+ ag.getIdAgent() + "\",\"\",\"" + style + "\",\"" + withCkeckBox + "\", \"" + isCheck + "\", \"" + isCheck + "\");";
 
 		return result;
 	}
