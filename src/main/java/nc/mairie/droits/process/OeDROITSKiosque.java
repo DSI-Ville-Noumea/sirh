@@ -17,6 +17,7 @@ import nc.mairie.gestionagent.dto.DelegatorAndOperatorsDto;
 import nc.mairie.gestionagent.dto.InputterDto;
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
 import nc.mairie.gestionagent.dto.ViseursDto;
+import nc.mairie.gestionagent.radi.dto.LightUserDto;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.Agent;
 import nc.mairie.metier.poste.Affectation;
@@ -27,6 +28,7 @@ import nc.mairie.spring.dao.metier.poste.FichePosteDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
+import nc.mairie.technique.UserAppli;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
@@ -37,6 +39,7 @@ import nc.noumea.spring.service.AdsService;
 import nc.noumea.spring.service.IAbsService;
 import nc.noumea.spring.service.IAdsService;
 import nc.noumea.spring.service.IPtgService;
+import nc.noumea.spring.service.IRadiService;
 import nc.noumea.spring.service.PtgService;
 
 import org.springframework.context.ApplicationContext;
@@ -55,6 +58,8 @@ public class OeDROITSKiosque extends BasicProcess {
 
 	public String ACTION_GERER_DROIT_ABS = "Gestion des droits ABS de l'approbateur";
 	public String ACTION_GERER_DROIT_PTG = "Gestion des droits PTG de l'approbateur";
+	
+	public String ACTION_DUPLIQUER_DROIT_ABS_PTG = "Dupliquer les droits ABS et PTG de l'approbateur";
 
 	public static final int STATUT_APPROBATEUR = 1;
 	public static final int STATUT_DELEGATAIRE_ABS = 2;
@@ -70,6 +75,7 @@ public class OeDROITSKiosque extends BasicProcess {
 	public static final int STATUT_AGENT_VISEUR_APPROBATEUR_ABS = 12;
 	public static final int STATUT_AGENT_MAIRIE_APPROBATEUR_ABS = 13;
 	public static final int STATUT_AGENT_MAIRIE_APPROBATEUR_PTG = 14;
+	public static final int STATUT_RECHERCHER_AGENT_DUPLICATION = 15;
 
 	private ArrayList<ApprobateurDto> listeApprobateurs = new ArrayList<ApprobateurDto>();
 	private ArrayList<ApprobateurDto> listeApprobateursPTG = new ArrayList<ApprobateurDto>();
@@ -96,6 +102,8 @@ public class OeDROITSKiosque extends BasicProcess {
 	private IAbsService absService;
 
 	private IPtgService ptgService;
+
+	private IRadiService radiService;
 
 	/**
 	 * @return String Renvoie focus.
@@ -233,6 +241,12 @@ public class OeDROITSKiosque extends BasicProcess {
 			Agent operateur = (Agent) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
 			VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
 			saveOperateurApprobateurPtg(request, operateur, false);
+		}
+
+		if (etatStatut() == STATUT_RECHERCHER_AGENT_DUPLICATION) {
+			Agent agent = (Agent) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
+			VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
+			addZone(getNOM_ST_AGENT_DUPLICATION(), agent.getNomatr().toString());
 		}
 
 		if (etatStatut() == STATUT_AGENT_OPE_APPROBATEUR_PTG) {
@@ -532,6 +546,9 @@ public class OeDROITSKiosque extends BasicProcess {
 		if (null == ptgService) {
 			ptgService = (PtgService) context.getBean("ptgService");
 		}
+		if (null == radiService) {
+			radiService = (IRadiService) context.getBean("radiService");
+		}
 	}
 
 	private void initialiseListeApprobateur(Integer idServiceADS, Agent agent) {
@@ -785,6 +802,9 @@ public class OeDROITSKiosque extends BasicProcess {
 				if (testerParametre(request, getNOM_PB_SUPPRIMER(i))) {
 					return performPB_SUPPRIMER(request, i);
 				}
+				if (testerParametre(request, getNOM_PB_DUPLIQUER(i))) {
+					return performPB_DUPLIQUER(request, i);
+				}
 				if (testerParametre(request, getNOM_PB_GERER_DROIT_ABS(i))) {
 					return performPB_GERER_DROIT_ABS(request, i);
 				}
@@ -871,9 +891,24 @@ public class OeDROITSKiosque extends BasicProcess {
 				return performPB_RECHERCHER_AGENT(request);
 			}
 
+			// Si clic sur le bouton PB_RECHERCHER_AGENT_DUPLICATION
+			if (testerParametre(request, getNOM_PB_RECHERCHER_AGENT_DUPLICATION())) {
+				return performPB_RECHERCHER_AGENT_DUPLICATION(request);
+			}
+
 			// Si clic sur le bouton PB_SUPPRIMER_RECHERCHER_AGENT
 			if (testerParametre(request, getNOM_PB_SUPPRIMER_RECHERCHER_AGENT())) {
 				return performPB_SUPPRIMER_RECHERCHER_AGENT(request);
+			}
+
+			// Si clic sur le bouton PB_SUPPRIMER_RECHERCHER_AGENT_DUPLICATION
+			if (testerParametre(request, getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_DUPLICATION())) {
+				return performPB_SUPPRIMER_RECHERCHER_AGENT_DUPLICATION(request);
+			}
+
+			// Si clic sur le bouton PB_SUPPRIMER_RECHERCHER_AGENT_DUPLICATION
+			if (testerParametre(request, getNOM_PB_VALIDER_DUPLICATION())) {
+				return performPB_VALIDER_DUPLICATION(request);
 			}
 
 			// Si clic sur le bouton PB_SUPPRIMER_RECHERCHER_SERVICE
@@ -1036,6 +1071,18 @@ public class OeDROITSKiosque extends BasicProcess {
 	}
 
 	/**
+	 * Retourne le nom d'un bouton pour la JSP : NOM_PB_DUPLIQUER
+	 * 
+	 * @param i
+	 *            id
+	 * @return String
+	 * 
+	 */
+	public String getNOM_PB_DUPLIQUER(int i) {
+		return "NOM_PB_DUPLIQUER" + i;
+	}
+
+	/**
 	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
 	 * regles de gestion du process - Positionne un statut en fonction de ces
 	 * regles : setStatut(STATUT, boolean veutRetour) ou
@@ -1088,6 +1135,87 @@ public class OeDROITSKiosque extends BasicProcess {
 		performPB_AFFICHER(request);
 
 		setStatut(STATUT_MEME_PROCESS);
+		return true;
+	}
+	
+	public boolean performPB_DUPLIQUER(HttpServletRequest request, int indiceEltADupliquer) throws Exception {
+		
+		addZone(getNOM_ST_ACTION(), ACTION_DUPLIQUER_DROIT_ABS_PTG);
+		setApprobateurCourant(null);
+
+		ApprobateurDto agentSelec = new ApprobateurDto();
+
+		Enumeration<ApprobateurDto> e = getHashApprobateur().keys();
+		while (e.hasMoreElements()) {
+			ApprobateurDto ag = e.nextElement();
+			int i = ag.getApprobateur().getIdAgent();
+
+			if (i == indiceEltADupliquer) {
+				agentSelec = ag;
+				break;
+			}
+		}
+		
+		setApprobateurCourant(agentSelec.getApprobateur());
+
+		setStatut(STATUT_MEME_PROCESS);
+		return true;
+	}
+	
+	public String getNOM_PB_VALIDER_DUPLICATION() {
+		return "NOM_PB_VALIDER_DUPLICATION";
+	}
+	
+	public boolean performPB_VALIDER_DUPLICATION(HttpServletRequest request) throws Exception {
+		
+		if(null == getVAL_ST_AGENT_DUPLICATION()
+				|| Const.CHAINE_VIDE.equals(getVAL_ST_AGENT_DUPLICATION())) {
+			getTransaction().declarerErreur("ERREUR : veuillez sélectionner un agent.");
+			return false;
+		}
+		
+		AgentWithServiceDto oldApprobateur = getApprobateurCourant();
+		
+		// recuperation agent
+		Agent agentDestinataire = null;
+		agentDestinataire = getAgentDao().chercherAgentParMatricule(Integer.valueOf(getVAL_ST_AGENT_DUPLICATION()));
+		
+		if(null == agentDestinataire) {
+			getTransaction().declarerErreur("ERREUR : L'agent saisi n'existe pas.");
+			return false;
+		}
+		
+		ApprobateurDto newApprobateur = new ApprobateurDto();
+		AgentWithServiceDto agentDto = new AgentWithServiceDto();
+		agentDto.setIdAgent(agentDestinataire.getIdAgent());
+
+		if(getListeApprobateurs().contains(newApprobateur)) {
+			getTransaction().declarerErreur("ERREUR : L'agent saisi existe déjà en tant que approbateur.");
+			return false;
+		}
+		
+		//////////////// on duplique ///////////////////////
+		ReturnMessageDto resultAbs = absService.dupliqueApprobateur(getAgentConnecte(request).getIdAgent(), oldApprobateur.getIdAgent(), agentDestinataire.getIdAgent());
+		String errAbs = Const.CHAINE_VIDE;
+		for (String erreur : resultAbs.getErrors()) {
+			errAbs += " " + erreur;
+		}
+		ReturnMessageDto resultPtg = ptgService.dupliqueApprobateur(getAgentConnecte(request).getIdAgent(), oldApprobateur.getIdAgent(), agentDestinataire.getIdAgent());
+		String errPtg = Const.CHAINE_VIDE;
+		for (String erreur : resultPtg.getErrors()) {
+			errPtg += " " + erreur;
+		}
+
+		if (!errAbs.equals(Const.CHAINE_VIDE)
+				|| !errPtg.equals(Const.CHAINE_VIDE)) {
+			getTransaction().declarerErreur("ERREUR ABS : " + errAbs + "; ERREUR PTG : " + errPtg);
+			return false;
+		}
+
+		setStatut(STATUT_MEME_PROCESS);
+		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+		addZone(getNOM_ST_AGENT_DUPLICATION(), Const.CHAINE_VIDE);
+		setApprobateurCourant(null);
 		return true;
 	}
 
@@ -1458,11 +1586,30 @@ public class OeDROITSKiosque extends BasicProcess {
 		return "NOM_PB_RECHERCHER_AGENT";
 	}
 
+	public String getNOM_ST_AGENT_DUPLICATION() {
+		return "NOM_ST_AGENT_DUPLICATION";
+	}
+
+	public String getVAL_ST_AGENT_DUPLICATION() {
+		return getZone(getNOM_ST_AGENT_DUPLICATION());
+	}
+
+	public String getNOM_PB_RECHERCHER_AGENT_DUPLICATION() {
+		return "NOM_PB_RECHERCHER_AGENT_DUPLICATION";
+	}
+
 	public boolean performPB_RECHERCHER_AGENT(HttpServletRequest request) throws Exception {
 		// On met l'agent courant en var d'activité
 		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new Agent());
 
 		setStatut(STATUT_RECHERCHER_AGENT, true);
+		return true;
+	}
+
+	public boolean performPB_RECHERCHER_AGENT_DUPLICATION(HttpServletRequest request) throws Exception {
+		// On met l'agent courant en var d'activité
+		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new Agent());
+		setStatut(STATUT_RECHERCHER_AGENT_DUPLICATION, true);
 		return true;
 	}
 
@@ -1473,6 +1620,16 @@ public class OeDROITSKiosque extends BasicProcess {
 	public boolean performPB_SUPPRIMER_RECHERCHER_AGENT(HttpServletRequest request) throws Exception {
 		// On enleve l'agent selectionnée
 		addZone(getNOM_ST_AGENT(), Const.CHAINE_VIDE);
+		return true;
+	}
+
+	public String getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_DUPLICATION() {
+		return "NOM_PB_SUPPRIMER_RECHERCHER_AGENT_DUPLICATION";
+	}
+
+	public boolean performPB_SUPPRIMER_RECHERCHER_AGENT_DUPLICATION(HttpServletRequest request) throws Exception {
+		// On enleve l'agent selectionnée
+		addZone(getNOM_ST_AGENT_DUPLICATION(), Const.CHAINE_VIDE);
 		return true;
 	}
 
@@ -2171,5 +2328,31 @@ public class OeDROITSKiosque extends BasicProcess {
 	public String getCurrentWholeTreeJS(String serviceSaisi) {
 		return adsService.getCurrentWholeTreeActifTransitoireJS(
 				null != serviceSaisi && !"".equals(serviceSaisi) ? serviceSaisi : null, false);
+	}
+
+	private Agent getAgentConnecte(HttpServletRequest request) throws Exception {
+		Agent agent = null;
+
+		UserAppli uUser = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
+		// on fait la correspondance entre le login et l'agent via RADI
+		LightUserDto user = radiService.getAgentCompteADByLogin(uUser.getUserName());
+		if (user == null) {
+			getTransaction().traiterErreur();
+			// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
+			return null;
+		} else {
+			if (user != null && user.getEmployeeNumber() != null && user.getEmployeeNumber() != 0) {
+				try {
+					agent = getAgentDao().chercherAgentParMatricule(radiService.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
+				} catch (Exception e) {
+					// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
+					return null;
+				}
+			}
+		}
+
+		return agent;
 	}
 }

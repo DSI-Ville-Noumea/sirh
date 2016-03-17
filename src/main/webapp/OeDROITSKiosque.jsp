@@ -80,6 +80,7 @@ document.formu.elements[nom].focus();
 				%>
 					<tr>
 						<td class="sigp2NewTab-liste" style="position:relative;width:35px;" align="center">
+							<INPUT title="Dupliquer" type="image" src="images/dupliquer.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_DUPLIQUER(i)%>">
 				    		<INPUT title="supprimer" type="image" src="images/suppression.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_SUPPRIMER(i)%>">
 				    	</td>
 						<td class="sigp2NewTab-liste" style="position:relative;width:200px;text-align: left;"><%=process.getVAL_ST_AGENT(i)%></td>
@@ -189,9 +190,9 @@ document.formu.elements[nom].focus();
 								</tr>
 							<%}%>
 						</table>
-		            </fieldset>		            
+		            </fieldset>
 			        <BR/><BR/>
-                    <div align="center">	 
+                    <div align="center"></div>
 	                    <INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
                     </div>
 	            </FIELDSET>
@@ -248,9 +249,27 @@ document.formu.elements[nom].focus();
 	                    <INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
                     </div>
 	            </FIELDSET>
-        <%} %>
+        <%} else if(process.getVAL_ST_ACTION().equals(process.ACTION_DUPLIQUER_DROIT_ABS_PTG)){ %>
+            <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
+	            <legend class="sigp2Legend"><%=process.ACTION_DUPLIQUER_DROIT_ABS_PTG %> <%=process.getApprobateurCourant().getNom() %> (<%=process.getApprobateurCourant().getIdAgent()-9000000 %>)</legend>
+		        
+				Veuillez saisir l'agent vers lequel vous souhaitez dupliquer les droits de l'agent <%=process.getApprobateurCourant().getNom() %> (<%=process.getApprobateurCourant().getIdAgent()-9000000 %>) :
+				<br />
+				<INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_AGENT_DUPLICATION() %>" size="10" type="text" value="<%= process.getVAL_ST_AGENT_DUPLICATION() %>" style="margin-right:10px;">
+				<img border="0" src="images/loupe.gif" width="16px" height="16px" style="cursor: pointer;" onclick="executeBouton('<%=process.getNOM_PB_RECHERCHER_AGENT_DUPLICATION() %>');" />
+          		<img border="0" src="images/suppression.gif" width="16px" height="16px" style="cursor: pointer;" onclick="executeBouton('<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT()%>');" />
+          		
+                <div align="center">
+                	<INPUT type="submit" value="Valider" class="sigp2-Bouton-100" name="<%=process.getNOM_PB_VALIDER_DUPLICATION()%>">
+                	<INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
+                </div>
+				
+				
+		    </FIELDSET>
+        <% } %>
 		<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_TRI()%>" value="TRI">
 		<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_RECHERCHER_AGENT()%>" value="RECHERCHERAGENT">
+		<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_RECHERCHER_AGENT_DUPLICATION()%>" value="RECHERCHERAGENTDUPLICATION">
 		<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT()%>" value="SUPPRECHERCHERAGENT">
 		<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_SERVICE()%>" value="SUPPRECHERCHERSERVICE">
 	</FORM>

@@ -53,6 +53,7 @@ public class SirhPtgWSConsumer extends BaseWsConsumer implements ISirhPtgWSConsu
 	private static final String ptgDroitsAgentsApprouvesUrl = "droits/agentsApprouves";
 	private static final String ptgDroitsDelegataireOperateursUrl = "droits/delegataireOperateurs";
 	private static final String ptgDroitsAgentsSaisisUrl = "droits/agentsSaisis";
+	private static final String sirhDupliqueApprobateurUrl = "droits/dupliqueDroitsApprobateur";
 
 	// Visualisation
 	private static final String sirhPtgVisualisationPointage = "visualisation/pointagesSIRH";
@@ -768,6 +769,19 @@ public class SirhPtgWSConsumer extends BaseWsConsumer implements ISirhPtgWSConsu
 		}
 
 		return dto;
+	}
+
+	@Override
+	public ReturnMessageDto dupliqueApprobateur(Integer idAgentConnecte, Integer idAgentSource, Integer idAgentDestinataire) {
+		
+		String url = String.format(ptgWsBaseUrl + sirhDupliqueApprobateurUrl);
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idAgentConnecte", idAgentConnecte.toString());
+		params.put("idAgentSource", idAgentSource.toString());
+		params.put("idAgentDest", idAgentDestinataire.toString());
+		
+		ClientResponse res = createAndPostRequest(params, url, null);
+		return readResponse(ReturnMessageDto.class, res, url);
 	}
 
 }

@@ -65,6 +65,7 @@ public class SirhAbsWSConsumer extends BaseWsConsumer implements ISirhAbsWSConsu
 	private static final String sirhdeleteViseursApprobateurSIRHUrl = "droits/deleteViseurSIRH";
 	private static final String sirhAgentsOperateurUrl = "droits/agentsSaisisByOperateur";
 	private static final String sirhAgentsViseurUrl = "droits/agentsSaisisByViseur";
+	private static final String sirhDupliqueApprobateurUrl = "droits/dupliqueDroitsApprobateur";
 
 	private static final String sirhAbsSoldeRecupAgent = "solde/soldeAgent";
 	private static final String sirhAbsHistoCompteurAgent = "solde/historiqueSolde";
@@ -666,6 +667,19 @@ public class SirhAbsWSConsumer extends BaseWsConsumer implements ISirhAbsWSConsu
 
 		ClientResponse res = createAndFireRequest(params, url);
 		return readResponse(InputterDto.class, res, url);
+	}
+
+	@Override
+	public ReturnMessageDto dupliqueApprobateur(Integer idAgentConnecte, Integer idAgentSource, Integer idAgentDestinataire) {
+		
+		String url = String.format(absWsBaseUrl + sirhDupliqueApprobateurUrl);
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idAgentConnecte", idAgentConnecte.toString());
+		params.put("idAgentSource", idAgentSource.toString());
+		params.put("idAgentDest", idAgentDestinataire.toString());
+		
+		ClientResponse res = createAndPostRequest(params, url, null);
+		return readResponse(ReturnMessageDto.class, res, url);
 	}
 
 	@Override

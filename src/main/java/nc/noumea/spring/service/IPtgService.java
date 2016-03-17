@@ -132,4 +132,7 @@ public interface IPtgService {
 	ReturnMessageDto genereEtatPayeurTitreRepas(Integer idAgent);
 
 	List<TitreRepasEtatPayeurDto> getListTitreRepasEtatPayeur(Integer idAgent);
+
+	ReturnMessageDto dupliqueApprobateur(Integer idAgentConnecte,
+			Integer idAgentSource, Integer idAgentDestinataire);
 }

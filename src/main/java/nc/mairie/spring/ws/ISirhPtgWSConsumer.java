@@ -133,4 +133,7 @@ public interface ISirhPtgWSConsumer {
 
 	List<TitreRepasEtatPayeurDto> getListTitreRepasEtatPayeur(Integer idAgent);
 
+	ReturnMessageDto dupliqueApprobateur(Integer idAgentConnecte,
+			Integer idAgentSource, Integer idAgentDestinataire);
+
 }

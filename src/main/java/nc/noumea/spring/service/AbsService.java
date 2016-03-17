@@ -99,6 +99,11 @@ public class AbsService implements IAbsService {
 	}
 
 	@Override
+	public ReturnMessageDto dupliqueApprobateur(Integer idAgentConnecte, Integer idAgentSource, Integer idAgentDestinataire) {
+		return absConsumer.dupliqueApprobateur(idAgentConnecte, idAgentSource, idAgentDestinataire);
+	}
+
+	@Override
 	public ViseursDto getViseursApprobateur(Integer idAgent) {
 		return absConsumer.getViseursApprobateur(idAgent);
 	}

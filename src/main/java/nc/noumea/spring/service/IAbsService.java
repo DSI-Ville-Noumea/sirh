@@ -163,4 +163,7 @@ public interface IAbsService {
 	List<CompteurDto> getListeCompteursA52(Integer idOrganisation);
 
 	List<AgentOrganisationSyndicaleDto> getListeRepresentantA52(Integer idOrganisation);
+
+	ReturnMessageDto dupliqueApprobateur(Integer idAgentConnecte,
+			Integer idAgentSource, Integer idAgentDestinataire);
 }

@@ -302,4 +302,10 @@ public class PtgService implements IPtgService {
 		return ptgConsumer.getListTitreRepasEtatPayeur(idAgent);
 	}
 
+	@Override
+	public ReturnMessageDto dupliqueApprobateur(Integer idAgentConnecte, Integer idAgentSource, Integer idAgentDestinataire) {
+		return ptgConsumer.dupliqueApprobateur(idAgentConnecte, idAgentSource, idAgentDestinataire);
+	}
+
+	
 }

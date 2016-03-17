@@ -175,4 +175,7 @@ public interface ISirhAbsWSConsumer {
 
 	ReturnMessageDto saveAgentsViseur(Integer idAgentApprobateur, Integer idAgentViseur, List<AgentDto> listSelect);
 
+	ReturnMessageDto dupliqueApprobateur(Integer idAgentConnecte,
+			Integer idAgentSource, Integer idAgentDestinataire);
+
 }
