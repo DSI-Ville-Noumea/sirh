@@ -4488,8 +4488,6 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			setAffectationCourant(null);
 			// On vide les zones de saisie
 			initialiseAffectationVide();
-			// On supprime la fiche de poste
-			setFichePosteCourant(null);
 
 			// #29145 : on regarde si la FDP est en statut transitoire --> alors
 			// on informe
@@ -4505,6 +4503,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 					getTransaction().declarerErreur(MessageUtils.getMessage("INF011", "secondaire " + getFichePosteSecondaireCourant().getNumFp(), EnumStatutFichePoste.INACTIVE.getLibLong()));
 				}
 			}
+			// On supprime la fiche de poste
+			setFichePosteCourant(null);
 
 			addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 			addZone(getNOM_ST_ACTION_spec(), Const.CHAINE_VIDE);
