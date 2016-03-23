@@ -286,14 +286,17 @@ public class OeAGENTContrat extends BasicProcess {
 						getContratCourant().getIdDocument(), getContratCourant().getNumContrat(), getContratCourant().isAvenant(), getContratCourant().getIdContratRef(),
 						getContratCourant().getDatdeb(), getContratCourant().getDateFinPeriodeEss(), getContratCourant().getDateFin(), getContratCourant().getJustification());
 			} else if (getZone(getNOM_ST_ACTION()).equals(ACTION_CREATION)) {
-				// #20611 : on verifie des information sur les compteurs
-				// d'absences
-				String messageSolde = verifieInfoSoldeAbsence(new DateTime(getContratCourant().getDatdeb()).getYear());
-				if (messageSolde != null) {
-					// "ERR035",
-					// "Attention @ pas égal à 0."
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR035", messageSolde));
-					return false;
+				// 29705 : verification que si ce n'est pas un avenant.
+				if (!getContratCourant().isAvenant()) {
+					// #20611 : on verifie des information sur les compteurs
+					// d'absences
+					String messageSolde = verifieInfoSoldeAbsence(new DateTime(getContratCourant().getDatdeb()).getYear());
+					if (messageSolde != null) {
+						// "ERR035",
+						// "Attention @ pas égal à 0."
+						getTransaction().declarerErreur(MessageUtils.getMessage("ERR035", messageSolde));
+						return false;
+					}
 				}
 
 				// Création
