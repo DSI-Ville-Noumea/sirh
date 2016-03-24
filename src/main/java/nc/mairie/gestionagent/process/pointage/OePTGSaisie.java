@@ -8,7 +8,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -629,6 +628,18 @@ public class OePTGSaisie extends BasicProcess {
 				}
 				ret.append("<option value='" + val + "'" + (selected.equals(val) ? "selected" : "") + ">" + val
 						+ "</option>");
+				
+				if(min == 45) {
+					val = hours + ":" + 48;
+					if (min == 0) {
+						val += "0";
+					}
+					if (hours < 10) {
+						val = "0" + val;
+					}
+					ret.append("<option value='" + val + "'" + (selected.equals(val) ? "selected" : "") + ">" + val
+							+ "</option>");
+				}
 			}
 		}
 		return ret.toString();
