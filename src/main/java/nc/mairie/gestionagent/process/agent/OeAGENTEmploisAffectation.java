@@ -4294,8 +4294,10 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			if (getVAL_ST_ACTION().equals(ACTION_MODIFICATION)) {
 				// Modification
 				// RG_AG_AF_A01
-				if (!Connecteur.modifierSPMTSR(getTransaction(), getAffectationCourant(), getAgentCourant().getNomatr(), getFichePosteCourant(), oldDateDeb, true))
+				// bug #29887 sur affectation inactive
+				if (!Connecteur.modifierSPMTSR(getTransaction(), getAffectationCourant(), getAgentCourant().getNomatr(), getFichePosteCourant(), oldDateDeb, getAffectationCourant().isActive()))
 					return false;
+				
 				HistoAffectation histo = new HistoAffectation(getAffectationCourant());
 				getHistoAffectationDao().creerHistoAffectation(histo, user, EnumTypeHisto.MODIFICATION);
 				getAffectationDao().modifierAffectation(getAffectationCourant());
