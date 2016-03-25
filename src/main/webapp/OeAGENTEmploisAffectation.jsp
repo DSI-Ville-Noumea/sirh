@@ -122,9 +122,10 @@
 						<td class="sigp2NewTab-liste" style="position: relative; width: 65px; text-align: left;">
 							<%=process.getVAL_ST_NUM_FP(indiceAff)%> 
 							<!-- #17320 -->
+							<!-- bug ##29879 : .replace("*", "") ==> FP secondaire -->
 							<span style="color: rgb(0, 128, 204);" onmouseover="this.style.color='#000000';" onmouseout="this.style.color='#0080CC';" id="FPGestion" 
 								class="LienActif" title="Gestion des fiches de poste" 
-								onclick="envoieFormulaire('<%=process.getVAL_ST_NUM_FP(indiceAff)%>'); changerMenuHaut('Module_posteEtEmploi_fichePoste');">
+								onclick="envoieFormulaire('<%=process.getVAL_ST_NUM_FP(indiceAff).replace("*", "")%>'); changerMenuHaut('Module_posteEtEmploi_fichePoste');">
 									<img title="Modifier la fiche de poste" src="images/loupe.gif" height="16px" width="16px">
 							</span>	
 						</td>
