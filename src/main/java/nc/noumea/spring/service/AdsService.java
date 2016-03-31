@@ -640,12 +640,12 @@ public class AdsService implements IAdsService {
 					|| filtreAgents.contains(agentTmpDto)) {
 				return true;
 			}
-			
-			for(EntiteWithAgentWithServiceDto enfant : entite.getEntiteEnfantWithAgents()) {
-				boolean result = isOneAgentInService(enfant, filtreAgents);
-				if(result)
-					return result;
-			}
+		}
+		// bug #30004 
+		for(EntiteWithAgentWithServiceDto enfant : entite.getEntiteEnfantWithAgents()) {
+			boolean result = isOneAgentInService(enfant, filtreAgents);
+			if(result)
+				return result;
 		}
 		
 		return false;
