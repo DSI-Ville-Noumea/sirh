@@ -44,7 +44,7 @@ public class SirhWSConsumer extends BaseWsConsumer implements ISirhWSConsumer {
 	private static final String sirhDeleteFDPUrl = "fichePostes/deleteFichePosteByIdFichePoste";
 
 	// Pour les editions BIRT
-	private static final String sirhDownloadTabAvctPUrl = "avancements/downloadTableauAvancements";
+	private static final String sirhDownloadTabAvctPDFUrl = "avancements/downloadTableauAvancementsPDF"; // edition PDF
 	private static final String sirhDownloadArretesPUrl = "avancements/downloadArretes";
 	private static final String sirhDownloadFichePosteSIRHPUrl = "fichePostes/downloadFichePosteSIRH";
 	private static final String sirhDownloadNoteServiceSIRHPUrl = "noteService/downloadNoteServiceSIRH";
@@ -101,7 +101,7 @@ public class SirhWSConsumer extends BaseWsConsumer implements ISirhWSConsumer {
 
 	@Override
 	public byte[] downloadTableauAvancement(int idCap, int idCadreEmploi, boolean avisEAE, String format) throws Exception {
-		String url = String.format(sirhWsBaseUrl + sirhDownloadTabAvctPUrl);
+		String url = String.format(sirhWsBaseUrl + sirhDownloadTabAvctPDFUrl);
 
 		String urlWSTableauAvctCAP = url + "?idCap=" + idCap + "&idCadreEmploi=" + idCadreEmploi + "&avisEAE=" + avisEAE;
 
