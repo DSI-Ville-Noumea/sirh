@@ -81,7 +81,7 @@
 				<LEGEND class="sigp2Legend">Recherche avancée d'une fiche de poste</LEGEND>
 				<table>
 					<tr>
-						<td width="70px">
+						<td width="80px">
 							<span class="sigp2">Numero :</span>
 						</td>
 						<td width="200px">
@@ -148,6 +148,24 @@
 						</td>
 						<td>
 							<INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_MATR_AGENT() %>" size="10" type="text" value="<%= process.getVAL_ST_MATR_AGENT() %>" style="margin-right:10px;">
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<span class="sigp2">FDP affectées :</span>
+						</td>
+						<td>
+							<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_FDP_AFFECTEES() %>">
+								<%=process.forComboHTML(process.getVAL_LB_FDP_AFFECTEES(), process.getVAL_LB_FDP_AFFECTEES_SELECT()) %>
+							</SELECT>
+						</td>
+						<td>
+							<span class="sigp2">Réglementaire :</span>
+						</td>
+						<td>
+							<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_FDP_REGLEMENTAIRE() %>">
+								<%=process.forComboHTML(process.getVAL_LB_FDP_REGLEMENTAIRE(), process.getVAL_LB_FDP_REGLEMENTAIRE_SELECT()) %>
+							</SELECT>
 						</td>
 					</tr>
 					<tr>

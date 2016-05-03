@@ -11,6 +11,7 @@ import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.Agent;
 import nc.mairie.metier.poste.Affectation;
 import nc.mairie.metier.poste.FichePoste;
+import nc.mairie.metier.poste.Horaire;
 import nc.mairie.metier.poste.StatutFP;
 import nc.mairie.metier.poste.TitrePoste;
 import nc.mairie.spring.dao.metier.agent.AgentDao;
@@ -45,12 +46,15 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 	private String[] LB_TITRE_POSTE;
 	private String[] LB_STATUT;
 	private String[] LB_STATUT_SERVICE;
+	private String[] LB_FDP_AFFECTEES;
+	private String[] LB_FDP_REGLEMENTAIRE;
 
 	private ArrayList<StatutFP> listeStatut;
 	private ArrayList<StatutEntiteEnum> listeStatutEntite;
 	private ArrayList<TitrePoste> listeTitre;
 	private ArrayList<FichePoste> listeFP;
 	private ArrayList<Affectation> listeAffectation;
+	private ArrayList<Horaire> listeHoraire;
 
 	public String focus = null;
 
@@ -168,6 +172,28 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 				setLB_TITRE_POSTE(null);
 			}
 		}
+
+		// Si liste FDP affectées vide alors affectation
+		if (getLB_FDP_AFFECTEES() == LBVide) {
+			int[] tailles = { 20 };
+			FormateListe aFormat = new FormateListe(tailles);
+			String ligne1[] = { "oui" };
+			aFormat.ajouteLigne(ligne1);
+			String ligne[] = { "non" };
+			aFormat.ajouteLigne(ligne);
+			setLB_FDP_AFFECTEES(aFormat.getListeFormatee(true));
+
+		}
+
+		// Si liste reglementaire vide alors affectation
+		if (getLB_FDP_REGLEMENTAIRE() == LBVide) {
+			ArrayList<Horaire> hor = Horaire.listerHoraire(getTransaction());
+			setListeHoraire(hor);
+
+			int[] tailles = { 20 };
+			String[] champs = { "libHor" };
+			setLB_FDP_REGLEMENTAIRE(new FormateListe(tailles, hor, champs).getListeFormatee(true));
+		}
 	}
 
 	/**
@@ -255,25 +281,40 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 		// Recuperation Service
 		EntiteDto entiteDtoSelect = null;
 		List<EntiteDto> listEntiteDtoSelect = new ArrayList<EntiteDto>();
-		
+
 		if (getVAL_ST_ID_SERVICE_ADS().length() != 0) {
 
 			if (getVAL_CK_WITH_SERVICE_ENFANT().equals(getCHECKED_ON())) {
-				entiteDtoSelect = adsService.getEntiteWithChildrenByIdEntite(new Integer(
-						getVAL_ST_ID_SERVICE_ADS()));
+				entiteDtoSelect = adsService.getEntiteWithChildrenByIdEntite(new Integer(getVAL_ST_ID_SERVICE_ADS()));
 			} else {
 				entiteDtoSelect = adsService.getEntiteByIdEntite(new Integer(getVAL_ST_ID_SERVICE_ADS()));
 			}
 		}
-		
-		if(null != entiteDtoSelect) {
+
+		if (null != entiteDtoSelect) {
 			listEntiteDtoSelect = adsService.getListEntiteDto(entiteDtoSelect);
 		}
 
+		// Recuperation FDP affectée
+		String fdpAffectees = null;
+		int indiceFdpAffectees = (Services.estNumerique(getVAL_LB_FDP_AFFECTEES_SELECT()) ? Integer.parseInt(getVAL_LB_FDP_AFFECTEES_SELECT()) : -1);
+		if (indiceFdpAffectees > 0) {
+			if (indiceFdpAffectees == 1)
+				fdpAffectees = "oui";
+			else
+				fdpAffectees = "non";
+
+		}
+
+		// Recuperation Reglementaire
+		Horaire reglementaire = null;
+		int indiceReglementaire = (Services.estNumerique(getVAL_LB_FDP_REGLEMENTAIRE_SELECT()) ? Integer.parseInt(getVAL_LB_FDP_REGLEMENTAIRE_SELECT()) : -1);
+		if (indiceReglementaire > 0)
+			reglementaire = (Horaire) getListeHoraire().get(indiceReglementaire - 1);
+
 		// Recuperation Statut
 		StatutFP statut = null;
-		int indiceStatut = (Services.estNumerique(getVAL_LB_STATUT_SELECT()) ? Integer
-				.parseInt(getVAL_LB_STATUT_SELECT()) : -1);
+		int indiceStatut = (Services.estNumerique(getVAL_LB_STATUT_SELECT()) ? Integer.parseInt(getVAL_LB_STATUT_SELECT()) : -1);
 		if (indiceStatut > 0)
 			statut = (StatutFP) getListeStatut().get(indiceStatut - 1);
 
@@ -337,8 +378,7 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 		// Recuperation statut entite
 		List<Integer> listIdServiceADS = new ArrayList<Integer>();
 		StatutEntiteEnum statutEntite = null;
-		int indiceStatutEntite = (Services.estNumerique(getVAL_LB_STATUT_SERVICE_SELECT()) ? Integer
-				.parseInt(getVAL_LB_STATUT_SERVICE_SELECT()) : -1);
+		int indiceStatutEntite = (Services.estNumerique(getVAL_LB_STATUT_SERVICE_SELECT()) ? Integer.parseInt(getVAL_LB_STATUT_SERVICE_SELECT()) : -1);
 		if (indiceStatutEntite > 0)
 			statutEntite = (StatutEntiteEnum) getListeStatutEntite().get(indiceStatutEntite - 1);
 
@@ -350,8 +390,7 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 				}
 			} else {
 				for (EntiteDto entiteChoisie : listEntiteDtoSelect) {
-					if (entiteChoisie.getIdStatut().toString()
-							.equals(String.valueOf(statutEntite.getIdRefStatutEntite()))) {
+					if (entiteChoisie.getIdStatut().toString().equals(String.valueOf(statutEntite.getIdRefStatutEntite()))) {
 						listIdServiceADS.add(entiteChoisie.getIdEntite());
 					}
 				}
@@ -361,9 +400,8 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 				listIdServiceADS.add(0);
 			}
 		} else {
-			if(null != listEntiteDtoSelect 
-					&& !listEntiteDtoSelect.isEmpty()) {
-				for(EntiteDto entiteChoisie : listEntiteDtoSelect) {
+			if (null != listEntiteDtoSelect && !listEntiteDtoSelect.isEmpty()) {
+				for (EntiteDto entiteChoisie : listEntiteDtoSelect) {
 					listIdServiceADS.add(entiteChoisie.getIdEntite());
 				}
 			}
@@ -371,10 +409,9 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 
 		boolean isCocheObservation = getVAL_CK_WITH_COMMENTAIRE().equals(getCHECKED_ON());
 
-		ArrayList<FichePoste> fp = getFichePosteDao().listerFichePosteAvecCriteresAvances(listIdServiceADS,
-				statut == null ? null : statut.getIdStatutFp(), idTitre,
-				getVAL_EF_NUM_FICHE_POSTE().equals(Const.CHAINE_VIDE) ? null : getVAL_EF_NUM_FICHE_POSTE(),
-				agent == null ? null : agent.getIdAgent(), isCocheObservation);
+		ArrayList<FichePoste> fp = getFichePosteDao().listerFichePosteAvecCriteresAvances(listIdServiceADS, statut == null ? null : statut.getIdStatutFp(), idTitre,
+				getVAL_EF_NUM_FICHE_POSTE().equals(Const.CHAINE_VIDE) ? null : getVAL_EF_NUM_FICHE_POSTE(), agent == null ? null : agent.getIdAgent(), isCocheObservation,
+				reglementaire == null ? null : reglementaire.getCdtHor(), fdpAffectees);
 		setListeFP(fp);
 
 		fillList(listEntiteDtoSelect);
@@ -384,7 +421,7 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 			VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_FICHE_POSTE, (FichePoste) getListeFP().get(0));
 			setStatut(STATUT_PROCESS_APPELANT);
 		}
-		
+
 		return true;
 	}
 
@@ -587,7 +624,7 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 	}
 
 	public String getDefaultFocus() {
-		return getNOM_EF_TITRE_POSTE();
+		return getNOM_EF_NUM_FICHE_POSTE();
 	}
 
 	/**
@@ -1232,5 +1269,65 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 
 	public String getVAL_CK_WITH_COMMENTAIRE() {
 		return getZone(getNOM_CK_WITH_COMMENTAIRE());
+	}
+
+	private String[] getLB_FDP_AFFECTEES() {
+		if (LB_FDP_AFFECTEES == null)
+			LB_FDP_AFFECTEES = initialiseLazyLB();
+		return LB_FDP_AFFECTEES;
+	}
+
+	private void setLB_FDP_AFFECTEES(String[] newLB_FDP_AFFECTEES) {
+		LB_FDP_AFFECTEES = newLB_FDP_AFFECTEES;
+	}
+
+	public String getNOM_LB_FDP_AFFECTEES() {
+		return "NOM_LB_FDP_AFFECTEES";
+	}
+
+	public String getNOM_LB_FDP_AFFECTEES_SELECT() {
+		return "NOM_LB_FDP_AFFECTEES_SELECT";
+	}
+
+	public String[] getVAL_LB_FDP_AFFECTEES() {
+		return getLB_FDP_AFFECTEES();
+	}
+
+	public String getVAL_LB_FDP_AFFECTEES_SELECT() {
+		return getZone(getNOM_LB_FDP_AFFECTEES_SELECT());
+	}
+
+	private String[] getLB_FDP_REGLEMENTAIRE() {
+		if (LB_FDP_REGLEMENTAIRE == null)
+			LB_FDP_REGLEMENTAIRE = initialiseLazyLB();
+		return LB_FDP_REGLEMENTAIRE;
+	}
+
+	private void setLB_FDP_REGLEMENTAIRE(String[] newLB_FDP_REGLEMENTAIRE) {
+		LB_FDP_REGLEMENTAIRE = newLB_FDP_REGLEMENTAIRE;
+	}
+
+	public String getNOM_LB_FDP_REGLEMENTAIRE() {
+		return "NOM_LB_FDP_REGLEMENTAIRE";
+	}
+
+	public String getNOM_LB_FDP_REGLEMENTAIRE_SELECT() {
+		return "NOM_LB_FDP_REGLEMENTAIRE_SELECT";
+	}
+
+	public String[] getVAL_LB_FDP_REGLEMENTAIRE() {
+		return getLB_FDP_REGLEMENTAIRE();
+	}
+
+	public String getVAL_LB_FDP_REGLEMENTAIRE_SELECT() {
+		return getZone(getNOM_LB_FDP_REGLEMENTAIRE_SELECT());
+	}
+
+	private ArrayList<Horaire> getListeHoraire() {
+		return listeHoraire;
+	}
+
+	private void setListeHoraire(ArrayList<Horaire> listeHoraire) {
+		this.listeHoraire = listeHoraire;
 	}
 }

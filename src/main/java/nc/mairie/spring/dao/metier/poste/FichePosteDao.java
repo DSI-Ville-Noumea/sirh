@@ -63,8 +63,7 @@ public class FichePosteDao extends SirhDao implements FichePosteDaoInterface {
 
 	@Override
 	public FichePoste chercherDerniereFichePoste(Integer annee) throws Exception {
-		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ANNEE_CREATION + " = ? order by " + CHAMP_ID
-				+ " desc";
+		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ANNEE_CREATION + " = ? order by " + CHAMP_ID + " desc";
 		ArrayList<FichePoste> liste = new ArrayList<FichePoste>();
 
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { annee });
@@ -108,8 +107,7 @@ public class FichePosteDao extends SirhDao implements FichePosteDaoInterface {
 	@Override
 	public FichePoste chercherFichePosteAvecNumeroFP(String numeroFP) throws Exception {
 		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_NUM_FP + " = ? ";
-		FichePoste cadre = (FichePoste) jdbcTemplate.queryForObject(sql, new Object[] { numeroFP },
-				new BeanPropertyRowMapper<FichePoste>(FichePoste.class));
+		FichePoste cadre = (FichePoste) jdbcTemplate.queryForObject(sql, new Object[] { numeroFP }, new BeanPropertyRowMapper<FichePoste>(FichePoste.class));
 		return cadre;
 	}
 
@@ -119,8 +117,8 @@ public class FichePosteDao extends SirhDao implements FichePosteDaoInterface {
 	}
 
 	@Override
-	public ArrayList<FichePoste> listerFichePosteAvecCriteresAvances(List<Integer> listIdServADS, Integer idStatutFP,
-			Integer idTitre, String numero, Integer idAgent, boolean avecObservation) throws Exception {
+	public ArrayList<FichePoste> listerFichePosteAvecCriteresAvances(List<Integer> listIdServADS, Integer idStatutFP, Integer idTitre, String numero, Integer idAgent, boolean avecObservation,
+			String idReglementaire, String fdpAffectees) throws Exception {
 
 		String list = Const.CHAINE_VIDE;
 		if (listIdServADS != null) {
@@ -142,21 +140,41 @@ public class FichePosteDao extends SirhDao implements FichePosteDaoInterface {
 				sql += " and fp.id_service_ads in (" + list + ") ";
 			}
 		} else {
-			sql = "select fp.* from " + NOM_TABLE
-					+ " fp inner join p_titre_poste tp on fp.id_titre_poste=tp.id_titre_poste where 1=1 ";
+			sql = "select fp.* from " + NOM_TABLE + " fp inner join p_titre_poste tp on fp.id_titre_poste=tp.id_titre_poste ";
+			if (fdpAffectees != null && fdpAffectees.equals("oui")) {
+				sql += "inner join affectation aff1 on aff1.id_fiche_poste = fp.id_fiche_poste ";
+			}
+
+			sql += "where 1=1 ";
+
+			if (fdpAffectees != null && fdpAffectees.equals("oui")) {
+				String dateJour = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+				sql += " AND aff1.DATE_DEBUT_AFF <= '" + dateJour + "' AND (aff1.DATE_FIN_AFF is null or  aff1.DATE_FIN_AFF >='" + dateJour + "') ";
+			} else if (fdpAffectees != null && fdpAffectees.equals("non")) {
+				String dateJour = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+				sql += " and id_fiche_poste not in ( ";
+				sql += " select fp.id_fiche_poste from fiche_poste fp ";
+				sql += " inner join affectation aff1 on aff1.id_fiche_poste = fp.id_fiche_poste where aff1.DATE_DEBUT_AFF <= '" + dateJour
+						+ "' AND (aff1.DATE_FIN_AFF is null or  aff1.DATE_FIN_AFF >='" + dateJour + "')) ";
+			}
+
 			if (!list.equals(Const.CHAINE_VIDE)) {
 				sql += " and fp.id_service_ads in (" + list + ") ";
 			}
 		}
-		//#17682
-		if(avecObservation){
+		// #17682
+		if (avecObservation) {
 			sql += " and fp.observation is not null and fp.observation != '' ";
 		}
-		
+
 		if (idStatutFP != null) {
 			sql += " and fp.id_statut_fp = " + idStatutFP;
 		} else {
 			sql += " and fp.id_statut_fp <> " + EnumStatutFichePoste.INACTIVE.getId();
+		}
+
+		if (idReglementaire != null) {
+			sql += " and fp.ID_CDTHOR_REG = " + idReglementaire;
 		}
 
 		if (idTitre != null)
@@ -168,9 +186,7 @@ public class FichePosteDao extends SirhDao implements FichePosteDaoInterface {
 		if (idAgent != null) {
 			String dateJour = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
 			sql += " and (aff1.id_agent='" + idAgent + "' or aff2.id_agent='" + idAgent + "')";
-			sql += " AND ((aff1.DATE_DEBUT_AFF <= '" + dateJour
-					+ "' AND (aff1.DATE_FIN_AFF is null or  aff1.DATE_FIN_AFF >='" + dateJour
-					+ "'))or(aff2.DATE_DEBUT_AFF <= '" + dateJour
+			sql += " AND ((aff1.DATE_DEBUT_AFF <= '" + dateJour + "' AND (aff1.DATE_FIN_AFF is null or  aff1.DATE_FIN_AFF >='" + dateJour + "'))or(aff2.DATE_DEBUT_AFF <= '" + dateJour
 					+ "' AND (aff2.DATE_FIN_AFF is null or  aff2.DATE_FIN_AFF >='" + dateJour + "')))";
 		}
 		sql += " order by tp.LIB_TITRE_POSTE,fp.NUM_FP,fp.id_fiche_poste";
@@ -217,8 +233,7 @@ public class FichePosteDao extends SirhDao implements FichePosteDaoInterface {
 
 	@Override
 	public ArrayList<FichePoste> listerFichePosteAvecService(Integer idServiceADS) throws Exception {
-		String sql = " select fp.* from " + NOM_TABLE + " fp, p_titre_poste tp WHERE fp." + CHAMP_ID_TITRE_POSTE
-				+ "=tp.id_titre_poste and " + CHAMP_ID_SERVICE_ADS + "=? order by tp.LIB_TITRE_POSTE";
+		String sql = " select fp.* from " + NOM_TABLE + " fp, p_titre_poste tp WHERE fp." + CHAMP_ID_TITRE_POSTE + "=tp.id_titre_poste and " + CHAMP_ID_SERVICE_ADS + "=? order by tp.LIB_TITRE_POSTE";
 
 		ArrayList<FichePoste> liste = new ArrayList<FichePoste>();
 
@@ -375,16 +390,11 @@ public class FichePosteDao extends SirhDao implements FichePosteDaoInterface {
 	}
 
 	@Override
-	public ArrayList<FichePoste> listerFichePosteValideesOuGeleesNonAffecteesAvecNumPartiel(String numPartiel)
-			throws Exception {
-		String sql = "select fp.* from "
-				+ NOM_TABLE
-				+ " FP, R_STATUT_FP STAT WHERE NUM_FP LIKE '%"
-				+ numPartiel
+	public ArrayList<FichePoste> listerFichePosteValideesOuGeleesNonAffecteesAvecNumPartiel(String numPartiel) throws Exception {
+		String sql = "select fp.* from " + NOM_TABLE + " FP, R_STATUT_FP STAT WHERE NUM_FP LIKE '%" + numPartiel
 				+ "%' AND ID_FICHE_POSTE NOT IN (SELECT ID_FICHE_POSTE_SECONDAIRE FROM AFFECTATION  WHERE DATE_FIN_AFF is null and id_fiche_poste_secondaire is not null) "
-				+ "AND ID_FICHE_POSTE NOT IN (SELECT ID_FICHE_POSTE FROM AFFECTATION WHERE DATE_FIN_AFF is null) AND STAT.ID_STATUT_FP = FP.ID_STATUT_FP "
-				+ "AND (STAT.LIB_STATUT_FP = '" + EnumStatutFichePoste.VALIDEE.getLibLong()
-				+ "' OR STAT.LIB_STATUT_FP = '" + EnumStatutFichePoste.GELEE.getLibLong() + "') WITH UR";
+				+ "AND ID_FICHE_POSTE NOT IN (SELECT ID_FICHE_POSTE FROM AFFECTATION WHERE DATE_FIN_AFF is null) AND STAT.ID_STATUT_FP = FP.ID_STATUT_FP " + "AND (STAT.LIB_STATUT_FP = '"
+				+ EnumStatutFichePoste.VALIDEE.getLibLong() + "' OR STAT.LIB_STATUT_FP = '" + EnumStatutFichePoste.GELEE.getLibLong() + "') WITH UR";
 
 		ArrayList<FichePoste> liste = new ArrayList<FichePoste>();
 
@@ -473,12 +483,10 @@ public class FichePosteDao extends SirhDao implements FichePosteDaoInterface {
 	@Override
 	public ArrayList<FichePoste> listerFichePosteValideesouGeleeNonAffectees() throws Exception {
 
-		String sql = "select fp.* from "
-				+ NOM_TABLE
+		String sql = "select fp.* from " + NOM_TABLE
 				+ " FP, R_STATUT_FP STAT WHERE FP.ID_FICHE_POSTE NOT IN (SELECT ID_FICHE_POSTE_SECONDAIRE FROM AFFECTATION  WHERE DATE_FIN_AFF is null and id_fiche_poste_secondaire is not null) "
-				+ "AND FP.ID_FICHE_POSTE NOT IN (SELECT ID_FICHE_POSTE FROM AFFECTATION WHERE DATE_FIN_AFF is null) AND STAT.ID_STATUT_FP = FP.ID_STATUT_FP "
-				+ "AND (STAT.LIB_STATUT_FP = '" + EnumStatutFichePoste.VALIDEE.getLibLong()
-				+ "' or STAT.LIB_STATUT_FP = '" + EnumStatutFichePoste.GELEE.getLibLong() + "') WITH UR";
+				+ "AND FP.ID_FICHE_POSTE NOT IN (SELECT ID_FICHE_POSTE FROM AFFECTATION WHERE DATE_FIN_AFF is null) AND STAT.ID_STATUT_FP = FP.ID_STATUT_FP " + "AND (STAT.LIB_STATUT_FP = '"
+				+ EnumStatutFichePoste.VALIDEE.getLibLong() + "' or STAT.LIB_STATUT_FP = '" + EnumStatutFichePoste.GELEE.getLibLong() + "') WITH UR";
 
 		ArrayList<FichePoste> liste = new ArrayList<FichePoste>();
 
@@ -543,8 +551,7 @@ public class FichePosteDao extends SirhDao implements FichePosteDaoInterface {
 	}
 
 	@Override
-	public void modifierFichePoste(FichePoste fp, HistoFichePosteDao histoDao, UserAppli user,
-			Transaction aTransaction, AffectationDao affDao) throws Exception {
+	public void modifierFichePoste(FichePoste fp, HistoFichePosteDao histoDao, UserAppli user, Transaction aTransaction, AffectationDao affDao) throws Exception {
 		// Modification du FichePoste
 
 		// historisation
@@ -562,8 +569,7 @@ public class FichePosteDao extends SirhDao implements FichePosteDaoInterface {
 	}
 
 	@Override
-	public Integer creerFichePoste(FichePoste fp, UserAppli user, HistoFichePosteDao histoDao, Transaction aTransaction)
-			throws Exception {
+	public Integer creerFichePoste(FichePoste fp, UserAppli user, HistoFichePosteDao histoDao, Transaction aTransaction) throws Exception {
 		// génération du numéro de fiche de poste
 		fp.setNumFp(createFichePosteNumber(fp.getAnneeCreation()));
 
@@ -580,47 +586,32 @@ public class FichePosteDao extends SirhDao implements FichePosteDaoInterface {
 	}
 
 	public void modifierFichePosteBD(FichePoste fichePoste) throws Exception {
-		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_ID_TITRE_POSTE + "=?," + CHAMP_ID_ENTITE_GEO + "=?,"
-				+ CHAMP_ID_BUDGET + "=?," + CHAMP_ID_STATUT_FP + "=?," + CHAMP_ID_RESPONSABLE + "=?,"
-				+ CHAMP_ID_REMPLACEMENT + "=?," + CHAMP_ID_CDTHOR_BUD + "=?," + CHAMP_ID_CDTHOR_REG + "=?,"
-				+ CHAMP_DATE_FIN_VALIDITE_FP + "=?," + CHAMP_OPI + "=?," + CHAMP_NFA + "=?," + CHAMP_MISSIONS + "=?,"
-				+ CHAMP_ANNEE_CREATION + "=?," + CHAMP_NUM_FP + "=?," + CHAMP_DATE_DEBUT_VALIDITE_FP + "=?,"
-				+ CHAMP_DATE_DEB_APPLI_SERV + "=?," + CHAMP_OBSERVATION + "=?," + CHAMP_CODE_GRADE + "=?,"
-				+ CHAMP_ID_NATURE_CREDIT + "=?," + CHAMP_NUM_DELIBERATION + "=?," + CHAMP_ID_BASE_HORAIRE_POINTAGE
-				+ "=?," + CHAMP_ID_BASE_HORAIRE_ABSENCE + "=?," + CHAMP_ID_SERVICE_ADS + "=? ," + CHAMP_ID_SERVI
-				+ "=? where " + CHAMP_ID + " =?";
+		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_ID_TITRE_POSTE + "=?," + CHAMP_ID_ENTITE_GEO + "=?," + CHAMP_ID_BUDGET + "=?," + CHAMP_ID_STATUT_FP + "=?," + CHAMP_ID_RESPONSABLE + "=?,"
+				+ CHAMP_ID_REMPLACEMENT + "=?," + CHAMP_ID_CDTHOR_BUD + "=?," + CHAMP_ID_CDTHOR_REG + "=?," + CHAMP_DATE_FIN_VALIDITE_FP + "=?," + CHAMP_OPI + "=?," + CHAMP_NFA + "=?,"
+				+ CHAMP_MISSIONS + "=?," + CHAMP_ANNEE_CREATION + "=?," + CHAMP_NUM_FP + "=?," + CHAMP_DATE_DEBUT_VALIDITE_FP + "=?," + CHAMP_DATE_DEB_APPLI_SERV + "=?," + CHAMP_OBSERVATION + "=?,"
+				+ CHAMP_CODE_GRADE + "=?," + CHAMP_ID_NATURE_CREDIT + "=?," + CHAMP_NUM_DELIBERATION + "=?," + CHAMP_ID_BASE_HORAIRE_POINTAGE + "=?," + CHAMP_ID_BASE_HORAIRE_ABSENCE + "=?,"
+				+ CHAMP_ID_SERVICE_ADS + "=? ," + CHAMP_ID_SERVI + "=? where " + CHAMP_ID + " =?";
 		jdbcTemplate.update(
 				sql,
-				new Object[] { fichePoste.getIdTitrePoste(), fichePoste.getIdEntiteGeo(), fichePoste.getIdBudget(),
-						fichePoste.getIdStatutFp(), fichePoste.getIdResponsable(), fichePoste.getIdRemplacement(),
-						fichePoste.getIdCdthorBud(), fichePoste.getIdCdthorReg(), fichePoste.getDateFinValiditeFp(),
-						fichePoste.getOpi(), fichePoste.getNfa(), fichePoste.getMissions(),
-						fichePoste.getAnneeCreation(), fichePoste.getNumFp(), fichePoste.getDateDebutValiditeFp(),
-						fichePoste.getDateDebAppliServ(), fichePoste.getObservation(), fichePoste.getCodeGrade(),
-						fichePoste.getIdNatureCredit(), fichePoste.getNumDeliberation(),
-						fichePoste.getIdBaseHorairePointage(), fichePoste.getIdBaseHoraireAbsence(),
-						fichePoste.getIdServiceAds(), fichePoste.getIdServi(), fichePoste.getIdFichePoste() });
+				new Object[] { fichePoste.getIdTitrePoste(), fichePoste.getIdEntiteGeo(), fichePoste.getIdBudget(), fichePoste.getIdStatutFp(), fichePoste.getIdResponsable(),
+						fichePoste.getIdRemplacement(), fichePoste.getIdCdthorBud(), fichePoste.getIdCdthorReg(), fichePoste.getDateFinValiditeFp(), fichePoste.getOpi(), fichePoste.getNfa(),
+						fichePoste.getMissions(), fichePoste.getAnneeCreation(), fichePoste.getNumFp(), fichePoste.getDateDebutValiditeFp(), fichePoste.getDateDebAppliServ(),
+						fichePoste.getObservation(), fichePoste.getCodeGrade(), fichePoste.getIdNatureCredit(), fichePoste.getNumDeliberation(), fichePoste.getIdBaseHorairePointage(),
+						fichePoste.getIdBaseHoraireAbsence(), fichePoste.getIdServiceAds(), fichePoste.getIdServi(), fichePoste.getIdFichePoste() });
 	}
 
 	public Integer creerFichePosteBD(FichePoste fp) throws Exception {
-		String sql = "select " + CHAMP_ID + " from NEW TABLE (INSERT INTO " + NOM_TABLE + " (" + CHAMP_ID_TITRE_POSTE
-				+ "," + CHAMP_ID_ENTITE_GEO + "," + CHAMP_ID_BUDGET + "," + CHAMP_ID_STATUT_FP + ","
-				+ CHAMP_ID_RESPONSABLE + "," + CHAMP_ID_REMPLACEMENT + "," + CHAMP_ID_CDTHOR_BUD + ","
-				+ CHAMP_ID_CDTHOR_REG + "," + CHAMP_DATE_FIN_VALIDITE_FP + "," + CHAMP_OPI + "," + CHAMP_NFA + ","
-				+ CHAMP_MISSIONS + "," + CHAMP_ANNEE_CREATION + "," + CHAMP_NUM_FP + "," + CHAMP_DATE_DEBUT_VALIDITE_FP
-				+ "," + CHAMP_DATE_DEB_APPLI_SERV + "," + CHAMP_OBSERVATION + "," + CHAMP_CODE_GRADE + ","
-				+ CHAMP_ID_NATURE_CREDIT + "," + CHAMP_NUM_DELIBERATION + "," + CHAMP_ID_BASE_HORAIRE_POINTAGE + ","
-				+ CHAMP_ID_BASE_HORAIRE_ABSENCE + "," + CHAMP_ID_SERVICE_ADS + "," + CHAMP_ID_SERVI + ") "
-				+ "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?))";
+		String sql = "select " + CHAMP_ID + " from NEW TABLE (INSERT INTO " + NOM_TABLE + " (" + CHAMP_ID_TITRE_POSTE + "," + CHAMP_ID_ENTITE_GEO + "," + CHAMP_ID_BUDGET + "," + CHAMP_ID_STATUT_FP
+				+ "," + CHAMP_ID_RESPONSABLE + "," + CHAMP_ID_REMPLACEMENT + "," + CHAMP_ID_CDTHOR_BUD + "," + CHAMP_ID_CDTHOR_REG + "," + CHAMP_DATE_FIN_VALIDITE_FP + "," + CHAMP_OPI + ","
+				+ CHAMP_NFA + "," + CHAMP_MISSIONS + "," + CHAMP_ANNEE_CREATION + "," + CHAMP_NUM_FP + "," + CHAMP_DATE_DEBUT_VALIDITE_FP + "," + CHAMP_DATE_DEB_APPLI_SERV + "," + CHAMP_OBSERVATION
+				+ "," + CHAMP_CODE_GRADE + "," + CHAMP_ID_NATURE_CREDIT + "," + CHAMP_NUM_DELIBERATION + "," + CHAMP_ID_BASE_HORAIRE_POINTAGE + "," + CHAMP_ID_BASE_HORAIRE_ABSENCE + ","
+				+ CHAMP_ID_SERVICE_ADS + "," + CHAMP_ID_SERVI + ") " + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?))";
 		Integer id = jdbcTemplate.queryForObject(
 				sql,
-				new Object[] { fp.getIdTitrePoste(), fp.getIdEntiteGeo(), fp.getIdBudget(), fp.getIdStatutFp(),
-						fp.getIdResponsable(), fp.getIdRemplacement(), fp.getIdCdthorBud(), fp.getIdCdthorReg(),
-						fp.getDateFinValiditeFp(), fp.getOpi(), fp.getNfa(), fp.getMissions(), fp.getAnneeCreation(),
-						fp.getNumFp(), fp.getDateDebutValiditeFp(), fp.getDateDebAppliServ(), fp.getObservation(),
-						fp.getCodeGrade(), fp.getIdNatureCredit(), fp.getNumDeliberation(),
-						fp.getIdBaseHorairePointage(), fp.getIdBaseHoraireAbsence(), fp.getIdServiceAds(),
-						fp.getIdServi() }, Integer.class);
+				new Object[] { fp.getIdTitrePoste(), fp.getIdEntiteGeo(), fp.getIdBudget(), fp.getIdStatutFp(), fp.getIdResponsable(), fp.getIdRemplacement(), fp.getIdCdthorBud(),
+						fp.getIdCdthorReg(), fp.getDateFinValiditeFp(), fp.getOpi(), fp.getNfa(), fp.getMissions(), fp.getAnneeCreation(), fp.getNumFp(), fp.getDateDebutValiditeFp(),
+						fp.getDateDebAppliServ(), fp.getObservation(), fp.getCodeGrade(), fp.getIdNatureCredit(), fp.getNumDeliberation(), fp.getIdBaseHorairePointage(), fp.getIdBaseHoraireAbsence(),
+						fp.getIdServiceAds(), fp.getIdServi() }, Integer.class);
 		return id;
 	}
 

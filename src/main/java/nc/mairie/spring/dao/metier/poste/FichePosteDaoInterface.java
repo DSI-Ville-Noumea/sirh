@@ -18,8 +18,8 @@ public interface FichePosteDaoInterface {
 
 	public FichePoste chercherFichePoste(Integer idFichePoste) throws Exception;
 
-	public ArrayList<FichePoste> listerFichePosteAvecCriteresAvances(List<Integer> listIdServADS, Integer idStatutFP,
-			Integer idTitre, String numero, Integer idAgent, boolean avecObservation) throws Exception;
+	public ArrayList<FichePoste> listerFichePosteAvecCriteresAvances(List<Integer> listIdServADS, Integer idStatutFP, Integer idTitre, String numero, Integer idAgent, boolean avecObservation,
+			String idReglementaire, String fdpAffectees) throws Exception;
 
 	public ArrayList<FichePoste> listerFichePosteAvecService(Integer idServiceADS) throws Exception;
 
@@ -29,8 +29,7 @@ public interface FichePosteDaoInterface {
 
 	public ArrayList<FichePoste> listerFichePosteAvecEntiteGeo(Integer idEntiteGeo) throws Exception;
 
-	public ArrayList<FichePoste> listerFichePosteValideesOuGeleesNonAffecteesAvecNumPartiel(String numPartiel)
-			throws Exception;
+	public ArrayList<FichePoste> listerFichePosteValideesOuGeleesNonAffecteesAvecNumPartiel(String numPartiel) throws Exception;
 
 	public ArrayList<FichePoste> listerFichePosteAvecNumPartiel(String numPartiel) throws Exception;
 
@@ -40,11 +39,9 @@ public interface FichePosteDaoInterface {
 
 	public String createFichePosteNumber(Integer annee) throws Exception;
 
-	public void modifierFichePoste(FichePoste fp, HistoFichePosteDao histoDao, UserAppli user,
-			Transaction aTransaction, AffectationDao affDao) throws Exception;
+	public void modifierFichePoste(FichePoste fp, HistoFichePosteDao histoDao, UserAppli user, Transaction aTransaction, AffectationDao affDao) throws Exception;
 
-	public Integer creerFichePoste(FichePoste fp, UserAppli user, HistoFichePosteDao histoDao, Transaction aTransaction)
-			throws Exception;
+	public Integer creerFichePoste(FichePoste fp, UserAppli user, HistoFichePosteDao histoDao, Transaction aTransaction) throws Exception;
 
 	public void supprimerFichePoste(FichePoste fp, Transaction aTransaction) throws Exception;
 
