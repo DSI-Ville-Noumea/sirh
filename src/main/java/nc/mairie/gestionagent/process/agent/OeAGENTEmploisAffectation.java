@@ -4297,7 +4297,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 				// bug #29887 sur affectation inactive
 				if (!Connecteur.modifierSPMTSR(getTransaction(), getAffectationCourant(), getAgentCourant().getNomatr(), getFichePosteCourant(), oldDateDeb, getAffectationCourant().isActive()))
 					return false;
-				
+
 				HistoAffectation histo = new HistoAffectation(getAffectationCourant());
 				getHistoAffectationDao().creerHistoAffectation(histo, user, EnumTypeHisto.MODIFICATION);
 				getAffectationDao().modifierAffectation(getAffectationCourant());
@@ -4497,10 +4497,16 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			if (statutFDPPrincipale.getLibStatutFp().equals(EnumStatutFichePoste.TRANSITOIRE.getLibLong())) {
 				// "INF011", "Attention : la fiche de poste @ est @."O
 				getTransaction().declarerErreur(MessageUtils.getMessage("INF011", getFichePosteCourant().getNumFp(), EnumStatutFichePoste.TRANSITOIRE.getLibLong()));
+			} else if (statutFDPPrincipale.getLibStatutFp().equals(EnumStatutFichePoste.INACTIVE.getLibLong())) {
+				// "INF011", "Attention : la fiche de poste @ est @."O
+				getTransaction().declarerErreur(MessageUtils.getMessage("INF011", getFichePosteCourant().getNumFp(), EnumStatutFichePoste.INACTIVE.getLibLong()));
 			}
 			if (getFichePosteSecondaireCourant() != null) {
 				StatutFP statutFDPSecondaire = getStatutFPDao().chercherStatutFP(getFichePosteSecondaireCourant().getIdStatutFp());
 				if (statutFDPSecondaire.getLibStatutFp().equals(EnumStatutFichePoste.TRANSITOIRE.getLibLong())) {
+					// "INF011", "Attention : la fiche de poste @ est @."
+					getTransaction().declarerErreur(MessageUtils.getMessage("INF011", "secondaire " + getFichePosteSecondaireCourant().getNumFp(), EnumStatutFichePoste.TRANSITOIRE.getLibLong()));
+				} else if (statutFDPSecondaire.getLibStatutFp().equals(EnumStatutFichePoste.INACTIVE.getLibLong())) {
 					// "INF011", "Attention : la fiche de poste @ est @."
 					getTransaction().declarerErreur(MessageUtils.getMessage("INF011", "secondaire " + getFichePosteSecondaireCourant().getNumFp(), EnumStatutFichePoste.INACTIVE.getLibLong()));
 				}
