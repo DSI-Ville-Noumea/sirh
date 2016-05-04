@@ -2442,11 +2442,6 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 		majChangementFEAutorise();
 
-		if (!messageInf.equals(Const.CHAINE_VIDE)) {
-			addZone(getNOM_ST_ACTION(), ACTION_MODIFICATION);
-			getTransaction().declarerErreur(messageInf);
-		}
-
 		// appel WS mise à jour Abre FDP
 		if (!sirhService.miseAJourArbreFDP()) {
 			// "ERR970","Une erreur est survenue lors de la mise à jour de l'arbre des Fiche de poste. Merci de contacter le responsable du projet car cela engendre un soucis sur le Kiosque RH."
@@ -2456,6 +2451,21 @@ public class OePOSTEFichePoste extends BasicProcess {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR970"));
 			messageInf = Const.CHAINE_VIDE;
 			return false;
+		}
+
+		// #30792 : on affiche un message si la FDP est "transitoire" et que
+		// budgete ou reglementaire !=0
+		if (getFichePosteCourante().getIdStatutFp().toString().equals(EnumStatutFichePoste.TRANSITOIRE.getId())) {
+			if (getFichePosteCourante().getIdCdthorReg() != 0 || getFichePosteCourante().getIdCdthorBud() != 0) {
+				// "INF112",
+				// "Attention : la FDP @ est transitoire, budgeté et reglementaire devrait être à non."
+				messageInf = MessageUtils.getMessage("INF112", getFichePosteCourante().getNumFp());
+			}
+		}
+
+		if (!messageInf.equals(Const.CHAINE_VIDE)) {
+			addZone(getNOM_ST_ACTION(), ACTION_MODIFICATION);
+			getTransaction().declarerErreur(messageInf);
 		}
 
 		return true;
