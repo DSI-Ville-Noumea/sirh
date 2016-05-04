@@ -4484,6 +4484,41 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			// Tout s'est bien passé
 			commitTransaction();
 
+			if (!getVAL_ST_ACTION().equals(ACTION_SUPPRESSION)) {
+				// #30794 : si l'affectation à une date de fin
+				if (getAffectationCourant().getDateFinAff() != null) {
+					// si date de fin < dateJour et que FDP non affectée à qqn
+					// d'autre --> on passe la FDP en inactive
+					Date dateJour = new SimpleDateFormat("dd/MM/yyyy").parse(new SimpleDateFormat("dd/MM/yyyy").format(new Date()));
+					if (getAffectationCourant().getDateFinAff().compareTo(dateJour) < 0) {
+						if (getAffectationDao().listerAffectationActiveOuFuturAvecFP(getFichePosteCourant().getIdFichePoste()).size() == 0) {
+							getFichePosteCourant().setIdStatutFp(new Integer(EnumStatutFichePoste.INACTIVE.getId()));
+							getFichePosteCourant().setIdResponsable(null);
+							getFichePosteDao().modifierFichePoste(getFichePosteCourant(), getHistoFichePosteDao(), user, getTransaction(), getAffectationDao());
+							commitTransaction();
+							// "INF013", "Attention : la FDP @ a été inactivée."
+							getTransaction().declarerErreur(MessageUtils.getMessage("INF013", getFichePosteCourant().getNumFp()));
+
+						}
+					} else {
+						if (getFichePosteCourant().getIdStatutFp().toString().equals(EnumStatutFichePoste.INACTIVE.getId())) {
+							// "INF011",
+							// "Attention : la fiche de poste @ est @."
+							getTransaction().declarerErreur(MessageUtils.getMessage("INF011", getFichePosteCourant().getNumFp(), EnumStatutFichePoste.INACTIVE.getLibLong()));
+						} else {
+							// sinon, on informe l'utilisateur qu'il faudra
+							// passer
+							// la
+							// FDP en inactive.
+							// "INF012",
+							// "Attention : il faudra penser à passer la FDP en @ à partir du @."
+							getTransaction().declarerErreur(
+									MessageUtils.getMessage("INF012", EnumStatutFichePoste.INACTIVE.getLibLong(), new SimpleDateFormat("dd/MM/yyyy").format(getAffectationCourant().getDateFinAff())));
+						}
+					}
+				}
+			}
+
 			// Réinitialisation
 			initialiseListeAffectation(request);
 			// init de l'affectation courante
