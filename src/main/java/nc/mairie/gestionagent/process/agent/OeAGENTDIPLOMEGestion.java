@@ -1089,7 +1089,8 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 		TypeDocument td = getTypeDocumentDao().chercherTypeDocumentByCod(codTypeDoc);
 		String extension = fichierUpload.getName().substring(fichierUpload.getName().indexOf('.'),
 				fichierUpload.getName().length());
-		String dateJour = new SimpleDateFormat("ddMMyyyy-hhmm").format(new Date()).toString();
+		// bug #30580
+		String dateJour = new SimpleDateFormat("ddMMyyyy-hhmms-S").format(new Date()).toString();
 		String nom = codTypeDoc.toUpperCase() + "_" + idDiplomeAgent + "_" + dateJour + extension;
 
 		// on upload le fichier
@@ -1148,7 +1149,8 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 		TypeDocument td = getTypeDocumentDao().chercherTypeDocumentByCod(codTypeDoc);
 		String extension = fichierUpload.getName().substring(fichierUpload.getName().indexOf('.'),
 				fichierUpload.getName().length());
-		String dateJour = new SimpleDateFormat("ddMMyyyy-hhmm").format(new Date()).toString();
+		// bug #30580
+		String dateJour = new SimpleDateFormat("ddMMyyyy-hhmms-S").format(new Date()).toString();
 		String nom = codTypeDoc.toUpperCase() + "_" + idFormationAgent + "_" + dateJour + extension;
 
 		// on upload le fichier
@@ -1207,7 +1209,8 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 		TypeDocument td = getTypeDocumentDao().chercherTypeDocumentByCod(codTypeDoc);
 		String extension = fichierUpload.getName().substring(fichierUpload.getName().indexOf('.'),
 				fichierUpload.getName().length());
-		String dateJour = new SimpleDateFormat("ddMMyyyy-hhmm").format(new Date()).toString();
+		// bug #30580
+		String dateJour = new SimpleDateFormat("ddMMyyyy-hhmms-S").format(new Date()).toString();
 		String nom = codTypeDoc.toUpperCase() + "_" + idPermisAgent + "_" + dateJour + extension;
 
 		// on upload le fichier

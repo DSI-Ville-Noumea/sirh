@@ -560,7 +560,8 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 		String codTypeDoc = ((TypeDocument) getListeTypeDocument().get(indiceTypeDoc - 1)).getCodTypeDocument();
 		String extension = fichierUpload.getName().substring(fichierUpload.getName().indexOf('.'),
 				fichierUpload.getName().length());
-		String dateJour = new SimpleDateFormat("ddMMyyyy-hhmm").format(new Date()).toString();
+		// bug #30580
+		String dateJour = new SimpleDateFormat("ddMMyyyy-hhmms-S").format(new Date()).toString();
 		String nom;
 		if (ajoutContrat) {
 			nom = codTypeDoc.toUpperCase() + "_" + c.getIdContrat() + extension;

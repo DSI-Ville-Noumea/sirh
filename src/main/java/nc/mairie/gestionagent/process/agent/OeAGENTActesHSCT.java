@@ -393,7 +393,8 @@ public class OeAGENTActesHSCT extends BasicProcess {
 			}
 		}
 		if (getZone(getNOM_ST_WARNING()).equals(Const.CHAINE_VIDE)) {
-			String dateJour = new SimpleDateFormat("ddMMyyyy-hhmm").format(new Date()).toString();
+			// bug #30580
+			String dateJour = new SimpleDateFormat("ddMMyyyy-hhmms-S").format(new Date()).toString();
 
 			// on controle si il y a deja un fichier pour ce contrat
 			if (ajoutAT) {
@@ -498,7 +499,8 @@ public class OeAGENTActesHSCT extends BasicProcess {
 		String codTypeDoc = ((TypeDocument) getListeTypeDocument().get(indiceTypeDoc - 1)).getCodTypeDocument();
 		String extension = fichierUpload.getName().substring(fichierUpload.getName().indexOf('.'),
 				fichierUpload.getName().length());
-		String dateJour = new SimpleDateFormat("ddMMyyyy-hhmm").format(new Date()).toString();
+		// bug #30580
+		String dateJour = new SimpleDateFormat("ddMMyyyy-hhmms-S").format(new Date()).toString();
 		String nom = Const.CHAINE_VIDE;
 		if (ajoutAT) {
 			nom = codTypeDoc.toUpperCase() + "_" + at.getIdAt() + "_" + dateJour + extension;

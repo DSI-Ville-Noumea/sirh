@@ -2521,7 +2521,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 		verifieRepertoire("SauvegardeFDP");
 
 		String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ACTES");
-		String dateJour = new SimpleDateFormat("ddMMyyyy-hhmm").format(new Date()).toString();
+		// bug #30580
+		String dateJour = new SimpleDateFormat("ddMMyyyy-hhmms-S").format(new Date()).toString();
 		String destinationFDP = "SauvegardeFDP/SauvFP_" + getFichePosteCourante().getIdFichePoste() + "_" + dateJour + ".doc";
 
 		try {

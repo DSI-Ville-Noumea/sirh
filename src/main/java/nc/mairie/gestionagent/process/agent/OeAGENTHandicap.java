@@ -2247,7 +2247,8 @@ public class OeAGENTHandicap extends BasicProcess {
 		Handicap handi = getHandicapCourant();
 
 		if (getZone(getNOM_ST_WARNING()).equals(Const.CHAINE_VIDE)) {
-			String dateJour = new SimpleDateFormat("ddMMyyyy-hhmm").format(new Date()).toString();
+			// bug #30580
+			String dateJour = new SimpleDateFormat("ddMMyyyy-hhmms-S").format(new Date()).toString();
 
 			// on controle si il y a deja un fichier pour ce handicap
 			if (!performControlerFichier(request, "HANDI_" + handi.getIdHandicap() + "_" + dateJour)) {
@@ -2306,7 +2307,8 @@ public class OeAGENTHandicap extends BasicProcess {
 		TypeDocument td = getTypeDocumentDao().chercherTypeDocumentByCod(codTypeDoc);
 		String extension = fichierUpload.getName().substring(fichierUpload.getName().indexOf('.'),
 				fichierUpload.getName().length());
-		String dateJour = new SimpleDateFormat("ddMMyyyy-hhmm").format(new Date()).toString();
+		// bug #30580
+		String dateJour = new SimpleDateFormat("ddMMyyyy-hhmms-S").format(new Date()).toString();
 		String nom = codTypeDoc.toUpperCase() + "_" + handi.getIdHandicap() + "_" + dateJour + extension;
 
 		// on upload le fichier
