@@ -6,11 +6,13 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.enums.EnumTypeAbsence;
 import nc.mairie.gestionagent.absence.dto.ActeursDto;
+import nc.mairie.gestionagent.absence.dto.DemandeDto;
 import nc.mairie.gestionagent.absence.dto.FiltreSoldeDto;
 import nc.mairie.gestionagent.absence.dto.HistoriqueSoldeDto;
 import nc.mairie.gestionagent.absence.dto.MoisAlimAutoCongesAnnuelsDto;
@@ -19,6 +21,7 @@ import nc.mairie.gestionagent.absence.dto.RestitutionMassiveDto;
 import nc.mairie.gestionagent.absence.dto.SoldeDto;
 import nc.mairie.gestionagent.absence.dto.SoldeSpecifiqueDto;
 import nc.mairie.gestionagent.absence.dto.TypeAbsenceDto;
+import nc.mairie.gestionagent.radi.dto.LightUserDto;
 import nc.mairie.gestionagent.robot.MaClasse;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.Agent;
@@ -29,11 +32,14 @@ import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.spring.ws.MSDateTransformer;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.Services;
+import nc.mairie.technique.UserAppli;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
 import nc.noumea.spring.service.AbsService;
 import nc.noumea.spring.service.IAbsService;
+import nc.noumea.spring.service.IRadiService;
+import nc.noumea.spring.service.RadiService;
 
 import org.joda.time.DateTime;
 import org.springframework.context.ApplicationContext;
@@ -59,6 +65,7 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 	private ArrayList<MoisAlimAutoCongesAnnuelsDto> listeHistoriqueAlimAuto;
 	private ArrayList<MoisAlimAutoCongesAnnuelsDto> listeHistoriqueAlimPaie;
 	private ArrayList<RestitutionMassiveDto> listeHistoriqueRestitutionMassive;
+	private ArrayList<DemandeDto> listeDemandeCA;
 
 	private boolean afficheSoldeAsaA52;
 	private boolean afficheSoldeAsaA48;
@@ -80,6 +87,8 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 
 	private IAbsService absService;
 
+	private IRadiService radiService;
+
 	/**
 	 * Constructeur du process OeAGENTAbsences. Date de création : (05/09/11
 	 * 11:39:24)
@@ -97,6 +106,9 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 		}
 		if (null == absService) {
 			absService = (AbsService) context.getBean("absService");
+		}
+		if (null == radiService) {
+			radiService = (RadiService) context.getBean("radiService");
 		}
 	}
 
@@ -428,6 +440,8 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 		SimpleDateFormat sdfDate = new SimpleDateFormat("dd/MM/yyyy");
 		SimpleDateFormat sdfHeure = new SimpleDateFormat("HH:mm");
 
+		SimpleDateFormat sdfDateMonth = new SimpleDateFormat("MM/yyyy");
+
 		int numAnnee = (Services.estNumerique(getZone(getNOM_LB_ANNEE_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_ANNEE_SELECT())) : -1);
 
 		if (numAnnee < 0 || getListeAnnee().size() == 0 || numAnnee > getListeAnnee().size())
@@ -469,13 +483,21 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 					.getHistoriqueAlimAutoCongeAnnuelAgent(getAgentCourant().getIdAgent());
 			setListeHistoriqueAlimAuto(listeHistoriqueAlimAuto);
 
+			// evol #30837
+			List<DemandeDto> listDemandeCA = absService.getListeDemandeCAWhichAddOrRemoveOnCounterAgent(getAgentConnecte(request).getIdAgent(), getAgentCourant().getIdAgent());
+			setListeDemandeCA((ArrayList<DemandeDto>) listDemandeCA);
+			
 			for (int i = 0; i < getListeHistoriqueAlimAuto().size(); i++) {
 				MoisAlimAutoCongesAnnuelsDto histo = (MoisAlimAutoCongesAnnuelsDto) getListeHistoriqueAlimAuto().get(i);
-
-				addZone(getNOM_ST_MOIS(i), histo.getDateMois() == null ? Const.CHAINE_VIDE : sdfDate.format(histo.getDateMois()));
+				// evol #30837
+				addZone(getNOM_ST_MOIS(i), histo.getDateMois() == null ? Const.CHAINE_VIDE : sdfDateMonth.format(histo.getDateMois()));
+				addZone(getNOM_ST_DATE_MODIF_HISTO_ALIM_AUTO(i), 
+						histo.getDateModification() == null 
+							? Const.CHAINE_VIDE : 
+									sdfDate.format(histo.getDateModification())
+										+ "<br/>" + sdfHeure.format(histo.getDateModification()));
 				addZone(getNOM_ST_NB_JOUR(i), histo.getNbJours().toString());
 				addZone(getNOM_ST_COMMENTAIRE(i), histo.getStatus());
-
 			}
 
 			// #15599 : dans les congés annuels, on charge aussi l'historique
@@ -768,6 +790,14 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 		return getZone(getNOM_ST_MOIS(i));
 	}
 
+	public String getNOM_ST_DATE_MODIF_HISTO_ALIM_AUTO(int i) {
+		return "NOM_ST_DATE_MODIF_HISTO_ALIM_AUTO" + i;
+	}
+
+	public String getVAL_ST_DATE_MODIF_HISTO_ALIM_AUTO(int i) {
+		return getZone(getNOM_ST_DATE_MODIF_HISTO_ALIM_AUTO(i));
+	}
+
 	public String getNOM_ST_NB_JOUR(int i) {
 		return "NOM_ST_NB_JOUR" + i;
 	}
@@ -838,6 +868,40 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 
 	public void setAfficheSoldeAsaAmicale(boolean afficheSoldeAsaAmicale) {
 		this.afficheSoldeAsaAmicale = afficheSoldeAsaAmicale;
+	}
+
+	public ArrayList<DemandeDto> getListeDemandeCA() {
+		return listeDemandeCA;
+	}
+
+	public void setListeDemandeCA(ArrayList<DemandeDto> listeDemandeCA) {
+		this.listeDemandeCA = listeDemandeCA;
+	}
+
+	private Agent getAgentConnecte(HttpServletRequest request) throws Exception {
+		Agent agent = null;
+
+		UserAppli uUser = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
+		// on fait la correspondance entre le login et l'agent via RADI
+		LightUserDto user = radiService.getAgentCompteADByLogin(uUser.getUserName());
+		if (user == null) {
+			getTransaction().traiterErreur();
+			// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
+			return null;
+		} else {
+			if (user != null && user.getEmployeeNumber() != null && user.getEmployeeNumber() != 0) {
+				try {
+					agent = getAgentDao().chercherAgentParMatricule(radiService.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
+				} catch (Exception e) {
+					// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
+					return null;
+				}
+			}
+		}
+
+		return agent;
 	}
 
 }

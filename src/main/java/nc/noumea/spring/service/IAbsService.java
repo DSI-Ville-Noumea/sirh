@@ -166,4 +166,6 @@ public interface IAbsService {
 
 	ReturnMessageDto dupliqueApprobateur(Integer idAgentConnecte,
 			Integer idAgentSource, Integer idAgentDestinataire);
+
+	List<DemandeDto> getListeDemandeCAWhichAddOrRemoveOnCounterAgent(Integer idAgent, Integer idAgentConcerne);
 }

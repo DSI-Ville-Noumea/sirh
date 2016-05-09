@@ -120,6 +120,7 @@ public class SirhAbsWSConsumer extends BaseWsConsumer implements ISirhAbsWSConsu
 	private static final String sirhAbsListRefAlimUrl = "congeannuel/getListRefAlimCongeAnnuel";
 	private static final String sirhAbsRefAlimCongeAnnuelSauvegarde = "congeannuel/setRefAlimCongeAnnuel";
 	private static final String sirhAbsCreateBaseConge = "congeannuel/createRefAlimCongeAnnuelAnnee";
+	private static final String sirhListeDemandeCAWhichAddOrRemoveOnCounterAgent = "congeannuel/getListeDemandeCAWhichAddOrRemoveOnCounterAgent";
 
 	private static final String sirhAbsHistoAlimAutoRecupUrl = "recuperations/getHistoAlimAutoRecup";
 	private static final String sirhAbsHistoAlimAutoReposCompUrl = "reposcomps/getHistoAlimAutoReposComp";
@@ -854,5 +855,18 @@ public class SirhAbsWSConsumer extends BaseWsConsumer implements ISirhAbsWSConsu
 		HashMap<String, String> params = new HashMap<>();
 		ClientResponse res = createAndFireRequest(params, url);
 		return readResponseAsList(CompteurDto.class, res, url);
+	}
+
+	@Override
+	public List<DemandeDto> getListeDemandeCAWhichAddOrRemoveOnCounterAgent(Integer idAgentConnecte, Integer idAgentConcerne) {
+		
+		String url = String.format(absWsBaseUrl + sirhListeDemandeCAWhichAddOrRemoveOnCounterAgent);
+		
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idAgent", idAgentConnecte.toString());
+		params.put("idAgentConcerne", idAgentConcerne.toString());
+		
+		ClientResponse res = createAndFireRequest(params, url);
+		return readResponseAsList(DemandeDto.class, res, url);
 	}
 }

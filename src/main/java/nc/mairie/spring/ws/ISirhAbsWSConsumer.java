@@ -178,4 +178,6 @@ public interface ISirhAbsWSConsumer {
 	ReturnMessageDto dupliqueApprobateur(Integer idAgentConnecte,
 			Integer idAgentSource, Integer idAgentDestinataire);
 
+	List<DemandeDto> getListeDemandeCAWhichAddOrRemoveOnCounterAgent(Integer idAgentConnecte, Integer idAgentConcerne);
+
 }

@@ -6,6 +6,9 @@
 <%@page import="nc.mairie.gestionagent.dto.AgentDto"%>
 <%@page import="nc.mairie.gestionagent.dto.AgentWithServiceDto"%>
 <%@page import="nc.mairie.gestionagent.dto.ApprobateurDto"%>
+<%@page import="nc.mairie.gestionagent.absence.dto.DemandeDto"%>
+<%@page import="nc.mairie.enums.EnumEtatAbsence"%>
+<%@page import="java.text.SimpleDateFormat"%>
 <HTML>
 	
 	<jsp:useBean class="nc.mairie.gestionagent.process.agent.OeAGENTAbsencesSolde" id="process" scope="session"></jsp:useBean>
@@ -156,6 +159,45 @@
 						</div>
 						<BR/><BR/>
 						
+						<%if(null != process.getListeDemandeCA()
+								&& !process.getListeDemandeCA().isEmpty()){ %>
+						<span>Historique des demandes ayant débitées/créditées le compteur</span>
+						<BR/><BR/>
+						<div style="overflow: auto;height: 250px;width:1000px;margin-right: 0px;margin-left: 0px;">
+							<table class="sigp2NewTab" style="text-align:left;width:980px;">
+								<tr bgcolor="#EFEFEF">
+									<td align="center" width="90px;">Date de modification compteur</td>
+									<td align="center" width="90px;">Date de début</td>
+									<td align="center" width="90px;">Date de fin</td>
+									<td align="center" width="50px;">Nb jours</td>
+									<td align="center" width="50px;">Etat demande</td>
+									<td align="center" width="50px;">Solde Agent AVANT N-1</td>
+									<td align="center" width="50px;">Solde Agent AVANT N</td>
+									<td align="center" width="50px;">Solde Agent APRES N-1</td>
+									<td align="center" width="50px;">Solde Agent APRES N</td>
+								</tr>
+								<%
+								SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+								for (int i = 0;i<process.getListeDemandeCA().size();i++){
+									DemandeDto demandeCA = process.getListeDemandeCA().get(i);
+								%>
+								<tr>
+									<td class="sigp2NewTab-liste" style="text-align: center;"><%=sdf.format(demandeCA.getDateSaisie()) %></td>
+									<td class="sigp2NewTab-liste" style="text-align: center;"><%=sdf.format(demandeCA.getDateDebut()) %></td>
+									<td class="sigp2NewTab-liste" style="text-align: center;"><%=sdf.format(demandeCA.getDateFin()) %></td>
+									<td class="sigp2NewTab-liste" style="text-align: center;"><%=demandeCA.getDuree() %> <% if(demandeCA.isSamediOffert()){ %> + S<% } %></td>
+									<td class="sigp2NewTab-liste" style="text-align: center;"><%=EnumEtatAbsence.getValueEnumEtatAbsence(demandeCA.getIdRefEtat()) %></td>
+									<td class="sigp2NewTab-liste" style="text-align: center;"><%=demandeCA.getTotalJoursAnneeN1Old() %></td>
+									<td class="sigp2NewTab-liste" style="text-align: center;"><%=demandeCA.getTotalJoursOld() %></td>
+									<td class="sigp2NewTab-liste" style="text-align: center;"><%=demandeCA.getTotalJoursAnneeN1New() %></td>
+									<td class="sigp2NewTab-liste" style="text-align: center;"><%=demandeCA.getTotalJoursNew() %></td>
+								</tr>
+								<%}%>
+						</table>	
+						</div>
+						<BR/><BR/>
+						<%}%>
+						
 						<%if(process.getListeHistoriqueAlimAuto().size()!=0){ %>
 						<span>Historique des alimentations automatiques de fin de mois</span>
 						<BR/><BR/>
@@ -163,6 +205,7 @@
 							<table class="sigp2NewTab" style="text-align:left;width:980px;">
 								<tr bgcolor="#EFEFEF">
 									<td align="center" width="90px;">Mois</td>
+									<td align="center" width="90px;">Date de modification</td>
 									<td align="center" width="50px;">Nb jours</td>
 									<td>Commentaire</td>
 								</tr>
@@ -171,6 +214,7 @@
 								%>
 									<tr>
 										<td class="sigp2NewTab-liste" style="text-align: center;"><%=process.getVAL_ST_MOIS(i)%></td>
+										<td class="sigp2NewTab-liste" style="text-align: center;"><%=process.getVAL_ST_DATE_MODIF_HISTO_ALIM_AUTO(i)%></td>
 										<td class="sigp2NewTab-liste" style="text-align: center;"><%=process.getVAL_ST_NB_JOUR(i)%></td>
 										<td class="sigp2NewTab-liste"><%=process.getVAL_ST_COMMENTAIRE(i)%></td>
 									</tr>

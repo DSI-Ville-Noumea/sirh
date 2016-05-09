@@ -385,4 +385,9 @@ public class AbsService implements IAbsService {
 		return absConsumer.getListeCompteursAmicale();
 	}
 
+	@Override
+	public List<DemandeDto> getListeDemandeCAWhichAddOrRemoveOnCounterAgent(Integer idAgent, Integer idAgentConcerne) {
+		return absConsumer.getListeDemandeCAWhichAddOrRemoveOnCounterAgent(idAgent, idAgentConcerne);
+	}
+
 }
