@@ -169,12 +169,12 @@
 									<td align="center" width="90px;">Date de modification compteur</td>
 									<td align="center" width="90px;">Date de début</td>
 									<td align="center" width="90px;">Date de fin</td>
-									<td align="center" width="50px;">Nb jours</td>
-									<td align="center" width="50px;">Etat demande</td>
-									<td align="center" width="50px;">Solde Agent AVANT N-1</td>
-									<td align="center" width="50px;">Solde Agent AVANT N</td>
-									<td align="center" width="50px;">Solde Agent APRES N-1</td>
-									<td align="center" width="50px;">Solde Agent APRES N</td>
+									<td align="center" width="90px;">Nb jours</td>
+									<td align="center" width="90px;">Etat demande</td>
+									<td align="center" width="90px;">Solde Agent AVANT N-1</td>
+									<td align="center" width="90px;">Solde Agent AVANT N</td>
+									<td align="center" width="90px;">Solde Agent APRES N-1</td>
+									<td align="center" width="90px;">Solde Agent APRES N</td>
 								</tr>
 								<%
 								SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
