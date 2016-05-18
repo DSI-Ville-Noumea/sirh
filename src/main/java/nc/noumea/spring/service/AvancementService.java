@@ -502,7 +502,7 @@ public class AvancementService implements IAvancementService {
 		// reprend ceux de la carriere precedente
 		nouvelleCarriere.setCodeBase(Const.CHAINE_VIDE);
 		nouvelleCarriere.setCodeTypeEmploi(carr.getCodeTypeEmploi());
-		nouvelleCarriere.setCodeGrade(avct.getIdNouvGrade());
+		nouvelleCarriere.setCodeGrade(avct.getIdNouvGrade()==null ?Const.CHAINE_VIDE : avct.getIdNouvGrade());
 		nouvelleCarriere.setCodeBaseHoraire2(carr.getCodeBaseHoraire2());
 		nouvelleCarriere.setIdMotif(Const.ZERO);
 		nouvelleCarriere.setModeReglement(carr.getModeReglement());
@@ -857,7 +857,7 @@ public class AvancementService implements IAvancementService {
 		avct.setIdNouvGrade(gradeSuivant.getCodeGrade() == null || gradeSuivant.getCodeGrade().length() == 0 ? null : gradeSuivant.getCodeGrade());
 
 		// on met a jour les champs pour la creation de la carriere
-		nouvelleCarriere.setCodeGrade(avct.getIdNouvGrade());
+		nouvelleCarriere.setCodeGrade(avct.getIdNouvGrade()==null ?Const.CHAINE_VIDE : avct.getIdNouvGrade());
 		nouvelleCarriere.setACCAnnee(avct.getNouvAccAnnee().toString());
 		nouvelleCarriere.setACCMois(avct.getNouvAccMois().toString());
 		nouvelleCarriere.setACCJour(avct.getNouvAccJour().toString());
@@ -1138,7 +1138,7 @@ public class AvancementService implements IAvancementService {
 
 		// on met a jour les champs pour la creation de la carriere
 		if (nouvelleCarriere != null) {
-			nouvelleCarriere.setCodeGrade(avct.getIdNouvGrade());
+			nouvelleCarriere.setCodeGrade(avct.getIdNouvGrade()==null ?Const.CHAINE_VIDE : avct.getIdNouvGrade());
 			nouvelleCarriere.setACCAnnee(avct.getNouvAccAnnee().toString());
 			nouvelleCarriere.setACCMois(avct.getNouvAccMois().toString());
 			nouvelleCarriere.setACCJour(avct.getNouvAccJour().toString());
