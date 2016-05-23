@@ -23,11 +23,12 @@ import flexjson.JSONDeserializer;
 
 public abstract class BaseWsConsumer {
 
-	private Logger logger = LoggerFactory.getLogger(BaseWsConsumer.class);
+	private Logger	logger	= LoggerFactory.getLogger(BaseWsConsumer.class);
 
 	protected byte[] readResponseAsByteArray(ClientResponse response, String url) throws Exception {
 
 		if (response.getStatus() != HttpStatus.OK.value()) {
+			logger.error(String.format("An error occured when querying '%s'. Return code is : %s", url, response.getStatus()));
 			throw new BaseWsConsumerException(String.format("An error occured when querying '%s'. Return code is : %s", url, response.getStatus()));
 		}
 
@@ -38,6 +39,7 @@ public abstract class BaseWsConsumer {
 			reportFile = response.getEntity(File.class);
 			reponseData = IOUtils.toByteArray(new FileInputStream(reportFile));
 		} catch (Exception e) {
+			logger.error("Erreur dans readResponseAsByteArray" + e.getMessage());
 			throw new Exception("An error occured while reading the downloaded report.", e);
 		} finally {
 			if (reportFile != null && reportFile.exists())
@@ -129,7 +131,8 @@ public abstract class BaseWsConsumer {
 
 		String output = response.getEntity(String.class);
 		logger.trace("json recu:" + output);
-		result = new JSONDeserializer<List<T>>().use(Date.class, new MSDateTransformer()).use(null, ArrayList.class).use("values", targetClass).deserialize(output);
+		result = new JSONDeserializer<List<T>>().use(Date.class, new MSDateTransformer()).use(null, ArrayList.class).use("values", targetClass)
+				.deserialize(output);
 		return result;
 	}
 
@@ -153,7 +156,7 @@ public abstract class BaseWsConsumer {
 
 		String output = response.getEntity(String.class);
 		logger.trace("json recu:" + output);
-		if(!output.equals("")){
+		if (!output.equals("")) {
 			result = new JSONDeserializer<T>().use(Date.class, new MSDateTransformer()).deserializeInto(output, result);
 		}
 		return result;
