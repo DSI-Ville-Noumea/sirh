@@ -104,12 +104,16 @@ public class SirhWSConsumer extends BaseWsConsumer implements ISirhWSConsumer {
 		String url = String.format(sirhWsBaseUrl + sirhDownloadTabAvctPDFUrl);
 
 		String urlWSTableauAvctCAP = url + "?idCap=" + idCap + "&idCadreEmploi=" + idCadreEmploi + "&avisEAE=" + avisEAE;
+		
+		logger.debug("downloadTableauAvancement : URL génération tableau AVCT : " + urlWSTableauAvctCAP);
 
 		Client client = Client.create();
 
 		WebResource webResource = client.resource(urlWSTableauAvctCAP);
 
 		ClientResponse response = webResource.get(ClientResponse.class);
+		
+		logger.debug("downloadTableauAvancement : ClientResponse : " + response);
 
 		return readResponseAsByteArray(response, urlWSTableauAvctCAP);
 	}
