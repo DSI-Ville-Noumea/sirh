@@ -72,14 +72,14 @@
 									<tr id="<%=indiceContrat%>" onmouseover="SelectLigne(<%=indiceContrat%>,<%=process.getListeContrat().size()%>)">
 										<td class="sigp2NewTab-liste" style="position:relative;width:80px;" align="center">
 											<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, "") %>" name="<%=process.getNOM_PB_CONSULTER(indiceContrat)%>">
-										<%if(c.getIdTypeContrat().equals("2") && c.getDateFin()==null){ %>
+										<%if(c.getIdTypeContrat().equals(2) && c.getDateFin()==null){ %>
 											<INPUT title="modifier" type="image" src="images/modifier.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_MODIFIER(indiceContrat)%>">
-										<%}else if(c.getIdTypeContrat().equals("1") && Services.compareDates(sdf.format(c.getDatdeb()),Services.dateDuJour())<0 && (c.getDateFin()!=null ? Services.compareDates(Services.dateDuJour(),sdf.format(c.getDateFin()))<0 : true)) { %>
+										<%}else if(c.getIdTypeContrat().equals(1) && Services.compareDates(sdf.format(c.getDatdeb()),Services.dateDuJour())<0 && (c.getDateFin()!=null ? Services.compareDates(Services.dateDuJour(),sdf.format(c.getDateFin()))<0 : true)) { %>
 											<INPUT title="modifier" type="image" src="images/modifier.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_MODIFIER(indiceContrat)%>">
 										<%}else{ %>
 											<span style="width: 22px;"></span>
 										<%} %>
-										<%if(c.getIdTypeContrat().equals("1")){ %>
+										<%if(c.getIdTypeContrat().equals(1)){ %>
 											<INPUT title="imprimer" type="image" src="images/imprimer.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_IMPRIMER(indiceContrat)%>">
 										<%}else{ %>
 											<span style="width: 22px;"></span>
@@ -117,10 +117,15 @@
 				</div>
 			<%}else if(process.getVAL_ST_ACTION().equals(process.ACTION_CREATION) && process.getVAL_ST_CHOIX_CONTRAT().equals(process.CHOIX_CONTRAT_O)){ %>
 				<div title="Création contrat">
+				
 					<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:70px;">Avenant : </span>
-					<INPUT class="sigp2" type="radio" name="<%=process.getNOM_RG_AVENANT()%>" onclick='executeBouton("<%=process.getNOM_PB_AVENANT()%>")' <%= process.forRadioHTML(process.getNOM_RG_AVENANT(),process.getNOM_RB_AVENANT_O())%>> Oui
-					<INPUT class="sigp2" type="radio" name="<%=process.getNOM_RG_AVENANT()%>" onclick='executeBouton("<%=process.getNOM_PB_AVENANT()%>")' <%= process.forRadioHTML(process.getNOM_RG_AVENANT(),process.getNOM_RB_AVENANT_N())%>> Non
+					<INPUT class="sigp2" type="radio" name="<%=process.getNOM_RG_AVENANT()%>" 
+						onclick='executeBouton("<%=process.getNOM_PB_AVENANT()%>")' <%= process.forRadioHTML(process.getNOM_RG_AVENANT(),process.getNOM_RB_AVENANT_O())%>> Oui
+					<INPUT class="sigp2" type="radio" name="<%=process.getNOM_RG_AVENANT()%>" 
+						onclick='executeBouton("<%=process.getNOM_PB_AVENANT()%>")' <%= process.forRadioHTML(process.getNOM_RG_AVENANT(),process.getNOM_RB_AVENANT_N())%>> Non
+						
 					<span style="width:20px"></span>
+					
 					<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:110px;">Type de contrat : </span>
 					<% if(process.getVAL_RG_AVENANT().equals(process.getNOM_RB_AVENANT_O())){ %>
 						<SELECT class="sigp2-saisie" disabled="disabled" name="<%= process.getNOM_LB_TYPE_CONTRAT() %>" style="width:120px">
@@ -172,19 +177,21 @@
 						<%} %>
 					<% } else { %>
 						<span style="width:120px">
-						<INPUT id="<%=process.getNOM_EF_DATE_DEB()%>" class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_DATE_DEB() %>" size="10" type="text" value="<%= process.getVAL_EF_DATE_DEB() %>" onblur='executeBouton("<%=process.getNOM_PB_INIT_FIN_PERIODE_ESSAI()%>")'>
+						<INPUT id="<%=process.getNOM_EF_DATE_DEB()%>" class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_DATE_DEB() %>" size="10" type="text" value="<%= process.getVAL_EF_DATE_DEB() %>" 
+							onblur='executeBouton("<%=process.getNOM_PB_INIT_FIN_PERIODE_ESSAI()%>")'>
 						<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%= process.getNOM_EF_DATE_DEB() %>', 'dd/mm/y');">
 						</span>
 					<% } %>
 					<%if(process.getVAL_LB_TYPE_CONTRAT_SELECT().equals("0")){ %>
 						<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:110px;">Date de fin : </span>
-						<INPUT id="<%=process.getNOM_EF_DATE_FIN()%>" class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_DATE_FIN() %>" size="10" type="text" value="<%= process.getVAL_EF_DATE_FIN() %>" onblur='executeBouton("<%=process.getNOM_PB_INIT_FIN_PERIODE_ESSAI()%>")'>
+						<INPUT id="<%=process.getNOM_EF_DATE_FIN()%>" class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_DATE_FIN() %>" size="10" type="text" value="<%= process.getVAL_EF_DATE_FIN() %>" 
+							onblur='executeBouton("<%=process.getNOM_PB_INIT_FIN_PERIODE_ESSAI()%>")'>
 						<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%= process.getNOM_EF_DATE_FIN() %>', 'dd/mm/y');">
-						<%}else{ %>
+					<%}else{ %>
 						<span class="sigp2" style="margin-left:20px;position:relative;width:110px;">Date de fin : </span>
 						<INPUT id="<%=process.getNOM_EF_DATE_FIN()%>" class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_DATE_FIN() %>" size="10" type="text" value="<%= process.getVAL_EF_DATE_FIN() %>">
 						<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%= process.getNOM_EF_DATE_FIN() %>', 'dd/mm/y');">
-						<%} %>
+					<%} %>
 					<%if(!process.getVAL_RG_AVENANT().equals(process.getNOM_RB_AVENANT_O())){ %>					
 						<%if(process.getVAL_LB_TYPE_CONTRAT_SELECT().equals("0")){ %>
 							<BR/><BR/>
@@ -194,7 +201,8 @@
 							<span class="sigp2Mandatory" style="margin-left:10px;position:relative;width:180px;">Date de fin de période d'essai : </span>
 						<%} %>
 						<span style="width:120px">
-							<INPUT id="<%=process.getNOM_EF_DATE_FIN_PERIODE_ESSAI()%>" class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_DATE_FIN_PERIODE_ESSAI() %>" size="10" type="text" value="<%= process.getVAL_EF_DATE_FIN_PERIODE_ESSAI() %>">
+							<INPUT id="<%=process.getNOM_EF_DATE_FIN_PERIODE_ESSAI()%>" class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_DATE_FIN_PERIODE_ESSAI() %>" size="10" type="text" 
+								value="<%= process.getVAL_EF_DATE_FIN_PERIODE_ESSAI() %>">
 							<IMG src="images/calendrier.gif" hspace="5"  onclick="return showCalendar('<%= process.getNOM_EF_DATE_FIN_PERIODE_ESSAI() %>', 'dd/mm/y');">					
 						</span>
 					<%} %>
