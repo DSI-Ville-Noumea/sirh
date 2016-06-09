@@ -128,6 +128,7 @@ import org.apache.commons.vfs2.VFS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
+import org.springframework.dao.EmptyResultDataAccessException;
 
 /**
  * Process OePOSTEFichePoste Date de création : (07/07/11 10:59:29)
@@ -390,8 +391,12 @@ public class OePOSTEFichePoste extends BasicProcess {
 			return;
 		} else {
 			if (getResponsable() == null && getFichePosteCourante() != null && getFichePosteCourante().getIdResponsable() != null) {
-				setResponsable(getFichePosteDao().chercherFichePoste(getFichePosteCourante().getIdResponsable()));
-				afficheResponsable();
+				try {
+					setResponsable(getFichePosteDao().chercherFichePoste(getFichePosteCourante().getIdResponsable()));
+					afficheResponsable();
+				} catch(EmptyResultDataAccessException e) {
+					logger.error("Erreur recherche Fiche de poste du responsable " + getFichePosteCourante().getIdResponsable() + " . Details : " + e.getMessage());
+				}
 			}
 		}
 
@@ -401,7 +406,11 @@ public class OePOSTEFichePoste extends BasicProcess {
 				setRemplacement((FichePoste) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_FICHE_POSTE));
 			} else {
 				if (getFichePosteCourante() != null && getFichePosteCourante().getIdRemplacement() != null) {
-					setRemplacement(getFichePosteDao().chercherFichePoste(getFichePosteCourante().getIdRemplacement()));
+					try {
+						setRemplacement(getFichePosteDao().chercherFichePoste(getFichePosteCourante().getIdRemplacement()));
+					} catch(EmptyResultDataAccessException e) {
+						logger.error("Erreur recherche Fiche de poste du responsable " + getFichePosteCourante().getIdResponsable() + " . Details : " + e.getMessage());
+					}
 				} else {
 					setRemplacement(null);
 				}
@@ -411,7 +420,11 @@ public class OePOSTEFichePoste extends BasicProcess {
 			return;
 		} else {
 			if (getRemplacement() == null && getFichePosteCourante() != null && getFichePosteCourante().getIdRemplacement() != null) {
-				setRemplacement(getFichePosteDao().chercherFichePoste(getFichePosteCourante().getIdRemplacement()));
+				try {
+					setRemplacement(getFichePosteDao().chercherFichePoste(getFichePosteCourante().getIdRemplacement()));
+				} catch(EmptyResultDataAccessException e) {
+					logger.error("Erreur recherche Fiche de poste du responsable " + getFichePosteCourante().getIdResponsable() + " . Details : " + e.getMessage());
+				}
 				afficheRemplacement();
 			}
 		}
@@ -1541,7 +1554,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 		if (getZone(getNOM_EF_SERVICE()).length() == 0 || getZone(getNOM_ST_ID_SERVICE_ADS()).length() == 0) {
 			// "ERR002","La zone @ est obligatoire."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "service"));
-			setFocus(getNOM_EF_SERVICE());
+			// bug #31319 en fait cela cree une boucle, et la page se raffraichit tout le temps  
+//			setFocus(getNOM_EF_SERVICE());
 			return false;
 		}
 
@@ -2526,7 +2540,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 		String destinationFDP = "SauvegardeFDP/SauvFP_" + getFichePosteCourante().getIdFichePoste() + "_" + dateJour + ".doc";
 
 		try {
-			byte[] fileAsBytes = sirhService.downloadFichePoste(getFichePosteCourante().getIdFichePoste());
+			byte[] fileAsBytes = null;//sirhService.downloadFichePoste(getFichePosteCourante().getIdFichePoste());
 
 			if (!saveFileToRemoteFileSystem(fileAsBytes, repPartage, destinationFDP)) {
 				// "ERR185",
@@ -3547,11 +3561,19 @@ public class OePOSTEFichePoste extends BasicProcess {
 			}
 			// Init Responsable
 			if (getFichePosteCourante().getIdResponsable() != null) {
-				setResponsable(getFichePosteDao().chercherFichePoste(getFichePosteCourante().getIdResponsable()));
+				try {
+					setResponsable(getFichePosteDao().chercherFichePoste(getFichePosteCourante().getIdResponsable()));
+				} catch(EmptyResultDataAccessException e) {
+					logger.error("EmptyResultDataAccessException sur la recherche de la Fiche de poste du responsable " + getFichePosteCourante().getIdResponsable() + " . Details :" + e.getMessage());
+				}
 			}
 			// Init Remplacement
 			if (getFichePosteCourante().getIdRemplacement() != null) {
-				setRemplacement(getFichePosteDao().chercherFichePoste(getFichePosteCourante().getIdRemplacement()));
+				try {
+					setRemplacement(getFichePosteDao().chercherFichePoste(getFichePosteCourante().getIdRemplacement()));
+				} catch(EmptyResultDataAccessException e) {
+					logger.error("EmptyResultDataAccessException sur la recherche de la Fiche de poste de remplacement " + getFichePosteCourante().getIdRemplacement() + " . Details :" + e.getMessage());
+				}
 			}
 			// Init Infos Affectation FP
 			try {
@@ -3559,7 +3581,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 			} catch (Exception e) {
 				setAgentCourant(null);
 			}
-			// si on a pas trouve d'gent affecté sur FP primaire, on recherche
+			// si on a pas trouve d'agent affecté sur FP primaire, on recherche
 			// sur secondaire
 			if (getAgentCourant() == null) {
 				try {
@@ -5108,7 +5130,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 		String destinationFDP = "FichePosteVierge/FP_" + getFichePosteCourante().getIdFichePoste() + ".doc";
 
 		try {
-			byte[] fileAsBytes = sirhService.downloadFichePoste(getFichePosteCourante().getIdFichePoste());
+			byte[] fileAsBytes = null;//sirhService.downloadFichePoste(getFichePosteCourante().getIdFichePoste());
 
 			if (!saveFileToRemoteFileSystem(fileAsBytes, repPartage, destinationFDP)) {
 				// "ERR185",
@@ -6966,7 +6988,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 				addZone(getNOM_EF_NUM_DELIBERATION(), entite.getRefDeliberationActif());
 			}
 		} catch (Exception e) {
-
+			logger.error("Pas de service selectionne.");
 		}
 		return true;
 	}
