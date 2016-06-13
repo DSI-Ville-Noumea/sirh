@@ -116,7 +116,7 @@ public class AdsService implements IAdsService {
 						transitoire = " (T)";
 						style = "font-style:italic;";
 					}
-
+					// bug #31361
 					result.append(ajouteNoeud(enfant.getNfa(), entite, enfant, withSelectionRadioBouton, transitoire, style, null));
 					result.append(buildTreeEntitiesActifTransitoire(enfant, withSelectionRadioBouton));
 				}
@@ -355,6 +355,7 @@ public class AdsService implements IAdsService {
 						transitoire = " (P)";
 						style = "font-weight: bold;";
 					}
+					// bug #31361
 					result.append(ajouteNoeud(enfant.getNfa(), entite, enfant, withSelectionRadioBouton, transitoire, style, null));
 					result.append(buildTreeEntitiesProvisoireActifTransitoire(enfant, withSelectionRadioBouton));
 				}
@@ -606,6 +607,7 @@ public class AdsService implements IAdsService {
 					// on teste si au moins un agent est affiche dans le service
 					// sinon on affiche pas le service
 					if(isOneAgentInService(enfant, filtreAgents)) {
+						// bug #31361
 						result.append(ajouteNoeud(enfant.getNfa(), entite, enfant, withCkeckBox, "", "", 
 								isAllAgentsCheck(enfant, filtreAgents, listAgentsExistants)));
 						
