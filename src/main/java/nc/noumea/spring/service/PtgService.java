@@ -10,6 +10,8 @@ import nc.mairie.gestionagent.dto.ApprobateurDto;
 import nc.mairie.gestionagent.dto.DelegatorAndOperatorsDto;
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
 import nc.mairie.gestionagent.pointage.dto.ConsultPointageDto;
+import nc.mairie.gestionagent.pointage.dto.DpmIndemniteAnneeDto;
+import nc.mairie.gestionagent.pointage.dto.DpmIndemniteChoixAgentDto;
 import nc.mairie.gestionagent.pointage.dto.EtatsPayeurDto;
 import nc.mairie.gestionagent.pointage.dto.FichePointageDto;
 import nc.mairie.gestionagent.pointage.dto.MotifHeureSupDto;
@@ -306,6 +308,32 @@ public class PtgService implements IPtgService {
 	public ReturnMessageDto dupliqueApprobateur(Integer idAgentConnecte, Integer idAgentSource, Integer idAgentDestinataire) {
 		return ptgConsumer.dupliqueApprobateur(idAgentConnecte, idAgentSource, idAgentDestinataire);
 	}
-
+	
+	/////// PRIME DPM //////
+	@Override
+	public List<DpmIndemniteChoixAgentDto> getListDpmIndemniteChoixAgent(Integer idAgent, Integer annee,
+			Boolean isChoixIndemnite, Boolean isChoixRecuperation, List<Integer> listIdsAgent) {
+		return ptgConsumer.getListDpmIndemniteChoixAgent(idAgent, annee, isChoixIndemnite, isChoixRecuperation, listIdsAgent);
+	}
+	@Override
+	public ReturnMessageDto saveIndemniteChoixAgent(Integer idAgentConnecte, Integer annee, DpmIndemniteChoixAgentDto dto) {
+		return ptgConsumer.saveIndemniteChoixAgent(idAgentConnecte, annee, dto);
+	}
+	@Override
+	public List<DpmIndemniteAnneeDto> getListDpmIndemAnnee(Integer idAgent) {
+		return ptgConsumer.getListDpmIndemAnnee(idAgent);
+	}
+	@Override
+	public List<DpmIndemniteAnneeDto> getListDpmIndemAnneeOuverte() {
+		return ptgConsumer.getListDpmIndemAnneeOuverte();
+	}
+	@Override
+	public ReturnMessageDto saveDpmIndemAnnee(Integer idAgentConnecte, DpmIndemniteAnneeDto dto) {
+		return ptgConsumer.saveDpmIndemAnnee(idAgentConnecte, dto);
+	}
+	@Override
+	public ReturnMessageDto deleteIndemniteChoixAgent(Integer idAgentConnecte, Integer id) {
+		return ptgConsumer.deleteIndemniteChoixAgent(idAgentConnecte, id);
+	}
 	
 }

@@ -16,6 +16,8 @@ import nc.mairie.gestionagent.dto.ReturnMessageDto;
 import nc.mairie.gestionagent.pointage.dto.CanStartVentilationDto;
 import nc.mairie.gestionagent.pointage.dto.CanStartWorkflowPaieActionDto;
 import nc.mairie.gestionagent.pointage.dto.ConsultPointageDto;
+import nc.mairie.gestionagent.pointage.dto.DpmIndemniteAnneeDto;
+import nc.mairie.gestionagent.pointage.dto.DpmIndemniteChoixAgentDto;
 import nc.mairie.gestionagent.pointage.dto.EtatsPayeurDto;
 import nc.mairie.gestionagent.pointage.dto.FichePointageDto;
 import nc.mairie.gestionagent.pointage.dto.MotifHeureSupDto;
@@ -103,7 +105,15 @@ public class SirhPtgWSConsumer extends BaseWsConsumer implements ISirhPtgWSConsu
 	private static final String sirhPtgFiltreDateMoisTitreRepas = "titreRepas/getListeMoisTitreRepasSaisie";
 	private static final String sirhPtgGenereEtatPayeurTitreRepas = "titreRepas/genereEtatPayeur";
 	private static final String sirhPtgListTitreRepasEtatPayeur = "titreRepas/listTitreRepasEtatPayeur";
-
+	
+	// Prime DPM #30544 */
+	private static final String ptgSaveListIndemniteChoixAgentUrl = "dpm/saveIndemniteChoixAgentForSIRH";
+	private static final String ptgListDpmIndemniteChoixAgentForSIRHUrl = "dpm/listDpmIndemniteChoixAgentForSIRH";
+	private static final String ptgSaveDpmIndemAnneeUrl = "dpm/saveDpmIndemAnnee";
+	private static final String ptgListDpmIndemAnneeUrl = "dpm/listDpmIndemAnnee";
+	private static final String ptgListDpmIndemAnneeOuverteUrl = "dpm/listDpmIndemAnneeOuverte";
+	private static final String ptgDeleteIndemniteChoixAgentUrl = "dpm/deleteIndemniteChoixAgent";
+	
 	private Logger logger = LoggerFactory.getLogger(SirhPtgWSConsumer.class);
 
 	@Override
@@ -265,7 +275,6 @@ public class SirhPtgWSConsumer extends BaseWsConsumer implements ISirhPtgWSConsu
 
 		// cas particulier des dates
 		return readResponseAsListDate(res, url);
-
 	}
 
 	@Override
@@ -781,6 +790,117 @@ public class SirhPtgWSConsumer extends BaseWsConsumer implements ISirhPtgWSConsu
 		params.put("idAgentDest", idAgentDestinataire.toString());
 		
 		ClientResponse res = createAndPostRequest(params, url, null);
+		return readResponse(ReturnMessageDto.class, res, url);
+	}
+	
+	///////////////// PRIME DPM ////////////
+
+	@Override
+	public List<DpmIndemniteChoixAgentDto> getListDpmIndemniteChoixAgent(Integer idAgent, Integer annee,
+			Boolean isChoixIndemnite, Boolean isChoixRecuperation,
+			List<Integer> listIdsAgent) {
+
+		String url = String.format(ptgWsBaseUrl + ptgListDpmIndemniteChoixAgentForSIRHUrl);
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idAgentConnecte", idAgent.toString());
+		
+		if(null != annee)
+			params.put("annee", annee.toString());
+		
+		if (null != listIdsAgent && !listIdsAgent.isEmpty()) {
+
+			String csvId = Const.CHAINE_VIDE;
+			for (Integer id : listIdsAgent) {
+				csvId += id + ",";
+			}
+			if (csvId != Const.CHAINE_VIDE) {
+				csvId = csvId.substring(0, csvId.length() - 1);
+			}
+			params.put("listIdsAgent", csvId);
+		}
+		
+		if(null != isChoixIndemnite)
+			params.put("isChoixIndemnite", isChoixIndemnite.toString());
+		
+		if(null != isChoixRecuperation)
+			params.put("isChoixRecuperation", isChoixRecuperation.toString());
+
+		ClientResponse res = createAndFireRequest(params, url);
+
+		return readResponseAsList(DpmIndemniteChoixAgentDto.class, res, url);
+	}
+
+	@Override
+	public ReturnMessageDto saveIndemniteChoixAgent(Integer idAgentConnecte, Integer annee, DpmIndemniteChoixAgentDto listDto) {
+		
+		String url = String.format(ptgWsBaseUrl + ptgSaveListIndemniteChoixAgentUrl);
+		
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idAgentConnecte", idAgentConnecte.toString());
+		params.put("annee", annee.toString());
+
+		String json = new JSONSerializer()
+				.exclude("*.class").exclude("*.choix")
+				.exclude("*.civilite").exclude("*.selectedDroitAbs").exclude("*.position")
+				.exclude("*.signature").exclude("*.statut")
+				.transform(new MSDateTransformer(), Date.class).deepSerialize(listDto);
+		
+		ClientResponse res = createAndPostRequest(params, url, json);
+		return readResponse(ReturnMessageDto.class, res, url);
+	}
+
+	@Override
+	public List<DpmIndemniteAnneeDto> getListDpmIndemAnnee(Integer idAgent) {
+
+		String url = String.format(ptgWsBaseUrl + ptgListDpmIndemAnneeUrl);
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idAgentConnecte", idAgent.toString());
+
+		ClientResponse res = createAndFireRequest(params, url);
+
+		return readResponseAsList(DpmIndemniteAnneeDto.class, res, url);
+	}
+
+	@Override
+	public List<DpmIndemniteAnneeDto> getListDpmIndemAnneeOuverte() {
+
+		String url = String.format(ptgWsBaseUrl + ptgListDpmIndemAnneeOuverteUrl);
+		
+		HashMap<String, String> params = new HashMap<>();
+
+		ClientResponse res = createAndFireRequest(params, url);
+
+		return readResponseAsList(DpmIndemniteAnneeDto.class, res, url);
+	}
+
+	@Override
+	public ReturnMessageDto saveDpmIndemAnnee(Integer idAgentConnecte, DpmIndemniteAnneeDto dto) {
+		
+		String url = String.format(ptgWsBaseUrl + ptgSaveDpmIndemAnneeUrl);
+		
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idAgentConnecte", idAgentConnecte.toString());
+
+		String json = new JSONSerializer()
+				.exclude("*.class").exclude("*.radioButtonZK")
+				.exclude("*.civilite").exclude("*.selectedDroitAbs").exclude("*.position")
+				.exclude("*.signature").exclude("*.statut")
+				.transform(new MSDateTransformer(), Date.class).deepSerialize(dto);
+		
+		ClientResponse res = createAndPostRequest(params, url, json);
+		return readResponse(ReturnMessageDto.class, res, url);
+	}
+	
+	@Override
+	public ReturnMessageDto deleteIndemniteChoixAgent(Integer idAgentConnecte, Integer idDpmIndemChoixAgent) {
+		
+		String url = String.format(ptgWsBaseUrl + ptgDeleteIndemniteChoixAgentUrl);
+		
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idAgentConnecte", idAgentConnecte.toString());
+		params.put("idDpmIndemChoixAgent", idDpmIndemChoixAgent.toString());
+		
+		ClientResponse res = createAndFireRequest(params, url);
 		return readResponse(ReturnMessageDto.class, res, url);
 	}
 

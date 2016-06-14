@@ -10,6 +10,8 @@ import nc.mairie.gestionagent.dto.ApprobateurDto;
 import nc.mairie.gestionagent.dto.DelegatorAndOperatorsDto;
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
 import nc.mairie.gestionagent.pointage.dto.ConsultPointageDto;
+import nc.mairie.gestionagent.pointage.dto.DpmIndemniteAnneeDto;
+import nc.mairie.gestionagent.pointage.dto.DpmIndemniteChoixAgentDto;
 import nc.mairie.gestionagent.pointage.dto.EtatsPayeurDto;
 import nc.mairie.gestionagent.pointage.dto.FichePointageDto;
 import nc.mairie.gestionagent.pointage.dto.MotifHeureSupDto;
@@ -135,5 +137,18 @@ public interface ISirhPtgWSConsumer {
 
 	ReturnMessageDto dupliqueApprobateur(Integer idAgentConnecte,
 			Integer idAgentSource, Integer idAgentDestinataire);
+
+	ReturnMessageDto saveDpmIndemAnnee(Integer idAgentConnecte, DpmIndemniteAnneeDto dto);
+
+	List<DpmIndemniteAnneeDto> getListDpmIndemAnnee(Integer idAgent);
+
+	List<DpmIndemniteAnneeDto> getListDpmIndemAnneeOuverte();
+
+	List<DpmIndemniteChoixAgentDto> getListDpmIndemniteChoixAgent(Integer idAgent, Integer annee, Boolean isChoixIndemnite,
+			Boolean isChoixRecuperation, List<Integer> listIdsAgent);
+
+	ReturnMessageDto saveIndemniteChoixAgent(Integer idAgentConnecte, Integer annee, DpmIndemniteChoixAgentDto listDto);
+
+	ReturnMessageDto deleteIndemniteChoixAgent(Integer idAgentConnecte, Integer idDpmIndemChoixAgent);
 
 }

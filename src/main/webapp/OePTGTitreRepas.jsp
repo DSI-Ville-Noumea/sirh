@@ -86,12 +86,12 @@
                                 "sNext": "",
                                 "sPrevious": ""
                             },
-                            "sZeroRecords": "Aucune information d'absence à afficher",
-                            "sInfo": "Affichage de _START_ à _END_ des _TOTAL_ absences au total",
-                            "sInfoEmpty": "Aucune information d'absence à afficher",
-                            "sEmptyTable": "Veuillez sélectionner une date de début et une date de fin pour afficher les informations d'absence",
-                            "sInfoFiltered": "(filtrage sur _MAX_ absences au total)",
-                            "sLengthMenu": "Affichage de _MENU_ absences par page",
+                            "sZeroRecords": "Aucune information à afficher",
+                            "sInfo": "Affichage de _START_ à _END_ des _TOTAL_ au total",
+                            "sInfoEmpty": "Aucune information à afficher",
+                            "sEmptyTable": "Veuillez sélectionner une date de début et une date de fin pour afficher les informations",
+                            "sInfoFiltered": "(filtrage sur _MAX_ au total)",
+                            "sLengthMenu": "Affichage de _MENU_ par page",
                             "sSearch": "Recherche instantanée"
                         },
                         "oTableTools": {

@@ -113,6 +113,8 @@
 		listeDroits.add("PTGPayeurContractuels");
 		listeDroits.add("PTGTitreRepas");
 		listeDroits.add("PTGTitreRepasEtatPayeur");
+		listeDroits.add("PTGPrimeDpm");
+		listeDroits.add("PTGPrimeDpmParametrage");
 		
 		
 		/*Module ABSENCE*/

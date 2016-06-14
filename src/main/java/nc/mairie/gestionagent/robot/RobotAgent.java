@@ -85,9 +85,11 @@ import nc.mairie.gestionagent.process.parametre.OePARAMETRAGEKiosque;
 import nc.mairie.gestionagent.process.parametre.OePARAMETRAGEPointage;
 import nc.mairie.gestionagent.process.parametre.OePARAMETRAGERecrutement;
 import nc.mairie.gestionagent.process.parametre.OePARAMETRAGERubrique;
+import nc.mairie.gestionagent.process.pointage.OePTGPrimeDpmParametrage;
 import nc.mairie.gestionagent.process.pointage.OePTGPayeurContractuels;
 import nc.mairie.gestionagent.process.pointage.OePTGPayeurConvCol;
 import nc.mairie.gestionagent.process.pointage.OePTGPayeurFonct;
+import nc.mairie.gestionagent.process.pointage.OePTGPrimeDpm;
 import nc.mairie.gestionagent.process.pointage.OePTGSaisie;
 import nc.mairie.gestionagent.process.pointage.OePTGSelectionAgent;
 import nc.mairie.gestionagent.process.pointage.OePTGTitreRepas;
@@ -290,7 +292,11 @@ public class RobotAgent extends Robot {
 			return new OePTGTitreRepas();
 		} else if (activite.equals("PTGTitreRepasEtatPayeur")) {
 				return new OePTGTitreRepasEtatPayeur();
-
+		} else if (activite.equals("PTGPrimeDpm")) {
+			return new OePTGPrimeDpm();
+		} else if (activite.equals("PTGPrimeDpmParametrage")) {
+			return new OePTGPrimeDpmParametrage();
+			
 		}// Module ABSENCE
 		else if (activite.equals("ABSVisualisation")) {
 			return new OeABSVisualisation();
@@ -523,6 +529,10 @@ public class RobotAgent extends Robot {
 		// Classe OePTGTitreRepas
 		navigation.put(OePTGTitreRepas.class.getName() + OePTGTitreRepas.STATUT_RECHERCHER_AGENT_DEMANDE, OeAGENTRecherche.class.getName());
 		navigation.put(OePTGTitreRepas.class.getName() + OePTGTitreRepas.STATUT_RECHERCHER_AGENT_CREATION, OeAGENTRecherche.class.getName());
+		
+		// Classe OePTGPrimeDpm
+		navigation.put(OePTGPrimeDpm.class.getName() + OePTGPrimeDpm.STATUT_RECHERCHER_AGENT_DEMANDE, OeAGENTRecherche.class.getName());
+		navigation.put(OePTGPrimeDpm.class.getName() + OePTGPrimeDpm.STATUT_RECHERCHER_AGENT_CREATION, OeAGENTRecherche.class.getName());
 
 		// ///////////////////
 		// ABSENCE //
@@ -657,6 +667,10 @@ public class RobotAgent extends Robot {
 		navigation.put(OePTGPayeurFonct.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 		navigation.put(OePTGPayeurContractuels.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 		navigation.put(OePTGSaisie.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OePTGTitreRepas.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OePTGTitreRepasEtatPayeur.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OePTGPrimeDpm.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OePTGPrimeDpmParametrage.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 
 		// ABSENCE
 		navigation.put(OeABSVisualisation.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());

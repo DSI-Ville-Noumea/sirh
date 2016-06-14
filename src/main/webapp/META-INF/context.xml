@@ -44,7 +44,7 @@
 	<Resource name="jdbc/SIRH_DS3" auth="Container" type="javax.sql.DataSource"
 		maxActive="100" maxIdle="30" minIdle="0" validationQuery="select 1"
 		maxWait="10000" initialSize="1" username="eae_adm" password="changemi"
-		driverClassName="org.postgresql.Driver" url="jdbc:postgresql://localhost:5433/sirh"
+		driverClassName="org.postgresql.Driver" url="jdbc:postgresql://svi-pg0.site-mairie.noumea.nc:5432/sirh"
 		poolPreparedStatements="true" />
 
 	<!-- -->
@@ -71,7 +71,7 @@
 	<!-- WS SIRH -->
 	<!-- -->
 	<Environment description="SIRH WS url" name="SIRH_WS_URL"
-		type="java.lang.String" override="false" value="http://svi-tomcat0:8085/sirhws/" />
+		type="java.lang.String" override="false" value="http://localhost:8085/sirhws/" />
 
 	<!-- -->
 	<!-- WS DE ADS -->
@@ -181,34 +181,34 @@
 <!-- 		value="file://///cristal/drh$/DRH/SIRH-document/DEV/Document_Associe/" /> -->
 	<Parameter description="repertoire pour les documents issus des modeles"
 		name="REPERTOIRE_ACTES" override="false"
-		value="file://///home/nicno85/sirh/sirhdata/Document_Associe/" />
+		value="file://///home/rebjo84/Bureau/" />
 	<Parameter description="repertoire pour les documents issus des modeles"
 		name="REPERTOIRE_ROOT" override="false"
-		value="//home/nicno85/sirh/sirhdata/Document_Associe/" />
+		value="//home/rebjo84/sirh/sirhdata/Document_Associe/" />
 	<Parameter description="repertoire pour les documents temporaires"
 		name="REPERTOIRE_TEMP" override="false"
-		value="//home/nicno85/sirh/sirhdata/temp/" />
+		value="//home/rebjo84/sirh/sirhdata/temp/" />
 	<Parameter description="repertoire pour les documents" name="REPERTOIRE_LECTURE"
 		override="false"
-		value="file://///home/nicno85/sirh/sirhdata/Document_Associe/"  />
+		value="file://///home/rebjo84/sirh/sirhdata/Document_Associe/"  />
 	<Parameter description="repertoire pour les documents issus des modeles"
-		name="REPERTOIRE_SP" override="false" value="//svq-sp/SIRH/FILEWATCHER_EAE/" />
+		name="REPERTOIRE_SP" override="false" value="//home/rebjo84/sirh/sirhdata/temp/" />
 
 	<!-- -->
 	<!-- Parametres extrait du web.xml -->
 	<!-- -->
+	<Environment description="Bibliotheque de la DTAARA_CALC"
+		name="DTAARA_SCHEMA" override="false" value="PERSONNEL" type="java.lang.String" />
+	<Environment description="Nom de la DTAARA_CALC" name="DTAARA_NAME"
+		override="false" value="CALCUL" type="java.lang.String" />
+	<Environment description="parametre pour accès à la DTAARA_CALC"
+		name="HOST_SGBD_PAYE" override="false" value="robinnw" type="java.lang.String" />
+	<Environment description="Pws pour accès à la DTAARA_CALC"
+		name="HOST_SGBD_PWD" override="false" value="***REMOVED***" type="java.lang.String" />
 	<Parameter description="parametre utile au framework" name="HOST_SGBD"
 		override="false" value="SIRH_DS2" />
-	<Parameter description="parametre pour accès à la DTAARA_CALC"
-		name="HOST_SGBD_PAYE" override="false" value="robinnw" />
 	<Parameter description="Login pour accès à la DTAARA_CALC"
 		name="HOST_SGBD_ADMIN" override="false" value="opensirh" />
-	<Parameter description="Pws pour accès à la DTAARA_CALC"
-		name="HOST_SGBD_PWD" override="false" value="***REMOVED***" />
-	<Parameter description="Bibliotheque de la DTAARA_CALC" name="DTAARA_SCHEMA"
-		override="false" value="PERSONNEL" />
-	<Parameter description="Nom de la DTAARA_CALC" name="DTAARA_NAME"
-		override="false" value="CALCUL" />
 
 	<!-- -->
 	<!-- Authentification LDAP -->

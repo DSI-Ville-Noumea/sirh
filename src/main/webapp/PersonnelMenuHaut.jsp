@@ -173,7 +173,6 @@ menuPTGVentilation.ajouterFils(new Lien("PTGVentilationTitu", "VENTILATION", "Ve
 menuPTGVentilation.ajouterFils(new Lien("PTGVentilationNonTitu", "VENTILATION", "Ventilation et validation", true, false,"CONTRACTUELS"));
 document.write(menuPTGVentilation.afficher());
 
-
 var menuPTGPayeur = new MenuHaut("Module_pointage_payeurPointage");
 menuPTGPayeur.ajouterFils(new Lien("PTGPayeurConvCol", "PAYEUR", "Editions du payeur", true, false,"CONVENTIONS"));
 menuPTGPayeur.ajouterFils(new Lien("PTGPayeurFonct", "PAYEUR", "Editions du payeur", true, false,"FONCTIONNAIRES"));
@@ -184,6 +183,11 @@ var menuPTGTitreRepas = new MenuHaut("Module_pointage_titreRepas");
 menuPTGTitreRepas.ajouterFils(new Lien("PTGTitreRepas", "TITRE REPAS", "Titres repas", true, false,"TITRES REPAS"));
 menuPTGTitreRepas.ajouterFils(new Lien("PTGTitreRepasEtatPayeur", "TITRE REPAS", "Titres repas", true, false,"ETATS PAYEUR"));
 document.write(menuPTGTitreRepas.afficher());
+
+var menuPTGPrimeDpm = new MenuHaut("Module_pointage_primeDpm");
+menuPTGPrimeDpm.ajouterFils(new Lien("PTGPrimeDpm", "PRIME DPM SDJF", "Prime DPM SDJF", true, false,"PRIME DPM SDJF"));
+menuPTGPrimeDpm.ajouterFils(new Lien("PTGPrimeDpmParametrage", "PRIME DPM SDJF", "Prime DPM SDJF", true, false,"PARAMETRAGE"));
+document.write(menuPTGPrimeDpm.afficher());
 
 //***************************************************************
 //*               Le menu haut Election
