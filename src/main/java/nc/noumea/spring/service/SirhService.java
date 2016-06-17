@@ -2,6 +2,7 @@ package nc.noumea.spring.service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import nc.mairie.gestionagent.dto.AgentDto;
 import nc.mairie.gestionagent.dto.AgentWithServiceDto;
@@ -107,6 +108,11 @@ public class SirhService implements ISirhService {
 	@Override
 	public List<AgentWithServiceDto> getListAgentsWithService(List<Integer> listAgentDto, Date date) {
 		return sirhConsumer.getListAgentsWithService(listAgentDto, date);
+	}
+	
+	@Override
+	public List<AgentWithServiceDto> getListeAgentWithIndemniteForfaitTravailDPM(Set<Integer> listIdsAgent) {
+		return sirhConsumer.getListeAgentWithIndemniteForfaitTravailDPM(listIdsAgent);
 	}
 
 }

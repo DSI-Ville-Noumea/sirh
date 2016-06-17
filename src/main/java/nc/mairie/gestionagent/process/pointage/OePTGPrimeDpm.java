@@ -2,6 +2,7 @@ package nc.mairie.gestionagent.process.pointage;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.TreeMap;
@@ -30,6 +31,7 @@ import nc.noumea.mairie.ads.dto.EntiteDto;
 import nc.noumea.spring.service.IAdsService;
 import nc.noumea.spring.service.IPtgService;
 import nc.noumea.spring.service.IRadiService;
+import nc.noumea.spring.service.ISirhService;
 import nc.noumea.spring.service.PtgService;
 
 import org.slf4j.Logger;
@@ -60,6 +62,8 @@ public class OePTGPrimeDpm extends BasicProcess {
 	private IAdsService adsService;
 
 	private IRadiService radiService;
+
+	private ISirhService sirhService;
 
 	private AgentDao agentDao;
 
@@ -181,6 +185,9 @@ public class OePTGPrimeDpm extends BasicProcess {
 		if (null == radiService) {
 			radiService = (IRadiService) context.getBean("radiService");
 		}
+		if (null == sirhService) {
+			sirhService = (ISirhService) context.getBean("sirhService");
+		}
 	}
 
 	/**
@@ -192,7 +199,7 @@ public class OePTGPrimeDpm extends BasicProcess {
 	 */
 	public boolean performPB_FILTRER(HttpServletRequest request) throws Exception {
 
-		// date mois
+		// date annee
 		int numAnnee = (Services.estNumerique(getZone(getNOM_LB_ANNEE_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_ANNEE_SELECT())) : -1);
 		Integer annee = null;
 		if (numAnnee != -1 && numAnnee != 0) {
@@ -261,6 +268,51 @@ public class OePTGPrimeDpm extends BasicProcess {
 				agentConnecte.getIdAgent(), annee, isChoixIndemnite, isChoixRecuperation, listIdAgentService);
 				
 		setListeChoixAgent((ArrayList<DpmIndemniteChoixAgentDto>) listChoixAgent);
+
+		afficheListeChoixAgent();
+
+		return true;
+	}
+	
+	public boolean performPB_AFFICHER_AGENTS_SANS_CHOIX(HttpServletRequest request) throws Exception {
+		
+		if(null != getDpmAnneeOuverte()) {
+			// on cherche les agents ayant fait un choix
+			List<DpmIndemniteChoixAgentDto> listChoixAgent = 
+						ptgService.getListDpmIndemniteChoixAgent(
+								getAgentConnecte(request).getIdAgent(), getDpmAnneeOuverte().getAnnee(), null, null, null);
+			
+			List<Integer> listIdsAgentAvecChoix = new ArrayList<Integer>();
+			if(null != listChoixAgent) {
+				for(DpmIndemniteChoixAgentDto choixAgent : listChoixAgent) {
+					if(!listIdsAgentAvecChoix.contains(choixAgent.getIdAgent()))
+						listIdsAgentAvecChoix.add(choixAgent.getIdAgent());
+				}
+			}
+			
+			// on cherche les agents ayant la prime DPM 7718 ou 7719
+			List<AgentWithServiceDto> listAgentsAvecPrimeDpm = sirhService.getListeAgentWithIndemniteForfaitTravailDPM(new HashSet<Integer>());
+			
+			List<DpmIndemniteChoixAgentDto> listSansChoixAgent = new ArrayList<DpmIndemniteChoixAgentDto>();
+			// puis on trie pour ne recuperer que les agents sans choix
+			if(null != listAgentsAvecPrimeDpm) {
+				for(AgentWithServiceDto agent : listAgentsAvecPrimeDpm) {
+					if(!listIdsAgentAvecChoix.contains(agent.getIdAgent())) {
+						DpmIndemniteChoixAgentDto dto = new DpmIndemniteChoixAgentDto();
+						dto.setIdAgent(agent.getIdAgent());
+						dto.setAgent(agent);
+						dto.setDpmIndemniteAnnee(getDpmAnneeOuverte());
+						
+						listSansChoixAgent.add(dto);
+					}
+				}
+			}
+			
+			setListeChoixAgent((ArrayList<DpmIndemniteChoixAgentDto>) listSansChoixAgent);
+		}else{
+			getTransaction().declarerErreur("Il n'y a pas de campagne de choix ouverte pour la prime DPM.");
+			return false;
+		}
 
 		afficheListeChoixAgent();
 
@@ -696,6 +748,10 @@ public class OePTGPrimeDpm extends BasicProcess {
 		return "NOM_PB_FILTRER";
 	}
 
+	public String getNOM_PB_AFFICHER_AGENT_SANS_CHOIX() {
+		return "NOM_PB_AFFICHER_AGENT_SANS_CHOIX";
+	}
+
 	public String getNOM_PB_AJOUTER_CHOIX_DPM() {
 		return "NOM_PB_CREATE_BOX";
 	}
@@ -867,6 +923,10 @@ public class OePTGPrimeDpm extends BasicProcess {
 			// Si clic sur le bouton PB_FILTRER
 			if (testerParametre(request, getNOM_PB_FILTRER())) {
 				return performPB_FILTRER(request);
+			}
+			// Si clic sur le bouton PB_FILTRER
+			if (testerParametre(request, getNOM_PB_AFFICHER_AGENT_SANS_CHOIX())) {
+				return performPB_AFFICHER_AGENTS_SANS_CHOIX(request);
 			}
 			// Si clic sur le bouton PB_AJOUTER_ABSENCE
 			if (testerParametre(request, getNOM_PB_AJOUTER_CHOIX_DPM())) {

@@ -2,6 +2,7 @@ package nc.mairie.spring.ws;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import nc.mairie.gestionagent.dto.AgentDto;
 import nc.mairie.gestionagent.dto.AgentWithServiceDto;
@@ -51,4 +52,6 @@ public interface ISirhWSConsumer {
 	EntiteWithAgentWithServiceDto getListeEntiteWithAgentWithServiceDtoByIdServiceAds(
 			Integer idServiceAds, Integer idAgent,
 			List<AgentDto> listAgentsAInclure);
+
+	List<AgentWithServiceDto> getListeAgentWithIndemniteForfaitTravailDPM(Set<Integer> listIdsAgent);
 }

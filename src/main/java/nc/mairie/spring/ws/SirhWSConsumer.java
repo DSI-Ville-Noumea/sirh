@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import nc.mairie.gestionagent.dto.AgentDto;
 import nc.mairie.gestionagent.dto.AgentWithServiceDto;
@@ -58,6 +59,9 @@ public class SirhWSConsumer extends BaseWsConsumer implements ISirhWSConsumer {
 	private static final String sirhAgentSubordonnesUrl = "agents/agentsSubordonnes";
 	private static final String sirhArbreServicesWithListAgentsByServiceUrl = "agents/arbreServicesWithListAgentsByServiceWithoutAgentConnecte";
 	private static final String sirhListAgentsWithServiceUrl = "services/listAgentsWithService";
+	
+
+	private static final String sirhListeAgentWithIndemniteForfaitTravailDPMUrl = "agents/listeAgentWithIndemniteForfaitTravailDPM";
 
 	private Logger logger = LoggerFactory.getLogger(SirhWSConsumer.class);
 
@@ -315,6 +319,20 @@ public class SirhWSConsumer extends BaseWsConsumer implements ISirhWSConsumer {
 			SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd");
 			parameters.put("date", sf.format(date));
 		}
+
+		ClientResponse res = createAndPostRequest(parameters, url, json);
+
+		return readResponseAsList(AgentWithServiceDto.class, res, url);
+	}
+
+	@Override
+	public List<AgentWithServiceDto> getListeAgentWithIndemniteForfaitTravailDPM(Set<Integer> listIdsAgent) {
+		
+		String url = String.format(sirhWsBaseUrl + sirhListeAgentWithIndemniteForfaitTravailDPMUrl);
+		
+		Map<String, String> parameters = new HashMap<String, String>();
+
+		String json = new JSONSerializer().exclude("*.class").deepSerialize(listIdsAgent);
 
 		ClientResponse res = createAndPostRequest(parameters, url, json);
 

@@ -109,11 +109,7 @@
                 <table width="190px" cellpadding="0" cellspacing="0" border="0" class="display" id="VisualisationTitreRepasList"> 
                     <thead>
                         <tr>
-                            <th width="20px" align="center">
-                            	<img src="images/ajout.gif" height="16px" width="16px" title="Créer une demande de titre repas" 
-	                            	onClick="executeBouton('<%=process.getNOM_PB_AJOUTER_CHOIX_DPM()%>')" 
-	                            	class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>">
-            				</th>
+                            <th width="20px" align="center"></th>
                             <th>Année</th>
                             <th>Date de début</th>
                             <th>Date de fin</th>

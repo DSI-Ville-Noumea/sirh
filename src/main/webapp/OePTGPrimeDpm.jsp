@@ -151,8 +151,10 @@
                 		</td> 
                 	</tr>
                 </table>
-                <BR/>         	
+                <BR/>
                 <INPUT type="submit" class="sigp2-Bouton-100" value="Afficher" name="<%=process.getNOM_PB_FILTRER()%>" />
+                <INPUT type="submit" class="sigp2-Bouton-100" style="width:280px;" value="Afficher les agents n'ayant pas fait de choix" name="<%=process.getNOM_PB_AFFICHER_AGENT_SANS_CHOIX()%>" 
+					title="Pas de filtre pour ce bouton. Affiche tous les agents n'ayant pas fait de choix pour l'année ouverte en cours." width="220px" />
              </FIELDSET>
             
             <FIELDSET class="sigp2Fieldset" style="text-align:left;">
@@ -188,10 +190,13 @@
                             	<img onkeydown="" onkeypress="" onkeyup="" src="images/modifier.gif" height="15px" width="15px" title="Editer le pointage" 
                             		onClick="executeBouton('<%=process.getNOM_PB_SAISIE_CHOIX(indiceTR) %>')" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>">
                             	<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_SAISIE_CHOIX(indiceTR)%>" value="">
+                            	
+                            	<% if(!"".equals(process.getVAL_ST_CHOIX(indiceTR))) { %>
                             	<img onkeydown="" onkeypress="" onkeyup="" title="annuler" type="image" src="images/suppression.gif"  
                             		height="15px" width="15px" class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" 
                             		name="<%=process.getNOM_PB_SUPPRIMER(indiceTR)%>" onclick="confirm('Etes-vous sûr de vouloir supprimer?');executeBouton('<%=process.getNOM_PB_SUPPRIMER(indiceTR)%>')">
 								<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_SUPPRIMER(indiceTR)%>" value="">
+								<% } %>
                             <% } %>
                             </td>
                             <td width="30px"><%=process.getVAL_ST_MATRICULE(indiceTR)%></td>
