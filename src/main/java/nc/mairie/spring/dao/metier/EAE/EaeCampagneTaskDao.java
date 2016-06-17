@@ -79,7 +79,9 @@ public class EaeCampagneTaskDao extends EaeDao implements EaeCampagneTaskDaoInte
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { annee });
 		for (Map<String, Object> row : rows) {
 			EaeCampagneTask camp = new EaeCampagneTask();
-			logger.info("List campagneTask EAE : " + row.toString());
+			
+			logger.debug("List campagneTask EAE : " + row.toString());
+			
 			camp.setIdCampagneTask((Integer) row.get(CHAMP_ID));
 			camp.setIdCampagneEae((Integer) row.get(CHAMP_ID_CAMPAGNE_EAE));
 			camp.setAnnee((Integer) row.get(CHAMP_ANNEE));
