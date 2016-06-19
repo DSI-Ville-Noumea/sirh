@@ -4318,6 +4318,23 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 				// Création Affectation
 				FichePoste fichePoste = getFichePosteDao().chercherFichePoste(getAffectationCourant().getIdFichePoste());
 
+				// bug #31433
+				if(null == fichePoste.getIdServi()
+						|| "".equals(fichePoste.getIdServi().trim())) {
+					
+					EntiteDto entite = adsService.getEntiteByIdEntite(fichePoste.getIdServiceAds());
+					
+					if(null != entite
+							&& null != entite.getCodeServi()
+							&& !"".equals(entite.getCodeServi().trim())) {
+						fichePoste.setIdServi(entite.getCodeServi());
+						getFichePosteDao().modifierFichePoste(fichePoste, getHistoFichePosteDao(), user, getTransaction(), affectationDao);
+					}else{
+						getTransaction().declarerErreur("Le CODE SERVI AS400 de la fiche de poste n'est pas renseigné. Merci de re-mettre à jour la fiche de poste.");
+						return false;
+					}
+				}
+				
 				// #13805 bug depuis que le schema SIRH en JDBC Template
 				// si une erreur survient, on peut avoir un dephasage entre
 				// SPMTSR et AFFECTATION : comme gerer par 2 transactions
@@ -4335,7 +4352,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 					return false;
 				}
 				// dans un 2e temps on verifie qu il n existe pas deja une
-				// affeca tion pour l agent au meme date
+				// affectation pour l agent au meme date
 				Affectation affectationExistante = getAffectationDao().chercherAffectationAgentPourDate(getAffectationCourant().getIdAgent(), getAffectationCourant().getDateDebutAff());
 				if (null != affectationExistante && affectationExistante.getDateDebutAff().equals(getAffectationCourant().getDateDebutAff())) {
 					return false;
