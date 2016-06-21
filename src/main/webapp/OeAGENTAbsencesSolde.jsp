@@ -230,7 +230,8 @@
 							<table class="display" id="tabAlimPaie">
 							<thead>
 								<tr>
-									<th>Mois</th>
+									<th>Date de modification</th>
+									<th>Date de Pointage ou Date de ventilation</th>
 									<th>Nb</th>
 									<th>Commentaire</th>					
 								</tr>
@@ -241,6 +242,7 @@
 									MoisAlimAutoCongesAnnuelsDto avct = (MoisAlimAutoCongesAnnuelsDto) process.getListeHistoriqueAlimPaie().get(i);
 							%>
 									<tr>
+										<td><%=process.getVAL_ST_DATE_MODIF(i)%></td>
 										<td><%=process.getVAL_ST_MOIS(i)%></td>
 										<td><%=process.getVAL_ST_NB_JOUR(i)%></td>
 										<td><%=process.getVAL_ST_COMMENTAIRE(i)%></td>										

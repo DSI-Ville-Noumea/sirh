@@ -440,6 +440,8 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 		SimpleDateFormat sdfDate = new SimpleDateFormat("dd/MM/yyyy");
 		SimpleDateFormat sdfHeure = new SimpleDateFormat("HH:mm");
 
+		SimpleDateFormat sdfDateEtHeure = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+
 		SimpleDateFormat sdfDateMonth = new SimpleDateFormat("MM/yyyy");
 
 		int numAnnee = (Services.estNumerique(getZone(getNOM_LB_ANNEE_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_ANNEE_SELECT())) : -1);
@@ -474,6 +476,7 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 
 		setListeHistoriqueAlimAuto(null);
 		setListeHistoriqueAlimPaie(null);
+		setListeDemandeCA(null);
 		if (EnumTypeAbsence.getRefTypeAbsenceEnum(codeTypeAbsence) == EnumTypeAbsence.CONGE) {
 			// #15146 : dans les congés annuels, on charge aussi l'historique
 			// des
@@ -530,8 +533,9 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 				String soldeRecupMinute = (soldeRecup % 60) == 0 ? Const.CHAINE_VIDE : soldeRecup % 60 + "m";
 				addZone(getNOM_ST_NB_JOUR(i), (soldeRecupHeure + soldeRecupMinute).equals(Const.CHAINE_VIDE) ? "0" : (soldeRecupHeure + soldeRecupMinute));
 				addZone(getNOM_ST_COMMENTAIRE(i), histo.getStatus());
-
+				addZone(getNOM_ST_DATE_MODIF(i), sdfDateEtHeure.format(histo.getDateModification()));
 			}
+			
 		} else if (EnumTypeAbsence.getRefTypeAbsenceEnum(codeTypeAbsence) == EnumTypeAbsence.REPOS_COMP) {
 			// #15479 : dans les recups/repos comp, on charge aussi l'historique
 			// des alim auto de la paie
@@ -549,7 +553,6 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 				String soldeReposCompMinute = (soldeReposComp % 60) == 0 ? Const.CHAINE_VIDE : soldeReposComp % 60 + "m";
 				addZone(getNOM_ST_NB_JOUR(i), (soldeReposCompHeure + soldeReposCompMinute).equals(Const.CHAINE_VIDE) ? "0" : (soldeReposCompHeure + soldeReposCompMinute));
 				addZone(getNOM_ST_COMMENTAIRE(i), histo.getStatus());
-
 			}
 		}
 
@@ -788,6 +791,14 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 
 	public String getVAL_ST_MOIS(int i) {
 		return getZone(getNOM_ST_MOIS(i));
+	}
+	
+	public String getNOM_ST_DATE_MODIF(int i) {
+		return "NOM_ST_DATE_MODIF" + i;
+	}
+
+	public String getVAL_ST_DATE_MODIF(int i) {
+		return getZone(getNOM_ST_DATE_MODIF(i));
 	}
 
 	public String getNOM_ST_DATE_MODIF_HISTO_ALIM_AUTO(int i) {
