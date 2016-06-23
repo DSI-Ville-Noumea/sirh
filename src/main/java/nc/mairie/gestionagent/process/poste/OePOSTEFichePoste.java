@@ -1952,12 +1952,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 		getFichePosteCourante().setIdBaseHorairePointage(baseHorairePointage.getIdBaseHorairePointage());
 		getFichePosteCourante().setIdBaseHoraireAbsence(baseHoraireAbsence.getIdRefTypeSaisiCongeAnnuel());
 
-		if (getFichePosteCourante().getIdStatutFp().toString().equals(EnumStatutFichePoste.INACTIVE.getId())) {
-			getFichePosteCourante().setIdResponsable(null);
-		} else {
-			if (getResponsable() != null) {
-				getFichePosteCourante().setIdResponsable(getResponsable().getIdFichePoste());
-			}
+		if (getResponsable() != null) {
+			getFichePosteCourante().setIdResponsable(getResponsable().getIdFichePoste());
 		}
 
 		if (getRemplacement() != null) {
@@ -2274,7 +2270,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 			return false;
 		}
 
-		// Controle des RGs entre stut FDP et staut des entités
+		// Controle des RGs entre stut FDP et statut des entités
 		// # 16364 et #16363
 		if (!performControlerRGEntite(request)) {
 			return false;
