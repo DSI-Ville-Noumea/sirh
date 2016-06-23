@@ -28,7 +28,6 @@ import nc.mairie.metier.hsct.SPABSEN;
 import nc.mairie.metier.hsct.VisiteMedicale;
 import nc.mairie.metier.poste.Affectation;
 import nc.mairie.metier.poste.FichePoste;
-import nc.mairie.metier.suiviMedical.MotifVisiteMed;
 import nc.mairie.metier.suiviMedical.SuiviMedical;
 import nc.mairie.spring.dao.metier.agent.AgentDao;
 import nc.mairie.spring.dao.metier.hsct.MedecinDao;
@@ -70,54 +69,48 @@ public class OeSMConvocation extends BasicProcess {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-	private String[] LB_MOIS;
-	private String[] LB_MEDECIN;
-	private String[] LB_HEURE_RDV;
-	private String[] LB_RELANCE;
-	private String[] LB_MOTIF;
-	private String[] LB_ETAT;
-	private String[] LB_STATUT;
+	private static final long			serialVersionUID		= 1L;
+	private String[]					LB_MOIS;
+	private String[]					LB_MEDECIN;
+	private String[]					LB_HEURE_RDV;
+	private String[]					LB_STATUT;
 
-	private String[] listeMois;
-	private Hashtable<String, String> hashMois;
+	private String[]					listeMois;
+	private Hashtable<String, String>	hashMois;
 
-	private ArrayList<SuiviMedical> listeSuiviMed;
-	private ArrayList<String> listeDocuments;
+	private ArrayList<SuiviMedical>		listeSuiviMed;
+	private ArrayList<String>			listeDocuments;
 
-	private ArrayList<Medecin> listeMedecin;
-	private Hashtable<Integer, Medecin> hashMedecin;
+	private ArrayList<Medecin>			listeMedecin;
+	private Hashtable<Integer, Medecin>	hashMedecin;
 
-	private ArrayList<String> listeHeureRDV;
+	private ArrayList<String>			listeHeureRDV;
 
-	public String ACTION_CALCUL = "Calcul";
-	public String ACTION_RECHERCHE = "Recherche";
-	public String ACTION_MODIFICATION = "Modification";
-	public String ACTION_SUPPRESSION = "Suppression";
+	public String						ACTION_CALCUL			= "Calcul";
+	public String						ACTION_RECHERCHE		= "Recherche";
+	public String						ACTION_MODIFICATION		= "Modification";
+	public String						ACTION_SUPPRESSION		= "Suppression";
 
-	private Logger logger = LoggerFactory.getLogger(OeSMConvocation.class);
+	private Logger						logger					= LoggerFactory.getLogger(OeSMConvocation.class);
 
-	public String convocationsEnErreur = Const.CHAINE_VIDE;
-	private String urlFichier;
+	public String						convocationsEnErreur	= Const.CHAINE_VIDE;
+	private String						urlFichier;
 
-	private SuiviMedicalDao suiviMedDao;
-	private MotifVisiteMedDao motifVisiteMedDao;
-	private SPABSENDao spabsenDao;
-	private MedecinDao medecinDao;
-	private VisiteMedicaleDao visiteMedicaleDao;
-	private FichePosteDao fichePosteDao;
-	private AffectationDao affectationDao;
-	private AgentDao agentDao;
+	private SuiviMedicalDao				suiviMedDao;
+	private MotifVisiteMedDao			motifVisiteMedDao;
+	private SPABSENDao					spabsenDao;
+	private MedecinDao					medecinDao;
+	private VisiteMedicaleDao			visiteMedicaleDao;
+	private FichePosteDao				fichePosteDao;
+	private AffectationDao				affectationDao;
+	private AgentDao					agentDao;
 
-	private IAdsService adsService;
+	private IAdsService					adsService;
 
-	private ISirhService sirhService;
+	private ISirhService				sirhService;
 
-	public static final int STATUT_RECHERCHER_AGENT = 1;
-	private ArrayList<String> listeRelance;
-	private ArrayList<String> listeStatut;
-	private ArrayList<MotifVisiteMed> listeMotif;
-	private ArrayList<EnumEtatSuiviMed> listeEnumEtatSuiviMed;
+	public static final int				STATUT_RECHERCHER_AGENT	= 1;
+	private ArrayList<String>			listeStatut;
 
 	@Override
 	public void initialiseZones(HttpServletRequest request) throws Exception {
@@ -154,8 +147,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	public String getCurrentWholeTreeJS(String serviceSaisi) {
-		return adsService.getCurrentWholeTreeActifTransitoireJS(
-				null != serviceSaisi && !"".equals(serviceSaisi) ? serviceSaisi : null, false);
+		return adsService.getCurrentWholeTreeActifTransitoireJS(null != serviceSaisi && !"".equals(serviceSaisi) ? serviceSaisi : null, false);
 	}
 
 	private void initialiseDao() {
@@ -203,17 +195,14 @@ public class OeSMConvocation extends BasicProcess {
 
 	private ArrayList<String> listerDocumentsSM() throws ParseException {
 		ArrayList<String> res = new ArrayList<String>();
-		int indiceMois = (Services.estNumerique(getVAL_LB_MOIS_SELECT()) ? Integer.parseInt(getVAL_LB_MOIS_SELECT())
-				: -1);
+		int indiceMois = (Services.estNumerique(getVAL_LB_MOIS_SELECT()) ? Integer.parseInt(getVAL_LB_MOIS_SELECT()) : -1);
 		String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ROOT");
-		String docuConvocF = repPartage + "SuiviMedical/SM_Convocation_F_" + getMoisSelectionne(indiceMois) + "_"
+		String docuConvocF = repPartage + "SuiviMedical/SM_Convocation_F_" + getMoisSelectionne(indiceMois) + "_" + getAnneeSelectionne(indiceMois) + ".doc";
+		String docuConvocCC = repPartage + "SuiviMedical/SM_Convocation_CC_" + getMoisSelectionne(indiceMois) + "_" + getAnneeSelectionne(indiceMois) + ".doc";
+		String docuAccompagnementF = repPartage + "SuiviMedical/SM_Lettre_Accompagnement_F_" + getMoisSelectionne(indiceMois) + "_"
 				+ getAnneeSelectionne(indiceMois) + ".doc";
-		String docuConvocCC = repPartage + "SuiviMedical/SM_Convocation_CC_" + getMoisSelectionne(indiceMois) + "_"
+		String docuAccompagnementCC = repPartage + "SuiviMedical/SM_Lettre_Accompagnement_CC_" + getMoisSelectionne(indiceMois) + "_"
 				+ getAnneeSelectionne(indiceMois) + ".doc";
-		String docuAccompagnementF = repPartage + "SuiviMedical/SM_Lettre_Accompagnement_F_"
-				+ getMoisSelectionne(indiceMois) + "_" + getAnneeSelectionne(indiceMois) + ".doc";
-		String docuAccompagnementCC = repPartage + "SuiviMedical/SM_Lettre_Accompagnement_CC_"
-				+ getMoisSelectionne(indiceMois) + "_" + getAnneeSelectionne(indiceMois) + ".doc";
 
 		// on verifie l'existance de chaque fichier
 		boolean existsConvocF = new File(docuConvocF).exists();
@@ -243,36 +232,32 @@ public class OeSMConvocation extends BasicProcess {
 			addZone(getNOM_ST_NUM_SM(i), sm.getIdSuiviMed().toString());
 			addZone(getNOM_ST_MATR(i), sm.getNomatr().toString());
 			addZone(getNOM_ST_AGENT(i), sm.getAgent());
-			addZone(getNOM_ST_NUM_CAFAT(i), agent.getNumCafat() == null ? Const.CHAINE_VIDE : agent.getNumCafat()
-					.trim());
+			addZone(getNOM_ST_NUM_CAFAT(i), agent.getNumCafat() == null ? Const.CHAINE_VIDE : agent.getNumCafat().trim());
 			addZone(getNOM_ST_STATUT(i), sm.getStatut());
 			// #16233
 			EntiteDto serv = adsService.getEntiteByIdEntite(sm.getIdServiceAds());
 			addZone(getNOM_ST_SERVICE(i), serv == null || serv.getLabel() == null ? "&nbsp;" : serv.getLabel());
 			addZone(getNOM_ST_DATE_DERNIERE_VISITE(i),
-					sm.getDateDerniereVisite() == null ? "&nbsp;" : Services.convertitDate(sm.getDateDerniereVisite()
-							.toString(), "yyyy-MM-dd", "dd/MM/yyyy"));
+					sm.getDateDerniereVisite() == null ? "&nbsp;" : Services.convertitDate(sm.getDateDerniereVisite().toString(), "yyyy-MM-dd", "dd/MM/yyyy"));
 			addZone(getNOM_ST_DATE_PREVISION_VISITE(i),
-					sm.getDatePrevisionVisite() == null ? "&nbsp;" : Services.convertitDate(sm.getDatePrevisionVisite()
-							.toString(), "yyyy-MM-dd", "dd/MM/yyyy"));
+					sm.getDatePrevisionVisite() == null ? "&nbsp;" : Services.convertitDate(sm.getDatePrevisionVisite().toString(), "yyyy-MM-dd", "dd/MM/yyyy"));
 			addZone(getNOM_ST_MOTIF(i), getLibMotifVM(sm.getIdMotifVm()));
 			addZone(getNOM_ST_NB_VISITES_RATEES(i), sm.getNbVisitesRatees().toString());
-			addZone(getNOM_LB_MEDECIN_SELECT(i),
-					sm.getIdMedecin() != null ? String.valueOf(getListeMedecin().indexOf(
-							getHashMedecin().get(sm.getIdMedecin()))) : Const.ZERO);
+			addZone(getNOM_LB_MEDECIN_SELECT(i), sm.getIdMedecin() != null ? String.valueOf(getListeMedecin().indexOf(getHashMedecin().get(sm.getIdMedecin())))
+					: Const.ZERO);
 			addZone(getNOM_ST_DATE_PROCHAIN_RDV(i),
-					sm.getDateProchaineVisite() == null ? Const.CHAINE_VIDE : Services.convertitDate(sm
-							.getDateProchaineVisite().toString(), "yyyy-MM-dd", "dd/MM/yyyy"));
+					sm.getDateProchaineVisite() == null ? Const.CHAINE_VIDE : Services.convertitDate(sm.getDateProchaineVisite().toString(), "yyyy-MM-dd",
+							"dd/MM/yyyy"));
 			if (sm.getHeureProchaineVisite() != null) {
 				Integer resHeure = getListeHeureRDV().indexOf(sm.getHeureProchaineVisite());
 				addZone(getNOM_LB_HEURE_RDV_SELECT(i), resHeure.toString());
 			} else {
 				addZone(getNOM_LB_HEURE_RDV_SELECT(i), Const.ZERO);
 			}
-			addZone(getNOM_CK_A_IMPRIMER_CONVOC(i), sm.getEtat().equals(EnumEtatSuiviMed.CONVOQUE.getCode())
-					|| sm.getEtat().equals(EnumEtatSuiviMed.ACCOMP.getCode()) ? getCHECKED_ON() : getCHECKED_OFF());
-			addZone(getNOM_CK_A_IMPRIMER_ACCOMP(i),
-					sm.getEtat().equals(EnumEtatSuiviMed.ACCOMP.getCode()) ? getCHECKED_ON() : getCHECKED_OFF());
+			addZone(getNOM_CK_A_IMPRIMER_CONVOC(i),
+					sm.getEtat().equals(EnumEtatSuiviMed.CONVOQUE.getCode()) || sm.getEtat().equals(EnumEtatSuiviMed.ACCOMP.getCode()) ? getCHECKED_ON()
+							: getCHECKED_OFF());
+			addZone(getNOM_CK_A_IMPRIMER_ACCOMP(i), sm.getEtat().equals(EnumEtatSuiviMed.ACCOMP.getCode()) ? getCHECKED_ON() : getCHECKED_OFF());
 			addZone(getNOM_ST_ETAT(i), sm.getEtat());
 		}
 	}
@@ -366,25 +351,9 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Initialisation des liste deroulantes de l'écran convocation du suivi
-	 * médical.
+	 * Initialisation des liste deroulantes de l'écran convocation du suivi médical.
 	 */
 	private void initialiseListeDeroulante() throws Exception {
-
-		// Si liste etat vide alors affectation
-		if (getLB_ETAT() == LBVide) {
-			ArrayList<EnumEtatSuiviMed> listeEtat = EnumEtatSuiviMed.getValues();
-			setListeEnumEtatSuiviMed(listeEtat);
-			int[] tailles = { 15 };
-			FormateListe aFormat = new FormateListe(tailles);
-			for (ListIterator<EnumEtatSuiviMed> list = listeEtat.listIterator(); list.hasNext();) {
-				EnumEtatSuiviMed etat = (EnumEtatSuiviMed) list.next();
-				String ligne[] = { etat.getValue() };
-				aFormat.ajouteLigne(ligne);
-			}
-			setLB_ETAT(aFormat.getListeFormatee(true));
-			addZone(getNOM_LB_ETAT_SELECT(), Const.ZERO);
-		}
 
 		// Si liste statut vide alors affectation
 		if (getLB_STATUT() == LBVide) {
@@ -402,39 +371,6 @@ public class OeSMConvocation extends BasicProcess {
 			}
 			setLB_STATUT(aFormat.getListeFormatee(true));
 			addZone(getNOM_LB_STATUT_SELECT(), Const.ZERO);
-		}
-
-		// Si liste motif vide alors affectation
-		if (getLB_MOTIF() == LBVide) {
-			ArrayList<MotifVisiteMed> listeMotif = (ArrayList<MotifVisiteMed>) getMotifVisiteMedDao()
-					.listerMotifVisiteMed();
-			setListeMotif(listeMotif);
-			int[] tailles = { 30 };
-			FormateListe aFormat = new FormateListe(tailles);
-			for (ListIterator<MotifVisiteMed> list = listeMotif.listIterator(); list.hasNext();) {
-				MotifVisiteMed motif = (MotifVisiteMed) list.next();
-				String ligne[] = { motif.getLibMotifVm() };
-				aFormat.ajouteLigne(ligne);
-			}
-			setLB_MOTIF(aFormat.getListeFormatee(true));
-			addZone(getNOM_LB_MOTIF_SELECT(), Const.ZERO);
-		}
-
-		// Si liste relance vide alors affectation
-		if (getLB_RELANCE() == LBVide) {
-			ArrayList<String> listeRelance = new ArrayList<String>();
-			listeRelance.add("oui");
-			listeRelance.add("non");
-			setListeRelance(listeRelance);
-			int[] tailles = { 15 };
-			FormateListe aFormat = new FormateListe(tailles);
-			for (ListIterator<String> list = listeRelance.listIterator(); list.hasNext();) {
-				String relance = (String) list.next();
-				String ligne[] = { relance };
-				aFormat.ajouteLigne(ligne);
-			}
-			setLB_RELANCE(aFormat.getListeFormatee(true));
-			addZone(getNOM_LB_RELANCE_SELECT(), Const.ZERO);
 		}
 
 		// Si liste mois vide alors affectation
@@ -557,8 +493,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_RECHERCHER Date de création
-	 * : (28/11/11)
+	 * Retourne le nom d'un bouton pour la JSP : PB_RECHERCHER Date de création : (28/11/11)
 	 * 
 	 */
 	public String getNOM_PB_RECHERCHER() {
@@ -566,46 +501,19 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * regles de gestion du process - Positionne un statut en fonction de ces
-	 * regles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (28/11/11)
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les regles de gestion du process - Positionne un statut en fonction de ces regles :
+	 * setStatut(STATUT, boolean veutRetour) ou setStatut(STATUT,Message d'erreur) Date de création : (28/11/11)
 	 * 
 	 */
 	public boolean performPB_RECHERCHER(HttpServletRequest request) throws Exception {
 		// Mise à jour de l'action menee
 		addZone(getNOM_ST_ACTION(), ACTION_RECHERCHE);
 
-		int indiceMois = (Services.estNumerique(getVAL_LB_MOIS_SELECT()) ? Integer.parseInt(getVAL_LB_MOIS_SELECT())
-				: -1);
+		int indiceMois = (Services.estNumerique(getVAL_LB_MOIS_SELECT()) ? Integer.parseInt(getVAL_LB_MOIS_SELECT()) : -1);
 		if (indiceMois != -1) {
-			// récupération de l'etat
-			int indiceEtat = (Services.estNumerique(getVAL_LB_ETAT_SELECT()) ? Integer
-					.parseInt(getVAL_LB_ETAT_SELECT()) : -1);
-			String etat = Const.CHAINE_VIDE;
-			if (indiceEtat > 0) {
-				etat = getListeEnumEtatSuiviMed().get(indiceEtat - 1).getCode();
-			}
-
-			// recupération motif
-			int indiceMotif = (Services.estNumerique(getVAL_LB_MOTIF_SELECT()) ? Integer
-					.parseInt(getVAL_LB_MOTIF_SELECT()) : -1);
-			String motif = Const.CHAINE_VIDE;
-			if (indiceMotif > 0) {
-				motif = getListeMotif().get(indiceMotif - 1).getIdMotifVm().toString();
-			}
-
-			// recupération relance
-			int indiceRelance = (Services.estNumerique(getVAL_LB_RELANCE_SELECT()) ? Integer
-					.parseInt(getVAL_LB_RELANCE_SELECT()) : -1);
-			String relance = Const.CHAINE_VIDE;
-			if (indiceRelance > 0) {
-				relance = getListeRelance().get(indiceRelance - 1);
-			}
 
 			// recupération statut
-			int indiceStatut = (Services.estNumerique(getVAL_LB_STATUT_SELECT()) ? Integer
-					.parseInt(getVAL_LB_STATUT_SELECT()) : -1);
+			int indiceStatut = (Services.estNumerique(getVAL_LB_STATUT_SELECT()) ? Integer.parseInt(getVAL_LB_STATUT_SELECT()) : -1);
 			String statut = Const.CHAINE_VIDE;
 			if (indiceStatut > 0) {
 				statut = getListeStatut().get(indiceStatut - 1);
@@ -621,13 +529,12 @@ public class OeSMConvocation extends BasicProcess {
 			List<Integer> listeSousService = null;
 			if (getVAL_ST_ID_SERVICE_ADS().length() != 0) {
 				// #16233 on recupere les sous-service du service selectionne
-				listeSousService = adsService.getListIdsEntiteWithEnfantsOfEntite(new Integer(
-						getVAL_ST_ID_SERVICE_ADS()));
+				listeSousService = adsService.getListIdsEntiteWithEnfantsOfEntite(new Integer(getVAL_ST_ID_SERVICE_ADS()));
 			}
 
-			setListeSuiviMed(getSuiviMedDao().listerSuiviMedicalAvecMoisetAnneeSansEffectue(
-					getMoisSelectionne(indiceMois), getAnneeSelectionne(indiceMois), agent, listeSousService, relance,
-					motif, etat, statut));
+			// #31345 : on ne cherche plus sur etat/relance/motif
+			setListeSuiviMed(getSuiviMedDao().listerSuiviMedicalAvecMoisetAnneeSansEffectue(getMoisSelectionne(indiceMois), getAnneeSelectionne(indiceMois),
+					agent, listeSousService, Const.CHAINE_VIDE, Const.CHAINE_VIDE, Const.CHAINE_VIDE, statut));
 			afficheListeSuiviMed();
 			// getSuiviMedDao().detruitDao();
 			// pour les documents
@@ -645,8 +552,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_CALCULER Date de création :
-	 * (28/11/11)
+	 * Retourne le nom d'un bouton pour la JSP : PB_CALCULER Date de création : (28/11/11)
 	 * 
 	 */
 	public String getNOM_PB_CALCULER() {
@@ -654,18 +560,15 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * regles de gestion du process - Positionne un statut en fonction de ces
-	 * regles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (28/11/11)
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les regles de gestion du process - Positionne un statut en fonction de ces regles :
+	 * setStatut(STATUT, boolean veutRetour) ou setStatut(STATUT,Message d'erreur) Date de création : (28/11/11)
 	 * 
 	 */
 	public boolean performPB_CALCULER(HttpServletRequest request) throws Exception {
 		// Mise à jour de l'action menee
 		addZone(getNOM_ST_ACTION(), ACTION_CALCUL);
 
-		int indiceMois = (Services.estNumerique(getVAL_LB_MOIS_SELECT()) ? Integer.parseInt(getVAL_LB_MOIS_SELECT())
-				: -1);
+		int indiceMois = (Services.estNumerique(getVAL_LB_MOIS_SELECT()) ? Integer.parseInt(getVAL_LB_MOIS_SELECT()) : -1);
 		if (indiceMois != -1) {
 			Integer moisChoisi = getMoisSelectionne(indiceMois);
 			Integer anneeChoisi = getAnneeSelectionne(indiceMois);
@@ -673,8 +576,7 @@ public class OeSMConvocation extends BasicProcess {
 			// Suppression des suivi medicaux a l'etat 'Travail' en fonction du
 			// mois et de l'année
 			try {
-				getSuiviMedDao().supprimerSuiviMedicalTravailAvecMoisetAnnee(EnumEtatSuiviMed.TRAVAIL.getCode(),
-						moisChoisi, anneeChoisi);
+				getSuiviMedDao().supprimerSuiviMedicalTravailAvecMoisetAnnee(EnumEtatSuiviMed.TRAVAIL.getCode(), moisChoisi, anneeChoisi);
 			} catch (Exception e) {
 				logger.error("Problème dans la suppression des suivi medicaux" + new Date());
 			}
@@ -683,8 +585,8 @@ public class OeSMConvocation extends BasicProcess {
 			performCalculSuiviMedical(moisChoisi, anneeChoisi);
 
 			// Affichage de la liste
-			setListeSuiviMed(getSuiviMedDao().listerSuiviMedicalAvecMoisetAnneeSansEffectue(moisChoisi, anneeChoisi,
-					null, null, Const.CHAINE_VIDE, Const.CHAINE_VIDE, Const.CHAINE_VIDE, Const.CHAINE_VIDE));
+			setListeSuiviMed(getSuiviMedDao().listerSuiviMedicalAvecMoisetAnneeSansEffectue(moisChoisi, anneeChoisi, null, null, Const.CHAINE_VIDE,
+					Const.CHAINE_VIDE, Const.CHAINE_VIDE, Const.CHAINE_VIDE));
 			logger.info("Affichage de la liste");
 			afficheListeSuiviMed();
 			// pour les documents
@@ -751,8 +653,7 @@ public class OeSMConvocation extends BasicProcess {
 		// CAS N 9 : AGENT SANS VISITES MEDICALES
 		// on liste tous les agents sans visites medicales
 		// avec une PA active à la date du jour
-		ArrayList<PositionAdmAgent> listeAgentActivite = PositionAdmAgent
-				.listerPositionAdmAgentEnActivite(getTransaction());
+		ArrayList<PositionAdmAgent> listeAgentActivite = PositionAdmAgent.listerPositionAdmAgentEnActivite(getTransaction());
 		String listeNomatr = Const.CHAINE_VIDE;
 		for (PositionAdmAgent pa : listeAgentActivite) {
 			listeNomatr += pa.getNomatr() + ",";
@@ -802,8 +703,7 @@ public class OeSMConvocation extends BasicProcess {
 			sm.setIdAgent(agent.getIdAgent());
 			sm.setNomatr(agent.getNomatr());
 			sm.setAgent(agent.getNomAgent() + " " + agent.getPrenomAgent());
-			sm.setStatut(carr != null && carr.getCodeCategorie() != null ? getSuiviMedDao().getStatutSM(
-					carr.getCodeCategorie()) : null);
+			sm.setStatut(carr != null && carr.getCodeCategorie() != null ? getSuiviMedDao().getStatutSM(carr.getCodeCategorie()) : null);
 			sm.setIdServiceAds(fp != null ? fp.getIdServiceAds() : null);
 			sm.setIdServi(fp != null ? fp.getIdServi() : null);
 			sm.setDateDerniereVisite(null);
@@ -822,8 +722,7 @@ public class OeSMConvocation extends BasicProcess {
 			// du meme
 			// agent
 			try {
-				SuiviMedical smTemp = getSuiviMedDao().chercherSuiviMedicalAgentMoisetAnnee(sm.getIdAgent(),
-						moisChoisi, anneeChoisi);
+				SuiviMedical smTemp = getSuiviMedDao().chercherSuiviMedicalAgentMoisetAnnee(sm.getIdAgent(), moisChoisi, anneeChoisi);
 				logger.debug("SM : " + smTemp.toString());
 				// si une ligne existe deja
 				// on regarde si etat Travail
@@ -835,8 +734,7 @@ public class OeSMConvocation extends BasicProcess {
 				// la
 				// nouvelle
 				if (smTemp.getEtat().equals(EnumEtatSuiviMed.TRAVAIL.getCode())) {
-					String dateExistePrevision = Services.convertitDate(smTemp.getDatePrevisionVisite().toString(),
-							"yyyy-MM-dd", "dd/MM/yyyy");
+					String dateExistePrevision = Services.convertitDate(smTemp.getDatePrevisionVisite().toString(), "yyyy-MM-dd", "dd/MM/yyyy");
 					String datePrevision = sm.getDatePrevisionVisite().toString();
 					if (Services.compareDates(dateExistePrevision, datePrevision) > 0) {
 						continue;
@@ -849,11 +747,9 @@ public class OeSMConvocation extends BasicProcess {
 			} catch (Exception e) {
 				// aucune ligne n'a été trouvée alors on continue
 			}
-			getSuiviMedDao().creerSuiviMedical(sm.getIdAgent(), sm.getNomatr(), sm.getAgent(), sm.getStatut(),
-					sm.getDateDerniereVisite(), sm.getDatePrevisionVisite(), sm.getIdMotifVm(),
-					sm.getNbVisitesRatees(), sm.getIdMedecin(), sm.getDateProchaineVisite(),
-					sm.getHeureProchaineVisite(), sm.getEtat(), sm.getMois(), sm.getAnnee(), sm.getRelance(),
-					sm.getIdServiceAds(), sm.getIdServi());
+			getSuiviMedDao().creerSuiviMedical(sm.getIdAgent(), sm.getNomatr(), sm.getAgent(), sm.getStatut(), sm.getDateDerniereVisite(),
+					sm.getDatePrevisionVisite(), sm.getIdMotifVm(), sm.getNbVisitesRatees(), sm.getIdMedecin(), sm.getDateProchaineVisite(),
+					sm.getHeureProchaineVisite(), sm.getEtat(), sm.getMois(), sm.getAnnee(), sm.getRelance(), sm.getIdServiceAds(), sm.getIdServi());
 			nbCas9++;
 		}
 		logger.info("Nb de cas 9 : " + nbCas9);
@@ -865,8 +761,7 @@ public class OeSMConvocation extends BasicProcess {
 		// l'année donnée
 		int nbCas5 = 0;
 		try {
-			ArrayList<Integer> listeMatriculeSMCas5 = getSpabsenDao().listerMatriculeAbsencePourSMDoubleType("MA",
-					"LM", moisChoisi, anneeChoisi);
+			ArrayList<Integer> listeMatriculeSMCas5 = getSpabsenDao().listerMatriculeAbsencePourSMDoubleType("MA", "LM", moisChoisi, anneeChoisi);
 			// pour chaque matricule trouvé on va cherche la liste de ses
 			// SPABSEN et
 			// on regarde si il se suivent, que le nombre de jours est > 90
@@ -882,8 +777,8 @@ public class OeSMConvocation extends BasicProcess {
 						continue;
 					}
 				}
-				ArrayList<SPABSEN> listeSPABSENAgent = getSpabsenDao().listerAbsencePourAgentTypeEtMoisAnneeDoubleType(
-						nomatrAgent, "MA", "LM", moisChoisi, anneeChoisi);
+				ArrayList<SPABSEN> listeSPABSENAgent = getSpabsenDao().listerAbsencePourAgentTypeEtMoisAnneeDoubleType(nomatrAgent, "MA", "LM", moisChoisi,
+						anneeChoisi);
 				Integer compteurJoursMA = 0;
 				SPABSEN dernierAM = null;
 				boolean dejaComptabilise = false;
@@ -899,11 +794,9 @@ public class OeSMConvocation extends BasicProcess {
 						// ligne suivante est egale a datFin de la precdente + 1
 						SPABSEN ligneSuivante = listeSPABSENAgent.get(j + 1);
 						dernierAM = ligneSuivante;
-						String dateDebLigneSuiv = Services.enleveJours(
-								Services.convertitDate(ligneSuivante.getDatDeb().toString(), "yyyyMMdd", "dd/MM/yyyy"),
+						String dateDebLigneSuiv = Services.enleveJours(Services.convertitDate(ligneSuivante.getDatDeb().toString(), "yyyyMMdd", "dd/MM/yyyy"),
 								1);
-						String dateFinLignePrec = Services.convertitDate(lignePrecedente.getDatFin().toString(),
-								"yyyyMMdd", "dd/MM/yyyy");
+						String dateFinLignePrec = Services.convertitDate(lignePrecedente.getDatFin().toString(), "yyyyMMdd", "dd/MM/yyyy");
 						if (dateFinLignePrec.equals(dateDebLigneSuiv)) {
 							compteurJoursMA = compteurJoursMA + ligneSuivante.getNbJour();
 							dejaComptabilise = true;
@@ -942,13 +835,11 @@ public class OeSMConvocation extends BasicProcess {
 					sm.setIdAgent(agent.getIdAgent());
 					sm.setNomatr(agent.getNomatr());
 					sm.setAgent(agent.getNomAgent() + " " + agent.getPrenomAgent());
-					sm.setStatut(carr != null && carr.getCodeCategorie() != null ? getSuiviMedDao().getStatutSM(
-							carr.getCodeCategorie()) : null);
+					sm.setStatut(carr != null && carr.getCodeCategorie() != null ? getSuiviMedDao().getStatutSM(carr.getCodeCategorie()) : null);
 					sm.setIdServiceAds(fp != null ? fp.getIdServiceAds() : null);
 					sm.setIdServi(fp != null ? fp.getIdServi() : null);
 					sm.setDateDerniereVisite(null);
-					String datePrev = Services.ajouteJours(
-							Services.convertitDate(dernierAM.getDatFin().toString(), "yyyyMMdd", "dd/MM/yyyy"), 2);
+					String datePrev = Services.ajouteJours(Services.convertitDate(dernierAM.getDatFin().toString(), "yyyyMMdd", "dd/MM/yyyy"), 2);
 					Date d = new SimpleDateFormat("dd/MM/yyyy").parse(datePrev);
 					sm.setDatePrevisionVisite(d);
 					sm.setIdMotifVm(EnumMotifVisiteMed.VM_CONGE_LONGUE_MALADIE.getCode());
@@ -964,8 +855,7 @@ public class OeSMConvocation extends BasicProcess {
 					// du meme
 					// agent
 					try {
-						SuiviMedical smTemp = getSuiviMedDao().chercherSuiviMedicalAgentMoisetAnnee(sm.getIdAgent(),
-								moisChoisi, anneeChoisi);
+						SuiviMedical smTemp = getSuiviMedDao().chercherSuiviMedicalAgentMoisetAnnee(sm.getIdAgent(), moisChoisi, anneeChoisi);
 						logger.debug("SM : " + smTemp.toString());
 						// si une ligne existe deja
 						// on regarde si etat Travail
@@ -977,8 +867,7 @@ public class OeSMConvocation extends BasicProcess {
 						// la
 						// nouvelle
 						if (smTemp.getEtat().equals(EnumEtatSuiviMed.TRAVAIL.getCode())) {
-							String dateExistePrevision = Services.convertitDate(smTemp.getDatePrevisionVisite()
-									.toString(), "yyyy-MM-dd", "dd/MM/yyyy");
+							String dateExistePrevision = Services.convertitDate(smTemp.getDatePrevisionVisite().toString(), "yyyy-MM-dd", "dd/MM/yyyy");
 							String datePrevision = sm.getDatePrevisionVisite().toString();
 							if (Services.compareDates(dateExistePrevision, datePrevision) > 0) {
 								continue;
@@ -991,11 +880,9 @@ public class OeSMConvocation extends BasicProcess {
 					} catch (Exception e) {
 						// aucune ligne n'a été trouvée alors on continue
 					}
-					getSuiviMedDao().creerSuiviMedical(sm.getIdAgent(), sm.getNomatr(), sm.getAgent(), sm.getStatut(),
-							sm.getDateDerniereVisite(), sm.getDatePrevisionVisite(), sm.getIdMotifVm(),
-							sm.getNbVisitesRatees(), sm.getIdMedecin(), sm.getDateProchaineVisite(),
-							sm.getHeureProchaineVisite(), sm.getEtat(), sm.getMois(), sm.getAnnee(), sm.getRelance(),
-							sm.getIdServiceAds(), sm.getIdServi());
+					getSuiviMedDao().creerSuiviMedical(sm.getIdAgent(), sm.getNomatr(), sm.getAgent(), sm.getStatut(), sm.getDateDerniereVisite(),
+							sm.getDatePrevisionVisite(), sm.getIdMotifVm(), sm.getNbVisitesRatees(), sm.getIdMedecin(), sm.getDateProchaineVisite(),
+							sm.getHeureProchaineVisite(), sm.getEtat(), sm.getMois(), sm.getAnnee(), sm.getRelance(), sm.getIdServiceAds(), sm.getIdServi());
 					nbCas5++;
 
 				}
@@ -1012,8 +899,7 @@ public class OeSMConvocation extends BasicProcess {
 		// l'année donnée
 		int nbCas4 = 0;
 		try {
-			ArrayList<Integer> listeMatriculeSMCas4 = getSpabsenDao().listerMatriculeAbsencePourSM("MA", moisChoisi,
-					anneeChoisi);
+			ArrayList<Integer> listeMatriculeSMCas4 = getSpabsenDao().listerMatriculeAbsencePourSM("MA", moisChoisi, anneeChoisi);
 			// pour chaque matricule trouvé on va cherche la liste de ses
 			// SPABSEN et
 			// on regarde si il se suivent, que le nombre de jours est > 30
@@ -1029,8 +915,7 @@ public class OeSMConvocation extends BasicProcess {
 						continue;
 					}
 				}
-				ArrayList<SPABSEN> listeSPABSENAgent = getSpabsenDao().listerAbsencePourAgentTypeEtMoisAnnee(
-						nomatrAgent, "MA", moisChoisi, anneeChoisi);
+				ArrayList<SPABSEN> listeSPABSENAgent = getSpabsenDao().listerAbsencePourAgentTypeEtMoisAnnee(nomatrAgent, "MA", moisChoisi, anneeChoisi);
 				Integer compteurJoursMA = 0;
 				SPABSEN dernierAM = null;
 				boolean dejaComptabilise = false;
@@ -1046,11 +931,9 @@ public class OeSMConvocation extends BasicProcess {
 						// ligne suivante est egale a datFin de la precdente + 1
 						SPABSEN ligneSuivante = listeSPABSENAgent.get(j + 1);
 						dernierAM = ligneSuivante;
-						String dateDebLigneSuiv = Services.enleveJours(
-								Services.convertitDate(ligneSuivante.getDatDeb().toString(), "yyyyMMdd", "dd/MM/yyyy"),
+						String dateDebLigneSuiv = Services.enleveJours(Services.convertitDate(ligneSuivante.getDatDeb().toString(), "yyyyMMdd", "dd/MM/yyyy"),
 								1);
-						String dateFinLignePrec = Services.convertitDate(lignePrecedente.getDatFin().toString(),
-								"yyyyMMdd", "dd/MM/yyyy");
+						String dateFinLignePrec = Services.convertitDate(lignePrecedente.getDatFin().toString(), "yyyyMMdd", "dd/MM/yyyy");
 						if (dateFinLignePrec.equals(dateDebLigneSuiv)) {
 							compteurJoursMA = compteurJoursMA + ligneSuivante.getNbJour();
 							dejaComptabilise = true;
@@ -1089,13 +972,11 @@ public class OeSMConvocation extends BasicProcess {
 					sm.setIdAgent(agent.getIdAgent());
 					sm.setNomatr(agent.getNomatr());
 					sm.setAgent(agent.getNomAgent() + " " + agent.getPrenomAgent());
-					sm.setStatut(carr != null && carr.getCodeCategorie() != null ? getSuiviMedDao().getStatutSM(
-							carr.getCodeCategorie()) : null);
+					sm.setStatut(carr != null && carr.getCodeCategorie() != null ? getSuiviMedDao().getStatutSM(carr.getCodeCategorie()) : null);
 					sm.setIdServiceAds(fp != null ? fp.getIdServiceAds() : null);
 					sm.setIdServi(fp != null ? fp.getIdServi() : null);
 					sm.setDateDerniereVisite(null);
-					String datePrev = Services.ajouteJours(
-							Services.convertitDate(dernierAM.getDatFin().toString(), "yyyyMMdd", "dd/MM/yyyy"), 2);
+					String datePrev = Services.ajouteJours(Services.convertitDate(dernierAM.getDatFin().toString(), "yyyyMMdd", "dd/MM/yyyy"), 2);
 					Date d = new SimpleDateFormat("dd/MM/yyyy").parse(datePrev);
 					sm.setDatePrevisionVisite(d);
 					sm.setIdMotifVm(EnumMotifVisiteMed.VM_MA_1MOIS.getCode());
@@ -1111,8 +992,7 @@ public class OeSMConvocation extends BasicProcess {
 					// du meme
 					// agent
 					try {
-						SuiviMedical smTemp = getSuiviMedDao().chercherSuiviMedicalAgentMoisetAnnee(sm.getIdAgent(),
-								moisChoisi, anneeChoisi);
+						SuiviMedical smTemp = getSuiviMedDao().chercherSuiviMedicalAgentMoisetAnnee(sm.getIdAgent(), moisChoisi, anneeChoisi);
 						logger.debug("SM : " + smTemp.toString());
 						// si une ligne existe deja
 						// on regarde si etat Travail
@@ -1124,8 +1004,7 @@ public class OeSMConvocation extends BasicProcess {
 						// la
 						// nouvelle
 						if (smTemp.getEtat().equals(EnumEtatSuiviMed.TRAVAIL.getCode())) {
-							String dateExistePrevision = Services.convertitDate(smTemp.getDatePrevisionVisite()
-									.toString(), "yyyy-MM-dd", "dd/MM/yyyy");
+							String dateExistePrevision = Services.convertitDate(smTemp.getDatePrevisionVisite().toString(), "yyyy-MM-dd", "dd/MM/yyyy");
 							String datePrevision = sm.getDatePrevisionVisite().toString();
 							if (Services.compareDates(dateExistePrevision, datePrevision) > 0) {
 								continue;
@@ -1138,11 +1017,9 @@ public class OeSMConvocation extends BasicProcess {
 					} catch (Exception e) {
 						// aucune ligne n'a été trouvée alors on continue
 					}
-					getSuiviMedDao().creerSuiviMedical(sm.getIdAgent(), sm.getNomatr(), sm.getAgent(), sm.getStatut(),
-							sm.getDateDerniereVisite(), sm.getDatePrevisionVisite(), sm.getIdMotifVm(),
-							sm.getNbVisitesRatees(), sm.getIdMedecin(), sm.getDateProchaineVisite(),
-							sm.getHeureProchaineVisite(), sm.getEtat(), sm.getMois(), sm.getAnnee(), sm.getRelance(),
-							sm.getIdServiceAds(), sm.getIdServi());
+					getSuiviMedDao().creerSuiviMedical(sm.getIdAgent(), sm.getNomatr(), sm.getAgent(), sm.getStatut(), sm.getDateDerniereVisite(),
+							sm.getDatePrevisionVisite(), sm.getIdMotifVm(), sm.getNbVisitesRatees(), sm.getIdMedecin(), sm.getDateProchaineVisite(),
+							sm.getHeureProchaineVisite(), sm.getEtat(), sm.getMois(), sm.getAnnee(), sm.getRelance(), sm.getIdServiceAds(), sm.getIdServi());
 					nbCas4++;
 				}
 			}
@@ -1158,8 +1035,7 @@ public class OeSMConvocation extends BasicProcess {
 		// l'année donnée
 		int nbCas3 = 0;
 		try {
-			ArrayList<Integer> listeMatriculeSMCas3 = getSpabsenDao().listerMatriculeAbsencePourSM("AT", moisChoisi,
-					anneeChoisi);
+			ArrayList<Integer> listeMatriculeSMCas3 = getSpabsenDao().listerMatriculeAbsencePourSM("AT", moisChoisi, anneeChoisi);
 			// pour chaque matricule trouvé on va cherche la liste de ses
 			// SPABSEN et
 			// on regarde si il se suivent, que le nombre de jours est > 15
@@ -1175,8 +1051,7 @@ public class OeSMConvocation extends BasicProcess {
 						continue;
 					}
 				}
-				ArrayList<SPABSEN> listeSPABSENAgent = getSpabsenDao().listerAbsencePourAgentTypeEtMoisAnnee(
-						nomatrAgent, "AT", moisChoisi, anneeChoisi);
+				ArrayList<SPABSEN> listeSPABSENAgent = getSpabsenDao().listerAbsencePourAgentTypeEtMoisAnnee(nomatrAgent, "AT", moisChoisi, anneeChoisi);
 				Integer compteurJoursITT = 0;
 				SPABSEN dernierAT = null;
 				boolean dejaComptabilise = false;
@@ -1192,11 +1067,9 @@ public class OeSMConvocation extends BasicProcess {
 						// ligne suivante est egale a datFin de la precdente + 1
 						SPABSEN ligneSuivante = listeSPABSENAgent.get(j + 1);
 						dernierAT = ligneSuivante;
-						String dateDebLigneSuiv = Services.enleveJours(
-								Services.convertitDate(ligneSuivante.getDatDeb().toString(), "yyyyMMdd", "dd/MM/yyyy"),
+						String dateDebLigneSuiv = Services.enleveJours(Services.convertitDate(ligneSuivante.getDatDeb().toString(), "yyyyMMdd", "dd/MM/yyyy"),
 								1);
-						String dateFinLignePrec = Services.convertitDate(lignePrecedente.getDatFin().toString(),
-								"yyyyMMdd", "dd/MM/yyyy");
+						String dateFinLignePrec = Services.convertitDate(lignePrecedente.getDatFin().toString(), "yyyyMMdd", "dd/MM/yyyy");
 						if (dateFinLignePrec.equals(dateDebLigneSuiv)) {
 							compteurJoursITT = compteurJoursITT + ligneSuivante.getNbJour();
 							dejaComptabilise = true;
@@ -1235,13 +1108,11 @@ public class OeSMConvocation extends BasicProcess {
 					sm.setIdAgent(agent.getIdAgent());
 					sm.setNomatr(agent.getNomatr());
 					sm.setAgent(agent.getNomAgent() + " " + agent.getPrenomAgent());
-					sm.setStatut(carr != null && carr.getCodeCategorie() != null ? getSuiviMedDao().getStatutSM(
-							carr.getCodeCategorie()) : null);
+					sm.setStatut(carr != null && carr.getCodeCategorie() != null ? getSuiviMedDao().getStatutSM(carr.getCodeCategorie()) : null);
 					sm.setIdServiceAds(fp != null ? fp.getIdServiceAds() : null);
 					sm.setIdServi(fp != null ? fp.getIdServi() : null);
 					sm.setDateDerniereVisite(null);
-					String datePrev = Services.ajouteJours(
-							Services.convertitDate(dernierAT.getDatFin().toString(), "yyyyMMdd", "dd/MM/yyyy"), 1);
+					String datePrev = Services.ajouteJours(Services.convertitDate(dernierAT.getDatFin().toString(), "yyyyMMdd", "dd/MM/yyyy"), 1);
 					Date d = new SimpleDateFormat("dd/MM/yyyy").parse(datePrev);
 					sm.setDatePrevisionVisite(d);
 					sm.setIdMotifVm(EnumMotifVisiteMed.VM_AT_ITT_15JOURS.getCode());
@@ -1257,8 +1128,7 @@ public class OeSMConvocation extends BasicProcess {
 					// du meme
 					// agent
 					try {
-						SuiviMedical smTemp = getSuiviMedDao().chercherSuiviMedicalAgentMoisetAnnee(sm.getIdAgent(),
-								moisChoisi, anneeChoisi);
+						SuiviMedical smTemp = getSuiviMedDao().chercherSuiviMedicalAgentMoisetAnnee(sm.getIdAgent(), moisChoisi, anneeChoisi);
 						logger.debug("SM : " + smTemp.toString());
 						// si une ligne existe deja
 						// on regarde si etat Travail
@@ -1270,8 +1140,7 @@ public class OeSMConvocation extends BasicProcess {
 						// la
 						// nouvelle
 						if (smTemp.getEtat().equals(EnumEtatSuiviMed.TRAVAIL.getCode())) {
-							String dateExistePrevision = Services.convertitDate(smTemp.getDatePrevisionVisite()
-									.toString(), "yyyy-MM-dd", "dd/MM/yyyy");
+							String dateExistePrevision = Services.convertitDate(smTemp.getDatePrevisionVisite().toString(), "yyyy-MM-dd", "dd/MM/yyyy");
 							String datePrevision = sm.getDatePrevisionVisite().toString();
 							if (Services.compareDates(dateExistePrevision, datePrevision) > 0) {
 								continue;
@@ -1284,11 +1153,9 @@ public class OeSMConvocation extends BasicProcess {
 					} catch (Exception e) {
 						// aucune ligne n'a été trouvée alors on continue
 					}
-					getSuiviMedDao().creerSuiviMedical(sm.getIdAgent(), sm.getNomatr(), sm.getAgent(), sm.getStatut(),
-							sm.getDateDerniereVisite(), sm.getDatePrevisionVisite(), sm.getIdMotifVm(),
-							sm.getNbVisitesRatees(), sm.getIdMedecin(), sm.getDateProchaineVisite(),
-							sm.getHeureProchaineVisite(), sm.getEtat(), sm.getMois(), sm.getAnnee(), sm.getRelance(),
-							sm.getIdServiceAds(), sm.getIdServi());
+					getSuiviMedDao().creerSuiviMedical(sm.getIdAgent(), sm.getNomatr(), sm.getAgent(), sm.getStatut(), sm.getDateDerniereVisite(),
+							sm.getDatePrevisionVisite(), sm.getIdMotifVm(), sm.getNbVisitesRatees(), sm.getIdMedecin(), sm.getDateProchaineVisite(),
+							sm.getHeureProchaineVisite(), sm.getEtat(), sm.getMois(), sm.getAnnee(), sm.getRelance(), sm.getIdServiceAds(), sm.getIdServi());
 					nbCas3++;
 				}
 			}
@@ -1302,9 +1169,8 @@ public class OeSMConvocation extends BasicProcess {
 		// CAS N 1 : A la demande de l'agent ou du service
 		// on liste toutes les visites medicales du type "a la demande..."
 		Medecin m = getMedecinDao().chercherMedecinARenseigner("A", "RENSEIGNER");
-		ArrayList<VisiteMedicale> listeSMCas1 = getVisiteMedicaleDao().listerVisiteMedicalePourSMCas1(
-				EnumMotifVisiteMed.VM_DEMANDE_AGENT.getCode(), EnumMotifVisiteMed.VM_DEMANDE_SERVICE.getCode(),
-				m.getIdMedecin());
+		ArrayList<VisiteMedicale> listeSMCas1 = getVisiteMedicaleDao().listerVisiteMedicalePourSMCas1(EnumMotifVisiteMed.VM_DEMANDE_AGENT.getCode(),
+				EnumMotifVisiteMed.VM_DEMANDE_SERVICE.getCode(), m.getIdMedecin());
 		int nbCas1 = 0;
 		for (int i = 0; i < listeSMCas1.size(); i++) {
 			VisiteMedicale vm = listeSMCas1.get(i);
@@ -1348,8 +1214,7 @@ public class OeSMConvocation extends BasicProcess {
 			sm.setIdAgent(agent.getIdAgent());
 			sm.setNomatr(agent.getNomatr());
 			sm.setAgent(agent.getNomAgent() + " " + agent.getPrenomAgent());
-			sm.setStatut(carr != null && carr.getCodeCategorie() != null ? getSuiviMedDao().getStatutSM(
-					carr.getCodeCategorie()) : null);
+			sm.setStatut(carr != null && carr.getCodeCategorie() != null ? getSuiviMedDao().getStatutSM(carr.getCodeCategorie()) : null);
 			sm.setIdServiceAds(fp != null ? fp.getIdServiceAds() : null);
 			sm.setIdServi(fp != null ? fp.getIdServi() : null);
 			sm.setDateDerniereVisite(null);
@@ -1368,8 +1233,7 @@ public class OeSMConvocation extends BasicProcess {
 			// du meme
 			// agent
 			try {
-				SuiviMedical smTemp = getSuiviMedDao().chercherSuiviMedicalAgentMoisetAnnee(sm.getIdAgent(),
-						moisChoisi, anneeChoisi);
+				SuiviMedical smTemp = getSuiviMedDao().chercherSuiviMedicalAgentMoisetAnnee(sm.getIdAgent(), moisChoisi, anneeChoisi);
 				logger.debug("SM : " + smTemp.toString());
 				// si une ligne existe deja
 				// on regarde si etat Travail
@@ -1381,8 +1245,7 @@ public class OeSMConvocation extends BasicProcess {
 				// la
 				// nouvelle
 				if (smTemp.getEtat().equals(EnumEtatSuiviMed.TRAVAIL.getCode())) {
-					String dateExistePrevision = Services.convertitDate(smTemp.getDatePrevisionVisite().toString(),
-							"yyyy-MM-dd", "dd/MM/yyyy");
+					String dateExistePrevision = Services.convertitDate(smTemp.getDatePrevisionVisite().toString(), "yyyy-MM-dd", "dd/MM/yyyy");
 					String datePrevision = sm.getDatePrevisionVisite().toString();
 					if (Services.compareDates(dateExistePrevision, datePrevision) > 0) {
 						continue;
@@ -1395,11 +1258,9 @@ public class OeSMConvocation extends BasicProcess {
 			} catch (Exception e) {
 				// aucune ligne n'a été trouvée alors on continue
 			}
-			getSuiviMedDao().creerSuiviMedical(sm.getIdAgent(), sm.getNomatr(), sm.getAgent(), sm.getStatut(),
-					sm.getDateDerniereVisite(), sm.getDatePrevisionVisite(), sm.getIdMotifVm(),
-					sm.getNbVisitesRatees(), sm.getIdMedecin(), sm.getDateProchaineVisite(),
-					sm.getHeureProchaineVisite(), sm.getEtat(), sm.getMois(), sm.getAnnee(), sm.getRelance(),
-					sm.getIdServiceAds(), sm.getIdServi());
+			getSuiviMedDao().creerSuiviMedical(sm.getIdAgent(), sm.getNomatr(), sm.getAgent(), sm.getStatut(), sm.getDateDerniereVisite(),
+					sm.getDatePrevisionVisite(), sm.getIdMotifVm(), sm.getNbVisitesRatees(), sm.getIdMedecin(), sm.getDateProchaineVisite(),
+					sm.getHeureProchaineVisite(), sm.getEtat(), sm.getMois(), sm.getAnnee(), sm.getRelance(), sm.getIdServiceAds(), sm.getIdServi());
 			nbCas1++;
 		}
 		logger.info("Nb de cas 1 : " + nbCas1);
@@ -1410,8 +1271,7 @@ public class OeSMConvocation extends BasicProcess {
 		// on liste tous les suivi médicaux de type "CONVOQUE" du mois précédent
 		int nbCas8 = 0;
 		try {
-			ArrayList<SuiviMedical> listeSMCas8 = getSuiviMedDao().listerSuiviMedicalNonEffectue(moisChoisi,
-					anneeChoisi, EnumEtatSuiviMed.CONVOQUE.getCode());
+			ArrayList<SuiviMedical> listeSMCas8 = getSuiviMedDao().listerSuiviMedicalNonEffectue(moisChoisi, anneeChoisi, EnumEtatSuiviMed.CONVOQUE.getCode());
 			for (int i = 0; i < listeSMCas8.size(); i++) {
 				// on crée une nouvelle ligne avec les memes informations
 				// sauf pour le statut et le service on le remet a jour
@@ -1420,8 +1280,7 @@ public class OeSMConvocation extends BasicProcess {
 				SuiviMedical sm = new SuiviMedical();
 				Agent agent = getAgentDao().chercherAgentParMatricule(smAncien.getNomatr());
 				// on regarde que la PA est active
-				PositionAdmAgent pa = PositionAdmAgent.chercherPositionAdmAgentActive(getTransaction(),
-						agent.getNomatr());
+				PositionAdmAgent pa = PositionAdmAgent.chercherPositionAdmAgentActive(getTransaction(), agent.getNomatr());
 				if (getTransaction().isErreur()) {
 					getTransaction().traiterErreur();
 					continue;
@@ -1455,8 +1314,7 @@ public class OeSMConvocation extends BasicProcess {
 				sm.setIdAgent(smAncien.getIdAgent());
 				sm.setNomatr(smAncien.getNomatr());
 				sm.setAgent(smAncien.getAgent());
-				sm.setStatut(carr != null && carr.getCodeCategorie() != null ? getSuiviMedDao().getStatutSM(
-						carr.getCodeCategorie()) : null);
+				sm.setStatut(carr != null && carr.getCodeCategorie() != null ? getSuiviMedDao().getStatutSM(carr.getCodeCategorie()) : null);
 				sm.setIdServiceAds(fp != null ? fp.getIdServiceAds() : null);
 				sm.setIdServi(fp != null ? fp.getIdServi() : null);
 				sm.setDateDerniereVisite(smAncien.getDateDerniereVisite());
@@ -1486,8 +1344,7 @@ public class OeSMConvocation extends BasicProcess {
 				// du meme
 				// agent
 				try {
-					SuiviMedical smTemp = getSuiviMedDao().chercherSuiviMedicalAgentMoisetAnnee(smAncien.getIdAgent(),
-							moisChoisi, anneeChoisi);
+					SuiviMedical smTemp = getSuiviMedDao().chercherSuiviMedicalAgentMoisetAnnee(smAncien.getIdAgent(), moisChoisi, anneeChoisi);
 					logger.debug("SM : " + smTemp.toString());
 					// si une ligne existe deja
 					// on regarde si etat Travail
@@ -1499,8 +1356,7 @@ public class OeSMConvocation extends BasicProcess {
 					// la
 					// nouvelle
 					if (smTemp.getEtat().equals(EnumEtatSuiviMed.TRAVAIL.getCode())) {
-						String dateExistePrevision = Services.convertitDate(smTemp.getDatePrevisionVisite().toString(),
-								"yyyy-MM-dd", "dd/MM/yyyy");
+						String dateExistePrevision = Services.convertitDate(smTemp.getDatePrevisionVisite().toString(), "yyyy-MM-dd", "dd/MM/yyyy");
 						String datePrevision = sm.getDatePrevisionVisite().toString();
 						if (Services.compareDates(dateExistePrevision, datePrevision) > 0) {
 							continue;
@@ -1513,11 +1369,9 @@ public class OeSMConvocation extends BasicProcess {
 				} catch (Exception e) {
 					// aucune ligne n'a été trouvée alors on continue
 				}
-				getSuiviMedDao().creerSuiviMedical(sm.getIdAgent(), sm.getNomatr(), sm.getAgent(), sm.getStatut(),
-						sm.getDateDerniereVisite(), sm.getDatePrevisionVisite(), sm.getIdMotifVm(),
-						sm.getNbVisitesRatees(), sm.getIdMedecin(), sm.getDateProchaineVisite(),
-						sm.getHeureProchaineVisite(), sm.getEtat(), sm.getMois(), sm.getAnnee(), sm.getRelance(),
-						sm.getIdServiceAds(), sm.getIdServi());
+				getSuiviMedDao().creerSuiviMedical(sm.getIdAgent(), sm.getNomatr(), sm.getAgent(), sm.getStatut(), sm.getDateDerniereVisite(),
+						sm.getDatePrevisionVisite(), sm.getIdMotifVm(), sm.getNbVisitesRatees(), sm.getIdMedecin(), sm.getDateProchaineVisite(),
+						sm.getHeureProchaineVisite(), sm.getEtat(), sm.getMois(), sm.getAnnee(), sm.getRelance(), sm.getIdServiceAds(), sm.getIdServi());
 				nbCas8++;
 			}
 		} catch (Exception e) {
@@ -1530,15 +1384,13 @@ public class OeSMConvocation extends BasicProcess {
 		// CAS N 7 : Changement de PA
 		// on liste toutes les PA hors-effectif
 		// on Vérifie qu'il y a bien une PA normale apres cette PA hors-effectif
-		ArrayList<PositionAdmAgent> listePACas7 = PositionAdmAgent.listerPositionAdmAgentHorsEffectif(getTransaction(),
-				moisChoisi, anneeChoisi);
+		ArrayList<PositionAdmAgent> listePACas7 = PositionAdmAgent.listerPositionAdmAgentHorsEffectif(getTransaction(), moisChoisi, anneeChoisi);
 		int nbCas7 = 0;
 		for (int i = 0; i < listePACas7.size(); i++) {
 			// on regarde pour cette liste de PA si il en existe une qui suit en
 			// NORMALE 01
 			PositionAdmAgent paHorsEffectif = listePACas7.get(i);
-			PositionAdmAgent paSuivante = PositionAdmAgent.chercherPositionAdmAgent(getTransaction(),
-					paHorsEffectif.getNomatr(), paHorsEffectif.getDatfin());
+			PositionAdmAgent paSuivante = PositionAdmAgent.chercherPositionAdmAgent(getTransaction(), paHorsEffectif.getNomatr(), paHorsEffectif.getDatfin());
 			if (paSuivante != null && paSuivante.getCdpadm() != null) {
 				if (paSuivante.getCdpadm().equals("01")) {
 					// si c'est bon alors on crée le suiviMedical
@@ -1569,13 +1421,11 @@ public class OeSMConvocation extends BasicProcess {
 					sm.setIdAgent(agent.getIdAgent());
 					sm.setNomatr(agent.getNomatr());
 					sm.setAgent(agent.getNomAgent() + " " + agent.getPrenomAgent());
-					sm.setStatut(carr != null && carr.getCodeCategorie() != null ? getSuiviMedDao().getStatutSM(
-							carr.getCodeCategorie()) : null);
+					sm.setStatut(carr != null && carr.getCodeCategorie() != null ? getSuiviMedDao().getStatutSM(carr.getCodeCategorie()) : null);
 					sm.setIdServiceAds(fp != null ? fp.getIdServiceAds() : null);
 					sm.setIdServi(fp != null ? fp.getIdServi() : null);
 					sm.setDateDerniereVisite(null);
-					Date d2 = new SimpleDateFormat("dd/MM/yyyy")
-							.parse(Services.enleveJours(paSuivante.getDatdeb(), 15));
+					Date d2 = new SimpleDateFormat("dd/MM/yyyy").parse(Services.enleveJours(paSuivante.getDatdeb(), 15));
 					sm.setDatePrevisionVisite(d2);
 					sm.setIdMotifVm(EnumMotifVisiteMed.VM_CHANGEMENT_PA.getCode());
 					sm.setNbVisitesRatees(0);
@@ -1590,8 +1440,8 @@ public class OeSMConvocation extends BasicProcess {
 					// du meme
 					// agent
 					try {
-						SuiviMedical smTemp = getSuiviMedDao().chercherSuiviMedicalAgentNomatrMoisetAnnee(
-								Integer.valueOf(paHorsEffectif.getNomatr()), moisChoisi, anneeChoisi);
+						SuiviMedical smTemp = getSuiviMedDao().chercherSuiviMedicalAgentNomatrMoisetAnnee(Integer.valueOf(paHorsEffectif.getNomatr()),
+								moisChoisi, anneeChoisi);
 						logger.debug("SM : " + smTemp.toString());
 						// si une ligne existe deja
 						// on regarde si etat Travail
@@ -1603,8 +1453,7 @@ public class OeSMConvocation extends BasicProcess {
 						// la
 						// nouvelle
 						if (smTemp.getEtat().equals(EnumEtatSuiviMed.TRAVAIL.getCode())) {
-							String dateExistePrevision = Services.convertitDate(smTemp.getDatePrevisionVisite()
-									.toString(), "yyyy-MM-dd", "dd/MM/yyyy");
+							String dateExistePrevision = Services.convertitDate(smTemp.getDatePrevisionVisite().toString(), "yyyy-MM-dd", "dd/MM/yyyy");
 							String datePrevision = sm.getDatePrevisionVisite().toString();
 							if (Services.compareDates(dateExistePrevision, datePrevision) > 0) {
 								continue;
@@ -1617,11 +1466,9 @@ public class OeSMConvocation extends BasicProcess {
 					} catch (Exception e) {
 						// aucune ligne n'a été trouvée alors on continue
 					}
-					getSuiviMedDao().creerSuiviMedical(sm.getIdAgent(), sm.getNomatr(), sm.getAgent(), sm.getStatut(),
-							sm.getDateDerniereVisite(), sm.getDatePrevisionVisite(), sm.getIdMotifVm(),
-							sm.getNbVisitesRatees(), sm.getIdMedecin(), sm.getDateProchaineVisite(),
-							sm.getHeureProchaineVisite(), sm.getEtat(), sm.getMois(), sm.getAnnee(), sm.getRelance(),
-							sm.getIdServiceAds(), sm.getIdServi());
+					getSuiviMedDao().creerSuiviMedical(sm.getIdAgent(), sm.getNomatr(), sm.getAgent(), sm.getStatut(), sm.getDateDerniereVisite(),
+							sm.getDatePrevisionVisite(), sm.getIdMotifVm(), sm.getNbVisitesRatees(), sm.getIdMedecin(), sm.getDateProchaineVisite(),
+							sm.getHeureProchaineVisite(), sm.getEtat(), sm.getMois(), sm.getAnnee(), sm.getRelance(), sm.getIdServiceAds(), sm.getIdServi());
 					nbCas7++;
 				} else {
 					continue;
@@ -1676,8 +1523,7 @@ public class OeSMConvocation extends BasicProcess {
 			sm.setIdAgent(agent.getIdAgent());
 			sm.setNomatr(agent.getNomatr());
 			sm.setAgent(agent.getNomAgent() + " " + agent.getPrenomAgent());
-			sm.setStatut(carr != null && carr.getCodeCategorie() != null ? getSuiviMedDao().getStatutSM(
-					carr.getCodeCategorie()) : null);
+			sm.setStatut(carr != null && carr.getCodeCategorie() != null ? getSuiviMedDao().getStatutSM(carr.getCodeCategorie()) : null);
 			sm.setIdServiceAds(fp != null ? fp.getIdServiceAds() : null);
 			sm.setIdServi(fp != null ? fp.getIdServi() : null);
 			sm.setDateDerniereVisite(null);
@@ -1694,8 +1540,7 @@ public class OeSMConvocation extends BasicProcess {
 			// on regarde la liste des SM pour ne pas reecrire une ligne du meme
 			// agent
 			try {
-				SuiviMedical smTemp = getSuiviMedDao().chercherSuiviMedicalAgentMoisetAnnee(agent.getIdAgent(),
-						moisChoisi, anneeChoisi);
+				SuiviMedical smTemp = getSuiviMedDao().chercherSuiviMedicalAgentMoisetAnnee(agent.getIdAgent(), moisChoisi, anneeChoisi);
 				logger.debug("SM : " + smTemp.toString());
 				// si une ligne existe deja
 				// on regarde si etat Travail
@@ -1705,8 +1550,7 @@ public class OeSMConvocation extends BasicProcess {
 				// si non , on supprime la ligne existante pour recréer la
 				// nouvelle
 				if (smTemp.getEtat().equals(EnumEtatSuiviMed.TRAVAIL.getCode())) {
-					String dateExistePrevision = Services.convertitDate(smTemp.getDatePrevisionVisite().toString(),
-							"yyyy-MM-dd", "dd/MM/yyyy");
+					String dateExistePrevision = Services.convertitDate(smTemp.getDatePrevisionVisite().toString(), "yyyy-MM-dd", "dd/MM/yyyy");
 					String datePrevision = sm.getDatePrevisionVisite().toString();
 					if (Services.compareDates(dateExistePrevision, datePrevision) > 0) {
 						continue;
@@ -1719,11 +1563,9 @@ public class OeSMConvocation extends BasicProcess {
 			} catch (Exception e) {
 				// aucune ligne n'a été trouvée alors on continue
 			}
-			getSuiviMedDao().creerSuiviMedical(sm.getIdAgent(), sm.getNomatr(), sm.getAgent(), sm.getStatut(),
-					sm.getDateDerniereVisite(), sm.getDatePrevisionVisite(), sm.getIdMotifVm(),
-					sm.getNbVisitesRatees(), sm.getIdMedecin(), sm.getDateProchaineVisite(),
-					sm.getHeureProchaineVisite(), sm.getEtat(), sm.getMois(), sm.getAnnee(), sm.getRelance(),
-					sm.getIdServiceAds(), sm.getIdServi());
+			getSuiviMedDao().creerSuiviMedical(sm.getIdAgent(), sm.getNomatr(), sm.getAgent(), sm.getStatut(), sm.getDateDerniereVisite(),
+					sm.getDatePrevisionVisite(), sm.getIdMotifVm(), sm.getNbVisitesRatees(), sm.getIdMedecin(), sm.getDateProchaineVisite(),
+					sm.getHeureProchaineVisite(), sm.getEtat(), sm.getMois(), sm.getAnnee(), sm.getRelance(), sm.getIdServiceAds(), sm.getIdServi());
 			nbCas6++;
 		}
 		logger.info("Nb de cas 6 : " + nbCas6);
@@ -1733,8 +1575,7 @@ public class OeSMConvocation extends BasicProcess {
 		// CAS N 2 : Visite Réguliere
 		// on liste toutes les visites medicales
 		// dont la dateVM + durée validitéVM = mois et année choisie du calcul
-		ArrayList<VisiteMedicale> listeVMCas2 = getVisiteMedicaleDao().listerVisiteMedicalePourSMCas2(moisChoisi,
-				anneeChoisi);
+		ArrayList<VisiteMedicale> listeVMCas2 = getVisiteMedicaleDao().listerVisiteMedicalePourSMCas2(moisChoisi, anneeChoisi);
 		int nbCas2 = 0;
 		for (int i = 0; i < listeVMCas2.size(); i++) {
 			VisiteMedicale vm = listeVMCas2.get(i);
@@ -1776,13 +1617,12 @@ public class OeSMConvocation extends BasicProcess {
 			sm.setIdAgent(vm.getIdAgent());
 			sm.setNomatr(agent.getNomatr());
 			sm.setAgent(agent.getNomAgent() + " " + agent.getPrenomAgent());
-			sm.setStatut(carr != null && carr.getCodeCategorie() != null ? getSuiviMedDao().getStatutSM(
-					carr.getCodeCategorie()) : null);
+			sm.setStatut(carr != null && carr.getCodeCategorie() != null ? getSuiviMedDao().getStatutSM(carr.getCodeCategorie()) : null);
 			sm.setIdServiceAds(fp != null ? fp.getIdServiceAds() : null);
 			sm.setIdServi(fp != null ? fp.getIdServi() : null);
 			sm.setDateDerniereVisite(vm.getDateDerniereVisite());
-			Date d2 = new SimpleDateFormat("dd/MM/yyyy").parse(Services.ajouteMois(
-					new SimpleDateFormat("dd/MM/yyyy").format(vm.getDateDerniereVisite()), vm.getDureeValidite()));
+			Date d2 = new SimpleDateFormat("dd/MM/yyyy").parse(Services.ajouteMois(new SimpleDateFormat("dd/MM/yyyy").format(vm.getDateDerniereVisite()),
+					vm.getDureeValidite()));
 			sm.setDatePrevisionVisite(d2);
 			sm.setIdMotifVm(EnumMotifVisiteMed.VM_REGULIERE.getCode());
 			sm.setNbVisitesRatees(0);
@@ -1796,8 +1636,7 @@ public class OeSMConvocation extends BasicProcess {
 			// on regarde la liste des SM pour ne pas reecrire une ligne du meme
 			// agent
 			try {
-				SuiviMedical smTemp = getSuiviMedDao().chercherSuiviMedicalAgentMoisetAnnee(vm.getIdAgent(),
-						moisChoisi, anneeChoisi);
+				SuiviMedical smTemp = getSuiviMedDao().chercherSuiviMedicalAgentMoisetAnnee(vm.getIdAgent(), moisChoisi, anneeChoisi);
 				logger.debug("SM : " + smTemp.toString());
 				// si une ligne existe deja
 				// on regarde si etat Travail
@@ -1807,8 +1646,7 @@ public class OeSMConvocation extends BasicProcess {
 				// si non , on supprime la ligne existante pour recréer la
 				// nouvelle
 				if (smTemp.getEtat().equals(EnumEtatSuiviMed.TRAVAIL.getCode())) {
-					String dateExistePrevision = Services.convertitDate(smTemp.getDatePrevisionVisite().toString(),
-							"yyyy-MM-dd", "dd/MM/yyyy");
+					String dateExistePrevision = Services.convertitDate(smTemp.getDatePrevisionVisite().toString(), "yyyy-MM-dd", "dd/MM/yyyy");
 					String datePrevision = sm.getDatePrevisionVisite().toString();
 					if (Services.compareDates(dateExistePrevision, datePrevision) > 0) {
 						continue;
@@ -1821,11 +1659,9 @@ public class OeSMConvocation extends BasicProcess {
 			} catch (Exception e) {
 				// aucune ligne n'a été trouvée alors on continue
 			}
-			getSuiviMedDao().creerSuiviMedical(sm.getIdAgent(), sm.getNomatr(), sm.getAgent(), sm.getStatut(),
-					sm.getDateDerniereVisite(), sm.getDatePrevisionVisite(), sm.getIdMotifVm(),
-					sm.getNbVisitesRatees(), sm.getIdMedecin(), sm.getDateProchaineVisite(),
-					sm.getHeureProchaineVisite(), sm.getEtat(), sm.getMois(), sm.getAnnee(), sm.getRelance(),
-					sm.getIdServiceAds(), sm.getIdServi());
+			getSuiviMedDao().creerSuiviMedical(sm.getIdAgent(), sm.getNomatr(), sm.getAgent(), sm.getStatut(), sm.getDateDerniereVisite(),
+					sm.getDatePrevisionVisite(), sm.getIdMotifVm(), sm.getNbVisitesRatees(), sm.getIdMedecin(), sm.getDateProchaineVisite(),
+					sm.getHeureProchaineVisite(), sm.getEtat(), sm.getMois(), sm.getAnnee(), sm.getRelance(), sm.getIdServiceAds(), sm.getIdServi());
 			nbCas2++;
 		}
 		logger.info("Nb de cas 2 : " + nbCas2);
@@ -1860,8 +1696,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Getter de la liste avec un lazy initialize : LB_MOIS Date de création :
-	 * (28/11/11)
+	 * Getter de la liste avec un lazy initialize : LB_MOIS Date de création : (28/11/11)
 	 * 
 	 */
 	private String[] getLB_MOIS() {
@@ -1879,8 +1714,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_MOIS Date de création :
-	 * (28/11/11)
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_MOIS Date de création : (28/11/11)
 	 * 
 	 */
 	public String getNOM_LB_MOIS() {
@@ -1888,8 +1722,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_MOIS_SELECT Date de création : (28/11/11)
+	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP : NOM_LB_MOIS_SELECT Date de création : (28/11/11)
 	 * 
 	 */
 	public String getNOM_LB_MOIS_SELECT() {
@@ -1897,8 +1730,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_MOIS Date de création : (28/11/11 09:55:36)
+	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la JSP : LB_MOIS Date de création : (28/11/11 09:55:36)
 	 * 
 	 */
 	public String[] getVAL_LB_MOIS() {
@@ -1906,8 +1738,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
-	 * la JSP : LB_MOIS Date de création : (28/11/11)
+	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de la JSP : LB_MOIS Date de création : (28/11/11)
 	 * 
 	 */
 	public String getVAL_LB_MOIS_SELECT() {
@@ -1943,8 +1774,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_NOM_DOC Date de
-	 * création : (21/11/11 09:55:36)
+	 * Retourne pour la JSP le nom de la zone statique : ST_NOM_DOC Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_ST_NOM_DOC(int i) {
@@ -1952,8 +1782,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_NOM_DOC Date
-	 * de création : (21/11/11 09:55:36)
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_NOM_DOC Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_ST_NOM_DOC(int i) {
@@ -1961,8 +1790,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_NUM_SM Date de
-	 * création : (21/11/11 09:55:36)
+	 * Retourne pour la JSP le nom de la zone statique : ST_NUM_SM Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_ST_NUM_SM(int i) {
@@ -1970,8 +1798,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_NUM_SM Date de
-	 * création : (21/11/11 09:55:36)
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_NUM_SM Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_ST_NUM_SM(int i) {
@@ -1979,8 +1806,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_MATR Date de
-	 * création : (21/11/11 09:55:36)
+	 * Retourne pour la JSP le nom de la zone statique : ST_MATR Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_ST_MATR(int i) {
@@ -1988,8 +1814,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_MATR Date de
-	 * création : (21/11/11 09:55:36)
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_MATR Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_ST_MATR(int i) {
@@ -1997,8 +1822,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_AGENT Date de
-	 * création : (21/11/11 09:55:36)
+	 * Retourne pour la JSP le nom de la zone statique : ST_AGENT Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_ST_AGENT(int i) {
@@ -2006,8 +1830,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_AGENT Date de
-	 * création : (21/11/11 09:55:36)
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_AGENT Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_ST_AGENT(int i) {
@@ -2015,8 +1838,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_NUM_CAFAT Date de
-	 * création : (21/11/11 09:55:36)
+	 * Retourne pour la JSP le nom de la zone statique : ST_NUM_CAFAT Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_ST_NUM_CAFAT(int i) {
@@ -2024,8 +1846,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_NUM_CAFAT Date
-	 * de création : (21/11/11 09:55:36)
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_NUM_CAFAT Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_ST_NUM_CAFAT(int i) {
@@ -2033,8 +1854,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_STATUT Date de
-	 * création : (21/11/11 09:55:36)
+	 * Retourne pour la JSP le nom de la zone statique : ST_STATUT Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_ST_STATUT(int i) {
@@ -2042,8 +1862,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_STATUT Date de
-	 * création : (21/11/11 09:55:36)
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_STATUT Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_ST_STATUT(int i) {
@@ -2051,8 +1870,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_SERVICE Date de
-	 * création : (21/11/11 09:55:36)
+	 * Retourne pour la JSP le nom de la zone statique : ST_SERVICE Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_ST_SERVICE(int i) {
@@ -2060,8 +1878,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_SERVICE Date
-	 * de création : (21/11/11 09:55:36)
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_SERVICE Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_ST_SERVICE(int i) {
@@ -2069,8 +1886,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_DATE_DERNIERE_VISITE
-	 * Date de création : (21/11/11 09:55:36)
+	 * Retourne pour la JSP le nom de la zone statique : ST_DATE_DERNIERE_VISITE Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_ST_DATE_DERNIERE_VISITE(int i) {
@@ -2078,8 +1894,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
-	 * ST_DATE_DERNIERE_VISITE Date de création : (21/11/11 09:55:36)
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE_DERNIERE_VISITE Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_ST_DATE_DERNIERE_VISITE(int i) {
@@ -2087,8 +1902,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne pour la JSP le nom de la zone statique :
-	 * ST_DATE_PREVISION_VISITE Date de création : (21/11/11 09:55:36)
+	 * Retourne pour la JSP le nom de la zone statique : ST_DATE_PREVISION_VISITE Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_ST_DATE_PREVISION_VISITE(int i) {
@@ -2096,8 +1910,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
-	 * ST_DATE_PREVISION_VISITE Date de création : (21/11/11 09:55:36)
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE_PREVISION_VISITE Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_ST_DATE_PREVISION_VISITE(int i) {
@@ -2105,8 +1918,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_MOTIF Date de
-	 * création : (21/11/11 09:55:36)
+	 * Retourne pour la JSP le nom de la zone statique : ST_MOTIF Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_ST_MOTIF(int i) {
@@ -2114,8 +1926,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_MOTIF Date de
-	 * création : (21/11/11 09:55:36)
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_MOTIF Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_ST_MOTIF(int i) {
@@ -2123,8 +1934,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_NB_VISITES_RATEES
-	 * Date de création : (21/11/11 09:55:36)
+	 * Retourne pour la JSP le nom de la zone statique : ST_NB_VISITES_RATEES Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_ST_NB_VISITES_RATEES(int i) {
@@ -2132,8 +1942,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
-	 * ST_NB_VISITES_RATEES Date de création : (21/11/11 09:55:36)
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_NB_VISITES_RATEES Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_ST_NB_VISITES_RATEES(int i) {
@@ -2141,8 +1950,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_DATE_PROCHAIN_RDV
-	 * Date de création : (21/11/11 09:55:36)
+	 * Retourne pour la JSP le nom de la zone statique : ST_DATE_PROCHAIN_RDV Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_ST_DATE_PROCHAIN_RDV(int i) {
@@ -2150,8 +1958,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
-	 * ST_DATE_PROCHAIN_RDV Date de création : (21/11/11 09:55:36)
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE_PROCHAIN_RDV Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_ST_DATE_PROCHAIN_RDV(int i) {
@@ -2159,8 +1966,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_ETAT Date de
-	 * création : (21/11/11 09:55:36)
+	 * Retourne pour la JSP le nom de la zone statique : ST_ETAT Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_ST_ETAT(int i) {
@@ -2168,8 +1974,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ETAT Date de
-	 * création : (21/11/11 09:55:36)
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ETAT Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_ST_ETAT(int i) {
@@ -2177,8 +1982,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Getter de la liste avec un lazy initialize : LB_MEDECIN Date de création
-	 * : (21/11/11 09:55:36)
+	 * Getter de la liste avec un lazy initialize : LB_MEDECIN Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
 	private String[] getLB_MEDECIN(int i) {
@@ -2196,8 +2000,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_MEDECIN Date de création
-	 * : (21/11/11 09:55:36)
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_MEDECIN Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_LB_MEDECIN(int i) {
@@ -2205,8 +2008,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_MEDECIN_SELECT Date de création : (21/11/11 09:55:36)
+	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP : NOM_LB_MEDECIN_SELECT Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_LB_MEDECIN_SELECT(int i) {
@@ -2214,8 +2016,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_MEDECIN Date de création : (21/11/11 09:55:36)
+	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la JSP : LB_MEDECIN Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String[] getVAL_LB_MEDECIN(int i) {
@@ -2223,8 +2024,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
-	 * la JSP : LB_MEDECIN Date de création : (21/11/11 09:55:36)
+	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de la JSP : LB_MEDECIN Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_LB_MEDECIN_SELECT(int i) {
@@ -2232,8 +2032,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la case à cocher sélectionnée pour la JSP :
-	 * CK_A_IMPRIMER_CONVOC Date de création : (21/11/11 09:55:36)
+	 * Retourne le nom de la case à cocher sélectionnée pour la JSP : CK_A_IMPRIMER_CONVOC Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_CK_A_IMPRIMER_CONVOC(int i) {
@@ -2241,8 +2040,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur de la case à cocher à afficher par la JSP pour la case
-	 * a cocher : CK_A_IMPRIMER_CONVOC Date de création : (21/11/11 09:55:36)
+	 * Retourne la valeur de la case à cocher à afficher par la JSP pour la case a cocher : CK_A_IMPRIMER_CONVOC Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_CK_A_IMPRIMER_CONVOC(int i) {
@@ -2250,8 +2048,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la case à cocher sélectionnée pour la JSP :
-	 * CK_A_IMPRIMER_ACCOMP Date de création : (21/11/11 09:55:36)
+	 * Retourne le nom de la case à cocher sélectionnée pour la JSP : CK_A_IMPRIMER_ACCOMP Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_CK_A_IMPRIMER_ACCOMP(int i) {
@@ -2259,8 +2056,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur de la case à cocher à afficher par la JSP pour la case
-	 * a cocher : CK_A_IMPRIMER_ACCOMP Date de création : (21/11/11 09:55:36)
+	 * Retourne la valeur de la case à cocher à afficher par la JSP pour la case a cocher : CK_A_IMPRIMER_ACCOMP Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_CK_A_IMPRIMER_ACCOMP(int i) {
@@ -2272,10 +2068,8 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * regles de gestion du process - Positionne un statut en fonction de ces
-	 * regles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (16/08/11 15:48:02)
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les regles de gestion du process - Positionne un statut en fonction de ces regles :
+	 * setStatut(STATUT, boolean veutRetour) ou setStatut(STATUT,Message d'erreur) Date de création : (16/08/11 15:48:02)
 	 * 
 	 * RG_AG_CA_A07
 	 */
@@ -2293,8 +2087,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMMER Date de création
-	 * : (05/09/11 11:31:37)
+	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMMER Date de création : (05/09/11 11:31:37)
 	 * 
 	 */
 	public String getNOM_PB_SUPPRIMER(int i) {
@@ -2302,10 +2095,8 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * regles de gestion du process - Positionne un statut en fonction de ces
-	 * regles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (05/09/11 11:31:37)
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les regles de gestion du process - Positionne un statut en fonction de ces regles :
+	 * setStatut(STATUT, boolean veutRetour) ou setStatut(STATUT,Message d'erreur) Date de création : (05/09/11 11:31:37)
 	 * 
 	 * RG_AG_CA_A08
 	 */
@@ -2326,8 +2117,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER Date de création :
-	 * (21/11/11 09:55:36)
+	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_PB_VALIDER() {
@@ -2335,10 +2125,8 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * regles de gestion du process - Positionne un statut en fonction de ces
-	 * regles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (21/11/11 09:55:36)
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les regles de gestion du process - Positionne un statut en fonction de ces regles :
+	 * setStatut(STATUT, boolean veutRetour) ou setStatut(STATUT,Message d'erreur) Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
 	public boolean performPB_VALIDER(HttpServletRequest request) throws Exception {
@@ -2367,13 +2155,11 @@ public class OeSMConvocation extends BasicProcess {
 				// si la date du prochain RDV est vide
 				if (dateRDV == null || dateRDV.trim().equals(Const.CHAINE_VIDE)) {
 					// "ERR002", "La zone @ est obligatoire."
-					getTransaction().declarerErreur(
-							MessageUtils.getMessage("ERR002", "date du prochain RDV pour la ligne " + i));
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "date du prochain RDV pour la ligne " + i));
 					return false;
 				}
 				// si la date du prochain RDV est inferieur au moins selectionné
-				int indiceMois = (Services.estNumerique(getVAL_LB_MOIS_SELECT()) ? Integer
-						.parseInt(getVAL_LB_MOIS_SELECT()) : -1);
+				int indiceMois = (Services.estNumerique(getVAL_LB_MOIS_SELECT()) ? Integer.parseInt(getVAL_LB_MOIS_SELECT()) : -1);
 				Integer moisChoisi = getMoisSelectionne(indiceMois);
 				Integer moisRDV = Integer.valueOf(dateRDV.substring(3, 5));
 				if (moisRDV < moisChoisi) {
@@ -2393,8 +2179,7 @@ public class OeSMConvocation extends BasicProcess {
 				}
 
 				// si la date du prochain RDV est inferieur à la date du jour
-				if (!getVAL_ST_ETAT(i).equals(EnumEtatSuiviMed.CONVOQUE.getCode())
-						&& !getVAL_ST_ETAT(i).equals(EnumEtatSuiviMed.ACCOMP.getCode())
+				if (!getVAL_ST_ETAT(i).equals(EnumEtatSuiviMed.CONVOQUE.getCode()) && !getVAL_ST_ETAT(i).equals(EnumEtatSuiviMed.ACCOMP.getCode())
 						&& Services.compareDates(dateRDV, Services.dateDuJour()) < 0) {
 					// "ERR302",
 					// "La date du prochain RDV pour l'agent @ doit être supérieure ou egale à la date du jour"
@@ -2423,8 +2208,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_ACTION Date de
-	 * création : (12/09/11 11:49:01)
+	 * Retourne pour la JSP le nom de la zone statique : ST_ACTION Date de création : (12/09/11 11:49:01)
 	 * 
 	 */
 	public String getNOM_ST_ACTION() {
@@ -2432,8 +2216,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACTION Date de
-	 * création : (12/09/11 11:49:01)
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACTION Date de création : (12/09/11 11:49:01)
 	 * 
 	 */
 	public String getVAL_ST_ACTION() {
@@ -2449,8 +2232,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Getter de la liste avec un lazy initialize : LB_HEURE_RDV Date de
-	 * création : (21/11/11 09:55:36)
+	 * Getter de la liste avec un lazy initialize : LB_HEURE_RDV Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
 	private String[] getLB_HEURE_RDV(int i) {
@@ -2468,8 +2250,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_HEURE_RDV Date de
-	 * création : (21/11/11 09:55:36)
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_HEURE_RDV Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_LB_HEURE_RDV(int i) {
@@ -2477,8 +2258,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_HEURE_RDV_SELECT Date de création : (21/11/11 09:55:36)
+	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP : NOM_LB_HEURE_RDV_SELECT Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_LB_HEURE_RDV_SELECT(int i) {
@@ -2486,8 +2266,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_HEURE_RDV Date de création : (21/11/11 09:55:36)
+	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la JSP : LB_HEURE_RDV Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String[] getVAL_LB_HEURE_RDV(int i) {
@@ -2495,8 +2274,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
-	 * la JSP : LB_HEURE_RDV Date de création : (21/11/11 09:55:36)
+	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de la JSP : LB_HEURE_RDV Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_LB_HEURE_RDV_SELECT(int i) {
@@ -2504,8 +2282,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_IMPRIMER_CONVOCATIONS Date
-	 * de création : (21/11/11 09:55:36)
+	 * Retourne le nom d'un bouton pour la JSP : PB_IMPRIMER_CONVOCATIONS Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_PB_IMPRIMER_LISTE_VISITE() {
@@ -2513,10 +2290,8 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * regles de gestion du process - Positionne un statut en fonction de ces
-	 * regles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (21/11/11 09:55:36)
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les regles de gestion du process - Positionne un statut en fonction de ces regles :
+	 * setStatut(STATUT, boolean veutRetour) ou setStatut(STATUT,Message d'erreur) Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
 	public boolean performPB_IMPRIMER_LISTE_VISITE(HttpServletRequest request) throws Exception {
@@ -2525,8 +2300,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_IMPRIMER_CONVOCATIONS Date
-	 * de création : (21/11/11 09:55:36)
+	 * Retourne le nom d'un bouton pour la JSP : PB_IMPRIMER_CONVOCATIONS Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_PB_IMPRIMER_LETTRES_ACCOMPAGNEMENTS() {
@@ -2534,10 +2308,8 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * regles de gestion du process - Positionne un statut en fonction de ces
-	 * regles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (21/11/11 09:55:36)
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les regles de gestion du process - Positionne un statut en fonction de ces regles :
+	 * setStatut(STATUT, boolean veutRetour) ou setStatut(STATUT,Message d'erreur) Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
 	public boolean performPB_IMPRIMER_LETTRES_ACCOMPAGNEMENTS(HttpServletRequest request) throws Exception {
@@ -2548,14 +2320,13 @@ public class OeSMConvocation extends BasicProcess {
 		sauvegardeTableau();
 
 		// on supprime les documents existants
-		int indiceMois = (Services.estNumerique(getVAL_LB_MOIS_SELECT()) ? Integer.parseInt(getVAL_LB_MOIS_SELECT())
-				: -1);
+		int indiceMois = (Services.estNumerique(getVAL_LB_MOIS_SELECT()) ? Integer.parseInt(getVAL_LB_MOIS_SELECT()) : -1);
 		String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ACTES");
 
-		String docuAccompagnementF = repPartage + "SuiviMedical/SM_Lettre_Accompagnement_F_"
-				+ getMoisSelectionne(indiceMois) + "_" + getAnneeSelectionne(indiceMois) + ".doc";
-		String docuAccompagnementCC = repPartage + "SuiviMedical/SM_Lettre_Accompagnement_CC_"
-				+ getMoisSelectionne(indiceMois) + "_" + getAnneeSelectionne(indiceMois) + ".doc";
+		String docuAccompagnementF = repPartage + "SuiviMedical/SM_Lettre_Accompagnement_F_" + getMoisSelectionne(indiceMois) + "_"
+				+ getAnneeSelectionne(indiceMois) + ".doc";
+		String docuAccompagnementCC = repPartage + "SuiviMedical/SM_Lettre_Accompagnement_CC_" + getMoisSelectionne(indiceMois) + "_"
+				+ getAnneeSelectionne(indiceMois) + ".doc";
 		// on verifie que les repertoires existent
 		verifieRepertoire("SuiviMedical");
 		// on verifie l'existance de chaque fichier
@@ -2619,12 +2390,10 @@ public class OeSMConvocation extends BasicProcess {
 
 		// on imprime les 2 listes
 		if (smFonctionnaireAImprimer.size() > 0) {
-			String destination = "SuiviMedical/SM_Lettre_Accompagnement_F_" + getMoisSelectionne(indiceMois) + "_"
-					+ getAnneeSelectionne(indiceMois) + ".doc";
+			String destination = "SuiviMedical/SM_Lettre_Accompagnement_F_" + getMoisSelectionne(indiceMois) + "_" + getAnneeSelectionne(indiceMois) + ".doc";
 
-			byte[] fileAsBytes = sirhService.downloadAccompagnement(smFonctionnaireAImprimer.toString()
-					.replace("[", "").replace("]", "").replace(" ", ""), "F",
-					getMoisSelectionne(indiceMois).toString(), getAnneeSelectionne(indiceMois).toString());
+			byte[] fileAsBytes = sirhService.downloadAccompagnement(smFonctionnaireAImprimer.toString().replace("[", "").replace("]", "").replace(" ", ""),
+					"F", getMoisSelectionne(indiceMois).toString(), getAnneeSelectionne(indiceMois).toString());
 
 			if (!saveFileToRemoteFileSystem(fileAsBytes, repPartage, destination)) {
 				// "ERR185",
@@ -2635,11 +2404,9 @@ public class OeSMConvocation extends BasicProcess {
 
 		}
 		if (smCCAImprimer.size() > 0) {
-			String destination = "SuiviMedical/SM_Lettre_Accompagnement_CC_" + getMoisSelectionne(indiceMois) + "_"
-					+ getAnneeSelectionne(indiceMois) + ".doc";
+			String destination = "SuiviMedical/SM_Lettre_Accompagnement_CC_" + getMoisSelectionne(indiceMois) + "_" + getAnneeSelectionne(indiceMois) + ".doc";
 
-			byte[] fileAsBytes = sirhService.downloadAccompagnement(
-					smCCAImprimer.toString().replace("[", "").replace("]", "").replace(" ", ""), "CC",
+			byte[] fileAsBytes = sirhService.downloadAccompagnement(smCCAImprimer.toString().replace("[", "").replace("]", "").replace(" ", ""), "CC",
 					getMoisSelectionne(indiceMois).toString(), getAnneeSelectionne(indiceMois).toString());
 
 			if (!saveFileToRemoteFileSystem(fileAsBytes, repPartage, destination)) {
@@ -2654,8 +2421,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_IMPRIMER_CONVOCATIONS Date
-	 * de création : (21/11/11 09:55:36)
+	 * Retourne le nom d'un bouton pour la JSP : PB_IMPRIMER_CONVOCATIONS Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_PB_IMPRIMER_CONVOCATIONS() {
@@ -2663,10 +2429,8 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * regles de gestion du process - Positionne un statut en fonction de ces
-	 * regles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (21/11/11 09:55:36)
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les regles de gestion du process - Positionne un statut en fonction de ces regles :
+	 * setStatut(STATUT, boolean veutRetour) ou setStatut(STATUT,Message d'erreur) Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
 	public boolean performPB_IMPRIMER_CONVOCATIONS(HttpServletRequest request) throws Exception {
@@ -2677,14 +2441,11 @@ public class OeSMConvocation extends BasicProcess {
 		sauvegardeTableau();
 
 		// on supprime les documents existants
-		int indiceMois = (Services.estNumerique(getVAL_LB_MOIS_SELECT()) ? Integer.parseInt(getVAL_LB_MOIS_SELECT())
-				: -1);
+		int indiceMois = (Services.estNumerique(getVAL_LB_MOIS_SELECT()) ? Integer.parseInt(getVAL_LB_MOIS_SELECT()) : -1);
 		String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ACTES");
 
-		String docuConvocF = repPartage + "SuiviMedical/SM_Convocation_F_" + getMoisSelectionne(indiceMois) + "_"
-				+ getAnneeSelectionne(indiceMois) + ".doc";
-		String docuConvocCC = repPartage + "SuiviMedical/SM_Convocation_CC_" + getMoisSelectionne(indiceMois) + "_"
-				+ getAnneeSelectionne(indiceMois) + ".doc";
+		String docuConvocF = repPartage + "SuiviMedical/SM_Convocation_F_" + getMoisSelectionne(indiceMois) + "_" + getAnneeSelectionne(indiceMois) + ".doc";
+		String docuConvocCC = repPartage + "SuiviMedical/SM_Convocation_CC_" + getMoisSelectionne(indiceMois) + "_" + getAnneeSelectionne(indiceMois) + ".doc";
 		// on verifie que les repertoires existent
 		verifieRepertoire("SuiviMedical");
 		// on verifie l'existance de chaque fichier
@@ -2749,12 +2510,10 @@ public class OeSMConvocation extends BasicProcess {
 
 		// on imprime les 2 listes
 		if (smFonctionnaireAImprimer.size() > 0) {
-			String destination = "SuiviMedical/SM_Convocation_F_" + getMoisSelectionne(indiceMois) + "_"
-					+ getAnneeSelectionne(indiceMois) + ".doc";
+			String destination = "SuiviMedical/SM_Convocation_F_" + getMoisSelectionne(indiceMois) + "_" + getAnneeSelectionne(indiceMois) + ".doc";
 
-			byte[] fileAsBytes = sirhService.downloadConvocation(smFonctionnaireAImprimer.toString().replace("[", "")
-					.replace("]", "").replace(" ", ""), "F", getMoisSelectionne(indiceMois).toString(),
-					getAnneeSelectionne(indiceMois).toString());
+			byte[] fileAsBytes = sirhService.downloadConvocation(smFonctionnaireAImprimer.toString().replace("[", "").replace("]", "").replace(" ", ""), "F",
+					getMoisSelectionne(indiceMois).toString(), getAnneeSelectionne(indiceMois).toString());
 
 			if (!saveFileToRemoteFileSystem(fileAsBytes, repPartage, destination)) {
 				// "ERR185",
@@ -2764,11 +2523,9 @@ public class OeSMConvocation extends BasicProcess {
 			}
 		}
 		if (smCCAImprimer.size() > 0) {
-			String destination = "SuiviMedical/SM_Convocation_CC_" + getMoisSelectionne(indiceMois) + "_"
-					+ getAnneeSelectionne(indiceMois) + ".doc";
+			String destination = "SuiviMedical/SM_Convocation_CC_" + getMoisSelectionne(indiceMois) + "_" + getAnneeSelectionne(indiceMois) + ".doc";
 
-			byte[] fileAsBytes = sirhService.downloadConvocation(
-					smCCAImprimer.toString().replace("[", "").replace("]", "").replace(" ", ""), "CC",
+			byte[] fileAsBytes = sirhService.downloadConvocation(smCCAImprimer.toString().replace("[", "").replace("]", "").replace(" ", ""), "CC",
 					getMoisSelectionne(indiceMois).toString(), getAnneeSelectionne(indiceMois).toString());
 
 			if (!saveFileToRemoteFileSystem(fileAsBytes, repPartage, destination)) {
@@ -2802,8 +2559,7 @@ public class OeSMConvocation extends BasicProcess {
 				}
 			}
 		} catch (Exception e) {
-			logger.error(String.format("An error occured while writing the report file to the following path  : "
-					+ chemin + filename + " : " + e));
+			logger.error(String.format("An error occured while writing the report file to the following path  : " + chemin + filename + " : " + e));
 			return false;
 		}
 		return true;
@@ -2863,8 +2619,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_VISUALISATION Date de
-	 * création : (29/09/11 10:03:38)
+	 * Retourne le nom d'un bouton pour la JSP : PB_VISUALISATION Date de création : (29/09/11 10:03:38)
 	 * 
 	 */
 	public String getNOM_PB_VISUALISATION(int i) {
@@ -2872,10 +2627,8 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * regles de gestion du process - Positionne un statut en fonction de ces
-	 * regles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (29/09/11 10:03:38)
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les regles de gestion du process - Positionne un statut en fonction de ces regles :
+	 * setStatut(STATUT, boolean veutRetour) ou setStatut(STATUT,Message d'erreur) Date de création : (29/09/11 10:03:38)
 	 * 
 	 */
 	public boolean performPB_VISUALISATION(HttpServletRequest request, int indiceEltAConsulter) throws Exception {
@@ -2915,8 +2668,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_AGENT Date de
-	 * création : (02/08/11 09:40:42)
+	 * Retourne pour la JSP le nom de la zone statique : ST_AGENT Date de création : (02/08/11 09:40:42)
 	 * 
 	 */
 	public String getNOM_ST_AGENT() {
@@ -2924,8 +2676,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_AGENT Date de
-	 * création : (02/08/11 09:40:42)
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_AGENT Date de création : (02/08/11 09:40:42)
 	 * 
 	 */
 	public String getVAL_ST_AGENT() {
@@ -2933,8 +2684,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_RECHERCHER_AGENT Date de
-	 * création : (02/08/11 09:42:00)
+	 * Retourne le nom d'un bouton pour la JSP : PB_RECHERCHER_AGENT Date de création : (02/08/11 09:42:00)
 	 * 
 	 */
 	public String getNOM_PB_RECHERCHER_AGENT() {
@@ -2942,10 +2692,8 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * regles de gestion du process - Positionne un statut en fonction de ces
-	 * regles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (02/08/11 09:42:00)
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les regles de gestion du process - Positionne un statut en fonction de ces regles :
+	 * setStatut(STATUT, boolean veutRetour) ou setStatut(STATUT,Message d'erreur) Date de création : (02/08/11 09:42:00)
 	 * 
 	 */
 	public boolean performPB_RECHERCHER_AGENT(HttpServletRequest request) throws Exception {
@@ -2957,8 +2705,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMER_RECHERCHER_AGENT
-	 * Date de création : (13/07/11 09:49:02)
+	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMER_RECHERCHER_AGENT Date de création : (13/07/11 09:49:02)
 	 * 
 	 * 
 	 */
@@ -2967,10 +2714,8 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * regles de gestion du process - Positionne un statut en fonction de ces
-	 * regles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (25/03/03 15:33:11)
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les regles de gestion du process - Positionne un statut en fonction de ces regles :
+	 * setStatut(STATUT, boolean veutRetour) ou setStatut(STATUT,Message d'erreur) Date de création : (25/03/03 15:33:11)
 	 * 
 	 */
 	public boolean performPB_SUPPRIMER_RECHERCHER_AGENT(HttpServletRequest request) throws Exception {
@@ -2980,8 +2725,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'une zone de saisie pour la JSP : EF_SERVICE Date de
-	 * création : (13/09/11 11:47:15)
+	 * Retourne le nom d'une zone de saisie pour la JSP : EF_SERVICE Date de création : (13/09/11 11:47:15)
 	 * 
 	 */
 	public String getNOM_EF_SERVICE() {
@@ -2989,8 +2733,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_SERVICE Date de création : (13/09/11 11:47:15)
+	 * Retourne la valeur à afficher par la JSP pour la zone de saisie : EF_SERVICE Date de création : (13/09/11 11:47:15)
 	 * 
 	 */
 	public String getVAL_EF_SERVICE() {
@@ -2998,8 +2741,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMER_RECHERCHER_SERVICE
-	 * Date de création : (13/07/11 09:49:02)
+	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMER_RECHERCHER_SERVICE Date de création : (13/07/11 09:49:02)
 	 * 
 	 * 
 	 */
@@ -3008,19 +2750,15 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * regles de gestion du process - Positionne un statut en fonction de ces
-	 * regles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (13/07/11 09:49:02)
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les regles de gestion du process - Positionne un statut en fonction de ces regles :
+	 * setStatut(STATUT, boolean veutRetour) ou setStatut(STATUT,Message d'erreur) Date de création : (13/07/11 09:49:02)
 	 * 
 	 * 
 	 */
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * regles de gestion du process - Positionne un statut en fonction de ces
-	 * regles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (25/03/03 15:33:11)
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les regles de gestion du process - Positionne un statut en fonction de ces regles :
+	 * setStatut(STATUT, boolean veutRetour) ou setStatut(STATUT,Message d'erreur) Date de création : (25/03/03 15:33:11)
 	 * 
 	 */
 	public boolean performPB_SUPPRIMER_RECHERCHER_SERVICE(HttpServletRequest request) throws Exception {
@@ -3031,8 +2769,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_CODE_SERVICE Date de
-	 * création : (13/09/11 08:45:29)
+	 * Retourne pour la JSP le nom de la zone statique : ST_CODE_SERVICE Date de création : (13/09/11 08:45:29)
 	 * 
 	 */
 	public String getNOM_ST_ID_SERVICE_ADS() {
@@ -3040,8 +2777,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_CODE_SERVICE
-	 * Date de création : (13/09/11 08:45:29)
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_CODE_SERVICE Date de création : (13/09/11 08:45:29)
 	 * 
 	 */
 	public String getVAL_ST_ID_SERVICE_ADS() {
@@ -3049,215 +2785,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la liste des services.
-	 * 
-	 * @return listeServices
-	 */
-	// public ArrayList<Service> getListeServices() {
-	// return listeServices;
-	// }
-
-	/**
-	 * Met a jour la liste des services.
-	 * 
-	 * @param listeServices
-	 */
-	// private void setListeServices(ArrayList<Service> listeServices) {
-	// this.listeServices = listeServices;
-	// }
-
-	/**
-	 * Getter de la liste avec un lazy initialize : LB_RELANCE Date de création
-	 * : (28/11/11)
-	 * 
-	 */
-	private String[] getLB_RELANCE() {
-		if (LB_RELANCE == null)
-			LB_RELANCE = initialiseLazyLB();
-		return LB_RELANCE;
-	}
-
-	/**
-	 * Setter de la liste: LB_RELANCE Date de création : (28/11/11)
-	 * 
-	 */
-	private void setLB_RELANCE(String[] newLB_RELANCE) {
-		LB_RELANCE = newLB_RELANCE;
-	}
-
-	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_RELANCE Date de création
-	 * : (28/11/11)
-	 * 
-	 */
-	public String getNOM_LB_RELANCE() {
-		return "NOM_LB_RELANCE";
-	}
-
-	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_RELANCE_SELECT Date de création : (28/11/11)
-	 * 
-	 */
-	public String getNOM_LB_RELANCE_SELECT() {
-		return "NOM_LB_RELANCE_SELECT";
-	}
-
-	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_RELANCE Date de création : (28/11/11 09:55:36)
-	 * 
-	 */
-	public String[] getVAL_LB_RELANCE() {
-		return getLB_RELANCE();
-	}
-
-	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
-	 * la JSP : LB_RELANCE Date de création : (28/11/11)
-	 * 
-	 */
-	public String getVAL_LB_RELANCE_SELECT() {
-		return getZone(getNOM_LB_RELANCE_SELECT());
-	}
-
-	public ArrayList<String> getListeRelance() {
-		return listeRelance == null ? new ArrayList<String>() : listeRelance;
-	}
-
-	public void setListeRelance(ArrayList<String> listeRelance) {
-		this.listeRelance = listeRelance;
-	}
-
-	/**
-	 * Getter de la liste avec un lazy initialize : LB_MOTIF Date de création :
-	 * (28/11/11)
-	 * 
-	 */
-	private String[] getLB_MOTIF() {
-		if (LB_MOTIF == null)
-			LB_MOTIF = initialiseLazyLB();
-		return LB_MOTIF;
-	}
-
-	/**
-	 * Setter de la liste: LB_MOTIF Date de création : (28/11/11)
-	 * 
-	 */
-	private void setLB_MOTIF(String[] newLB_MOTIF) {
-		LB_MOTIF = newLB_MOTIF;
-	}
-
-	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_MOTIF Date de création :
-	 * (28/11/11)
-	 * 
-	 */
-	public String getNOM_LB_MOTIF() {
-		return "NOM_LB_MOTIF";
-	}
-
-	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_MOTIF_SELECT Date de création : (28/11/11)
-	 * 
-	 */
-	public String getNOM_LB_MOTIF_SELECT() {
-		return "NOM_LB_MOTIF_SELECT";
-	}
-
-	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_MOTIF Date de création : (28/11/11 09:55:36)
-	 * 
-	 */
-	public String[] getVAL_LB_MOTIF() {
-		return getLB_MOTIF();
-	}
-
-	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
-	 * la JSP : LB_MOTIF Date de création : (28/11/11)
-	 * 
-	 */
-	public String getVAL_LB_MOTIF_SELECT() {
-		return getZone(getNOM_LB_MOTIF_SELECT());
-	}
-
-	public ArrayList<MotifVisiteMed> getListeMotif() {
-		return listeMotif;
-	}
-
-	public void setListeMotif(ArrayList<MotifVisiteMed> listeMotif) {
-		this.listeMotif = listeMotif;
-	}
-
-	/**
-	 * Getter de la liste avec un lazy initialize : LB_ETAT Date de création :
-	 * (28/11/11)
-	 * 
-	 */
-	private String[] getLB_ETAT() {
-		if (LB_ETAT == null)
-			LB_ETAT = initialiseLazyLB();
-		return LB_ETAT;
-	}
-
-	/**
-	 * Setter de la liste: LB_ETAT Date de création : (28/11/11)
-	 * 
-	 */
-	private void setLB_ETAT(String[] newLB_ETAT) {
-		LB_ETAT = newLB_ETAT;
-	}
-
-	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_ETAT Date de création :
-	 * (28/11/11)
-	 * 
-	 */
-	public String getNOM_LB_ETAT() {
-		return "NOM_LB_ETAT";
-	}
-
-	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_ETAT_SELECT Date de création : (28/11/11)
-	 * 
-	 */
-	public String getNOM_LB_ETAT_SELECT() {
-		return "NOM_LB_ETAT_SELECT";
-	}
-
-	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_ETAT Date de création : (28/11/11 09:55:36)
-	 * 
-	 */
-	public String[] getVAL_LB_ETAT() {
-		return getLB_ETAT();
-	}
-
-	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
-	 * la JSP : LB_ETAT Date de création : (28/11/11)
-	 * 
-	 */
-	public String getVAL_LB_ETAT_SELECT() {
-		return getZone(getNOM_LB_ETAT_SELECT());
-	}
-
-	public ArrayList<EnumEtatSuiviMed> getListeEnumEtatSuiviMed() {
-		return listeEnumEtatSuiviMed == null ? new ArrayList<EnumEtatSuiviMed>() : listeEnumEtatSuiviMed;
-	}
-
-	public void setListeEnumEtatSuiviMed(ArrayList<EnumEtatSuiviMed> listeEnumEtatSuiviMed) {
-		this.listeEnumEtatSuiviMed = listeEnumEtatSuiviMed;
-	}
-
-	/**
-	 * Getter de la liste avec un lazy initialize : LB_STATUT Date de création :
-	 * (28/11/11)
+	 * Getter de la liste avec un lazy initialize : LB_STATUT Date de création : (28/11/11)
 	 * 
 	 */
 	private String[] getLB_STATUT() {
@@ -3275,8 +2803,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_STATUT Date de création :
-	 * (28/11/11)
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_STATUT Date de création : (28/11/11)
 	 * 
 	 */
 	public String getNOM_LB_STATUT() {
@@ -3284,8 +2811,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_STATUT_SELECT Date de création : (28/11/11)
+	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP : NOM_LB_STATUT_SELECT Date de création : (28/11/11)
 	 * 
 	 */
 	public String getNOM_LB_STATUT_SELECT() {
@@ -3293,8 +2819,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_STATUT Date de création : (28/11/11 09:55:36)
+	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la JSP : LB_STATUT Date de création : (28/11/11 09:55:36)
 	 * 
 	 */
 	public String[] getVAL_LB_STATUT() {
@@ -3302,8 +2827,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
-	 * la JSP : LB_STATUT Date de création : (28/11/11)
+	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de la JSP : LB_STATUT Date de création : (28/11/11)
 	 * 
 	 */
 	public String getVAL_LB_STATUT_SELECT() {

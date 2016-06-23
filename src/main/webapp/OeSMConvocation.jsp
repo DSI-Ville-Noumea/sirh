@@ -132,18 +132,6 @@
 				</div>
 				
           	<br/><br/> 
-          	<span class="sigp2" style="width:75px">Relancés : </span>
-			<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_RELANCE() %>" style="width=50px;margin-right:10px;">
-				<%=process.forComboHTML(process.getVAL_LB_RELANCE(), process.getVAL_LB_RELANCE_SELECT()) %>
-			</SELECT>			
-			<span class="sigp2" style="width:55px">Motif : </span>
-			<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_MOTIF() %>" style="width=200px;margin-right:10px;">
-				<%=process.forComboHTML(process.getVAL_LB_MOTIF(), process.getVAL_LB_MOTIF_SELECT()) %>
-			</SELECT>
-			<span class="sigp2" style="width:40px">Etat : </span>
-			<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_ETAT() %>" style="width=150px;margin-right:20px;">
-				<%=process.forComboHTML(process.getVAL_LB_ETAT(), process.getVAL_LB_ETAT_SELECT()) %>
-			</SELECT>
 			<span class="sigp2" style="width:40px">Statut : </span>
 			<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_STATUT() %>" style="width=50px;margin-right:20px;">
 				<%=process.forComboHTML(process.getVAL_LB_STATUT(), process.getVAL_LB_STATUT_SELECT()) %>
