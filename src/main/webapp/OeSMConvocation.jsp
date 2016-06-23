@@ -109,11 +109,15 @@
 		<%} %>
 		<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
 		<legend class="sigp2Legend">Prévisions des visites médicales du travail</legend>
-			<span class="sigp2" style="width:75px">Mois - Année : </span>
-			<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_MOIS() %>" style="width=140px;margin-right:20px;">
-				<%=process.forComboHTML(process.getVAL_LB_MOIS(), process.getVAL_LB_MOIS_SELECT()) %>
-			</SELECT>
-			<span class="sigp2" style="width:75px">Par agent :</span>
+		
+            <span class="sigp2Mandatory">Date début : </span>
+			<input id="<%=process.getNOM_ST_DATE_MIN()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_MIN()%>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_MIN()%>" >
+			<IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_MIN()%>', 'dd/mm/y');">
+			<span class="sigp2">Date fin : </span>
+			<input id="<%=process.getNOM_ST_DATE_MAX()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_MAX()%>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_MAX()%>" >
+			<IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_MAX()%>', 'dd/mm/y');">
+			
+            <span class="sigp2" style="width:75px">Par agent :</span>
 			<INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_AGENT() %>" size="10" readonly="readonly" type="text" value="<%= process.getVAL_ST_AGENT() %>" >
 			<img border="0" src="images/loupe.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_RECHERCHER_AGENT()%>');">
           	<img border="0" src="images/suppression.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT()%>');">
@@ -130,17 +134,25 @@
 				<%=process.getCurrentWholeTreeJS(process.getVAL_EF_SERVICE().toUpperCase()) %>
 				<!-- ////////// ARBRE DES SERVICES - ADS ///////////// -->
 				</div>
-				
-          	<br/><br/> 
 			<span class="sigp2" style="width:40px">Statut : </span>
 			<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_STATUT() %>" style="width=50px;margin-right:20px;">
 				<%=process.forComboHTML(process.getVAL_LB_STATUT(), process.getVAL_LB_STATUT_SELECT()) %>
 			</SELECT>
-			<BR/><BR/>
+			<BR/>
           	
           	<INPUT type="submit" class="sigp2-Bouton-100" value="Filtrer" name="<%=process.getNOM_PB_RECHERCHER()%>">
+		</FIELDSET>
+		
+		<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
+		<legend class="sigp2Legend">Calcul des prévisions des visites médicales du travail</legend>
+			<span class="sigp2" style="width:75px">Mois - Année : </span>
+			<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_MOIS() %>" style="width=140px;margin-right:20px;">
+				<%=process.forComboHTML(process.getVAL_LB_MOIS(), process.getVAL_LB_MOIS_SELECT()) %>
+			</SELECT>
 			<INPUT type="submit" class="sigp2-Bouton-250" value="Calculer pour le mois sélectionné" name="<%=process.getNOM_PB_CALCULER()%>">
 		</FIELDSET>
+		
+		
 		<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;height:530px;">
 		    <BR/>
 			<legend class="sigp2Legend">Gestion des prévisions</legend>

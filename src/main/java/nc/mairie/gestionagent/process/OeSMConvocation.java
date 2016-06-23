@@ -500,6 +500,18 @@ public class OeSMConvocation extends BasicProcess {
 		return "NOM_PB_RECHERCHER";
 	}
 
+	private boolean performControlerFiltres() throws Exception {
+		String dateDeb = getVAL_ST_DATE_MIN();
+		if (dateDeb.equals(Const.CHAINE_VIDE)) {
+			// "ERR500",
+			// "Le champ date de début est obligatoire."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR500"));
+			return false;
+		}
+
+		return true;
+	}
+
 	/**
 	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les regles de gestion du process - Positionne un statut en fonction de ces regles :
 	 * setStatut(STATUT, boolean veutRetour) ou setStatut(STATUT,Message d'erreur) Date de création : (28/11/11)
@@ -509,44 +521,52 @@ public class OeSMConvocation extends BasicProcess {
 		// Mise à jour de l'action menee
 		addZone(getNOM_ST_ACTION(), ACTION_RECHERCHE);
 
-		int indiceMois = (Services.estNumerique(getVAL_LB_MOIS_SELECT()) ? Integer.parseInt(getVAL_LB_MOIS_SELECT()) : -1);
-		if (indiceMois != -1) {
-
-			// recupération statut
-			int indiceStatut = (Services.estNumerique(getVAL_LB_STATUT_SELECT()) ? Integer.parseInt(getVAL_LB_STATUT_SELECT()) : -1);
-			String statut = Const.CHAINE_VIDE;
-			if (indiceStatut > 0) {
-				statut = getListeStatut().get(indiceStatut - 1);
-			}
-
-			// recuperation agent
-			Agent agent = null;
-			if (getVAL_ST_AGENT().length() != 0) {
-				agent = getAgentDao().chercherAgentParMatricule(Integer.valueOf(getVAL_ST_AGENT()));
-			}
-
-			// recuperation du service
-			List<Integer> listeSousService = null;
-			if (getVAL_ST_ID_SERVICE_ADS().length() != 0) {
-				// #16233 on recupere les sous-service du service selectionne
-				listeSousService = adsService.getListIdsEntiteWithEnfantsOfEntite(new Integer(getVAL_ST_ID_SERVICE_ADS()));
-			}
-
-			// #31345 : on ne cherche plus sur etat/relance/motif
-			setListeSuiviMed(getSuiviMedDao().listerSuiviMedicalAvecMoisetAnneeSansEffectue(getMoisSelectionne(indiceMois), getAnneeSelectionne(indiceMois),
-					agent, listeSousService, Const.CHAINE_VIDE, Const.CHAINE_VIDE, Const.CHAINE_VIDE, statut));
-			afficheListeSuiviMed();
-			// getSuiviMedDao().detruitDao();
-			// pour les documents
-			setListeDocuments(listerDocumentsSM());
-			afficheListeDocuments();
-		} else {
+		if (!performControlerFiltres()) {
 			setListeSuiviMed(null);
 			setListeDocuments(null);
-			// "ERR002","La zone @ est obligatoire."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "mois"));
 			return false;
 		}
+
+		// récupération dates
+		String dateDeb = getVAL_ST_DATE_MIN();
+		Date dateDebut = new SimpleDateFormat("dd/MM/yyyy").parse(dateDeb);
+
+		String dateF = getVAL_ST_DATE_MAX();
+		Date dateFin = null;
+		if (dateF.equals(Const.CHAINE_VIDE)) {
+			dateFin = dateDebut;
+			addZone(getNOM_ST_DATE_MAX(), getVAL_ST_DATE_MIN());
+		} else {
+			dateFin = new SimpleDateFormat("dd/MM/yyyy").parse(dateF);
+		}
+
+		// recupération statut
+		int indiceStatut = (Services.estNumerique(getVAL_LB_STATUT_SELECT()) ? Integer.parseInt(getVAL_LB_STATUT_SELECT()) : -1);
+		String statut = Const.CHAINE_VIDE;
+		if (indiceStatut > 0) {
+			statut = getListeStatut().get(indiceStatut - 1);
+		}
+
+		// recuperation agent
+		Agent agent = null;
+		if (getVAL_ST_AGENT().length() != 0) {
+			agent = getAgentDao().chercherAgentParMatricule(Integer.valueOf(getVAL_ST_AGENT()));
+		}
+
+		// recuperation du service
+		List<Integer> listeSousService = null;
+		if (getVAL_ST_ID_SERVICE_ADS().length() != 0) {
+			// #16233 on recupere les sous-service du service selectionne
+			listeSousService = adsService.getListIdsEntiteWithEnfantsOfEntite(new Integer(getVAL_ST_ID_SERVICE_ADS()));
+		}
+
+		// #31345 : on ne cherche plus sur etat/relance/motif
+		setListeSuiviMed(getSuiviMedDao().listerSuiviMedicalAvecMoisetAnneeSansEffectueBetweenDate(dateDebut, dateFin, agent, listeSousService, statut));
+		afficheListeSuiviMed();
+		// getSuiviMedDao().detruitDao();
+		// pour les documents
+		setListeDocuments(listerDocumentsSM());
+		afficheListeDocuments();
 
 		return true;
 	}
@@ -585,8 +605,7 @@ public class OeSMConvocation extends BasicProcess {
 			performCalculSuiviMedical(moisChoisi, anneeChoisi);
 
 			// Affichage de la liste
-			setListeSuiviMed(getSuiviMedDao().listerSuiviMedicalAvecMoisetAnneeSansEffectue(moisChoisi, anneeChoisi, null, null, Const.CHAINE_VIDE,
-					Const.CHAINE_VIDE, Const.CHAINE_VIDE, Const.CHAINE_VIDE));
+			setListeSuiviMed(getSuiviMedDao().listerSuiviMedicalAvecMoisetAnneeSansEffectue(moisChoisi, anneeChoisi, null, null, Const.CHAINE_VIDE));
 			logger.info("Affichage de la liste");
 			afficheListeSuiviMed();
 			// pour les documents
@@ -2909,6 +2928,22 @@ public class OeSMConvocation extends BasicProcess {
 
 	public void setAgentDao(AgentDao agentDao) {
 		this.agentDao = agentDao;
+	}
+
+	public String getNOM_ST_DATE_MIN() {
+		return "NOM_ST_DATE_MIN";
+	}
+
+	public String getVAL_ST_DATE_MIN() {
+		return getZone(getNOM_ST_DATE_MIN());
+	}
+
+	public String getNOM_ST_DATE_MAX() {
+		return "NOM_ST_DATE_MAX";
+	}
+
+	public String getVAL_ST_DATE_MAX() {
+		return getZone(getNOM_ST_DATE_MAX());
 	}
 
 }
