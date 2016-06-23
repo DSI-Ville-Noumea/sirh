@@ -4506,16 +4506,38 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 				if (getAffectationCourant().getDateFinAff() != null) {
 					// si date de fin < dateJour et que FDP non affectée à qqn
 					// d'autre --> on passe la FDP en inactive
-					Date dateJour = new SimpleDateFormat("dd/MM/yyyy").parse(new SimpleDateFormat("dd/MM/yyyy").format(new Date()));
-					if (getAffectationCourant().getDateFinAff().compareTo(dateJour) < 0) {
+					if (getAffectationCourant().getDateFinAff().before(new Date())) {
 						if (getAffectationDao().listerAffectationActiveOuFuturAvecFP(getFichePosteCourant().getIdFichePoste()).size() == 0) {
-							getFichePosteCourant().setIdStatutFp(new Integer(EnumStatutFichePoste.INACTIVE.getId()));
-							getFichePosteCourant().setIdResponsable(null);
-							getFichePosteDao().modifierFichePoste(getFichePosteCourant(), getHistoFichePosteDao(), user, getTransaction(), getAffectationDao());
-							commitTransaction();
-							// "INF013", "Attention : la FDP @ a été inactivée."
-							getTransaction().declarerErreur(MessageUtils.getMessage("INF013", getFichePosteCourant().getNumFp()));
-
+							// et pas de FP enfant valide Gelée ou Transitoire
+							List<Integer> listIdsFichePosteEnfant = sirhService.getSubFichePostes(getAgentCourant().getIdAgent(), 1);
+							
+							boolean isFPEnfantValideGeleeTransitoire = true;
+							if(null != listIdsFichePosteEnfant
+									&& !listIdsFichePosteEnfant.isEmpty()) {
+								for(Integer idFP : listIdsFichePosteEnfant) {
+									FichePoste fp = getFichePosteDao().chercherFichePoste(idFP);
+									if(EnumStatutFichePoste.VALIDEE.getId().equals(fp.getIdStatutFp().toString())
+											|| EnumStatutFichePoste.GELEE.getId().equals(fp.getIdStatutFp().toString())
+											|| EnumStatutFichePoste.TRANSITOIRE.getId().equals(fp.getIdStatutFp().toString())) {
+										
+										isFPEnfantValideGeleeTransitoire = false;
+										break;
+									}
+								}
+							}
+							
+							if(isFPEnfantValideGeleeTransitoire
+									&& (EnumStatutFichePoste.TRANSITOIRE.getId().equals(getFichePosteCourant().getIdStatutFp().toString())
+											|| (EnumStatutFichePoste.VALIDEE.getId().equals(getFichePosteCourant().getIdStatutFp().toString())
+													// NON REGLEMENTAIRE
+													&& getFichePosteCourant().getIdCdthorReg().equals(0)
+													))) {
+								getFichePosteCourant().setIdStatutFp(new Integer(EnumStatutFichePoste.INACTIVE.getId()));
+								getFichePosteDao().modifierFichePoste(getFichePosteCourant(), getHistoFichePosteDao(), user, getTransaction(), getAffectationDao());
+								commitTransaction();
+								// "INF013", "Attention : la FDP @ a été inactivée."
+								getTransaction().declarerErreur(MessageUtils.getMessage("INF013", getFichePosteCourant().getNumFp()));
+							}
 						}
 					} else {
 						if (getFichePosteCourant().getIdStatutFp().toString().equals(EnumStatutFichePoste.INACTIVE.getId())) {
@@ -4585,7 +4607,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		} else if (statutFDPPrincipale.getLibStatutFp().equals(EnumStatutFichePoste.EN_CREATION.getLibLong())) {
 			// "ERR089",
 			// "La fiche de poste @ est @. Vous ne pouvez pas créer d'affectation"
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR089", getFichePosteCourant().getNumFp(), EnumStatutFichePoste.INACTIVE.getLibLong()));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR089", getFichePosteCourant().getNumFp(), EnumStatutFichePoste.EN_CREATION.getLibLong()));
 			setFocus(getNOM_PB_AJOUTER());
 			return false;
 		}

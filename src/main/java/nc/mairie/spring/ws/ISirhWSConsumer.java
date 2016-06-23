@@ -54,4 +54,6 @@ public interface ISirhWSConsumer {
 			List<AgentDto> listAgentsAInclure);
 
 	List<AgentWithServiceDto> getListeAgentWithIndemniteForfaitTravailDPM(Set<Integer> listIdsAgent);
+
+	List<Integer> getSubFichePostes(Integer idAgent, Integer maxDepth);
 }

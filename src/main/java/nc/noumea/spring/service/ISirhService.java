@@ -50,4 +50,13 @@ public interface ISirhService {
 			List<Integer> listAgentDto, Date date);
 
 	List<AgentWithServiceDto> getListeAgentWithIndemniteForfaitTravailDPM(Set<Integer> listIdsAgent);
+
+	/**
+	 * Retourne les fiches de poste enfant de la fiche de poste d un agent
+	 * 
+	 * @param idAgent Integer ID Agent
+	 * @param maxDepth Integer Nombre de niveau a descendre
+	 * @return Liste de Numéro des FP
+	 */
+	List<Integer> getSubFichePostes(Integer idAgent, Integer maxDepth);
 }

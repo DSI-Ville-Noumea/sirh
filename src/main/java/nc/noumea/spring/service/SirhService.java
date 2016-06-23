@@ -115,4 +115,9 @@ public class SirhService implements ISirhService {
 		return sirhConsumer.getListeAgentWithIndemniteForfaitTravailDPM(listIdsAgent);
 	}
 
+	@Override
+	public List<Integer> getSubFichePostes(Integer idAgent, Integer maxDepth) {
+		return sirhConsumer.getSubFichePostes(idAgent, maxDepth);
+	}
+
 }

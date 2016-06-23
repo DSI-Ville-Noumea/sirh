@@ -1711,7 +1711,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 					if (EnumStatutFichePoste.INACTIVE.getLibLong().equals(statutCourant.getLibStatutFp())
 							&& !(EnumStatutFichePoste.VALIDEE.getLibLong().equals(statutPrecedant.getLibStatutFp())
-									|| EnumStatutFichePoste.TRANSITOIRE.getLibLong().equals(statutPrecedant.getLibStatutFp()) || EnumStatutFichePoste.GELEE.getLibLong().equals(
+									|| EnumStatutFichePoste.TRANSITOIRE.getLibLong().equals(statutPrecedant.getLibStatutFp()) 
+									|| EnumStatutFichePoste.GELEE.getLibLong().equals(
 									statutPrecedant.getLibStatutFp()))) {
 						// "ERR124",
 						// "Le statut ne peut passer a @ s'il n'est pas @."
@@ -2456,7 +2457,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 		majChangementFEAutorise();
 
-		// appel WS mise à jour Abre FDP
+		// appel WS mise à jour Arbre FDP
 		if (!sirhService.miseAJourArbreFDP()) {
 			// "ERR970","Une erreur est survenue lors de la mise à jour de l'arbre des Fiche de poste. Merci de contacter le responsable du projet car cela engendre un soucis sur le Kiosque RH."
 			if (getTransaction().isErreur()) {
@@ -2514,7 +2515,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 				if (String.valueOf(StatutEntiteEnum.PREVISION.getIdRefStatutEntite()).equals(entiteDto.getIdStatut().toString())) {
 					// "ERR126",
 					// "Le statut de la FDP ne peut être @ si l'entité n'est pas @."
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR126", "'En création'", "'En prévision'"));
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR127", statutCourant.getLibStatutFp(), "'En prévision'"));
 					return false;
 				}
 			}

@@ -63,6 +63,8 @@ public class SirhWSConsumer extends BaseWsConsumer implements ISirhWSConsumer {
 
 	private static final String sirhListeAgentWithIndemniteForfaitTravailDPMUrl = "agents/listeAgentWithIndemniteForfaitTravailDPM";
 
+	private static final String sirGetSubFichePostesUrl = "fichePostes/getSubFichePostes";
+
 	private Logger logger = LoggerFactory.getLogger(SirhWSConsumer.class);
 
 	@Override
@@ -337,6 +339,20 @@ public class SirhWSConsumer extends BaseWsConsumer implements ISirhWSConsumer {
 		ClientResponse res = createAndPostRequest(parameters, url, json);
 
 		return readResponseAsList(AgentWithServiceDto.class, res, url);
+	}
+
+	@Override
+	public List<Integer> getSubFichePostes(Integer idAgent, Integer maxDepth) {
+
+		String url = String.format(sirhWsBaseUrl + sirGetSubFichePostesUrl);
+
+		Map<String, String> parameters = new HashMap<String, String>();
+		parameters.put("idAgent", idAgent.toString());
+		parameters.put("maxDepth", maxDepth.toString());
+		
+		ClientResponse res = createAndFireRequest(parameters, url);
+
+		return readResponseAsList(Integer.class, res, url);
 	}
 
 }
