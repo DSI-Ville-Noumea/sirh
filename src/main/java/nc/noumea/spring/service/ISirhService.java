@@ -9,6 +9,7 @@ import nc.mairie.gestionagent.dto.AgentWithServiceDto;
 import nc.mairie.gestionagent.dto.BaseHorairePointageDto;
 import nc.mairie.gestionagent.dto.DateAvctDto;
 import nc.mairie.gestionagent.dto.EntiteWithAgentWithServiceDto;
+import nc.mairie.gestionagent.dto.FichePosteTreeNodeDto;
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
 import nc.mairie.gestionagent.eae.dto.AutreAdministrationAgentDto;
 import nc.mairie.gestionagent.eae.dto.CalculEaeInfosDto;
@@ -52,11 +53,23 @@ public interface ISirhService {
 	List<AgentWithServiceDto> getListeAgentWithIndemniteForfaitTravailDPM(Set<Integer> listIdsAgent);
 
 	/**
-	 * Retourne les fiches de poste enfant de la fiche de poste d un agent
+	 * Retourne l arbre des fiches de poste par rapport a l entite
 	 * 
-	 * @param idAgent Integer ID Agent
-	 * @param maxDepth Integer Nombre de niveau a descendre
-	 * @return Liste de Numéro des FP
+	 * @param idEntite Integer ID entite
+	 * @param withFichesPosteNonReglemente boolean Avec FP non reglementaire ou non
+	 * @return Arbre fiches de poste
 	 */
-	List<Integer> getSubFichePostes(Integer idAgent, Integer maxDepth);
+	List<FichePosteTreeNodeDto> getFichePosteTreeNodeDto(Integer idEntite, boolean withFichesPosteNonReglemente);
+
+	/**
+	 * Retourne vrai si une FP est Valide Gelee ou Transitoire :
+	 * parcours tout l'arbre
+	 * 
+	 * @param listFP List<FichePosteTreeNodeDto
+	 * @param idFichePosteConcerne Integer FP que l on va passer a inactif
+	 * @return boolean
+	 */
+	boolean isFPEnfantValideGeleeTransitoire(List<FichePosteTreeNodeDto> listFP, Integer idFichePosteConcerne);
+
+	FichePosteTreeNodeDto getFichePosteTreeNodeDtoByIdFichePoste(List<FichePosteTreeNodeDto> listFP, Integer idFichePosteConcerne);
 }

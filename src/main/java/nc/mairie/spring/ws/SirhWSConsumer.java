@@ -15,6 +15,7 @@ import nc.mairie.gestionagent.dto.AgentWithServiceDto;
 import nc.mairie.gestionagent.dto.BaseHorairePointageDto;
 import nc.mairie.gestionagent.dto.DateAvctDto;
 import nc.mairie.gestionagent.dto.EntiteWithAgentWithServiceDto;
+import nc.mairie.gestionagent.dto.FichePosteTreeNodeDto;
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
 import nc.mairie.gestionagent.eae.dto.AutreAdministrationAgentDto;
 import nc.mairie.gestionagent.eae.dto.CalculEaeInfosDto;
@@ -63,7 +64,7 @@ public class SirhWSConsumer extends BaseWsConsumer implements ISirhWSConsumer {
 
 	private static final String sirhListeAgentWithIndemniteForfaitTravailDPMUrl = "agents/listeAgentWithIndemniteForfaitTravailDPM";
 
-	private static final String sirGetSubFichePostesUrl = "fichePostes/getSubFichePostes";
+	private static final String sirhTreeFichesPosteByIdEntiteUrl = "fichePostes/treeFichesPosteByIdEntite";
 
 	private Logger logger = LoggerFactory.getLogger(SirhWSConsumer.class);
 
@@ -342,17 +343,17 @@ public class SirhWSConsumer extends BaseWsConsumer implements ISirhWSConsumer {
 	}
 
 	@Override
-	public List<Integer> getSubFichePostes(Integer idAgent, Integer maxDepth) {
+	public List<FichePosteTreeNodeDto> getFichePosteTreeNodeDto(Integer idEntite, boolean withFichesPosteNonReglemente) {
 
-		String url = String.format(sirhWsBaseUrl + sirGetSubFichePostesUrl);
+		String url = String.format(sirhWsBaseUrl + sirhTreeFichesPosteByIdEntiteUrl);
 
 		Map<String, String> parameters = new HashMap<String, String>();
-		parameters.put("idAgent", idAgent.toString());
-		parameters.put("maxDepth", maxDepth.toString());
+		parameters.put("idEntite", idEntite.toString());
+		parameters.put("withFichesPosteNonReglemente", new Boolean(withFichesPosteNonReglemente).toString());
 		
 		ClientResponse res = createAndFireRequest(parameters, url);
 
-		return readResponseAsList(Integer.class, res, url);
+		return readResponseAsList(FichePosteTreeNodeDto.class, res, url);
 	}
 
 }

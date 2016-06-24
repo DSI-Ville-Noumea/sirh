@@ -18,6 +18,7 @@ import nc.mairie.enums.EnumTypeGroupeAbsence;
 import nc.mairie.enums.EnumTypeHisto;
 import nc.mairie.gestionagent.absence.dto.RefTypeSaisiCongeAnnuelDto;
 import nc.mairie.gestionagent.absence.dto.TypeAbsenceDto;
+import nc.mairie.gestionagent.dto.FichePosteTreeNodeDto;
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
 import nc.mairie.gestionagent.pointage.dto.RefPrimeDto;
 import nc.mairie.gestionagent.radi.dto.LightUserDto;
@@ -4509,24 +4510,15 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 					if (getAffectationCourant().getDateFinAff().before(new Date())) {
 						if (getAffectationDao().listerAffectationActiveOuFuturAvecFP(getFichePosteCourant().getIdFichePoste()).size() == 0) {
 							// et pas de FP enfant valide Gelée ou Transitoire
-							List<Integer> listIdsFichePosteEnfant = sirhService.getSubFichePostes(getAgentCourant().getIdAgent(), 1);
+							List<FichePosteTreeNodeDto> listFP = sirhService.getFichePosteTreeNodeDto(getFichePosteCourant().getIdServiceAds(), true);
 							
-							boolean isFPEnfantValideGeleeTransitoire = true;
-							if(null != listIdsFichePosteEnfant
-									&& !listIdsFichePosteEnfant.isEmpty()) {
-								for(Integer idFP : listIdsFichePosteEnfant) {
-									FichePoste fp = getFichePosteDao().chercherFichePoste(idFP);
-									if(EnumStatutFichePoste.VALIDEE.getId().equals(fp.getIdStatutFp().toString())
-											|| EnumStatutFichePoste.GELEE.getId().equals(fp.getIdStatutFp().toString())
-											|| EnumStatutFichePoste.TRANSITOIRE.getId().equals(fp.getIdStatutFp().toString())) {
-										
-										isFPEnfantValideGeleeTransitoire = false;
-										break;
-									}
-								}
-							}
+							FichePosteTreeNodeDto fichePosteTreeNodeDtoOfFP = sirhService.getFichePosteTreeNodeDtoByIdFichePoste(listFP, getFichePosteCourant().getIdFichePoste());
+							List<FichePosteTreeNodeDto> listFichePosteTreeNodeDtoOfFP = new ArrayList<FichePosteTreeNodeDto>();
+							listFichePosteTreeNodeDtoOfFP.add(fichePosteTreeNodeDtoOfFP);
 							
-							if(isFPEnfantValideGeleeTransitoire
+							if(!sirhService.isFPEnfantValideGeleeTransitoire(
+									listFichePosteTreeNodeDtoOfFP, 
+									getFichePosteCourant().getIdFichePoste())
 									&& (EnumStatutFichePoste.TRANSITOIRE.getId().equals(getFichePosteCourant().getIdStatutFp().toString())
 											|| (EnumStatutFichePoste.VALIDEE.getId().equals(getFichePosteCourant().getIdStatutFp().toString())
 													// NON REGLEMENTAIRE
@@ -4535,6 +4527,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 								getFichePosteCourant().setIdStatutFp(new Integer(EnumStatutFichePoste.INACTIVE.getId()));
 								getFichePosteDao().modifierFichePoste(getFichePosteCourant(), getHistoFichePosteDao(), user, getTransaction(), getAffectationDao());
 								commitTransaction();
+								
 								// "INF013", "Attention : la FDP @ a été inactivée."
 								getTransaction().declarerErreur(MessageUtils.getMessage("INF013", getFichePosteCourant().getNumFp()));
 							}

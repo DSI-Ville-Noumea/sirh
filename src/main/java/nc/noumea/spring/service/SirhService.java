@@ -4,11 +4,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import nc.mairie.enums.EnumStatutFichePoste;
 import nc.mairie.gestionagent.dto.AgentDto;
 import nc.mairie.gestionagent.dto.AgentWithServiceDto;
 import nc.mairie.gestionagent.dto.BaseHorairePointageDto;
 import nc.mairie.gestionagent.dto.DateAvctDto;
 import nc.mairie.gestionagent.dto.EntiteWithAgentWithServiceDto;
+import nc.mairie.gestionagent.dto.FichePosteTreeNodeDto;
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
 import nc.mairie.gestionagent.eae.dto.AutreAdministrationAgentDto;
 import nc.mairie.gestionagent.eae.dto.CalculEaeInfosDto;
@@ -116,8 +118,53 @@ public class SirhService implements ISirhService {
 	}
 
 	@Override
-	public List<Integer> getSubFichePostes(Integer idAgent, Integer maxDepth) {
-		return sirhConsumer.getSubFichePostes(idAgent, maxDepth);
+	public List<FichePosteTreeNodeDto> getFichePosteTreeNodeDto(Integer idEntite, boolean withFichesPosteNonReglemente) {
+		return sirhConsumer.getFichePosteTreeNodeDto(idEntite, withFichesPosteNonReglemente);
+	}
+	
+	@Override
+	public FichePosteTreeNodeDto getFichePosteTreeNodeDtoByIdFichePoste(List<FichePosteTreeNodeDto> listFP, Integer idFichePosteConcerne) {
+		
+		FichePosteTreeNodeDto result = null;
+		if(null != listFP
+				&& !listFP.isEmpty()) {
+			for(FichePosteTreeNodeDto fp : listFP) {
+				if(fp.getIdFichePoste().equals(idFichePosteConcerne)) {
+					return fp;
+				}
+				result = getFichePosteTreeNodeDtoByIdFichePoste(fp.getFichePostesEnfant(), idFichePosteConcerne);
+				if(null != result) {
+					return result;
+				}
+			}
+		}
+		
+		return result;
+	}
+	
+	@Override
+	public boolean isFPEnfantValideGeleeTransitoire(List<FichePosteTreeNodeDto> listFP, Integer idFichePosteConcerne) {
+		
+		boolean result = false;
+		
+		if(null != listFP
+				&& !listFP.isEmpty()) {
+			for(FichePosteTreeNodeDto fp : listFP) {
+				if(!fp.getIdFichePoste().equals(idFichePosteConcerne)
+						&& (EnumStatutFichePoste.VALIDEE.getId().equals(fp.getIdStatutFDP().toString())
+							|| EnumStatutFichePoste.GELEE.getId().equals(fp.getIdStatutFDP().toString())
+							|| EnumStatutFichePoste.TRANSITOIRE.getId().equals(fp.getIdStatutFDP().toString()))) {
+					
+					return true;
+				}
+				
+				result = isFPEnfantValideGeleeTransitoire(fp.getFichePostesEnfant(), idFichePosteConcerne);
+				if(result)
+					return result;
+			}
+		}
+		
+		return result;
 	}
 
 }
