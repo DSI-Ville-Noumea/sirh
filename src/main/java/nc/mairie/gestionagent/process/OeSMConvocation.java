@@ -590,8 +590,12 @@ public class OeSMConvocation extends BasicProcess {
 			listeSousService = adsService.getListIdsEntiteWithEnfantsOfEntite(new Integer(getVAL_ST_ID_SERVICE_ADS()));
 		}
 
+		// coche CDD
+		boolean isCocheCDD = getVAL_CK_AGENT_CDD().equals(getCHECKED_ON());
+
 		// #31345 : on ne cherche plus sur etat/relance/motif
-		setListeSuiviMed(getSuiviMedDao().listerSuiviMedicalAvecMoisetAnneeSansEffectueBetweenDate(dateDebut, dateFin, listeAgent, listeSousService, statut));
+		setListeSuiviMed(getSuiviMedDao().listerSuiviMedicalAvecMoisetAnneeSansEffectueBetweenDate(dateDebut, dateFin, listeAgent, listeSousService, statut,
+				isCocheCDD));
 		afficheListeSuiviMed();
 		// getSuiviMedDao().detruitDao();
 		// pour les documents
@@ -3004,6 +3008,14 @@ public class OeSMConvocation extends BasicProcess {
 		// On enleve l'agent selectionnée
 		addZone(getNOM_ST_AGENT_HIERARCHIQUE(), Const.CHAINE_VIDE);
 		return true;
+	}
+
+	public String getNOM_CK_AGENT_CDD() {
+		return "NOM_CK_AGENT_CDD";
+	}
+
+	public String getVAL_CK_AGENT_CDD() {
+		return getZone(getNOM_CK_AGENT_CDD());
 	}
 
 }

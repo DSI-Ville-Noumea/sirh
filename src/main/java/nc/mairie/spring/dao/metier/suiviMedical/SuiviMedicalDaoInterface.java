@@ -13,7 +13,7 @@ public interface SuiviMedicalDaoInterface {
 			String statut) throws Exception;
 
 	public ArrayList<SuiviMedical> listerSuiviMedicalAvecMoisetAnneeSansEffectueBetweenDate(Date dateDebut, Date dateFin, List<Integer> listeAgent,
-			List<Integer> listeSousService, String statut) throws Exception;
+			List<Integer> listeSousService, String statut, boolean CDD) throws Exception;
 
 	public ArrayList<SuiviMedical> listerSuiviMedicalNonEffectue(Integer mois, Integer annee, String etat) throws Exception;
 

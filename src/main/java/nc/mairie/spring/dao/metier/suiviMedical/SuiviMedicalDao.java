@@ -336,9 +336,16 @@ public class SuiviMedicalDao extends SirhDao implements SuiviMedicalDaoInterface
 
 	@Override
 	public ArrayList<SuiviMedical> listerSuiviMedicalAvecMoisetAnneeSansEffectueBetweenDate(Date dateDebut, Date dateFin, List<Integer> listeAgent,
-			List<Integer> listeSousService, String statut) throws Exception {
+			List<Integer> listeSousService, String statut, boolean CDD) throws Exception {
 
-		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_DATE_PREVISION_VISITE + " between ? and ? and " + CHAMP_ETAT + "!= ? ";
+		String sql = "select * from " + NOM_TABLE + " sm ";
+		if (CDD) {
+			sql += " inner join AGENT ag on sm." + CHAMP_ID_AGENT + "=ag." + CHAMP_ID_AGENT;
+			sql += " inner join CONTRAT c on c." + CHAMP_ID_AGENT + "=ag." + CHAMP_ID_AGENT;
+			sql += " where c.DATDEB<=? and ( c.DATE_FIN is null or c.DATE_FIN>=?) ";
+			sql += " and c.ID_TYPE_CONTRAT=1 ";
+		}
+		sql += (CDD ? " and " : " where ") + CHAMP_DATE_PREVISION_VISITE + " between ? and ? and " + CHAMP_ETAT + "!= ? ";
 		if (listeAgent != null && listeAgent.size() > 0) {
 
 			String list = Const.CHAINE_VIDE;
@@ -368,7 +375,13 @@ public class SuiviMedicalDao extends SirhDao implements SuiviMedicalDaoInterface
 
 		ArrayList<SuiviMedical> listeSuiviMedical = new ArrayList<SuiviMedical>();
 
-		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { dateDebut, dateFin, EnumEtatSuiviMed.EFFECTUE.getCode() });
+		List<Map<String, Object>> rows = null;
+		if (CDD) {
+			Date dateJour = new Date();
+			rows = jdbcTemplate.queryForList(sql, new Object[] { dateJour, dateJour, dateDebut, dateFin, EnumEtatSuiviMed.EFFECTUE.getCode() });
+		} else {
+			rows = jdbcTemplate.queryForList(sql, new Object[] { dateDebut, dateFin, EnumEtatSuiviMed.EFFECTUE.getCode() });
+		}
 		for (Map<String, Object> row : rows) {
 			SuiviMedical sm = new SuiviMedical();
 			BigDecimal idSuivi = (BigDecimal) row.get(CHAMP_ID);

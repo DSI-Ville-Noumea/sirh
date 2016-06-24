@@ -120,6 +120,8 @@
 			<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_STATUT() %>" style="width=50px;margin-right:20px;">
 				<%=process.forComboHTML(process.getVAL_LB_STATUT(), process.getVAL_LB_STATUT_SELECT()) %>
 			</SELECT>
+			<span class="sigp2">Agent en CDD :</span>
+			<INPUT style="visibility: visible;" type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_AGENT_CDD(),process.getVAL_CK_AGENT_CDD())%>><span  class="sigp2">Oui</span>
 			
 			<BR/>
             <span class="sigp2" style="width:75px">Par supérieur hiérarchique :</span>
