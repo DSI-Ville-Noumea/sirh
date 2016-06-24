@@ -116,28 +116,34 @@
 			<span class="sigp2">Date fin : </span>
 			<input id="<%=process.getNOM_ST_DATE_MAX()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_MAX()%>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_MAX()%>" >
 			<IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_MAX()%>', 'dd/mm/y');">
+			<span class="sigp2" style="width:40px">Statut : </span>
+			<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_STATUT() %>" style="width=50px;margin-right:20px;">
+				<%=process.forComboHTML(process.getVAL_LB_STATUT(), process.getVAL_LB_STATUT_SELECT()) %>
+			</SELECT>
 			
-            <span class="sigp2" style="width:75px">Par agent :</span>
+			<BR/>
+            <span class="sigp2" style="width:75px">Par supérieur hiérarchique :</span>
+			<INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_AGENT_HIERARCHIQUE() %>" size="10" readonly="readonly" type="text" value="<%= process.getVAL_ST_AGENT_HIERARCHIQUE() %>" >
+			<img border="0" src="images/loupe.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_RECHERCHER_AGENT_HIERARCHIQUE()%>');">
+          	<img border="0" src="images/suppression.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_HIERARCHIQUE()%>');">
+          	
+          	<span class="sigp2" style="width:75px">Par agent :</span>
 			<INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_AGENT() %>" size="10" readonly="readonly" type="text" value="<%= process.getVAL_ST_AGENT() %>" >
 			<img border="0" src="images/loupe.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_RECHERCHER_AGENT()%>');">
           	<img border="0" src="images/suppression.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT()%>');">
+          	
           	<span class="sigp2" style="width:75px;">Service :</span>
-				<INPUT id="service" class="sigp2-saisie" readonly="readonly" name="<%= process.getNOM_EF_SERVICE() %>" size="10" style="margin-right:10px;" type="text" value="<%= process.getVAL_EF_SERVICE() %>">
-				<img border="0" src="images/loupe.gif" width="16" title="Cliquer pour afficher l'arborescence"	height="16" style="cursor : pointer;" onclick="agrandirHierarchy();">	
-				<img border="0" src="images/suppression.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_SERVICE()%>');">
-				<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_SERVICE()%>" value="SUPPRECHERCHERSERVICE">	
-          		<INPUT type="hidden" id="idServiceADS" size="4" name="<%=process.getNOM_ST_ID_SERVICE_ADS() %>" 
-					value="<%=process.getVAL_ST_ID_SERVICE_ADS() %>" class="sigp2-saisie">
-				
+			<INPUT id="service" class="sigp2-saisie" readonly="readonly" name="<%= process.getNOM_EF_SERVICE() %>" size="10" style="margin-right:10px;" type="text" value="<%= process.getVAL_EF_SERVICE() %>">
+			<img border="0" src="images/loupe.gif" width="16" title="Cliquer pour afficher l'arborescence"	height="16" style="cursor : pointer;" onclick="agrandirHierarchy();">	
+			<img border="0" src="images/suppression.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_SERVICE()%>');">
+			<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_SERVICE()%>" value="SUPPRECHERCHERSERVICE">	
+          	<INPUT type="hidden" id="idServiceADS" size="4" name="<%=process.getNOM_ST_ID_SERVICE_ADS() %>" 
+					value="<%=process.getVAL_ST_ID_SERVICE_ADS() %>" class="sigp2-saisie">				
                 <div style="margin-left:400px;" class="sigp2">
 				<!-- ////////// ARBRE DES SERVICES - ADS ///////////// -->
 				<%=process.getCurrentWholeTreeJS(process.getVAL_EF_SERVICE().toUpperCase()) %>
 				<!-- ////////// ARBRE DES SERVICES - ADS ///////////// -->
 				</div>
-			<span class="sigp2" style="width:40px">Statut : </span>
-			<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_STATUT() %>" style="width=50px;margin-right:20px;">
-				<%=process.forComboHTML(process.getVAL_LB_STATUT(), process.getVAL_LB_STATUT_SELECT()) %>
-			</SELECT>
 			<BR/>
           	
           	<INPUT type="submit" class="sigp2-Bouton-100" value="Filtrer" name="<%=process.getNOM_PB_RECHERCHER()%>">
@@ -301,6 +307,8 @@
 	<%=process.getUrlFichier()%>
 		<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_RECHERCHER_AGENT()%>" value="RECHERCHERAGENTEVALUE">
 		<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT()%>" value="SUPPRECHERCHERAGENTEVALUE">
+		<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_RECHERCHER_AGENT_HIERARCHIQUE()%>" value="RECHERCHERAGENTHIERARCHIQUE">
+		<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_HIERARCHIQUE()%>" value="SUPPRECHERCHERAGENTHIERARCHIQUE">
 	</FORM>
 	</BODY>
 </HTML>

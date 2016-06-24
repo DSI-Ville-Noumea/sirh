@@ -497,6 +497,7 @@ public class RobotAgent extends Robot {
 		// ///////////////////
 		// Classe OeSMConvocation
 		navigation.put(OeSMConvocation.class.getName() + OeSMConvocation.STATUT_RECHERCHER_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OeSMConvocation.class.getName() + OeSMConvocation.STATUT_RECHERCHER_AGENT_HIERARCHIQUE, OeAGENTRecherche.class.getName());
 
 		// ///////////////////
 		// POINTAGE //

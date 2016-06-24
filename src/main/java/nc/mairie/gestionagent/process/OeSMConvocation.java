@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.enums.EnumEtatSuiviMed;
 import nc.mairie.enums.EnumMotifVisiteMed;
+import nc.mairie.gestionagent.dto.AgentDto;
 import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.Agent;
@@ -69,7 +70,7 @@ public class OeSMConvocation extends BasicProcess {
 	/**
 	 * 
 	 */
-	private static final long			serialVersionUID		= 1L;
+	private static final long			serialVersionUID						= 1L;
 	private String[]					LB_MOIS;
 	private String[]					LB_MEDECIN;
 	private String[]					LB_HEURE_RDV;
@@ -86,14 +87,14 @@ public class OeSMConvocation extends BasicProcess {
 
 	private ArrayList<String>			listeHeureRDV;
 
-	public String						ACTION_CALCUL			= "Calcul";
-	public String						ACTION_RECHERCHE		= "Recherche";
-	public String						ACTION_MODIFICATION		= "Modification";
-	public String						ACTION_SUPPRESSION		= "Suppression";
+	public String						ACTION_CALCUL							= "Calcul";
+	public String						ACTION_RECHERCHE						= "Recherche";
+	public String						ACTION_MODIFICATION						= "Modification";
+	public String						ACTION_SUPPRESSION						= "Suppression";
 
-	private Logger						logger					= LoggerFactory.getLogger(OeSMConvocation.class);
+	private Logger						logger									= LoggerFactory.getLogger(OeSMConvocation.class);
 
-	public String						convocationsEnErreur	= Const.CHAINE_VIDE;
+	public String						convocationsEnErreur					= Const.CHAINE_VIDE;
 	private String						urlFichier;
 
 	private SuiviMedicalDao				suiviMedDao;
@@ -109,7 +110,8 @@ public class OeSMConvocation extends BasicProcess {
 
 	private ISirhService				sirhService;
 
-	public static final int				STATUT_RECHERCHER_AGENT	= 1;
+	public static final int				STATUT_RECHERCHER_AGENT					= 1;
+	public static final int				STATUT_RECHERCHER_AGENT_HIERARCHIQUE	= 2;
 	private ArrayList<String>			listeStatut;
 
 	@Override
@@ -136,6 +138,11 @@ public class OeSMConvocation extends BasicProcess {
 			Agent agt = (Agent) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
 			VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
 			addZone(getNOM_ST_AGENT(), agt.getNomatr().toString());
+			performPB_RECHERCHER(request);
+		} else if (etatStatut() == STATUT_RECHERCHER_AGENT_HIERARCHIQUE) {
+			Agent agt = (Agent) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
+			VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
+			addZone(getNOM_ST_AGENT_HIERARCHIQUE(), agt.getNomatr().toString());
 			performPB_RECHERCHER(request);
 		}
 		// Initialisation de la liste des documents suivi medicaux
@@ -344,6 +351,16 @@ public class OeSMConvocation extends BasicProcess {
 			if (testerParametre(request, getNOM_PB_SUPPRIMER_RECHERCHER_SERVICE())) {
 				return performPB_SUPPRIMER_RECHERCHER_SERVICE(request);
 			}
+
+			// Si clic sur le bouton PB_RECHERCHER_AGENT_HIERARCHIQUE
+			if (testerParametre(request, getNOM_PB_RECHERCHER_AGENT_HIERARCHIQUE())) {
+				return performPB_RECHERCHER_AGENT_HIERARCHIQUE(request);
+			}
+
+			// Si clic sur le bouton PB_SUPPRIMER_RECHERCHER_AGENT_HIERARCHIQUE
+			if (testerParametre(request, getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_HIERARCHIQUE())) {
+				return performPB_SUPPRIMER_RECHERCHER_AGENT_HIERARCHIQUE(request);
+			}
 		}
 		// Si TAG INPUT non géré par le process
 		setStatut(STATUT_MEME_PROCESS);
@@ -547,10 +564,23 @@ public class OeSMConvocation extends BasicProcess {
 			statut = getListeStatut().get(indiceStatut - 1);
 		}
 
+		List<Integer> listeAgent = new ArrayList<>();
+
 		// recuperation agent
-		Agent agent = null;
 		if (getVAL_ST_AGENT().length() != 0) {
-			agent = getAgentDao().chercherAgentParMatricule(Integer.valueOf(getVAL_ST_AGENT()));
+			Agent agent = getAgentDao().chercherAgentParMatricule(Integer.valueOf(getVAL_ST_AGENT()));
+			listeAgent.add(agent.getIdAgent());
+		}
+
+		// recuperation supérieur hiérarchique
+		if (getVAL_ST_AGENT_HIERARCHIQUE().length() != 0) {
+			listeAgent = new ArrayList<>();
+			Agent agentSuperieur = getAgentDao().chercherAgentParMatricule(Integer.valueOf(getVAL_ST_AGENT_HIERARCHIQUE()));
+			List<AgentDto> agentSousHierarchique = sirhService.getAgentsSubordonnes(agentSuperieur.getIdAgent());
+			for (AgentDto dto : agentSousHierarchique) {
+				Agent agent = getAgentDao().chercherAgent(dto.getIdAgent());
+				listeAgent.add(agent.getIdAgent());
+			}
 		}
 
 		// recuperation du service
@@ -561,7 +591,7 @@ public class OeSMConvocation extends BasicProcess {
 		}
 
 		// #31345 : on ne cherche plus sur etat/relance/motif
-		setListeSuiviMed(getSuiviMedDao().listerSuiviMedicalAvecMoisetAnneeSansEffectueBetweenDate(dateDebut, dateFin, agent, listeSousService, statut));
+		setListeSuiviMed(getSuiviMedDao().listerSuiviMedicalAvecMoisetAnneeSansEffectueBetweenDate(dateDebut, dateFin, listeAgent, listeSousService, statut));
 		afficheListeSuiviMed();
 		// getSuiviMedDao().detruitDao();
 		// pour les documents
@@ -2944,6 +2974,36 @@ public class OeSMConvocation extends BasicProcess {
 
 	public String getVAL_ST_DATE_MAX() {
 		return getZone(getNOM_ST_DATE_MAX());
+	}
+
+	public String getNOM_ST_AGENT_HIERARCHIQUE() {
+		return "NOM_ST_AGENT_HIERARCHIQUE";
+	}
+
+	public String getVAL_ST_AGENT_HIERARCHIQUE() {
+		return getZone(getNOM_ST_AGENT_HIERARCHIQUE());
+	}
+
+	public String getNOM_PB_RECHERCHER_AGENT_HIERARCHIQUE() {
+		return "NOM_PB_RECHERCHER_AGENT_HIERARCHIQUE";
+	}
+
+	public boolean performPB_RECHERCHER_AGENT_HIERARCHIQUE(HttpServletRequest request) throws Exception {
+		// On met l'agent courant en var d'activité
+		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new Agent());
+
+		setStatut(STATUT_RECHERCHER_AGENT_HIERARCHIQUE, true);
+		return true;
+	}
+
+	public String getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_HIERARCHIQUE() {
+		return "NOM_PB_SUPPRIMER_RECHERCHER_AGENT_HIERARCHIQUE";
+	}
+
+	public boolean performPB_SUPPRIMER_RECHERCHER_AGENT_HIERARCHIQUE(HttpServletRequest request) throws Exception {
+		// On enleve l'agent selectionnée
+		addZone(getNOM_ST_AGENT_HIERARCHIQUE(), Const.CHAINE_VIDE);
+		return true;
 	}
 
 }

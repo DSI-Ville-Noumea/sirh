@@ -335,12 +335,20 @@ public class SuiviMedicalDao extends SirhDao implements SuiviMedicalDaoInterface
 	}
 
 	@Override
-	public ArrayList<SuiviMedical> listerSuiviMedicalAvecMoisetAnneeSansEffectueBetweenDate(Date dateDebut, Date dateFin, Agent agent,
+	public ArrayList<SuiviMedical> listerSuiviMedicalAvecMoisetAnneeSansEffectueBetweenDate(Date dateDebut, Date dateFin, List<Integer> listeAgent,
 			List<Integer> listeSousService, String statut) throws Exception {
 
 		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_DATE_PREVISION_VISITE + " between ? and ? and " + CHAMP_ETAT + "!= ? ";
-		if (agent != null) {
-			sql += " and " + CHAMP_ID_AGENT + "=" + agent.getIdAgent() + " ";
+		if (listeAgent != null && listeAgent.size() > 0) {
+
+			String list = Const.CHAINE_VIDE;
+			for (Integer idAg : listeAgent) {
+				list += idAg + ",";
+			}
+			if (!list.equals(Const.CHAINE_VIDE)) {
+				list = list.substring(0, list.length() - 1);
+			}
+			sql += " and " + CHAMP_ID_AGENT + " in (" + list + ") ";
 		}
 
 		if (!statut.equals(Const.CHAINE_VIDE)) {
