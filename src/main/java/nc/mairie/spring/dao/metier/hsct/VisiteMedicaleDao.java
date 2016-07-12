@@ -22,6 +22,7 @@ public class VisiteMedicaleDao extends SirhDao implements
 	public static final String CHAMP_APTE = "APTE";
 	public static final String CHAMP_ID_MOTIF_VM = "ID_MOTIF_VM";
 	public static final String CHAMP_ID_SUIVI_MED = "ID_SUIVI_MED";
+	public static final String CHAMP_COMMENTAIRE = "COMMENTAIRE";
 
 	public VisiteMedicaleDao(SirhDao sirhDao) {
 		super.dataSource = sirhDao.getDataSource();
@@ -39,30 +40,30 @@ public class VisiteMedicaleDao extends SirhDao implements
 	public void creerVisiteMedicale(Integer idAgent, Integer idMedecin,
 			Integer idRecommandation, Date dateDerniereVisite,
 			Integer dureeValidite, Integer apte, Integer idMotifVm,
-			Integer idSuiviMed) throws Exception {
+			Integer idSuiviMed,String commentaire) throws Exception {
 		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_ID_AGENT + ","
 				+ CHAMP_ID_MEDECIN + "," + CHAMP_ID_RECOMMANDATION + ","
 				+ CHAMP_DATE_DERNIERE_VISITE + "," + CHAMP_DUREE_VALIDITE + ","
 				+ CHAMP_APTE + "," + CHAMP_ID_MOTIF_VM + ","
-				+ CHAMP_ID_SUIVI_MED + ") " + "VALUES (?,?,?,?,?,?,?,?)";
+				+ CHAMP_ID_SUIVI_MED + ","+CHAMP_COMMENTAIRE+") " + "VALUES (?,?,?,?,?,?,?,?,?)";
 		jdbcTemplate.update(sql, new Object[] { idAgent, idMedecin,
 				idRecommandation, dateDerniereVisite, dureeValidite, apte,
-				idMotifVm, idSuiviMed });
+				idMotifVm, idSuiviMed, commentaire });
 	}
 
 	@Override
 	public void modifierVisiteMedicale(Integer idVM, Integer idAgent,
 			Integer idMedecin, Integer idRecommandation,
 			Date dateDerniereVisite, Integer dureeValidite, Integer apte,
-			Integer idMotifVm, Integer idSuiviMed) throws Exception {
+			Integer idMotifVm, Integer idSuiviMed,String commentaire) throws Exception {
 		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_ID_AGENT + "=?,"
 				+ CHAMP_ID_MEDECIN + "=?," + CHAMP_ID_RECOMMANDATION + "=?,"
 				+ CHAMP_DATE_DERNIERE_VISITE + "=?," + CHAMP_DUREE_VALIDITE
 				+ "=?," + CHAMP_APTE + "=?," + CHAMP_ID_MOTIF_VM + "=?,"
-				+ CHAMP_ID_SUIVI_MED + "=? where " + CHAMP_ID + " =?";
+				+ CHAMP_ID_SUIVI_MED + "=?," + CHAMP_COMMENTAIRE + "=? where " + CHAMP_ID + " =?";
 		jdbcTemplate.update(sql, new Object[] { idAgent, idMedecin,
 				idRecommandation, dateDerniereVisite, dureeValidite, apte,
-				idMotifVm, idSuiviMed, idVM });
+				idMotifVm, idSuiviMed,commentaire, idVM });
 	}
 
 	@Override
@@ -94,6 +95,7 @@ public class VisiteMedicaleDao extends SirhDao implements
 			a.setIdMotifVm((Integer) row.get(CHAMP_ID_MOTIF_VM));
 			BigDecimal idSuiviMed = (BigDecimal) row.get(CHAMP_ID_SUIVI_MED);
 			a.setIdSuiviMed(idSuiviMed != null ? idSuiviMed.intValue() : null);
+			a.setCommentaire((String) row.get(CHAMP_COMMENTAIRE));
 			liste.add(a);
 		}
 
@@ -142,6 +144,7 @@ public class VisiteMedicaleDao extends SirhDao implements
 			a.setIdMotifVm((Integer) row.get(CHAMP_ID_MOTIF_VM));
 			BigDecimal idSuiviMed = (BigDecimal) row.get(CHAMP_ID_SUIVI_MED);
 			a.setIdSuiviMed(idSuiviMed != null ? idSuiviMed.intValue() : null);
+			a.setCommentaire((String) row.get(CHAMP_COMMENTAIRE));
 			liste.add(a);
 		}
 
@@ -182,6 +185,7 @@ public class VisiteMedicaleDao extends SirhDao implements
 			a.setIdMotifVm((Integer) row.get(CHAMP_ID_MOTIF_VM));
 			BigDecimal idSuiviMed = (BigDecimal) row.get(CHAMP_ID_SUIVI_MED);
 			a.setIdSuiviMed(idSuiviMed != null ? idSuiviMed.intValue() : null);
+			a.setCommentaire((String) row.get(CHAMP_COMMENTAIRE));
 			liste.add(a);
 		}
 
@@ -210,6 +214,7 @@ public class VisiteMedicaleDao extends SirhDao implements
 			a.setIdMotifVm((Integer) row.get(CHAMP_ID_MOTIF_VM));
 			BigDecimal idSuiviMed = (BigDecimal) row.get(CHAMP_ID_SUIVI_MED);
 			a.setIdSuiviMed(idSuiviMed != null ? idSuiviMed.intValue() : null);
+			a.setCommentaire((String) row.get(CHAMP_COMMENTAIRE));
 			liste.add(a);
 		}
 
@@ -238,6 +243,7 @@ public class VisiteMedicaleDao extends SirhDao implements
 			a.setIdMotifVm((Integer) row.get(CHAMP_ID_MOTIF_VM));
 			BigDecimal idSuiviMed = (BigDecimal) row.get(CHAMP_ID_SUIVI_MED);
 			a.setIdSuiviMed(idSuiviMed != null ? idSuiviMed.intValue() : null);
+			a.setCommentaire((String) row.get(CHAMP_COMMENTAIRE));
 			liste.add(a);
 		}
 

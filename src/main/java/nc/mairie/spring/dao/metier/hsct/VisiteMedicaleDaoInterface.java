@@ -10,11 +10,11 @@ public interface VisiteMedicaleDaoInterface {
 	public VisiteMedicale chercherVisiteMedicale(Integer idVM) throws Exception;
 
 	public void creerVisiteMedicale(Integer idAgent, Integer idMedecin, Integer idRecommandation,
-			Date dateDerniereVisite, Integer dureeValidite, Integer apte, Integer idMotifVm, Integer idSuiviMed)
+			Date dateDerniereVisite, Integer dureeValidite, Integer apte, Integer idMotifVm, Integer idSuiviMed,String commentaire)
 			throws Exception;
 
 	public void modifierVisiteMedicale(Integer idVM, Integer idAgent, Integer idMedecin, Integer idRecommandation,
-			Date dateDerniereVisite, Integer dureeValidite, Integer apte, Integer idMotifVm, Integer idSuiviMed)
+			Date dateDerniereVisite, Integer dureeValidite, Integer apte, Integer idMotifVm, Integer idSuiviMed,String commentaire)
 			throws Exception;
 
 	public void supprimerVisiteMedicale(Integer idVM) throws Exception;

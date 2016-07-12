@@ -29,7 +29,7 @@ public interface SuiviMedicalDaoInterface {
 
 	public void creerSuiviMedical(Integer idAgent, Integer nomatr, String agent, String statut, Date dateDerniereVisite, Date datePrevisionVisite,
 			Integer idMotifVM, Integer nbVisitesRatees, Integer idMedecin, Date dateProchaineVisite, String heureProchaineVisite, String etat, Integer mois,
-			Integer annee, Integer relance, Integer idServiceADS, String idServi, Integer idRecommandationDerniereVisite) throws Exception;
+			Integer annee, Integer relance, Integer idServiceADS, String idServi, Integer idRecommandationDerniereVisite,String commentaireDerniereVisite) throws Exception;
 
 	public SuiviMedical chercherSuiviMedicalAgentMoisetAnnee(Integer idAgent, Integer mois, Integer annee) throws Exception;
 

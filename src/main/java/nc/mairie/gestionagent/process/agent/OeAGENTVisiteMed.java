@@ -600,6 +600,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 				.getApte() == 1 ? "APTE" : "INAPTE");
 		addZone(getNOM_ST_RECOMMANDATION(),
 				recommandation == null ? Const.CHAINE_VIDE : recommandation.getDescRecommandation());
+		addZone(getNOM_ST_COMMENTAIRE(),
+				getVisiteCourante().getCommentaire() == null ? Const.CHAINE_VIDE : getVisiteCourante().getCommentaire());
 
 		return true;
 	}
@@ -1073,6 +1075,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 				getVisiteCourante().setIdMotifVm(motif.getIdMotifVm());
 				getVisiteCourante().setIdRecommandation(
 						recommandation != null ? recommandation.getIdRecommandation() : null);
+				getVisiteCourante().setCommentaire(getVAL_ST_COMMENTAIRE());
 
 				if (getZone(getNOM_ST_ACTION()).equals(ACTION_MODIFICATION)) {
 					// si tranformation d'un suivi medical en VM
@@ -1113,14 +1116,14 @@ public class OeAGENTVisiteMed extends BasicProcess {
 								getVisiteCourante().getIdMedecin(), getVisiteCourante().getIdRecommandation(),
 								getVisiteCourante().getDateDerniereVisite(), getVisiteCourante().getDureeValidite(),
 								getVisiteCourante().getApte(), getVisiteCourante().getIdMotifVm(),
-								getVisiteCourante().getIdSuiviMed());
+								getVisiteCourante().getIdSuiviMed(),getVisiteCourante().getCommentaire());
 					} else {
 						// Modification
 						getVisiteMedicaleDao().modifierVisiteMedicale(getVisiteCourante().getIdVisite(),
 								getVisiteCourante().getIdAgent(), getVisiteCourante().getIdMedecin(),
 								getVisiteCourante().getIdRecommandation(), getVisiteCourante().getDateDerniereVisite(),
 								getVisiteCourante().getDureeValidite(), getVisiteCourante().getApte(),
-								getVisiteCourante().getIdMotifVm(), getVisiteCourante().getIdSuiviMed());
+								getVisiteCourante().getIdMotifVm(), getVisiteCourante().getIdSuiviMed(),getVisiteCourante().getCommentaire());
 					}
 				} else if (getZone(getNOM_ST_ACTION()).equals(ACTION_CREATION)) {
 					// Création
@@ -1128,7 +1131,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 							getVisiteCourante().getIdMedecin(), getVisiteCourante().getIdRecommandation(),
 							getVisiteCourante().getDateDerniereVisite(), getVisiteCourante().getDureeValidite(),
 							getVisiteCourante().getApte(), getVisiteCourante().getIdMotifVm(),
-							getVisiteCourante().getIdSuiviMed());
+							getVisiteCourante().getIdSuiviMed(),getVisiteCourante().getCommentaire());
 				}
 				if (getTransaction().isErreur())
 					return false;
@@ -3485,5 +3488,11 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 	public void setInaptitudeDao(InaptitudeDao inaptitudeDao) {
 		this.inaptitudeDao = inaptitudeDao;
+	}
+	public String getNOM_ST_COMMENTAIRE() {
+		return "NOM_ST_COMMENTAIRE";
+	}
+	public String getVAL_ST_COMMENTAIRE() {
+		return getZone(getNOM_ST_COMMENTAIRE());
 	}
 }

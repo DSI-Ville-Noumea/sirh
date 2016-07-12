@@ -176,6 +176,14 @@
 						</SELECT>
 					</td>
 				</tr>
+				<tr>
+					<td>
+						<span class="sigp2">Commentaire :</span>
+					</td>
+					<td>
+						<textarea <%= process.elementModifibale ? "" : "disabled='disabled'" %> class="sigp2-saisie" rows="3" maxlength="2500" style="position:relative;width:600px" name="<%= process.getNOM_ST_COMMENTAIRE() %>" ><%= process.getVAL_ST_COMMENTAIRE() %></textarea>
+					</td>
+				</tr>		
 			</table>
 			<%}else if(process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT) || process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT_CREATION) || process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT_SUPPRESSION)){ %>			
 				<div style="overflow: auto;height: 250px;width:1000px;margin-right: 0px;margin-left: 0px;">
@@ -361,6 +369,14 @@
 					</td>
 					<td>
 					<span class="sigp2-saisie"><%=process.getVAL_ST_RECOMMANDATION()%></span>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span class="sigp2">Commentaire :</span>
+					</td>
+					<td>
+						<span class="sigp2-saisie"><%=process.getVAL_ST_COMMENTAIRE()%></span>
 					</td>
 				</tr>
 			</table>

@@ -37,7 +37,8 @@ public class SuiviMedicalDao extends SirhDao implements SuiviMedicalDaoInterface
 	public static final String	CHAMP_ANNEE						= "ANNEE";
 	public static final String	CHAMP_RELANCE					= "RELANCE";
 	public static final String	CHAMP_ID_SERVICE_ADS			= "ID_SERVICE_ADS";
-	public static final String	CHAMP_ID_RECOMMANDATION_DERNIERE_VISITE			= "ID_RECOMMANDATION_DERNIERE_VISITE";
+	public static final String	CHAMP_ID_RECOMMANDATION_DERNIERE_VISITE		= "ID_RECOMMANDATION_DERNIERE_VISITE";
+	public static final String	CHAMP_COMMENTAIRE_DERNIERE_VISITE			= "COMMENTAIRE_DERNIERE_VISITE";
 
 	public SuiviMedicalDao(SirhDao sirhDao) {
 		super.dataSource = sirhDao.getDataSource();
@@ -124,6 +125,7 @@ public class SuiviMedicalDao extends SirhDao implements SuiviMedicalDaoInterface
 			sm.setRelance((Integer) row.get(CHAMP_RELANCE));
 			sm.setIdServiceAds((Integer) row.get(CHAMP_ID_SERVICE_ADS));
 			sm.setIdRecommandationDerniereVisite((Integer) row.get(CHAMP_ID_RECOMMANDATION_DERNIERE_VISITE));
+			sm.setCommentaireDerniereViste((String) row.get(CHAMP_COMMENTAIRE_DERNIERE_VISITE));
 			listeSuiviMedical.add(sm);
 		}
 
@@ -133,15 +135,15 @@ public class SuiviMedicalDao extends SirhDao implements SuiviMedicalDaoInterface
 	@Override
 	public void creerSuiviMedical(Integer idAgent, Integer nomatr, String agent, String statut, Date dateDerniereVisite, Date datePrevisionVisite,
 			Integer idMotifVM, Integer nbVisitesRatees, Integer idMedecin, Date dateProchaineVisite, String heureProchaineVisite, String etat, Integer mois,
-			Integer annee, Integer relance, Integer idServiceADS, String idServi,Integer idRecommandationDerniereVisite) throws Exception {
+			Integer annee, Integer relance, Integer idServiceADS, String idServi,Integer idRecommandationDerniereVisite,String commentaireDerniereVisite) throws Exception {
 		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_ID_AGENT + "," + CHAMP_NOMATR + "," + CHAMP_AGENT + "," + CHAMP_STATUT + ","
 				+ CHAMP_DATE_DERNIERE_VISITE + "," + CHAMP_DATE_PREVISION_VISITE + "," + CHAMP_ID_MOTIF_VM + "," + CHAMP_NB_VISITES_RATEES + ","
 				+ CHAMP_ID_MEDECIN + "," + CHAMP_DATE_PROCHAINE_VISITE + "," + CHAMP_HEURE_PROCHAINE_VISITE + "," + CHAMP_ETAT + "," + CHAMP_MOIS + ","
 				+ CHAMP_ANNEE + "," + CHAMP_RELANCE + "," + CHAMP_ID_SERVICE_ADS + "," + CHAMP_ID_SERVI
-				+ "," + CHAMP_ID_RECOMMANDATION_DERNIERE_VISITE
-				+ ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)";
+				+ "," + CHAMP_ID_RECOMMANDATION_DERNIERE_VISITE+"," + CHAMP_COMMENTAIRE_DERNIERE_VISITE				
+				+ ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?)";
 		jdbcTemplate.update(sql, new Object[] { idAgent, nomatr, agent, statut, dateDerniereVisite, datePrevisionVisite, idMotifVM, nbVisitesRatees, idMedecin,
-				dateProchaineVisite, heureProchaineVisite, etat, mois, annee, relance, idServiceADS, idServi, idRecommandationDerniereVisite });
+				dateProchaineVisite, heureProchaineVisite, etat, mois, annee, relance, idServiceADS, idServi, idRecommandationDerniereVisite,commentaireDerniereVisite });
 	}
 
 	@Override
@@ -179,6 +181,7 @@ public class SuiviMedicalDao extends SirhDao implements SuiviMedicalDaoInterface
 			sm.setRelance((Integer) row.get(CHAMP_RELANCE));
 			sm.setIdServiceAds((Integer) row.get(CHAMP_ID_SERVICE_ADS));
 			sm.setIdRecommandationDerniereVisite((Integer) row.get(CHAMP_ID_RECOMMANDATION_DERNIERE_VISITE));
+			sm.setCommentaireDerniereViste((String) row.get(CHAMP_COMMENTAIRE_DERNIERE_VISITE));
 			listeSuiviMedical.add(sm);
 		}
 
@@ -210,13 +213,13 @@ public class SuiviMedicalDao extends SirhDao implements SuiviMedicalDaoInterface
 		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_ID_AGENT + "=?," + CHAMP_NOMATR + "=?," + CHAMP_AGENT + "=?," + CHAMP_STATUT + "=?,"
 				+ CHAMP_DATE_DERNIERE_VISITE + "=?," + CHAMP_DATE_PREVISION_VISITE + "=?," + CHAMP_ID_MOTIF_VM + "=?," + CHAMP_NB_VISITES_RATEES + "=?,"
 				+ CHAMP_ID_MEDECIN + "=?," + CHAMP_DATE_PROCHAINE_VISITE + "=?," + CHAMP_HEURE_PROCHAINE_VISITE + "=?," + CHAMP_ETAT + "=?," + CHAMP_MOIS
-				+ "=?," + CHAMP_ANNEE + "=?, " + CHAMP_RELANCE + "=?, " + CHAMP_ID_SERVICE_ADS + "=? , " + CHAMP_ID_SERVI + "=? , " + CHAMP_ID_RECOMMANDATION_DERNIERE_VISITE + "=? where " + CHAMP_ID + "=?";
+				+ "=?," + CHAMP_ANNEE + "=?, " + CHAMP_RELANCE + "=?, " + CHAMP_ID_SERVICE_ADS + "=? , " + CHAMP_ID_SERVI + "=? , " + CHAMP_ID_RECOMMANDATION_DERNIERE_VISITE + "=?, " + CHAMP_COMMENTAIRE_DERNIERE_VISITE + "=? where " + CHAMP_ID + "=?";
 		jdbcTemplate.update(
 				sql,
 				new Object[] { smSelct.getIdAgent(), smSelct.getNomatr(), smSelct.getAgent(), smSelct.getStatut(), smSelct.getDateDerniereVisite(),
 						smSelct.getDatePrevisionVisite(), smSelct.getIdMotifVm(), smSelct.getNbVisitesRatees(), smSelct.getIdMedecin(),
 						smSelct.getDateProchaineVisite(), smSelct.getHeureProchaineVisite(), smSelct.getEtat(), smSelct.getMois(), smSelct.getAnnee(),
-						smSelct.getRelance(), smSelct.getIdServiceAds(), smSelct.getIdServi(),smSelct.getIdRecommandationDerniereVisite(), idSuiviMed });
+						smSelct.getRelance(), smSelct.getIdServiceAds(), smSelct.getIdServi(),smSelct.getIdRecommandationDerniereVisite(),smSelct.getCommentaireDerniereViste(), idSuiviMed });
 	}
 
 	@Override
@@ -254,6 +257,7 @@ public class SuiviMedicalDao extends SirhDao implements SuiviMedicalDaoInterface
 			sm.setRelance((Integer) row.get(CHAMP_RELANCE));
 			sm.setIdServiceAds((Integer) row.get(CHAMP_ID_SERVICE_ADS));
 			sm.setIdRecommandationDerniereVisite((Integer) row.get(CHAMP_ID_RECOMMANDATION_DERNIERE_VISITE));
+			sm.setCommentaireDerniereViste((String) row.get(CHAMP_COMMENTAIRE_DERNIERE_VISITE));
 			listeSuiviMedical.add(sm);
 		}
 
@@ -290,6 +294,7 @@ public class SuiviMedicalDao extends SirhDao implements SuiviMedicalDaoInterface
 			sm.setRelance((Integer) row.get(CHAMP_RELANCE));
 			sm.setIdServiceAds((Integer) row.get(CHAMP_ID_SERVICE_ADS));
 			sm.setIdRecommandationDerniereVisite((Integer) row.get(CHAMP_ID_RECOMMANDATION_DERNIERE_VISITE));
+			sm.setCommentaireDerniereViste((String) row.get(CHAMP_COMMENTAIRE_DERNIERE_VISITE));
 			listeSuiviMedical.add(sm);
 		}
 
@@ -324,6 +329,7 @@ public class SuiviMedicalDao extends SirhDao implements SuiviMedicalDaoInterface
 			sm.setRelance((Integer) row.get(CHAMP_RELANCE));
 			sm.setIdServiceAds((Integer) row.get(CHAMP_ID_SERVICE_ADS));
 			sm.setIdRecommandationDerniereVisite((Integer) row.get(CHAMP_ID_RECOMMANDATION_DERNIERE_VISITE));
+			sm.setCommentaireDerniereViste((String) row.get(CHAMP_COMMENTAIRE_DERNIERE_VISITE));
 			listeSuiviMedical.add(sm);
 		}
 
@@ -410,6 +416,7 @@ public class SuiviMedicalDao extends SirhDao implements SuiviMedicalDaoInterface
 			sm.setRelance((Integer) row.get(CHAMP_RELANCE));
 			sm.setIdServiceAds((Integer) row.get(CHAMP_ID_SERVICE_ADS));
 			sm.setIdRecommandationDerniereVisite((Integer) row.get(CHAMP_ID_RECOMMANDATION_DERNIERE_VISITE));
+			sm.setCommentaireDerniereViste((String) row.get(CHAMP_COMMENTAIRE_DERNIERE_VISITE));
 			listeSuiviMedical.add(sm);
 		}
 
