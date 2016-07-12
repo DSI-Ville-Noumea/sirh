@@ -137,6 +137,7 @@
 		
 		
 		/*Module SUIVI MEDICAL*/
+		listeDroits.add("SMCalcul");
 		listeDroits.add("SMConvocation");
 		listeDroits.add("SMHistorique");
 		

@@ -7,6 +7,7 @@ import nc.mairie.droits.process.OeDROITSKiosque;
 import nc.mairie.droits.process.OeDROITSUtilisateurs;
 import nc.mairie.gestionagent.process.OeCOMMUNESelection;
 import nc.mairie.gestionagent.process.OeENFANTGestion;
+import nc.mairie.gestionagent.process.OeSMCalcul;
 import nc.mairie.gestionagent.process.OeSMConvocation;
 import nc.mairie.gestionagent.process.OeSMHistorique;
 import nc.mairie.gestionagent.process.OeVOIESelection;
@@ -85,11 +86,11 @@ import nc.mairie.gestionagent.process.parametre.OePARAMETRAGEKiosque;
 import nc.mairie.gestionagent.process.parametre.OePARAMETRAGEPointage;
 import nc.mairie.gestionagent.process.parametre.OePARAMETRAGERecrutement;
 import nc.mairie.gestionagent.process.parametre.OePARAMETRAGERubrique;
-import nc.mairie.gestionagent.process.pointage.OePTGPrimeDpmParametrage;
 import nc.mairie.gestionagent.process.pointage.OePTGPayeurContractuels;
 import nc.mairie.gestionagent.process.pointage.OePTGPayeurConvCol;
 import nc.mairie.gestionagent.process.pointage.OePTGPayeurFonct;
 import nc.mairie.gestionagent.process.pointage.OePTGPrimeDpm;
+import nc.mairie.gestionagent.process.pointage.OePTGPrimeDpmParametrage;
 import nc.mairie.gestionagent.process.pointage.OePTGSaisie;
 import nc.mairie.gestionagent.process.pointage.OePTGSelectionAgent;
 import nc.mairie.gestionagent.process.pointage.OePTGTitreRepas;
@@ -268,8 +269,10 @@ public class RobotAgent extends Robot {
 			return new OeAVCTMasseSalarialeDetaches();
 
 		} // Module SUIVI MEDICAL
-		else if (activite.equals("SMConvocation")) {
-			return new OeSMConvocation();
+		else if (activite.equals("SMCalcul")) {
+			return new OeSMCalcul();
+		}else if (activite.equals("SMConvocation")) {
+				return new OeSMConvocation();
 		} else if (activite.equals("SMHistorique")) {
 			return new OeSMHistorique();
 
@@ -656,6 +659,7 @@ public class RobotAgent extends Robot {
 		navigation.put(OeAVCTMasseSalarialeDetaches.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 
 		// SM - Suivi Medical
+		navigation.put(OeSMCalcul.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 		navigation.put(OeSMConvocation.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 		navigation.put(OeSMHistorique.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 

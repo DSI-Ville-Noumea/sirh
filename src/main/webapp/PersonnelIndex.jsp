@@ -108,7 +108,7 @@ var Module_avct = new Dossier("Module_avct", "Gestion des avancements","GESTION 
 String affSuiviMed =  (String) ServletAgent.getMesParametres().get("AFFICHAGE_SUIVI_MEDICAL");
 if (affSuiviMed.equals("TRUE")){ %>
 var Module_suiviMed = new Dossier("Module_suiviMed", "Gestion du suivi medical","SUIVI MEDICAL");
-	Module_suiviMed.ajouterFils(new Lien("suiviMed", "SMConvocation", "Suivi médical", "Gestion du suivi médical", true));
+	Module_suiviMed.ajouterFils(new Lien("suiviMed", "SMCalcul", "Suivi médical", "Gestion du suivi médical", true));
 <%}%>
 
 

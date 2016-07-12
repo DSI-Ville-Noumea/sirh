@@ -160,6 +160,7 @@ document.write(menuAVCTMasseSalariale.afficher());
 //*               Le menu haut Suivi medical
 //***************************************************************
 var menuSMConvocation = new MenuHaut("Module_suiviMed_suiviMed");
+menuSMConvocation.ajouterFils(new Lien("SMCalcul", "CALCUL DES CONVOCATIONS", "Calcul des convocations pour le suivi médical", true, false,"CALCUL"));
 menuSMConvocation.ajouterFils(new Lien("SMConvocation", "CONVOCATION", "Convocation pour le suivi médical", true, false,"CONVOCATION"));
 menuSMConvocation.ajouterFils(new Lien("SMHistorique", "HISTORIQUE", "Historique du suivi médical", true, false,"HISTORIQUE"));
 document.write(menuSMConvocation.afficher());

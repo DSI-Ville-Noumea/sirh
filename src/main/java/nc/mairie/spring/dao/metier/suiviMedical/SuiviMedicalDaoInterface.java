@@ -4,13 +4,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import nc.mairie.metier.agent.Agent;
 import nc.mairie.metier.suiviMedical.SuiviMedical;
 
 public interface SuiviMedicalDaoInterface {
-
-	public ArrayList<SuiviMedical> listerSuiviMedicalAvecMoisetAnneeSansEffectue(Integer mois, Integer annee, Agent agent, List<Integer> listeSousService,
-			String statut) throws Exception;
 
 	public ArrayList<SuiviMedical> listerSuiviMedicalAvecMoisetAnneeSansEffectueBetweenDate(Date dateDebut, Date dateFin, List<Integer> listeAgent,
 			List<Integer> listeSousService, String statut, boolean CDD) throws Exception;

@@ -8,7 +8,6 @@ import java.util.Map;
 
 import nc.mairie.enums.EnumEtatSuiviMed;
 import nc.mairie.metier.Const;
-import nc.mairie.metier.agent.Agent;
 import nc.mairie.metier.suiviMedical.SuiviMedical;
 import nc.mairie.spring.dao.utils.SirhDao;
 
@@ -76,60 +75,6 @@ public class SuiviMedicalDao extends SirhDao implements SuiviMedicalDaoInterface
 	public void supprimerSuiviMedicalTravailAvecMoisetAnnee(String etat, Integer mois, Integer annee) throws Exception {
 		String sql = "DELETE from " + NOM_TABLE + " where " + CHAMP_ETAT + "=? and " + CHAMP_MOIS + "=? and " + CHAMP_ANNEE + "=?";
 		jdbcTemplate.update(sql, new Object[] { etat, mois, annee });
-	}
-
-	@Override
-	public ArrayList<SuiviMedical> listerSuiviMedicalAvecMoisetAnneeSansEffectue(Integer mois, Integer annee, Agent agent, List<Integer> listeSousService,
-			String statut) throws Exception {
-		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_MOIS + "=? and " + CHAMP_ANNEE + "=? and " + CHAMP_ETAT + "!= ? ";
-		if (agent != null) {
-			sql += " and " + CHAMP_ID_AGENT + "=" + agent.getIdAgent() + " ";
-		}
-
-		if (!statut.equals(Const.CHAINE_VIDE)) {
-			sql += " and " + CHAMP_STATUT + " ='" + statut + "' ";
-
-		}
-
-		if (listeSousService != null) {
-			String list = Const.CHAINE_VIDE;
-			for (Integer codeServ : listeSousService) {
-				list += codeServ + ",";
-			}
-			if (!list.equals(Const.CHAINE_VIDE))
-				list = list.substring(0, list.length() - 1);
-			sql += " and (" + CHAMP_ID_SERVICE_ADS + " in (" + list + ")) ";
-		}
-
-		ArrayList<SuiviMedical> listeSuiviMedical = new ArrayList<SuiviMedical>();
-
-		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { mois, annee, EnumEtatSuiviMed.EFFECTUE.getCode() });
-		for (Map<String, Object> row : rows) {
-			SuiviMedical sm = new SuiviMedical();
-			BigDecimal idSuivi = (BigDecimal) row.get(CHAMP_ID);
-			sm.setIdSuiviMed(idSuivi.intValue());
-			sm.setIdAgent((Integer) row.get(CHAMP_ID_AGENT));
-			sm.setNomatr((Integer) row.get(CHAMP_NOMATR));
-			sm.setAgent((String) row.get(CHAMP_AGENT));
-			sm.setStatut((String) row.get(CHAMP_STATUT));
-			sm.setDateDerniereVisite((Date) row.get(CHAMP_DATE_DERNIERE_VISITE));
-			sm.setDatePrevisionVisite((Date) row.get(CHAMP_DATE_PREVISION_VISITE));
-			sm.setIdMotifVm((Integer) row.get(CHAMP_ID_MOTIF_VM));
-			sm.setNbVisitesRatees((Integer) row.get(CHAMP_NB_VISITES_RATEES));
-			sm.setIdMedecin((Integer) row.get(CHAMP_ID_MEDECIN));
-			sm.setDateProchaineVisite((Date) row.get(CHAMP_DATE_PROCHAINE_VISITE));
-			sm.setHeureProchaineVisite((String) row.get(CHAMP_HEURE_PROCHAINE_VISITE));
-			sm.setEtat((String) row.get(CHAMP_ETAT));
-			sm.setMois((Integer) row.get(CHAMP_MOIS));
-			sm.setAnnee((Integer) row.get(CHAMP_ANNEE));
-			sm.setRelance((Integer) row.get(CHAMP_RELANCE));
-			sm.setIdServiceAds((Integer) row.get(CHAMP_ID_SERVICE_ADS));
-			sm.setIdRecommandationDerniereVisite((Integer) row.get(CHAMP_ID_RECOMMANDATION_DERNIERE_VISITE));
-			sm.setCommentaireDerniereViste((String) row.get(CHAMP_COMMENTAIRE_DERNIERE_VISITE));
-			listeSuiviMedical.add(sm);
-		}
-
-		return listeSuiviMedical;
 	}
 
 	@Override

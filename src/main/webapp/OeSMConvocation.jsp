@@ -151,22 +151,13 @@
           	<INPUT type="submit" class="sigp2-Bouton-100" value="Filtrer" name="<%=process.getNOM_PB_RECHERCHER()%>">
 		</FIELDSET>
 		
-		<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
-		<legend class="sigp2Legend">Calcul des prévisions des visites médicales du travail</legend>
-			<span class="sigp2" style="width:75px">Mois - Année : </span>
-			<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_MOIS() %>" style="width=140px;margin-right:20px;">
-				<%=process.forComboHTML(process.getVAL_LB_MOIS(), process.getVAL_LB_MOIS_SELECT()) %>
-			</SELECT>
-			<INPUT type="submit" class="sigp2-Bouton-250" value="Calculer pour le mois sélectionné" name="<%=process.getNOM_PB_CALCULER()%>">
-		</FIELDSET>
-		
 		
 		<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;height:530px;">
 		    <BR/>
 			<legend class="sigp2Legend">Gestion des prévisions</legend>
 			<INPUT type="submit" class="sigp2-Bouton-100" value="Enregistrer" name="<%=process.getNOM_PB_VALIDER()%>">
-			<INPUT type="submit" class="sigp2-Bouton-200" value="Générer les convocations" name="<%=process.getNOM_PB_IMPRIMER_CONVOCATIONS()%>">
-			<INPUT type="submit" class="sigp2-Bouton-250" value="Générer les lettres d'accompagnement" name="<%=process.getNOM_PB_IMPRIMER_LETTRES_ACCOMPAGNEMENTS()%>">
+<%-- 			<INPUT type="submit" class="sigp2-Bouton-200" value="Générer les convocations" name="<%=process.getNOM_PB_IMPRIMER_CONVOCATIONS()%>"> --%>
+<%-- 			<INPUT type="submit" class="sigp2-Bouton-250" value="Générer les lettres d'accompagnement" name="<%=process.getNOM_PB_IMPRIMER_LETTRES_ACCOMPAGNEMENTS()%>"> --%>
 			<BR/><BR/>
 			<div>
 				<table class="display" id="tabSuiviMed">
