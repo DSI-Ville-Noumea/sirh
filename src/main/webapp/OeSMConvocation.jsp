@@ -273,6 +273,7 @@
 							"oLanguage": {"sUrl": "media/dataTables/language/fr_FR.txt"},
 							"aoColumns": [{"bSearchable":false, "bVisible":false},null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,{"bSearchable":false,"bSortable":false},{"bSearchable":false,"bSortable":false},null],
 							"sDom": '<"H"flT>t<"F"iT>',
+							"sScrollY": "375px",
 							"bPaginate": false,
 							"oTableTools": {
 								"aButtons": [{"sExtends":"xls","sButtonText":"Export Excel","mColumns":"visible","sTitle":"suiviMedical","sFileName":"*.xls"}], //OU : "mColumns":[0,1,2,3,4]
