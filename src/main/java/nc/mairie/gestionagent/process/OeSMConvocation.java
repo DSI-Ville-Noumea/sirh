@@ -248,7 +248,9 @@ public class OeSMConvocation extends BasicProcess {
 			addZone(getNOM_ST_STATUT(i), sm.getStatut());
 			// #16233
 			EntiteDto serv = adsService.getEntiteByIdEntite(sm.getIdServiceAds());
+			EntiteDto direction = adsService.getAffichageDirection(sm.getIdServiceAds());
 			addZone(getNOM_ST_SERVICE(i), serv == null || serv.getLabel() == null ? "&nbsp;" : serv.getLabel());
+			addZone(getNOM_ST_DIRECTION(i), direction != null ? direction.getSigle() : "&nbsp;");
 			addZone(getNOM_ST_DATE_DERNIERE_VISITE(i),
 					sm.getDateDerniereVisite() == null ? "&nbsp;" : Services.convertitDate(sm.getDateDerniereVisite().toString(), "yyyy-MM-dd", "dd/MM/yyyy"));
 			addZone(getNOM_ST_RESULTAT_DERNIERE_VISITE(i), sm.getIdRecommandationDerniereVisite()==null ? "&nbsp;" : getRecommandationDao().chercherRecommandation(sm.getIdRecommandationDerniereVisite()).getDescRecommandation());
@@ -3072,6 +3074,13 @@ public class OeSMConvocation extends BasicProcess {
 
 	public String getVAL_ST_COMMENTAIRE_DERNIERE_VISITE(int i) {
 		return getZone(getNOM_ST_COMMENTAIRE_DERNIERE_VISITE(i));
+	}
+	public String getNOM_ST_DIRECTION(int i) {
+		return "NOM_ST_DIRECTION_" + i;
+	}
+
+	public String getVAL_ST_DIRECTION(int i) {
+		return getZone(getNOM_ST_DIRECTION(i));
 	}
 
 }

@@ -177,6 +177,7 @@
 							<th>Agent</th>
 							<th>Cafat</th>
 							<th>Statut</th>
+							<th>Dir.</th>
 							<th>Serv.</th>
 							<th>Date derniere visite</th>
 							<th>Résultat derniere visite</th>
@@ -210,6 +211,7 @@
 								<td><%=process.getVAL_ST_AGENT(indiceSM)%></td>
 								<td><%=process.getVAL_ST_NUM_CAFAT(indiceSM)%></td>
 								<td><%=process.getVAL_ST_STATUT(indiceSM)%></td>
+								<td><%=process.getVAL_ST_DIRECTION(indiceSM)%></td>
 								<td><%=process.getVAL_ST_SERVICE(indiceSM)%></td>
 								<td><%=process.getVAL_ST_DATE_DERNIERE_VISITE(indiceSM)%></td>	
 								<td><%=process.getVAL_ST_RESULTAT_DERNIERE_VISITE(indiceSM)%></td>	
@@ -271,7 +273,7 @@
 					$(document).ready(function() {
 					    $('#tabSuiviMed').dataTable({
 							"oLanguage": {"sUrl": "media/dataTables/language/fr_FR.txt"},
-							"aoColumns": [{"bSearchable":false, "bVisible":false},null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,{"bSearchable":false,"bSortable":false},{"bSearchable":false,"bSortable":false},null],
+							"aoColumns": [{"bSearchable":false, "bVisible":false},null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,{"bSearchable":false,"bSortable":false},{"bSearchable":false,"bSortable":false},null],
 							"sDom": '<"H"flT>t<"F"iT>',
 							"sScrollY": "375px",
 							"bPaginate": false,
