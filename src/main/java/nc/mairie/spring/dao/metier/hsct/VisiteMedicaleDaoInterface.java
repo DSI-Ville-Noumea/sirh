@@ -36,4 +36,6 @@ public interface VisiteMedicaleDaoInterface {
 
 	public ArrayList<VisiteMedicale> listerVisiteMedicaleAvecRecommandation(Integer idRecommandation) throws Exception;
 
+	public VisiteMedicale chercherDerniereVisiteMedicale(Integer idAgent) throws Exception;
+
 }
