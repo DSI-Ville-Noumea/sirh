@@ -32,6 +32,7 @@ import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.suiviMedical.SuiviMedical;
 import nc.mairie.spring.dao.metier.agent.AgentDao;
 import nc.mairie.spring.dao.metier.hsct.MedecinDao;
+import nc.mairie.spring.dao.metier.hsct.RecommandationDao;
 import nc.mairie.spring.dao.metier.hsct.SPABSENDao;
 import nc.mairie.spring.dao.metier.hsct.VisiteMedicaleDao;
 import nc.mairie.spring.dao.metier.poste.AffectationDao;
@@ -105,6 +106,7 @@ public class OeSMConvocation extends BasicProcess {
 	private FichePosteDao				fichePosteDao;
 	private AffectationDao				affectationDao;
 	private AgentDao					agentDao;
+	private RecommandationDao			recommandationDao;
 
 	private IAdsService					adsService;
 
@@ -185,6 +187,9 @@ public class OeSMConvocation extends BasicProcess {
 		if (getAgentDao() == null) {
 			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (getRecommandationDao() == null) {
+			setRecommandationDao(new RecommandationDao((SirhDao) context.getBean("sirhDao")));
+		}
 		if (null == adsService) {
 			adsService = (IAdsService) context.getBean("adsService");
 		}
@@ -246,6 +251,7 @@ public class OeSMConvocation extends BasicProcess {
 			addZone(getNOM_ST_SERVICE(i), serv == null || serv.getLabel() == null ? "&nbsp;" : serv.getLabel());
 			addZone(getNOM_ST_DATE_DERNIERE_VISITE(i),
 					sm.getDateDerniereVisite() == null ? "&nbsp;" : Services.convertitDate(sm.getDateDerniereVisite().toString(), "yyyy-MM-dd", "dd/MM/yyyy"));
+			addZone(getNOM_ST_RESULTAT_DERNIERE_VISITE(i), sm.getIdRecommandationDerniereVisite()==null ? "&nbsp;" : getRecommandationDao().chercherRecommandation(sm.getIdRecommandationDerniereVisite()).getDescRecommandation());
 			addZone(getNOM_ST_DATE_PREVISION_VISITE(i),
 					sm.getDatePrevisionVisite() == null ? "&nbsp;" : Services.convertitDate(sm.getDatePrevisionVisite().toString(), "yyyy-MM-dd", "dd/MM/yyyy"));
 			addZone(getNOM_ST_MOTIF(i), getLibMotifVM(sm.getIdMotifVm()));
@@ -761,6 +767,7 @@ public class OeSMConvocation extends BasicProcess {
 			sm.setIdServi(fp != null ? fp.getIdServi() : null);
 			VisiteMedicale derniereVisite = getVisiteMedicaleDao().chercherDerniereVisiteMedicale(agent.getIdAgent());
 			sm.setDateDerniereVisite(derniereVisite==null ? null : derniereVisite.getDateDerniereVisite());
+			sm.setIdRecommandationDerniereVisite(derniereVisite==null ? null : derniereVisite.getIdRecommandation());
 			Date d = new SimpleDateFormat("dd/MM/yyyy").parse("15/" + moisChoisi + "/" + anneeChoisi);
 			sm.setDatePrevisionVisite(d);
 			sm.setIdMotifVm(EnumMotifVisiteMed.VM_AGENT_SANS_VM.getCode());
@@ -803,7 +810,7 @@ public class OeSMConvocation extends BasicProcess {
 			}
 			getSuiviMedDao().creerSuiviMedical(sm.getIdAgent(), sm.getNomatr(), sm.getAgent(), sm.getStatut(), sm.getDateDerniereVisite(),
 					sm.getDatePrevisionVisite(), sm.getIdMotifVm(), sm.getNbVisitesRatees(), sm.getIdMedecin(), sm.getDateProchaineVisite(),
-					sm.getHeureProchaineVisite(), sm.getEtat(), sm.getMois(), sm.getAnnee(), sm.getRelance(), sm.getIdServiceAds(), sm.getIdServi());
+					sm.getHeureProchaineVisite(), sm.getEtat(), sm.getMois(), sm.getAnnee(), sm.getRelance(), sm.getIdServiceAds(), sm.getIdServi(), sm.getIdRecommandationDerniereVisite());
 			nbCas9++;
 		}
 		logger.info("Nb de cas 9 : " + nbCas9);
@@ -894,6 +901,7 @@ public class OeSMConvocation extends BasicProcess {
 					sm.setIdServi(fp != null ? fp.getIdServi() : null);
 					VisiteMedicale derniereVisite = getVisiteMedicaleDao().chercherDerniereVisiteMedicale(agent.getIdAgent());
 					sm.setDateDerniereVisite(derniereVisite==null ? null : derniereVisite.getDateDerniereVisite());
+					sm.setIdRecommandationDerniereVisite(derniereVisite==null ? null : derniereVisite.getIdRecommandation());
 					String datePrev = Services.ajouteJours(Services.convertitDate(dernierAM.getDatFin().toString(), "yyyyMMdd", "dd/MM/yyyy"), 2);
 					Date d = new SimpleDateFormat("dd/MM/yyyy").parse(datePrev);
 					sm.setDatePrevisionVisite(d);
@@ -937,7 +945,7 @@ public class OeSMConvocation extends BasicProcess {
 					}
 					getSuiviMedDao().creerSuiviMedical(sm.getIdAgent(), sm.getNomatr(), sm.getAgent(), sm.getStatut(), sm.getDateDerniereVisite(),
 							sm.getDatePrevisionVisite(), sm.getIdMotifVm(), sm.getNbVisitesRatees(), sm.getIdMedecin(), sm.getDateProchaineVisite(),
-							sm.getHeureProchaineVisite(), sm.getEtat(), sm.getMois(), sm.getAnnee(), sm.getRelance(), sm.getIdServiceAds(), sm.getIdServi());
+							sm.getHeureProchaineVisite(), sm.getEtat(), sm.getMois(), sm.getAnnee(), sm.getRelance(), sm.getIdServiceAds(), sm.getIdServi(), sm.getIdRecommandationDerniereVisite());
 					nbCas5++;
 
 				}
@@ -1032,6 +1040,7 @@ public class OeSMConvocation extends BasicProcess {
 					sm.setIdServi(fp != null ? fp.getIdServi() : null);
 					VisiteMedicale derniereVisite = getVisiteMedicaleDao().chercherDerniereVisiteMedicale(agent.getIdAgent());
 					sm.setDateDerniereVisite(derniereVisite==null ? null : derniereVisite.getDateDerniereVisite());
+					sm.setIdRecommandationDerniereVisite(derniereVisite==null ? null : derniereVisite.getIdRecommandation());
 					String datePrev = Services.ajouteJours(Services.convertitDate(dernierAM.getDatFin().toString(), "yyyyMMdd", "dd/MM/yyyy"), 2);
 					Date d = new SimpleDateFormat("dd/MM/yyyy").parse(datePrev);
 					sm.setDatePrevisionVisite(d);
@@ -1075,7 +1084,7 @@ public class OeSMConvocation extends BasicProcess {
 					}
 					getSuiviMedDao().creerSuiviMedical(sm.getIdAgent(), sm.getNomatr(), sm.getAgent(), sm.getStatut(), sm.getDateDerniereVisite(),
 							sm.getDatePrevisionVisite(), sm.getIdMotifVm(), sm.getNbVisitesRatees(), sm.getIdMedecin(), sm.getDateProchaineVisite(),
-							sm.getHeureProchaineVisite(), sm.getEtat(), sm.getMois(), sm.getAnnee(), sm.getRelance(), sm.getIdServiceAds(), sm.getIdServi());
+							sm.getHeureProchaineVisite(), sm.getEtat(), sm.getMois(), sm.getAnnee(), sm.getRelance(), sm.getIdServiceAds(), sm.getIdServi(), sm.getIdRecommandationDerniereVisite());
 					nbCas4++;
 				}
 			}
@@ -1169,6 +1178,7 @@ public class OeSMConvocation extends BasicProcess {
 					sm.setIdServi(fp != null ? fp.getIdServi() : null);
 					VisiteMedicale derniereVisite = getVisiteMedicaleDao().chercherDerniereVisiteMedicale(agent.getIdAgent());
 					sm.setDateDerniereVisite(derniereVisite==null ? null : derniereVisite.getDateDerniereVisite());
+					sm.setIdRecommandationDerniereVisite(derniereVisite==null ? null : derniereVisite.getIdRecommandation());
 					String datePrev = Services.ajouteJours(Services.convertitDate(dernierAT.getDatFin().toString(), "yyyyMMdd", "dd/MM/yyyy"), 1);
 					Date d = new SimpleDateFormat("dd/MM/yyyy").parse(datePrev);
 					sm.setDatePrevisionVisite(d);
@@ -1212,7 +1222,7 @@ public class OeSMConvocation extends BasicProcess {
 					}
 					getSuiviMedDao().creerSuiviMedical(sm.getIdAgent(), sm.getNomatr(), sm.getAgent(), sm.getStatut(), sm.getDateDerniereVisite(),
 							sm.getDatePrevisionVisite(), sm.getIdMotifVm(), sm.getNbVisitesRatees(), sm.getIdMedecin(), sm.getDateProchaineVisite(),
-							sm.getHeureProchaineVisite(), sm.getEtat(), sm.getMois(), sm.getAnnee(), sm.getRelance(), sm.getIdServiceAds(), sm.getIdServi());
+							sm.getHeureProchaineVisite(), sm.getEtat(), sm.getMois(), sm.getAnnee(), sm.getRelance(), sm.getIdServiceAds(), sm.getIdServi(), sm.getIdRecommandationDerniereVisite());
 					nbCas3++;
 				}
 			}
@@ -1276,6 +1286,7 @@ public class OeSMConvocation extends BasicProcess {
 			sm.setIdServi(fp != null ? fp.getIdServi() : null);
 			VisiteMedicale derniereVisite = getVisiteMedicaleDao().chercherDerniereVisiteMedicale(agent.getIdAgent());
 			sm.setDateDerniereVisite(derniereVisite==null ? null : derniereVisite.getDateDerniereVisite());
+			sm.setIdRecommandationDerniereVisite(derniereVisite==null ? null : derniereVisite.getIdRecommandation());
 			Date d = new SimpleDateFormat("dd/MM/yyyy").parse("15/" + moisChoisi + "/" + anneeChoisi);
 			sm.setDatePrevisionVisite(d);
 			sm.setIdMotifVm(vm.getIdMotifVm());
@@ -1318,7 +1329,7 @@ public class OeSMConvocation extends BasicProcess {
 			}
 			getSuiviMedDao().creerSuiviMedical(sm.getIdAgent(), sm.getNomatr(), sm.getAgent(), sm.getStatut(), sm.getDateDerniereVisite(),
 					sm.getDatePrevisionVisite(), sm.getIdMotifVm(), sm.getNbVisitesRatees(), sm.getIdMedecin(), sm.getDateProchaineVisite(),
-					sm.getHeureProchaineVisite(), sm.getEtat(), sm.getMois(), sm.getAnnee(), sm.getRelance(), sm.getIdServiceAds(), sm.getIdServi());
+					sm.getHeureProchaineVisite(), sm.getEtat(), sm.getMois(), sm.getAnnee(), sm.getRelance(), sm.getIdServiceAds(), sm.getIdServi(), sm.getIdRecommandationDerniereVisite());
 			nbCas1++;
 		}
 		logger.info("Nb de cas 1 : " + nbCas1);
@@ -1377,6 +1388,7 @@ public class OeSMConvocation extends BasicProcess {
 				sm.setIdServi(fp != null ? fp.getIdServi() : null);
 				VisiteMedicale derniereVisite = getVisiteMedicaleDao().chercherDerniereVisiteMedicale(agent.getIdAgent());
 				sm.setDateDerniereVisite(derniereVisite==null ? null : derniereVisite.getDateDerniereVisite());
+				sm.setIdRecommandationDerniereVisite(derniereVisite==null ? null : derniereVisite.getIdRecommandation());
 				sm.setDatePrevisionVisite(smAncien.getDatePrevisionVisite());
 				sm.setIdMotifVm(smAncien.getIdMotifVm());
 				// ATTENTION : si mois de la date de prochainRDV < moisChoisi
@@ -1430,7 +1442,7 @@ public class OeSMConvocation extends BasicProcess {
 				}
 				getSuiviMedDao().creerSuiviMedical(sm.getIdAgent(), sm.getNomatr(), sm.getAgent(), sm.getStatut(), sm.getDateDerniereVisite(),
 						sm.getDatePrevisionVisite(), sm.getIdMotifVm(), sm.getNbVisitesRatees(), sm.getIdMedecin(), sm.getDateProchaineVisite(),
-						sm.getHeureProchaineVisite(), sm.getEtat(), sm.getMois(), sm.getAnnee(), sm.getRelance(), sm.getIdServiceAds(), sm.getIdServi());
+						sm.getHeureProchaineVisite(), sm.getEtat(), sm.getMois(), sm.getAnnee(), sm.getRelance(), sm.getIdServiceAds(), sm.getIdServi(), sm.getIdRecommandationDerniereVisite());
 				nbCas8++;
 			}
 		} catch (Exception e) {
@@ -1485,6 +1497,7 @@ public class OeSMConvocation extends BasicProcess {
 					sm.setIdServi(fp != null ? fp.getIdServi() : null);
 					VisiteMedicale derniereVisite = getVisiteMedicaleDao().chercherDerniereVisiteMedicale(agent.getIdAgent());
 					sm.setDateDerniereVisite(derniereVisite==null ? null : derniereVisite.getDateDerniereVisite());
+					sm.setIdRecommandationDerniereVisite(derniereVisite==null ? null : derniereVisite.getIdRecommandation());
 					Date d2 = new SimpleDateFormat("dd/MM/yyyy").parse(Services.enleveJours(paSuivante.getDatdeb(), 15));
 					sm.setDatePrevisionVisite(d2);
 					sm.setIdMotifVm(EnumMotifVisiteMed.VM_CHANGEMENT_PA.getCode());
@@ -1528,7 +1541,7 @@ public class OeSMConvocation extends BasicProcess {
 					}
 					getSuiviMedDao().creerSuiviMedical(sm.getIdAgent(), sm.getNomatr(), sm.getAgent(), sm.getStatut(), sm.getDateDerniereVisite(),
 							sm.getDatePrevisionVisite(), sm.getIdMotifVm(), sm.getNbVisitesRatees(), sm.getIdMedecin(), sm.getDateProchaineVisite(),
-							sm.getHeureProchaineVisite(), sm.getEtat(), sm.getMois(), sm.getAnnee(), sm.getRelance(), sm.getIdServiceAds(), sm.getIdServi());
+							sm.getHeureProchaineVisite(), sm.getEtat(), sm.getMois(), sm.getAnnee(), sm.getRelance(), sm.getIdServiceAds(), sm.getIdServi(), sm.getIdRecommandationDerniereVisite());
 					nbCas7++;
 				} else {
 					continue;
@@ -1588,6 +1601,7 @@ public class OeSMConvocation extends BasicProcess {
 			sm.setIdServi(fp != null ? fp.getIdServi() : null);
 			VisiteMedicale derniereVisite = getVisiteMedicaleDao().chercherDerniereVisiteMedicale(agent.getIdAgent());
 			sm.setDateDerniereVisite(derniereVisite==null ? null : derniereVisite.getDateDerniereVisite());
+			sm.setIdRecommandationDerniereVisite(derniereVisite==null ? null : derniereVisite.getIdRecommandation());
 			sm.setDatePrevisionVisite(agent.getDateDerniereEmbauche());
 			sm.setIdMotifVm(EnumMotifVisiteMed.VM_NOUVEAU.getCode());
 			sm.setNbVisitesRatees(0);
@@ -1626,7 +1640,7 @@ public class OeSMConvocation extends BasicProcess {
 			}
 			getSuiviMedDao().creerSuiviMedical(sm.getIdAgent(), sm.getNomatr(), sm.getAgent(), sm.getStatut(), sm.getDateDerniereVisite(),
 					sm.getDatePrevisionVisite(), sm.getIdMotifVm(), sm.getNbVisitesRatees(), sm.getIdMedecin(), sm.getDateProchaineVisite(),
-					sm.getHeureProchaineVisite(), sm.getEtat(), sm.getMois(), sm.getAnnee(), sm.getRelance(), sm.getIdServiceAds(), sm.getIdServi());
+					sm.getHeureProchaineVisite(), sm.getEtat(), sm.getMois(), sm.getAnnee(), sm.getRelance(), sm.getIdServiceAds(), sm.getIdServi(), sm.getIdRecommandationDerniereVisite());
 			nbCas6++;
 		}
 		logger.info("Nb de cas 6 : " + nbCas6);
@@ -1683,6 +1697,7 @@ public class OeSMConvocation extends BasicProcess {
 			sm.setIdServi(fp != null ? fp.getIdServi() : null);
 			VisiteMedicale derniereVisite = getVisiteMedicaleDao().chercherDerniereVisiteMedicale(agent.getIdAgent());
 			sm.setDateDerniereVisite(derniereVisite==null ? null : derniereVisite.getDateDerniereVisite());
+			sm.setIdRecommandationDerniereVisite(derniereVisite==null ? null : derniereVisite.getIdRecommandation());
 			Date d2 = new SimpleDateFormat("dd/MM/yyyy").parse(Services.ajouteMois(new SimpleDateFormat("dd/MM/yyyy").format(vm.getDateDerniereVisite()),
 					vm.getDureeValidite()));
 			sm.setDatePrevisionVisite(d2);
@@ -1723,7 +1738,7 @@ public class OeSMConvocation extends BasicProcess {
 			}
 			getSuiviMedDao().creerSuiviMedical(sm.getIdAgent(), sm.getNomatr(), sm.getAgent(), sm.getStatut(), sm.getDateDerniereVisite(),
 					sm.getDatePrevisionVisite(), sm.getIdMotifVm(), sm.getNbVisitesRatees(), sm.getIdMedecin(), sm.getDateProchaineVisite(),
-					sm.getHeureProchaineVisite(), sm.getEtat(), sm.getMois(), sm.getAnnee(), sm.getRelance(), sm.getIdServiceAds(), sm.getIdServi());
+					sm.getHeureProchaineVisite(), sm.getEtat(), sm.getMois(), sm.getAnnee(), sm.getRelance(), sm.getIdServiceAds(), sm.getIdServi(), sm.getIdRecommandationDerniereVisite());
 			nbCas2++;
 		}
 		logger.info("Nb de cas 2 : " + nbCas2);
@@ -3025,6 +3040,21 @@ public class OeSMConvocation extends BasicProcess {
 
 	public String getVAL_CK_AGENT_CDD() {
 		return getZone(getNOM_CK_AGENT_CDD());
+	}
+	public String getNOM_ST_RESULTAT_DERNIERE_VISITE(int i) {
+		return "NOM_ST_RESULTAT_DERNIERE_VISITE_" + i;
+	}
+
+	public String getVAL_ST_RESULTAT_DERNIERE_VISITE(int i) {
+		return getZone(getNOM_ST_RESULTAT_DERNIERE_VISITE(i));
+	}
+
+	public RecommandationDao getRecommandationDao() {
+		return recommandationDao;
+	}
+
+	public void setRecommandationDao(RecommandationDao recommandationDao) {
+		this.recommandationDao = recommandationDao;
 	}
 
 }

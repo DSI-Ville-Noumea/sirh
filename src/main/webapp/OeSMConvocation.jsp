@@ -179,6 +179,7 @@
 							<th>Statut</th>
 							<th>Serv.</th>
 							<th>Date derniere visite</th>
+							<th>Résultat derniere visite</th>
 							<th>Prévision de visite</th>
 							<th>Motif</th>
 							<th>Nb visites ratées</th>
@@ -209,7 +210,8 @@
 								<td><%=process.getVAL_ST_NUM_CAFAT(indiceSM)%></td>
 								<td><%=process.getVAL_ST_STATUT(indiceSM)%></td>
 								<td><%=process.getVAL_ST_SERVICE(indiceSM)%></td>
-								<td><%=process.getVAL_ST_DATE_DERNIERE_VISITE(indiceSM)%></td>					
+								<td><%=process.getVAL_ST_DATE_DERNIERE_VISITE(indiceSM)%></td>	
+								<td><%=process.getVAL_ST_RESULTAT_DERNIERE_VISITE(indiceSM)%></td>					
 								<td><%=process.getVAL_ST_DATE_PREVISION_VISITE(indiceSM)%></td>							
 								<td><%=process.getVAL_ST_MOTIF(indiceSM)%></td>						
 								<td><%=process.getVAL_ST_NB_VISITES_RATEES(indiceSM)%></td>	
@@ -267,7 +269,7 @@
 					$(document).ready(function() {
 					    $('#tabSuiviMed').dataTable({
 							"oLanguage": {"sUrl": "media/dataTables/language/fr_FR.txt"},
-							"aoColumns": [{"bSearchable":false, "bVisible":false},null,null,null,null,null,null,null,null,null,null,null,null,null,{"bSearchable":false,"bSortable":false},{"bSearchable":false,"bSortable":false},null],
+							"aoColumns": [{"bSearchable":false, "bVisible":false},null,null,null,null,null,null,null,null,null,null,null,null,null,null,{"bSearchable":false,"bSortable":false},{"bSearchable":false,"bSortable":false},null],
 							"sDom": '<"H"flT>t<"F"iT>',
 							"bPaginate": false,
 							"oTableTools": {
