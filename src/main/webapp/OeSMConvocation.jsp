@@ -117,7 +117,7 @@
 			<input id="<%=process.getNOM_ST_DATE_MAX()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_MAX()%>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_MAX()%>" >
 			<IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_MAX()%>', 'dd/mm/y');">
 			<span class="sigp2" style="width:40px">Statut : </span>
-			<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_STATUT() %>" style="width:50px;margin-right:20px;">
+			<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_STATUT() %>" style="width:100px;margin-right:20px;">
 				<%=process.forComboHTML(process.getVAL_LB_STATUT(), process.getVAL_LB_STATUT_SELECT()) %>
 			</SELECT>
 			<span class="sigp2" style="width:40px">Recommandation : </span>
