@@ -330,8 +330,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		// Recherche des suivi médicaux de l'agent en statut planifié ou
 		// convoque
 		ArrayList<SuiviMedical> listeSuiviMed = getSuiviMedDao().listerSuiviMedicalEtatAgent(
-				getAgentCourant().getIdAgent(), EnumEtatSuiviMed.CONVOQUE.getCode(),
-				EnumEtatSuiviMed.PLANIFIE.getCode(), EnumEtatSuiviMed.ACCOMP.getCode());
+				getAgentCourant().getIdAgent(), EnumEtatSuiviMed.PLANIFIE.getCode());
 		for (int i = 0; i < listeSuiviMed.size(); i++) {
 			// on recupere le suivi medical que l'on transforme en visite
 			// medicale

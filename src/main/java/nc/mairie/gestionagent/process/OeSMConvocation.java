@@ -21,11 +21,13 @@ import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.Agent;
 import nc.mairie.metier.hsct.Medecin;
+import nc.mairie.metier.hsct.VisiteMedicale;
 import nc.mairie.metier.suiviMedical.SuiviMedical;
 import nc.mairie.spring.dao.metier.agent.AgentDao;
 import nc.mairie.spring.dao.metier.hsct.MedecinDao;
 import nc.mairie.spring.dao.metier.hsct.RecommandationDao;
 import nc.mairie.spring.dao.metier.hsct.SPABSENDao;
+import nc.mairie.spring.dao.metier.hsct.VisiteMedicaleDao;
 import nc.mairie.spring.dao.metier.poste.AffectationDao;
 import nc.mairie.spring.dao.metier.poste.FichePosteDao;
 import nc.mairie.spring.dao.metier.suiviMedical.MotifVisiteMedDao;
@@ -52,6 +54,7 @@ import org.apache.commons.vfs2.VFS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
+import org.springframework.dao.EmptyResultDataAccessException;
 
 /**
  * Process OeAGENTAccidentTravail Date de création : (30/06/11 13:56:32)
@@ -93,6 +96,7 @@ public class OeSMConvocation extends BasicProcess {
 	private AffectationDao				affectationDao;
 	private AgentDao					agentDao;
 	private RecommandationDao			recommandationDao;
+	private VisiteMedicaleDao visiteMedicaleDao;
 
 	private IAdsService					adsService;
 
@@ -126,12 +130,10 @@ public class OeSMConvocation extends BasicProcess {
 			Agent agt = (Agent) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
 			VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
 			addZone(getNOM_ST_AGENT(), agt.getNomatr().toString());
-			performPB_RECHERCHER(request);
 		} else if (etatStatut() == STATUT_RECHERCHER_AGENT_HIERARCHIQUE) {
 			Agent agt = (Agent) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
 			VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
 			addZone(getNOM_ST_AGENT_HIERARCHIQUE(), agt.getNomatr().toString());
-			performPB_RECHERCHER(request);
 		}
 		// Initialisation de la liste des documents suivi medicaux
 		if (getListeDocuments() == null || getListeDocuments().size() == 0) {
@@ -172,6 +174,9 @@ public class OeSMConvocation extends BasicProcess {
 		}
 		if (getRecommandationDao() == null) {
 			setRecommandationDao(new RecommandationDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getVisiteMedicaleDao() == null) {
+			setVisiteMedicaleDao(new VisiteMedicaleDao((SirhDao) context.getBean("sirhDao")));
 		}
 		if (null == adsService) {
 			adsService = (IAdsService) context.getBean("adsService");
@@ -242,8 +247,33 @@ public class OeSMConvocation extends BasicProcess {
 					sm.getDatePrevisionVisite() == null ? "&nbsp;" : Services.convertitDate(sm.getDatePrevisionVisite().toString(), "yyyy-MM-dd", "dd/MM/yyyy"));
 			addZone(getNOM_ST_MOTIF(i), getLibMotifVM(sm.getIdMotifVm()));
 			addZone(getNOM_ST_NB_VISITES_RATEES(i), sm.getNbVisitesRatees().toString());
-			addZone(getNOM_LB_MEDECIN_SELECT(i), sm.getIdMedecin() != null ? String.valueOf(getListeMedecin().indexOf(getHashMedecin().get(sm.getIdMedecin())))
-					: Const.ZERO);
+			Medecin med = sm.getIdMedecin() != null ? getListeMedecin().get(getListeMedecin().indexOf(getHashMedecin().get(sm.getIdMedecin()))) : null;
+			addZone(getNOM_LB_MEDECIN_SELECT(i), med != null ? String.valueOf(med) : Const.ZERO);
+			if (sm.getEtat().equals(EnumEtatSuiviMed.EFFECTUE.getCode())) {
+				VisiteMedicale vm = null;
+				try {
+					vm = getVisiteMedicaleDao().chercherVisiteMedicaleLieeSM(sm.getIdSuiviMed(),
+						sm.getIdAgent());
+				} catch(EmptyResultDataAccessException e) {
+					
+				}
+				Medecin medecin = null;
+				if (null != vm && vm.getIdMedecin() != null) {
+					medecin = getMedecinDao().chercherMedecin(vm.getIdMedecin());
+				}
+				addZone(getNOM_ST_MEDECIN(i),
+						medecin != null ?  medecin.getPrenomMedecin() + " "
+								+ medecin.getNomMedecin() : Const.CHAINE_VIDE);
+				addZone(getNOM_ST_DATE_RDV(i),
+						 sm.getDateProchaineVisite() == null ? Const.CHAINE_VIDE : Services.convertitDate(sm.getDateProchaineVisite().toString(), "yyyy-MM-dd",
+									"dd/MM/yyyy"));
+				addZone(getNOM_ST_HEURE_RDV(i),sm.getHeureProchaineVisite());			
+
+			}else{
+				addZone(getNOM_ST_MEDECIN(i),Const.CHAINE_VIDE);
+				addZone(getNOM_ST_DATE_RDV(i),Const.CHAINE_VIDE);
+				addZone(getNOM_ST_HEURE_RDV(i),Const.CHAINE_VIDE);
+			}
 			addZone(getNOM_ST_DATE_PROCHAIN_RDV(i),
 					sm.getDateProchaineVisite() == null ? Const.CHAINE_VIDE : Services.convertitDate(sm.getDateProchaineVisite().toString(), "yyyy-MM-dd",
 							"dd/MM/yyyy"));
@@ -253,11 +283,11 @@ public class OeSMConvocation extends BasicProcess {
 			} else {
 				addZone(getNOM_LB_HEURE_RDV_SELECT(i), Const.ZERO);
 			}
-			addZone(getNOM_CK_A_IMPRIMER_CONVOC(i),
-					sm.getEtat().equals(EnumEtatSuiviMed.CONVOQUE.getCode()) || sm.getEtat().equals(EnumEtatSuiviMed.ACCOMP.getCode()) ? getCHECKED_ON()
-							: getCHECKED_OFF());
-			addZone(getNOM_CK_A_IMPRIMER_ACCOMP(i), sm.getEtat().equals(EnumEtatSuiviMed.ACCOMP.getCode()) ? getCHECKED_ON() : getCHECKED_OFF());
-			addZone(getNOM_ST_ETAT(i), sm.getEtat());
+//			addZone(getNOM_CK_A_IMPRIMER_CONVOC(i),
+//					sm.getEtat().equals(EnumEtatSuiviMed.CONVOQUE.getCode()) || sm.getEtat().equals(EnumEtatSuiviMed.ACCOMP.getCode()) ? getCHECKED_ON()
+//							: getCHECKED_OFF());
+//			addZone(getNOM_CK_A_IMPRIMER_ACCOMP(i), sm.getEtat().equals(EnumEtatSuiviMed.ACCOMP.getCode()) ? getCHECKED_ON() : getCHECKED_OFF());
+			addZone(getNOM_ST_ETAT(i), sm.getEtat().equals(EnumEtatSuiviMed.TRAVAIL.getCode())?"&nbsp" : sm.getEtat() );
 		}
 	}
 
@@ -535,7 +565,7 @@ public class OeSMConvocation extends BasicProcess {
 		boolean isCocheCDD = getVAL_CK_AGENT_CDD().equals(getCHECKED_ON());
 
 		// #31345 : on ne cherche plus sur etat/relance/motif
-		setListeSuiviMed(getSuiviMedDao().listerSuiviMedicalAvecMoisetAnneeSansEffectueBetweenDate(dateDebut, dateFin, listeAgent, listeSousService, statut,
+		setListeSuiviMed(getSuiviMedDao().listerSuiviMedicalAvecMoisetAnneeBetweenDate(dateDebut, dateFin, listeAgent, listeSousService, statut,
 				isCocheCDD));
 		afficheListeSuiviMed();
 		// getSuiviMedDao().detruitDao();
@@ -815,37 +845,37 @@ public class OeSMConvocation extends BasicProcess {
 		return getZone(getNOM_LB_MEDECIN_SELECT(i));
 	}
 
-	/**
-	 * Retourne le nom de la case à cocher sélectionnée pour la JSP : CK_A_IMPRIMER_CONVOC Date de création : (21/11/11 09:55:36)
-	 * 
-	 */
-	public String getNOM_CK_A_IMPRIMER_CONVOC(int i) {
-		return "NOM_CK_A_IMPRIMER_CONVOC_" + i;
-	}
-
-	/**
-	 * Retourne la valeur de la case à cocher à afficher par la JSP pour la case a cocher : CK_A_IMPRIMER_CONVOC Date de création : (21/11/11 09:55:36)
-	 * 
-	 */
-	public String getVAL_CK_A_IMPRIMER_CONVOC(int i) {
-		return getZone(getNOM_CK_A_IMPRIMER_CONVOC(i));
-	}
-
-	/**
-	 * Retourne le nom de la case à cocher sélectionnée pour la JSP : CK_A_IMPRIMER_ACCOMP Date de création : (21/11/11 09:55:36)
-	 * 
-	 */
-	public String getNOM_CK_A_IMPRIMER_ACCOMP(int i) {
-		return "NOM_CK_A_IMPRIMER_ACCOMP_" + i;
-	}
-
-	/**
-	 * Retourne la valeur de la case à cocher à afficher par la JSP pour la case a cocher : CK_A_IMPRIMER_ACCOMP Date de création : (21/11/11 09:55:36)
-	 * 
-	 */
-	public String getVAL_CK_A_IMPRIMER_ACCOMP(int i) {
-		return getZone(getNOM_CK_A_IMPRIMER_ACCOMP(i));
-	}
+//	/**
+//	 * Retourne le nom de la case à cocher sélectionnée pour la JSP : CK_A_IMPRIMER_CONVOC Date de création : (21/11/11 09:55:36)
+//	 * 
+//	 */
+//	public String getNOM_CK_A_IMPRIMER_CONVOC(int i) {
+//		return "NOM_CK_A_IMPRIMER_CONVOC_" + i;
+//	}
+//
+//	/**
+//	 * Retourne la valeur de la case à cocher à afficher par la JSP pour la case a cocher : CK_A_IMPRIMER_CONVOC Date de création : (21/11/11 09:55:36)
+//	 * 
+//	 */
+//	public String getVAL_CK_A_IMPRIMER_CONVOC(int i) {
+//		return getZone(getNOM_CK_A_IMPRIMER_CONVOC(i));
+//	}
+//
+//	/**
+//	 * Retourne le nom de la case à cocher sélectionnée pour la JSP : CK_A_IMPRIMER_ACCOMP Date de création : (21/11/11 09:55:36)
+//	 * 
+//	 */
+//	public String getNOM_CK_A_IMPRIMER_ACCOMP(int i) {
+//		return "NOM_CK_A_IMPRIMER_ACCOMP_" + i;
+//	}
+//
+//	/**
+//	 * Retourne la valeur de la case à cocher à afficher par la JSP pour la case a cocher : CK_A_IMPRIMER_ACCOMP Date de création : (21/11/11 09:55:36)
+//	 * 
+//	 */
+//	public String getVAL_CK_A_IMPRIMER_ACCOMP(int i) {
+//		return getZone(getNOM_CK_A_IMPRIMER_ACCOMP(i));
+//	}
 
 	public String getNOM_PB_MODIFIER(int i) {
 		return "NOM_PB_MODIFIER" + i;
@@ -861,11 +891,14 @@ public class OeSMConvocation extends BasicProcess {
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION(), ACTION_MODIFICATION);
 		setStatut(STATUT_MEME_PROCESS);
+		
+		SuiviMedical sm =  getSuiviMedDao().chercherSuiviMedical(idSm);		
+		getListeSuiviMed().get(getListeSuiviMed().indexOf(sm)).setEtat(EnumEtatSuiviMed.PLANIFIE.getCode());
 
 		// on change l'etat juste pour l'affichage
-		addZone(getNOM_ST_ETAT(idSm), EnumEtatSuiviMed.PLANIFIE.getCode());
-		addZone(getVAL_CK_A_IMPRIMER_CONVOC(idSm), Const.CHAINE_VIDE);
-		addZone(getVAL_CK_A_IMPRIMER_ACCOMP(idSm), Const.CHAINE_VIDE);
+//		addZone(getNOM_ST_ETAT(idSm), EnumEtatSuiviMed.PLANIFIE.getCode());
+//		addZone(getVAL_CK_A_IMPRIMER_CONVOC(idSm), Const.CHAINE_VIDE);
+//		addZone(getVAL_CK_A_IMPRIMER_ACCOMP(idSm), Const.CHAINE_VIDE);
 
 		return true;
 	}
@@ -888,14 +921,17 @@ public class OeSMConvocation extends BasicProcess {
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION(), ACTION_SUPPRESSION);
 		setStatut(STATUT_MEME_PROCESS);
+		
+		SuiviMedical sm =  getSuiviMedDao().chercherSuiviMedical(idSm);		
+		getListeSuiviMed().get(getListeSuiviMed().indexOf(sm)).setEtat(EnumEtatSuiviMed.TRAVAIL.getCode());
 
 		// on change l'etat juste pour l'affichage
-		addZone(getNOM_ST_ETAT(idSm), EnumEtatSuiviMed.TRAVAIL.getCode());
+//		addZone(getNOM_ST_ETAT(idSm), EnumEtatSuiviMed.TRAVAIL.getCode());
 		addZone(getNOM_ST_DATE_PROCHAIN_RDV(idSm), Const.CHAINE_VIDE);
 		addZone(getNOM_LB_HEURE_RDV_SELECT(idSm), Const.ZERO);
 		addZone(getNOM_LB_MEDECIN_SELECT(idSm), Const.ZERO);
-		addZone(getVAL_CK_A_IMPRIMER_CONVOC(idSm), Const.CHAINE_VIDE);
-		addZone(getVAL_CK_A_IMPRIMER_ACCOMP(idSm), Const.CHAINE_VIDE);
+//		addZone(getVAL_CK_A_IMPRIMER_CONVOC(idSm), Const.CHAINE_VIDE);
+//		addZone(getVAL_CK_A_IMPRIMER_ACCOMP(idSm), Const.CHAINE_VIDE);
 
 		return true;
 	}
@@ -933,13 +969,13 @@ public class OeSMConvocation extends BasicProcess {
 			SuiviMedical sm = getListeSuiviMed().get(j);
 			Integer i = sm.getIdSuiviMed();
 			// si la ligne n'est pas en etat travail
-			if (!getVAL_ST_ETAT(i).equals(EnumEtatSuiviMed.TRAVAIL.getCode())) {
+			if (!sm.getEtat().equals(EnumEtatSuiviMed.TRAVAIL.getCode())) {
 				String dateRDV = getVAL_ST_DATE_PROCHAIN_RDV(i);
 				String agentConcerne = getVAL_ST_MATR(i) + " ( " + getVAL_ST_AGENT(i) + " ) ";
 				// si la date du prochain RDV est vide
 				if (dateRDV == null || dateRDV.trim().equals(Const.CHAINE_VIDE)) {
 					// "ERR002", "La zone @ est obligatoire."
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "date du prochain RDV pour la ligne " + i));
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "date du prochain RDV pour l'agent " + agentConcerne));
 					return false;
 				}
 				
@@ -954,7 +990,7 @@ public class OeSMConvocation extends BasicProcess {
 				}
 
 				// si la date du prochain RDV est inferieur à la date du jour
-				if (!getVAL_ST_ETAT(i).equals(EnumEtatSuiviMed.CONVOQUE.getCode()) && !getVAL_ST_ETAT(i).equals(EnumEtatSuiviMed.ACCOMP.getCode())
+				if (sm.getEtat().equals(EnumEtatSuiviMed.PLANIFIE.getCode())
 						&& Services.compareDates(dateRDV, Services.dateDuJour()) < 0) {
 					// "ERR302",
 					// "La date du prochain RDV pour l'agent @ doit être supérieure ou egale à la date du jour"
@@ -1333,8 +1369,7 @@ public class OeSMConvocation extends BasicProcess {
 			// on recupere la ligne concernée
 			SuiviMedical sm = (SuiviMedical) getListeSuiviMed().get(j);
 			Integer i = sm.getIdSuiviMed();
-			sm.setEtat(getVAL_ST_ETAT(i));
-			if (getVAL_ST_ETAT(i).equals(EnumEtatSuiviMed.TRAVAIL.getCode())) {
+			if (sm.getEtat().equals(EnumEtatSuiviMed.TRAVAIL.getCode())) {
 				sm.setHeureProchaineVisite(null);
 				sm.setDateProchaineVisite(null);
 				sm.setIdMedecin(null);
@@ -1732,6 +1767,35 @@ public class OeSMConvocation extends BasicProcess {
 
 	public String getVAL_ST_DIRECTION(int i) {
 		return getZone(getNOM_ST_DIRECTION(i));
+	}
+	public String getNOM_ST_MEDECIN(int i) {
+		return "NOM_ST_MEDECIN_" + i;
+	}
+
+	public String getVAL_ST_MEDECIN(int i) {
+		return getZone(getNOM_ST_MEDECIN(i));
+	}
+	public String getNOM_ST_HEURE_RDV(int i) {
+		return "NOM_ST_HEURE_RDV_" + i;
+	}
+
+	public String getVAL_ST_HEURE_RDV(int i) {
+		return getZone(getNOM_ST_HEURE_RDV(i));
+	}
+	public String getNOM_ST_DATE_RDV(int i) {
+		return "NOM_ST_DATE_RDV_" + i;
+	}
+
+	public String getVAL_ST_DATE_RDV(int i) {
+		return getZone(getNOM_ST_DATE_RDV(i));
+	}
+
+	public VisiteMedicaleDao getVisiteMedicaleDao() {
+		return visiteMedicaleDao;
+	}
+
+	public void setVisiteMedicaleDao(VisiteMedicaleDao visiteMedicaleDao) {
+		this.visiteMedicaleDao = visiteMedicaleDao;
 	}
 
 }

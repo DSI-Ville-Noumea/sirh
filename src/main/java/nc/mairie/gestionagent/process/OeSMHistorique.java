@@ -84,8 +84,7 @@ public class OeSMHistorique extends BasicProcess {
 			int indiceMois = (Services.estNumerique(getVAL_LB_MOIS_SELECT()) ? Integer
 					.parseInt(getVAL_LB_MOIS_SELECT()) : -1);
 			setListeHistoSuiviMed(getSuiviMedDao().listerHistoriqueSuiviMedical(getAnneeSelectionne(indiceAnnee),
-					getMoisSelectionne(indiceMois), EnumEtatSuiviMed.CONVOQUE.getCode(),
-					EnumEtatSuiviMed.ACCOMP.getCode(), EnumEtatSuiviMed.EFFECTUE.getCode()));
+					getMoisSelectionne(indiceMois),  EnumEtatSuiviMed.EFFECTUE.getCode()));
 			afficheListeHistoSuiviMed();
 		}
 	}

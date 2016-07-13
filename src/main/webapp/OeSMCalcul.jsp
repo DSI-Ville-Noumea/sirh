@@ -37,25 +37,7 @@
 	<BODY bgcolor="#FFFFFF" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="window.parent.frames['refAgent'].location.reload();" >
 	<%@ include file="BanniereErreur.jsp" %>
 	<FORM name="formu" method="POST" class="sigp2-titre">		
-		<INPUT name="JSP" type="hidden" value="<%= process.getJSP() %>">
-		<% if (!process.convocationsEnErreur.equals("")){ %>
-		 <FIELDSET style="border-color : red red red red;">
-		 <TABLE border="0" width="100%" cellpadding="0" cellspacing="0">
-		 	<TBODY>
-		 	<TR>
-		 		<td width="30" class="sigp2-titre"><IMG src="images/info.gif" width="20" height="20" border="0"></td>
-		 		<td valign="middle" class="sigp2-titre">
-		 			<span class="sigp2Mandatory">Agents en anomalies : <%=process.convocationsEnErreur %></span>
-					<BR/>
-					<span class="sigp2Mandatory">Ces agents ne sont ni fonctionnaire ni convention collective. Merci de corriger manuellement les carrières de ces agents.</span>
-		 		</td>
-		 	</TR>
-		 	</TBODY>					
-		</TABLE>
-		</FIELDSET>
-		<BR/>
-		<BR/>
-		<%} %>		
+		<INPUT name="JSP" type="hidden" value="<%= process.getJSP() %>">	
 		
 		<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
 		<legend class="sigp2Legend">Calcul des prévisions des visites médicales du travail</legend>

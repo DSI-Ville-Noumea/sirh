@@ -180,13 +180,13 @@
 							<th>Medecin</th>
 							<th>Date prochain RDV</th>
 							<th>Heure prochain RDV</th>
-							<th>Imprimer convoc.							
-								<INPUT type="checkbox" name="CHECK_ALL_IMPRIMER_CONVOC" onClick='activeImprimerConvoc()'>
-							</th>
-							<th>Imprimer accomp.
-								<INPUT type="checkbox" name="CHECK_ALL_IMPRIMER_ACCOMP" onClick='activeImprimerAccomp()'>
-							</th>
-							<th style="display: none;" >Etat</th>
+<!-- 							<th>Imprimer convoc.							 -->
+<!-- 								<INPUT type="checkbox" name="CHECK_ALL_IMPRIMER_CONVOC" onClick='activeImprimerConvoc()'> -->
+<!-- 							</th> -->
+<!-- 							<th>Imprimer accomp. -->
+<!-- 								<INPUT type="checkbox" name="CHECK_ALL_IMPRIMER_ACCOMP" onClick='activeImprimerAccomp()'> -->
+<!-- 							</th> -->
+							<th>Etat</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -211,48 +211,52 @@
 								<td><%=process.getVAL_ST_MOTIF(indiceSM)%></td>						
 								<td><%=process.getVAL_ST_NB_VISITES_RATEES(indiceSM)%></td>	
 								<td>
-								<INPUT title="modifier" type="image" src="images/modifier.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_MODIFIER(indiceSM)%>">
-				    			<%if(!process.getVAL_ST_ETAT(indiceSM).equals(EnumEtatSuiviMed.TRAVAIL.getCode())){ %>
+								<%if(sm.getEtat().equals(EnumEtatSuiviMed.TRAVAIL.getCode())){ %>
+				    				<INPUT title="modifier" type="image" src="images/modifier.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_MODIFIER(indiceSM)%>">
+				    			<%} %>
+				    			<%if(sm.getEtat().equals(EnumEtatSuiviMed.PLANIFIE.getCode())){ %>
 				    				<INPUT title="supprimer" type="image" src="images/suppression.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_SUPPRIMER(indiceSM)%>">
 				    			<%} %>
 				    			</td>	
-				    			<%if(process.getVAL_ST_ETAT(indiceSM).equals(EnumEtatSuiviMed.TRAVAIL.getCode())){ %>
+				    			<%if(sm.getEtat().equals(EnumEtatSuiviMed.TRAVAIL.getCode())){ %>
 				    			<td>&nbsp;</td>					
 								<td>&nbsp;</td>					
 								<td>&nbsp;</td>	
-								<td>
-									<INPUT disabled="disabled" type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_A_IMPRIMER_CONVOC(indiceSM),process.getVAL_CK_A_IMPRIMER_CONVOC(indiceSM))%>>
-								</td>		
-								<td>
-									<INPUT disabled="disabled" type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_A_IMPRIMER_ACCOMP(indiceSM),process.getVAL_CK_A_IMPRIMER_ACCOMP(indiceSM))%>>
-								</td>
+<!-- 								<td> -->
+<%-- 									<INPUT disabled="disabled" type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_A_IMPRIMER_CONVOC(indiceSM),process.getVAL_CK_A_IMPRIMER_CONVOC(indiceSM))%>> --%>
+<!-- 								</td>		 -->
+<!-- 								<td> -->
+<%-- 									<INPUT disabled="disabled" type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_A_IMPRIMER_ACCOMP(indiceSM),process.getVAL_CK_A_IMPRIMER_ACCOMP(indiceSM))%>> --%>
+<!-- 								</td> -->
+								<%}else if(sm.getEtat().equals(EnumEtatSuiviMed.EFFECTUE.getCode())){ %>
+					    			<td><%=process.getVAL_ST_MEDECIN(indiceSM)%></td>			
+					    			<td><%=process.getVAL_ST_DATE_RDV(indiceSM)%></td>			
+					    			<td><%=process.getVAL_ST_HEURE_RDV(indiceSM)%></td>
 								<%}else{ %>
 				    			<td>
-									<SELECT <%= process.getVAL_ST_ETAT(indiceSM).equals(EnumEtatSuiviMed.ACCOMP.getCode())||process.getVAL_ST_ETAT(indiceSM).equals(EnumEtatSuiviMed.CONVOQUE.getCode()) ?  "disabled='disabled'" : "" %> name="<%= process.getNOM_LB_MEDECIN(indiceSM) %>" class="sigp2-liste">
+									<SELECT <%= sm.getEtat().equals(EnumEtatSuiviMed.EFFECTUE.getCode()) ?  "disabled='disabled'" : "" %> name="<%= process.getNOM_LB_MEDECIN(indiceSM) %>" class="sigp2-liste">
 										<%=process.forComboHTML(process.getVAL_LB_MEDECIN(indiceSM), process.getVAL_LB_MEDECIN_SELECT(indiceSM)) %>
 									</SELECT>
 								</td>										
 								<td>
-									<input id="<%=process.getNOM_ST_DATE_PROCHAIN_RDV(indiceSM)%>" <%= process.getVAL_ST_ETAT(indiceSM).equals(EnumEtatSuiviMed.ACCOMP.getCode())||process.getVAL_ST_ETAT(indiceSM).equals(EnumEtatSuiviMed.CONVOQUE.getCode())  ?  "disabled='disabled'" : "" %> class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_PROCHAIN_RDV(indiceSM) %>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_PROCHAIN_RDV(indiceSM) %>">
-									<%if(!process.getVAL_ST_ETAT(indiceSM).equals(EnumEtatSuiviMed.ACCOMP.getCode())&&!process.getVAL_ST_ETAT(indiceSM).equals(EnumEtatSuiviMed.CONVOQUE.getCode())){ %>
+									<input id="<%=process.getNOM_ST_DATE_PROCHAIN_RDV(indiceSM)%>" <%= sm.getEtat().equals(EnumEtatSuiviMed.EFFECTUE.getCode())  ?  "disabled='disabled'" : "" %> class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_PROCHAIN_RDV(indiceSM) %>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_PROCHAIN_RDV(indiceSM) %>">
+									<%if(!sm.getEtat().equals(EnumEtatSuiviMed.EFFECTUE.getCode())){ %>
 									<IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_PROCHAIN_RDV(indiceSM)%>', 'dd/mm/y');">
 									<%} %>
 								</td>				
 								<td>
-									<SELECT <%= process.getVAL_ST_ETAT(indiceSM).equals(EnumEtatSuiviMed.ACCOMP.getCode())||process.getVAL_ST_ETAT(indiceSM).equals(EnumEtatSuiviMed.CONVOQUE.getCode())  ?  "disabled='disabled'" : "" %> name="<%= process.getNOM_LB_HEURE_RDV(indiceSM) %>" class="sigp2-liste">
+									<SELECT <%= sm.getEtat().equals(EnumEtatSuiviMed.EFFECTUE.getCode())  ?  "disabled='disabled'" : "" %> name="<%= process.getNOM_LB_HEURE_RDV(indiceSM) %>" class="sigp2-liste">
 										<%=process.forComboHTML(process.getVAL_LB_HEURE_RDV(indiceSM), process.getVAL_LB_HEURE_RDV_SELECT(indiceSM)) %>
 									</SELECT>
 								</td>	
-								<td>
-									<INPUT <%= process.getVAL_ST_ETAT(indiceSM).equals(EnumEtatSuiviMed.ACCOMP.getCode())||process.getVAL_ST_ETAT(indiceSM).equals(EnumEtatSuiviMed.CONVOQUE.getCode())  ?  "disabled='disabled'" : "" %> type="checkbox" onClick='validConvoque("<%=indiceSM %>")' <%= process.forCheckBoxHTML(process.getNOM_CK_A_IMPRIMER_CONVOC(indiceSM),process.getVAL_CK_A_IMPRIMER_CONVOC(indiceSM))%> >
-								</td>		
-								<td>
-									<INPUT <%= process.getVAL_ST_ETAT(indiceSM).equals(EnumEtatSuiviMed.ACCOMP.getCode()) || (!process.getVAL_ST_ETAT(indiceSM).equals(EnumEtatSuiviMed.ACCOMP.getCode()) && !process.getVAL_ST_ETAT(indiceSM).equals(EnumEtatSuiviMed.CONVOQUE.getCode()))  ?  "disabled='disabled'" : "" %> type="checkbox" onClick='validAccomp("<%=indiceSM %>")' <%= process.forCheckBoxHTML(process.getNOM_CK_A_IMPRIMER_ACCOMP(indiceSM),process.getVAL_CK_A_IMPRIMER_ACCOMP(indiceSM))%> >
-								</td>
-				    			<%} %>	
-				    			<td style="display: none;">
-				    				<input style="visibility:hidden" class="sigp2-saisie" maxlength="2"	name="<%= process.getNOM_ST_ETAT(indiceSM) %>" size="2" type="text"	value="<%= process.getVAL_ST_ETAT(indiceSM) %>">
-								</td>
+<!-- 								<td> -->
+<%-- 									<INPUT <%= sm.getEtat().equals(EnumEtatSuiviMed.ACCOMP.getCode())|| sm.getEtat().equals(EnumEtatSuiviMed.CONVOQUE.getCode())  ?  "disabled='disabled'" : "" %> type="checkbox" onClick='validConvoque("<%=indiceSM %>")' <%= process.forCheckBoxHTML(process.getNOM_CK_A_IMPRIMER_CONVOC(indiceSM),process.getVAL_CK_A_IMPRIMER_CONVOC(indiceSM))%> > --%>
+<!-- 								</td>		 -->
+<!-- 								<td> -->
+<%-- 									<INPUT <%= sm.getEtat().equals(EnumEtatSuiviMed.ACCOMP.getCode()) || (!sm.getEtat().equals(EnumEtatSuiviMed.ACCOMP.getCode()) && !sm.getEtat().equals(EnumEtatSuiviMed.CONVOQUE.getCode()))  ?  "disabled='disabled'" : "" %> type="checkbox" onClick='validAccomp("<%=indiceSM %>")' <%= process.forCheckBoxHTML(process.getNOM_CK_A_IMPRIMER_ACCOMP(indiceSM),process.getVAL_CK_A_IMPRIMER_ACCOMP(indiceSM))%> > --%>
+<!-- 								</td> -->
+				    			<%} %>			
+								<td><%=process.getVAL_ST_ETAT(indiceSM)%></td>
 							</tr>
 					<%
 						}
@@ -264,7 +268,7 @@
 					$(document).ready(function() {
 					    $('#tabSuiviMed').dataTable({
 							"oLanguage": {"sUrl": "media/dataTables/language/fr_FR.txt"},
-							"aoColumns": [{"bSearchable":false, "bVisible":false},null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,{"bSearchable":false,"bSortable":false},{"bSearchable":false,"bSortable":false},null],
+							"aoColumns": [{"bSearchable":false, "bVisible":false},null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
 							"sDom": '<"H"flT>t<"F"iT>',
 							"sScrollY": "375px",
 							"bPaginate": false,
@@ -279,30 +283,30 @@
 			<BR/>
 		</FIELDSET>
 
-		<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
-		<legend class="sigp2Legend">Documents générés pour le mois sélectionné</legend>	
-		<br/>
-			<span style="position:relative;width:35px;"></span>
-			<span style="position:relative;text-align: left;">Nom Document</span>
-			<br/>
-			<div style="overflow: auto;height:150px;width:1000px;margin-right: 0px;margin-left: 0px;">
-				<table class="sigp2NewTab" style="text-align:left;width:980px;">
-				<%int indiceDoc = 0;
-				if (process.getListeDocuments()!=null){
-				for (int i = 0;i<process.getListeDocuments().size();i++){
-				%>
-					<tr id="<%=indiceDoc%>" onmouseover="SelectLigne(<%=indiceDoc%>,<%=process.getListeDocuments().size()%>)">
-						<td class="sigp2NewTab-liste" style="position:relative;width:30px;" align="center">
-							<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_VISUALISATION(indiceDoc)%>">				
-						</td>
-						<td class="sigp2NewTab-liste" style="position:relative;text-align: left;"><%=process.getVAL_ST_NOM_DOC(indiceDoc)%></td>
-					</tr>
-				<%indiceDoc++;
-				}
-				}%>
-				</table>	
-			</div>
-		</FIELDSET>
+<!-- 		<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;"> -->
+<!-- 		<legend class="sigp2Legend">Documents générés pour le mois sélectionné</legend>	 -->
+<!-- 		<br/> -->
+<!-- 			<span style="position:relative;width:35px;"></span> -->
+<!-- 			<span style="position:relative;text-align: left;">Nom Document</span> -->
+<!-- 			<br/> -->
+<!-- 			<div style="overflow: auto;height:150px;width:1000px;margin-right: 0px;margin-left: 0px;"> -->
+<!-- 				<table class="sigp2NewTab" style="text-align:left;width:980px;"> -->
+<%-- 				<%int indiceDoc = 0; --%>
+<!-- // 				if (process.getListeDocuments()!=null){ -->
+<!-- // 				for (int i = 0;i<process.getListeDocuments().size();i++){ -->
+<%-- 				%> --%>
+<%-- 					<tr id="<%=indiceDoc%>" onmouseover="SelectLigne(<%=indiceDoc%>,<%=process.getListeDocuments().size()%>)"> --%>
+<!-- 						<td class="sigp2NewTab-liste" style="position:relative;width:30px;" align="center"> -->
+<%-- 							<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_VISUALISATION(indiceDoc)%>">				 --%>
+<!-- 						</td> -->
+<%-- 						<td class="sigp2NewTab-liste" style="position:relative;text-align: left;"><%=process.getVAL_ST_NOM_DOC(indiceDoc)%></td> --%>
+<!-- 					</tr> -->
+<%-- 				<%indiceDoc++; --%>
+<!-- // 				} -->
+<%-- 				}%> --%>
+<!-- 				</table>	 -->
+<!-- 			</div> -->
+<!-- 		</FIELDSET> -->
 			<br/>
 	<%=process.getUrlFichier()%>
 		<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_RECHERCHER_AGENT()%>" value="RECHERCHERAGENTEVALUE">

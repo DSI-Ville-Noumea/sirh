@@ -8,7 +8,7 @@ import nc.mairie.metier.suiviMedical.SuiviMedical;
 
 public interface SuiviMedicalDaoInterface {
 
-	public ArrayList<SuiviMedical> listerSuiviMedicalAvecMoisetAnneeSansEffectueBetweenDate(Date dateDebut, Date dateFin, List<Integer> listeAgent,
+	public ArrayList<SuiviMedical> listerSuiviMedicalAvecMoisetAnneeBetweenDate(Date dateDebut, Date dateFin, List<Integer> listeAgent,
 			List<Integer> listeSousService, String statut, boolean CDD) throws Exception;
 
 	public ArrayList<SuiviMedical> listerSuiviMedicalNonEffectue(Integer mois, Integer annee, String etat) throws Exception;
@@ -33,10 +33,10 @@ public interface SuiviMedicalDaoInterface {
 
 	public void modifierSuiviMedicalTravail(Integer idSuiviMed, SuiviMedical smSelct) throws Exception;
 
-	public ArrayList<SuiviMedical> listerHistoriqueSuiviMedical(Integer annee, Integer mois, String etatConvoq, String etatAccomp, String etatPlanif)
+	public ArrayList<SuiviMedical> listerHistoriqueSuiviMedical(Integer annee, Integer mois, String etatPlanif)
 			throws Exception;
 
-	public ArrayList<SuiviMedical> listerSuiviMedicalEtatAgent(Integer idAgent, String etatConvoq, String etatPlanif, String etatImprime) throws Exception;
+	public ArrayList<SuiviMedical> listerSuiviMedicalEtatAgent(Integer idAgent,  String etatPlanif) throws Exception;
 
 	public ArrayList<SuiviMedical> listerSuiviMedicalAgentAnterieurDate(Integer idAgent, Integer mois, Integer annee) throws Exception;
 

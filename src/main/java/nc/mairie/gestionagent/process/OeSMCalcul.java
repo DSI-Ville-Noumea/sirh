@@ -1139,7 +1139,7 @@ public class OeSMCalcul extends BasicProcess {
 		try {
 			ArrayList<SuiviMedical> listeSMCas8 = getSuiviMedDao()
 					.listerSuiviMedicalNonEffectue(moisChoisi, anneeChoisi,
-							EnumEtatSuiviMed.CONVOQUE.getCode());
+							EnumEtatSuiviMed.PLANIFIE.getCode());
 			for (int i = 0; i < listeSMCas8.size(); i++) {
 				// on crée une nouvelle ligne avec les memes informations
 				// sauf pour le statut et le service on le remet a jour

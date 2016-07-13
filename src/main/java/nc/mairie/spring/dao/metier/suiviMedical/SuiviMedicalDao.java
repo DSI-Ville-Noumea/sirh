@@ -6,7 +6,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import nc.mairie.enums.EnumEtatSuiviMed;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.suiviMedical.SuiviMedical;
 import nc.mairie.spring.dao.utils.SirhDao;
@@ -173,13 +172,12 @@ public class SuiviMedicalDao extends SirhDao implements SuiviMedicalDaoInterface
 	}
 
 	@Override
-	public ArrayList<SuiviMedical> listerHistoriqueSuiviMedical(Integer annee, Integer mois, String etatConvoq, String etatAccomp, String etatPlanif)
+	public ArrayList<SuiviMedical> listerHistoriqueSuiviMedical(Integer annee, Integer mois,  String etatPlanif)
 			throws Exception {
-		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ANNEE + "=? and " + CHAMP_MOIS + "=? and (" + CHAMP_ETAT + "= ? or " + CHAMP_ETAT
-				+ "= ? or " + CHAMP_ETAT + "= ?)";
+		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ANNEE + "=? and " + CHAMP_MOIS + "=? and " + CHAMP_ETAT + "= ? ";
 		ArrayList<SuiviMedical> listeSuiviMedical = new ArrayList<SuiviMedical>();
 
-		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { annee, mois, etatConvoq, etatAccomp, etatPlanif });
+		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { annee, mois, etatPlanif });
 		for (Map<String, Object> row : rows) {
 			SuiviMedical sm = new SuiviMedical();
 			logger.info("List suiviMed listerSuiviMedicalNonEffectue : " + row.toString());
@@ -210,13 +208,12 @@ public class SuiviMedicalDao extends SirhDao implements SuiviMedicalDaoInterface
 	}
 
 	@Override
-	public ArrayList<SuiviMedical> listerSuiviMedicalEtatAgent(Integer idAgentChoisi, String etatConvoq, String etatPlanif, String etatImprime)
+	public ArrayList<SuiviMedical> listerSuiviMedicalEtatAgent(Integer idAgentChoisi, String etatPlanif)
 			throws Exception {
-		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID_AGENT + "=? and (" + CHAMP_ETAT + "= ? or " + CHAMP_ETAT + "= ? or " + CHAMP_ETAT
-				+ "= ?)";
+		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID_AGENT + "=? and " + CHAMP_ETAT + "= ? ";
 		ArrayList<SuiviMedical> listeSuiviMedical = new ArrayList<SuiviMedical>();
 
-		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { idAgentChoisi, etatConvoq, etatPlanif, etatImprime });
+		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { idAgentChoisi,  etatPlanif});
 		for (Map<String, Object> row : rows) {
 			SuiviMedical sm = new SuiviMedical();
 			logger.info("List suiviMed listerSuiviMedicalNonEffectue : " + row.toString());
@@ -293,7 +290,7 @@ public class SuiviMedicalDao extends SirhDao implements SuiviMedicalDaoInterface
 	}
 
 	@Override
-	public ArrayList<SuiviMedical> listerSuiviMedicalAvecMoisetAnneeSansEffectueBetweenDate(Date dateDebut, Date dateFin, List<Integer> listeAgent,
+	public ArrayList<SuiviMedical> listerSuiviMedicalAvecMoisetAnneeBetweenDate(Date dateDebut, Date dateFin, List<Integer> listeAgent,
 			List<Integer> listeSousService, String statut, boolean CDD) throws Exception {
 
 		String sql = "select * from " + NOM_TABLE + " sm ";
@@ -303,7 +300,7 @@ public class SuiviMedicalDao extends SirhDao implements SuiviMedicalDaoInterface
 			sql += " where c.DATDEB<=? and ( c.DATE_FIN is null or c.DATE_FIN>=?) ";
 			sql += " and c.ID_TYPE_CONTRAT=1 ";
 		}
-		sql += (CDD ? " and " : " where ") + CHAMP_DATE_PREVISION_VISITE + " between ? and ? and " + CHAMP_ETAT + "!= ? ";
+		sql += (CDD ? " and " : " where ") + CHAMP_DATE_PREVISION_VISITE + " between ? and ? ";
 		if (listeAgent != null && listeAgent.size() > 0) {
 
 			String list = Const.CHAINE_VIDE;
@@ -336,9 +333,9 @@ public class SuiviMedicalDao extends SirhDao implements SuiviMedicalDaoInterface
 		List<Map<String, Object>> rows = null;
 		if (CDD) {
 			Date dateJour = new Date();
-			rows = jdbcTemplate.queryForList(sql, new Object[] { dateJour, dateJour, dateDebut, dateFin, EnumEtatSuiviMed.EFFECTUE.getCode() });
+			rows = jdbcTemplate.queryForList(sql, new Object[] { dateJour, dateJour, dateDebut, dateFin });
 		} else {
-			rows = jdbcTemplate.queryForList(sql, new Object[] { dateDebut, dateFin, EnumEtatSuiviMed.EFFECTUE.getCode() });
+			rows = jdbcTemplate.queryForList(sql, new Object[] { dateDebut, dateFin });
 		}
 		for (Map<String, Object> row : rows) {
 			SuiviMedical sm = new SuiviMedical();
