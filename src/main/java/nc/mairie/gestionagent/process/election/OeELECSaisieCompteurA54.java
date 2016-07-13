@@ -840,7 +840,7 @@ public class OeELECSaisieCompteurA54 extends BasicProcess {
 		int indiceAnnee = (Services.estNumerique(getVAL_LB_ANNEE_FILTRE_SELECT()) ? Integer
 				.parseInt(getVAL_LB_ANNEE_FILTRE_SELECT()) : -1);
 		String anneeFiltre = getListeAnneeFiltre().get(indiceAnnee);
-		if(new Integer(anneeFiltre)==anneeCourante){
+		if(new Integer(anneeFiltre).equals(anneeCourante)){
 			return true;
 		}
 		return false;		
@@ -852,7 +852,10 @@ public class OeELECSaisieCompteurA54 extends BasicProcess {
 
 	public boolean performPB_DUPLIQUER(HttpServletRequest request)
 			throws Exception {
-		
+		if(!isDuplicationPossible()){
+			getTransaction().declarerErreur("ERREUR : La duplication ne peut se faire que sur l'année en cours, merci de choisir l'année en cours.");
+			return false;			
+		}
 		return true;
 	}
 }

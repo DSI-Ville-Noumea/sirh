@@ -55,7 +55,7 @@ function testClickEnrigistrer(){
 				</SELECT>
 	          	<INPUT type="submit" class="sigp2-Bouton-100" value="Filtrer" name="<%=process.getNOM_PB_FILTRER()%>">
 	          	<% if(process.isDuplicationPossible()){ %>
-	          		<INPUT type="submit" class="sigp2-Bouton-200" value="Dupliquer les actifs sur l'année suivante" name="<%=process.getNOM_PB_DUPLIQUER()%>">
+	          		<INPUT type="submit" class="sigp2-Bouton-200" value="Dupliquer sur l'année suivante" name="<%=process.getNOM_PB_DUPLIQUER()%>">
 	          	<% }%>
 	          	<BR/><BR/>
 					
