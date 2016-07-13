@@ -856,6 +856,69 @@ public class OeELECSaisieCompteurA54 extends BasicProcess {
 			getTransaction().declarerErreur("ERREUR : La duplication ne peut se faire que sur l'année en cours, merci de choisir l'année en cours.");
 			return false;			
 		}
+
+		// on recupere l'agent connecte
+		Agent agentConnecte = getAgentConnecte(request);
+		if (agentConnecte == null) {
+			// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
+			return false;
+		}
+		//on recupere la liste de tous les compteurs pour l'année en cours
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(new Date());
+		Integer anneeCourante = cal.get(Calendar.YEAR);
+		ArrayList<CompteurDto> listeCompteur = (ArrayList<CompteurDto>) absService.getListeCompteursA54(anneeCourante);
+		
+		//on met le motif "reprise de données"
+		MotifCompteurDto motifReprise =null;
+		for(MotifCompteurDto mo : getListeMotifCompteur()){
+			if(mo.getLibelle().equals("Reprise de données")){
+				motifReprise= mo;
+				break;
+			}
+		}
+		
+		//on construit le DTO
+		List<CompteurDto> listeDto = new ArrayList<>();
+		for(CompteurDto dtoExist : listeCompteur){
+			//on ne prend que les actifs
+			if(dtoExist.isActif()){
+
+				CompteurDto compteurDto = new CompteurDto();
+				compteurDto.setIdAgent(dtoExist.getIdAgent());
+				
+				compteurDto.setMotifCompteurDto(motifReprise);
+				compteurDto.setDureeAAjouter(10.0);
+				compteurDto.setDateDebut(new DateTime(anneeCourante+1, 1, 1, 0, 0, 0).toDate());
+				compteurDto.setDateFin(new DateTime(anneeCourante+1, 12, 31, 23, 59, 0).toDate());
+				compteurDto.setActif(true);
+				//on ajoute le DTO
+				listeDto.add(compteurDto);				
+			}
+		}
+		
+
+		// on sauvegarde
+		ReturnMessageDto message = absService.addCompteurAsaA54ByList(
+				agentConnecte.getIdAgent(),
+				new JSONSerializer().exclude("*.class")
+						.transform(new MSDateTransformer(), Date.class)
+						.serialize(listeDto));
+
+		if (message.getErrors().size() > 0) {
+			String err = Const.CHAINE_VIDE;
+			for (String erreur : message.getErrors()) {
+				err += " " + erreur;
+			}
+			getTransaction().declarerErreur("ERREUR : " + err);
+		} else {
+			// "INF010", "Les compteurs @ a bien été mis a jour."
+			setStatut(STATUT_MEME_PROCESS,false,"INFO : les compteurs ont bien été dupliqués");
+		}
+
+		// On nomme l'action
+		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 		return true;
 	}
 }

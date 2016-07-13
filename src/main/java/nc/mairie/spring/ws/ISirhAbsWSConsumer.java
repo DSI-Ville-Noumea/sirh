@@ -101,6 +101,8 @@ public interface ISirhAbsWSConsumer {
 
 	ReturnMessageDto addCompteurAsaA54(Integer idAgentConnecte, String json);
 
+	ReturnMessageDto addCompteurAsaA54ByList(Integer idAgentConnecte, String json);
+
 	ReturnMessageDto addCompteurAsaA55(Integer idAgentConnecte, String json);
 
 	ReturnMessageDto addCompteurAsaAmicale(Integer idAgentConnecte, String json);

@@ -101,6 +101,7 @@ public class SirhAbsWSConsumer extends BaseWsConsumer implements ISirhAbsWSConsu
 	private static final String sirhAbsAddCompteurReposComp = "reposcomps/addManual";
 	private static final String sirhAbsAddCompteurAsaA48 = "asaA48/addManual";
 	private static final String sirhAbsAddCompteurAsaA54 = "asaA54/addManual";
+	private static final String sirhAbsAddCompteurAsaA54ByList = "asaA54/addManualByList";
 	private static final String sirhAbsAddCompteurAsaA55 = "asaA55/addManual";
 	private static final String sirhAbsAddCompteurAsaA53 = "asaA53/addManual";
 	private static final String sirhAbsAddCompteurAsaA52 = "asaA52/addManual";
@@ -366,6 +367,15 @@ public class SirhAbsWSConsumer extends BaseWsConsumer implements ISirhAbsWSConsu
 	@Override
 	public ReturnMessageDto addCompteurAsaA54(Integer idAgentConnecte, String json) {
 		String url = String.format(absWsBaseUrl + sirhAbsAddCompteurAsaA54);
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idAgent", idAgentConnecte.toString());
+		ClientResponse res = createAndPostRequest(params, url, json);
+		return readResponseWithReturnMessageDto(ReturnMessageDto.class, res, url);
+	}
+
+	@Override
+	public ReturnMessageDto addCompteurAsaA54ByList(Integer idAgentConnecte, String json) {
+		String url = String.format(absWsBaseUrl + sirhAbsAddCompteurAsaA54ByList);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgentConnecte.toString());
 		ClientResponse res = createAndPostRequest(params, url, json);

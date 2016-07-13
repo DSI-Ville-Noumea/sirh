@@ -296,6 +296,11 @@ public class AbsService implements IAbsService {
 	}
 
 	@Override
+	public ReturnMessageDto addCompteurAsaA54ByList(Integer idAgentConnecte, String json) {
+		return absConsumer.addCompteurAsaA54ByList(idAgentConnecte, json);
+	}
+
+	@Override
 	public List<CompteurDto> getListeCompteursA54(Integer annee) {
 		return absConsumer.getListeCompteursA54(annee);
 	}
