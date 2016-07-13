@@ -296,8 +296,8 @@ public class AbsService implements IAbsService {
 	}
 
 	@Override
-	public List<CompteurDto> getListeCompteursA54() {
-		return absConsumer.getListeCompteursA54();
+	public List<CompteurDto> getListeCompteursA54(Integer annee) {
+		return absConsumer.getListeCompteursA54(annee);
 	}
 
 	@Override

@@ -373,9 +373,10 @@ public class SirhAbsWSConsumer extends BaseWsConsumer implements ISirhAbsWSConsu
 	}
 
 	@Override
-	public List<CompteurDto> getListeCompteursA54() {
+	public List<CompteurDto> getListeCompteursA54(Integer annee) {
 		String url = String.format(absWsBaseUrl + sirhAbsListeCompteurA54);
 		HashMap<String, String> params = new HashMap<>();
+		params.put("annee", annee.toString());
 		ClientResponse res = createAndFireRequest(params, url);
 		return readResponseAsList(CompteurDto.class, res, url);
 	}

@@ -113,7 +113,7 @@ public interface ISirhAbsWSConsumer {
 
 	List<CompteurDto> getListeCompteursA48();
 
-	List<CompteurDto> getListeCompteursA54();
+	List<CompteurDto> getListeCompteursA54(Integer annee);
 
 	List<CompteurDto> getListeCompteursA55();
 

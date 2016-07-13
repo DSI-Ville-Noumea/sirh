@@ -128,7 +128,7 @@ public interface IAbsService {
 
 	ReturnMessageDto addCompteurAsaA54(Integer idAgent, String json);
 
-	List<CompteurDto> getListeCompteursA54();
+	List<CompteurDto> getListeCompteursA54(Integer annee);
 
 	ReturnMessageDto addCompteurAsaA55(Integer idAgent, String json);
 
