@@ -117,14 +117,18 @@
 			<input id="<%=process.getNOM_ST_DATE_MAX()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_MAX()%>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_MAX()%>" >
 			<IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_MAX()%>', 'dd/mm/y');">
 			<span class="sigp2" style="width:40px">Statut : </span>
-			<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_STATUT() %>" style="width=50px;margin-right:20px;">
+			<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_STATUT() %>" style="width:50px;margin-right:20px;">
 				<%=process.forComboHTML(process.getVAL_LB_STATUT(), process.getVAL_LB_STATUT_SELECT()) %>
 			</SELECT>
-			<span class="sigp2">Agent en CDD :</span>
-			<INPUT style="visibility: visible;" type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_AGENT_CDD(),process.getVAL_CK_AGENT_CDD())%>><span  class="sigp2">Oui</span>
+			<span class="sigp2" style="width:40px">Recommandation : </span>
+			<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_RECOMMANDATION() %>" style="width:300px;margin-right:20px;">
+				<%=process.forComboHTML(process.getVAL_LB_RECOMMANDATION(), process.getVAL_LB_RECOMMANDATION_SELECT()) %>
+			</SELECT>
 			
 			<BR/>
-            <span class="sigp2" style="width:75px">Par supérieur hiérarchique :</span>
+            <span class="sigp2">Agent en CDD :</span>
+			<INPUT style="visibility: visible;" type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_AGENT_CDD(),process.getVAL_CK_AGENT_CDD())%>><span  class="sigp2">Oui</span>
+			<span class="sigp2" style="width:75px">Par supérieur hiérarchique :</span>
 			<INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_AGENT_HIERARCHIQUE() %>" size="10" readonly="readonly" type="text" value="<%= process.getVAL_ST_AGENT_HIERARCHIQUE() %>" >
 			<img border="0" src="images/loupe.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_RECHERCHER_AGENT_HIERARCHIQUE()%>');">
           	<img border="0" src="images/suppression.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_HIERARCHIQUE()%>');">
@@ -146,8 +150,8 @@
 				<%=process.getCurrentWholeTreeJS(process.getVAL_EF_SERVICE().toUpperCase()) %>
 				<!-- ////////// ARBRE DES SERVICES - ADS ///////////// -->
 				</div>
-			<BR/>
-          	
+          	<BR/>
+			
           	<INPUT type="submit" class="sigp2-Bouton-100" value="Filtrer" name="<%=process.getNOM_PB_RECHERCHER()%>">
 		</FIELDSET>
 		

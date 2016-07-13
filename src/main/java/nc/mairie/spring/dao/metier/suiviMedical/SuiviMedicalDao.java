@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import nc.mairie.metier.Const;
+import nc.mairie.metier.hsct.Recommandation;
 import nc.mairie.metier.suiviMedical.SuiviMedical;
 import nc.mairie.spring.dao.utils.SirhDao;
 
@@ -291,7 +292,7 @@ public class SuiviMedicalDao extends SirhDao implements SuiviMedicalDaoInterface
 
 	@Override
 	public ArrayList<SuiviMedical> listerSuiviMedicalAvecMoisetAnneeBetweenDate(Date dateDebut, Date dateFin, List<Integer> listeAgent,
-			List<Integer> listeSousService, String statut, boolean CDD) throws Exception {
+			List<Integer> listeSousService, String statut, boolean CDD, Recommandation recommandation) throws Exception {
 
 		String sql = "select * from " + NOM_TABLE + " sm ";
 		if (CDD) {
@@ -313,9 +314,12 @@ public class SuiviMedicalDao extends SirhDao implements SuiviMedicalDaoInterface
 			sql += " and " + CHAMP_ID_AGENT + " in (" + list + ") ";
 		}
 
+		if (recommandation!=null) {
+			sql += " and " + CHAMP_ID_RECOMMANDATION_DERNIERE_VISITE + " =" + recommandation.getIdRecommandation() + " ";
+		}
+
 		if (!statut.equals(Const.CHAINE_VIDE)) {
 			sql += " and " + CHAMP_STATUT + " ='" + statut + "' ";
-
 		}
 
 		if (listeSousService != null) {
