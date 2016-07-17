@@ -49,7 +49,16 @@ function testClickEnrigistrer(){
 		<BR/>
 		
 	    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
-			<legend class="sigp2Legend">Compteurs des réunions des membres du bureau directeur</legend>			
+			<legend class="sigp2Legend">Compteurs des réunions des membres du bureau directeur</legend>		
+				<span class="sigp2" style="width:40px">Année : </span>
+				<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_ANNEE_FILTRE() %>" style="width:100px;margin-right:20px;">
+					<%=process.forComboHTML(process.getVAL_LB_ANNEE_FILTRE(), process.getVAL_LB_ANNEE_FILTRE_SELECT()) %>
+				</SELECT>
+	          	<INPUT type="submit" class="sigp2-Bouton-100" value="Filtrer" name="<%=process.getNOM_PB_FILTRER()%>">
+	          	<% if(process.isDuplicationPossible()){ %>
+	          		<INPUT type="submit" class="sigp2-Bouton-200" value="Dupliquer sur l'année suivante" name="<%=process.getNOM_PB_DUPLIQUER()%>">
+	          	<% }%>
+	          	<BR/><BR/>		
 				<div style="overflow: auto;height: 250px;width:1000px;margin-right: 0px;margin-left: 0px;">
 						<table class="sigp2NewTab" style="text-align:left;width:980px;">
 							<tr bgcolor="#EFEFEF">

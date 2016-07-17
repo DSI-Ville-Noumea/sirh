@@ -114,9 +114,11 @@ public interface IAbsService {
 
 	ReturnMessageDto initialiseCompteurConge(Integer agentConnecte, Integer agentConcerne);
 
-	List<CompteurDto> getListeCompteursA48();
+	List<CompteurDto> getListeCompteursA48(Integer annee);
 
 	ReturnMessageDto addCompteurAsaA48(Integer idAgent, String json);
+
+	ReturnMessageDto addCompteurAsaA48ByList(Integer idAgent, String json);
 
 	ReturnMessageDto saveRepresentantAsaA52(Integer idOrganisation, String json);
 

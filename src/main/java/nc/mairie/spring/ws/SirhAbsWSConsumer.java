@@ -100,6 +100,7 @@ public class SirhAbsWSConsumer extends BaseWsConsumer implements ISirhAbsWSConsu
 	private static final String sirhAbsHistoRestitutionMassiveByIdAgent = "congeannuel/getHistoRestitutionMassiveByIdAgent";
 	private static final String sirhAbsAddCompteurReposComp = "reposcomps/addManual";
 	private static final String sirhAbsAddCompteurAsaA48 = "asaA48/addManual";
+	private static final String sirhAbsAddCompteurAsaA48ByList = "asaA48/addManualByList";	
 	private static final String sirhAbsAddCompteurAsaA54 = "asaA54/addManual";
 	private static final String sirhAbsAddCompteurAsaA54ByList = "asaA54/addManualByList";
 	private static final String sirhAbsAddCompteurAsaA55 = "asaA55/addManual";
@@ -245,9 +246,10 @@ public class SirhAbsWSConsumer extends BaseWsConsumer implements ISirhAbsWSConsu
 	}
 
 	@Override
-	public List<CompteurDto> getListeCompteursA48() {
+	public List<CompteurDto> getListeCompteursA48(Integer annee) {
 		String url = String.format(absWsBaseUrl + sirhAbsListeCompteurA48);
 		HashMap<String, String> params = new HashMap<>();
+		params.put("annee", annee.toString());
 		ClientResponse res = createAndFireRequest(params, url);
 		return readResponseAsList(CompteurDto.class, res, url);
 	}
@@ -879,5 +881,14 @@ public class SirhAbsWSConsumer extends BaseWsConsumer implements ISirhAbsWSConsu
 		
 		ClientResponse res = createAndFireRequest(params, url);
 		return readResponseAsList(DemandeDto.class, res, url);
+	}
+
+	@Override
+	public ReturnMessageDto addCompteurAsaA48ByList(Integer idAgentConnecte, String json) {
+		String url = String.format(absWsBaseUrl + sirhAbsAddCompteurAsaA48ByList);
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idAgent", idAgentConnecte.toString());
+		ClientResponse res = createAndPostRequest(params, url, json);
+		return readResponseWithReturnMessageDto(ReturnMessageDto.class, res, url);
 	}
 }

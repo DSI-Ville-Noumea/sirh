@@ -99,6 +99,8 @@ public interface ISirhAbsWSConsumer {
 
 	ReturnMessageDto addCompteurAsaA48(Integer idAgentConnecte, String json);
 
+	ReturnMessageDto addCompteurAsaA48ByList(Integer idAgentConnecte, String json);
+
 	ReturnMessageDto addCompteurAsaA54(Integer idAgentConnecte, String json);
 
 	ReturnMessageDto addCompteurAsaA54ByList(Integer idAgentConnecte, String json);
@@ -113,7 +115,7 @@ public interface ISirhAbsWSConsumer {
 
 	ReturnMessageDto addCompteurCongeAnnuel(Integer idAgent, String json);
 
-	List<CompteurDto> getListeCompteursA48();
+	List<CompteurDto> getListeCompteursA48(Integer annee);
 
 	List<CompteurDto> getListeCompteursA54(Integer annee);
 

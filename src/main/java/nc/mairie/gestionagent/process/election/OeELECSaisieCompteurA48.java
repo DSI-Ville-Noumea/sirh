@@ -54,8 +54,10 @@ public class OeELECSaisieCompteurA48 extends BasicProcess {
 
 	private ArrayList<CompteurDto> listeCompteur;
 	private ArrayList<String> listeAnnee;
+	private ArrayList<String> listeAnneeFiltre;
 	private String[] LB_ANNEE;
 	private String[] LB_MOTIF;
+	private String[] LB_ANNEE_FILTRE;
 	private ArrayList<MotifCompteurDto> listeMotifCompteur;
 
 	public String ACTION_MODIFICATION = "Modification d'un compteur.";
@@ -127,6 +129,28 @@ public class OeELECSaisieCompteurA48 extends BasicProcess {
 
 	private void initialiseListeDeroulante() {
 		// Si liste annee vide alors affectation
+		if (getLB_ANNEE_FILTRE() == LBVide) {
+			List<String> listeAnnee = new ArrayList<>();
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(new Date());
+			Integer anneeCourante = cal.get(Calendar.YEAR);
+			for (int i = 2015; i <= anneeCourante + 1; i++) {
+				listeAnnee.add(i + "");
+			}
+			setListeAnneeFiltre((ArrayList<String>) listeAnnee);
+
+			int[] tailles = { 50 };
+			FormateListe aFormat = new FormateListe(tailles);
+			for (String annee : getListeAnneeFiltre()) {
+				String ligne[] = { annee };
+				aFormat.ajouteLigne(ligne);
+			}
+
+			setLB_ANNEE_FILTRE(aFormat.getListeFormatee(false));
+			addZone(getNOM_LB_ANNEE_FILTRE_SELECT(), "1");
+		}
+		
+		// Si liste annee vide alors affectation
 		if (getLB_ANNEE() == LBVide) {
 
 			Calendar cal = Calendar.getInstance();
@@ -173,7 +197,14 @@ public class OeELECSaisieCompteurA48 extends BasicProcess {
 	}
 
 	private void initialiseListeCompteur(HttpServletRequest request) throws Exception {
-		ArrayList<CompteurDto> listeCompteur = (ArrayList<CompteurDto>) absService.getListeCompteursA48();
+		// recupération année du filtre
+		int indiceAnnee = (Services.estNumerique(getVAL_LB_ANNEE_FILTRE_SELECT()) ? Integer
+				.parseInt(getVAL_LB_ANNEE_FILTRE_SELECT()) : -1);
+		String anneeFiltre = getListeAnneeFiltre().get(indiceAnnee);
+		
+		ArrayList<CompteurDto> listeCompteur = (ArrayList<CompteurDto>) absService
+				.getListeCompteursA48(new Integer(anneeFiltre));
+		
 		logger.debug("Taille liste des compteurs ASA A48 : " + listeCompteur.size());
 		setListeCompteur(listeCompteur);
 		// #14737 tri par ordre alpha
@@ -230,6 +261,16 @@ public class OeELECSaisieCompteurA48 extends BasicProcess {
 			// Si clic sur le bouton PB_ANNULER
 			if (testerParametre(request, getNOM_PB_ANNULER())) {
 				return performPB_ANNULER(request);
+			}
+
+			// Si clic sur le bouton PB_FILTRER
+			if (testerParametre(request, getNOM_PB_FILTRER())) {
+				return performPB_FILTRER(request);
+			}
+
+			// Si clic sur le bouton PB_DUPLIQUER
+			if (testerParametre(request, getNOM_PB_DUPLIQUER())) {
+				return performPB_DUPLIQUER(request);
 			}
 
 			// Si clic sur le bouton PB_MODIFIER
@@ -703,6 +744,143 @@ public class OeELECSaisieCompteurA48 extends BasicProcess {
 
 	public String getNOM_RB_OUI() {
 		return "NOM_RB_OUI";
+	}
+
+
+	private String[] getLB_ANNEE_FILTRE() {
+		if (LB_ANNEE_FILTRE == null)
+			LB_ANNEE_FILTRE = initialiseLazyLB();
+		return LB_ANNEE_FILTRE;
+	}
+
+	private void setLB_ANNEE_FILTRE(String[] newLB_ANNEE_FILTRE) {
+		LB_ANNEE_FILTRE = newLB_ANNEE_FILTRE;
+	}
+
+	public String getNOM_LB_ANNEE_FILTRE() {
+		return "NOM_LB_ANNEE_FILTRE";
+	}
+
+	public String getNOM_LB_ANNEE_FILTRE_SELECT() {
+		return "NOM_LB_ANNEE_FILTRE_SELECT";
+	}
+
+	public String[] getVAL_LB_ANNEE_FILTRE() {
+		return getLB_ANNEE_FILTRE();
+	}
+
+	public String getVAL_LB_ANNEE_FILTRE_SELECT() {
+		return getZone(getNOM_LB_ANNEE_FILTRE_SELECT());
+	}
+
+	public ArrayList<String> getListeAnneeFiltre() {
+		return listeAnneeFiltre;
+	}
+
+	public void setListeAnneeFiltre(ArrayList<String> listeAnneeFiltre) {
+		this.listeAnneeFiltre = listeAnneeFiltre;
+	}
+
+	public String getNOM_PB_FILTRER() {
+		return "NOM_PB_FILTRER";
+	}
+
+	public boolean performPB_FILTRER(HttpServletRequest request)
+			throws Exception {
+		
+		initialiseListeCompteur(request);
+		return true;
+	}
+	public boolean isDuplicationPossible(){
+		//on ne peut dupliquer que si on est sur l'année en cours
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(new Date());
+		Integer anneeCourante = cal.get(Calendar.YEAR);
+		
+		// recupération année du filtre
+		int indiceAnnee = (Services.estNumerique(getVAL_LB_ANNEE_FILTRE_SELECT()) ? Integer
+				.parseInt(getVAL_LB_ANNEE_FILTRE_SELECT()) : -1);
+		String anneeFiltre = getListeAnneeFiltre().get(indiceAnnee);
+		if(new Integer(anneeFiltre).equals(anneeCourante)){
+			return true;
+		}
+		return false;		
+	}
+
+	public String getNOM_PB_DUPLIQUER() {
+		return "NOM_PB_DUPLIQUER";
+	}
+
+	public boolean performPB_DUPLIQUER(HttpServletRequest request)
+			throws Exception {
+		if(!isDuplicationPossible()){
+			getTransaction().declarerErreur("ERREUR : La duplication ne peut se faire que sur l'année en cours, merci de choisir l'année en cours.");
+			return false;			
+		}
+
+		// on recupere l'agent connecte
+		Agent agentConnecte = getAgentConnecte(request);
+		if (agentConnecte == null) {
+			// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
+			return false;
+		}
+		//on recupere la liste de tous les compteurs pour l'année en cours
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(new Date());
+		Integer anneeCourante = cal.get(Calendar.YEAR);
+		ArrayList<CompteurDto> listeCompteur = (ArrayList<CompteurDto>) absService.getListeCompteursA48(anneeCourante);
+		
+		//on met le motif "reprise de données"
+		MotifCompteurDto motifReprise =null;
+		for(MotifCompteurDto mo : getListeMotifCompteur()){
+			if(mo.getLibelle().equals("Reprise de données")){
+				motifReprise= mo;
+				break;
+			}
+		}
+		
+		//on construit le DTO
+		List<CompteurDto> listeDto = new ArrayList<>();
+		for(CompteurDto dtoExist : listeCompteur){
+			//on ne prend que les actifs
+			if(dtoExist.isActif()){
+
+				CompteurDto compteurDto = new CompteurDto();
+				compteurDto.setIdAgent(dtoExist.getIdAgent());
+				
+				compteurDto.setMotifCompteurDto(motifReprise);
+				compteurDto.setDureeAAjouter(10.0);
+				compteurDto.setDateDebut(new DateTime(anneeCourante+1, 1, 1, 0, 0, 0).toDate());
+				compteurDto.setDateFin(new DateTime(anneeCourante+1, 12, 31, 23, 59, 0).toDate());
+				compteurDto.setActif(true);
+				//on ajoute le DTO
+				listeDto.add(compteurDto);				
+			}
+		}
+		
+
+		// on sauvegarde
+		ReturnMessageDto message = absService.addCompteurAsaA48ByList(
+				agentConnecte.getIdAgent(),
+				new JSONSerializer().exclude("*.class")
+						.transform(new MSDateTransformer(), Date.class)
+						.serialize(listeDto));
+
+		if (message.getErrors().size() > 0) {
+			String err = Const.CHAINE_VIDE;
+			for (String erreur : message.getErrors()) {
+				err += " " + erreur;
+			}
+			getTransaction().declarerErreur("ERREUR : " + err);
+		} else {
+			// "INF010", "Les compteurs @ a bien été mis a jour."
+			setStatut(STATUT_MEME_PROCESS,false,"INFO : les compteurs ont bien été dupliqués");
+		}
+
+		// On nomme l'action
+		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+		return true;
 	}
 
 }
