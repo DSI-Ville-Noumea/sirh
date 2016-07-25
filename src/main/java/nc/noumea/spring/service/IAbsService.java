@@ -172,4 +172,12 @@ public interface IAbsService {
 			Integer idAgentSource, Integer idAgentDestinataire);
 
 	List<DemandeDto> getListeDemandeCAWhichAddOrRemoveOnCounterAgent(Integer idAgent, Integer idAgentConcerne);
+
+	List<AgentOrganisationSyndicaleDto> getListeRepresentantA54(Integer idOrganisation);
+
+	ReturnMessageDto saveRepresentantAsaA54(Integer idOrganisation, String json);
+
+	List<AgentOrganisationSyndicaleDto> getListeRepresentantA48(Integer idOrganisation);
+
+	ReturnMessageDto saveRepresentantAsaA48(Integer idOrganisation, String json);
 }

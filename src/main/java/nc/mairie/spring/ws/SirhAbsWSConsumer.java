@@ -47,8 +47,12 @@ public class SirhAbsWSConsumer extends BaseWsConsumer implements ISirhAbsWSConsu
 	private static final String sirhAbsListOrganisationSyndicale = "organisation/listOrganisation";
 	private static final String sirhAbsOrganisationSyndicaleSauvegarde = "organisation/addOS";
 	private static final String sirhAbsAddRepresentantAsaA52 = "asaA52/saveRepresentant";
+	private static final String sirhAbsAddRepresentantAsaA54 = "asaA54/saveRepresentant";
+	private static final String sirhAbsAddRepresentantAsaA48 = "asaA48/saveRepresentant";
 	private static final String sirhAbsListOSA52Url = "asaA52/listeOrganisationSyndicaleA52";
 	private static final String sirhAbsListRepresentantOSA52Url = "asaA52/listeRepresentantA52";
+	private static final String sirhAbsListRepresentantOSA54Url = "asaA54/listeRepresentantA54";
+	private static final String sirhAbsListRepresentantOSA48Url = "asaA48/listeRepresentantA48";
 
 	private static final String sirhAbsListOrganisationActif = "organisation/listOrganisationActif";
 
@@ -888,6 +892,44 @@ public class SirhAbsWSConsumer extends BaseWsConsumer implements ISirhAbsWSConsu
 		String url = String.format(absWsBaseUrl + sirhAbsAddCompteurAsaA48ByList);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgentConnecte.toString());
+		ClientResponse res = createAndPostRequest(params, url, json);
+		return readResponseWithReturnMessageDto(ReturnMessageDto.class, res, url);
+	}
+
+	@Override
+	public List<AgentOrganisationSyndicaleDto> getListeRepresentantA54(Integer idOrganisation) {
+		String url = String.format(absWsBaseUrl + sirhAbsListRepresentantOSA54Url);
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idOrganisationSyndicale", idOrganisation.toString());
+		logger.debug("Call " + url + " with idOrganisationSyndicale : " + idOrganisation);
+		ClientResponse res = createAndFireRequest(params, url);
+		return readResponseAsList(AgentOrganisationSyndicaleDto.class, res, url);
+	}
+
+	@Override
+	public ReturnMessageDto saveRepresentantAsaA54(Integer idOrganisationSyndicale, String json) {
+		String url = String.format(absWsBaseUrl + sirhAbsAddRepresentantAsaA54);
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idOrganisationSyndicale", idOrganisationSyndicale.toString());
+		ClientResponse res = createAndPostRequest(params, url, json);
+		return readResponseWithReturnMessageDto(ReturnMessageDto.class, res, url);
+	}
+
+	@Override
+	public List<AgentOrganisationSyndicaleDto> getListeRepresentantA48(Integer idOrganisation) {
+		String url = String.format(absWsBaseUrl + sirhAbsListRepresentantOSA48Url);
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idOrganisationSyndicale", idOrganisation.toString());
+		logger.debug("Call " + url + " with idOrganisationSyndicale : " + idOrganisation);
+		ClientResponse res = createAndFireRequest(params, url);
+		return readResponseAsList(AgentOrganisationSyndicaleDto.class, res, url);
+	}
+
+	@Override
+	public ReturnMessageDto saveRepresentantAsaA48(Integer idOrganisationSyndicale, String json) {
+		String url = String.format(absWsBaseUrl + sirhAbsAddRepresentantAsaA48);
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idOrganisationSyndicale", idOrganisationSyndicale.toString());
 		ClientResponse res = createAndPostRequest(params, url, json);
 		return readResponseWithReturnMessageDto(ReturnMessageDto.class, res, url);
 	}

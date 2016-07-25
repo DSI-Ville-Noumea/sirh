@@ -64,9 +64,17 @@ public interface ISirhAbsWSConsumer {
 
 	ReturnMessageDto saveRepresentantAsaA52(Integer idOrganisationSyndicale, String json);
 
+	ReturnMessageDto saveRepresentantAsaA54(Integer idOrganisationSyndicale, String json);
+
+	ReturnMessageDto saveRepresentantAsaA48(Integer idOrganisationSyndicale, String json);
+
 	List<OrganisationSyndicaleDto> getListeOSCompteursA52();
 
 	List<AgentOrganisationSyndicaleDto> getListeRepresentantA52(Integer idOrganisation);
+
+	List<AgentOrganisationSyndicaleDto> getListeRepresentantA54(Integer idOrganisation);
+
+	List<AgentOrganisationSyndicaleDto> getListeRepresentantA48(Integer idOrganisation);
 
 	// Type d'absences
 	List<RefGroupeAbsenceDto> getRefGroupeAbsence();

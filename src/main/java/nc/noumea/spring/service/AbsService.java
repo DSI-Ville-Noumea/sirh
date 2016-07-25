@@ -400,4 +400,24 @@ public class AbsService implements IAbsService {
 		return absConsumer.addCompteurAsaA48ByList(idAgentConnecte, json);
 	}
 
+	@Override
+	public List<AgentOrganisationSyndicaleDto> getListeRepresentantA54(Integer idOrganisation) {
+		return absConsumer.getListeRepresentantA54(idOrganisation);
+	}
+
+	@Override
+	public ReturnMessageDto saveRepresentantAsaA54(Integer idOrganisation, String json) {
+		return absConsumer.saveRepresentantAsaA54(idOrganisation, json);
+	}
+
+	@Override
+	public List<AgentOrganisationSyndicaleDto> getListeRepresentantA48(Integer idOrganisation) {
+		return absConsumer.getListeRepresentantA48(idOrganisation);
+	}
+
+	@Override
+	public ReturnMessageDto saveRepresentantAsaA48(Integer idOrganisation, String json) {
+		return absConsumer.saveRepresentantAsaA48(idOrganisation, json);
+	}
+
 }
