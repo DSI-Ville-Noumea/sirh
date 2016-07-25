@@ -3,6 +3,7 @@ package nc.mairie.gestionagent.process.election;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -132,7 +133,9 @@ public class OeELECSaisieCompteurA54 extends BasicProcess {
 		// Initialisation des listes deroulantes
 		initialiseListeDeroulante();
 
-		initialiseListeCompteur(request);
+		if (getListeCompteur().size() == 0) {
+			initialiseListeCompteur(request);
+		}
 
 		initialiseListeOS(request);
 	}
@@ -212,16 +215,25 @@ public class OeELECSaisieCompteurA54 extends BasicProcess {
 
 		ArrayList<CompteurDto> listeCompteur = (ArrayList<CompteurDto>) absService.getListeCompteursA54(new Integer(anneeFiltre));
 		logger.debug("Taille liste des compteurs ASA A54 : " + listeCompteur.size());
+		setListeCompteur(listeCompteur);
+
+		afficheListeCompteur(getListeCompteur(), false);
+	}
+
+	private void afficheListeCompteur(List<CompteurDto> liste, boolean triOS) throws Exception {
 		// #14737 tri par ordre alpha
 		List<VoAgentCompteur> listCompteurAgent = new ArrayList<VoAgentCompteur>();
-		for (CompteurDto dto : listeCompteur) {
+
+		for (CompteurDto dto : liste) {
 
 			Agent ag = getAgentDao().chercherAgent(dto.getIdAgent());
 
 			VoAgentCompteur voCompteur = new VoAgentCompteur(dto, ag);
 			listCompteurAgent.add(voCompteur);
 		}
-		Collections.sort(listCompteurAgent);
+		if (!triOS) {
+			Collections.sort(listCompteurAgent);
+		}
 
 		ArrayList<CompteurDto> listeCompteurTriee = new ArrayList<CompteurDto>();
 		int indiceLigne = 0;
@@ -233,6 +245,7 @@ public class OeELECSaisieCompteurA54 extends BasicProcess {
 
 			addZone(getNOM_ST_MATRICULE(indiceLigne), vo.getAgent().getNomatr().toString());
 			addZone(getNOM_ST_AGENT(indiceLigne), vo.getAgent().getNomAgent() + " " + vo.getAgent().getPrenomAgent());
+			addZone(getNOM_ST_AGENT_OS(indiceLigne), vo.getSigleOS() == null ? Const.CHAINE_VIDE : vo.getSigleOS());
 			addZone(getNOM_ST_ANNEE(indiceLigne), annee.toString());
 			addZone(getNOM_ST_NB_JOURS(indiceLigne), String.valueOf(vo.getCompteur().getDureeAAjouter().intValue()));
 			addZone(getNOM_ST_MOTIF(indiceLigne),
@@ -243,7 +256,6 @@ public class OeELECSaisieCompteurA54 extends BasicProcess {
 
 			listeCompteurTriee.add(vo.getCompteur());
 		}
-		setListeCompteur(listeCompteurTriee);
 	}
 
 	@Override
@@ -251,6 +263,11 @@ public class OeELECSaisieCompteurA54 extends BasicProcess {
 
 		// Si on arrive de la JSP alors on traite le get
 		if (request.getParameter("JSP") != null && request.getParameter("JSP").equals(getJSP())) {
+
+			// Si clic sur le bouton PB_TRI
+			if (testerParametre(request, getNOM_PB_TRI())) {
+				return performPB_TRI(request);
+			}
 
 			// Si clic sur le bouton PB_AJOUTER
 			if (testerParametre(request, getNOM_PB_AJOUTER())) {
@@ -358,6 +375,14 @@ public class OeELECSaisieCompteurA54 extends BasicProcess {
 
 	public String getVAL_ST_AGENT(int i) {
 		return getZone(getNOM_ST_AGENT(i));
+	}
+
+	public String getNOM_ST_AGENT_OS(int i) {
+		return "NOM_ST_AGENT_OS" + i;
+	}
+
+	public String getVAL_ST_AGENT_OS(int i) {
+		return getZone(getNOM_ST_AGENT_OS(i));
 	}
 
 	public String getNOM_ST_ANNEE(int i) {
@@ -639,6 +664,7 @@ public class OeELECSaisieCompteurA54 extends BasicProcess {
 
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+		initialiseListeCompteur(request);
 		return true;
 	}
 
@@ -1145,6 +1171,7 @@ public class OeELECSaisieCompteurA54 extends BasicProcess {
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 		addZone(getNOM_ST_ACTION_REPRESENTANT(), Const.CHAINE_VIDE);
+		initialiseListeCompteur(request);
 		return true;
 	}
 
@@ -1162,5 +1189,45 @@ public class OeELECSaisieCompteurA54 extends BasicProcess {
 			}
 		}
 		setListeOrganisationSyndicale(listeOSActif);
+	}
+
+	public String getNOM_PB_TRI() {
+		return "NOM_PB_TRI";
+	}
+
+	public boolean performPB_TRI(HttpServletRequest request) throws Exception {
+		if (getVAL_RG_TRI().equals(getNOM_RB_TRI_AGENT())) {
+			afficheListeCompteur(getListeCompteur(), false);
+		} else if (getVAL_RG_TRI().equals(getNOM_RB_TRI_OS())) {
+			Collections.sort(getListeCompteur(), new Comparator<CompteurDto>() {
+				@Override
+				public int compare(CompteurDto o1, CompteurDto o2) {
+					if (o1.getOrganisationSyndicaleDto() == null || o2.getOrganisationSyndicaleDto() == null) {
+						return 0;
+					}
+					return o1.getOrganisationSyndicaleDto().getSigle().compareTo(o2.getOrganisationSyndicaleDto().getSigle());
+				}
+
+			});
+			afficheListeCompteur(getListeCompteur(), true);
+
+		}
+		return true;
+	}
+
+	public String getNOM_RG_TRI() {
+		return "NOM_RG_TRI";
+	}
+
+	public String getVAL_RG_TRI() {
+		return getZone(getNOM_RG_TRI());
+	}
+
+	public String getNOM_RB_TRI_AGENT() {
+		return "NOM_RB_TRI_AGENT";
+	}
+
+	public String getNOM_RB_TRI_OS() {
+		return "NOM_RB_TRI_OS";
 	}
 }

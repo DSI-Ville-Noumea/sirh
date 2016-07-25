@@ -67,7 +67,8 @@ function testClickEnrigistrer(){
 								    <img title="ajouter" border="0" src="images/ajout.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_AJOUTER()%>');" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>">
 								</td>
 								<td align="center" width="60px;">Matricule</td>
-								<td width="300px;">Agent</td>
+								<td width="300px;"><INPUT type="radio" onclick='executeBouton("<%=process.getNOM_PB_TRI() %>")' <%= process.forRadioHTML(process.getNOM_RG_TRI(),process.getNOM_RB_TRI_AGENT())%>>Agent</TD>
+								<td width="100px;"><INPUT type="radio" onclick='executeBouton("<%=process.getNOM_PB_TRI() %>")' <%= process.forRadioHTML(process.getNOM_RG_TRI(),process.getNOM_RB_TRI_OS())%>>OS</TD>
 								<td align="center" width="50px;">Année</td>
 								<td align="center" width="90px;">Nb jours</td>
 								<td align="center" width="20px;">Actif</td>
@@ -87,6 +88,7 @@ function testClickEnrigistrer(){
 										</td>
 										<td class="sigp2NewTab-liste" style="text-align: center;"><%=process.getVAL_ST_MATRICULE(i)%></td>
 										<td class="sigp2NewTab-liste"><%=process.getVAL_ST_AGENT(i)%></td>
+										<td class="sigp2NewTab-liste"><%=process.getVAL_ST_AGENT_OS(i)%></td>
 										<td class="sigp2NewTab-liste" style="text-align: center;"><%=process.getVAL_ST_ANNEE(i)%></td>
 										<td class="sigp2NewTab-liste" style="text-align: center;"><%=process.getVAL_ST_NB_JOURS(i)%></td>
 										<td class="sigp2NewTab-liste" style="text-align: center;"><%=process.getVAL_ST_ACTIF(i)%></td>
@@ -316,6 +318,7 @@ function testClickEnrigistrer(){
     <INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_AJOUTER()%>" value="AJOUTER">
     <INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_AJOUTER_REPRESENTANT()%>" value="AJOUTERREPRESENTANT">
     <INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_RECHERCHER_AGENT_CREATE()%>" value="RECHERCHERAGENTCREATE">
+	<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_TRI()%>" value="TRI">
 	</FORM>
 </BODY>
 </HTML>
