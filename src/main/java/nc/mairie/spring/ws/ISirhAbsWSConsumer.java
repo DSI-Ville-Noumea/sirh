@@ -31,31 +31,37 @@ public interface ISirhAbsWSConsumer {
 	// Approbateurs / Droits
 	List<ApprobateurDto> getApprobateurs(Integer idServiceADS, Integer idAgent);
 
-	ReturnMessageDto setApprobateur(String json);
+	ReturnMessageDto setApprobateur(String json, Integer idAgentConnecte);
 
-	ReturnMessageDto deleteApprobateur(String json);
+	ReturnMessageDto deleteApprobateur(String json, Integer idAgentConnecte);
 
-	ReturnMessageDto setDelegataire(Integer idAgent, String json);
+	ReturnMessageDto setDelegataire(Integer idAgent, String json, Integer idAgentConnecte);
 
 	List<AgentDto> getAgentsApprobateur(Integer idAgentApprobateur);
 
-	ReturnMessageDto saveAgentsApprobateur(Integer idAgent, List<AgentDto> listSelect);
+	ReturnMessageDto saveAgentsApprobateur(Integer idAgent, List<AgentDto> listSelect, Integer idAgentConnecte);
 
 	InputterDto getOperateursDelegataireApprobateur(Integer idAgentApprobateur);
 
-	ReturnMessageDto saveOperateurApprobateur(Integer idAgent, AgentDto dto);
+	ReturnMessageDto saveOperateurApprobateur(Integer idAgent, AgentDto dto, Integer idAgentConnecte);
 
-	ReturnMessageDto deleteOperateurApprobateur(Integer idAgent, AgentDto dto);
+	ReturnMessageDto deleteOperateurApprobateur(Integer idAgent, AgentDto dto, Integer idAgentConnecte);
 
 	ViseursDto getViseursApprobateur(Integer idAgentApprobateur);
 
-	ReturnMessageDto saveViseurApprobateur(Integer idAgent, AgentDto dto);
+	ReturnMessageDto saveViseurApprobateur(Integer idAgent, AgentDto dto, Integer idAgentConnecte);
 
-	ReturnMessageDto deleteViseurApprobateur(Integer idAgent, AgentDto dto);
+	ReturnMessageDto deleteViseurApprobateur(Integer idAgent, AgentDto dto, Integer idAgentConnecte);
 
 	List<AgentDto> getAgentsOperateur(Integer idAgentApprobateur, Integer idAgentOperateur);
 
-	ReturnMessageDto saveAgentsOperateur(Integer idAgentApprobateur, Integer idAgentOperateur, List<AgentDto> listSelect);
+	ReturnMessageDto saveAgentsOperateur(Integer idAgentApprobateur, Integer idAgentOperateur, List<AgentDto> listSelect, Integer idAgentConnecte);
+
+	List<AgentDto> getAgentsViseur(Integer idAgentApprobateur, Integer idAgentViseur);
+
+	ReturnMessageDto saveAgentsViseur(Integer idAgentApprobateur, Integer idAgentViseur, List<AgentDto> listSelect, Integer idAgentConnecte);
+
+	ReturnMessageDto dupliqueApprobateur(Integer idAgentConnecte, Integer idAgentSource, Integer idAgentDestinataire);
 
 	// OS
 	List<OrganisationSyndicaleDto> getListeOrganisationSyndicale();
@@ -140,10 +146,11 @@ public interface ISirhAbsWSConsumer {
 	ReturnMessageDto initialiseCompteurConge(Integer agentConnecte, Integer idAgentConcerne);
 
 	// demandes
-	List<DemandeDto> getListeDemandesAgent(Integer idAgent, String onglet, String dateDebut, String dateFin, String dateDemande, String listIdRefEtat, Integer idRefType, Integer idRefGroupeAbsence);
+	List<DemandeDto> getListeDemandesAgent(Integer idAgent, String onglet, String dateDebut, String dateFin, String dateDemande, String listIdRefEtat,
+			Integer idRefType, Integer idRefGroupeAbsence);
 
-	List<DemandeDto> getListeDemandes(String dateDebut, String dateFin, String listIdRefEtat, Integer idRefType, Integer idAgentRecherche, Integer idRefGroupe, boolean aValider,
-			List<String> idAgentsService);
+	List<DemandeDto> getListeDemandes(String dateDebut, String dateFin, String listIdRefEtat, Integer idRefType, Integer idAgentRecherche,
+			Integer idRefGroupe, boolean aValider, List<String> idAgentsService);
 
 	List<DemandeDto> getVisualisationHistory(Integer absId);
 
@@ -182,13 +189,6 @@ public interface ISirhAbsWSConsumer {
 	ReturnMessageDto createNouvelleAnneeBaseConges(Integer anneeCreation);
 
 	List<RestitutionMassiveDto> getHistoRestitutionMassiveByIdAgent(Integer idAgent);
-
-	List<AgentDto> getAgentsViseur(Integer idAgentApprobateur, Integer idAgentViseur);
-
-	ReturnMessageDto saveAgentsViseur(Integer idAgentApprobateur, Integer idAgentViseur, List<AgentDto> listSelect);
-
-	ReturnMessageDto dupliqueApprobateur(Integer idAgentConnecte,
-			Integer idAgentSource, Integer idAgentDestinataire);
 
 	List<DemandeDto> getListeDemandeCAWhichAddOrRemoveOnCounterAgent(Integer idAgentConnecte, Integer idAgentConcerne);
 

@@ -281,11 +281,12 @@ public class OeDROITSKiosque extends BasicProcess {
 
 	}
 
-	private void saveAgentApprobateurViseurAbs(HttpServletRequest request, List<AgentDto> list) {
+	private void saveAgentApprobateurViseurAbs(HttpServletRequest request, List<AgentDto> list) throws Exception {
 		if (getApprobateurCourant() != null && getViseurCourant() != null) {
+			Agent agentConnecte = getAgentConnecte(request);
 
 			ReturnMessageDto result = absService.saveAgentsViseur(getApprobateurCourant().getIdAgent(),
-					getViseurCourant().getIdAgent(), list);
+					getViseurCourant().getIdAgent(), list,agentConnecte.getIdAgent());
 
 			String err = Const.CHAINE_VIDE;
 			for (String erreur : result.getErrors()) {
@@ -300,11 +301,12 @@ public class OeDROITSKiosque extends BasicProcess {
 		}
 	}
 
-	private void saveAgentApprobateurOperateurAbs(HttpServletRequest request, List<AgentDto> list) {
+	private void saveAgentApprobateurOperateurAbs(HttpServletRequest request, List<AgentDto> list) throws Exception {
 		if (getApprobateurCourant() != null && getOperateurCourant() != null) {
+			Agent agentConnecte = getAgentConnecte(request);
 
 			ReturnMessageDto result = absService.saveAgentsOperateur(getApprobateurCourant().getIdAgent(),
-					getOperateurCourant().getIdAgent(), list);
+					getOperateurCourant().getIdAgent(), list,agentConnecte.getIdAgent());
 
 			String err = Const.CHAINE_VIDE;
 			for (String erreur : result.getErrors()) {
@@ -341,6 +343,7 @@ public class OeDROITSKiosque extends BasicProcess {
 
 	private void saveViseurApprobateurAbs(HttpServletRequest request, List<AgentDto> listAgtAAjouter,
 			boolean suppression) throws Exception {
+		Agent agentConnecte = getAgentConnecte(request);
 		if (!suppression) {
 			if (getApprobateurCourant() != null) {
 				// #15731
@@ -352,7 +355,7 @@ public class OeDROITSKiosque extends BasicProcess {
 					viseurAAjouter = ajout;
 
 					ReturnMessageDto result = absService.saveViseurApprobateur(getApprobateurCourant().getIdAgent(),
-							viseurAAjouter);
+							viseurAAjouter,agentConnecte.getIdAgent());
 
 					for (String erreur : result.getErrors()) {
 						err += " " + erreur;
@@ -378,7 +381,7 @@ public class OeDROITSKiosque extends BasicProcess {
 				}
 
 				ReturnMessageDto result = absService.deleteViseurApprobateur(getApprobateurCourant().getIdAgent(),
-						viseurASupprimer);
+						viseurASupprimer,agentConnecte.getIdAgent());
 
 				String err = Const.CHAINE_VIDE;
 				for (String erreur : result.getErrors()) {
@@ -407,6 +410,7 @@ public class OeDROITSKiosque extends BasicProcess {
 			getTransaction().declarerErreur("ERREUR : L'agent ne peut être opérateur de lui même.");
 			return;
 		}
+		Agent agentConnecte = getAgentConnecte(request);
 
 		if (!suppression) {
 			if (getApprobateurCourant() != null) {
@@ -426,7 +430,7 @@ public class OeDROITSKiosque extends BasicProcess {
 						getApprobateurCourant().getIdAgent());
 				dto.setDelegataire(approExistant.get(0).getDelegataire());
 				ReturnMessageDto result = absService.saveOperateurApprobateur(getApprobateurCourant().getIdAgent(),
-						ajoutOperateur);
+						ajoutOperateur,agentConnecte.getIdAgent());
 
 				String err = Const.CHAINE_VIDE;
 				for (String erreur : result.getErrors()) {
@@ -451,7 +455,7 @@ public class OeDROITSKiosque extends BasicProcess {
 				}
 				// on recupere le delagataire existant
 				ReturnMessageDto result = absService.deleteOperateurApprobateur(getApprobateurCourant().getIdAgent(),
-						deleteOperateur);
+						deleteOperateur,agentConnecte.getIdAgent());
 
 				String err = Const.CHAINE_VIDE;
 				for (String erreur : result.getErrors()) {
@@ -471,6 +475,7 @@ public class OeDROITSKiosque extends BasicProcess {
 
 	private void saveAgentApprobateurAbs(HttpServletRequest request, List<AgentDto> listAgtAAjouter, boolean suppression, boolean fromRechercheAbreServiceWithAgents)
 			throws Exception {
+		Agent agentConnecte = getAgentConnecte(request);
 
 		if (!suppression) {
 			if (getApprobateurCourant() != null) {
@@ -484,7 +489,7 @@ public class OeDROITSKiosque extends BasicProcess {
 				}
 
 				ReturnMessageDto result = absService.saveAgentsApprobateur(getApprobateurCourant().getIdAgent(),
-						getListeAgentsApprobateurAbs());
+						getListeAgentsApprobateurAbs(),agentConnecte.getIdAgent());
 
 				String err = Const.CHAINE_VIDE;
 				for (String erreur : result.getErrors()) {
@@ -505,7 +510,7 @@ public class OeDROITSKiosque extends BasicProcess {
 				}
 
 				ReturnMessageDto result = absService.saveAgentsApprobateur(getApprobateurCourant().getIdAgent(),
-						getListeAgentsApprobateurAbs());
+						getListeAgentsApprobateurAbs(),agentConnecte.getIdAgent());
 
 				String err = Const.CHAINE_VIDE;
 				for (String erreur : result.getErrors()) {
@@ -643,11 +648,12 @@ public class OeDROITSKiosque extends BasicProcess {
 		}
 	}
 
-	private ReturnMessageDto saveApprobateurABS(HttpServletRequest request, AgentWithServiceDto dto, boolean suppression) {
+	private ReturnMessageDto saveApprobateurABS(HttpServletRequest request, AgentWithServiceDto dto, boolean suppression) throws Exception {
+		Agent agentConnecte = getAgentConnecte(request);
 		if (suppression)
-			return deleteApprobateurABS(request, dto);
+			return deleteApprobateurABS(request, dto,agentConnecte.getIdAgent());
 		else
-			return absService.setApprobateur(new JSONSerializer().exclude("*.class").serialize(dto));
+			return absService.setApprobateur(new JSONSerializer().exclude("*.class").serialize(dto),agentConnecte.getIdAgent());
 	}
 
 	private ReturnMessageDto saveApprobateurPTG(HttpServletRequest request, AgentWithServiceDto dto, boolean suppression) {
@@ -1122,7 +1128,8 @@ public class OeDROITSKiosque extends BasicProcess {
 			}
 		}
 		if (getListeApprobateursABS().contains(agentSelec)) {
-			ReturnMessageDto messageAbs = deleteApprobateurABS(request, agentSelec.getApprobateur());
+			Agent agentConnecte = getAgentConnecte(request);
+			ReturnMessageDto messageAbs = deleteApprobateurABS(request, agentSelec.getApprobateur(),agentConnecte.getIdAgent());
 
 			for (String erreur : messageAbs.getErrors()) {
 				err += " " + erreur;
@@ -1219,8 +1226,8 @@ public class OeDROITSKiosque extends BasicProcess {
 		return true;
 	}
 
-	private ReturnMessageDto deleteApprobateurABS(HttpServletRequest request, AgentWithServiceDto dto) {
-		return absService.deleteApprobateur(new JSONSerializer().exclude("*.class").serialize(dto));
+	private ReturnMessageDto deleteApprobateurABS(HttpServletRequest request, AgentWithServiceDto dto,Integer idAgentConnecte) {
+		return absService.deleteApprobateur(new JSONSerializer().exclude("*.class").serialize(dto),idAgentConnecte);
 	}
 
 	private ReturnMessageDto deleteApprobateurPTG(HttpServletRequest request, AgentWithServiceDto dto) {
@@ -1443,7 +1450,8 @@ public class OeDROITSKiosque extends BasicProcess {
 		return true;
 	}
 
-	private void saveDelegataireAbs(HttpServletRequest request, boolean suppression) {
+	private void saveDelegataireAbs(HttpServletRequest request, boolean suppression) throws Exception {
+		Agent agentConnecte = getAgentConnecte(request);
 
 		if (!suppression) {
 			Agent ag = (Agent) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
@@ -1458,7 +1466,7 @@ public class OeDROITSKiosque extends BasicProcess {
 				InputterDto inputter = new InputterDto();
 				inputter.setDelegataire(agInputter);
 				ReturnMessageDto message = absService.setDelegataire(getApprobateurCourant().getIdAgent(),
-						new JSONSerializer().exclude("*.class").serialize(inputter));
+						new JSONSerializer().exclude("*.class").serialize(inputter),agentConnecte.getIdAgent());
 
 				String err = Const.CHAINE_VIDE;
 				for (String erreur : message.getErrors()) {
@@ -1473,7 +1481,7 @@ public class OeDROITSKiosque extends BasicProcess {
 			}
 		} else {
 			ReturnMessageDto message = absService.setDelegataire(getApprobateurCourant().getIdAgent(),
-					new JSONSerializer().exclude("*.class").serialize(new DelegatorAndOperatorsDto()));
+					new JSONSerializer().exclude("*.class").serialize(new DelegatorAndOperatorsDto()),agentConnecte.getIdAgent());
 
 			String err = Const.CHAINE_VIDE;
 			for (String erreur : message.getErrors()) {

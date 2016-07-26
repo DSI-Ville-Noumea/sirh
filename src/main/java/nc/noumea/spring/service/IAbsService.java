@@ -25,27 +25,27 @@ import nc.mairie.gestionagent.dto.ViseursDto;
 
 public interface IAbsService {
 
-	ReturnMessageDto saveAgentsViseur(Integer idAgentApprobateur, Integer idAgentViseur, List<AgentDto> list);
+	ReturnMessageDto saveAgentsViseur(Integer idAgentApprobateur, Integer idAgentViseur, List<AgentDto> list, Integer idAgentConnecte);
 
-	ReturnMessageDto saveAgentsOperateur(Integer idAgentApprobateur, Integer idAgentOperateur, List<AgentDto> list);
+	ReturnMessageDto saveAgentsOperateur(Integer idAgentApprobateur, Integer idAgentOperateur, List<AgentDto> list, Integer idAgentConnecte);
 
-	ReturnMessageDto saveViseurApprobateur(Integer idAgent, AgentDto viseurAAjouter);
+	ReturnMessageDto saveViseurApprobateur(Integer idAgent, AgentDto viseurAAjouter, Integer idAgentConnecte);
 
-	ReturnMessageDto deleteViseurApprobateur(Integer idAgent, AgentDto viseurASupprimer);
+	ReturnMessageDto deleteViseurApprobateur(Integer idAgent, AgentDto viseurASupprimer, Integer idAgentConnecte);
 
-	ReturnMessageDto saveOperateurApprobateur(Integer idAgent, AgentDto ajoutOperateur);
+	ReturnMessageDto saveOperateurApprobateur(Integer idAgent, AgentDto ajoutOperateur, Integer idAgentConnecte);
 
 	List<ApprobateurDto> getApprobateurs(Integer idServiceADS, Integer idAgent);
 
-	ReturnMessageDto deleteOperateurApprobateur(Integer idAgent, AgentDto deleteOperateur);
+	ReturnMessageDto deleteOperateurApprobateur(Integer idAgent, AgentDto deleteOperateur, Integer idAgentConnecte);
 
-	ReturnMessageDto saveAgentsApprobateur(Integer idAgent, List<AgentDto> listeAgentsApprobateurAbs);
+	ReturnMessageDto saveAgentsApprobateur(Integer idAgent, List<AgentDto> listeAgentsApprobateurAbs, Integer idAgentConnecte);
 
-	ReturnMessageDto setApprobateur(String json);
+	ReturnMessageDto setApprobateur(String json, Integer idAgentConnecte);
 
-	ReturnMessageDto deleteApprobateur(String json);
+	ReturnMessageDto deleteApprobateur(String json, Integer idAgentConnecte);
 
-	ReturnMessageDto setDelegataire(Integer idAgent, String json);
+	ReturnMessageDto setDelegataire(Integer idAgent, String json, Integer idAgentConnecte);
 
 	List<AgentDto> getAgentsApprobateur(Integer idAgent);
 
@@ -73,8 +73,8 @@ public interface IAbsService {
 
 	List<RefGroupeAbsenceDto> getRefGroupeAbsence();
 
-	List<DemandeDto> getListeDemandes(String dateDebut, String dateFin, String listIdRefEtat, Integer idRefType, Integer idAgentRecherche, Integer idRefGroupe, boolean aValider,
-			List<String> idAgentsService);
+	List<DemandeDto> getListeDemandes(String dateDebut, String dateFin, String listIdRefEtat, Integer idRefType, Integer idAgentRecherche,
+			Integer idRefGroupe, boolean aValider, List<String> idAgentsService);
 
 	TypeAbsenceDto getTypeAbsence(Integer idBaseHoraireAbsence);
 
@@ -98,7 +98,8 @@ public interface IAbsService {
 
 	SoldeDto getSoldeAgent(Integer idAgent, String json);
 
-	List<DemandeDto> getListeDemandesAgent(Integer idAgent, String onglet, String dateDebut, String dateFin, String dateDemande, String listIdRefEtat, Integer idRefType, Integer idRefGroupeAbsence);
+	List<DemandeDto> getListeDemandesAgent(Integer idAgent, String onglet, String dateDebut, String dateFin, String dateDemande, String listIdRefEtat,
+			Integer idRefType, Integer idRefGroupeAbsence);
 
 	List<HistoriqueSoldeDto> getHistoriqueCompteurAgent(Integer idAgent, Integer codeTypeAbsence, String json);
 
@@ -168,8 +169,7 @@ public interface IAbsService {
 
 	List<AgentOrganisationSyndicaleDto> getListeRepresentantA52(Integer idOrganisation);
 
-	ReturnMessageDto dupliqueApprobateur(Integer idAgentConnecte,
-			Integer idAgentSource, Integer idAgentDestinataire);
+	ReturnMessageDto dupliqueApprobateur(Integer idAgentConnecte, Integer idAgentSource, Integer idAgentDestinataire);
 
 	List<DemandeDto> getListeDemandeCAWhichAddOrRemoveOnCounterAgent(Integer idAgent, Integer idAgentConcerne);
 

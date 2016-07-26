@@ -34,28 +34,28 @@ public class AbsService implements IAbsService {
 	private ISirhAbsWSConsumer absConsumer;
 
 	@Override
-	public ReturnMessageDto saveAgentsViseur(Integer idAgentApprobateur, Integer idAgentViseur, List<AgentDto> list) {
-		return absConsumer.saveAgentsViseur(idAgentApprobateur, idAgentViseur, list);
+	public ReturnMessageDto saveAgentsViseur(Integer idAgentApprobateur, Integer idAgentViseur, List<AgentDto> list, Integer idAgentConnecte) {
+		return absConsumer.saveAgentsViseur(idAgentApprobateur, idAgentViseur, list, idAgentConnecte);
 	}
 
 	@Override
-	public ReturnMessageDto saveAgentsOperateur(Integer idAgentApprobateur, Integer idAgentOperateur, List<AgentDto> list) {
-		return absConsumer.saveAgentsOperateur(idAgentApprobateur, idAgentOperateur, list);
+	public ReturnMessageDto saveAgentsOperateur(Integer idAgentApprobateur, Integer idAgentOperateur, List<AgentDto> list, Integer idAgentConnecte) {
+		return absConsumer.saveAgentsOperateur(idAgentApprobateur, idAgentOperateur, list, idAgentConnecte);
 	}
 
 	@Override
-	public ReturnMessageDto saveViseurApprobateur(Integer idAgent, AgentDto viseurAAjouter) {
-		return absConsumer.saveViseurApprobateur(idAgent, viseurAAjouter);
+	public ReturnMessageDto saveViseurApprobateur(Integer idAgent, AgentDto viseurAAjouter, Integer idAgentConnecte) {
+		return absConsumer.saveViseurApprobateur(idAgent, viseurAAjouter, idAgentConnecte);
 	}
 
 	@Override
-	public ReturnMessageDto deleteViseurApprobateur(Integer idAgent, AgentDto viseurASupprimer) {
-		return absConsumer.deleteViseurApprobateur(idAgent, viseurASupprimer);
+	public ReturnMessageDto deleteViseurApprobateur(Integer idAgent, AgentDto viseurASupprimer, Integer idAgentConnecte) {
+		return absConsumer.deleteViseurApprobateur(idAgent, viseurASupprimer, idAgentConnecte);
 	}
 
 	@Override
-	public ReturnMessageDto saveOperateurApprobateur(Integer idAgent, AgentDto ajoutOperateur) {
-		return absConsumer.saveOperateurApprobateur(idAgent, ajoutOperateur);
+	public ReturnMessageDto saveOperateurApprobateur(Integer idAgent, AgentDto ajoutOperateur, Integer idAgentConnecte) {
+		return absConsumer.saveOperateurApprobateur(idAgent, ajoutOperateur, idAgentConnecte);
 	}
 
 	@Override
@@ -64,28 +64,28 @@ public class AbsService implements IAbsService {
 	}
 
 	@Override
-	public ReturnMessageDto deleteOperateurApprobateur(Integer idAgent, AgentDto deleteOperateur) {
-		return absConsumer.deleteOperateurApprobateur(idAgent, deleteOperateur);
+	public ReturnMessageDto deleteOperateurApprobateur(Integer idAgent, AgentDto deleteOperateur, Integer idAgentConnecte) {
+		return absConsumer.deleteOperateurApprobateur(idAgent, deleteOperateur, idAgentConnecte);
 	}
 
 	@Override
-	public ReturnMessageDto saveAgentsApprobateur(Integer idAgent, List<AgentDto> listeAgentsApprobateurAbs) {
-		return absConsumer.saveAgentsApprobateur(idAgent, listeAgentsApprobateurAbs);
+	public ReturnMessageDto saveAgentsApprobateur(Integer idAgent, List<AgentDto> listeAgentsApprobateurAbs, Integer idAgentConnecte) {
+		return absConsumer.saveAgentsApprobateur(idAgent, listeAgentsApprobateurAbs, idAgentConnecte);
 	}
 
 	@Override
-	public ReturnMessageDto setApprobateur(String json) {
-		return absConsumer.setApprobateur(json);
+	public ReturnMessageDto setApprobateur(String json, Integer idAgentConnecte) {
+		return absConsumer.setApprobateur(json, idAgentConnecte);
 	}
 
 	@Override
-	public ReturnMessageDto deleteApprobateur(String json) {
-		return absConsumer.deleteApprobateur(json);
+	public ReturnMessageDto deleteApprobateur(String json, Integer idAgentConnecte) {
+		return absConsumer.deleteApprobateur(json, idAgentConnecte);
 	}
 
 	@Override
-	public ReturnMessageDto setDelegataire(Integer idAgent, String json) {
-		return absConsumer.setDelegataire(idAgent, json);
+	public ReturnMessageDto setDelegataire(Integer idAgent, String json, Integer idAgentConnecte) {
+		return absConsumer.setDelegataire(idAgent, json, idAgentConnecte);
 	}
 
 	@Override
@@ -159,8 +159,8 @@ public class AbsService implements IAbsService {
 	}
 
 	@Override
-	public List<DemandeDto> getListeDemandes(String dateDebut, String dateFin, String listIdRefEtat, Integer idRefType, Integer idAgentRecherche, Integer idRefGroupe, boolean aValider,
-			List<String> idAgentsService) {
+	public List<DemandeDto> getListeDemandes(String dateDebut, String dateFin, String listIdRefEtat, Integer idRefType, Integer idAgentRecherche,
+			Integer idRefGroupe, boolean aValider, List<String> idAgentsService) {
 		return absConsumer.getListeDemandes(dateDebut, dateFin, listIdRefEtat, idRefType, idAgentRecherche, idRefGroupe, aValider, idAgentsService);
 	}
 
@@ -220,8 +220,8 @@ public class AbsService implements IAbsService {
 	}
 
 	@Override
-	public List<DemandeDto> getListeDemandesAgent(Integer idAgent, String onglet, String dateDebut, String dateFin, String dateDemande, String listIdRefEtat, Integer idRefType,
-			Integer idRefGroupeAbsence) {
+	public List<DemandeDto> getListeDemandesAgent(Integer idAgent, String onglet, String dateDebut, String dateFin, String dateDemande,
+			String listIdRefEtat, Integer idRefType, Integer idRefGroupeAbsence) {
 		return absConsumer.getListeDemandesAgent(idAgent, onglet, dateDebut, dateFin, dateDemande, listIdRefEtat, idRefType, idRefGroupeAbsence);
 	}
 
