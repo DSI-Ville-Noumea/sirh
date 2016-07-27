@@ -126,7 +126,7 @@
 							<th>Prévision de visite</th>
 							<th>Motif</th>
 							<th>Nb visites ratées</th>
-							<th>Actions</th>
+							<th>Actions DRH</th>
 							<th>Medecin</th>
 							<th>Date prochain RDV</th>
 							<th>Heure prochain RDV</th>
@@ -205,7 +205,7 @@
 							"sScrollY": "375px",
 							"bPaginate": false,
 							"oTableTools": {
-								"aButtons": [{"sExtends":"xls","sButtonText":"Export Excel","mColumns":[1,2,3,4,5,6,7,8,9,10,11,12],"sTitle":"suiviMedical","sFileName":"*.xls"}], //OU : "mColumns":[0,1,2,3,4] ou "mColumns":"visible"
+								"aButtons": [{"sExtends":"xls","sButtonText":"Export Excel","mColumns":"visible","sTitle":"suiviMedical","sFileName":"*.xls"}], //OU : "mColumns":[0,1,2,3,4] ou "mColumns":"visible"
 								"sSwfPath": "TableTools-2.0.1/media/swf/copy_cvs_xls_pdf.swf"
 							}
 					    });
