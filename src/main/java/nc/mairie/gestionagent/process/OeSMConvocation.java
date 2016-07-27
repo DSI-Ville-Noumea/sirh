@@ -195,9 +195,7 @@ public class OeSMConvocation extends BasicProcess {
 					: Services.convertitDate(sm.getDatePrevisionVisite().toString(), "yyyy-MM-dd", "dd/MM/yyyy"));
 			addZone(getNOM_ST_MOTIF(i), getLibMotifVM(sm.getIdMotifVm()));
 			addZone(getNOM_ST_NB_VISITES_RATEES(i), sm.getNbVisitesRatees().toString());
-			Medecin med = sm.getIdMedecin() != null ? getListeMedecin().get(getListeMedecin().indexOf(getHashMedecin().get(sm.getIdMedecin())))
-					: null;
-			addZone(getNOM_LB_MEDECIN_SELECT(i), med != null ? String.valueOf(med) : Const.ZERO);
+			addZone(getNOM_LB_MEDECIN_SELECT(i), sm.getIdMedecin() != null ? String.valueOf(getListeMedecin().indexOf(getHashMedecin().get(sm.getIdMedecin()))) : Const.ZERO);
 			if (sm.getEtat().equals(EnumEtatSuiviMed.EFFECTUE.getCode())) {
 				VisiteMedicale vm = null;
 				try {
