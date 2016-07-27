@@ -51,8 +51,6 @@ public class SirhWSConsumer extends BaseWsConsumer implements ISirhWSConsumer {
 	private static final String sirhDownloadFichePosteSIRHPUrl = "fichePostes/downloadFichePosteSIRH";
 	private static final String sirhDownloadNoteServiceSIRHPUrl = "noteService/downloadNoteServiceSIRH";
 	private static final String sirhDownloadNoteServiceInterneSIRHPUrl = "noteService/downloadNoteServiceInterneSIRH";
-	private static final String sirhDownloadConvocationVisiteMedPUrl = "suiviMedical/downloadConvocationSIRH";
-	private static final String sirhDownloadLettreAccompagnementVisiteMedPUrl = "suiviMedical/downloadLettreAccompagnementSIRH";
 	private static final String sirhDownloadContratUrl = "contrat/downloadContratSIRH";
 	private static final String sirhBaseHorairePointageUrl = "pointages/baseHoraire";
 
@@ -172,34 +170,6 @@ public class SirhWSConsumer extends BaseWsConsumer implements ISirhWSConsumer {
 		ClientResponse response = webResource.get(ClientResponse.class);
 
 		return readResponseAsByteArray(response, url);
-	}
-
-	@Override
-	public byte[] downloadConvocation(String csvIdSuiviMedical, String typePopulation, String mois, String annee) throws Exception {
-		String url = String.format(sirhWsBaseUrl + sirhDownloadConvocationVisiteMedPUrl);
-		String urlWSConvocation = url + "?csvIdSuiviMedical=" + csvIdSuiviMedical + "&typePopulation=" + typePopulation + "&mois=" + mois + "&annee=" + annee;
-
-		Client client = Client.create();
-
-		WebResource webResource = client.resource(urlWSConvocation);
-
-		ClientResponse response = webResource.get(ClientResponse.class);
-
-		return readResponseAsByteArray(response, urlWSConvocation);
-	}
-
-	@Override
-	public byte[] downloadAccompagnement(String csvIdSuiviMedical, String typePopulation, String mois, String annee) throws Exception {
-		String url = String.format(sirhWsBaseUrl + sirhDownloadLettreAccompagnementVisiteMedPUrl);
-		String urlWSAccomp = url + "?csvIdSuiviMedical=" + csvIdSuiviMedical + "&typePopulation=" + typePopulation + "&mois=" + mois + "&annee=" + annee;
-
-		Client client = Client.create();
-
-		WebResource webResource = client.resource(urlWSAccomp);
-
-		ClientResponse response = webResource.get(ClientResponse.class);
-
-		return readResponseAsByteArray(response, urlWSAccomp);
 	}
 
 	@Override

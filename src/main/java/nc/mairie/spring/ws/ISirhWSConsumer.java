@@ -31,10 +31,6 @@ public interface ISirhWSConsumer {
 
 	byte[] downloadNoteService(Integer idAffectation, String typeDocument) throws Exception;
 
-	byte[] downloadConvocation(String csvIdSuiviMedical, String typePopulation, String mois, String annee) throws Exception;
-
-	byte[] downloadAccompagnement(String csvIdSuiviMedical, String typePopulation, String mois, String annee) throws Exception;
-
 	byte[] downloadContrat(Integer idAgent, Integer idContrat) throws Exception;
 
 	// pour la gestion des droits

@@ -49,64 +49,8 @@
 	<jsp:useBean class="nc.mairie.gestionagent.process.OeSMConvocation" id="process" scope="session"></jsp:useBean>
 	<BODY bgcolor="#FFFFFF" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="window.parent.frames['refAgent'].location.reload();" >
 	<%@ include file="BanniereErreur.jsp" %>
-	<FORM name="formu" method="POST" class="sigp2-titre">
-		<script type="text/javascript">
-	function activeImprimerConvoc() {						
-			<%
-			for (int j = 0;j<process.getListeSuiviMed().size();j++){
-				SuiviMedical sm = process.getListeSuiviMed().get(j);
-				Integer i = sm.getIdSuiviMed();
-			%>
-			var box = document.formu.elements['NOM_CK_A_IMPRIMER_CONVOC_'+<%=i %>];  		
-	  		if(document.formu.elements['CHECK_ALL_IMPRIMER_CONVOC'].checked){
-	  			if(box!=null && !box.disabled){	
-					box.checked=true;  
-				}			
-		  	}else{
-	  			if(box!=null && !box.disabled){	
-					box.checked=false;	
-				}		
-			}
-			<%}%>
-}
-	function activeImprimerAccomp() {						
-		<%
-		for (int j = 0;j<process.getListeSuiviMed().size();j++){
-			SuiviMedical sm = process.getListeSuiviMed().get(j);
-			Integer i = sm.getIdSuiviMed();
-		%>
-		var box = document.formu.elements['NOM_CK_A_IMPRIMER_ACCOMP_'+<%=i %>];  		
-  		if(document.formu.elements['CHECK_ALL_IMPRIMER_ACCOMP'].checked){
-  			if(box!=null && !box.disabled){	
-				box.checked=true;  
-			}			
-	  	}else{
-  			if(box!=null && !box.disabled){	
-				box.checked=false;	
-			}		
-		}
-		<%}%>
-}
-</script>
+	<FORM name="formu" method="POST" class="sigp2-titre">		
 		<INPUT name="JSP" type="hidden" value="<%= process.getJSP() %>">
-		<% if (!process.convocationsEnErreur.equals("")){ %>
-		 <FIELDSET style="border-color : red red red red;">
-		 <TABLE border="0" width="100%" cellpadding="0" cellspacing="0">
-		 	<TBODY>
-		 	<TR>
-		 		<td width="30" class="sigp2-titre"><IMG src="images/info.gif" width="20" height="20" border="0"></td>
-		 		<td valign="middle" class="sigp2-titre">
-		 			<span class="sigp2Mandatory">Agents en anomalies : <%=process.convocationsEnErreur %></span>
-					<BR/>
-					<span class="sigp2Mandatory">Ces agents ne sont ni fonctionnaire ni convention collective. Merci de corriger manuellement les carrières de ces agents.</span>
-		 		</td>
-		 	</TR>
-		 	</TBODY>					
-		</TABLE>
-		</FIELDSET>
-		<BR/>
-		<BR/>
-		<%} %>
 		<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
 		<legend class="sigp2Legend">Prévisions des visites médicales du travail</legend>
 		
@@ -160,8 +104,6 @@
 		    <BR/>
 			<legend class="sigp2Legend">Gestion des prévisions</legend>
 			<INPUT type="submit" class="sigp2-Bouton-100" value="Enregistrer" name="<%=process.getNOM_PB_VALIDER()%>">
-<%-- 			<INPUT type="submit" class="sigp2-Bouton-200" value="Générer les convocations" name="<%=process.getNOM_PB_IMPRIMER_CONVOCATIONS()%>"> --%>
-<%-- 			<INPUT type="submit" class="sigp2-Bouton-250" value="Générer les lettres d'accompagnement" name="<%=process.getNOM_PB_IMPRIMER_LETTRES_ACCOMPAGNEMENTS()%>"> --%>
 			<BR/><BR/>
 			<div>
 				<table class="display" id="tabSuiviMed">
@@ -184,12 +126,6 @@
 							<th>Medecin</th>
 							<th>Date prochain RDV</th>
 							<th>Heure prochain RDV</th>
-<!-- 							<th>Imprimer convoc.							 -->
-<!-- 								<INPUT type="checkbox" name="CHECK_ALL_IMPRIMER_CONVOC" onClick='activeImprimerConvoc()'> -->
-<!-- 							</th> -->
-<!-- 							<th>Imprimer accomp. -->
-<!-- 								<INPUT type="checkbox" name="CHECK_ALL_IMPRIMER_ACCOMP" onClick='activeImprimerAccomp()'> -->
-<!-- 							</th> -->
 							<th>Etat</th>
 						</tr>
 					</thead>
@@ -226,12 +162,6 @@
 				    			<td>&nbsp;</td>					
 								<td>&nbsp;</td>					
 								<td>&nbsp;</td>	
-<!-- 								<td> -->
-<%-- 									<INPUT disabled="disabled" type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_A_IMPRIMER_CONVOC(indiceSM),process.getVAL_CK_A_IMPRIMER_CONVOC(indiceSM))%>> --%>
-<!-- 								</td>		 -->
-<!-- 								<td> -->
-<%-- 									<INPUT disabled="disabled" type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_A_IMPRIMER_ACCOMP(indiceSM),process.getVAL_CK_A_IMPRIMER_ACCOMP(indiceSM))%>> --%>
-<!-- 								</td> -->
 								<%}else if(sm.getEtat().equals(EnumEtatSuiviMed.EFFECTUE.getCode())){ %>
 					    			<td><%=process.getVAL_ST_MEDECIN(indiceSM)%></td>			
 					    			<td><%=process.getVAL_ST_DATE_RDV(indiceSM)%></td>			
@@ -253,12 +183,6 @@
 										<%=process.forComboHTML(process.getVAL_LB_HEURE_RDV(indiceSM), process.getVAL_LB_HEURE_RDV_SELECT(indiceSM)) %>
 									</SELECT>
 								</td>	
-<!-- 								<td> -->
-<%-- 									<INPUT <%= sm.getEtat().equals(EnumEtatSuiviMed.ACCOMP.getCode())|| sm.getEtat().equals(EnumEtatSuiviMed.CONVOQUE.getCode())  ?  "disabled='disabled'" : "" %> type="checkbox" onClick='validConvoque("<%=indiceSM %>")' <%= process.forCheckBoxHTML(process.getNOM_CK_A_IMPRIMER_CONVOC(indiceSM),process.getVAL_CK_A_IMPRIMER_CONVOC(indiceSM))%> > --%>
-<!-- 								</td>		 -->
-<!-- 								<td> -->
-<%-- 									<INPUT <%= sm.getEtat().equals(EnumEtatSuiviMed.ACCOMP.getCode()) || (!sm.getEtat().equals(EnumEtatSuiviMed.ACCOMP.getCode()) && !sm.getEtat().equals(EnumEtatSuiviMed.CONVOQUE.getCode()))  ?  "disabled='disabled'" : "" %> type="checkbox" onClick='validAccomp("<%=indiceSM %>")' <%= process.forCheckBoxHTML(process.getNOM_CK_A_IMPRIMER_ACCOMP(indiceSM),process.getVAL_CK_A_IMPRIMER_ACCOMP(indiceSM))%> > --%>
-<!-- 								</td> -->
 				    			<%} %>			
 								<td><%=process.getVAL_ST_ETAT(indiceSM)%></td>
 							</tr>
@@ -286,33 +210,6 @@
 			</div>
 			<BR/>
 		</FIELDSET>
-
-<!-- 		<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;"> -->
-<!-- 		<legend class="sigp2Legend">Documents générés pour le mois sélectionné</legend>	 -->
-<!-- 		<br/> -->
-<!-- 			<span style="position:relative;width:35px;"></span> -->
-<!-- 			<span style="position:relative;text-align: left;">Nom Document</span> -->
-<!-- 			<br/> -->
-<!-- 			<div style="overflow: auto;height:150px;width:1000px;margin-right: 0px;margin-left: 0px;"> -->
-<!-- 				<table class="sigp2NewTab" style="text-align:left;width:980px;"> -->
-<%-- 				<%int indiceDoc = 0; --%>
-<!-- // 				if (process.getListeDocuments()!=null){ -->
-<!-- // 				for (int i = 0;i<process.getListeDocuments().size();i++){ -->
-<%-- 				%> --%>
-<%-- 					<tr id="<%=indiceDoc%>" onmouseover="SelectLigne(<%=indiceDoc%>,<%=process.getListeDocuments().size()%>)"> --%>
-<!-- 						<td class="sigp2NewTab-liste" style="position:relative;width:30px;" align="center"> -->
-<%-- 							<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_VISUALISATION(indiceDoc)%>">				 --%>
-<!-- 						</td> -->
-<%-- 						<td class="sigp2NewTab-liste" style="position:relative;text-align: left;"><%=process.getVAL_ST_NOM_DOC(indiceDoc)%></td> --%>
-<!-- 					</tr> -->
-<%-- 				<%indiceDoc++; --%>
-<!-- // 				} -->
-<%-- 				}%> --%>
-<!-- 				</table>	 -->
-<!-- 			</div> -->
-<!-- 		</FIELDSET> -->
-			<br/>
-	<%=process.getUrlFichier()%>
 		<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_RECHERCHER_AGENT()%>" value="RECHERCHERAGENTEVALUE">
 		<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT()%>" value="SUPPRECHERCHERAGENTEVALUE">
 		<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_RECHERCHER_AGENT_HIERARCHIQUE()%>" value="RECHERCHERAGENTHIERARCHIQUE">
