@@ -71,7 +71,7 @@
 	<!-- WS SIRH -->
 	<!-- -->
 	<Environment description="SIRH WS url" name="SIRH_WS_URL"
-		type="java.lang.String" override="false" value="http://localhost:8085/sirhws/" />
+		type="java.lang.String" override="false" value="http://svi-tomcat0:8085/sirhws/" />
 
 	<!-- -->
 	<!-- WS DE ADS -->

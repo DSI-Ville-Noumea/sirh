@@ -51,7 +51,7 @@
 	<%@ include file="BanniereErreur.jsp" %>
 	<FORM name="formu" method="POST" class="sigp2-titre">		
 		<INPUT name="JSP" type="hidden" value="<%= process.getJSP() %>">
-		<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
+		<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1180px;">
 		<legend class="sigp2Legend">Prévisions des visites médicales du travail</legend>
 		
             <span class="sigp2Mandatory">Date début : </span>
@@ -67,6 +67,10 @@
 			<span class="sigp2" style="width:40px">Recommandation : </span>
 			<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_RECOMMANDATION() %>" style="width:300px;margin-right:20px;">
 				<%=process.forComboHTML(process.getVAL_LB_RECOMMANDATION(), process.getVAL_LB_RECOMMANDATION_SELECT()) %>
+			</SELECT>
+			<span class="sigp2" style="width:40px">Etat : </span>
+			<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_ETAT() %>" style="width:150px;margin-right:20px;">
+				<%=process.forComboHTML(process.getVAL_LB_ETAT(), process.getVAL_LB_ETAT_SELECT()) %>
 			</SELECT>
 			
 			<BR/>

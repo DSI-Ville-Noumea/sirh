@@ -63,6 +63,7 @@ public class OeSMConvocation extends BasicProcess {
 	private String[]					LB_HEURE_RDV;
 	private String[]					LB_STATUT;
 	private String[]					LB_RECOMMANDATION;
+	private String[]					LB_ETAT;
 
 	private ArrayList<SuiviMedical>		listeSuiviMed;
 
@@ -95,6 +96,7 @@ public class OeSMConvocation extends BasicProcess {
 	public static final int				STATUT_RECHERCHER_AGENT_HIERARCHIQUE	= 2;
 	private ArrayList<String>			listeStatut;
 	private ArrayList<Recommandation>	listeRecommandation;
+	private ArrayList<EnumEtatSuiviMed>	listeEnumEtatSuiviMed;
 
 	@Override
 	public void initialiseZones(HttpServletRequest request) throws Exception {
@@ -195,7 +197,8 @@ public class OeSMConvocation extends BasicProcess {
 					: Services.convertitDate(sm.getDatePrevisionVisite().toString(), "yyyy-MM-dd", "dd/MM/yyyy"));
 			addZone(getNOM_ST_MOTIF(i), getLibMotifVM(sm.getIdMotifVm()));
 			addZone(getNOM_ST_NB_VISITES_RATEES(i), sm.getNbVisitesRatees().toString());
-			addZone(getNOM_LB_MEDECIN_SELECT(i), sm.getIdMedecin() != null ? String.valueOf(getListeMedecin().indexOf(getHashMedecin().get(sm.getIdMedecin()))) : Const.ZERO);
+			addZone(getNOM_LB_MEDECIN_SELECT(i),
+					sm.getIdMedecin() != null ? String.valueOf(getListeMedecin().indexOf(getHashMedecin().get(sm.getIdMedecin()))) : Const.ZERO);
 			if (sm.getEtat().equals(EnumEtatSuiviMed.EFFECTUE.getCode())) {
 				VisiteMedicale vm = null;
 				try {
@@ -342,6 +345,20 @@ public class OeSMConvocation extends BasicProcess {
 			setLB_STATUT(aFormat.getListeFormatee(true));
 			addZone(getNOM_LB_STATUT_SELECT(), Const.ZERO);
 		}
+		// Si liste etat vide alors affectation
+		if (getLB_ETAT() == LBVide) {
+			ArrayList<EnumEtatSuiviMed> listeEtat = EnumEtatSuiviMed.getValues();
+			setListeEnumEtatSuiviMed(listeEtat);
+			int[] tailles = { 15 };
+			FormateListe aFormat = new FormateListe(tailles);
+			for (ListIterator<EnumEtatSuiviMed> list = listeEtat.listIterator(); list.hasNext();) {
+				EnumEtatSuiviMed etat = (EnumEtatSuiviMed) list.next();
+				String ligne[] = { etat.getValue() };
+				aFormat.ajouteLigne(ligne);
+			}
+			setLB_ETAT(aFormat.getListeFormatee(true));
+			addZone(getNOM_LB_ETAT_SELECT(), Const.ZERO);
+		}
 
 		// Si liste statut vide alors affectation
 		if (getLB_RECOMMANDATION() == LBVide) {
@@ -481,6 +498,13 @@ public class OeSMConvocation extends BasicProcess {
 			dateFin = new SimpleDateFormat("dd/MM/yyyy").parse(dateF);
 		}
 
+		// récupération de l'etat
+		int indiceEtat = (Services.estNumerique(getVAL_LB_ETAT_SELECT()) ? Integer.parseInt(getVAL_LB_ETAT_SELECT()) : -1);
+		String etat = Const.CHAINE_VIDE;
+		if (indiceEtat > 0) {
+			etat = getListeEnumEtatSuiviMed().get(indiceEtat - 1).getCode();
+		}
+
 		// recupération recommandation
 		int indiceRecommandation = (Services.estNumerique(getVAL_LB_RECOMMANDATION_SELECT()) ? Integer.parseInt(getVAL_LB_RECOMMANDATION_SELECT())
 				: -1);
@@ -525,9 +549,9 @@ public class OeSMConvocation extends BasicProcess {
 		// coche CDD
 		boolean isCocheCDD = getVAL_CK_AGENT_CDD().equals(getCHECKED_ON());
 
-		// #31345 : on ne cherche plus sur etat/relance/motif
+		// #31345 : on ne cherche plus sur relance/motif
 		setListeSuiviMed(getSuiviMedDao().listerSuiviMedicalAvecMoisetAnneeBetweenDate(dateDebut, dateFin, listeAgent, listeSousService, statut,
-				isCocheCDD, recommandation));
+				isCocheCDD, recommandation, etat));
 		afficheListeSuiviMed();
 
 		return true;
@@ -1473,5 +1497,39 @@ public class OeSMConvocation extends BasicProcess {
 
 	public void setListeRecommandation(ArrayList<Recommandation> listeRecommandation) {
 		this.listeRecommandation = listeRecommandation;
+	}
+
+	private String[] getLB_ETAT() {
+		if (LB_ETAT == null)
+			LB_ETAT = initialiseLazyLB();
+		return LB_ETAT;
+	}
+
+	private void setLB_ETAT(String[] newLB_ETAT) {
+		LB_ETAT = newLB_ETAT;
+	}
+
+	public String getNOM_LB_ETAT() {
+		return "NOM_LB_ETAT";
+	}
+
+	public String getNOM_LB_ETAT_SELECT() {
+		return "NOM_LB_ETAT_SELECT";
+	}
+
+	public String[] getVAL_LB_ETAT() {
+		return getLB_ETAT();
+	}
+
+	public String getVAL_LB_ETAT_SELECT() {
+		return getZone(getNOM_LB_ETAT_SELECT());
+	}
+
+	public ArrayList<EnumEtatSuiviMed> getListeEnumEtatSuiviMed() {
+		return listeEnumEtatSuiviMed == null ? new ArrayList<EnumEtatSuiviMed>() : listeEnumEtatSuiviMed;
+	}
+
+	public void setListeEnumEtatSuiviMed(ArrayList<EnumEtatSuiviMed> listeEnumEtatSuiviMed) {
+		this.listeEnumEtatSuiviMed = listeEnumEtatSuiviMed;
 	}
 }

@@ -292,7 +292,7 @@ public class SuiviMedicalDao extends SirhDao implements SuiviMedicalDaoInterface
 
 	@Override
 	public ArrayList<SuiviMedical> listerSuiviMedicalAvecMoisetAnneeBetweenDate(Date dateDebut, Date dateFin, List<Integer> listeAgent,
-			List<Integer> listeSousService, String statut, boolean CDD, Recommandation recommandation) throws Exception {
+			List<Integer> listeSousService, String statut, boolean CDD, Recommandation recommandation, String etat) throws Exception {
 
 		String sql = "select * from " + NOM_TABLE + " sm ";
 		if (CDD) {
@@ -320,6 +320,10 @@ public class SuiviMedicalDao extends SirhDao implements SuiviMedicalDaoInterface
 
 		if (!statut.equals(Const.CHAINE_VIDE)) {
 			sql += " and " + CHAMP_STATUT + " ='" + statut + "' ";
+		}
+
+		if (!etat.equals(Const.CHAINE_VIDE)) {
+			sql += " and " + CHAMP_ETAT + " = '" + etat + "' ";
 		}
 
 		if (listeSousService != null) {
