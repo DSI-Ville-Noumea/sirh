@@ -26,16 +26,6 @@ public class SirhService implements ISirhService {
 	private ISirhWSConsumer sirhConsumer;
 
 	@Override
-	public byte[] downloadAccompagnement(String csvIdSuiviMedical, String typePopulation, String mois, String annee) throws Exception {
-		return sirhConsumer.downloadAccompagnement(csvIdSuiviMedical, typePopulation, mois, annee);
-	}
-
-	@Override
-	public byte[] downloadConvocation(String csvIdSuiviMedical, String typePopulation, String mois, String annee) throws Exception {
-		return sirhConsumer.downloadConvocation(csvIdSuiviMedical, typePopulation, mois, annee);
-	}
-
-	@Override
 	public byte[] downloadContrat(Integer idAgent, Integer idContrat) throws Exception {
 		return sirhConsumer.downloadContrat(idAgent, idContrat);
 	}
@@ -102,16 +92,16 @@ public class SirhService implements ISirhService {
 	}
 
 	@Override
-	public EntiteWithAgentWithServiceDto getListeEntiteWithAgentWithServiceDtoByIdServiceAdsWithoutAgentConnecte(
-			Integer idServiceAds,Integer idAgent, List<AgentDto> listAgentsAInclureDansArbre) {
+	public EntiteWithAgentWithServiceDto getListeEntiteWithAgentWithServiceDtoByIdServiceAdsWithoutAgentConnecte(Integer idServiceAds,
+			Integer idAgent, List<AgentDto> listAgentsAInclureDansArbre) {
 		return sirhConsumer.getListeEntiteWithAgentWithServiceDtoByIdServiceAds(idServiceAds, idAgent, listAgentsAInclureDansArbre);
 	}
-	
+
 	@Override
 	public List<AgentWithServiceDto> getListAgentsWithService(List<Integer> listAgentDto, Date date) {
 		return sirhConsumer.getListAgentsWithService(listAgentDto, date);
 	}
-	
+
 	@Override
 	public List<AgentWithServiceDto> getListeAgentWithIndemniteForfaitTravailDPM(Set<Integer> listIdsAgent) {
 		return sirhConsumer.getListeAgentWithIndemniteForfaitTravailDPM(listIdsAgent);
@@ -121,49 +111,46 @@ public class SirhService implements ISirhService {
 	public List<FichePosteTreeNodeDto> getFichePosteTreeNodeDto(Integer idEntite, boolean withFichesPosteNonReglemente) {
 		return sirhConsumer.getFichePosteTreeNodeDto(idEntite, withFichesPosteNonReglemente);
 	}
-	
+
 	@Override
 	public FichePosteTreeNodeDto getFichePosteTreeNodeDtoByIdFichePoste(List<FichePosteTreeNodeDto> listFP, Integer idFichePosteConcerne) {
-		
+
 		FichePosteTreeNodeDto result = null;
-		if(null != listFP
-				&& !listFP.isEmpty()) {
-			for(FichePosteTreeNodeDto fp : listFP) {
-				if(fp.getIdFichePoste().equals(idFichePosteConcerne)) {
+		if (null != listFP && !listFP.isEmpty()) {
+			for (FichePosteTreeNodeDto fp : listFP) {
+				if (fp.getIdFichePoste().equals(idFichePosteConcerne)) {
 					return fp;
 				}
 				result = getFichePosteTreeNodeDtoByIdFichePoste(fp.getFichePostesEnfant(), idFichePosteConcerne);
-				if(null != result) {
+				if (null != result) {
 					return result;
 				}
 			}
 		}
-		
+
 		return result;
 	}
-	
+
 	@Override
 	public boolean isFPEnfantValideGeleeTransitoire(List<FichePosteTreeNodeDto> listFP, Integer idFichePosteConcerne) {
-		
+
 		boolean result = false;
-		
-		if(null != listFP
-				&& !listFP.isEmpty()) {
-			for(FichePosteTreeNodeDto fp : listFP) {
-				if(!fp.getIdFichePoste().equals(idFichePosteConcerne)
-						&& (EnumStatutFichePoste.VALIDEE.getId().equals(fp.getIdStatutFDP().toString())
-							|| EnumStatutFichePoste.GELEE.getId().equals(fp.getIdStatutFDP().toString())
-							|| EnumStatutFichePoste.TRANSITOIRE.getId().equals(fp.getIdStatutFDP().toString()))) {
-					
+
+		if (null != listFP && !listFP.isEmpty()) {
+			for (FichePosteTreeNodeDto fp : listFP) {
+				if (!fp.getIdFichePoste().equals(idFichePosteConcerne) && (EnumStatutFichePoste.VALIDEE.getId().equals(fp.getIdStatutFDP().toString())
+						|| EnumStatutFichePoste.GELEE.getId().equals(fp.getIdStatutFDP().toString())
+						|| EnumStatutFichePoste.TRANSITOIRE.getId().equals(fp.getIdStatutFDP().toString()))) {
+
 					return true;
 				}
-				
+
 				result = isFPEnfantValideGeleeTransitoire(fp.getFichePostesEnfant(), idFichePosteConcerne);
-				if(result)
+				if (result)
 					return result;
 			}
 		}
-		
+
 		return result;
 	}
 

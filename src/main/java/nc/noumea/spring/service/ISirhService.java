@@ -16,9 +16,6 @@ import nc.mairie.gestionagent.eae.dto.CalculEaeInfosDto;
 
 public interface ISirhService {
 
-	byte[] downloadAccompagnement(String csvIdSuiviMedical, String typePopulation, String mois, String annee) throws Exception;
-
-	byte[] downloadConvocation(String csvIdSuiviMedical, String typePopulation, String mois, String annee) throws Exception;
 
 	byte[] downloadContrat(Integer idAgent, Integer idContrat) throws Exception;
 
