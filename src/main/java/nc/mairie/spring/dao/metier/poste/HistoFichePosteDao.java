@@ -13,34 +13,34 @@ import nc.mairie.technique.UserAppli;
 
 public class HistoFichePosteDao extends SirhDao implements HistoFichePosteDaoInterface {
 
-	public static final String CHAMP_ID_FICHE_POSTE = "ID_FICHE_POSTE";
-	public static final String CHAMP_ID_TITRE_POSTE = "ID_TITRE_POSTE";
-	public static final String CHAMP_ID_ENTITE_GEO = "ID_ENTITE_GEO";
-	public static final String CHAMP_ID_BUDGET = "ID_BUDGET";
-	public static final String CHAMP_ID_STATUT_FP = "ID_STATUT_FP";
-	public static final String CHAMP_ID_RESPONSABLE = "ID_RESPONSABLE";
-	public static final String CHAMP_ID_REMPLACEMENT = "ID_REMPLACEMENT";
-	public static final String CHAMP_ID_CDTHOR_BUD = "ID_CDTHOR_BUD";
-	public static final String CHAMP_ID_CDTHOR_REG = "ID_CDTHOR_REG";
-	public static final String CHAMP_ID_SERVI = "ID_SERVI";
-	public static final String CHAMP_DATE_FIN_VALIDITE_FP = "DATE_FIN_VALIDITE_FP";
-	public static final String CHAMP_OPI = "OPI";
-	public static final String CHAMP_NFA = "NFA";
-	public static final String CHAMP_MISSIONS = "MISSIONS";
-	public static final String CHAMP_ANNEE_CREATION = "ANNEE_CREATION";
-	public static final String CHAMP_CODE_GRADE = "CODE_GRADE";
-	public static final String CHAMP_NUM_FP = "NUM_FP";
-	public static final String CHAMP_DATE_HISTO = "DATE_HISTO";
-	public static final String CHAMP_TYPE_HISTO = "TYPE_HISTO";
-	public static final String CHAMP_USER_HISTO = "USER_HISTO";
-	public static final String CHAMP_DATE_DEBUT_VALIDITE_FP = "DATE_DEBUT_VALIDITE_FP";
-	public static final String CHAMP_DATE_DEB_APPLI_SERV = "DATE_DEB_APPLI_SERV";
-	public static final String CHAMP_DATE_FIN_APPLI_SERV = "DATE_FIN_APPLI_SERV";
-	public static final String CHAMP_ID_NATURE_CREDIT = "ID_NATURE_CREDIT";
-	public static final String CHAMP_NUM_DELIBERATION = "NUM_DELIBERATION";
-	public static final String CHAMP_ID_BASE_HORAIRE_POINTAGE = "ID_BASE_HORAIRE_POINTAGE";
-	public static final String CHAMP_ID_BASE_HORAIRE_ABSENCE = "ID_BASE_HORAIRE_ABSENCE";
-	public static final String CHAMP_ID_SERVICE_ADS = "ID_SERVICE_ADS";
+	public static final String	CHAMP_ID_FICHE_POSTE			= "ID_FICHE_POSTE";
+	public static final String	CHAMP_ID_TITRE_POSTE			= "ID_TITRE_POSTE";
+	public static final String	CHAMP_ID_ENTITE_GEO				= "ID_ENTITE_GEO";
+	public static final String	CHAMP_ID_BUDGET					= "ID_BUDGET";
+	public static final String	CHAMP_ID_STATUT_FP				= "ID_STATUT_FP";
+	public static final String	CHAMP_ID_RESPONSABLE			= "ID_RESPONSABLE";
+	public static final String	CHAMP_ID_REMPLACEMENT			= "ID_REMPLACEMENT";
+	public static final String	CHAMP_ID_CDTHOR_BUD				= "ID_CDTHOR_BUD";
+	public static final String	CHAMP_ID_CDTHOR_REG				= "ID_CDTHOR_REG";
+	public static final String	CHAMP_ID_SERVI					= "ID_SERVI";
+	public static final String	CHAMP_DATE_FIN_VALIDITE_FP		= "DATE_FIN_VALIDITE_FP";
+	public static final String	CHAMP_OPI						= "OPI";
+	public static final String	CHAMP_NFA						= "NFA";
+	public static final String	CHAMP_MISSIONS					= "MISSIONS";
+	public static final String	CHAMP_ANNEE_CREATION			= "ANNEE_CREATION";
+	public static final String	CHAMP_CODE_GRADE				= "CODE_GRADE";
+	public static final String	CHAMP_NUM_FP					= "NUM_FP";
+	public static final String	CHAMP_DATE_HISTO				= "DATE_HISTO";
+	public static final String	CHAMP_TYPE_HISTO				= "TYPE_HISTO";
+	public static final String	CHAMP_USER_HISTO				= "USER_HISTO";
+	public static final String	CHAMP_DATE_DEBUT_VALIDITE_FP	= "DATE_DEBUT_VALIDITE_FP";
+	public static final String	CHAMP_DATE_DEB_APPLI_SERV		= "DATE_DEB_APPLI_SERV";
+	public static final String	CHAMP_DATE_FIN_APPLI_SERV		= "DATE_FIN_APPLI_SERV";
+	public static final String	CHAMP_ID_NATURE_CREDIT			= "ID_NATURE_CREDIT";
+	public static final String	CHAMP_NUM_DELIBERATION			= "NUM_DELIBERATION";
+	public static final String	CHAMP_ID_BASE_HORAIRE_POINTAGE	= "ID_BASE_HORAIRE_POINTAGE";
+	public static final String	CHAMP_ID_BASE_HORAIRE_ABSENCE	= "ID_BASE_HORAIRE_ABSENCE";
+	public static final String	CHAMP_ID_SERVICE_ADS			= "ID_SERVICE_ADS";
 
 	public HistoFichePosteDao(SirhDao sirhDao) {
 		super.dataSource = sirhDao.getDataSource();
@@ -69,16 +69,14 @@ public class HistoFichePosteDao extends SirhDao implements HistoFichePosteDaoInt
 
 	@Override
 	public void modifierDateFinAppliServHistoFichePoste(HistoFichePoste histoFP) throws Exception {
-		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_DATE_FIN_APPLI_SERV + "=? where " + CHAMP_ID_FICHE_POSTE
-				+ " =?";
+		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_DATE_FIN_APPLI_SERV + "=? where " + CHAMP_ID_FICHE_POSTE + " =?";
 		jdbcTemplate.update(sql, new Object[] { histoFP.getDateFinAppliServ(), histoFP.getIdFichePoste() });
 
 	}
 
 	@Override
 	public ArrayList<HistoFichePoste> listerHistoFichePosteById(Integer idFichePoste) throws Exception {
-		String sql = " select * from " + NOM_TABLE + " where " + CHAMP_ID_FICHE_POSTE + "=? order by "
-				+ CHAMP_DATE_HISTO + " desc";
+		String sql = " select * from " + NOM_TABLE + " where " + CHAMP_ID_FICHE_POSTE + "=? order by " + CHAMP_DATE_HISTO + " desc";
 
 		ArrayList<HistoFichePoste> liste = new ArrayList<HistoFichePoste>();
 
@@ -123,16 +121,13 @@ public class HistoFichePosteDao extends SirhDao implements HistoFichePosteDaoInt
 	}
 
 	@Override
-	public ArrayList<HistoFichePoste> listerHistoFichePosteDansDate(Integer idFichePoste, Date dateDebutAff,
-			Date dateFinAff) throws Exception {
-		String sql = " select * from " + NOM_TABLE + " where " + CHAMP_ID_FICHE_POSTE + "=? and "
-				+ CHAMP_DATE_DEB_APPLI_SERV + ">= ? and " + CHAMP_DATE_DEB_APPLI_SERV + " is not null and "
-				+ CHAMP_DATE_DEB_APPLI_SERV + "< ? order by " + CHAMP_DATE_HISTO + " desc";
+	public ArrayList<HistoFichePoste> listerHistoFichePosteDansDate(Integer idFichePoste, Date dateDebutAff, Date dateFinAff) throws Exception {
+		String sql = " select * from " + NOM_TABLE + " where " + CHAMP_ID_FICHE_POSTE + "=? and " + CHAMP_DATE_DEB_APPLI_SERV + ">= ? and "
+				+ CHAMP_DATE_DEB_APPLI_SERV + " is not null and " + CHAMP_DATE_DEB_APPLI_SERV + "< ? order by " + CHAMP_DATE_HISTO + " desc";
 
 		ArrayList<HistoFichePoste> liste = new ArrayList<HistoFichePoste>();
 
-		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { idFichePoste, dateDebutAff,
-				dateFinAff });
+		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { idFichePoste, dateDebutAff, dateFinAff });
 		for (Map<String, Object> row : rows) {
 			HistoFichePoste a = new HistoFichePoste();
 			a.setIdFichePoste((Integer) row.get(CHAMP_ID_FICHE_POSTE));
@@ -174,26 +169,66 @@ public class HistoFichePosteDao extends SirhDao implements HistoFichePosteDaoInt
 
 	@Override
 	public void creerHistoFichePosteBD(HistoFichePoste histoFP) throws Exception {
-		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_ID_FICHE_POSTE + "," + CHAMP_ID_TITRE_POSTE + ","
-				+ CHAMP_ID_ENTITE_GEO + "," + CHAMP_ID_BUDGET + "," + CHAMP_ID_STATUT_FP + "," + CHAMP_ID_RESPONSABLE
-				+ "," + CHAMP_ID_REMPLACEMENT + "," + CHAMP_ID_CDTHOR_BUD + "," + CHAMP_ID_CDTHOR_REG + ","
-				+ CHAMP_DATE_FIN_VALIDITE_FP + "," + CHAMP_OPI + "," + CHAMP_NFA + "," + CHAMP_MISSIONS + ","
-				+ CHAMP_ANNEE_CREATION + "," + CHAMP_NUM_FP + "," + CHAMP_DATE_HISTO + "," + CHAMP_TYPE_HISTO + ","
-				+ CHAMP_USER_HISTO + "," + CHAMP_DATE_DEBUT_VALIDITE_FP + "," + CHAMP_DATE_DEB_APPLI_SERV + ","
-				+ CHAMP_DATE_FIN_APPLI_SERV + "," + CHAMP_CODE_GRADE + "," + CHAMP_ID_NATURE_CREDIT + ","
-				+ CHAMP_NUM_DELIBERATION + "," + CHAMP_ID_BASE_HORAIRE_POINTAGE + "," + CHAMP_ID_BASE_HORAIRE_ABSENCE
-				+ "," + CHAMP_ID_SERVICE_ADS + "," + CHAMP_ID_SERVI + ") "
-				+ "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-		jdbcTemplate.update(
-				sql,
-				new Object[] { histoFP.getIdFichePoste(), histoFP.getIdTitrePoste(), histoFP.getIdEntiteGeo(),
-						histoFP.getIdBudget(), histoFP.getIdStatutFp(), histoFP.getIdResponsable(),
-						histoFP.getIdRemplacement(), histoFP.getIdCdthorBud(), histoFP.getIdCdthorReg(),
-						histoFP.getDateFinValiditeFp(), histoFP.getOpi(), histoFP.getNfa(), histoFP.getMissions(),
-						histoFP.getAnneeCreation(), histoFP.getNumFp(), new Date(), histoFP.getTypeHisto(),
-						histoFP.getUserHisto(), histoFP.getDateDebutValiditeFp(), histoFP.getDateDebAppliServ(),
-						histoFP.getDateFinAppliServ(), histoFP.getCodeGrade(), histoFP.getIdNatureCredit(),
-						histoFP.getNumDeliberation(), histoFP.getIdBaseHorairePointage(),
+		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_ID_FICHE_POSTE + "," + CHAMP_ID_TITRE_POSTE + "," + CHAMP_ID_ENTITE_GEO + ","
+				+ CHAMP_ID_BUDGET + "," + CHAMP_ID_STATUT_FP + "," + CHAMP_ID_RESPONSABLE + "," + CHAMP_ID_REMPLACEMENT + "," + CHAMP_ID_CDTHOR_BUD
+				+ "," + CHAMP_ID_CDTHOR_REG + "," + CHAMP_DATE_FIN_VALIDITE_FP + "," + CHAMP_OPI + "," + CHAMP_NFA + "," + CHAMP_MISSIONS + ","
+				+ CHAMP_ANNEE_CREATION + "," + CHAMP_NUM_FP + "," + CHAMP_DATE_HISTO + "," + CHAMP_TYPE_HISTO + "," + CHAMP_USER_HISTO + ","
+				+ CHAMP_DATE_DEBUT_VALIDITE_FP + "," + CHAMP_DATE_DEB_APPLI_SERV + "," + CHAMP_DATE_FIN_APPLI_SERV + "," + CHAMP_CODE_GRADE + ","
+				+ CHAMP_ID_NATURE_CREDIT + "," + CHAMP_NUM_DELIBERATION + "," + CHAMP_ID_BASE_HORAIRE_POINTAGE + "," + CHAMP_ID_BASE_HORAIRE_ABSENCE
+				+ "," + CHAMP_ID_SERVICE_ADS + "," + CHAMP_ID_SERVI + ") " + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+		jdbcTemplate.update(sql,
+				new Object[] { histoFP.getIdFichePoste(), histoFP.getIdTitrePoste(), histoFP.getIdEntiteGeo(), histoFP.getIdBudget(),
+						histoFP.getIdStatutFp(), histoFP.getIdResponsable(), histoFP.getIdRemplacement(), histoFP.getIdCdthorBud(),
+						histoFP.getIdCdthorReg(), histoFP.getDateFinValiditeFp(), histoFP.getOpi(), histoFP.getNfa(), histoFP.getMissions(),
+						histoFP.getAnneeCreation(), histoFP.getNumFp(), new Date(), histoFP.getTypeHisto(), histoFP.getUserHisto(),
+						histoFP.getDateDebutValiditeFp(), histoFP.getDateDebAppliServ(), histoFP.getDateFinAppliServ(), histoFP.getCodeGrade(),
+						histoFP.getIdNatureCredit(), histoFP.getNumDeliberation(), histoFP.getIdBaseHorairePointage(),
 						histoFP.getIdBaseHoraireAbsence(), histoFP.getIdServiceAds(), histoFP.getIdServi() });
+	}
+
+	@Override
+	public ArrayList<HistoFichePoste> listerHistoFichePosteAvecTitrePoste(Integer idTitrePoste) throws Exception {
+		String sql = " select * from " + NOM_TABLE + " WHERE " + CHAMP_ID_TITRE_POSTE + "=? ";
+
+		ArrayList<HistoFichePoste> liste = new ArrayList<HistoFichePoste>();
+
+		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { idTitrePoste });
+		for (Map<String, Object> row : rows) {
+			HistoFichePoste a = new HistoFichePoste();
+			a.setIdFichePoste((Integer) row.get(CHAMP_ID_FICHE_POSTE));
+			a.setIdTitrePoste((Integer) row.get(CHAMP_ID_TITRE_POSTE));
+			BigDecimal entiteGeo = (BigDecimal) row.get(CHAMP_ID_ENTITE_GEO);
+			a.setIdEntiteGeo(entiteGeo == null ? null : entiteGeo.intValue());
+			a.setIdBudget((Integer) row.get(CHAMP_ID_BUDGET));
+			a.setIdStatutFp((Integer) row.get(CHAMP_ID_STATUT_FP));
+			a.setIdResponsable((Integer) row.get(CHAMP_ID_RESPONSABLE));
+			a.setIdRemplacement((Integer) row.get(CHAMP_ID_REMPLACEMENT));
+			BigDecimal bud = (BigDecimal) row.get(CHAMP_ID_CDTHOR_BUD);
+			a.setIdCdthorBud(bud == null ? null : bud.intValue());
+			BigDecimal reg = (BigDecimal) row.get(CHAMP_ID_CDTHOR_REG);
+			a.setIdCdthorReg(reg == null ? null : reg.intValue());
+			a.setDateFinValiditeFp((Date) row.get(CHAMP_DATE_FIN_VALIDITE_FP));
+			a.setOpi((String) row.get(CHAMP_OPI));
+			a.setNfa((String) row.get(CHAMP_NFA));
+			a.setMissions((String) row.get(CHAMP_MISSIONS));
+			BigDecimal annee = (BigDecimal) row.get(CHAMP_ANNEE_CREATION);
+			a.setAnneeCreation(annee == null ? null : annee.intValue());
+			a.setNumFp((String) row.get(CHAMP_NUM_FP));
+			a.setTypeHisto((String) row.get(CHAMP_TYPE_HISTO));
+			a.setUserHisto((String) row.get(CHAMP_USER_HISTO));
+			a.setDateDebutValiditeFp((Date) row.get(CHAMP_DATE_DEBUT_VALIDITE_FP));
+			a.setDateDebAppliServ((Date) row.get(CHAMP_DATE_DEB_APPLI_SERV));
+			a.setDateFinAppliServ((Date) row.get(CHAMP_DATE_FIN_APPLI_SERV));
+			a.setCodeGrade((String) row.get(CHAMP_CODE_GRADE));
+			a.setIdNatureCredit((Integer) row.get(CHAMP_ID_NATURE_CREDIT));
+			a.setNumDeliberation((String) row.get(CHAMP_NUM_DELIBERATION));
+			a.setIdBaseHorairePointage((Integer) row.get(CHAMP_ID_BASE_HORAIRE_POINTAGE));
+			a.setIdBaseHoraireAbsence((Integer) row.get(CHAMP_ID_BASE_HORAIRE_ABSENCE));
+			a.setIdServiceAds((Integer) row.get(CHAMP_ID_SERVICE_ADS));
+			a.setIdServi((String) row.get(CHAMP_ID_SERVI));
+			liste.add(a);
+		}
+
+		return liste;
 	}
 }

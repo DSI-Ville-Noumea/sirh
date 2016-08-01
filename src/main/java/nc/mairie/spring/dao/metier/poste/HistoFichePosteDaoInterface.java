@@ -17,7 +17,8 @@ public interface HistoFichePosteDaoInterface {
 
 	public ArrayList<HistoFichePoste> listerHistoFichePosteById(Integer idFichePoste) throws Exception;
 
-	public ArrayList<HistoFichePoste> listerHistoFichePosteDansDate(Integer idFichePoste, Date dateDebutAff,
-			Date dateFinAff) throws Exception;
+	public ArrayList<HistoFichePoste> listerHistoFichePosteDansDate(Integer idFichePoste, Date dateDebutAff, Date dateFinAff) throws Exception;
+
+	public ArrayList<HistoFichePoste> listerHistoFichePosteAvecTitrePoste(Integer idTitrePoste) throws Exception;
 
 }

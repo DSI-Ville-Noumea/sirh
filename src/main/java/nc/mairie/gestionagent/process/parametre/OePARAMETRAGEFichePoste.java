@@ -6,6 +6,8 @@ import java.util.ListIterator;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.context.ApplicationContext;
+
 import nc.mairie.metier.Const;
 import nc.mairie.metier.parametrage.BaseHorairePointage;
 import nc.mairie.metier.parametrage.NatureAvantage;
@@ -21,6 +23,7 @@ import nc.mairie.spring.dao.metier.parametrage.TypeAvantageDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeDelegationDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeRegIndemnDao;
 import nc.mairie.spring.dao.metier.poste.FichePosteDao;
+import nc.mairie.spring.dao.metier.poste.HistoFichePosteDao;
 import nc.mairie.spring.dao.metier.poste.TitrePosteDao;
 import nc.mairie.spring.dao.metier.specificites.AvantageNatureDao;
 import nc.mairie.spring.dao.metier.specificites.DelegationDao;
@@ -36,8 +39,6 @@ import nc.mairie.utils.MessageUtils;
 import nc.noumea.spring.service.AdsService;
 import nc.noumea.spring.service.IAdsService;
 
-import org.springframework.context.ApplicationContext;
-
 /**
  * Process OePARAMETRAGEFichePoste Date de création : (13/09/11 15:49:10)
  * 
@@ -46,63 +47,65 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long				serialVersionUID	= 1L;
 
-	public String focus = null;
+	public String							focus				= null;
 
-	private String[] LB_ENTITE_GEO;
-	private String[] LB_ENTITE_ECOLE;
-	private String[] LB_NATURE_AVANTAGE;
-	private String[] LB_TITRE;
-	private String[] LB_TYPE_AVANTAGE;
-	private String[] LB_TYPE_DELEGATION;
-	private String[] LB_TYPE_REGIME;
-	private String[] LB_ECOLE;
-	private String[] LB_BASE_HORAIRE_POINTAGE;
+	private String[]						LB_ENTITE_GEO;
+	private String[]						LB_ENTITE_ECOLE;
+	private String[]						LB_NATURE_AVANTAGE;
+	private String[]						LB_TITRE;
+	private String[]						LB_TYPE_AVANTAGE;
+	private String[]						LB_TYPE_DELEGATION;
+	private String[]						LB_TYPE_REGIME;
+	private String[]						LB_ECOLE;
+	private String[]						LB_BASE_HORAIRE_POINTAGE;
 
-	private ArrayList<BaseHorairePointage> listeBaseHorairePointage;
-	private BaseHorairePointage baseHorairePointageCourant;
+	private ArrayList<BaseHorairePointage>	listeBaseHorairePointage;
+	private BaseHorairePointage				baseHorairePointageCourant;
 
-	private ArrayList<EntiteGeo> listeEntite;
-	private EntiteGeo entiteGeoCourante;
+	private ArrayList<EntiteGeo>			listeEntite;
+	private EntiteGeo						entiteGeoCourante;
 
-	private ArrayList<Ecole> listeEntiteEcole;
-	private Hashtable<String, Ecole> hashEntiteEcole;
+	private ArrayList<Ecole>				listeEntiteEcole;
+	private Hashtable<String, Ecole>		hashEntiteEcole;
 
-	private ArrayList<TitrePoste> listeTitrePoste;
-	private TitrePoste titrePosteCourante;
+	private ArrayList<TitrePoste>			listeTitrePoste;
+	private TitrePoste						titrePosteCourante;
 
-	private ArrayList<TypeAvantage> listeTypeAvantage;
-	private TypeAvantage typeAvantageCourant;
+	private ArrayList<TypeAvantage>			listeTypeAvantage;
+	private TypeAvantage					typeAvantageCourant;
 
-	private ArrayList<NatureAvantage> listeNatureAvantage;
-	private NatureAvantage natureAvantageCourant;
+	private ArrayList<NatureAvantage>		listeNatureAvantage;
+	private NatureAvantage					natureAvantageCourant;
 
-	private ArrayList<TypeDelegation> listeTypeDelegation;
-	private TypeDelegation typeDelegationCourant;
+	private ArrayList<TypeDelegation>		listeTypeDelegation;
+	private TypeDelegation					typeDelegationCourant;
 
-	private ArrayList<TypeRegIndemn> listeTypeRegime;
-	private TypeRegIndemn typeRegimeCourant;
+	private ArrayList<TypeRegIndemn>		listeTypeRegime;
+	private TypeRegIndemn					typeRegimeCourant;
 
-	private ArrayList<Ecole> listeEcole;
-	private Ecole EcoleCourante;
+	private ArrayList<Ecole>				listeEcole;
+	private Ecole							EcoleCourante;
 
-	public String ACTION_SUPPRESSION = "0";
-	public String ACTION_CREATION = "1";
-	public String ACTION_MODIFICATION = "2";
+	public String							ACTION_SUPPRESSION	= "0";
+	public String							ACTION_CREATION		= "1";
+	public String							ACTION_MODIFICATION	= "2";
 
-	private NatureAvantageDao natureAvantageDao;
-	private TypeAvantageDao typeAvantageDao;
-	private TypeDelegationDao typeDelegationDao;
-	private TypeRegIndemnDao typeRegIndemnDao;
-	private AvantageNatureDao avantageNatureDao;
-	private DelegationDao delegationDao;
-	private RegIndemnDao regIndemnDao;
-	private TitrePosteDao titrePosteDao;
-	private FichePosteDao fichePosteDao;
-	private BaseHorairePointageDao baseHorairePointageDao;
+	private NatureAvantageDao				natureAvantageDao;
+	private TypeAvantageDao					typeAvantageDao;
+	private TypeDelegationDao				typeDelegationDao;
+	private TypeRegIndemnDao				typeRegIndemnDao;
+	private AvantageNatureDao				avantageNatureDao;
+	private DelegationDao					delegationDao;
+	private RegIndemnDao					regIndemnDao;
+	private TitrePosteDao					titrePosteDao;
+	private FichePosteDao					fichePosteDao;
+	private HistoFichePosteDao				histoFichePosteDao;
 
-	private IAdsService adsService;
+	private BaseHorairePointageDao			baseHorairePointageDao;
+
+	private IAdsService						adsService;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -120,7 +123,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 		// ----------------------------------//
 		if (MairieUtils.estInterdit(request, getNomEcran())) {
 			// "ERR190",
-			// "Operation impossible. Vous ne disposez pas des droits d'acces a cette option."
+			// "Operation impossible. Vous ne disposez pas des droits d'acces a
+			// cette option."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
@@ -174,6 +178,9 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 		}
 		if (getFichePosteDao() == null) {
 			setFichePosteDao(new FichePosteDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getHistoFichePosteDao() == null) {
+			setHistoFichePosteDao(new HistoFichePosteDao((SirhDao) context.getBean("sirhDao")));
 		}
 		if (getBaseHorairePointageDao() == null) {
 			setBaseHorairePointageDao(new BaseHorairePointageDao((SirhDao) context.getBean("sirhDao")));
@@ -426,15 +433,13 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 		if (getListeBaseHorairePointage() == null) {
 			// Recherche des bases horaires de pointage
-			setListeBaseHorairePointage((ArrayList<BaseHorairePointage>) getBaseHorairePointageDao()
-					.listerBaseHorairePointageOrderByCode());
+			setListeBaseHorairePointage((ArrayList<BaseHorairePointage>) getBaseHorairePointageDao().listerBaseHorairePointageOrderByCode());
 			initialiseListeBaseHorairePointage(request);
 		}
 	}
 
 	private void initialiseListeBaseHorairePointage(HttpServletRequest request) throws Exception {
-		setListeBaseHorairePointage((ArrayList<BaseHorairePointage>) getBaseHorairePointageDao()
-				.listerBaseHorairePointageOrderByCode());
+		setListeBaseHorairePointage((ArrayList<BaseHorairePointage>) getBaseHorairePointageDao().listerBaseHorairePointageOrderByCode());
 		if (getListeBaseHorairePointage().size() != 0) {
 			int tailles[] = { 6, 50 };
 			String padding[] = { "G", "G" };
@@ -645,8 +650,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	 * 
 	 */
 	public boolean performPB_MODIFIER_ENTITE_GEO(HttpServletRequest request) throws Exception {
-		int indice = (Services.estNumerique(getVAL_LB_ENTITE_GEO_SELECT()) ? Integer
-				.parseInt(getVAL_LB_ENTITE_GEO_SELECT()) : -1);
+		int indice = (Services.estNumerique(getVAL_LB_ENTITE_GEO_SELECT()) ? Integer.parseInt(getVAL_LB_ENTITE_GEO_SELECT()) : -1);
 
 		if (indice != -1 && indice < getListeEntite().size()) {
 			EntiteGeo entiteGeo = getListeEntite().get(indice);
@@ -811,8 +815,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	 */
 	public boolean performPB_SUPPRIMER_ENTITE_GEO(HttpServletRequest request) throws Exception {
 
-		int indice = (Services.estNumerique(getVAL_LB_ENTITE_GEO_SELECT()) ? Integer
-				.parseInt(getVAL_LB_ENTITE_GEO_SELECT()) : -1);
+		int indice = (Services.estNumerique(getVAL_LB_ENTITE_GEO_SELECT()) ? Integer.parseInt(getVAL_LB_ENTITE_GEO_SELECT()) : -1);
 
 		if (indice != -1 && indice < getListeEntite().size()) {
 			EntiteGeo eg = getListeEntite().get(indice);
@@ -849,8 +852,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	 */
 	public boolean performPB_SUPPRIMER_NATURE_AVANTAGE(HttpServletRequest request) throws Exception {
 
-		int indice = (Services.estNumerique(getVAL_LB_NATURE_AVANTAGE_SELECT()) ? Integer
-				.parseInt(getVAL_LB_NATURE_AVANTAGE_SELECT()) : -1);
+		int indice = (Services.estNumerique(getVAL_LB_NATURE_AVANTAGE_SELECT()) ? Integer.parseInt(getVAL_LB_NATURE_AVANTAGE_SELECT()) : -1);
 
 		if (indice != -1 && indice < getListeNatureAvantage().size()) {
 			NatureAvantage na = getListeNatureAvantage().get(indice);
@@ -914,8 +916,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	 */
 	public boolean performPB_SUPPRIMER_TYPE_AVANTAGE(HttpServletRequest request) throws Exception {
 
-		int indice = (Services.estNumerique(getVAL_LB_TYPE_AVANTAGE_SELECT()) ? Integer
-				.parseInt(getVAL_LB_TYPE_AVANTAGE_SELECT()) : -1);
+		int indice = (Services.estNumerique(getVAL_LB_TYPE_AVANTAGE_SELECT()) ? Integer.parseInt(getVAL_LB_TYPE_AVANTAGE_SELECT()) : -1);
 
 		if (indice != -1 && indice < getListeTypeAvantage().size()) {
 			TypeAvantage ta = getListeTypeAvantage().get(indice);
@@ -947,8 +948,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	 */
 	public boolean performPB_SUPPRIMER_TYPE_DELEGATION(HttpServletRequest request) throws Exception {
 
-		int indice = (Services.estNumerique(getVAL_LB_TYPE_DELEGATION_SELECT()) ? Integer
-				.parseInt(getVAL_LB_TYPE_DELEGATION_SELECT()) : -1);
+		int indice = (Services.estNumerique(getVAL_LB_TYPE_DELEGATION_SELECT()) ? Integer.parseInt(getVAL_LB_TYPE_DELEGATION_SELECT()) : -1);
 
 		if (indice != -1 && indice < getListeTypeDelegation().size()) {
 			TypeDelegation tg = getListeTypeDelegation().get(indice);
@@ -980,8 +980,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	 */
 	public boolean performPB_SUPPRIMER_TYPE_REGIME(HttpServletRequest request) throws Exception {
 
-		int indice = (Services.estNumerique(getVAL_LB_TYPE_REGIME_SELECT()) ? Integer
-				.parseInt(getVAL_LB_TYPE_REGIME_SELECT()) : -1);
+		int indice = (Services.estNumerique(getVAL_LB_TYPE_REGIME_SELECT()) ? Integer.parseInt(getVAL_LB_TYPE_REGIME_SELECT()) : -1);
 
 		if (indice != -1 && indice < getListeTypeRegime().size()) {
 			TypeRegIndemn tr = getListeTypeRegime().get(indice);
@@ -1022,8 +1021,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 			if (getVAL_ST_ACTION_ENTITE_GEO().equals(ACTION_CREATION)) {
 				// on recupere l'école (si elle est saisie !)
 				setEntiteGeoCourante(new EntiteGeo());
-				int indice = (Services.estNumerique(getVAL_LB_ENTITE_GEO_ECOLE_SELECT()) ? Integer
-						.parseInt(getVAL_LB_ENTITE_GEO_ECOLE_SELECT()) : -1);
+				int indice = (Services.estNumerique(getVAL_LB_ENTITE_GEO_ECOLE_SELECT()) ? Integer.parseInt(getVAL_LB_ENTITE_GEO_ECOLE_SELECT())
+						: -1);
 				if (indice != 0) {
 					String codeEcole = ((Ecole) getListeEntiteEcole().get(indice - 1)).getCdecol();
 					getEntiteGeoCourante().setCdEcol(codeEcole);
@@ -1044,8 +1043,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 				setEntiteGeoCourante(null);
 			} else if (getVAL_ST_ACTION_ENTITE_GEO().equals(ACTION_MODIFICATION)) {
 				// on recupere l'école (si elle est saisie !)
-				int indice = (Services.estNumerique(getVAL_LB_ENTITE_GEO_ECOLE_SELECT()) ? Integer
-						.parseInt(getVAL_LB_ENTITE_GEO_ECOLE_SELECT()) : -1);
+				int indice = (Services.estNumerique(getVAL_LB_ENTITE_GEO_ECOLE_SELECT()) ? Integer.parseInt(getVAL_LB_ENTITE_GEO_ECOLE_SELECT())
+						: -1);
 				if (indice != 0) {
 					String codeEcole = ((Ecole) getListeEntiteEcole().get(indice - 1)).getCdecol();
 					getEntiteGeoCourante().setCdEcol(codeEcole);
@@ -1095,13 +1094,11 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 		// Verification si suppression d'une entité géographique utilisee sur
 		// une fiche de poste
 		if (getVAL_ST_ACTION_ENTITE_GEO().equals(ACTION_SUPPRESSION)
-				&& getFichePosteDao().listerFichePosteAvecEntiteGeo(
-						Integer.valueOf(getEntiteGeoCourante().getIdEntiteGeo())).size() > 0) {
+				&& getFichePosteDao().listerFichePosteAvecEntiteGeo(Integer.valueOf(getEntiteGeoCourante().getIdEntiteGeo())).size() > 0) {
 
 			// "ERR989",
 			// "Suppression impossible. Il existe au moins @ rattaché a @."
-			getTransaction().declarerErreur(
-					MessageUtils.getMessage("ERR989", "une fiche de poste", "cette entité géographique"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR989", "une fiche de poste", "cette entité géographique"));
 			return false;
 		}
 
@@ -1112,8 +1109,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 				if (entite.getLibEntiteGeo().equals(getVAL_EF_ENTITE_GEO().toUpperCase())) {
 					// "ERR974",
 					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
-					getTransaction().declarerErreur(
-							MessageUtils.getMessage("ERR974", "une entité géographique", "ce libellé"));
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "une entité géographique", "ce libellé"));
 					return false;
 				}
 			}
@@ -1195,13 +1191,11 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 		// Verification si suppression d'une nature d'avantage en nature
 		// utilisee sur un avantage en nature
 		if (getVAL_ST_ACTION_NATURE_AVANTAGE().equals(ACTION_SUPPRESSION)
-				&& getAvantageNatureDao().listerAvantageNatureAvecNatureAvantage(
-						getNatureAvantageCourant().getIdNatureAvantage()).size() > 0) {
+				&& getAvantageNatureDao().listerAvantageNatureAvecNatureAvantage(getNatureAvantageCourant().getIdNatureAvantage()).size() > 0) {
 
 			// "ERR989",
 			// "Suppression impossible. Il existe au moins @ rattaché a @."
-			getTransaction().declarerErreur(
-					MessageUtils.getMessage("ERR989", "un avantage en nature", "cette nature d'avantage en nature"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR989", "un avantage en nature", "cette nature d'avantage en nature"));
 			return false;
 		}
 
@@ -1212,8 +1206,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 				if (nature.getLibNatureAvantage().equals(getVAL_EF_NATURE_AVANTAGE().toUpperCase())) {
 					// "ERR974",
 					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
-					getTransaction().declarerErreur(
-							MessageUtils.getMessage("ERR974", "une nature d'avantage en nature", "ce libellé"));
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "une nature d'avantage en nature", "ce libellé"));
 					return false;
 				}
 			}
@@ -1294,14 +1287,19 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 		// Verification si suppression d'un titre de poste utilise sur une fiche
 		// de poste
-		if (getVAL_ST_ACTION_TITRE().equals(ACTION_SUPPRESSION)
-				&& getFichePosteDao().listerFichePosteAvecTitrePoste(getTitrePosteCourante().getIdTitrePoste()).size() > 0) {
-
-			// "ERR989",
-			// "Suppression impossible. Il existe au moins @ rattaché a @."
-			getTransaction().declarerErreur(
-					MessageUtils.getMessage("ERR989", "une fiche de poste", "ce titre de poste"));
-			return false;
+		if (getVAL_ST_ACTION_TITRE().equals(ACTION_SUPPRESSION)) {
+			if (getFichePosteDao().listerFichePosteAvecTitrePoste(getTitrePosteCourante().getIdTitrePoste()).size() > 0) {
+				// "ERR989",
+				// "Suppression impossible. Il existe au moins @ rattaché a @."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR989", "une fiche de poste", "ce titre de poste"));
+				return false;
+			}
+			if (getHistoFichePosteDao().listerHistoFichePosteAvecTitrePoste(getTitrePosteCourante().getIdTitrePoste()).size() > 0) {
+				// "ERR989",
+				// "Suppression impossible. Il existe au moins @ rattaché a @."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR989", "un historique de fiche de poste", "ce titre de poste"));
+				return false;
+			}
 		}
 
 		// Vérification des contraintes d'unicité du titre de poste
@@ -1311,8 +1309,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 				if (titre.getLibTitrePoste().equals(getVAL_EF_TITRE().toUpperCase())) {
 					// "ERR974",
 					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
-					getTransaction().declarerErreur(
-							MessageUtils.getMessage("ERR974", "un titre de poste", "ce libellé"));
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "un titre de poste", "ce libellé"));
 					return false;
 				}
 			}
@@ -1394,13 +1391,11 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 		// Verification si suppression d'un type d'avantage utilise sur un
 		// avantage en nature
 		if (getVAL_ST_ACTION_TYPE_AVANTAGE().equals(ACTION_SUPPRESSION)
-				&& getAvantageNatureDao().listerAvantageNatureAvecTypeAvantage(
-						getTypeAvantageCourant().getIdTypeAvantage()).size() > 0) {
+				&& getAvantageNatureDao().listerAvantageNatureAvecTypeAvantage(getTypeAvantageCourant().getIdTypeAvantage()).size() > 0) {
 
 			// "ERR989",
 			// "Suppression impossible. Il existe au moins @ rattaché a @."
-			getTransaction().declarerErreur(
-					MessageUtils.getMessage("ERR989", "un avantage en nature", "ce type d'avantage en nature"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR989", "un avantage en nature", "ce type d'avantage en nature"));
 			return false;
 		}
 
@@ -1411,8 +1406,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 				if (type.getLibTypeAvantage().equals(getVAL_EF_TYPE_AVANTAGE().toUpperCase())) {
 					// "ERR974",
 					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
-					getTransaction().declarerErreur(
-							MessageUtils.getMessage("ERR974", "un type d'avantage en nature", "ce libellé"));
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "un type d'avantage en nature", "ce libellé"));
 					return false;
 				}
 			}
@@ -1494,13 +1488,11 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 		// Verification si suppression d'un type de délégation sur une
 		// délégation
 		if (getVAL_ST_ACTION_TYPE_DELEGATION().equals(ACTION_SUPPRESSION)
-				&& getDelegationDao().listerDelegationAvecTypeDelegation(
-						getTypeDelegationCourant().getIdTypeDelegation()).size() > 0) {
+				&& getDelegationDao().listerDelegationAvecTypeDelegation(getTypeDelegationCourant().getIdTypeDelegation()).size() > 0) {
 
 			// "ERR989",
 			// "Suppression impossible. Il existe au moins @ rattaché a @."
-			getTransaction().declarerErreur(
-					MessageUtils.getMessage("ERR989", "une délégation", "ce type de délégation"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR989", "une délégation", "ce type de délégation"));
 			return false;
 		}
 
@@ -1511,8 +1503,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 				if (type.getLibTypeDelegation().equals(getVAL_EF_TYPE_DELEGATION().toUpperCase())) {
 					// "ERR974",
 					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
-					getTransaction().declarerErreur(
-							MessageUtils.getMessage("ERR974", "un type de délégation", "ce libellé"));
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "un type de délégation", "ce libellé"));
 					return false;
 				}
 			}
@@ -1594,13 +1585,11 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 		// Verification si suppression d'un type de régime idemnitaire utilisee
 		// sur un régime idemnitaire
 		if (getVAL_ST_ACTION_TYPE_REGIME().equals(ACTION_SUPPRESSION)
-				&& getRegIndemnDao()
-						.listerRegimeIndemnitaireAvecTypeRegime(getTypeRegimeCourant().getIdTypeRegIndemn()).size() > 0) {
+				&& getRegIndemnDao().listerRegimeIndemnitaireAvecTypeRegime(getTypeRegimeCourant().getIdTypeRegIndemn()).size() > 0) {
 
 			// "ERR989",
 			// "Suppression impossible. Il existe au moins @ rattaché a @."
-			getTransaction().declarerErreur(
-					MessageUtils.getMessage("ERR989", "un régime indemnitaire", "ce type de régime idemnitaire"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR989", "un régime indemnitaire", "ce type de régime idemnitaire"));
 			return false;
 		}
 
@@ -1611,8 +1600,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 				if (type.getLibTypeRegIndemn().equals(getVAL_EF_TYPE_REGIME().toUpperCase())) {
 					// "ERR974",
 					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
-					getTransaction().declarerErreur(
-							MessageUtils.getMessage("ERR974", "un type de régime idemnitaire", "ce libellé"));
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "un type de régime idemnitaire", "ce libellé"));
 					return false;
 				}
 			}
@@ -3048,8 +3036,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	public boolean performPB_MODIFIER_BASE_HORAIRE_POINTAGE(HttpServletRequest request) throws Exception {
-		int indice = (Services.estNumerique(getVAL_LB_BASE_HORAIRE_POINTAGE_SELECT()) ? Integer
-				.parseInt(getVAL_LB_BASE_HORAIRE_POINTAGE_SELECT()) : -1);
+		int indice = (Services.estNumerique(getVAL_LB_BASE_HORAIRE_POINTAGE_SELECT()) ? Integer.parseInt(getVAL_LB_BASE_HORAIRE_POINTAGE_SELECT())
+				: -1);
 		if (indice != -1 && indice < getListeBaseHorairePointage().size()) {
 			BaseHorairePointage base = getListeBaseHorairePointage().get(indice);
 			setBaseHorairePointageCourant(base);
@@ -3065,17 +3053,13 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 			addZone(getNOM_EF_HEURE_DIMANCHE(), base.getHeureDimanche().toString());
 
 			if (base.getBaseLegale() != 0) {
-				String avantPoint = base.getBaseLegale().toString()
-						.substring(0, base.getBaseLegale().toString().indexOf("."));
-				String apresPoint = base
-						.getBaseLegale()
-						.toString()
-						.substring(base.getBaseLegale().toString().indexOf(".") + 1,
-								base.getBaseLegale().toString().length());
+				String avantPoint = base.getBaseLegale().toString().substring(0, base.getBaseLegale().toString().indexOf("."));
+				String apresPoint = base.getBaseLegale().toString().substring(base.getBaseLegale().toString().indexOf(".") + 1,
+						base.getBaseLegale().toString().length());
 
 				addZone(getNOM_EF_BASE_HEBDO_LEG_H(), avantPoint.equals("0") ? Const.CHAINE_VIDE : avantPoint);
-				addZone(getNOM_EF_BASE_HEBDO_LEG_M(), apresPoint.equals("0") ? Const.CHAINE_VIDE
-						: apresPoint.length() == 1 ? apresPoint + "0" : apresPoint);
+				addZone(getNOM_EF_BASE_HEBDO_LEG_M(),
+						apresPoint.equals("0") ? Const.CHAINE_VIDE : apresPoint.length() == 1 ? apresPoint + "0" : apresPoint);
 			} else {
 				addZone(getNOM_EF_BASE_HEBDO_LEG_H(), Const.CHAINE_VIDE);
 				addZone(getNOM_EF_BASE_HEBDO_LEG_M(), Const.CHAINE_VIDE);
@@ -3083,17 +3067,13 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 			}
 
 			if (base.getBaseCalculee() != 0) {
-				String avantPoint = base.getBaseCalculee().toString()
-						.substring(0, base.getBaseCalculee().toString().indexOf("."));
-				String apresPoint = base
-						.getBaseCalculee()
-						.toString()
-						.substring(base.getBaseCalculee().toString().indexOf(".") + 1,
-								base.getBaseCalculee().toString().length());
+				String avantPoint = base.getBaseCalculee().toString().substring(0, base.getBaseCalculee().toString().indexOf("."));
+				String apresPoint = base.getBaseCalculee().toString().substring(base.getBaseCalculee().toString().indexOf(".") + 1,
+						base.getBaseCalculee().toString().length());
 
 				addZone(getNOM_EF_BASE_HEBDO_H(), avantPoint.equals("0") ? Const.CHAINE_VIDE : avantPoint);
-				addZone(getNOM_EF_BASE_HEBDO_M(), apresPoint.equals("0") ? Const.CHAINE_VIDE
-						: apresPoint.length() == 1 ? apresPoint + "0" : apresPoint);
+				addZone(getNOM_EF_BASE_HEBDO_M(),
+						apresPoint.equals("0") ? Const.CHAINE_VIDE : apresPoint.length() == 1 ? apresPoint + "0" : apresPoint);
 			} else {
 				addZone(getNOM_EF_BASE_HEBDO_H(), Const.CHAINE_VIDE);
 				addZone(getNOM_EF_BASE_HEBDO_M(), Const.CHAINE_VIDE);
@@ -3121,14 +3101,12 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 		if (!performControlerRegleGestionBaseHorairePointage(request))
 			return false;
 
-		if (getVAL_ST_ACTION_BASE_HORAIRE_POINTAGE() != null
-				&& getVAL_ST_ACTION_BASE_HORAIRE_POINTAGE() != Const.CHAINE_VIDE) {
+		if (getVAL_ST_ACTION_BASE_HORAIRE_POINTAGE() != null && getVAL_ST_ACTION_BASE_HORAIRE_POINTAGE() != Const.CHAINE_VIDE) {
 			if (getVAL_ST_ACTION_BASE_HORAIRE_POINTAGE().equals(ACTION_CREATION)) {
 				setBaseHorairePointageCourant(new BaseHorairePointage());
 				getBaseHorairePointageCourant().setCodeBaseHorairePointage(getVAL_EF_CODE_BASE_HORAIRE_POINTAGE());
 				getBaseHorairePointageCourant().setLibelleBaseHorairePointage(getVAL_EF_LIB_BASE_HORAIRE_POINTAGE());
-				getBaseHorairePointageCourant().setDescriptionBaseHorairePointage(
-						getVAL_EF_DESC_BASE_HORAIRE_POINTAGE());
+				getBaseHorairePointageCourant().setDescriptionBaseHorairePointage(getVAL_EF_DESC_BASE_HORAIRE_POINTAGE());
 				getBaseHorairePointageCourant().setHeureLundi(Double.valueOf(getVAL_EF_HEURE_LUNDI()));
 				getBaseHorairePointageCourant().setHeureMardi(Double.valueOf(getVAL_EF_HEURE_MARDI()));
 				getBaseHorairePointageCourant().setHeureMercredi(Double.valueOf(getVAL_EF_HEURE_MERCREDI()));
@@ -3137,10 +3115,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 				getBaseHorairePointageCourant().setHeureSamedi(Double.valueOf(getVAL_EF_HEURE_SAMEDI()));
 				getBaseHorairePointageCourant().setHeureDimanche(Double.valueOf(getVAL_EF_HEURE_DIMANCHE()));
 
-				String heureBaseLegale = getVAL_EF_BASE_HEBDO_LEG_H().equals(Const.CHAINE_VIDE) ? "0"
-						: getVAL_EF_BASE_HEBDO_LEG_H();
-				String minuteBaseLegale = getVAL_EF_BASE_HEBDO_LEG_M().equals(Const.CHAINE_VIDE) ? "0"
-						: getVAL_EF_BASE_HEBDO_LEG_M();
+				String heureBaseLegale = getVAL_EF_BASE_HEBDO_LEG_H().equals(Const.CHAINE_VIDE) ? "0" : getVAL_EF_BASE_HEBDO_LEG_H();
+				String minuteBaseLegale = getVAL_EF_BASE_HEBDO_LEG_M().equals(Const.CHAINE_VIDE) ? "0" : getVAL_EF_BASE_HEBDO_LEG_M();
 				String totalBaseLegale = heureBaseLegale + ":" + minuteBaseLegale;
 				getBaseHorairePointageCourant().setBaseLegale(getHeureDouble(totalBaseLegale));
 
@@ -3158,8 +3134,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 			} else if (getVAL_ST_ACTION_BASE_HORAIRE_POINTAGE().equals(ACTION_MODIFICATION)) {
 				getBaseHorairePointageCourant().setLibelleBaseHorairePointage(getVAL_EF_LIB_BASE_HORAIRE_POINTAGE());
-				getBaseHorairePointageCourant().setDescriptionBaseHorairePointage(
-						getVAL_EF_DESC_BASE_HORAIRE_POINTAGE());
+				getBaseHorairePointageCourant().setDescriptionBaseHorairePointage(getVAL_EF_DESC_BASE_HORAIRE_POINTAGE());
 				getBaseHorairePointageCourant().setHeureLundi(Double.valueOf(getVAL_EF_HEURE_LUNDI()));
 				getBaseHorairePointageCourant().setHeureMardi(Double.valueOf(getVAL_EF_HEURE_MARDI()));
 				getBaseHorairePointageCourant().setHeureMercredi(Double.valueOf(getVAL_EF_HEURE_MERCREDI()));
@@ -3168,10 +3143,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 				getBaseHorairePointageCourant().setHeureSamedi(Double.valueOf(getVAL_EF_HEURE_SAMEDI()));
 				getBaseHorairePointageCourant().setHeureDimanche(Double.valueOf(getVAL_EF_HEURE_DIMANCHE()));
 
-				String heureBaseLegale = getVAL_EF_BASE_HEBDO_LEG_H().equals(Const.CHAINE_VIDE) ? "0"
-						: getVAL_EF_BASE_HEBDO_LEG_H();
-				String minuteBaseLegale = getVAL_EF_BASE_HEBDO_LEG_M().equals(Const.CHAINE_VIDE) ? "0"
-						: getVAL_EF_BASE_HEBDO_LEG_M();
+				String heureBaseLegale = getVAL_EF_BASE_HEBDO_LEG_H().equals(Const.CHAINE_VIDE) ? "0" : getVAL_EF_BASE_HEBDO_LEG_H();
+				String minuteBaseLegale = getVAL_EF_BASE_HEBDO_LEG_M().equals(Const.CHAINE_VIDE) ? "0" : getVAL_EF_BASE_HEBDO_LEG_M();
 				String totalBaseLegale = heureBaseLegale + ":" + minuteBaseLegale;
 				getBaseHorairePointageCourant().setBaseLegale(getHeureDouble(totalBaseLegale));
 
@@ -3234,20 +3207,16 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 		if (getVAL_ST_ACTION_BASE_HORAIRE_POINTAGE().equals(ACTION_CREATION)) {
 
 			for (BaseHorairePointage base : getListeBaseHorairePointage()) {
-				if (base.getLibelleBaseHorairePointage().trim()
-						.equals(getVAL_EF_LIB_BASE_HORAIRE_POINTAGE().toUpperCase().trim())) {
+				if (base.getLibelleBaseHorairePointage().trim().equals(getVAL_EF_LIB_BASE_HORAIRE_POINTAGE().toUpperCase().trim())) {
 					// "ERR974",
 					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
-					getTransaction().declarerErreur(
-							MessageUtils.getMessage("ERR974", "une base horaire de pointage", "ce libellé"));
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "une base horaire de pointage", "ce libellé"));
 					return false;
 				}
-				if (base.getCodeBaseHorairePointage().trim()
-						.equals(getVAL_EF_CODE_BASE_HORAIRE_POINTAGE().toUpperCase().trim())) {
+				if (base.getCodeBaseHorairePointage().trim().equals(getVAL_EF_CODE_BASE_HORAIRE_POINTAGE().toUpperCase().trim())) {
 					// "ERR974",
 					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
-					getTransaction().declarerErreur(
-							MessageUtils.getMessage("ERR974", "une base horaire de pointage", "ce code"));
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "une base horaire de pointage", "ce code"));
 					return false;
 				}
 			}
@@ -3275,15 +3244,13 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 			return false;
 		}
 		// Verification nb heure legale numerique
-		if (getZone(getNOM_EF_BASE_HEBDO_LEG_H()).length() != 0
-				&& !Services.estNumerique(getZone(getNOM_EF_BASE_HEBDO_LEG_H()))) {
+		if (getZone(getNOM_EF_BASE_HEBDO_LEG_H()).length() != 0 && !Services.estNumerique(getZone(getNOM_EF_BASE_HEBDO_LEG_H()))) {
 			// "ERR992", "La zone @ doit être numérique.";
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "heures légale"));
 			return false;
 		}
 		// Verification nb heure legale numerique
-		if (getZone(getNOM_EF_BASE_HEBDO_LEG_M()).length() != 0
-				&& !Services.estNumerique(getZone(getNOM_EF_BASE_HEBDO_LEG_M()))) {
+		if (getZone(getNOM_EF_BASE_HEBDO_LEG_M()).length() != 0 && !Services.estNumerique(getZone(getNOM_EF_BASE_HEBDO_LEG_M()))) {
 			// "ERR992", "La zone @ doit être numérique.";
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "minutes légale"));
 			return false;
@@ -3420,7 +3387,14 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	public String getCurrentWholeTreeJS(String serviceSaisi) {
-		return adsService.getCurrentWholeTreeActifTransitoireJS(
-				null != serviceSaisi && !"".equals(serviceSaisi) ? serviceSaisi : null, false);
+		return adsService.getCurrentWholeTreeActifTransitoireJS(null != serviceSaisi && !"".equals(serviceSaisi) ? serviceSaisi : null, false);
+	}
+
+	public HistoFichePosteDao getHistoFichePosteDao() {
+		return histoFichePosteDao;
+	}
+
+	public void setHistoFichePosteDao(HistoFichePosteDao histoFichePosteDao) {
+		this.histoFichePosteDao = histoFichePosteDao;
 	}
 }
