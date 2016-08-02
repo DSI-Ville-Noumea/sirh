@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.stereotype.Service;
+
 import nc.mairie.enums.EnumEtatAvancement;
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
 import nc.mairie.metier.Const;
@@ -36,20 +38,13 @@ import nc.mairie.spring.dao.metier.parametrage.MotifAvancementDao;
 import nc.mairie.spring.dao.metier.poste.AffectationDao;
 import nc.mairie.spring.dao.metier.poste.FichePosteDao;
 import nc.mairie.spring.dao.metier.referentiel.AvisCapDao;
-import nc.mairie.spring.ws.ISirhWSConsumer;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.Transaction;
 import nc.mairie.utils.MessageUtils;
 import nc.noumea.mairie.ads.dto.EntiteDto;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 @Service(value = "avancementService")
 public class AvancementService implements IAvancementService {
-
-	@Autowired
-	private ISirhWSConsumer sirhConsumer;
 
 	@Override
 	public AvancementConvCol calculAvancementConventionCollective(Transaction aTransaction, Agent a, String annee, IAdsService adsService, FichePosteDao ficheDao, AffectationDao affDao)

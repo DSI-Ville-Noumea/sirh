@@ -6,9 +6,6 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 
-import nc.mairie.gestionagent.dto.KiosqueDto;
-import nc.mairie.gestionagent.servlets.ServletAgent;
-
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.auth.AuthScope;
@@ -25,6 +22,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import flexjson.JSONDeserializer;
+import nc.mairie.gestionagent.dto.KiosqueDto;
+import nc.mairie.gestionagent.servlets.ServletAgent;
 
 @Service
 public class SirhKiosqueWSConsumer implements ISirhKiosqueWSConsumer {
