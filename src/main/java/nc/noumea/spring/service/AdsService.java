@@ -3,20 +3,19 @@ package nc.noumea.spring.service;
 import java.util.ArrayList;
 import java.util.List;
 
-import nc.mairie.gestionagent.dto.AgentDto;
-import nc.mairie.gestionagent.dto.AgentWithServiceDto;
-import nc.mairie.gestionagent.dto.EntiteWithAgentWithServiceDto;
-import nc.mairie.metier.Const;
-import nc.mairie.spring.dao.utils.SirhDao;
-import nc.mairie.spring.ws.IADSWSConsumer;
-import nc.noumea.mairie.ads.dto.EntiteDto;
-import nc.noumea.mairie.ads.dto.ReferenceDto;
-import nc.noumea.mairie.ads.dto.StatutEntiteEnum;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import nc.mairie.gestionagent.dto.AgentDto;
+import nc.mairie.gestionagent.dto.AgentWithServiceDto;
+import nc.mairie.gestionagent.dto.EntiteWithAgentWithServiceDto;
+import nc.mairie.metier.Const;
+import nc.mairie.spring.ws.IADSWSConsumer;
+import nc.noumea.mairie.ads.dto.EntiteDto;
+import nc.noumea.mairie.ads.dto.ReferenceDto;
+import nc.noumea.mairie.ads.dto.StatutEntiteEnum;
 
 @Service
 public class AdsService implements IAdsService {
@@ -25,9 +24,6 @@ public class AdsService implements IAdsService {
 
 	@Autowired
 	private IADSWSConsumer adsConsumer;
-
-	@Autowired
-	private SirhDao sirhDao;
 
 	private EntiteDto currentTree;
 

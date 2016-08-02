@@ -201,14 +201,14 @@ public class OeSMConvocation extends BasicProcess {
 					sm.getIdMedecin() != null ? String.valueOf(getListeMedecin().indexOf(getHashMedecin().get(sm.getIdMedecin()))) : Const.ZERO);
 			if (sm.getEtat().equals(EnumEtatSuiviMed.EFFECTUE.getCode())) {
 				VisiteMedicale vm = null;
+				Medecin medecin = null;
 				try {
 					vm = getVisiteMedicaleDao().chercherVisiteMedicaleLieeSM(sm.getIdSuiviMed(), sm.getIdAgent());
+					if (null != vm && vm.getIdMedecin() != null) {
+						medecin = getMedecinDao().chercherMedecin(vm.getIdMedecin());
+					}
 				} catch (EmptyResultDataAccessException e) {
 
-				}
-				Medecin medecin = null;
-				if (null != vm && vm.getIdMedecin() != null) {
-					medecin = getMedecinDao().chercherMedecin(vm.getIdMedecin());
 				}
 				addZone(getNOM_ST_MEDECIN(i), medecin != null ? medecin.getPrenomMedecin() + " " + medecin.getNomMedecin() : Const.CHAINE_VIDE);
 				addZone(getNOM_ST_DATE_RDV(i), sm.getDateProchaineVisite() == null ? Const.CHAINE_VIDE
