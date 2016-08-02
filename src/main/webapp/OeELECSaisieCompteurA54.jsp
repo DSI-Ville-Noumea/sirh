@@ -54,6 +54,10 @@ function testClickEnrigistrer(){
 				<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_ANNEE_FILTRE() %>" style="width:100px;margin-right:20px;">
 					<%=process.forComboHTML(process.getVAL_LB_ANNEE_FILTRE(), process.getVAL_LB_ANNEE_FILTRE_SELECT()) %>
 				</SELECT>
+				<span class="sigp2" style="width:40px">OS : </span>
+				<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_OS_FILTRE() %>" style="width:100px;margin-right:20px;">
+					<%=process.forComboHTML(process.getVAL_LB_OS_FILTRE(), process.getVAL_LB_OS_FILTRE_SELECT()) %>
+				</SELECT>
 	          	<INPUT type="submit" class="sigp2-Bouton-100" value="Filtrer" name="<%=process.getNOM_PB_FILTRER()%>">
 	          	<% if(process.isDuplicationPossible()){ %>
 	          		<INPUT type="submit" class="sigp2-Bouton-200" value="Dupliquer sur l'année suivante" name="<%=process.getNOM_PB_DUPLIQUER()%>">
@@ -67,18 +71,19 @@ function testClickEnrigistrer(){
 								    <img title="ajouter" border="0" src="images/ajout.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_AJOUTER()%>');" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>">
 								</td>
 								<td align="center" width="60px;">Matricule</td>
-								<td width="300px;"><INPUT type="radio" onclick='executeBouton("<%=process.getNOM_PB_TRI() %>")' <%= process.forRadioHTML(process.getNOM_RG_TRI(),process.getNOM_RB_TRI_AGENT())%>>Agent</TD>
-								<td width="100px;"><INPUT type="radio" onclick='executeBouton("<%=process.getNOM_PB_TRI() %>")' <%= process.forRadioHTML(process.getNOM_RG_TRI(),process.getNOM_RB_TRI_OS())%>>OS</TD>
+								<td width="300px;">Agent</TD>
+								<td width="100px;">OS</TD>
 								<td align="center" width="50px;">Année</td>
 								<td align="center" width="90px;">Nb jours</td>
 								<td align="center" width="20px;">Actif</td>
 								<td align="center">Motif</td>
 							</tr>
 							<%
-							if (process.getListeCompteur()!=null){
-								for (int i = 0;i<process.getListeCompteur().size();i++){
+							if (process.getListeCompteurAgent()!=null){
+								for (int j = 0;j<process.getListeCompteurAgent().size();j++){
+									Integer  i = process.getListeCompteurAgent().get(j).getAgent().getIdAgent();
 							%>
-									<tr id="<%=i%>" onmouseover="SelectLigne(<%=i%>,<%=process.getListeCompteur().size()%>)">
+									<tr id="<%=i%>" onmouseover="SelectLigne(<%=j%>,<%=process.getListeCompteur().size()%>)">
 										<td class="sigp2NewTab-liste" align="center">
 											<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, "") %>" name="<%=process.getNOM_PB_VISUALISATION(i)%>">
 				    						<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_VISUALISATION(i)%>">
@@ -162,6 +167,16 @@ function testClickEnrigistrer(){
 					</td>
 				</tr>
 				<tr>
+					<td>
+						<span class="sigp2-saisie">OS :</span>
+					</td>
+					<td>
+						<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_OS() %>">
+							<%=process.forComboHTML(process.getVAL_LB_OS(), process.getVAL_LB_OS_SELECT()) %>
+						</SELECT>
+					</td>
+				</tr>
+				<tr>
 					<td colspan="2">
 						<%if(process.getVAL_ST_ACTION().equals(process.ACTION_CREATION)){%>
 							<INPUT type="submit" class="sigp2-Bouton-100" value="Creer" name="<%=process.getNOM_PB_VALIDER()%>">
@@ -220,6 +235,16 @@ function testClickEnrigistrer(){
 					</td>
 				</tr>
 				<tr>
+					<td>
+						<span class="sigp2-saisie">OS :</span>
+					</td>
+					<td>
+						<SELECT disabled="disabled" class="sigp2-saisie" name="<%= process.getNOM_LB_OS() %>">
+							<%=process.forComboHTML(process.getVAL_LB_OS(), process.getVAL_LB_OS_SELECT()) %>
+						</SELECT>
+					</td>
+				</tr>
+				<tr>
 					<td colspan="2">
                         <INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">	
 					</td>
@@ -228,97 +253,9 @@ function testClickEnrigistrer(){
 			<%} %>
 		</FIELDSET>
 		<%} %>
-		
-		<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
-			<legend class="sigp2Legend">Groupement par OS</legend>			
-				<div style="overflow: auto;height: 250px;width:1000px;">
-						<table class="sigp2NewTab" style="text-align:left;width:980px;">
-							<tr bgcolor="#EFEFEF">
-								<td width="100px;">Sigle</td>
-								<td width="700px;">Organisation syndicale</td>
-								<td>Représentants</td>
-							</tr>
-							<%
-								for (int j = 0;j<process.getListeOrganisationSyndicale().size();j++){
-									Integer i = process.getListeOrganisationSyndicale().get(j).getIdOrganisation();
-							%>
-									<tr id="<%=i%>" onmouseover="SelectLigne(<%=i%>,<%=process.getListeOrganisationSyndicale().size()%>)">
-										<td class="sigp2NewTab-liste"><%=process.getVAL_ST_SIGLE_OS(i)%></td>
-										<td class="sigp2NewTab-liste"><%=process.getVAL_ST_OS(i)%></td>
-										<td class="sigp2NewTab-liste">										
-											<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, "") %>" name="<%=process.getNOM_PB_VISU_REPRESENTANT(i)%>">
-				    						<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_VISU_REPRESENTANT(i)%>">
-				    						<INPUT title="modifier" type="image" src="images/modifier.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_MODIFIER_REPRESENTANT(i)%>">
-										</td>
-									</tr>
-									<%
-								}
-							%>
-						</table>	
-						<BR/><BR/>
-						
-			<%if(process.getVAL_ST_ACTION().equals(process.ACTION_VISU_REPRESENTANT)){ %>
-					<table class="sigp2NewTab" style="text-align:left;width:980px;">
-							<tr bgcolor="#EFEFEF">
-								<td width="300px" >Agent</td>
-							</tr>
-							<%
-							if (process.getListeRepresentant()!=null){
-								for (int j = 0;j<process.getListeRepresentant().size();j++){
-									Integer i = process.getListeRepresentant().get(j).getIdAgent();
-							%>
-									<tr id="<%=i%>" onmouseover="SelectLigne(<%=i%>,<%=process.getListeRepresentant().size()%>)">
-										<td class="sigp2NewTab-liste"><%=process.getVAL_ST_AGENT_REPRESENTANT(i)%></td>
-									</tr>
-									<%
-								}
-							}%>
-						</table>			
-			<%}else if(process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION_REPRESENTANT)){ %>			
-					<table class="sigp2NewTab" style="text-align:left;width:980px;">
-							<tr bgcolor="#EFEFEF">
-								<td width="20px;">
-									<img title="ajouter" border="0" src="images/ajout.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_AJOUTER_REPRESENTANT()%>');" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>">
-								</td>
-								<td width="300px">Agent</td>
-							</tr>
-							<%
-							if (process.getListeRepresentant()!=null){
-								for (int j = 0;j<process.getListeRepresentant().size();j++){
-									Integer i = process.getListeRepresentant().get(j).getIdAgent();
-							%>
-									<tr id="<%=i%>" onmouseover="SelectLigne(<%=i%>,<%=process.getListeRepresentant().size()%>)">
-										<td class="sigp2NewTab-liste" align="center">
-											<INPUT title="supprimer" type="image" src="images/suppression.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_SUPPRIMER_REPRESENTANT(i)%>">
-										</td>
-										<td class="sigp2NewTab-liste" width="300px;"><%=process.getVAL_ST_AGENT_REPRESENTANT(i)%></td>
-									</tr>
-									<%
-								}
-							}%>
-						</table>
-						<br/><br/>
-						<INPUT type="submit" class="sigp2-Bouton-200" value="Valider les modifications" name="<%=process.getNOM_PB_VALIDER_REPRESENTANT()%>">
-                        <INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">	
-						<%if(!process.getVAL_ST_ACTION_REPRESENTANT().equals(Const.CHAINE_VIDE)){ %>
-						<br/><br/><br/>
-						<fieldset  class="sigp2Fieldset" >
-							<% if(process.getVAL_ST_ACTION_REPRESENTANT().equals(process.ACTION_CREATION_REPRESENTANT)){ %>
-								<span class="sigp2Mandatory" style="width:70px">Agent :</span>
-	                       		<INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_AGENT_CREATE()%>" size="10" type="text" value="<%= process.getVAL_ST_AGENT_CREATE()%>" style="margin-right:10px;">
-	                        	<img border="0" src="images/loupe.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_RECHERCHER_AGENT_CREATE()%>');">                        
-								<INPUT onkeydown="" onkeypress="" onkeyup="" type="submit" class="sigp2-Bouton-200" value="Ajouter à la liste" name="<%=process.getNOM_PB_CREATE()%>">	 
-		                    <%} %>
-		                </fieldset>
-						<%} %>
-			<%}%>
-				</div>	
-		</FIELDSET>
 
     <INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_AJOUTER()%>" value="AJOUTER">
-    <INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_AJOUTER_REPRESENTANT()%>" value="AJOUTERREPRESENTANT">
     <INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_RECHERCHER_AGENT_CREATE()%>" value="RECHERCHERAGENTCREATE">
-	<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_TRI()%>" value="TRI">
 	</FORM>
 </BODY>
 </HTML>

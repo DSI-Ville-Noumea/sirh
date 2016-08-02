@@ -67,19 +67,17 @@ public interface IPtgService {
 
 	VentilDateDto getVentilationEnCours(String statut);
 
-	boolean startVentilation(Integer idAgent, Date dateVentilation, String agentsJson, String statut,
-			String idRefTypePointage);
+	boolean startVentilation(Integer idAgent, Date dateVentilation, String agentsJson, String statut, String idRefTypePointage);
 
-	List<Integer> getListeAgentsForShowVentilation(Integer idDateVentil, Integer idRefTypePointage, String statut,
-			Date ventilationDate, String agentMin, String agentMax, boolean allVentilation);
+	List<Integer> getListeAgentsForShowVentilation(Integer idDateVentil, Integer idRefTypePointage, String statut, Date ventilationDate,
+			String agentMin, String agentMax, boolean allVentilation);
 
 	boolean startDeversementPaie(Integer idAgent, String statut);
 
-	<T> List<T> getVentilations(Class<T> targetClass, Integer idDateVentil, Integer idRefTypePointage,
-			String agentsJson, boolean allVentilation);
+	<T> List<T> getVentilations(Class<T> targetClass, Integer idDateVentil, Integer idRefTypePointage, String agentsJson, boolean allVentilation);
 
-	<T> List<T> getVentilationsHistory(Class<T> targetClass, Integer mois, Integer annee, Integer idRefTypePointage,
-			Integer idAgent, boolean allVentilation, Integer idVentilDate);
+	<T> List<T> getVentilationsHistory(Class<T> targetClass, Integer mois, Integer annee, Integer idRefTypePointage, Integer idAgent,
+			boolean allVentilation, Integer idVentilDate);
 
 	List<RefEtatDto> getEtatsPointage();
 
@@ -87,8 +85,8 @@ public interface IPtgService {
 
 	List<Integer> getListeIdAgentPointage();
 
-	List<ConsultPointageDto> getVisualisationPointage(String fromDate, String toDate, List<String> idAgents,
- Integer idRefEtat, Integer idRefType, String typeHeureSup, String dateEtat);
+	List<ConsultPointageDto> getVisualisationPointage(String fromDate, String toDate, List<String> idAgents, Integer idRefEtat, Integer idRefType,
+			String typeHeureSup, String dateEtat);
 
 	ReturnMessageDto setPtgState(ArrayList<Integer> idPtg, Integer idRefEtat, Integer idAgent);
 
@@ -110,22 +108,16 @@ public interface IPtgService {
 
 	ReturnMessageDto saveMotifHeureSup(String json);
 
-	RefPrimeDto getPrimeDetailFromRefPrimeOptimise(
-			List<RefPrimeDto> listRefPrimeDto, Integer idRefPrime);
+	RefPrimeDto getPrimeDetailFromRefPrimeOptimise(List<RefPrimeDto> listRefPrimeDto, Integer idRefPrime);
 
-	List<TitreRepasDemandeDto> getVisualisationTitreRepasHistory(
-			Integer idDemandeTR);
+	List<TitreRepasDemandeDto> getVisualisationTitreRepasHistory(Integer idDemandeTR);
 
-	List<TitreRepasDemandeDto> getListTitreRepas(Integer idAgentConnecte,
-			String fromDate, String toDate, Integer idRefEtat,
-			Boolean commande, String dateMonth, Integer idServiceAds,
-			Integer idAgent, List<Integer> listIdsAgent);
+	List<TitreRepasDemandeDto> getListTitreRepas(Integer idAgentConnecte, String fromDate, String toDate, Integer idRefEtat, Boolean commande,
+			String dateMonth, Integer idServiceAds, Integer idAgent, List<Integer> listIdsAgent);
 
-	ReturnMessageDto setTRState(
-			List<TitreRepasDemandeDto> listTitreRepasDemandeDto, Integer idAgent);
+	ReturnMessageDto setTRState(List<TitreRepasDemandeDto> listTitreRepasDemandeDto, Integer idAgent);
 
-	ReturnMessageDto enregistreTitreRepas(List<TitreRepasDemandeDto> dto,
-			Integer idAgent);
+	ReturnMessageDto enregistreTitreRepas(List<TitreRepasDemandeDto> dto, Integer idAgent);
 
 	List<RefEtatDto> getEtatsTitreRepas();
 
@@ -135,10 +127,8 @@ public interface IPtgService {
 
 	List<TitreRepasEtatPayeurDto> getListTitreRepasEtatPayeur(Integer idAgent);
 
-	ReturnMessageDto dupliqueApprobateur(Integer idAgentConnecte,
-			Integer idAgentSource, Integer idAgentDestinataire);
+	ReturnMessageDto dupliqueApprobateur(Integer idAgentConnecte, Integer idAgentSource, Integer idAgentDestinataire);
 
-	
 	///////// Prime DPM ////////
 	ReturnMessageDto saveDpmIndemAnnee(Integer idAgentConnecte, DpmIndemniteAnneeDto dto);
 

@@ -3,14 +3,18 @@ package nc.mairie.gestionagent.process.election;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
+
+import flexjson.JSONSerializer;
 import nc.mairie.enums.EnumTypeAbsence;
-import nc.mairie.gestionagent.absence.dto.AgentOrganisationSyndicaleDto;
 import nc.mairie.gestionagent.absence.dto.CompteurDto;
 import nc.mairie.gestionagent.absence.dto.MotifCompteurDto;
 import nc.mairie.gestionagent.absence.dto.OrganisationSyndicaleDto;
@@ -35,13 +39,6 @@ import nc.noumea.spring.service.AbsService;
 import nc.noumea.spring.service.IAbsService;
 import nc.noumea.spring.service.IRadiService;
 
-import org.joda.time.DateTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationContext;
-
-import flexjson.JSONSerializer;
-
 /**
  *
  */
@@ -50,35 +47,33 @@ public class OeELECSaisieCompteurA54 extends BasicProcess {
 	/**
 	 *
 	 */
-	private static final long							serialVersionUID					= 1L;
-	private Logger										logger								= LoggerFactory.getLogger(OeELECSaisieCompteurA54.class);
+	private static final long					serialVersionUID				= 1L;
+	private Logger								logger							= LoggerFactory.getLogger(OeELECSaisieCompteurA54.class);
 
-	public static final int								STATUT_RECHERCHER_AGENT_CREATE		= 1;
+	public static final int						STATUT_RECHERCHER_AGENT_CREATE	= 1;
 
-	private ArrayList<CompteurDto>						listeCompteur;
-	private ArrayList<String>							listeAnnee;
-	private ArrayList<String>							listeAnneeFiltre;
-	private String[]									LB_ANNEE;
-	private String[]									LB_ANNEE_FILTRE;
-	private String[]									LB_MOTIF;
-	private ArrayList<MotifCompteurDto>					listeMotifCompteur;
+	private ArrayList<CompteurDto>				listeCompteur;
+	private ArrayList<VoAgentCompteur>			listeCompteurAgent;
+	private ArrayList<String>					listeAnnee;
+	private ArrayList<String>					listeAnneeFiltre;
+	private String[]							LB_ANNEE;
+	private String[]							LB_MOTIF;
+	private String[]							LB_OS;
+	private String[]							LB_ANNEE_FILTRE;
+	private String[]							LB_OS_FILTRE;
+	private ArrayList<MotifCompteurDto>			listeMotifCompteur;
 
-	public String										ACTION_MODIFICATION					= "Modification d'un compteur.";
-	public String										ACTION_CREATION						= "Création d'un compteur.";
-	public String										ACTION_VISUALISATION				= "Consultation d'un compteur.";
-	public String										ACTION_VISU_REPRESENTANT			= "Visualisation des représentants -";
-	public String										ACTION_MODIFICATION_REPRESENTANT	= "Modification des représentants -";
-	public String										ACTION_CREATION_REPRESENTANT		= "Création d'un représentant -";
+	public String								ACTION_MODIFICATION				= "Modification d'un compteur.";
+	public String								ACTION_CREATION					= "Création d'un compteur.";
+	public String								ACTION_VISUALISATION			= "Consultation d'un compteur.";
 
-	private AgentDao									agentDao;
+	private AgentDao							agentDao;
 
-	private IRadiService								radiService;
+	private IRadiService						radiService;
 
-	private IAbsService									absService;
+	private IAbsService							absService;
 
-	private ArrayList<OrganisationSyndicaleDto>			listeOrganisationSyndicale;
-	private OrganisationSyndicaleDto					organisationCourante;
-	private ArrayList<AgentOrganisationSyndicaleDto>	listeRepresentant;
+	private ArrayList<OrganisationSyndicaleDto>	listeOrganisationSyndicale;
 
 	@Override
 	public String getJSP() {
@@ -136,11 +131,34 @@ public class OeELECSaisieCompteurA54 extends BasicProcess {
 		if (getListeCompteur().size() == 0) {
 			initialiseListeCompteur(request);
 		}
-
-		initialiseListeOS(request);
 	}
 
 	private void initialiseListeDeroulante() {
+		// Si liste OS vide alors affectation
+		if (getLB_OS_FILTRE() == LBVide || getLB_OS() == LBVide) {
+			ArrayList<OrganisationSyndicaleDto> listeTousOS = (ArrayList<OrganisationSyndicaleDto>) absService.getListeOrganisationSyndicale();
+
+			int[] tailles = { 50 };
+			FormateListe aFormat = new FormateListe(tailles);
+			ArrayList<OrganisationSyndicaleDto> listeOActifS = new ArrayList<OrganisationSyndicaleDto>();
+			for (OrganisationSyndicaleDto orga : listeTousOS) {
+				// on ajoute uniquement les actifs
+				if (orga.isActif()) {
+					String ligne[] = { orga.getSigle() };
+					aFormat.ajouteLigne(ligne);
+					listeOActifS.add(orga);
+				}
+			}
+
+			setListeOrganisationSyndicale(listeOActifS);
+
+			setLB_OS_FILTRE(aFormat.getListeFormatee(true));
+			addZone(getNOM_LB_OS_FILTRE_SELECT(), Const.ZERO);
+
+			setLB_OS(aFormat.getListeFormatee(true));
+			addZone(getNOM_LB_OS_SELECT(), Const.ZERO);
+		}
+
 		// Si liste annee vide alors affectation
 		if (getLB_ANNEE_FILTRE() == LBVide) {
 			List<String> listeAnnee = new ArrayList<>();
@@ -209,18 +227,25 @@ public class OeELECSaisieCompteurA54 extends BasicProcess {
 	}
 
 	private void initialiseListeCompteur(HttpServletRequest request) throws Exception {
+		// recupération OS du filtre
+		int indiceOS = (Services.estNumerique(getVAL_LB_OS_FILTRE_SELECT()) ? Integer.parseInt(getVAL_LB_OS_FILTRE_SELECT()) : -1);
+		OrganisationSyndicaleDto orgaFiltre = null;
+		if (indiceOS > 0) {
+			orgaFiltre = getListeOrganisationSyndicale().get(indiceOS - 1);
+		}
 		// recupération année du filtre
 		int indiceAnnee = (Services.estNumerique(getVAL_LB_ANNEE_FILTRE_SELECT()) ? Integer.parseInt(getVAL_LB_ANNEE_FILTRE_SELECT()) : -1);
 		String anneeFiltre = getListeAnneeFiltre().get(indiceAnnee);
 
-		ArrayList<CompteurDto> listeCompteur = (ArrayList<CompteurDto>) absService.getListeCompteursA54(new Integer(anneeFiltre));
+		ArrayList<CompteurDto> listeCompteur = (ArrayList<CompteurDto>) absService.getListeCompteursA54(new Integer(anneeFiltre),
+				orgaFiltre == null ? null : orgaFiltre.getIdOrganisation());
 		logger.debug("Taille liste des compteurs ASA A54 : " + listeCompteur.size());
 		setListeCompteur(listeCompteur);
 
-		afficheListeCompteur(getListeCompteur(), false);
+		afficheListeCompteur(getListeCompteur());
 	}
 
-	private void afficheListeCompteur(List<CompteurDto> liste, boolean triOS) throws Exception {
+	private void afficheListeCompteur(List<CompteurDto> liste) throws Exception {
 		// #14737 tri par ordre alpha
 		List<VoAgentCompteur> listCompteurAgent = new ArrayList<VoAgentCompteur>();
 
@@ -231,13 +256,11 @@ public class OeELECSaisieCompteurA54 extends BasicProcess {
 			VoAgentCompteur voCompteur = new VoAgentCompteur(dto, ag);
 			listCompteurAgent.add(voCompteur);
 		}
-		if (!triOS) {
-			Collections.sort(listCompteurAgent);
-		}
+		Collections.sort(listCompteurAgent);
+		setListeCompteurAgent((ArrayList<VoAgentCompteur>) listCompteurAgent);
 
-		ArrayList<CompteurDto> listeCompteurTriee = new ArrayList<CompteurDto>();
-		int indiceLigne = 0;
 		for (VoAgentCompteur vo : listCompteurAgent) {
+			Integer indiceLigne = vo.getAgent().getIdAgent();
 
 			Calendar cal = Calendar.getInstance();
 			cal.setTime(vo.getCompteur().getDateDebut());
@@ -251,10 +274,6 @@ public class OeELECSaisieCompteurA54 extends BasicProcess {
 			addZone(getNOM_ST_MOTIF(indiceLigne),
 					vo.getCompteur().getMotifCompteurDto() == null ? Const.CHAINE_VIDE : vo.getCompteur().getMotifCompteurDto().getLibelle());
 			addZone(getNOM_ST_ACTIF(indiceLigne), vo.isActif() ? "oui" : "non");
-
-			indiceLigne++;
-
-			listeCompteurTriee.add(vo.getCompteur());
 		}
 	}
 
@@ -263,11 +282,6 @@ public class OeELECSaisieCompteurA54 extends BasicProcess {
 
 		// Si on arrive de la JSP alors on traite le get
 		if (request.getParameter("JSP") != null && request.getParameter("JSP").equals(getJSP())) {
-
-			// Si clic sur le bouton PB_TRI
-			if (testerParametre(request, getNOM_PB_TRI())) {
-				return performPB_TRI(request);
-			}
 
 			// Si clic sur le bouton PB_AJOUTER
 			if (testerParametre(request, getNOM_PB_AJOUTER())) {
@@ -294,7 +308,8 @@ public class OeELECSaisieCompteurA54 extends BasicProcess {
 				return performPB_DUPLIQUER(request);
 			}
 
-			for (int i = 0; i < getListeCompteur().size(); i++) {
+			for (int j = 0; j < getListeCompteurAgent().size(); j++) {
+				Integer i = getListeCompteurAgent().get(j).getAgent().getIdAgent();
 				// Si clic sur le bouton PB_MODIFIER
 				if (testerParametre(request, getNOM_PB_MODIFIER(i))) {
 					return performPB_MODIFIER(request, i);
@@ -307,45 +322,6 @@ public class OeELECSaisieCompteurA54 extends BasicProcess {
 
 			if (testerParametre(request, getNOM_PB_RECHERCHER_AGENT_CREATE())) {
 				return performPB_RECHERCHER_AGENT_CREATE(request);
-			}
-
-			// Si clic sur le bouton PB_CREATE
-			if (testerParametre(request, getNOM_PB_CREATE())) {
-				return performPB_CREATE(request);
-			}
-
-			// Si clic sur le bouton PB_VALIDER_REPRESENTANT
-			if (testerParametre(request, getNOM_PB_VALIDER_REPRESENTANT())) {
-				return performPB_VALIDER_REPRESENTANT(request);
-			}
-
-			for (int j = 0; j < getListeOrganisationSyndicale().size(); j++) {
-				Integer i = getListeOrganisationSyndicale().get(j).getIdOrganisation();
-				// Si clic sur le bouton PB_VISU_REPRESENTANT
-				if (testerParametre(request, getNOM_PB_VISU_REPRESENTANT(i))) {
-					return performPB_VISU_REPRESENTANT(request, i);
-				}
-				// Si clic sur le bouton PB_MODIFIER_REPRESENTANT
-				if (testerParametre(request, getNOM_PB_MODIFIER_REPRESENTANT(i))) {
-					return performPB_MODIFIER_REPRESENTANT(request, i);
-				}
-			}
-
-			// Si clic sur le bouton PB_AJOUTER_REPRESENTANT
-			if (testerParametre(request, getNOM_PB_AJOUTER_REPRESENTANT())) {
-				return performPB_AJOUTER_REPRESENTANT(request);
-			}
-
-			for (int j = 0; j < getListeRepresentant().size(); j++) {
-				Integer i = getListeRepresentant().get(j).getIdAgent();
-				// Si clic sur le bouton PB_MODIFIER_REPRE
-				if (testerParametre(request, getNOM_PB_MODIFIER_REPRESENTANT(i))) {
-					return performPB_MODIFIER_REPRESENTANT(request, i);
-				}
-				// Si clic sur le bouton PB_SUPPRIMER_REPRE
-				if (testerParametre(request, getNOM_PB_SUPPRIMER_REPRESENTANT(i))) {
-					return performPB_SUPPRIMER_REPRESENTANT(request, i);
-				}
 			}
 		}
 		// Si TAG INPUT non géré par le process
@@ -424,6 +400,7 @@ public class OeELECSaisieCompteurA54 extends BasicProcess {
 		addZone(getNOM_LB_ANNEE_SELECT(), Const.ZERO);
 		addZone(getNOM_ST_AGENT_CREATE(), Const.CHAINE_VIDE);
 		addZone(getNOM_LB_MOTIF_SELECT(), Const.ZERO);
+		addZone(getNOM_LB_OS_SELECT(), Const.ZERO);
 	}
 
 	public String getNOM_PB_AJOUTER() {
@@ -435,6 +412,12 @@ public class OeELECSaisieCompteurA54 extends BasicProcess {
 		addZone(getNOM_ST_ACTION(), ACTION_CREATION);
 		videZonesDeSaisie(request);
 
+		// si on a choisi un OS dans le filtre, alors on positionne par defaut
+		int indiceOS = (Services.estNumerique(getVAL_LB_OS_FILTRE_SELECT()) ? Integer.parseInt(getVAL_LB_OS_FILTRE_SELECT()) : -1);
+		if (indiceOS > 0) {
+			addZone(getNOM_LB_OS_SELECT(), String.valueOf(indiceOS));
+		}
+
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
@@ -443,12 +426,14 @@ public class OeELECSaisieCompteurA54 extends BasicProcess {
 		return "NOM_PB_MODIFIER" + i;
 	}
 
-	public boolean performPB_MODIFIER(HttpServletRequest request, int indiceEltAModifier) throws Exception {
+	public boolean performPB_MODIFIER(HttpServletRequest request, int idAgent) throws Exception {
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 		videZonesDeSaisie(request);
 
-		CompteurDto compteurCourant = (CompteurDto) getListeCompteur().get(indiceEltAModifier);
+		CompteurDto ag = new CompteurDto();
+		ag.setIdAgent(idAgent);
+		CompteurDto compteurCourant = (CompteurDto) getListeCompteur().get(getListeCompteur().indexOf(ag));
 
 		if (!initialiseCompteurCourant(request, compteurCourant))
 			return false;
@@ -474,6 +459,8 @@ public class OeELECSaisieCompteurA54 extends BasicProcess {
 		int ligneMotif = getListeMotifCompteur().indexOf(dto.getMotifCompteurDto());
 		addZone(getNOM_LB_MOTIF_SELECT(), String.valueOf(ligneMotif + 1));
 		addZone(getNOM_RG_AGENT_INACTIF(), dto.isActif() ? getNOM_RB_OUI() : getNOM_RB_NON());
+		int ligneOS = getListeOrganisationSyndicale().indexOf(dto.getOrganisationSyndicaleDto());
+		addZone(getNOM_LB_OS_SELECT(), String.valueOf(ligneOS + 1));
 		return true;
 	}
 
@@ -481,12 +468,14 @@ public class OeELECSaisieCompteurA54 extends BasicProcess {
 		return "NOM_PB_VISUALISATION" + i;
 	}
 
-	public boolean performPB_VISUALISATION(HttpServletRequest request, int indiceEltAConsulter) throws Exception {
+	public boolean performPB_VISUALISATION(HttpServletRequest request, int idAgent) throws Exception {
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 		videZonesDeSaisie(request);
 
-		CompteurDto compteurCourant = (CompteurDto) getListeCompteur().get(indiceEltAConsulter);
+		CompteurDto ag = new CompteurDto();
+		ag.setIdAgent(idAgent);
+		CompteurDto compteurCourant = (CompteurDto) getListeCompteur().get(getListeCompteur().indexOf(ag));
 
 		if (!initialiseCompteurCourant(request, compteurCourant))
 			return false;
@@ -651,11 +640,34 @@ public class OeELECSaisieCompteurA54 extends BasicProcess {
 		message = absService.addCompteurAsaA54(agentConnecte.getIdAgent(),
 				new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class).serialize(compteurDto));
 
+		String err = Const.CHAINE_VIDE;
 		if (message.getErrors().size() > 0) {
-			String err = Const.CHAINE_VIDE;
 			for (String erreur : message.getErrors()) {
 				err += " " + erreur;
 			}
+		}
+
+		// on sauvegarde l'OS du répresentant
+		int indiceOS = (Services.estNumerique(getVAL_LB_OS_SELECT()) ? Integer.parseInt(getVAL_LB_OS_SELECT()) : -1);
+		OrganisationSyndicaleDto orgaDto = null;
+		if (indiceOS >= 0) {
+			try {
+				orgaDto = getListeOrganisationSyndicale().get(indiceOS - 1);
+			} catch (Exception e) {
+				// on est dans la suppression d'info
+			}
+
+			ReturnMessageDto messageOs = absService.saveRepresentantAsaA54(orgaDto == null ? 0 : orgaDto.getIdOrganisation(),
+					agCompteur.getIdAgent());
+
+			if (messageOs.getErrors().size() > 0) {
+				for (String erreur : messageOs.getErrors()) {
+					err += " " + erreur;
+				}
+			}
+		}
+
+		if (err != Const.CHAINE_VIDE) {
 			getTransaction().declarerErreur("ERREUR : " + err);
 		} else {
 			// "INF010", "Le compteur @ a bien été mis a jour."
@@ -730,8 +742,10 @@ public class OeELECSaisieCompteurA54 extends BasicProcess {
 		this.listeAnnee = listeAnnee;
 	}
 
-	public boolean peutModifierCompteur(int i) {
-		CompteurDto compteurCourant = (CompteurDto) getListeCompteur().get(i);
+	public boolean peutModifierCompteur(int idAgent) {
+		CompteurDto ag = new CompteurDto();
+		ag.setIdAgent(idAgent);
+		CompteurDto compteurCourant = (CompteurDto) getListeCompteur().get(getListeCompteur().indexOf(ag));
 
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(new Date());
@@ -887,7 +901,7 @@ public class OeELECSaisieCompteurA54 extends BasicProcess {
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(new Date());
 		Integer anneeCourante = cal.get(Calendar.YEAR);
-		ArrayList<CompteurDto> listeCompteur = (ArrayList<CompteurDto>) absService.getListeCompteursA54(anneeCourante);
+		ArrayList<CompteurDto> listeCompteur = (ArrayList<CompteurDto>) absService.getListeCompteursA54(anneeCourante, null);
 
 		// on met le motif "reprise de données"
 		MotifCompteurDto motifReprise = null;
@@ -945,289 +959,63 @@ public class OeELECSaisieCompteurA54 extends BasicProcess {
 		this.listeOrganisationSyndicale = listeOrganisationSyndicale;
 	}
 
-	public String getNOM_ST_SIGLE_OS(int i) {
-		return "NOM_ST_SIGLE_OS" + i;
+	private String[] getLB_OS_FILTRE() {
+		if (LB_OS_FILTRE == null)
+			LB_OS_FILTRE = initialiseLazyLB();
+		return LB_OS_FILTRE;
 	}
 
-	public String getVAL_ST_SIGLE_OS(int i) {
-		return getZone(getNOM_ST_SIGLE_OS(i));
+	private void setLB_OS_FILTRE(String[] newLB_OS_FILTRE) {
+		LB_OS_FILTRE = newLB_OS_FILTRE;
 	}
 
-	public String getNOM_ST_OS(int i) {
-		return "NOM_ST_OS" + i;
+	public String getNOM_LB_OS_FILTRE() {
+		return "NOM_LB_OS_FILTRE";
 	}
 
-	public String getVAL_ST_OS(int i) {
-		return getZone(getNOM_ST_OS(i));
+	public String getNOM_LB_OS_FILTRE_SELECT() {
+		return "NOM_LB_OS_FILTRE_SELECT";
 	}
 
-	private boolean affichageRepresentant(HttpServletRequest request) throws Exception {
-		// #14737 tri par ordre alpha
-		ArrayList<VoAgentCompteur> listeVoAgentCompteur = new ArrayList<VoAgentCompteur>();
-		for (AgentOrganisationSyndicaleDto dto : getListeRepresentant()) {
-			Agent agent = getAgentDao().chercherAgent(dto.getIdAgent());
-			listeVoAgentCompteur.add(new VoAgentCompteur(dto, agent));
-		}
-		Collections.sort(listeVoAgentCompteur);
-
-		ArrayList<AgentOrganisationSyndicaleDto> listeRepresentantsTriee = new ArrayList<AgentOrganisationSyndicaleDto>();
-		for (VoAgentCompteur vo : listeVoAgentCompteur) {
-			addZone(getNOM_ST_AGENT_REPRESENTANT(vo.getAgentOS().getIdAgent()), vo.getAgent().getNomAgent() + " " + vo.getAgent().getPrenomAgent());
-			listeRepresentantsTriee.add(vo.getAgentOS());
-		}
-		setListeRepresentant(listeRepresentantsTriee);
-		return true;
+	public String[] getVAL_LB_OS_FILTRE() {
+		return getLB_OS_FILTRE();
 	}
 
-	public String getNOM_PB_VISU_REPRESENTANT(int i) {
-		return "NOM_PB_VISU_REPRESENTANT" + i;
+	public String getVAL_LB_OS_FILTRE_SELECT() {
+		return getZone(getNOM_LB_OS_FILTRE_SELECT());
 	}
 
-	public boolean performPB_VISU_REPRESENTANT(HttpServletRequest request, int indiceEltAConsulter) throws Exception {
-		// On nomme l'action
-		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
-		videZonesDeSaisie(request);
-		setOrganisationCourante(null);
-
-		OrganisationSyndicaleDto dto = new OrganisationSyndicaleDto();
-		dto.setIdOrganisation(indiceEltAConsulter);
-
-		OrganisationSyndicaleDto osCourant = (OrganisationSyndicaleDto) getListeOrganisationSyndicale()
-				.get(getListeOrganisationSyndicale().indexOf(dto));
-		setOrganisationCourante(osCourant);
-
-		ArrayList<AgentOrganisationSyndicaleDto> listeAgent = (ArrayList<AgentOrganisationSyndicaleDto>) absService
-				.getListeRepresentantA54(getOrganisationCourante().getIdOrganisation());
-
-		setListeRepresentant(listeAgent);
-
-		if (!affichageRepresentant(request))
-			return false;
-
-		// On nomme l'action
-		addZone(getNOM_ST_ACTION(), ACTION_VISU_REPRESENTANT);
-
-		setStatut(STATUT_MEME_PROCESS);
-		return true;
+	private String[] getLB_OS() {
+		if (LB_OS == null)
+			LB_OS = initialiseLazyLB();
+		return LB_OS;
 	}
 
-	public String getNOM_PB_MODIFIER_REPRESENTANT(int i) {
-		return "NOM_PB_MODIFIER_REPRESENTANT" + i;
+	private void setLB_OS(String[] newLB_OS) {
+		LB_OS = newLB_OS;
 	}
 
-	public boolean performPB_MODIFIER_REPRESENTANT(HttpServletRequest request, int indiceEltAModifier) throws Exception {
-		// On nomme l'action
-		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
-		videZonesDeSaisie(request);
-		setOrganisationCourante(null);
-
-		OrganisationSyndicaleDto dto = new OrganisationSyndicaleDto();
-		dto.setIdOrganisation(indiceEltAModifier);
-
-		OrganisationSyndicaleDto osCourant = (OrganisationSyndicaleDto) getListeOrganisationSyndicale()
-				.get(getListeOrganisationSyndicale().indexOf(dto));
-		setOrganisationCourante(osCourant);
-
-		ArrayList<AgentOrganisationSyndicaleDto> listeAgent = (ArrayList<AgentOrganisationSyndicaleDto>) absService
-				.getListeRepresentantA54(getOrganisationCourante().getIdOrganisation());
-
-		setListeRepresentant(listeAgent);
-
-		if (!affichageRepresentant(request))
-			return false;
-
-		// On nomme l'action
-		addZone(getNOM_ST_ACTION(), ACTION_MODIFICATION_REPRESENTANT);
-
-		setStatut(STATUT_MEME_PROCESS);
-		return true;
+	public String getNOM_LB_OS() {
+		return "NOM_LB_OS";
 	}
 
-	public OrganisationSyndicaleDto getOrganisationCourante() {
-		return organisationCourante;
+	public String getNOM_LB_OS_SELECT() {
+		return "NOM_LB_OS_SELECT";
 	}
 
-	public void setOrganisationCourante(OrganisationSyndicaleDto organisationCourante) {
-		this.organisationCourante = organisationCourante;
+	public String[] getVAL_LB_OS() {
+		return getLB_OS();
 	}
 
-	public ArrayList<AgentOrganisationSyndicaleDto> getListeRepresentant() {
-		return listeRepresentant == null ? new ArrayList<AgentOrganisationSyndicaleDto>() : listeRepresentant;
+	public String getVAL_LB_OS_SELECT() {
+		return getZone(getNOM_LB_OS_SELECT());
 	}
 
-	public void setListeRepresentant(ArrayList<AgentOrganisationSyndicaleDto> listeRepresentant) {
-		this.listeRepresentant = listeRepresentant;
+	public ArrayList<VoAgentCompteur> getListeCompteurAgent() {
+		return listeCompteurAgent;
 	}
 
-	public String getNOM_ST_AGENT_REPRESENTANT(int i) {
-		return "NOM_ST_AGENT_REPRESENTANT" + i;
-	}
-
-	public String getVAL_ST_AGENT_REPRESENTANT(int i) {
-		return getZone(getNOM_ST_AGENT_REPRESENTANT(i));
-	}
-
-	public String getNOM_PB_AJOUTER_REPRESENTANT() {
-		return "NOM_PB_AJOUTER_REPRESENTANT";
-	}
-
-	public boolean performPB_AJOUTER_REPRESENTANT(HttpServletRequest request) throws Exception {
-		// On nomme l'action
-		addZone(getNOM_ST_ACTION_REPRESENTANT(), ACTION_CREATION_REPRESENTANT);
-		videZonesDeSaisie(request);
-
-		setStatut(STATUT_MEME_PROCESS);
-		return true;
-	}
-
-	public String getNOM_PB_SUPPRIMER_REPRESENTANT(int i) {
-		return "NOM_PB_SUPPRIMER_REPRESENTANT" + i;
-	}
-
-	public boolean performPB_SUPPRIMER_REPRESENTANT(HttpServletRequest request, int indiceEltAModifier) throws Exception {
-		// on supprime le representant de la liste
-		AgentOrganisationSyndicaleDto dto = new AgentOrganisationSyndicaleDto();
-		dto.setIdAgent(indiceEltAModifier);
-
-		getListeRepresentant().remove(dto);
-		affichageRepresentant(request);
-
-		setStatut(STATUT_MEME_PROCESS);
-		return true;
-	}
-
-	public String getNOM_ST_ACTION_REPRESENTANT() {
-		return "NOM_ST_ACTION_REPRESENTANT";
-	}
-
-	public String getVAL_ST_ACTION_REPRESENTANT() {
-		return getZone(getNOM_ST_ACTION_REPRESENTANT());
-	}
-
-	public String getNOM_PB_CREATE() {
-		return "NOM_PB_CREATE";
-	}
-
-	public boolean performPB_CREATE(HttpServletRequest request) throws Exception {
-		if (getVAL_ST_ACTION_REPRESENTANT().equals(ACTION_CREATION_REPRESENTANT)) {
-			String nomatr = getVAL_ST_AGENT_CREATE();
-			if (nomatr.equals(Const.CHAINE_VIDE)) {
-				// "ERR002","La zone @ est obligatoire."
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "agent"));
-				return false;
-			}
-			try {
-				Agent agent = getAgentDao().chercherAgent(Integer.valueOf("900" + nomatr));
-				AgentOrganisationSyndicaleDto dto = new AgentOrganisationSyndicaleDto();
-				dto.setIdAgent(agent.getIdAgent());
-
-				getListeRepresentant().add(dto);
-				affichageRepresentant(request);
-				videZonesDeSaisie(request);
-			} catch (Exception e) {
-				// "ERR503",
-				// "L'agent @ n'existe pas. Merci de saisir un matricule
-				// existant."
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR503", nomatr));
-				return false;
-			}
-		}
-		return true;
-	}
-
-	public String getNOM_PB_VALIDER_REPRESENTANT() {
-		return "NOM_PB_VALIDER_REPRESENTANT";
-	}
-
-	public boolean performPB_VALIDER_REPRESENTANT(HttpServletRequest request) throws Exception {
-
-		// on recupere l'agent connecte
-		Agent agentConnecte = getAgentConnecte(request);
-		if (agentConnecte == null) {
-			// "Votre login ne nous permet pas de trouver votre identifiant.
-			// Merci de contacter le responsable du projet."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
-			return false;
-		}
-
-		// on sauvegarde les données
-		ReturnMessageDto message = new ReturnMessageDto();
-
-		// on sauvegarde
-		message = absService.saveRepresentantAsaA54(getOrganisationCourante().getIdOrganisation(),
-				new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class).serialize(getListeRepresentant()));
-
-		if (message.getErrors().size() > 0) {
-			String err = Const.CHAINE_VIDE;
-			for (String erreur : message.getErrors()) {
-				err += " " + erreur;
-			}
-			getTransaction().declarerErreur("ERREUR : " + err);
-		} else {
-			// "INF700", "Les représentants ont bien été mis a jour."
-			setStatut(STATUT_MEME_PROCESS, false, MessageUtils.getMessage("INF700"));
-		}
-
-		// On nomme l'action
-		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
-		addZone(getNOM_ST_ACTION_REPRESENTANT(), Const.CHAINE_VIDE);
-		initialiseListeCompteur(request);
-		return true;
-	}
-
-	private void initialiseListeOS(HttpServletRequest request) {
-		ArrayList<OrganisationSyndicaleDto> listeOS = (ArrayList<OrganisationSyndicaleDto>) absService.getListeOrganisationSyndicale();
-		logger.debug("Taille liste des OS : " + listeOS.size());
-
-		ArrayList<OrganisationSyndicaleDto> listeOSActif = new ArrayList<>();
-		for (OrganisationSyndicaleDto vo : listeOS) {
-			if (vo.isActif()) {
-				Integer indiceLigne = vo.getIdOrganisation();
-				listeOSActif.add(vo);
-				addZone(getNOM_ST_SIGLE_OS(indiceLigne), vo.getSigle());
-				addZone(getNOM_ST_OS(indiceLigne), vo.getLibelle());
-			}
-		}
-		setListeOrganisationSyndicale(listeOSActif);
-	}
-
-	public String getNOM_PB_TRI() {
-		return "NOM_PB_TRI";
-	}
-
-	public boolean performPB_TRI(HttpServletRequest request) throws Exception {
-		if (getVAL_RG_TRI().equals(getNOM_RB_TRI_AGENT())) {
-			afficheListeCompteur(getListeCompteur(), false);
-		} else if (getVAL_RG_TRI().equals(getNOM_RB_TRI_OS())) {
-			Collections.sort(getListeCompteur(), new Comparator<CompteurDto>() {
-				@Override
-				public int compare(CompteurDto o1, CompteurDto o2) {
-					if (o1.getOrganisationSyndicaleDto() == null || o2.getOrganisationSyndicaleDto() == null) {
-						return 0;
-					}
-					return o1.getOrganisationSyndicaleDto().getSigle().compareTo(o2.getOrganisationSyndicaleDto().getSigle());
-				}
-
-			});
-			afficheListeCompteur(getListeCompteur(), true);
-
-		}
-		return true;
-	}
-
-	public String getNOM_RG_TRI() {
-		return "NOM_RG_TRI";
-	}
-
-	public String getVAL_RG_TRI() {
-		return getZone(getNOM_RG_TRI());
-	}
-
-	public String getNOM_RB_TRI_AGENT() {
-		return "NOM_RB_TRI_AGENT";
-	}
-
-	public String getNOM_RB_TRI_OS() {
-		return "NOM_RB_TRI_OS";
+	public void setListeCompteurAgent(ArrayList<VoAgentCompteur> listeCompteurAgent) {
+		this.listeCompteurAgent = listeCompteurAgent;
 	}
 }

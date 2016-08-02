@@ -5,6 +5,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+
+import com.sun.jersey.api.client.ClientResponse;
+
+import flexjson.JSONSerializer;
 import nc.mairie.gestionagent.absence.dto.ActeursDto;
 import nc.mairie.gestionagent.absence.dto.AgentOrganisationSyndicaleDto;
 import nc.mairie.gestionagent.absence.dto.CompteurDto;
@@ -27,111 +36,99 @@ import nc.mairie.gestionagent.dto.ReturnMessageDto;
 import nc.mairie.gestionagent.dto.ViseursDto;
 import nc.mairie.metier.Const;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Service;
-
-import com.sun.jersey.api.client.ClientResponse;
-
-import flexjson.JSONSerializer;
-
 @Service
 public class SirhAbsWSConsumer extends BaseWsConsumer implements ISirhAbsWSConsumer {
 
 	@Autowired
 	@Qualifier("absWsBaseUrl")
-	private String absWsBaseUrl;
+	private String				absWsBaseUrl;
 
-	private static final String sirhAbsListOrganisationSyndicale = "organisation/listOrganisation";
-	private static final String sirhAbsOrganisationSyndicaleSauvegarde = "organisation/addOS";
-	private static final String sirhAbsAddRepresentantAsaA52 = "asaA52/saveRepresentant";
-	private static final String sirhAbsAddRepresentantAsaA54 = "asaA54/saveRepresentant";
-	private static final String sirhAbsAddRepresentantAsaA48 = "asaA48/saveRepresentant";
-	private static final String sirhAbsListOSA52Url = "asaA52/listeOrganisationSyndicaleA52";
-	private static final String sirhAbsListRepresentantOSA52Url = "asaA52/listeRepresentantA52";
-	private static final String sirhAbsListRepresentantOSA54Url = "asaA54/listeRepresentantA54";
-	private static final String sirhAbsListRepresentantOSA48Url = "asaA48/listeRepresentantA48";
+	private static final String	sirhAbsListOrganisationSyndicale					= "organisation/listOrganisation";
+	private static final String	sirhAbsOrganisationSyndicaleSauvegarde				= "organisation/addOS";
+	private static final String	sirhAbsAddRepresentantAsaA52						= "asaA52/saveRepresentant";
+	private static final String	sirhAbsAddRepresentantAsaA54						= "asaA54/saveRepresentant";
+	private static final String	sirhAbsAddRepresentantAsaA48						= "asaA48/saveRepresentant";
+	private static final String	sirhAbsListOSA52Url									= "asaA52/listeOrganisationSyndicaleA52";
+	private static final String	sirhAbsListRepresentantOSA52Url						= "asaA52/listeRepresentantA52";
 
-	private static final String sirhAbsListOrganisationActif = "organisation/listOrganisationActif";
+	private static final String	sirhAbsListOrganisationActif						= "organisation/listOrganisationActif";
 
-	private static final String sirhAbsAgentsApprobateurs = "droits/approbateurs";
-	private static final String sirhAbsDeleteApprobateurs = "droits/deleteApprobateurs";
-	private static final String sirhAbsSauvegardeDelegataire = "droits/delegataire";
-	private static final String sirhAbsListeActeurs = "droits/listeActeurs";
-	private static final String sirhAgentApprobateurUrl = "droits/agentsApprouves";
-	private static final String sirhOperateursDelegataireApprobateurUrl = "droits/inputter";
-	private static final String sirhOperateurApprobateurUrl = "droits/operateurSIRH";
-	private static final String sirhDeleteOperateurApprobateurUrl = "droits/deleteOperateurSIRH";
-	private static final String sirhViseursApprobateurUrl = "droits/viseur";
-	private static final String sirhViseursApprobateurSIRHUrl = "droits/viseurSIRH";
-	private static final String sirhdeleteViseursApprobateurSIRHUrl = "droits/deleteViseurSIRH";
-	private static final String sirhAgentsOperateurUrl = "droits/agentsSaisisByOperateur";
-	private static final String sirhAgentsViseurUrl = "droits/agentsSaisisByViseur";
-	private static final String sirhDupliqueApprobateurUrl = "droits/dupliqueDroitsApprobateur";
+	private static final String	sirhAbsAgentsApprobateurs							= "droits/approbateurs";
+	private static final String	sirhAbsDeleteApprobateurs							= "droits/deleteApprobateurs";
+	private static final String	sirhAbsSauvegardeDelegataire						= "droits/delegataire";
+	private static final String	sirhAbsListeActeurs									= "droits/listeActeurs";
+	private static final String	sirhAgentApprobateurUrl								= "droits/agentsApprouves";
+	private static final String	sirhOperateursDelegataireApprobateurUrl				= "droits/inputter";
+	private static final String	sirhOperateurApprobateurUrl							= "droits/operateurSIRH";
+	private static final String	sirhDeleteOperateurApprobateurUrl					= "droits/deleteOperateurSIRH";
+	private static final String	sirhViseursApprobateurUrl							= "droits/viseur";
+	private static final String	sirhViseursApprobateurSIRHUrl						= "droits/viseurSIRH";
+	private static final String	sirhdeleteViseursApprobateurSIRHUrl					= "droits/deleteViseurSIRH";
+	private static final String	sirhAgentsOperateurUrl								= "droits/agentsSaisisByOperateur";
+	private static final String	sirhAgentsViseurUrl									= "droits/agentsSaisisByViseur";
+	private static final String	sirhDupliqueApprobateurUrl							= "droits/dupliqueDroitsApprobateur";
 
-	private static final String sirhAbsSoldeRecupAgent = "solde/soldeAgent";
-	private static final String sirhAbsHistoCompteurAgent = "solde/historiqueSolde";
+	private static final String	sirhAbsSoldeRecupAgent								= "solde/soldeAgent";
+	private static final String	sirhAbsHistoCompteurAgent							= "solde/historiqueSolde";
 
-	private static final String sirhAbsDemandesAgent = "demandes/listeDemandesAgent";
-	private static final String sirhAbsDemandes = "demandes/listeDemandesSIRH";
-	private static final String sirhAbsDemandesHistorique = "demandes/historiqueSIRH";
-	private static final String sirhAbsDemandeSauvegarde = "demandes/demandeSIRH";
-	private static final String sirhAbsStateSave = "demandes/changerEtatsSIRH";
-	private static final String sirhDureeCongeAnnuelUrl = "demandes/dureeDemandeCongeAnnuel";
+	private static final String	sirhAbsDemandesAgent								= "demandes/listeDemandesAgent";
+	private static final String	sirhAbsDemandes										= "demandes/listeDemandesSIRH";
+	private static final String	sirhAbsDemandesHistorique							= "demandes/historiqueSIRH";
+	private static final String	sirhAbsDemandeSauvegarde							= "demandes/demandeSIRH";
+	private static final String	sirhAbsStateSave									= "demandes/changerEtatsSIRH";
+	private static final String	sirhDureeCongeAnnuelUrl								= "demandes/dureeDemandeCongeAnnuel";
 
-	private static final String sirhAbsMotif = "motif/getListeMotif";
-	private static final String sirhAbsMotifSauvegarde = "motif/setMotif";
+	private static final String	sirhAbsMotif										= "motif/getListeMotif";
+	private static final String	sirhAbsMotifSauvegarde								= "motif/setMotif";
 
-	private static final String sirhAbsMotifCompteur = "motifCompteur/getListeMotifCompteur";
-	private static final String sirhAbsMotifCompteurSauvegarde = "motifCompteur/setMotifCompteur";
+	private static final String	sirhAbsMotifCompteur								= "motifCompteur/getListeMotifCompteur";
+	private static final String	sirhAbsMotifCompteurSauvegarde						= "motifCompteur/setMotifCompteur";
 
-	private static final String sirhAbsListeCompteurA48 = "asaA48/listeCompteurA48";
-	private static final String sirhAbsListeCompteurA54 = "asaA54/listeCompteurA54";
-	private static final String sirhAbsListeCompteurA55 = "asaA55/listeCompteurA55";
-	private static final String sirhAbsListeCompteurA53 = "asaA53/listeCompteurA53";
-	private static final String sirhAbsListeCompteurA52 = "asaA52/listeCompteurA52";
-	private static final String sirhAbsListeCompteurAmicale = "asaAmicale/listeCompteurAmicale";
+	private static final String	sirhAbsListeCompteurA48								= "asaA48/listeCompteurA48";
+	private static final String	sirhAbsListeCompteurA54								= "asaA54/listeCompteurA54";
+	private static final String	sirhAbsListeCompteurA55								= "asaA55/listeCompteurA55";
+	private static final String	sirhAbsListeCompteurA53								= "asaA53/listeCompteurA53";
+	private static final String	sirhAbsListeCompteurA52								= "asaA52/listeCompteurA52";
+	private static final String	sirhAbsListeCompteurAmicale							= "asaAmicale/listeCompteurAmicale";
 
-	private static final String sirhAbsInitialiseCompteurCongeAnnuel = "congeannuel/intitCompteurCongeAnnuel";
+	private static final String	sirhAbsInitialiseCompteurCongeAnnuel				= "congeannuel/intitCompteurCongeAnnuel";
 
-	private static final String sirhAbsAddCompteurRecup = "recuperations/addManual";
-	private static final String sirhAbsAddCompteurCongeAnnuel = "congeannuel/addManual";
-	private static final String sirhAbsRestitutionMassive = "congeannuel/restitutionMassive";
-	private static final String sirhAbsHistoRestitutionMassive = "congeannuel/getHistoRestitutionMassive";
-	private static final String sirhAbsDetailsHistoRestitutionMassive = "congeannuel/getDetailsHistoRestitutionMassive";
-	private static final String sirhAbsHistoRestitutionMassiveByIdAgent = "congeannuel/getHistoRestitutionMassiveByIdAgent";
-	private static final String sirhAbsAddCompteurReposComp = "reposcomps/addManual";
-	private static final String sirhAbsAddCompteurAsaA48 = "asaA48/addManual";
-	private static final String sirhAbsAddCompteurAsaA48ByList = "asaA48/addManualByList";	
-	private static final String sirhAbsAddCompteurAsaA54 = "asaA54/addManual";
-	private static final String sirhAbsAddCompteurAsaA54ByList = "asaA54/addManualByList";
-	private static final String sirhAbsAddCompteurAsaA55 = "asaA55/addManual";
-	private static final String sirhAbsAddCompteurAsaA53 = "asaA53/addManual";
-	private static final String sirhAbsAddCompteurAsaA52 = "asaA52/addManual";
-	private static final String sirhAbsAddCompteurAsaAmicale = "asaAmicale/addManual";
+	private static final String	sirhAbsAddCompteurRecup								= "recuperations/addManual";
+	private static final String	sirhAbsAddCompteurCongeAnnuel						= "congeannuel/addManual";
+	private static final String	sirhAbsRestitutionMassive							= "congeannuel/restitutionMassive";
+	private static final String	sirhAbsHistoRestitutionMassive						= "congeannuel/getHistoRestitutionMassive";
+	private static final String	sirhAbsDetailsHistoRestitutionMassive				= "congeannuel/getDetailsHistoRestitutionMassive";
+	private static final String	sirhAbsHistoRestitutionMassiveByIdAgent				= "congeannuel/getHistoRestitutionMassiveByIdAgent";
+	private static final String	sirhAbsAddCompteurReposComp							= "reposcomps/addManual";
+	private static final String	sirhAbsAddCompteurAsaA48							= "asaA48/addManual";
+	private static final String	sirhAbsAddCompteurAsaA48ByList						= "asaA48/addManualByList";
+	private static final String	sirhAbsAddCompteurAsaA54							= "asaA54/addManual";
+	private static final String	sirhAbsAddCompteurAsaA54ByList						= "asaA54/addManualByList";
+	private static final String	sirhAbsAddCompteurAsaA55							= "asaA55/addManual";
+	private static final String	sirhAbsAddCompteurAsaA53							= "asaA53/addManual";
+	private static final String	sirhAbsAddCompteurAsaA52							= "asaA52/addManual";
+	private static final String	sirhAbsAddCompteurAsaAmicale						= "asaAmicale/addManual";
 
-	private static final String sirhAbsListeRefTypeAbs = "typeAbsence/getListeTypeAbsence";
-	private static final String sirhAbsAddCongeExcep = "typeAbsence/setTypeAbsence";
-	private static final String sirhAbsDeleteCongeExcep = "typeAbsence/deleteTypeAbsence";
-	private static final String sirhAbsRefTypeAbs = "typeAbsence/getTypeAbsence";
+	private static final String	sirhAbsListeRefTypeAbs								= "typeAbsence/getListeTypeAbsence";
+	private static final String	sirhAbsAddCongeExcep								= "typeAbsence/setTypeAbsence";
+	private static final String	sirhAbsDeleteCongeExcep								= "typeAbsence/deleteTypeAbsence";
+	private static final String	sirhAbsRefTypeAbs									= "typeAbsence/getTypeAbsence";
 
-	private static final String sirhAbsListeUnitePeriodeQuota = "filtres/getUnitePeriodeQuota";
-	private static final String sirhAbsGroupeAbsenceUrl = "filtres/getGroupesAbsence";
+	private static final String	sirhAbsListeUnitePeriodeQuota						= "filtres/getUnitePeriodeQuota";
+	private static final String	sirhAbsGroupeAbsenceUrl								= "filtres/getGroupesAbsence";
 
-	private static final String sirhAbsMoisAlimAutoUrl = "congeannuel/getListeMoisAlimAutoCongeAnnuel";
-	private static final String sirhAbsAlimAutoUrl = "congeannuel/getListeAlimAutoCongeAnnuel";
-	private static final String sirhAbsHistoAlimAutoCongeAnnuelUrl = "congeannuel/getHistoAlimAutoCongeAnnuel";
-	private static final String sirhAbsListRefAlimUrl = "congeannuel/getListRefAlimCongeAnnuel";
-	private static final String sirhAbsRefAlimCongeAnnuelSauvegarde = "congeannuel/setRefAlimCongeAnnuel";
-	private static final String sirhAbsCreateBaseConge = "congeannuel/createRefAlimCongeAnnuelAnnee";
-	private static final String sirhListeDemandeCAWhichAddOrRemoveOnCounterAgent = "congeannuel/getListeDemandeCAWhichAddOrRemoveOnCounterAgent";
+	private static final String	sirhAbsMoisAlimAutoUrl								= "congeannuel/getListeMoisAlimAutoCongeAnnuel";
+	private static final String	sirhAbsAlimAutoUrl									= "congeannuel/getListeAlimAutoCongeAnnuel";
+	private static final String	sirhAbsHistoAlimAutoCongeAnnuelUrl					= "congeannuel/getHistoAlimAutoCongeAnnuel";
+	private static final String	sirhAbsListRefAlimUrl								= "congeannuel/getListRefAlimCongeAnnuel";
+	private static final String	sirhAbsRefAlimCongeAnnuelSauvegarde					= "congeannuel/setRefAlimCongeAnnuel";
+	private static final String	sirhAbsCreateBaseConge								= "congeannuel/createRefAlimCongeAnnuelAnnee";
+	private static final String	sirhListeDemandeCAWhichAddOrRemoveOnCounterAgent	= "congeannuel/getListeDemandeCAWhichAddOrRemoveOnCounterAgent";
 
-	private static final String sirhAbsHistoAlimAutoRecupUrl = "recuperations/getHistoAlimAutoRecup";
-	private static final String sirhAbsHistoAlimAutoReposCompUrl = "reposcomps/getHistoAlimAutoReposComp";
+	private static final String	sirhAbsHistoAlimAutoRecupUrl						= "recuperations/getHistoAlimAutoRecup";
+	private static final String	sirhAbsHistoAlimAutoReposCompUrl					= "reposcomps/getHistoAlimAutoReposComp";
 
-	private Logger logger = LoggerFactory.getLogger(SirhAbsWSConsumer.class);
+	private Logger				logger												= LoggerFactory.getLogger(SirhAbsWSConsumer.class);
 
 	@Override
 	public List<ApprobateurDto> getApprobateurs(Integer idServiceADS, Integer idAgent) {
@@ -148,7 +145,7 @@ public class SirhAbsWSConsumer extends BaseWsConsumer implements ISirhAbsWSConsu
 	}
 
 	@Override
-	public ReturnMessageDto setApprobateur(String json,Integer idAgentConnecte) {
+	public ReturnMessageDto setApprobateur(String json, Integer idAgentConnecte) {
 		String url = String.format(absWsBaseUrl + sirhAbsAgentsApprobateurs);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgentConnecte", idAgentConnecte.toString());
@@ -158,7 +155,7 @@ public class SirhAbsWSConsumer extends BaseWsConsumer implements ISirhAbsWSConsu
 	}
 
 	@Override
-	public ReturnMessageDto deleteApprobateur(String json,Integer idAgentConnecte) {
+	public ReturnMessageDto deleteApprobateur(String json, Integer idAgentConnecte) {
 		String url = String.format(absWsBaseUrl + sirhAbsDeleteApprobateurs);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgentConnecte", idAgentConnecte.toString());
@@ -178,8 +175,8 @@ public class SirhAbsWSConsumer extends BaseWsConsumer implements ISirhAbsWSConsu
 	}
 
 	@Override
-	public List<DemandeDto> getListeDemandesAgent(Integer idAgent, String onglet, String dateDebut, String dateFin, String dateDemande, String listIdRefEtat, Integer idRefType,
-			Integer idRefGroupeAbsence) {
+	public List<DemandeDto> getListeDemandesAgent(Integer idAgent, String onglet, String dateDebut, String dateFin, String dateDemande,
+			String listIdRefEtat, Integer idRefType, Integer idRefGroupeAbsence) {
 		String url = String.format(absWsBaseUrl + sirhAbsDemandesAgent);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgent.toString());
@@ -197,8 +194,8 @@ public class SirhAbsWSConsumer extends BaseWsConsumer implements ISirhAbsWSConsu
 		if (idRefGroupeAbsence != null)
 			params.put("groupe", idRefGroupeAbsence.toString());
 
-		logger.debug("Call " + url + " with idAgent : " + idAgent + ",ongletDemande : " + onglet + ",from : " + dateDebut + ",to : " + dateFin + ",dateDemande : " + dateDemande + ",etat : "
-				+ listIdRefEtat + ",type : " + idRefType);
+		logger.debug("Call " + url + " with idAgent : " + idAgent + ",ongletDemande : " + onglet + ",from : " + dateDebut + ",to : " + dateFin
+				+ ",dateDemande : " + dateDemande + ",etat : " + listIdRefEtat + ",type : " + idRefType);
 		ClientResponse res = createAndFireRequest(params, url);
 		return readResponseAsList(DemandeDto.class, res, url);
 
@@ -256,10 +253,12 @@ public class SirhAbsWSConsumer extends BaseWsConsumer implements ISirhAbsWSConsu
 	}
 
 	@Override
-	public List<CompteurDto> getListeCompteursA48(Integer annee) {
+	public List<CompteurDto> getListeCompteursA48(Integer annee, Integer idOrganisation) {
 		String url = String.format(absWsBaseUrl + sirhAbsListeCompteurA48);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("annee", annee.toString());
+		if (idOrganisation != null)
+			params.put("idOrganisation", idOrganisation.toString());
 		ClientResponse res = createAndFireRequest(params, url);
 		return readResponseAsList(CompteurDto.class, res, url);
 	}
@@ -319,8 +318,8 @@ public class SirhAbsWSConsumer extends BaseWsConsumer implements ISirhAbsWSConsu
 	}
 
 	@Override
-	public List<DemandeDto> getListeDemandes(String dateDebut, String dateFin, String listIdRefEtat, Integer idRefType, Integer idAgentRecherche, Integer idRefGroupe, boolean aValider,
-			List<String> idAgentsService) {
+	public List<DemandeDto> getListeDemandes(String dateDebut, String dateFin, String listIdRefEtat, Integer idRefType, Integer idAgentRecherche,
+			Integer idRefGroupe, boolean aValider, List<String> idAgentsService) {
 
 		String url = String.format(absWsBaseUrl + sirhAbsDemandes);
 		HashMap<String, String> params = new HashMap<>();
@@ -350,8 +349,9 @@ public class SirhAbsWSConsumer extends BaseWsConsumer implements ISirhAbsWSConsu
 			params.put("idAgents", csvId);
 		}
 
-		logger.debug("Call " + url + " with from : " + dateDebut + ",to : " + dateFin + ",etat : " + listIdRefEtat + ",type : " + idRefType + ",idAgentRecherche : " + idAgentRecherche + ",groupe : "
-				+ idRefGroupe + ",aValider : " + aValider + ", idAgents : " + idAgentsService);
+		logger.debug("Call " + url + " with from : " + dateDebut + ",to : " + dateFin + ",etat : " + listIdRefEtat + ",type : " + idRefType
+				+ ",idAgentRecherche : " + idAgentRecherche + ",groupe : " + idRefGroupe + ",aValider : " + aValider + ", idAgents : "
+				+ idAgentsService);
 
 		ClientResponse res = createAndFireRequest(params, url);
 		return readResponseAsList(DemandeDto.class, res, url);
@@ -395,10 +395,12 @@ public class SirhAbsWSConsumer extends BaseWsConsumer implements ISirhAbsWSConsu
 	}
 
 	@Override
-	public List<CompteurDto> getListeCompteursA54(Integer annee) {
+	public List<CompteurDto> getListeCompteursA54(Integer annee, Integer idOrganisation) {
 		String url = String.format(absWsBaseUrl + sirhAbsListeCompteurA54);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("annee", annee.toString());
+		if (idOrganisation != null)
+			params.put("idOrganisation", idOrganisation.toString());
 		ClientResponse res = createAndFireRequest(params, url);
 		return readResponseAsList(CompteurDto.class, res, url);
 	}
@@ -527,8 +529,8 @@ public class SirhAbsWSConsumer extends BaseWsConsumer implements ISirhAbsWSConsu
 		String url = String.format(absWsBaseUrl + sirhDureeCongeAnnuelUrl);
 		HashMap<String, String> params = new HashMap<>();
 
-		String json = new JSONSerializer().exclude("*.class").exclude("*.civilite").exclude("*.signature").exclude("*.position").exclude("*.selectedDroitAbs")
-				.transform(new MSDateTransformer(), Date.class).deepSerialize(demandeDto);
+		String json = new JSONSerializer().exclude("*.class").exclude("*.civilite").exclude("*.signature").exclude("*.position")
+				.exclude("*.selectedDroitAbs").transform(new MSDateTransformer(), Date.class).deepSerialize(demandeDto);
 
 		ClientResponse res = createAndPostRequest(params, url, json);
 		return readResponse(DemandeDto.class, res, url);
@@ -625,7 +627,7 @@ public class SirhAbsWSConsumer extends BaseWsConsumer implements ISirhAbsWSConsu
 	}
 
 	@Override
-	public ReturnMessageDto setDelegataire(Integer idAgent, String json,Integer idAgentConnecte) {
+	public ReturnMessageDto setDelegataire(Integer idAgent, String json, Integer idAgentConnecte) {
 		String url = String.format(absWsBaseUrl + sirhAbsSauvegardeDelegataire);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgent.toString());
@@ -696,13 +698,13 @@ public class SirhAbsWSConsumer extends BaseWsConsumer implements ISirhAbsWSConsu
 
 	@Override
 	public ReturnMessageDto dupliqueApprobateur(Integer idAgentConnecte, Integer idAgentSource, Integer idAgentDestinataire) {
-		
+
 		String url = String.format(absWsBaseUrl + sirhDupliqueApprobateurUrl);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgentConnecte", idAgentConnecte.toString());
 		params.put("idAgentSource", idAgentSource.toString());
 		params.put("idAgentDest", idAgentDestinataire.toString());
-		
+
 		ClientResponse res = createAndPostRequest(params, url, null);
 		return readResponse(ReturnMessageDto.class, res, url);
 	}
@@ -718,7 +720,7 @@ public class SirhAbsWSConsumer extends BaseWsConsumer implements ISirhAbsWSConsu
 	}
 
 	@Override
-	public ReturnMessageDto saveAgentsApprobateur(Integer idAgent, List<AgentDto> listSelect,Integer idAgentConnecte) {
+	public ReturnMessageDto saveAgentsApprobateur(Integer idAgent, List<AgentDto> listSelect, Integer idAgentConnecte) {
 		String url = String.format(absWsBaseUrl + sirhAgentApprobateurUrl);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgent.toString());
@@ -731,7 +733,7 @@ public class SirhAbsWSConsumer extends BaseWsConsumer implements ISirhAbsWSConsu
 	}
 
 	@Override
-	public ReturnMessageDto saveOperateurApprobateur(Integer idAgent, AgentDto dto,Integer idAgentConnecte) {
+	public ReturnMessageDto saveOperateurApprobateur(Integer idAgent, AgentDto dto, Integer idAgentConnecte) {
 		String url = String.format(absWsBaseUrl + sirhOperateurApprobateurUrl);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgent.toString());
@@ -744,7 +746,7 @@ public class SirhAbsWSConsumer extends BaseWsConsumer implements ISirhAbsWSConsu
 	}
 
 	@Override
-	public ReturnMessageDto deleteOperateurApprobateur(Integer idAgent, AgentDto dto,Integer idAgentConnecte) {
+	public ReturnMessageDto deleteOperateurApprobateur(Integer idAgent, AgentDto dto, Integer idAgentConnecte) {
 		String url = String.format(absWsBaseUrl + sirhDeleteOperateurApprobateurUrl);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgent.toString());
@@ -757,7 +759,7 @@ public class SirhAbsWSConsumer extends BaseWsConsumer implements ISirhAbsWSConsu
 	}
 
 	@Override
-	public ReturnMessageDto saveViseurApprobateur(Integer idAgent, AgentDto dto,Integer idAgentConnecte) {
+	public ReturnMessageDto saveViseurApprobateur(Integer idAgent, AgentDto dto, Integer idAgentConnecte) {
 		String url = String.format(absWsBaseUrl + sirhViseursApprobateurSIRHUrl);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgent.toString());
@@ -794,7 +796,8 @@ public class SirhAbsWSConsumer extends BaseWsConsumer implements ISirhAbsWSConsu
 	}
 
 	@Override
-	public ReturnMessageDto saveAgentsOperateur(Integer idAgentApprobateur, Integer idAgentOperateur, List<AgentDto> listSelect,Integer idAgentConnecte) {
+	public ReturnMessageDto saveAgentsOperateur(Integer idAgentApprobateur, Integer idAgentOperateur, List<AgentDto> listSelect,
+			Integer idAgentConnecte) {
 		String url = String.format(absWsBaseUrl + sirhAgentsOperateurUrl);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgentApprobateur.toString());
@@ -819,7 +822,7 @@ public class SirhAbsWSConsumer extends BaseWsConsumer implements ISirhAbsWSConsu
 	}
 
 	@Override
-	public ReturnMessageDto saveAgentsViseur(Integer idAgentApprobateur, Integer idAgentViseur, List<AgentDto> listSelect,Integer idAgentConnecte) {
+	public ReturnMessageDto saveAgentsViseur(Integer idAgentApprobateur, Integer idAgentViseur, List<AgentDto> listSelect, Integer idAgentConnecte) {
 		String url = String.format(absWsBaseUrl + sirhAgentsViseurUrl);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgentApprobateur.toString());
@@ -890,13 +893,13 @@ public class SirhAbsWSConsumer extends BaseWsConsumer implements ISirhAbsWSConsu
 
 	@Override
 	public List<DemandeDto> getListeDemandeCAWhichAddOrRemoveOnCounterAgent(Integer idAgentConnecte, Integer idAgentConcerne) {
-		
+
 		String url = String.format(absWsBaseUrl + sirhListeDemandeCAWhichAddOrRemoveOnCounterAgent);
-		
+
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgentConnecte.toString());
 		params.put("idAgentConcerne", idAgentConcerne.toString());
-		
+
 		ClientResponse res = createAndFireRequest(params, url);
 		return readResponseAsList(DemandeDto.class, res, url);
 	}
@@ -911,40 +914,22 @@ public class SirhAbsWSConsumer extends BaseWsConsumer implements ISirhAbsWSConsu
 	}
 
 	@Override
-	public List<AgentOrganisationSyndicaleDto> getListeRepresentantA54(Integer idOrganisation) {
-		String url = String.format(absWsBaseUrl + sirhAbsListRepresentantOSA54Url);
-		HashMap<String, String> params = new HashMap<>();
-		params.put("idOrganisationSyndicale", idOrganisation.toString());
-		logger.debug("Call " + url + " with idOrganisationSyndicale : " + idOrganisation);
-		ClientResponse res = createAndFireRequest(params, url);
-		return readResponseAsList(AgentOrganisationSyndicaleDto.class, res, url);
-	}
-
-	@Override
-	public ReturnMessageDto saveRepresentantAsaA54(Integer idOrganisationSyndicale, String json) {
+	public ReturnMessageDto saveRepresentantAsaA54(Integer idOrganisationSyndicale, Integer idAgent) {
 		String url = String.format(absWsBaseUrl + sirhAbsAddRepresentantAsaA54);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idOrganisationSyndicale", idOrganisationSyndicale.toString());
-		ClientResponse res = createAndPostRequest(params, url, json);
+		params.put("idAgent", idAgent.toString());
+		ClientResponse res = createAndFireRequest(params, url);
 		return readResponseWithReturnMessageDto(ReturnMessageDto.class, res, url);
 	}
 
 	@Override
-	public List<AgentOrganisationSyndicaleDto> getListeRepresentantA48(Integer idOrganisation) {
-		String url = String.format(absWsBaseUrl + sirhAbsListRepresentantOSA48Url);
-		HashMap<String, String> params = new HashMap<>();
-		params.put("idOrganisationSyndicale", idOrganisation.toString());
-		logger.debug("Call " + url + " with idOrganisationSyndicale : " + idOrganisation);
-		ClientResponse res = createAndFireRequest(params, url);
-		return readResponseAsList(AgentOrganisationSyndicaleDto.class, res, url);
-	}
-
-	@Override
-	public ReturnMessageDto saveRepresentantAsaA48(Integer idOrganisationSyndicale, String json) {
+	public ReturnMessageDto saveRepresentantAsaA48(Integer idOrganisationSyndicale, Integer idAgent) {
 		String url = String.format(absWsBaseUrl + sirhAbsAddRepresentantAsaA48);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idOrganisationSyndicale", idOrganisationSyndicale.toString());
-		ClientResponse res = createAndPostRequest(params, url, json);
+		params.put("idAgent", idAgent.toString());
+		ClientResponse res = createAndFireRequest(params, url);
 		return readResponseWithReturnMessageDto(ReturnMessageDto.class, res, url);
 	}
 }

@@ -4,25 +4,25 @@ import java.util.Date;
 
 public class CompteurDto {
 
-	private Integer idCompteur;
+	private Integer						idCompteur;
 
-	private Integer idAgent;
+	private Integer						idAgent;
 
-	private Double dureeAAjouter;
+	private Double						dureeAAjouter;
 
-	private Double dureeARetrancher;
+	private Double						dureeARetrancher;
 
-	private MotifCompteurDto motifCompteurDto;
+	private MotifCompteurDto			motifCompteurDto;
 
-	private boolean isAnneePrecedente;
+	private boolean						isAnneePrecedente;
 
-	private Date dateDebut;
+	private Date						dateDebut;
 
-	private Date dateFin;
+	private Date						dateFin;
 
-	private OrganisationSyndicaleDto organisationSyndicaleDto;
-	
-	private boolean actif;
+	private OrganisationSyndicaleDto	organisationSyndicaleDto;
+
+	private boolean						actif;
 
 	public Integer getIdAgent() {
 		return idAgent;
@@ -98,7 +98,10 @@ public class CompteurDto {
 
 	@Override
 	public boolean equals(Object obj) {
-		return idCompteur.toString().equals(((CompteurDto) obj).getIdCompteur().toString());
+		if (idAgent == null) {
+			return false;
+		}
+		return idAgent.toString().equals(((CompteurDto) obj).getIdAgent().toString());
 	}
 
 	public boolean isActif() {

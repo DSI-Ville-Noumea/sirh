@@ -115,7 +115,7 @@ public interface IAbsService {
 
 	ReturnMessageDto initialiseCompteurConge(Integer agentConnecte, Integer agentConcerne);
 
-	List<CompteurDto> getListeCompteursA48(Integer annee);
+	List<CompteurDto> getListeCompteursA48(Integer annee, Integer idOrganisation);
 
 	ReturnMessageDto addCompteurAsaA48(Integer idAgent, String json);
 
@@ -133,7 +133,7 @@ public interface IAbsService {
 
 	ReturnMessageDto addCompteurAsaA54ByList(Integer idAgent, String json);
 
-	List<CompteurDto> getListeCompteursA54(Integer annee);
+	List<CompteurDto> getListeCompteursA54(Integer annee, Integer idOrganisation);
 
 	ReturnMessageDto addCompteurAsaA55(Integer idAgent, String json);
 
@@ -173,11 +173,7 @@ public interface IAbsService {
 
 	List<DemandeDto> getListeDemandeCAWhichAddOrRemoveOnCounterAgent(Integer idAgent, Integer idAgentConcerne);
 
-	List<AgentOrganisationSyndicaleDto> getListeRepresentantA54(Integer idOrganisation);
+	ReturnMessageDto saveRepresentantAsaA54(Integer idOrganisation, Integer idAgent);
 
-	ReturnMessageDto saveRepresentantAsaA54(Integer idOrganisation, String json);
-
-	List<AgentOrganisationSyndicaleDto> getListeRepresentantA48(Integer idOrganisation);
-
-	ReturnMessageDto saveRepresentantAsaA48(Integer idOrganisation, String json);
+	ReturnMessageDto saveRepresentantAsaA48(Integer idOrganisation, Integer idAgent);
 }

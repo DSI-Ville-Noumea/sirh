@@ -2,6 +2,9 @@ package nc.noumea.spring.service;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import nc.mairie.gestionagent.absence.dto.ActeursDto;
 import nc.mairie.gestionagent.absence.dto.AgentOrganisationSyndicaleDto;
 import nc.mairie.gestionagent.absence.dto.CompteurDto;
@@ -23,9 +26,6 @@ import nc.mairie.gestionagent.dto.InputterDto;
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
 import nc.mairie.gestionagent.dto.ViseursDto;
 import nc.mairie.spring.ws.ISirhAbsWSConsumer;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 @Service
 public class AbsService implements IAbsService {
@@ -261,8 +261,8 @@ public class AbsService implements IAbsService {
 	}
 
 	@Override
-	public List<CompteurDto> getListeCompteursA48(Integer annee) {
-		return absConsumer.getListeCompteursA48(annee);
+	public List<CompteurDto> getListeCompteursA48(Integer annee, Integer idOrganisation) {
+		return absConsumer.getListeCompteursA48(annee, idOrganisation);
 	}
 
 	@Override
@@ -301,8 +301,8 @@ public class AbsService implements IAbsService {
 	}
 
 	@Override
-	public List<CompteurDto> getListeCompteursA54(Integer annee) {
-		return absConsumer.getListeCompteursA54(annee);
+	public List<CompteurDto> getListeCompteursA54(Integer annee, Integer idOrganisation) {
+		return absConsumer.getListeCompteursA54(annee, idOrganisation);
 	}
 
 	@Override
@@ -401,23 +401,13 @@ public class AbsService implements IAbsService {
 	}
 
 	@Override
-	public List<AgentOrganisationSyndicaleDto> getListeRepresentantA54(Integer idOrganisation) {
-		return absConsumer.getListeRepresentantA54(idOrganisation);
+	public ReturnMessageDto saveRepresentantAsaA54(Integer idOrganisation, Integer idAgent) {
+		return absConsumer.saveRepresentantAsaA54(idOrganisation, idAgent);
 	}
 
 	@Override
-	public ReturnMessageDto saveRepresentantAsaA54(Integer idOrganisation, String json) {
-		return absConsumer.saveRepresentantAsaA54(idOrganisation, json);
-	}
-
-	@Override
-	public List<AgentOrganisationSyndicaleDto> getListeRepresentantA48(Integer idOrganisation) {
-		return absConsumer.getListeRepresentantA48(idOrganisation);
-	}
-
-	@Override
-	public ReturnMessageDto saveRepresentantAsaA48(Integer idOrganisation, String json) {
-		return absConsumer.saveRepresentantAsaA48(idOrganisation, json);
+	public ReturnMessageDto saveRepresentantAsaA48(Integer idOrganisation, Integer idAgent) {
+		return absConsumer.saveRepresentantAsaA48(idOrganisation, idAgent);
 	}
 
 }

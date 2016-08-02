@@ -70,17 +70,13 @@ public interface ISirhAbsWSConsumer {
 
 	ReturnMessageDto saveRepresentantAsaA52(Integer idOrganisationSyndicale, String json);
 
-	ReturnMessageDto saveRepresentantAsaA54(Integer idOrganisationSyndicale, String json);
+	ReturnMessageDto saveRepresentantAsaA54(Integer idOrganisationSyndicale, Integer idAgent);
 
-	ReturnMessageDto saveRepresentantAsaA48(Integer idOrganisationSyndicale, String json);
+	ReturnMessageDto saveRepresentantAsaA48(Integer idOrganisationSyndicale, Integer idAgent);
 
 	List<OrganisationSyndicaleDto> getListeOSCompteursA52();
 
 	List<AgentOrganisationSyndicaleDto> getListeRepresentantA52(Integer idOrganisation);
-
-	List<AgentOrganisationSyndicaleDto> getListeRepresentantA54(Integer idOrganisation);
-
-	List<AgentOrganisationSyndicaleDto> getListeRepresentantA48(Integer idOrganisation);
 
 	// Type d'absences
 	List<RefGroupeAbsenceDto> getRefGroupeAbsence();
@@ -129,9 +125,9 @@ public interface ISirhAbsWSConsumer {
 
 	ReturnMessageDto addCompteurCongeAnnuel(Integer idAgent, String json);
 
-	List<CompteurDto> getListeCompteursA48(Integer annee);
+	List<CompteurDto> getListeCompteursA48(Integer annee, Integer idOrganisation);
 
-	List<CompteurDto> getListeCompteursA54(Integer annee);
+	List<CompteurDto> getListeCompteursA54(Integer annee, Integer idOrganisation);
 
 	List<CompteurDto> getListeCompteursA55();
 
