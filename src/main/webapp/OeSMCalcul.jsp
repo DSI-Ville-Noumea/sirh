@@ -41,9 +41,13 @@
 		
 		<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
 		<legend class="sigp2Legend">Calcul des prévisions des visites médicales du travail</legend>
-			<span class="sigp2" style="width:75px">Mois - Année : </span>
+			<span class="sigp2" style="width:75px">Mois : </span>
 			<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_MOIS() %>" style="width=140px;margin-right:20px;">
 				<%=process.forComboHTML(process.getVAL_LB_MOIS(), process.getVAL_LB_MOIS_SELECT()) %>
+			</SELECT>
+			<span class="sigp2" style="width:75px">Année : </span>
+			<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_ANNEE() %>" style="width=140px;margin-right:20px;">
+				<%=process.forComboHTML(process.getVAL_LB_ANNEE(), process.getVAL_LB_ANNEE_SELECT()) %>
 			</SELECT>
 			<INPUT type="submit" class="sigp2-Bouton-250" value="Calculer pour le mois sélectionné" name="<%=process.getNOM_PB_CALCULER()%>">
 		</FIELDSET>

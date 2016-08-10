@@ -1,12 +1,9 @@
 package nc.mairie.gestionagent.process;
 
-import java.text.DateFormatSymbols;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Hashtable;
-import java.util.Locale;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -37,6 +34,7 @@ import nc.mairie.spring.dao.utils.MairieDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
+import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
@@ -47,25 +45,26 @@ public class OeSMCalcul extends BasicProcess {
 	/**
 	 * 
 	 */
-	private static final long			serialVersionUID		= 1L;
-	private String[]					LB_MOIS;
+	private static final long	serialVersionUID		= 1L;
+	private String[]			LB_MOIS;
+	private String[]			LB_ANNEE;
 
-	private String[]					listeMois;
-	private Hashtable<String, String>	hashMois;
+	private List<Integer>		listeMois				= new ArrayList<>();
+	private List<Integer>		listeAnnee				= new ArrayList<>();;
 
-	public String						ACTION_CALCUL			= "Calcul";
+	public String				ACTION_CALCUL			= "Calcul";
 
-	private Logger						logger					= LoggerFactory.getLogger(OeSMCalcul.class);
+	private Logger				logger					= LoggerFactory.getLogger(OeSMCalcul.class);
 
-	private SuiviMedicalDao				suiviMedDao;
-	private SPABSENDao					spabsenDao;
-	private MedecinDao					medecinDao;
-	private VisiteMedicaleDao			visiteMedicaleDao;
-	private FichePosteDao				fichePosteDao;
-	private AffectationDao				affectationDao;
-	private AgentDao					agentDao;
+	private SuiviMedicalDao		suiviMedDao;
+	private SPABSENDao			spabsenDao;
+	private MedecinDao			medecinDao;
+	private VisiteMedicaleDao	visiteMedicaleDao;
+	private FichePosteDao		fichePosteDao;
+	private AffectationDao		affectationDao;
+	private AgentDao			agentDao;
 
-	public static final int				STATUT_RECHERCHER_AGENT	= 1;
+	public static final int		STATUT_RECHERCHER_AGENT	= 1;
 
 	@Override
 	public void initialiseZones(HttpServletRequest request) throws Exception {
@@ -139,52 +138,45 @@ public class OeSMCalcul extends BasicProcess {
 	private void initialiseListeDeroulante() throws Exception {
 
 		// Si liste mois vide alors affectation
+		if (getLB_ANNEE() == LBVide) {
+			Integer anneeCourante = Integer.parseInt(Services.dateDuJour().substring(6, 10));
+			getListeAnnee().clear();
+			getListeAnnee().add(anneeCourante + 2);
+			getListeAnnee().add(anneeCourante + 1);
+			getListeAnnee().add(anneeCourante);
+			getListeAnnee().add(anneeCourante - 1);
+			getListeAnnee().add(anneeCourante - 2);
+
+			int[] tailles = { 15 };
+			FormateListe aFormat = new FormateListe(tailles);
+			for (Integer anne : getListeAnnee()) {
+				String ligne[] = { anne.toString() };
+				aFormat.ajouteLigne(ligne);
+			}
+
+			setLB_ANNEE(aFormat.getListeFormatee(false));
+			addZone(getNOM_LB_ANNEE_SELECT(), "2");
+		}
+
+		// Si liste mois vide alors affectation
 		if (getLB_MOIS() == LBVide) {
-			Integer moisCourant = Integer.parseInt(Services.dateDuJour().substring(3, 5)) - 1;
-			String anneeCourante = Services.dateDuJour().substring(6, 10);
-			DateFormatSymbols dfsFR = new DateFormatSymbols(Locale.FRENCH);
-			String[] moisAnneeFR = dfsFR.getMonths();
-			String[] moisAnnee = dfsFR.getShortMonths();
-			getHashMois().clear();
-			int j = 0;
-			int tailleTotal = 6;
-			setListeMois(new String[tailleTotal]);
+			Integer moisCourant = Integer.parseInt(Services.dateDuJour().substring(3, 5));
+			getListeMois().clear();
 
-			for (int i = moisCourant; i < moisAnneeFR.length - 1; i++) {
-				if (j >= tailleTotal) {
-					break;
-				}
-				getListeMois()[j] = moisAnneeFR[i] + " - " + anneeCourante;
-				getHashMois().put(moisAnneeFR[i] + " - " + anneeCourante, moisAnnee[i] + "/" + anneeCourante);
-				j++;
-			}
-			// si moisCourant = juillet ou plus
-			// alors il faudra afficher des mois de l'année suivante
-			if (moisCourant >= 7) {
-				String anneeSuivante = String.valueOf(Integer.valueOf(anneeCourante) + 1);
-				int sauvJ = j;
-				for (int i = 0; i < tailleTotal - sauvJ; i++) {
-					getListeMois()[j] = moisAnneeFR[i] + " - " + anneeSuivante;
-					getHashMois().put(moisAnneeFR[i] + " - " + anneeSuivante, moisAnnee[i] + "/" + anneeSuivante);
-					j++;
-				}
+			for (int i = 0; i < 13; i++) {
+				getListeMois().add(i);
 			}
 
-			setLB_MOIS(getListeMois());
-			addZone(getNOM_LB_MOIS_SELECT(), Const.ZERO);
-		}
-	}
+			int[] tailles = { 15 };
+			FormateListe aFormat = new FormateListe(tailles);
+			for (Integer mois : getListeMois()) {
+				String ligne[] = { mois.toString() };
+				aFormat.ajouteLigne(ligne);
+			}
 
-	/**
-	 * Getter de la HashTable des mois.
-	 * 
-	 * @return hashMois
-	 */
-	private Hashtable<String, String> getHashMois() {
-		if (hashMois == null) {
-			hashMois = new Hashtable<String, String>();
+			setLB_MOIS(aFormat.getListeFormatee(false));
+			addZone(getNOM_LB_MOIS_SELECT(), moisCourant.toString());
 		}
-		return hashMois;
 	}
 
 	/**
@@ -214,10 +206,11 @@ public class OeSMCalcul extends BasicProcess {
 		// Mise à jour de l'action menee
 		addZone(getNOM_ST_ACTION(), ACTION_CALCUL);
 
+		int indiceAnnee = (Services.estNumerique(getVAL_LB_ANNEE_SELECT()) ? Integer.parseInt(getVAL_LB_ANNEE_SELECT()) : -1);
 		int indiceMois = (Services.estNumerique(getVAL_LB_MOIS_SELECT()) ? Integer.parseInt(getVAL_LB_MOIS_SELECT()) : -1);
-		if (indiceMois != -1) {
-			Integer moisChoisi = getMoisSelectionne(indiceMois);
-			Integer anneeChoisi = getAnneeSelectionne(indiceMois);
+		if (indiceMois != -1 && indiceAnnee != -1) {
+			Integer anneeChoisi = getListeAnnee().get(indiceAnnee);
+			Integer moisChoisi = getListeMois().get(indiceMois);
 
 			// Suppression des suivi medicaux a l'etat 'Travail' en fonction du
 			// mois et de l'année
@@ -232,7 +225,7 @@ public class OeSMCalcul extends BasicProcess {
 
 		} else {
 			// "ERR002","La zone @ est obligatoire."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "mois"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "mois/année"));
 			return false;
 		}
 
@@ -1347,34 +1340,6 @@ public class OeSMCalcul extends BasicProcess {
 		logger.info("Nb de cas 2 : " + nbCas2);
 	}
 
-	private Integer getMoisSelectionne(int indiceMois) throws ParseException {
-		if (getListeMois() != null && getListeMois().length > 0 && indiceMois != -1) {
-			String test = getListeMois()[indiceMois];
-			String test2 = getHashMois().get(test);
-			SimpleDateFormat sdf = new SimpleDateFormat("MMM/yyyy", Locale.FRENCH);
-			SimpleDateFormat sdf2 = new SimpleDateFormat("MM", Locale.FRENCH);
-			Date d = sdf.parse(test2);
-			String mois = sdf2.format(d);
-			return Integer.valueOf(mois);
-		} else {
-			return 0;
-		}
-	}
-
-	private Integer getAnneeSelectionne(int indiceMois) throws ParseException {
-		if (getListeMois() != null && getListeMois().length > 0 && indiceMois != -1) {
-			String test = getListeMois()[indiceMois];
-			String test2 = getHashMois().get(test);
-			SimpleDateFormat sdf = new SimpleDateFormat("MMM/yyyy", Locale.FRENCH);
-			SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy", Locale.FRENCH);
-			Date d = sdf.parse(test2);
-			String annee = sdf2.format(d);
-			return Integer.valueOf(annee);
-		} else {
-			return 0;
-		}
-	}
-
 	/**
 	 * Getter de la liste avec un lazy initialize : LB_MOIS Date de création :
 	 * (28/11/11)
@@ -1428,24 +1393,6 @@ public class OeSMCalcul extends BasicProcess {
 	 */
 	public String getVAL_LB_MOIS_SELECT() {
 		return getZone(getNOM_LB_MOIS_SELECT());
-	}
-
-	/**
-	 * Getter de la liste des années possibles.
-	 * 
-	 * @return listeMois
-	 */
-	private String[] getListeMois() {
-		return listeMois;
-	}
-
-	/**
-	 * Setter de la liste des années possibles.
-	 * 
-	 * @param strings
-	 */
-	private void setListeMois(String[] strings) {
-		this.listeMois = strings;
 	}
 
 	/**
@@ -1525,6 +1472,48 @@ public class OeSMCalcul extends BasicProcess {
 
 	public void setAgentDao(AgentDao agentDao) {
 		this.agentDao = agentDao;
+	}
+
+	private String[] getLB_ANNEE() {
+		if (LB_ANNEE == null)
+			LB_ANNEE = initialiseLazyLB();
+		return LB_ANNEE;
+	}
+
+	private void setLB_ANNEE(String[] listeANNEE) {
+		LB_ANNEE = listeANNEE;
+	}
+
+	public String getNOM_LB_ANNEE() {
+		return "NOM_LB_ANNEE";
+	}
+
+	public String getNOM_LB_ANNEE_SELECT() {
+		return "NOM_LB_ANNEE_SELECT";
+	}
+
+	public String[] getVAL_LB_ANNEE() {
+		return getLB_ANNEE();
+	}
+
+	public String getVAL_LB_ANNEE_SELECT() {
+		return getZone(getNOM_LB_ANNEE_SELECT());
+	}
+
+	public List<Integer> getListeMois() {
+		return listeMois;
+	}
+
+	public void setListeMois(List<Integer> listeMois) {
+		this.listeMois = listeMois;
+	}
+
+	public List<Integer> getListeAnnee() {
+		return listeAnnee;
+	}
+
+	public void setListeAnnee(List<Integer> listeAnnee) {
+		this.listeAnnee = listeAnnee;
 	}
 
 }
