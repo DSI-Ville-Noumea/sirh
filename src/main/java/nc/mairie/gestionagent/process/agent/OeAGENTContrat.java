@@ -1,7 +1,5 @@
 package nc.mairie.gestionagent.process.agent;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -16,17 +14,12 @@ import nc.mairie.enums.EnumTypeContrat;
 import nc.mairie.gestionagent.absence.dto.FiltreSoldeDto;
 import nc.mairie.gestionagent.absence.dto.SoldeDto;
 import nc.mairie.gestionagent.robot.MaClasse;
-import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.Agent;
 import nc.mairie.metier.agent.Contrat;
-import nc.mairie.metier.agent.Document;
-import nc.mairie.metier.agent.DocumentAgent;
 import nc.mairie.metier.referentiel.Motif;
 import nc.mairie.metier.referentiel.TypeContrat;
 import nc.mairie.spring.dao.metier.agent.ContratDao;
-import nc.mairie.spring.dao.metier.agent.DocumentAgentDao;
-import nc.mairie.spring.dao.metier.agent.DocumentDao;
 import nc.mairie.spring.dao.metier.referentiel.MotifDao;
 import nc.mairie.spring.dao.metier.referentiel.TypeContratDao;
 import nc.mairie.spring.dao.utils.SirhDao;
@@ -42,14 +35,7 @@ import nc.noumea.spring.service.AbsService;
 import nc.noumea.spring.service.IAbsService;
 import nc.noumea.spring.service.ISirhService;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.vfs2.FileObject;
-import org.apache.commons.vfs2.FileSystemException;
-import org.apache.commons.vfs2.FileSystemManager;
-import org.apache.commons.vfs2.VFS;
 import org.joda.time.DateTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 
 import flexjson.JSONSerializer;
@@ -60,50 +46,46 @@ import flexjson.JSONSerializer;
  */
 public class OeAGENTContrat extends BasicProcess {
 
-	private Logger logger = LoggerFactory.getLogger(OeAGENTContrat.class);
-
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-	private String[] LB_MOTIF;
-	private String[] LB_TYPE_CONTRAT;
+	private static final long				serialVersionUID	= 1L;
+	private String[]						LB_MOTIF;
+	private String[]						LB_TYPE_CONTRAT;
 
-	public String ACTION_SUPPRESSION = "Suppression d'un contrat.";
-	public String ACTION_CONSULTATION = "Consultation d'un contrat.";
-	public String ACTION_MODIFICATION = "Modification d'un contrat.";
-	public String ACTION_CREATION = "Création d'un contrat.";
-	public String ACTION_IMPRESSION = "Impression d'un contrat.";
+	public String							ACTION_SUPPRESSION	= "Suppression d'un contrat.";
+	public String							ACTION_CONSULTATION	= "Consultation d'un contrat.";
+	public String							ACTION_MODIFICATION	= "Modification d'un contrat.";
+	public String							ACTION_CREATION		= "Création d'un contrat.";
+	public String							ACTION_IMPRESSION	= "Impression d'un contrat.";
 
-	public String CHOIX_CONTRAT_O = "Oui";
-	public String CHOIX_CONTRAT_N = "Non";
+	public String							CHOIX_CONTRAT_O		= "Oui";
+	public String							CHOIX_CONTRAT_N		= "Non";
 
-	private Agent agentCourant;
-	private TypeContrat typeContratCourant;
-	private Motif motifCourant;
-	private ArrayList<Contrat> listeContrat;
-	private ArrayList<TypeContrat> listeTypeContrat;
-	private Hashtable<Integer, TypeContrat> hashTypeContrat;
-	private ArrayList<Motif> listeMotif;
-	private Hashtable<Integer, Motif> hashMotif;
-	private Contrat contratCourant;
-	private Contrat contratReference;
-	private String focus = null;
-	private String urlFichier;
+	private Agent							agentCourant;
+	private TypeContrat						typeContratCourant;
+	private Motif							motifCourant;
+	private ArrayList<Contrat>				listeContrat;
+	private ArrayList<TypeContrat>			listeTypeContrat;
+	private Hashtable<Integer, TypeContrat>	hashTypeContrat;
+	private ArrayList<Motif>				listeMotif;
+	private Hashtable<Integer, Motif>		hashMotif;
+	private Contrat							contratCourant;
+	private Contrat							contratReference;
+	private String							focus				= null;
+	private String							urlFichier;
 
-	String messageInfo = null;
+	String									messageInfo			= null;
 
-	private MotifDao motifDao;
-	private TypeContratDao typeContratDao;
-	private DocumentAgentDao lienDocumentAgentDao;
-	private DocumentDao documentDao;
-	private ContratDao contratDao;
+	private MotifDao						motifDao;
+	private TypeContratDao					typeContratDao;
+	private ContratDao						contratDao;
 
-	private IAbsService absService;
+	private IAbsService						absService;
 
-	private ISirhService sirhService;
+	private ISirhService					sirhService;
 
-	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+	private SimpleDateFormat				sdf					= new SimpleDateFormat("dd/MM/yyyy");
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER Date de création :
@@ -159,7 +141,8 @@ public class OeAGENTContrat extends BasicProcess {
 
 			if (getContratReference() != null) {
 				addZone(getNOM_ST_NUM_CONTRAT_REF(), getContratReference().getNumContrat());
-				addZone(getNOM_LB_TYPE_CONTRAT_SELECT(), String.valueOf(getListeTypeContrat().indexOf(getHashTypeContrat().get(getContratReference().getIdTypeContrat()))));
+				addZone(getNOM_LB_TYPE_CONTRAT_SELECT(),
+						String.valueOf(getListeTypeContrat().indexOf(getHashTypeContrat().get(getContratReference().getIdTypeContrat()))));
 				Motif m = (Motif) getHashMotif().get(getContratReference().getIdMotif());
 				setMotifCourant(m);
 				int ligneMotif = getListeMotif().indexOf(m);
@@ -282,9 +265,11 @@ public class OeAGENTContrat extends BasicProcess {
 			if (getZone(getNOM_ST_ACTION()).equals(ACTION_MODIFICATION)) {
 
 				// Modification
-				getContratDao().modifierContrat(getContratCourant().getIdContrat(), getContratCourant().getIdTypeContrat(), getContratCourant().getIdMotif(), getContratCourant().getIdAgent(),
-						getContratCourant().getIdDocument(), getContratCourant().getNumContrat(), getContratCourant().isAvenant(), getContratCourant().getIdContratRef(),
-						getContratCourant().getDatdeb(), getContratCourant().getDateFinPeriodeEss(), getContratCourant().getDateFin(), getContratCourant().getJustification());
+				getContratDao().modifierContrat(getContratCourant().getIdContrat(), getContratCourant().getIdTypeContrat(),
+						getContratCourant().getIdMotif(), getContratCourant().getIdAgent(), getContratCourant().getIdDocument(),
+						getContratCourant().getNumContrat(), getContratCourant().isAvenant(), getContratCourant().getIdContratRef(),
+						getContratCourant().getDatdeb(), getContratCourant().getDateFinPeriodeEss(), getContratCourant().getDateFin(),
+						getContratCourant().getJustification());
 			} else if (getZone(getNOM_ST_ACTION()).equals(ACTION_CREATION)) {
 				// 29705 : verification que si ce n'est pas un avenant.
 				if (!getContratCourant().isAvenant()) {
@@ -304,8 +289,9 @@ public class OeAGENTContrat extends BasicProcess {
 				String numSeq = getContratDao().getNumContratChrono();
 
 				getContratCourant().setNumContrat(Services.dateDuJour().substring(6) + "/" + Services.lpad(numSeq, 5, "0"));
-				getContratDao().creerContrat(getContratCourant().getIdTypeContrat(), getContratCourant().getIdMotif(), getContratCourant().getIdAgent(), getContratCourant().getIdDocument(),
-						getContratCourant().getNumContrat(), getContratCourant().isAvenant(), getContratCourant().getIdContratRef(), getContratCourant().getDatdeb(),
+				getContratDao().creerContrat(getContratCourant().getIdTypeContrat(), getContratCourant().getIdMotif(),
+						getContratCourant().getIdAgent(), getContratCourant().getIdDocument(), getContratCourant().getNumContrat(),
+						getContratCourant().isAvenant(), getContratCourant().getIdContratRef(), getContratCourant().getDatdeb(),
 						getContratCourant().getDateFinPeriodeEss(), getContratCourant().getDateFin(), getContratCourant().getJustification());
 			}
 			if (getTransaction().isErreur())
@@ -531,7 +517,8 @@ public class OeAGENTContrat extends BasicProcess {
 					// Un ou des evenants pour ce contrat exite déjà : on
 					// verifie la date du debut avec la date de fin du dernier
 					// avenant
-					if (Services.compareDates(sdf.format(getContratCourant().getDatdeb()), sdf.format(listeAvenant.get(listeAvenant.size() - 1).getDateFin())) <= 0) {
+					if (Services.compareDates(sdf.format(getContratCourant().getDatdeb()),
+							sdf.format(listeAvenant.get(listeAvenant.size() - 1).getDateFin())) <= 0) {
 						// "ERR205",
 						// "La date @ doit être supérieure à la date @."
 						getTransaction().declarerErreur(MessageUtils.getMessage("ERR205", "de début de contrat", "de fin du dernier avenant"));
@@ -540,7 +527,8 @@ public class OeAGENTContrat extends BasicProcess {
 				}
 				if (listeAvenant.size() >= 3) {
 					// "INF007",
-					// "Attention : ce contrat a déjà 3 avenants. Veuillez Vérifier son motif."
+					// "Attention : ce contrat a déjà 3 avenants. Veuillez
+					// Vérifier son motif."
 					messageInfo = MessageUtils.getMessage("INF007");
 				}
 			}
@@ -564,7 +552,8 @@ public class OeAGENTContrat extends BasicProcess {
 		boolean rgOK = true;
 		TypeContrat tc = (TypeContrat) getListeTypeContrat().get(Integer.parseInt(getZone(getNOM_LB_TYPE_CONTRAT_SELECT())));
 		if (tc.getLibTypeContrat().equals(EnumTypeContrat.CDD.getValue())) {
-			if (Services.compareDates(Services.dateDuJour(), getZone(getNOM_EF_DATE_DEB())) < 0 || Services.compareDates(getZone(getNOM_EF_DATE_FIN()), Services.dateDuJour()) < 0) {
+			if (Services.compareDates(Services.dateDuJour(), getZone(getNOM_EF_DATE_DEB())) < 0
+					|| Services.compareDates(getZone(getNOM_EF_DATE_FIN()), Services.dateDuJour()) < 0) {
 				rgOK = false;
 			}
 			if (Services.compareDates(Services.dateDuJour(), getZone(getNOM_EF_DATE_DEB())) <= 0) {
@@ -947,12 +936,6 @@ public class OeAGENTContrat extends BasicProcess {
 		if (getTypeContratDao() == null) {
 			setTypeContratDao(new TypeContratDao((SirhDao) context.getBean("sirhDao")));
 		}
-		if (getLienDocumentAgentDao() == null) {
-			setLienDocumentAgentDao(new DocumentAgentDao((SirhDao) context.getBean("sirhDao")));
-		}
-		if (getDocumentDao() == null) {
-			setDocumentDao(new DocumentDao((SirhDao) context.getBean("sirhDao")));
-		}
 		if (getContratDao() == null) {
 			setContratDao(new ContratDao((SirhDao) context.getBean("sirhDao")));
 		}
@@ -981,7 +964,8 @@ public class OeAGENTContrat extends BasicProcess {
 		// Vérification des droits d'acces.
 		if (MairieUtils.estInterdit(request, getNomEcran())) {
 			// "ERR190",
-			// "Operation impossible. Vous ne disposez pas des droits d'acces a cette option."
+			// "Operation impossible. Vous ne disposez pas des droits d'acces a
+			// cette option."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
@@ -1377,8 +1361,8 @@ public class OeAGENTContrat extends BasicProcess {
 			return false;
 		}
 
-		if (!getVAL_RG_AVENANT().equals(getNOM_RB_AVENANT_O()) && Const.CHAINE_VIDE.equals(getZone(getNOM_EF_DATE_FIN_PERIODE_ESSAI())) && !Const.CHAINE_VIDE.equals(getZone(getNOM_EF_DATE_DEB()))
-				&& Services.estUneDate(getZone(getNOM_EF_DATE_DEB()))) {
+		if (!getVAL_RG_AVENANT().equals(getNOM_RB_AVENANT_O()) && Const.CHAINE_VIDE.equals(getZone(getNOM_EF_DATE_FIN_PERIODE_ESSAI()))
+				&& !Const.CHAINE_VIDE.equals(getZone(getNOM_EF_DATE_DEB())) && Services.estUneDate(getZone(getNOM_EF_DATE_DEB()))) {
 			String datePeriodeEssai = Const.CHAINE_VIDE;
 			TypeContrat tc = (TypeContrat) getListeTypeContrat().get(Integer.parseInt(getZone(getNOM_LB_TYPE_CONTRAT_SELECT())));
 			if (tc.getLibTypeContrat().equals(EnumTypeContrat.CDI.getValue())) {
@@ -1513,16 +1497,6 @@ public class OeAGENTContrat extends BasicProcess {
 		return "ECR-AG-DP-CONTRAT";
 	}
 
-	private boolean verifieExistFichier(Integer idContrat) throws Exception {
-		// on regarde si le fichier existe
-		try {
-			getDocumentDao().chercherDocumentByContainsNom("C_" + idContrat);
-		} catch (Exception e) {
-			return false;
-		}
-		return true;
-	}
-
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_IMPRIMER
 	 */
@@ -1543,24 +1517,6 @@ public class OeAGENTContrat extends BasicProcess {
 	}
 
 	private boolean imprimeModele(HttpServletRequest request) throws Exception {
-		// on verifie que les repertoires existent
-		verifieRepertoire("C");
-
-		String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ACTES");
-		String destination = "C/C_" + getContratCourant().getIdContrat() + ".doc";
-
-		// si le fichier existe alors on supprime l'entrée ou il y a le fichier
-		if (verifieExistFichier(getContratCourant().getIdContrat())) {
-			Document d = getDocumentDao().chercherDocumentByContainsNom("C_" + getContratCourant().getIdContrat());
-			DocumentAgent l = getLienDocumentAgentDao().chercherDocumentAgent(getAgentCourant().getIdAgent(), d.getIdDocument());
-			String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ROOT");
-			File f = new File(repertoireStockage + d.getLienDocument());
-			if (f.exists()) {
-				f.delete();
-			}
-			getLienDocumentAgentDao().supprimerDocumentAgent(l.getIdAgent(), l.getIdDocument());
-			getDocumentDao().supprimerDocument(d.getIdDocument());
-		}
 
 		if (!getTypeContratDao().chercherTypeContrat(getContratCourant().getIdTypeContrat()).getLibTypeContrat().equals("CDD")) {
 			// "ERR034", "Une impression ne peut se faire que sur un CDD."
@@ -1568,78 +1524,14 @@ public class OeAGENTContrat extends BasicProcess {
 			return false;
 		}
 
-		try {
-			byte[] fileAsBytes = sirhService.downloadContrat(getAgentCourant().getIdAgent(), getContratCourant().getIdContrat());
+		String nomFichier = "C_" + getContratCourant().getIdContrat() + ".doc";
+		String url = "PrintDocument?fromPage=" + this.getClass().getName() + "&nomFichier=" + nomFichier + "&idAgent="
+				+ getAgentCourant().getIdAgent() + "&idContrat=" + getContratCourant().getIdContrat();
+		setURLFichier(getScriptOuverture(url));
 
-			if (!saveFileToRemoteFileSystem(fileAsBytes, repPartage, destination)) {
-				// "ERR185",
-				// "Une erreur est survenue dans la génération des documents. Merci de contacter le responsable du projet."
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR185"));
-				return false;
-			}
-
-			// Tout s'est bien passé
-			// on crée le document en base de données
-			Document d = new Document();
-			d.setIdTypeDocument(2);
-			d.setLienDocument(destination);
-			d.setNomDocument("C_" + getContratCourant().getIdContrat() + ".doc");
-			d.setDateDocument(new Date());
-			d.setCommentaire("Document généré par l'application");
-			Integer id = getDocumentDao().creerDocument(d.getClasseDocument(), d.getNomDocument(), d.getLienDocument(), d.getDateDocument(), d.getCommentaire(), d.getIdTypeDocument(),
-					d.getNomOriginal());
-
-			DocumentAgent lda = new DocumentAgent();
-			lda.setIdAgent(getAgentCourant().getIdAgent());
-			lda.setIdDocument(id);
-			getLienDocumentAgentDao().creerDocumentAgent(lda.getIdAgent(), lda.getIdDocument());
-
-			if (getTransaction().isErreur())
-				return false;
-
-			destination = destination.substring(destination.lastIndexOf("/"), destination.length());
-			String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_LECTURE");
-			setURLFichier(getScriptOuverture(repertoireStockage + "C" + destination));
-
-			commitTransaction();
-
-		} catch (Exception e) {
-			// "ERR185",
-			// "Une erreur est survenue dans la génération des documents. Merci de contacter le responsable du projet."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR185"));
-			return false;
-		}
-
-		initialiseListeContratsAgent(request);
 		addZone(getNOM_ST_WARNING(), Const.CHAINE_VIDE);
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 
-		return true;
-	}
-
-	public boolean saveFileToRemoteFileSystem(byte[] fileAsBytes, String chemin, String filename) throws Exception {
-
-		BufferedOutputStream bos = null;
-		FileObject docFile = null;
-
-		try {
-			FileSystemManager fsManager = VFS.getManager();
-			docFile = fsManager.resolveFile(String.format("%s", chemin + filename));
-			bos = new BufferedOutputStream(docFile.getContent().getOutputStream());
-			IOUtils.write(fileAsBytes, bos);
-			IOUtils.closeQuietly(bos);
-
-			if (docFile != null) {
-				try {
-					docFile.close();
-				} catch (FileSystemException e) {
-					// ignore the exception
-				}
-			}
-		} catch (Exception e) {
-			logger.error(String.format("An error occured while writing the report file to the following path  : " + chemin + filename + " : " + e));
-			return false;
-		}
 		return true;
 	}
 
@@ -1661,20 +1553,6 @@ public class OeAGENTContrat extends BasicProcess {
 			return Const.CHAINE_VIDE;
 		}
 		return res;
-	}
-
-	private void verifieRepertoire(String codTypeDoc) {
-		// on verifie déjà que le repertoire source existe
-		String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ACTES");
-
-		File dossierParent = new File(repPartage);
-		if (!dossierParent.exists()) {
-			dossierParent.mkdir();
-		}
-		File ssDossier = new File(repPartage + codTypeDoc + "/");
-		if (!ssDossier.exists()) {
-			ssDossier.mkdir();
-		}
 	}
 
 	/**
@@ -2092,17 +1970,8 @@ public class OeAGENTContrat extends BasicProcess {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR034"));
 			return false;
 		}
-
-		// on verifie si il existe deja un fichier pour ce contrat dans la BD
-		if (verifieExistFichier(getContratCourant().getIdContrat())) {
-			// alors on affiche un message
-			// :" Attention un fichier existe déjà pour ce contrat. Etes-vous sûr de vouloir écraser la version précédente ?"
-			addZone(getNOM_ST_WARNING(), "Attention un fichier existe déjà pour ce contrat. Etes-vous sûr de vouloir écraser la version précédente ?");
-			// On nomme l'action
-			addZone(getNOM_ST_ACTION(), ACTION_IMPRESSION);
-		} else {
-			imprimeModele(request);
-		}
+		
+		imprimeModele(request);
 
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
@@ -2122,22 +1991,6 @@ public class OeAGENTContrat extends BasicProcess {
 
 	public void setTypeContratDao(TypeContratDao typeContratDao) {
 		this.typeContratDao = typeContratDao;
-	}
-
-	public DocumentAgentDao getLienDocumentAgentDao() {
-		return lienDocumentAgentDao;
-	}
-
-	public void setLienDocumentAgentDao(DocumentAgentDao lienDocumentAgentDao) {
-		this.lienDocumentAgentDao = lienDocumentAgentDao;
-	}
-
-	public DocumentDao getDocumentDao() {
-		return documentDao;
-	}
-
-	public void setDocumentDao(DocumentDao documentDao) {
-		this.documentDao = documentDao;
 	}
 
 	public ContratDao getContratDao() {

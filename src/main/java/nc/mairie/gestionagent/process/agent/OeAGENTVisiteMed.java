@@ -1,27 +1,20 @@
 package nc.mairie.gestionagent.process.agent;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.ListIterator;
 
 import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.enums.EnumEtatSuiviMed;
 import nc.mairie.enums.EnumMotifVisiteMed;
+import nc.mairie.gestionagent.dto.ReturnMessageDto;
+import nc.mairie.gestionagent.radi.dto.LightUserDto;
 import nc.mairie.gestionagent.robot.MaClasse;
 import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
@@ -37,6 +30,7 @@ import nc.mairie.metier.hsct.VisiteMedicale;
 import nc.mairie.metier.parametrage.TypeDocument;
 import nc.mairie.metier.suiviMedical.MotifVisiteMed;
 import nc.mairie.metier.suiviMedical.SuiviMedical;
+import nc.mairie.spring.dao.metier.agent.AgentDao;
 import nc.mairie.spring.dao.metier.agent.DocumentAgentDao;
 import nc.mairie.spring.dao.metier.agent.DocumentDao;
 import nc.mairie.spring.dao.metier.hsct.InaptitudeDao;
@@ -52,13 +46,15 @@ import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
+import nc.mairie.technique.UserAppli;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
+import nc.noumea.mairie.alfresco.cmis.CmisUtils;
+import nc.noumea.spring.service.IRadiService;
+import nc.noumea.spring.service.cmis.AlfrescoCMISService;
+import nc.noumea.spring.service.cmis.IAlfrescoCMISService;
 
-import org.apache.commons.vfs2.FileObject;
-import org.apache.commons.vfs2.FileSystemManager;
-import org.apache.commons.vfs2.VFS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -114,7 +110,6 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	private ArrayList<Document> listeDocuments;
 	private Document documentCourant;
 	private DocumentAgent lienDocumentAgentCourant;
-	private String urlFichier;
 	public boolean isImporting = false;
 	public MultipartRequest multi = null;
 	public File fichierUpload = null;
@@ -135,6 +130,11 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	private DocumentAgentDao lienDocumentAgentDao;
 	private DocumentDao documentDao;
 	private InaptitudeDao inaptitudeDao;
+	private AgentDao agentDao;
+	
+	private IAlfrescoCMISService alfrescoCMISService;
+	private IRadiService radiService;
+	
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
 	/**
@@ -213,6 +213,15 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		}
 		if (getInaptitudeDao() == null) {
 			setInaptitudeDao(new InaptitudeDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getAgentDao() == null) {
+			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (alfrescoCMISService == null) {
+			alfrescoCMISService = (IAlfrescoCMISService) context.getBean("alfrescoCMISService");
+		}
+		if (radiService == null) {
+			radiService = (IRadiService) context.getBean("radiService");
 		}
 	}
 
@@ -1991,13 +2000,6 @@ public class OeAGENTVisiteMed extends BasicProcess {
 				return performPB_CREER_DOC(request);
 			}
 
-			// Si clic sur le bouton PB_CONSULTER_DOC
-			for (int i = 0; i < getListeDocuments().size(); i++) {
-				if (testerParametre(request, getNOM_PB_CONSULTER_DOC(i))) {
-					return performPB_CONSULTER_DOC(request, i);
-				}
-			}
-
 			// Si clic sur le bouton PB_SUPPRIMER_DOC
 			for (int i = 0; i < getListeDocuments().size(); i++) {
 				if (testerParametre(request, getNOM_PB_SUPPRIMER_DOC(i))) {
@@ -2669,7 +2671,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 		// Recherche des documents de l'agent
 		ArrayList<Document> listeDocAgent = getDocumentDao().listerDocumentAgentTYPE(getLienDocumentAgentDao(),
-				getAgentCourant().getIdAgent(), "HSCT", "VM", getVisiteCourante().getIdVisite());
+				getAgentCourant().getIdAgent(), "HSCT", CmisUtils.CODE_TYPE_VM, getVisiteCourante().getIdVisite());
 		setListeDocuments(listeDocAgent);
 
 		int indiceActeVM = 0;
@@ -2687,6 +2689,11 @@ public class OeAGENTVisiteMed extends BasicProcess {
 				addZone(getNOM_ST_DATE_DOC(indiceActeVM), sdf.format(doc.getDateDocument()));
 				addZone(getNOM_ST_COMMENTAIRE(indiceActeVM), doc.getCommentaire().equals(Const.CHAINE_VIDE) ? "&nbsp;"
 						: doc.getCommentaire());
+				addZone(getNOM_ST_URL_DOC(indiceActeVM),
+						(null == doc.getNodeRefAlfresco()
+							|| doc.getNodeRefAlfresco().equals(Const.CHAINE_VIDE))
+							? "&nbsp;" 
+							: AlfrescoCMISService.getUrlOfDocument(doc.getNodeRefAlfresco()));
 
 				indiceActeVM++;
 			}
@@ -2794,70 +2801,6 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		// On pose le statut
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
-	}
-
-	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_CONSULTER_DOC Date de
-	 * création : (29/09/11 10:03:38)
-	 * 
-	 */
-	public String getNOM_PB_CONSULTER_DOC(int i) {
-		return "NOM_PB_CONSULTER_DOC" + i;
-	}
-
-	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * regles de gestion du process - Positionne un statut en fonction de ces
-	 * regles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (29/09/11 10:03:38)
-	 * 
-	 */
-	public boolean performPB_CONSULTER_DOC(HttpServletRequest request, int indiceEltAConsulter) throws Exception {
-		// Si pas d'agent courant alors erreur
-		if (getAgentCourant() == null) {
-			// "ERR004","Vous devez d'abord rechercher un agent"
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR004"));
-			return false;
-		}
-
-		// On nomme l'action
-		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
-		addZone(getNOM_ST_NOM_DOC(), Const.CHAINE_VIDE);
-		addZone(getNOM_ST_NOM_ORI_DOC(), Const.CHAINE_VIDE);
-		addZone(getNOM_ST_DATE_DOC(), Const.CHAINE_VIDE);
-		addZone(getNOM_ST_COMMENTAIRE_DOC(), Const.CHAINE_VIDE);
-
-		String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_LECTURE");
-
-		// Récup du document courant
-		Document d = (Document) getListeDocuments().get(indiceEltAConsulter);
-		// on affiche le document
-		setURLFichier(getScriptOuverture(repertoireStockage + d.getLienDocument()));
-
-		addZone(getNOM_ST_ACTION(), ACTION_DOCUMENT);
-
-		return true;
-	}
-
-	private void setURLFichier(String scriptOuverture) {
-		urlFichier = scriptOuverture;
-	}
-
-	public String getScriptOuverture(String cheminFichier) throws Exception {
-		StringBuffer scriptOuvPDF = new StringBuffer("<script language=\"JavaScript\" type=\"text/javascript\">");
-		scriptOuvPDF.append("window.open('" + cheminFichier + "');");
-		scriptOuvPDF.append("</script>");
-		return scriptOuvPDF.toString();
-	}
-
-	public String getUrlFichier() {
-		String res = urlFichier;
-		setURLFichier(null);
-		if (res == null) {
-			return Const.CHAINE_VIDE;
-		} else {
-			return res;
-		}
 	}
 
 	/**
@@ -2986,6 +2929,12 @@ public class OeAGENTVisiteMed extends BasicProcess {
 			setStatut(STATUT_MEME_PROCESS, true, MessageUtils.getMessage("ERR006"));
 			return false;
 		}
+		
+		// on supprime le fichier physiquement sur alfresco
+		ReturnMessageDto rmd = alfrescoCMISService.removeDocument(getDocumentCourant());
+		if (declarerErreurFromReturnMessageDto(rmd))
+			return false;
+		
 		// suppression dans table DOCUMENT_AGENT
 		getLienDocumentAgentDao().supprimerDocumentAgent(getLienDocumentAgentCourant().getIdAgent(),
 				getLienDocumentAgentCourant().getIdDocument());
@@ -2994,16 +2943,6 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 		if (getTransaction().isErreur())
 			return false;
-
-		// on supprime le fichier physiquement sur le serveur
-		String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ROOT");
-		String cheminDoc = getDocumentCourant().getLienDocument();
-		File fichierASupp = new File(repertoireStockage + cheminDoc);
-		try {
-			fichierASupp.delete();
-		} catch (Exception e) {
-			logger.error("Erreur suppression physique du fichier : " + e.toString());
-		}
 
 		// tout s'est bien passé
 		commitTransaction();
@@ -3018,6 +2957,20 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 		initialiseListeDocuments(request);
 		return true;
+	}
+	
+	private boolean declarerErreurFromReturnMessageDto(ReturnMessageDto rmd) {
+		
+		if(!rmd.getErrors().isEmpty()) {
+			String errors = "";
+			for(String error : rmd.getErrors()) {
+				errors += error;
+			}
+			
+			getTransaction().declarerErreur("Err : " + errors);
+			return true;
+		}
+		return false;
 	}
 
 	public String getNOM_EF_COMMENTAIRE() {
@@ -3069,17 +3022,6 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		VisiteMedicale vm = getVisiteCourante();
 
 		if (getZone(getNOM_ST_WARNING()).equals(Const.CHAINE_VIDE)) {
-			// bug #30580
-			String dateJour = new SimpleDateFormat("ddMMyyyy-hhmms-S").format(new Date()).toString();
-
-			// on controle si il y a deja un fichier pour cette VM
-			if (!performControlerFichier(request, "VM_" + vm.getIdVisite() + "_" + dateJour)) {
-				// alors on affiche un message pour prevenir que l'on va ecraser
-				// le fichier precedent
-				addZone(getNOM_ST_WARNING(),
-						"Attention un fichier du même type existe déjà pour cette visite médicale. Etes-vous sûr de vouloir écraser la version précédente ?");
-				return true;
-			}
 
 			if (!creeDocument(request, vm)) {
 				return false;
@@ -3113,38 +3055,10 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		return true;
 	}
 
-	private boolean uploadFichierPDF(File f, String nomFichier, String codTypeDoc) throws Exception {
-		boolean resultat = false;
-		String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ROOT");
-		// on verifie que les repertoires existent
-		verifieRepertoire(codTypeDoc);
-
-		File newFile = new File(repPartage + codTypeDoc + "/" + nomFichier);
-
-		FileInputStream in = new FileInputStream(f);
-
-		try {
-			FileOutputStream out = new FileOutputStream(newFile);
-			try {
-				byte[] byteBuffer = new byte[in.available()];
-				@SuppressWarnings("unused")
-				int s = in.read(byteBuffer);
-				out.write(byteBuffer);
-				out.flush();
-				resultat = true;
-			} finally {
-				out.close();
-			}
-		} finally {
-			in.close();
-		}
-
-		return resultat;
-	}
-
 	private boolean creeDocument(HttpServletRequest request, VisiteMedicale vm) throws Exception {
 		// on crée l'entrée dans la table
 		setDocumentCourant(new Document());
+		
 		// on recupere le fichier mis dans le repertoire temporaire
 		if (fichierUpload == null) {
 			getTransaction().declarerErreur("Err : le nom de fichier est incorrect");
@@ -3152,35 +3066,29 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		}
 
 		// on recupere le type de document
-		String codTypeDoc = "VM";
+		String codTypeDoc = CmisUtils.CODE_TYPE_VM;
 		TypeDocument td = getTypeDocumentDao().chercherTypeDocumentByCod(codTypeDoc);
-		String extension = fichierUpload.getName().substring(fichierUpload.getName().indexOf('.'),
-				fichierUpload.getName().length());
-		// bug #30580
-		String dateJour = new SimpleDateFormat("ddMMyyyy-hhmms-S").format(new Date()).toString();
-		String nom = codTypeDoc.toUpperCase() + "_" + vm.getIdVisite() + "_" + dateJour + extension;
-
-		// on upload le fichier
-		boolean upload = false;
-		if (extension.equals(".pdf") || extension.equals(".tiff")) {
-			upload = uploadFichierPDF(fichierUpload, nom, codTypeDoc);
-		} else {
-			upload = uploadFichier(fichierUpload, nom, codTypeDoc);
-		}
-		if (!upload)
-			return false;
 
 		// on crée le document en base de données
-		getDocumentCourant().setLienDocument(codTypeDoc + "/" + nom);
 		getDocumentCourant().setIdTypeDocument(td.getIdTypeDocument());
 		getDocumentCourant().setNomOriginal(fichierUpload.getName());
-		getDocumentCourant().setNomDocument(nom);
 		getDocumentCourant().setDateDocument(new Date());
 		getDocumentCourant().setCommentaire(getZone(getNOM_EF_COMMENTAIRE()));
+		getDocumentCourant().setReference(vm.getIdVisite());
+		
+		// on upload le fichier
+		ReturnMessageDto rmd = alfrescoCMISService.uploadDocument(getAgentConnecte(request).getIdAgent(), getAgentCourant(), getDocumentCourant(), 
+				fichierUpload, codTypeDoc);
+		
+		if (declarerErreurFromReturnMessageDto(rmd))
+			return false;
+
 		Integer id = getDocumentDao().creerDocument(getDocumentCourant().getClasseDocument(),
 				getDocumentCourant().getNomDocument(), getDocumentCourant().getLienDocument(),
 				getDocumentCourant().getDateDocument(), getDocumentCourant().getCommentaire(),
-				getDocumentCourant().getIdTypeDocument(), getDocumentCourant().getNomOriginal());
+				getDocumentCourant().getIdTypeDocument(), getDocumentCourant().getNomOriginal(),
+				getDocumentCourant().getNodeRefAlfresco(), getDocumentCourant().getCommentaireAlfresco(),
+				getDocumentCourant().getReference());
 
 		setLienDocumentAgentCourant(new DocumentAgent());
 		getLienDocumentAgentCourant().setIdAgent(getAgentCourant().getIdAgent());
@@ -3203,62 +3111,30 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		return true;
 	}
 
-	private boolean uploadFichier(File f, String nomFichier, String codTypeDoc) throws Exception {
-		boolean resultat = false;
-		String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ACTES");
+	private Agent getAgentConnecte(HttpServletRequest request) throws Exception {
+		Agent agent = null;
 
-		// on verifie que les repertoires existent
-		verifieRepertoire(codTypeDoc);
-
-		FileSystemManager fsManager = VFS.getManager();
-		// LECTURE
-		FileObject fo = fsManager.toFileObject(f);
-		InputStream is = fo.getContent().getInputStream();
-		InputStreamReader inR = new InputStreamReader(is, "UTF8");
-		BufferedReader in = new BufferedReader(inR);
-
-		// ECRITURE
-		FileObject destinationFile = fsManager.resolveFile(repPartage + codTypeDoc + "/" + nomFichier);
-		destinationFile.createFile();
-		OutputStream os = destinationFile.getContent().getOutputStream();
-		OutputStreamWriter ouw = new OutputStreamWriter(os, "UTF8");
-		BufferedWriter out = new BufferedWriter(ouw);
-
-		String ligne;
-		try {
-			while ((ligne = in.readLine()) != null) {
-				out.write(ligne);
+		UserAppli uUser = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
+		// on fait la correspondance entre le login et l'agent via RADI
+		LightUserDto user = radiService.getAgentCompteADByLogin(uUser.getUserName());
+		if (user == null) {
+			getTransaction().traiterErreur();
+			// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
+			return null;
+		} else {
+			if (user != null && user.getEmployeeNumber() != null && user.getEmployeeNumber() != 0) {
+				try {
+					agent = getAgentDao().chercherAgentParMatricule(radiService.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
+				} catch (Exception e) {
+					// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
+					return null;
+				}
 			}
-			resultat = true;
-		} catch (Exception e) {
-			logger.error("erreur d'execution " + e.toString());
 		}
 
-		// FERMETURE DES FLUX
-		in.close();
-		inR.close();
-		is.close();
-		fo.close();
-
-		out.close();
-		ouw.close();
-		os.close();
-		destinationFile.close();
-
-		return resultat;
-	}
-
-	private void verifieRepertoire(String codTypeDoc) {
-		// on verifie déjà que le repertoire source existe
-		String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ACTES");
-		File dossierParent = new File(repPartage);
-		if (!dossierParent.exists()) {
-			dossierParent.mkdir();
-		}
-		File ssDossier = new File(repPartage + codTypeDoc + "/");
-		if (!ssDossier.exists()) {
-			ssDossier.mkdir();
-		}
+		return agent;
 	}
 
 	private boolean performControlerSaisieDocument(HttpServletRequest request) throws Exception {
@@ -3271,21 +3147,6 @@ public class OeAGENTVisiteMed extends BasicProcess {
 			// ERR002:La zone parcourir est obligatoire.
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "parcourir"));
 			result &= false;
-		}
-		return result;
-	}
-
-	private boolean performControlerFichier(HttpServletRequest request, String nomFichier) {
-		boolean result = true;
-		// on regarde dans la liste des document si il y a une entrée avec ce
-		// nom de contrat
-		for (Iterator<Document> iter = getListeDocuments().iterator(); iter.hasNext();) {
-			Document doc = (Document) iter.next();
-			// on supprime l'extension
-			String nomDocSansExtension = doc.getNomDocument().substring(0, doc.getNomDocument().indexOf("."));
-			if (nomFichier.equals(nomDocSansExtension)) {
-				result = false;
-			}
 		}
 		return result;
 	}
@@ -3485,6 +3346,14 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		return inaptitudeDao;
 	}
 
+	public AgentDao getAgentDao() {
+		return agentDao;
+	}
+
+	public void setAgentDao(AgentDao agentDao) {
+		this.agentDao = agentDao;
+	}
+
 	public void setInaptitudeDao(InaptitudeDao inaptitudeDao) {
 		this.inaptitudeDao = inaptitudeDao;
 	}
@@ -3493,5 +3362,21 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 	public String getVAL_ST_COMMENTAIRE() {
 		return getZone(getNOM_ST_COMMENTAIRE());
+	}
+
+	/**
+	 * Retourne pour la JSP le nom de la zone statique : NOM_ST_URL_DOC
+	 * 
+	 */
+	public String getNOM_ST_URL_DOC(int i) {
+		return "NOM_ST_URL_DOC" + i;
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone : NOM_ST_URL_DOC
+	 * 
+	 */
+	public String getVAL_ST_URL_DOC(int i) {
+		return getZone(getNOM_ST_URL_DOC(i));
 	}
 }

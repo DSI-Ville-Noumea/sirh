@@ -22,6 +22,8 @@ public class TitreRepasEtatPayeurDto implements Serializable {
 	private String fichier;
 	private AgentDto agent;
 	
+	private String urlAlfresco;
+	
 	public TitreRepasEtatPayeurDto(){
 	}
 	
@@ -68,6 +70,14 @@ public class TitreRepasEtatPayeurDto implements Serializable {
 
 	public void setAgent(AgentDto agent) {
 		this.agent = agent;
+	}
+
+	public String getUrlAlfresco() {
+		return urlAlfresco;
+	}
+
+	public void setUrlAlfresco(String urlAlfresco) {
+		this.urlAlfresco = urlAlfresco;
 	}
 	
 }

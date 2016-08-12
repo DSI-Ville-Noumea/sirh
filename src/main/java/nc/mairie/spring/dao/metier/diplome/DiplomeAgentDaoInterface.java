@@ -17,7 +17,7 @@ public interface DiplomeAgentDaoInterface {
 
 	public ArrayList<DiplomeAgent> listerEcolesDiplomeAgent() throws Exception;
 
-	public void creerDiplomeAgent(Integer idTitreDiplome, Integer idAgent, Integer idDocument,
+	public Integer creerDiplomeAgent(Integer idTitreDiplome, Integer idAgent, Integer idDocument,
 			Integer idSpecialiteDiplome, Date dateObtention, String nomEcole) throws Exception;
 
 	public void modifierDiplomeAgent(Integer idDiplome, Integer idTitreDiplome, Integer idAgent, Integer idDocument,

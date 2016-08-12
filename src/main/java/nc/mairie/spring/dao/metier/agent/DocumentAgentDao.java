@@ -46,6 +46,7 @@ public class DocumentAgentDao extends SirhDao implements DocumentAgentDaoInterfa
 	public ArrayList<DocumentAgent> listerDocumentAgentAvecModule(Integer idAgent, String module) throws Exception {
 		String sql = "select lien.* from " + NOM_TABLE + " "
 				+ " lien inner join DOCUMENT_ASSOCIE doc on doc.ID_DOCUMENT = lien." + CHAMP_ID_DOCUMENT
+				+ " and doc.node_ref_alfresco is not NULL "
 				+ " inner join P_TYPE_DOCUMENT typeDoc on typeDoc.ID_TYPE_DOCUMENT = doc.ID_TYPE_DOCUMENT  "
 				+ " where lien." + CHAMP_ID_AGENT
 				+ " =?  and typeDoc.MODULE_TYPE_DOCUMENT =? order by doc.nom_original";
@@ -68,14 +69,14 @@ public class DocumentAgentDao extends SirhDao implements DocumentAgentDaoInterfa
 			Integer idDansListe) throws Exception {
 		String sql = "select lien.* from "
 				+ NOM_TABLE
-				+ " lien inner join DOCUMENT_ASSOCIE doc on doc.ID_DOCUMENT = lien.ID_DOCUMENT "
+				+ " lien inner join DOCUMENT_ASSOCIE doc on doc.ID_DOCUMENT = lien.ID_DOCUMENT and doc.NODE_REF_ALFRESCO is not NULL "
 				+ " inner join P_TYPE_DOCUMENT typeDoc on typeDoc.ID_TYPE_DOCUMENT = doc.ID_TYPE_DOCUMENT  "
-				+ " where lien.ID_AGENT =? and typeDoc.MODULE_TYPE_DOCUMENT =? and doc.NOM_DOCUMENT like ? order by doc.nom_original";
+				+ " where lien.ID_AGENT =? and typeDoc.MODULE_TYPE_DOCUMENT =? and typeDoc.COD_TYPE_DOCUMENT = ? and doc.REFERENCE =? order by doc.nom_original";
 
 		ArrayList<DocumentAgent> liste = new ArrayList<DocumentAgent>();
 
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { idAgent, module,
-				typDoc + "_" + idDansListe + "%" });
+				typDoc, idDansListe });
 		for (Map<String, Object> row : rows) {
 			DocumentAgent a = new DocumentAgent();
 			a.setIdAgent((Integer) row.get(CHAMP_ID_AGENT));

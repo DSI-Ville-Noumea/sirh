@@ -4,6 +4,6 @@
 <HEAD>
 </HEAD>
 <BODY>
-	<P>Ouverture Fiche Etat Payeur</P>
+	<P>Ouverture de document</P>
 </BODY>
 </HTML>

@@ -5,6 +5,8 @@ import java.util.ListIterator;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.context.ApplicationContext;
+
 import nc.mairie.metier.Const;
 import nc.mairie.metier.hsct.MaladiePro;
 import nc.mairie.metier.hsct.Medecin;
@@ -12,7 +14,6 @@ import nc.mairie.metier.hsct.Recommandation;
 import nc.mairie.metier.hsct.SiegeLesion;
 import nc.mairie.metier.hsct.TypeAT;
 import nc.mairie.metier.hsct.TypeInaptitude;
-import nc.mairie.metier.parametrage.TypeDocument;
 import nc.mairie.spring.dao.metier.agent.DocumentDao;
 import nc.mairie.spring.dao.metier.hsct.AccidentTravailDao;
 import nc.mairie.spring.dao.metier.hsct.HandicapDao;
@@ -24,7 +25,6 @@ import nc.mairie.spring.dao.metier.hsct.SiegeLesionDao;
 import nc.mairie.spring.dao.metier.hsct.TypeATDao;
 import nc.mairie.spring.dao.metier.hsct.TypeInaptitudeDao;
 import nc.mairie.spring.dao.metier.hsct.VisiteMedicaleDao;
-import nc.mairie.spring.dao.metier.parametrage.TypeDocumentDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
@@ -33,8 +33,6 @@ import nc.mairie.technique.Services;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
-
-import org.springframework.context.ApplicationContext;
 
 /**
  * Process OePARAMETRAGEHSCT Date de création : (15/09/11 08:57:49)
@@ -51,7 +49,6 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	private String[] LB_MALADIE;
 	private String[] LB_MEDECIN;
 	private String[] LB_RECOMMANDATION;
-	private String[] LB_TYPE_DOCUMENT;
 
 	private ArrayList<Medecin> listeMedecin;
 	private Medecin medecinCourant;
@@ -71,13 +68,9 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	private ArrayList<MaladiePro> listeMaladie;
 	private MaladiePro maladieCourante;
 
-	private ArrayList<TypeDocument> listeTypeDocument;
-	private TypeDocument typeDocumentCourant;
-
 	public String ACTION_SUPPRESSION = "0";
 	public String ACTION_CREATION = "1";
 
-	private TypeDocumentDao typeDocumentDao;
 	private AccidentTravailDao accidentTravailDao;
 	private HandicapDao handicapDao;
 	private MaladieProDao maladieProDao;
@@ -157,21 +150,11 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 			setListeMaladie(listeMaladie);
 			initialiseListeMaladie(request);
 		}
-
-		if (getListeTypeDocument() == null) {
-			// Recherche des types de documents
-			ArrayList<TypeDocument> listeTypeDocument = getTypeDocumentDao().listerTypeDocumentAvecModule("HSCT");
-			setListeTypeDocument(listeTypeDocument);
-			initialiseListeTypeDocument(request);
-		}
 	}
 
 	private void initialiseDao() {
 		// on initialise le dao
 		ApplicationContext context = ApplicationContextProvider.getContext();
-		if (getTypeDocumentDao() == null) {
-			setTypeDocumentDao(new TypeDocumentDao((SirhDao) context.getBean("sirhDao")));
-		}
 		if (getAccidentTravailDao() == null) {
 			setAccidentTravailDao(new AccidentTravailDao((SirhDao) context.getBean("sirhDao")));
 		}
@@ -470,26 +453,6 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 			// Si clic sur le bouton PB_VALIDER_RECOMMANDATION
 			if (testerParametre(request, getNOM_PB_VALIDER_RECOMMANDATION())) {
 				return performPB_VALIDER_RECOMMANDATION(request);
-			}
-
-			// Si clic sur le bouton PB_VALIDER_TYPE_DOCUMENT
-			if (testerParametre(request, getNOM_PB_VALIDER_TYPE_DOCUMENT())) {
-				return performPB_VALIDER_TYPE_DOCUMENT(request);
-			}
-
-			// Si clic sur le bouton PB_ANNULER_TYPE_DOCUMENT
-			if (testerParametre(request, getNOM_PB_ANNULER_TYPE_DOCUMENT())) {
-				return performPB_ANNULER_TYPE_DOCUMENT(request);
-			}
-
-			// Si clic sur le bouton PB_CREER_TYPE_DOCUMENT
-			if (testerParametre(request, getNOM_PB_CREER_TYPE_DOCUMENT())) {
-				return performPB_CREER_TYPE_DOCUMENT(request);
-			}
-
-			// Si clic sur le bouton PB_SUPPRIMER_TYPE_DOCUMENT
-			if (testerParametre(request, getNOM_PB_SUPPRIMER_TYPE_DOCUMENT())) {
-				return performPB_SUPPRIMER_TYPE_DOCUMENT(request);
 			}
 
 		}
@@ -2325,364 +2288,6 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 
 	private void setRecommandationCourante(Recommandation recommandationCourante) {
 		this.recommandationCourante = recommandationCourante;
-	}
-
-	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_TYPE_DOCUMENT
-	 * 
-	 */
-	public String getNOM_LB_TYPE_DOCUMENT() {
-		return "NOM_LB_TYPE_DOCUMENT";
-	}
-
-	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
-	 * la JSP : LB_TYPE_DOCUMENT
-	 * 
-	 */
-	public String getVAL_LB_TYPE_DOCUMENT_SELECT() {
-		return getZone(getNOM_LB_TYPE_DOCUMENT_SELECT());
-	}
-
-	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_TYPE_DOCUMENT_SELECT
-	 * 
-	 */
-	public String getNOM_LB_TYPE_DOCUMENT_SELECT() {
-		return "NOM_LB_TYPE_DOCUMENT_SELECT";
-	}
-
-	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_TYPE_DOCUMENT
-	 * 
-	 */
-	public String[] getVAL_LB_TYPE_DOCUMENT() {
-		return getLB_TYPE_DOCUMENT();
-	}
-
-	/**
-	 * Getter de la liste avec un lazy initialize : LB_TYPE_DOCUMENT
-	 * 
-	 */
-	private String[] getLB_TYPE_DOCUMENT() {
-		if (LB_TYPE_DOCUMENT == null)
-			LB_TYPE_DOCUMENT = initialiseLazyLB();
-		return LB_TYPE_DOCUMENT;
-	}
-
-	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_CREER_TYPE_DOUMENT Date de
-	 * création : (15/09/11 14:14:43)
-	 * 
-	 */
-	public String getNOM_PB_CREER_TYPE_DOCUMENT() {
-		return "NOM_PB_CREER_TYPE_DOCUMENT";
-	}
-
-	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMER_TYPE_DOUMENT Date
-	 * de création : (15/09/11 14:14:43)
-	 * 
-	 */
-	public String getNOM_PB_SUPPRIMER_TYPE_DOCUMENT() {
-		return "NOM_PB_SUPPRIMER_TYPE_DOCUMENT";
-	}
-
-	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
-	 * ST_ACTION_TYPE_DOUMENT Date de création : (15/09/11 14:14:43)
-	 * 
-	 */
-	public String getVAL_ST_ACTION_TYPE_DOCUMENT() {
-		return getZone(getNOM_ST_ACTION_TYPE_DOCUMENT());
-	}
-
-	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_ACTION_TYPE_DOUMENT
-	 * Date de création : (15/09/11 14:14:43)
-	 * 
-	 */
-	public String getNOM_ST_ACTION_TYPE_DOCUMENT() {
-		return "NOM_ST_ACTION_TYPE_DOCUMENT";
-	}
-
-	/**
-	 * Retourne le nom d'une zone de saisie pour la JSP : EF_TYPE_DOCUMENT Date
-	 * de création : (15/09/11 14:14:43)
-	 * 
-	 */
-	public String getNOM_EF_TYPE_DOCUMENT() {
-		return "NOM_EF_TYPE_DOCUMENT";
-	}
-
-	/**
-	 * Retourne le nom d'une zone de saisie pour la JSP : EF_CODE_TYPE_DOCUMENT
-	 * Date de création : (15/09/11 14:14:43)
-	 * 
-	 */
-	public String getNOM_EF_CODE_TYPE_DOCUMENT() {
-		return "NOM_EF_CODE_TYPE_DOCUMENT";
-	}
-
-	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_TYPE_DOCUMENT Date de création : (15/09/11 14:14:43)
-	 * 
-	 */
-	public String getVAL_EF_TYPE_DOCUMENT() {
-		return getZone(getNOM_EF_TYPE_DOCUMENT());
-	}
-
-	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_CODE_TYPE_DOCUMENT Date de création : (15/09/11 14:14:43)
-	 * 
-	 */
-	public String getVAL_EF_CODE_TYPE_DOCUMENT() {
-		return getZone(getNOM_EF_CODE_TYPE_DOCUMENT());
-	}
-
-	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER_TYPE_DOCUMENT Date
-	 * de création : (15/09/11 14:14:43)
-	 * 
-	 */
-	public String getNOM_PB_VALIDER_TYPE_DOCUMENT() {
-		return "NOM_PB_VALIDER_TYPE_DOCUMENT";
-	}
-
-	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * regles de gestion du process - Positionne un statut en fonction de ces
-	 * regles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (15/09/11 14:14:43)
-	 * 
-	 */
-	public boolean performPB_VALIDER_TYPE_DOCUMENT(HttpServletRequest request) throws Exception {
-		if (!performControlerSaisieTypeDocument(request))
-			return false;
-
-		if (!performControlerRegleGestionTypeDocument(request))
-			return false;
-
-		if (getVAL_ST_ACTION_TYPE_DOCUMENT() != null && getVAL_ST_ACTION_TYPE_DOCUMENT() != Const.CHAINE_VIDE) {
-			if (getVAL_ST_ACTION_TYPE_DOCUMENT().equals(ACTION_CREATION)) {
-				setTypeDocumentCourant(new TypeDocument());
-				getTypeDocumentCourant().setLibTypeDocument(getVAL_EF_TYPE_DOCUMENT());
-				getTypeDocumentCourant().setCodTypeDocument(getVAL_EF_CODE_TYPE_DOCUMENT());
-				getTypeDocumentCourant().setModuleTypeDocument("HSCT");
-				getTypeDocumentDao()
-						.creerTypeDocument(getTypeDocumentCourant().getLibTypeDocument(),
-								getTypeDocumentCourant().getCodTypeDocument(),
-								getTypeDocumentCourant().getModuleTypeDocument());
-				if (!getTransaction().isErreur())
-					getListeTypeDocument().add(getTypeDocumentCourant());
-				else
-					return false;
-			} else if (getVAL_ST_ACTION_TYPE_DOCUMENT().equals(ACTION_SUPPRESSION)) {
-				getTypeDocumentDao().supprimerTypeDocument(getTypeDocumentCourant().getIdTypeDocument());
-				if (!getTransaction().isErreur())
-					getListeTypeDocument().remove(getTypeDocumentCourant());
-				else
-					return false;
-				setTypeDocumentCourant(null);
-			}
-
-			if (getTransaction().isErreur())
-				return false;
-
-			commitTransaction();
-			initialiseListeTypeDocument(request);
-			addZone(getNOM_ST_ACTION_TYPE_DOCUMENT(), Const.CHAINE_VIDE);
-		}
-
-		return true;
-	}
-
-	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER_TYPE_DOCUMENT Date
-	 * de création : (15/09/11 14:14:43)
-	 * 
-	 */
-	public String getNOM_PB_ANNULER_TYPE_DOCUMENT() {
-		return "NOM_PB_ANNULER_TYPE_DOCUMENT";
-	}
-
-	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * regles de gestion du process - Positionne un statut en fonction de ces
-	 * regles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (15/09/11 14:14:43)
-	 * 
-	 */
-	public boolean performPB_ANNULER_TYPE_DOCUMENT(HttpServletRequest request) throws Exception {
-		addZone(getNOM_ST_ACTION_TYPE_DOCUMENT(), Const.CHAINE_VIDE);
-		setStatut(STATUT_MEME_PROCESS);
-		return true;
-	}
-
-	private TypeDocument getTypeDocumentCourant() {
-		return typeDocumentCourant;
-	}
-
-	private void setTypeDocumentCourant(TypeDocument typeDocumentCourant) {
-		this.typeDocumentCourant = typeDocumentCourant;
-	}
-
-	private ArrayList<TypeDocument> getListeTypeDocument() {
-		return listeTypeDocument;
-	}
-
-	private void setListeTypeDocument(ArrayList<TypeDocument> listeTypeDocument) {
-		this.listeTypeDocument = listeTypeDocument;
-	}
-
-	/**
-	 * Setter de la liste: LB_TYPE_DOCUMENT Date de création : (15/09/11
-	 * 14:14:43)
-	 * 
-	 */
-	private void setLB_TYPE_DOCUMENT(String[] newLB_TYPE_DOCUMENT) {
-		LB_TYPE_DOCUMENT = newLB_TYPE_DOCUMENT;
-	}
-
-	/**
-	 * Controle les zones saisies d'un type de document Date de création :
-	 * (14/09/11)
-	 */
-	private boolean performControlerSaisieTypeDocument(HttpServletRequest request) throws Exception {
-
-		// Verification libellé type document not null
-		if (getZone(getNOM_EF_TYPE_DOCUMENT()).length() == 0) {
-			// "ERR002","La zone @ est obligatoire."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "libellé"));
-			return false;
-		}
-		// Verification libellé du code du type document not null
-		if (getZone(getNOM_EF_CODE_TYPE_DOCUMENT()).length() == 0) {
-			// "ERR002","La zone @ est obligatoire."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "code"));
-			return false;
-		}
-
-		return true;
-	}
-
-	/**
-	 * Controle les regles de gestion d'une autre administration Date de
-	 * création : (14/09/11)
-	 */
-	private boolean performControlerRegleGestionTypeDocument(HttpServletRequest request) throws Exception {
-
-		// Verification si suppression d'un type de document utilise sur
-		// document agent
-
-		if (getVAL_ST_ACTION_TYPE_DOCUMENT().equals(ACTION_SUPPRESSION)
-				&& getDocumentDao().listerDocumentAvecType(getTypeDocumentCourant().getIdTypeDocument()).size() > 0) {
-
-			// "ERR989",
-			// "Suppression impossible. Il existe au moins @ rattaché a @."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR989", "un document", "ce type"));
-			return false;
-		}
-
-		// Vérification des contraintes d'unicité du type de document
-		if (getVAL_ST_ACTION_TYPE_DOCUMENT().equals(ACTION_CREATION)) {
-
-			for (TypeDocument typeDoc : getListeTypeDocument()) {
-				if (typeDoc.getLibTypeDocument().equals(getVAL_EF_TYPE_DOCUMENT().toUpperCase())) {
-					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
-					getTransaction().declarerErreur(
-							MessageUtils.getMessage("ERR974", "un type de document", "ce libellé"));
-					return false;
-				}
-				if (typeDoc.getCodTypeDocument().equals(getVAL_EF_CODE_TYPE_DOCUMENT().toUpperCase())) {
-					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
-					getTransaction().declarerErreur(
-							MessageUtils.getMessage("ERR974", "un code type de document", "ce libellé"));
-					return false;
-				}
-			}
-		}
-
-		return true;
-	}
-
-	/**
-	 * Initialisation de la listes des types de documents Date de création :
-	 * (15/09/11)
-	 * 
-	 */
-	private void initialiseListeTypeDocument(HttpServletRequest request) throws Exception {
-		setListeTypeDocument(getTypeDocumentDao().listerTypeDocumentAvecModule("HSCT"));
-		if (getListeTypeDocument().size() != 0) {
-			int tailles[] = { 70 };
-			String padding[] = { "G" };
-			FormateListe aFormat = new FormateListe(tailles, padding, false);
-			for (ListIterator<TypeDocument> list = getListeTypeDocument().listIterator(); list.hasNext();) {
-				TypeDocument type = (TypeDocument) list.next();
-				String ligne[] = { type.getLibTypeDocument() + " - " + type.getCodTypeDocument() };
-
-				aFormat.ajouteLigne(ligne);
-			}
-			setLB_TYPE_DOCUMENT(aFormat.getListeFormatee());
-		} else {
-			setLB_TYPE_DOCUMENT(null);
-		}
-	}
-
-	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * regles de gestion du process - Positionne un statut en fonction de ces
-	 * regles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (15/09/11 14:14:43)
-	 * 
-	 */
-	public boolean performPB_CREER_TYPE_DOCUMENT(HttpServletRequest request) throws Exception {
-		// On nomme l'action
-		addZone(getNOM_ST_ACTION_TYPE_DOCUMENT(), ACTION_CREATION);
-		addZone(getNOM_EF_TYPE_DOCUMENT(), Const.CHAINE_VIDE);
-		addZone(getNOM_EF_CODE_TYPE_DOCUMENT(), Const.CHAINE_VIDE);
-
-		setStatut(STATUT_MEME_PROCESS);
-		return true;
-	}
-
-	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * regles de gestion du process - Positionne un statut en fonction de ces
-	 * regles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (15/09/11 14:14:43)
-	 * 
-	 */
-	public boolean performPB_SUPPRIMER_TYPE_DOCUMENT(HttpServletRequest request) throws Exception {
-
-		int indice = (Services.estNumerique(getVAL_LB_TYPE_DOCUMENT_SELECT()) ? Integer
-				.parseInt(getVAL_LB_TYPE_DOCUMENT_SELECT()) : -1);
-
-		if (indice != -1 && indice < getListeTypeDocument().size()) {
-			TypeDocument type = getListeTypeDocument().get(indice);
-			setTypeDocumentCourant(type);
-			addZone(getNOM_EF_TYPE_DOCUMENT(), type.getLibTypeDocument());
-			addZone(getNOM_EF_CODE_TYPE_DOCUMENT(), type.getCodTypeDocument());
-			addZone(getNOM_ST_ACTION_TYPE_DOCUMENT(), ACTION_SUPPRESSION);
-		} else {
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "types de documents"));
-		}
-
-		return true;
-	}
-
-	public TypeDocumentDao getTypeDocumentDao() {
-		return typeDocumentDao;
-	}
-
-	public void setTypeDocumentDao(TypeDocumentDao typeDocumentDao) {
-		this.typeDocumentDao = typeDocumentDao;
 	}
 
 	public AccidentTravailDao getAccidentTravailDao() {

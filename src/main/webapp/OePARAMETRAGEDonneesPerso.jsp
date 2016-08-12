@@ -220,46 +220,41 @@
 				            <%}%>
 						</FIELDSET>
 					</td>
-					<td>					
-				    	<FIELDSET class="sigp2Fieldset"  style="text-align: left;">
-					    	<legend class="sigp2Legend">Types de documents</legend>
+					<td>
+						<FIELDSET class="sigp2Fieldset"  style="text-align: left;">
+					    	<legend class="sigp2Legend">Titre de permis</legend>
 							<span class="sigp2-titre">
-							<SELECT name="<%= process.getNOM_LB_TYPE_DOCUMENT() %>" size="10" style="width:100%;" class="sigp2-liste">
-								<%=process.forComboHTML(process.getVAL_LB_TYPE_DOCUMENT(), process.getVAL_LB_TYPE_DOCUMENT_SELECT()) %>
+							<SELECT name="<%= process.getNOM_LB_TITRE_PERMIS() %>" size="10" style="width:100%;" class="sigp2-liste">
+								<%=process.forComboHTML(process.getVAL_LB_TITRE_PERMIS(), process.getVAL_LB_TITRE_PERMIS_SELECT()) %>
 							</SELECT>
 			            	</span>
 			
 							<div class=<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>>
-								<INPUT type="image" src="images/ajout.gif" height="20px" width="20px" name="<%=process.getNOM_PB_CREER_TYPE_DOCUMENT()%>">
-			    	        	<INPUT type="image" src="images/suppression.gif" height="20px" width="20px" name="<%=process.getNOM_PB_SUPPRIMER_TYPE_DOCUMENT()%>">
+								<INPUT type="image" src="images/ajout.gif" height="20px" width="20px" name="<%=process.getNOM_PB_CREER_TITRE_PERMIS()%>">
+								<INPUT type="image" src="images/modifier.gif" height="20px" width="20px" name="<%=process.getNOM_PB_MODIFIER_TITRE_PERMIS()%>">
+			    	        	<INPUT type="image" src="images/suppression.gif" height="20px" width="20px" name="<%=process.getNOM_PB_SUPPRIMER_TITRE_PERMIS()%>">
 			    	        </div>
 			            	
-			            	<% if (process.getVAL_ST_ACTION_TYPE_DOCUMENT()!= null && !process.getVAL_ST_ACTION_TYPE_DOCUMENT().equals("")) {%>
+			            	<% if (process.getVAL_ST_ACTION_TITRE_PERMIS()!= null && !process.getVAL_ST_ACTION_TITRE_PERMIS().equals("")) {%>
 			            	<br>
 				            <table width="400px">
-								<% if (!process.ACTION_SUPPRESSION.equals(process.getVAL_ST_ACTION_TYPE_DOCUMENT())) { %>
+								<% if (!process.ACTION_SUPPRESSION.equals(process.getVAL_ST_ACTION_TITRE_PERMIS())) { %>
 					            	<tr>
 					            		<td width="50px">
 											<label class="sigp2Mandatory">Libellé:</label>
 					            		</td>
 					            		<td>
-					            			<INPUT class="sigp2-saisiemajuscule" maxlength="30" name="<%= process.getNOM_EF_TYPE_DOCUMENT() %>" size="30" type="text" value="<%= process.getVAL_EF_TYPE_DOCUMENT() %>">
+					            			<INPUT class="sigp2-saisiemajuscule" maxlength="100" name="<%= process.getNOM_EF_TITRE_PERMIS() %>" size="35" type="text" value="<%= process.getVAL_EF_TITRE_PERMIS() %>">
 										</td>
 					            	</tr>	
-					            	<tr>
-					            		<td>
-											<label class="sigp2Mandatory">Code:</label>
-					            		</td>
-					            		<td>
-					            			<INPUT class="sigp2-saisiemajuscule" maxlength="5" name="<%= process.getNOM_EF_CODE_TYPE_DOCUMENT() %>" size="5" type="text" value="<%= process.getVAL_EF_CODE_TYPE_DOCUMENT() %>">
-										</td>
-					            	</tr>
 									<tr>
 					            		<td colspan="2" align="center">
-											<% if (process.ACTION_CREATION.equals(process.getVAL_ST_ACTION_TYPE_DOCUMENT())) { %>
-					            				<INPUT type="submit" class="sigp2-Bouton-100" value="Ajouter" name="<%=process.getNOM_PB_VALIDER_TYPE_DOCUMENT()%>">	
-											<% }%>
-											<INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER_TYPE_DOCUMENT()%>">						
+											<% if (process.ACTION_CREATION.equals(process.getVAL_ST_ACTION_TITRE_PERMIS())) { %>
+					            				<INPUT type="submit" class="sigp2-Bouton-100" value="Ajouter" name="<%=process.getNOM_PB_VALIDER_TITRE_PERMIS()%>">	
+											<% }else{%>
+												<INPUT type="submit" class="sigp2-Bouton-100" value="Modifier" name="<%=process.getNOM_PB_VALIDER_TITRE_PERMIS()%>">
+											<%} %>
+											<INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER_TITRE_PERMIS()%>">						
 					            		</td>
 					            	</tr>		            	
 								<%} else {%>
@@ -268,21 +263,13 @@
 											<label class="sigp2Mandatory">Libellé:</label>
 					            		</td>
 					            		<td>
-					            			<INPUT class="sigp2-saisiemajuscule" maxlength="30" readonly="readonly" name="<%= process.getNOM_EF_TYPE_DOCUMENT() %>" size="30" type="text" value="<%= process.getVAL_EF_TYPE_DOCUMENT() %>">
-										</td>
-					            	</tr>
-					            	<tr>
-					            		<td>
-											<label class="sigp2Mandatory">Code:</label>
-					            		</td>
-					            		<td>
-					            			<INPUT class="sigp2-saisiemajuscule" maxlength="5" name="<%= process.getNOM_EF_CODE_TYPE_DOCUMENT() %>" size="5" type="text" value="<%= process.getVAL_EF_CODE_TYPE_DOCUMENT() %>">
+					            			<INPUT class="sigp2-saisiemajuscule" maxlength="100" readonly="readonly" name="<%= process.getNOM_EF_TITRE_PERMIS() %>" size="35" type="text" value="<%= process.getVAL_EF_TITRE_PERMIS() %>">
 										</td>
 					            	</tr>
 					            	<tr>
 					            		<td colspan="2" align="center">
-											<INPUT type="submit" class="sigp2-Bouton-100" value="Supprimer" name="<%=process.getNOM_PB_VALIDER_TYPE_DOCUMENT()%>">
-											<INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER_TYPE_DOCUMENT()%>">
+											<INPUT type="submit" class="sigp2-Bouton-100" value="Supprimer" name="<%=process.getNOM_PB_VALIDER_TITRE_PERMIS()%>">
+											<INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER_TITRE_PERMIS()%>">
 					            		</td>
 					            	</tr>
 				            	<%}%>
@@ -406,66 +393,6 @@
 				            <%}%>
 						</FIELDSET>
 					</td>
-				</tr>		
-				<tr>
-					<td>
-						<FIELDSET class="sigp2Fieldset"  style="text-align: left;">
-					    	<legend class="sigp2Legend">Titre de permis</legend>
-							<span class="sigp2-titre">
-							<SELECT name="<%= process.getNOM_LB_TITRE_PERMIS() %>" size="10" style="width:100%;" class="sigp2-liste">
-								<%=process.forComboHTML(process.getVAL_LB_TITRE_PERMIS(), process.getVAL_LB_TITRE_PERMIS_SELECT()) %>
-							</SELECT>
-			            	</span>
-			
-							<div class=<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>>
-								<INPUT type="image" src="images/ajout.gif" height="20px" width="20px" name="<%=process.getNOM_PB_CREER_TITRE_PERMIS()%>">
-								<INPUT type="image" src="images/modifier.gif" height="20px" width="20px" name="<%=process.getNOM_PB_MODIFIER_TITRE_PERMIS()%>">
-			    	        	<INPUT type="image" src="images/suppression.gif" height="20px" width="20px" name="<%=process.getNOM_PB_SUPPRIMER_TITRE_PERMIS()%>">
-			    	        </div>
-			            	
-			            	<% if (process.getVAL_ST_ACTION_TITRE_PERMIS()!= null && !process.getVAL_ST_ACTION_TITRE_PERMIS().equals("")) {%>
-			            	<br>
-				            <table width="400px">
-								<% if (!process.ACTION_SUPPRESSION.equals(process.getVAL_ST_ACTION_TITRE_PERMIS())) { %>
-					            	<tr>
-					            		<td width="50px">
-											<label class="sigp2Mandatory">Libellé:</label>
-					            		</td>
-					            		<td>
-					            			<INPUT class="sigp2-saisiemajuscule" maxlength="100" name="<%= process.getNOM_EF_TITRE_PERMIS() %>" size="35" type="text" value="<%= process.getVAL_EF_TITRE_PERMIS() %>">
-										</td>
-					            	</tr>	
-									<tr>
-					            		<td colspan="2" align="center">
-											<% if (process.ACTION_CREATION.equals(process.getVAL_ST_ACTION_TITRE_PERMIS())) { %>
-					            				<INPUT type="submit" class="sigp2-Bouton-100" value="Ajouter" name="<%=process.getNOM_PB_VALIDER_TITRE_PERMIS()%>">	
-											<% }else{%>
-												<INPUT type="submit" class="sigp2-Bouton-100" value="Modifier" name="<%=process.getNOM_PB_VALIDER_TITRE_PERMIS()%>">
-											<%} %>
-											<INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER_TITRE_PERMIS()%>">						
-					            		</td>
-					            	</tr>		            	
-								<%} else {%>
-					            	<tr>
-					            		<td width="50px">
-											<label class="sigp2Mandatory">Libellé:</label>
-					            		</td>
-					            		<td>
-					            			<INPUT class="sigp2-saisiemajuscule" maxlength="100" readonly="readonly" name="<%= process.getNOM_EF_TITRE_PERMIS() %>" size="35" type="text" value="<%= process.getVAL_EF_TITRE_PERMIS() %>">
-										</td>
-					            	</tr>
-					            	<tr>
-					            		<td colspan="2" align="center">
-											<INPUT type="submit" class="sigp2-Bouton-100" value="Supprimer" name="<%=process.getNOM_PB_VALIDER_TITRE_PERMIS()%>">
-											<INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER_TITRE_PERMIS()%>">
-					            		</td>
-					            	</tr>
-				            	<%}%>
-				            </table>
-				            <%}%>
-						</FIELDSET>
-					</td>
-					<td>&nbsp;</td>
 				</tr>			
 			</table>
 		</FORM>

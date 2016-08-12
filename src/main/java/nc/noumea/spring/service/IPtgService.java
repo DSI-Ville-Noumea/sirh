@@ -92,8 +92,6 @@ public interface IPtgService {
 
 	List<ConsultPointageDto> getVisualisationHistory(Integer idAgents);
 
-	byte[] downloadFicheEtatsPayeur(Integer idEtatPayeur);
-
 	RefPrimeDto getPrimeDetailFromRefPrime(Integer idRefPrime);
 
 	boolean isVentilEnCours(String statut);

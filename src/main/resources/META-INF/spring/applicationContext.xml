@@ -46,4 +46,12 @@
 	<jee:jndi-lookup id="absWsBaseUrl" jndi-name="SIRH_ABS_WS_URL" expected-type="java.lang.String"/>
 	<jee:jndi-lookup id="ptgWsBaseUrl" jndi-name="SIRH_PTG_WS_URL" expected-type="java.lang.String"/>
 
+	<!-- ALFRESCO -->
+	<jee:jndi-lookup id="alfrescoUrl" jndi-name="ALFRESCO_URL" expected-type="java.lang.String"/>
+
+	<jee:jndi-lookup id="alfrescoLogin" jndi-name="ALFRESCO_LOGIN" expected-type="java.lang.String"/>
+
+	<jee:jndi-lookup id="alfrescoPassword" jndi-name="ALFRESCO_PASSWORD" expected-type="java.lang.String"/>
+	<!-- FIN ALFRESCO -->
+
 </beans>

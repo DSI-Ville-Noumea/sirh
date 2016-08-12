@@ -899,8 +899,9 @@
 				%>
 				<tr>
 					<td>
-						<INPUT name="<%=process.getNOM_PB_CONSULTER_ANCIEN_EAE(id)%>" title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, "") %>" >
-						<INPUT name="<%=process.getNOM_PB_CONSULTER_ANCIEN_EAE(id)%>" title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" >
+						<a href="<%=process.getVAL_ST_URL_DOC(id)%>" title="Consulter le document" target="_blank" >
+							<img onkeydown="" onkeypress="" onkeyup="" src="images/oeil.gif" height="16px" width="16px" title="Voir le document" />
+						</a>
 				    </td>
 					<td>
 						<%=process.getVAL_ST_DOCUMENT_ANCIEN_EAE(id)%>

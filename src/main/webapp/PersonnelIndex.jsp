@@ -175,6 +175,8 @@ Module_parametres.ajouterFils(new Lien("absence", "ParamAbsMotif", "Absence", "G
 Module_parametres.ajouterFils(new Lien("election", "ParamElec", "Election", "Gestion des paramètres des élections", true));
 Module_parametres.ajouterFils(new Lien("kiosque", "ParamKiosque", "Kiosque", "Gestion des paramètres du kiosque", true));
 Module_parametres.ajouterFils(new Lien("pointage", "ParamPointage", "Pointage", "Gestion des paramètres des pointages", true));
+Module_parametres.ajouterFils(new Lien("typeDocument", "ParamTypeDocument", "Types de document", "Gestion des types de document", true));
+
 //***************************************************************
 //*               Le module Gestion des droits
 //***************************************************************

@@ -15,6 +15,8 @@ public class EtatsPayeurDto {
 	private String displayNom;
 	private String displayPrenom;
 	
+	private String urlAlfresco;
+	
 	public EtatsPayeurDto(){
 		
 	}
@@ -110,6 +112,13 @@ public class EtatsPayeurDto {
 	public void setDisplayPrenom(String displayPrenom) {
 		this.displayPrenom = displayPrenom;
 	}
-	
+
+	public String getUrlAlfresco() {
+		return urlAlfresco;
+	}
+
+	public void setUrlAlfresco(String urlAlfresco) {
+		this.urlAlfresco = urlAlfresco;
+	}
 	
 }

@@ -1,8 +1,5 @@
 package nc.mairie.gestionagent.process.avancement;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -10,6 +7,8 @@ import java.util.Hashtable;
 import java.util.ListIterator;
 
 import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.context.ApplicationContext;
 
 import nc.mairie.enums.EnumEtatAvancement;
 import nc.mairie.enums.EnumTypeHisto;
@@ -41,15 +40,6 @@ import nc.mairie.utils.MessageUtils;
 import nc.noumea.spring.service.IAvancementService;
 import nc.noumea.spring.service.ISirhService;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.vfs2.FileObject;
-import org.apache.commons.vfs2.FileSystemException;
-import org.apache.commons.vfs2.FileSystemManager;
-import org.apache.commons.vfs2.VFS;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationContext;
-
 /**
  * Process OeAVCTCampagneTableauBord Date de création : (21/11/11 09:55:36)
  * 
@@ -62,8 +52,6 @@ public class OeAVCTFonctionnaireAutre extends BasicProcess {
 	private static final long serialVersionUID = 1L;
 
 	public static final int STATUT_RECHERCHER_AGENT = 1;
-
-	private Logger logger = LoggerFactory.getLogger(OeAVCTFonctionnaireAutre.class);
 
 	private String[] LB_ANNEE;
 	private String[] LB_AVIS_CAP;
@@ -79,7 +67,6 @@ public class OeAVCTFonctionnaireAutre extends BasicProcess {
 	private ArrayList<AvancementFonctionnaires> listeAvct;
 	public String agentEnErreur = Const.CHAINE_VIDE;
 
-	private ArrayList<String> listeDocuments;
 	private String urlFichier;
 
 	private MotifAvancementDao motifAvancementDao;
@@ -117,13 +104,6 @@ public class OeAVCTFonctionnaireAutre extends BasicProcess {
 
 		initialiseDao();
 		initialiseListeDeroulante();
-
-		// Initialisation de la liste des documents suivi medicaux
-		if (getListeDocuments() == null || getListeDocuments().size() == 0) {
-			setListeDocuments(listerDocumentsArretes());
-			afficheListeDocuments();
-
-		}
 	}
 
 	private void initialiseDao() {
@@ -236,13 +216,6 @@ public class OeAVCTFonctionnaireAutre extends BasicProcess {
 			// Si clic sur le bouton PB_IMPRIMER
 			if (testerParametre(request, getNOM_PB_IMPRIMER())) {
 				return performPB_IMPRIMER(request);
-			}
-
-			// Si clic sur le bouton PB_VISUALISER pour les documents
-			for (int i = 0; i < getListeDocuments().size(); i++) {
-				if (testerParametre(request, getNOM_PB_VISUALISATION(i))) {
-					return performPB_VISUALISATION(request, i);
-				}
 			}
 		}
 		// Si TAG INPUT non géré par le process
@@ -1188,22 +1161,7 @@ public class OeAVCTFonctionnaireAutre extends BasicProcess {
 	 * 
 	 */
 	public boolean performPB_IMPRIMER(HttpServletRequest request) throws Exception {
-
-		verifieRepertoire("Avancement");
-		String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ACTES");
-
-		// on supprime les documents existants
-		String docuChangementClasse = "Avancement/arretesChangementClasseDetaches.doc";
-		String docuAvctDiff = "Avancement/arretesAvancementDiffDetaches.doc";
-		// on verifie l'existance de chaque fichier
-		File chgtClasse = new File(repPartage.substring(8, repPartage.length()) + docuChangementClasse);
-		if (chgtClasse.exists()) {
-			chgtClasse.delete();
-		}
-		File avctDiff = new File(repPartage.substring(8, repPartage.length()) + docuAvctDiff);
-		if (avctDiff.exists()) {
-			avctDiff.delete();
-		}
+		
 		ArrayList<Integer> listeImpressionChangementClasse = new ArrayList<Integer>();
 		ArrayList<Integer> listeImpressionAvancementDiff = new ArrayList<Integer>();
 
@@ -1215,10 +1173,12 @@ public class OeAVCTFonctionnaireAutre extends BasicProcess {
 			AvancementFonctionnaires avct = (AvancementFonctionnaires) getListeAvct().get(j);
 			Integer idAvct = avct.getIdAvct();
 			if (getVAL_CK_VALID_ARR_IMPR(idAvct).equals(getCHECKED_ON())) {
-				if (avct.getIdMotifAvct() == 4) {
+				if (null != avct && null != avct.getIdMotifAvct() 
+						&& avct.getIdMotifAvct() == 4) {
 					// on fait une liste des arretes changement classe
 					listeImpressionChangementClasse.add(avct.getIdAgent());
-				} else if (avct.getIdMotifAvct() == 7 || avct.getIdMotifAvct() == 6 || avct.getIdMotifAvct() == 3) {
+				} else if (null != avct && null != avct.getIdMotifAvct() 
+						&& (avct.getIdMotifAvct() == 7 || avct.getIdMotifAvct() == 6 || avct.getIdMotifAvct() == 3)) {
 					// on fait une liste des arretes avancement diffe
 					listeImpressionAvancementDiff.add(avct.getIdAgent());
 				} else {
@@ -1264,44 +1224,15 @@ public class OeAVCTFonctionnaireAutre extends BasicProcess {
 
 		}
 		if (listeImpressionChangementClasse.size() > 0) {
-
-			try {
-				byte[] fileAsBytes = sirhService.downloadArrete(listeImpressionChangementClasse.toString().replace("[", "").replace("]", "").replace(" ", ""), true, Integer.valueOf(getAnneeSelect()),
-						false);
-
-				if (!saveFileToRemoteFileSystem(fileAsBytes, repPartage, docuChangementClasse)) {
-					// "ERR185",
-					// "Une erreur est survenue dans la génération des documents. Merci de contacter le responsable du projet."
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR185"));
-					return false;
-				}
-			} catch (Exception e) {
-				// "ERR185",
-				// "Une erreur est survenue dans la génération des documents. Merci de contacter le responsable du projet."
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR185"));
-				return false;
-			}
-
+			String nomFichier = "arretesChangementClasseDetaches.doc";
+			String url = "PrintDocument?fromPage="+this.getClass().getName()+"&nomFichier="+nomFichier+"&listeImpressionChangementClasse="+listeImpressionChangementClasse+"&anneeSelect="+getAnneeSelect();
+			setURLFichier(getScriptOuverture(url));
 		}
 		if (listeImpressionAvancementDiff.size() > 0) {
-			try {
-				byte[] fileAsBytes = sirhService.downloadArrete(listeImpressionAvancementDiff.toString().replace("[", "").replace("]", "").replace(" ", ""), false, Integer.valueOf(getAnneeSelect()),
-						false);
-				if (!saveFileToRemoteFileSystem(fileAsBytes, repPartage, docuAvctDiff)) {
-					// "ERR185",
-					// "Une erreur est survenue dans la génération des documents. Merci de contacter le responsable du projet."
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR185"));
-					return false;
-				}
-			} catch (Exception e) {
-				// "ERR185",
-				// "Une erreur est survenue dans la génération des documents. Merci de contacter le responsable du projet."
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR185"));
-				return false;
-			}
-
+			String nomFichier = "arretesAvancementDiffDetaches.doc";
+			String url = "PrintDocument?fromPage="+this.getClass().getName()+"&nomFichier="+nomFichier+"&listeImpressionAvancementDiff="+listeImpressionChangementClasse+"&anneeSelect="+getAnneeSelect();
+			setURLFichier(getScriptOuverture(url));
 		}
-		setListeDocuments(null);
 		afficherListeAvct(request);
 		return true;
 	}
@@ -1322,109 +1253,6 @@ public class OeAVCTFonctionnaireAutre extends BasicProcess {
 	 */
 	public void setAnneeSelect(String newAnneeSelect) {
 		this.anneeSelect = newAnneeSelect;
-	}
-
-	private void verifieRepertoire(String codTypeDoc) {
-		// on verifie déjà que le repertoire source existe
-		String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ACTES");
-
-		File dossierParent = new File(repPartage);
-		if (!dossierParent.exists()) {
-			dossierParent.mkdir();
-		}
-		File ssDossier = new File(repPartage + codTypeDoc + "/");
-		if (!ssDossier.exists()) {
-			ssDossier.mkdir();
-		}
-	}
-
-	public boolean saveFileToRemoteFileSystem(byte[] fileAsBytes, String chemin, String filename) throws Exception {
-
-		BufferedOutputStream bos = null;
-		FileObject pdfFile = null;
-
-		try {
-			FileSystemManager fsManager = VFS.getManager();
-			pdfFile = fsManager.resolveFile(String.format("%s", chemin + filename));
-			bos = new BufferedOutputStream(pdfFile.getContent().getOutputStream());
-			IOUtils.write(fileAsBytes, bos);
-			IOUtils.closeQuietly(bos);
-
-			if (pdfFile != null) {
-				try {
-					pdfFile.close();
-				} catch (FileSystemException e) {
-					// ignore the exception
-				}
-			}
-		} catch (Exception e) {
-			logger.error(String.format("An error occured while writing the report file to the following path  : " + chemin + filename + " : " + e));
-			return false;
-		}
-		return true;
-	}
-
-	public ArrayList<String> getListeDocuments() {
-		if (listeDocuments == null)
-			return new ArrayList<String>();
-		return listeDocuments;
-	}
-
-	public void setListeDocuments(ArrayList<String> listeDocuments) {
-		this.listeDocuments = listeDocuments;
-	}
-
-	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_NOM_DOC Date de
-	 * création : (21/11/11 09:55:36)
-	 * 
-	 */
-	public String getNOM_ST_NOM_DOC(int i) {
-		return "NOM_ST_NOM_DOC_" + i;
-	}
-
-	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_NOM_DOC Date
-	 * de création : (21/11/11 09:55:36)
-	 * 
-	 */
-	public String getVAL_ST_NOM_DOC(int i) {
-		return getZone(getNOM_ST_NOM_DOC(i));
-	}
-
-	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_VISUALISATION Date de
-	 * création : (29/09/11 10:03:38)
-	 * 
-	 */
-	public String getNOM_PB_VISUALISATION(int i) {
-		return "NOM_PB_VISUALISATION" + i;
-	}
-
-	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * regles de gestion du process - Positionne un statut en fonction de ces
-	 * regles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (29/09/11 10:03:38)
-	 * 
-	 */
-	public boolean performPB_VISUALISATION(HttpServletRequest request, int indiceEltAConsulter) throws Exception {
-
-		String docSelection = getListeDocuments().get(indiceEltAConsulter);
-		String nomDoc = docSelection.substring(docSelection.lastIndexOf("/"), docSelection.length());
-
-		String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_LECTURE");
-		setURLFichier(getScriptOuverture(repertoireStockage + "Avancement" + nomDoc));
-
-		setStatut(STATUT_MEME_PROCESS);
-		return true;
-	}
-
-	private void afficheListeDocuments() {
-		for (int i = 0; i < getListeDocuments().size(); i++) {
-			String nomDoc = getListeDocuments().get(i);
-			addZone(getNOM_ST_NOM_DOC(i), nomDoc.substring(nomDoc.lastIndexOf("/") + 1, nomDoc.length()));
-		}
 	}
 
 	public String getScriptOuverture(String cheminFichier) throws Exception {
@@ -1448,23 +1276,6 @@ public class OeAVCTFonctionnaireAutre extends BasicProcess {
 		urlFichier = scriptOuverture;
 	}
 
-	private ArrayList<String> listerDocumentsArretes() throws ParseException {
-		ArrayList<String> res = new ArrayList<String>();
-		String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ROOT");
-		String docuArreteChangementClasse = repPartage + "Avancement/arretesChangementClasseDetaches.doc";
-		String docuArreteAvctDiff = repPartage + "Avancement/arretesAvancementDiffDetaches.doc";
-
-		// on verifie l'existance de chaque fichier
-		boolean existsDocuArreteChangementClasse = new File(docuArreteChangementClasse).exists();
-		if (existsDocuArreteChangementClasse) {
-			res.add(docuArreteChangementClasse);
-		}
-		boolean existsDocuArreteAvctDiff = new File(docuArreteAvctDiff).exists();
-		if (existsDocuArreteAvctDiff) {
-			res.add(docuArreteAvctDiff);
-		}
-		return res;
-	}
 
 	/**
 	 * Retourne le nom de la case à cocher sélectionnée pour la JSP :

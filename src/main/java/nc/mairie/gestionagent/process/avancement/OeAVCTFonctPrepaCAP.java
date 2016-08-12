@@ -1,7 +1,5 @@
 package nc.mairie.gestionagent.process.avancement;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -11,6 +9,10 @@ import java.util.List;
 import java.util.ListIterator;
 
 import javax.servlet.http.HttpServletRequest;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
 
 import nc.mairie.enums.EnumEtatAvancement;
 import nc.mairie.enums.EnumEtatEAE;
@@ -59,15 +61,6 @@ import nc.noumea.spring.service.IAdsService;
 import nc.noumea.spring.service.IRadiService;
 import nc.noumea.spring.service.ISirhService;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.vfs2.FileObject;
-import org.apache.commons.vfs2.FileSystemException;
-import org.apache.commons.vfs2.FileSystemManager;
-import org.apache.commons.vfs2.VFS;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationContext;
-
 /**
  * Process OeAVCTFonctionnaires Date de création : (21/11/11 09:55:36)
  * 
@@ -94,6 +87,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 
 	private String[]								listeAnnee;
 	private String									anneeSelect;
+	private String									urlFichier;
 
 	private ArrayList<AvancementFonctionnaires>		listeAvct;
 	private ArrayList<AvisCap>						listeAvisCAPMinMoyMax;
@@ -1347,20 +1341,6 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 		return getZone(getNOM_ST_CADRE_EMPLOI(i));
 	}
 
-	private void verifieRepertoire(String codTypeDoc) {
-		// on verifie déjà que le repertoire source existe
-		String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ACTES");
-
-		File dossierParent = new File(repPartage);
-		if (!dossierParent.exists()) {
-			dossierParent.mkdir();
-		}
-		File ssDossier = new File(repPartage + codTypeDoc + "/");
-		if (!ssDossier.exists()) {
-			ssDossier.mkdir();
-		}
-	}
-
 	public String getScriptOuverture(String cheminFichier) throws Exception {
 		StringBuffer scriptOuvPDF = new StringBuffer("<script language=\"JavaScript\" type=\"text/javascript\">");
 		scriptOuvPDF.append("window.open('" + cheminFichier + "');");
@@ -1382,62 +1362,19 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	 * 
 	 */
 	public boolean performPB_CONSULTER_TABLEAU(HttpServletRequest request, String indiceCap, String indiceCadreEmploi) throws Exception {
-		verifieRepertoire("Avancement");
-		String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ACTES");
+		
 		UserAppli user = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
-		String destination = "Avancement/tabAvctCap_" + user.getUserName() + ".pdf";
-		// on receupere la CAP et le cadre Emploi
-		try {
-			Cap cap = getCapDao().chercherCapByCodeCap(indiceCap);
-			CadreEmploi cadre = getCadreEmploiDao().chercherCadreEmploiByLib(indiceCadreEmploi);
+		String nomFichier = "tabAvctCap_" + user.getUserName() + ".pdf";
+		
+		// on recupere la CAP et le cadre Emploi
+		Cap cap = getCapDao().chercherCapByCodeCap(indiceCap);
+		CadreEmploi cadre = getCadreEmploiDao().chercherCadreEmploiByLib(indiceCadreEmploi);
 
-			byte[] fileAsBytes = sirhService.downloadTableauAvancement(cap.getIdCap(), cadre.getIdCadreEmploi(), false, "PDF");
-			if (!saveFileToRemoteFileSystem(fileAsBytes, repPartage, destination)) {
-				// "ERR182",
-				// "Une erreur est survenue dans la génération du tableau. Merci de contacter le responsable du projet."
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR182"));
-				return false;
-			}
-		} catch (Exception e) {
-			logger.error("Erreur génération tableau AVCT : " + e.getMessage());
-			// "ERR182",
-			// "Une erreur est survenue dans la génération du tableau. Merci de contacter le responsable du projet."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR182"));
-			return false;
-		}
+		String url = "PrintDocument?fromPage="+this.getClass().getName()+"&nomFichier="+nomFichier+"&idCap="+cap.getIdCap()+"&idCadreEmploi="+cadre.getIdCadreEmploi();
+		setURLFichier(getScriptOuverture(url));
+			
 		return true;
 	}
-
-	public boolean saveFileToRemoteFileSystem(byte[] fileAsBytes, String chemin, String filename) throws Exception {
-
-		BufferedOutputStream bos = null;
-		FileObject pdfFile = null;
-
-		try {
-			FileSystemManager fsManager = VFS.getManager();
-			pdfFile = fsManager.resolveFile(String.format("%s", chemin + filename));
-			bos = new BufferedOutputStream(pdfFile.getContent().getOutputStream());
-			IOUtils.write(fileAsBytes, bos);
-			IOUtils.closeQuietly(bos);
-
-			if (pdfFile != null) {
-				try {
-					pdfFile.close();
-					String repLecture = (String) ServletAgent.getMesParametres().get("REPERTOIRE_LECTURE");
-					setURLFichier(getScriptOuverture(repLecture + filename));
-				} catch (FileSystemException e) {
-					// ignore the exception
-				}
-			}
-		} catch (Exception e) {
-			setURLFichier(null);
-			logger.error(String.format("An error occured while writing the report file to the following path  : " + chemin + filename + " : " + e));
-			return false;
-		}
-		return true;
-	}
-
-	private String	urlFichier;
 
 	public String getUrlFichier() {
 		String res = urlFichier;
@@ -1856,30 +1793,17 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	}
 
 	public boolean performPB_CONSULTER_TABLEAU_AVIS_SHD(HttpServletRequest request, String indiceCap, String indiceCadreEmploi) throws Exception {
-		verifieRepertoire("Avancement");
-		String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ACTES");
 		UserAppli user = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
-		String destination = "Avancement/tabAvctCap_" + user.getUserName() + ".pdf";
-		// on receupere la CAP et le cadre Emploi
-		try {
-			Cap cap = getCapDao().chercherCapByCodeCap(indiceCap);
-			CadreEmploi cadre = getCadreEmploiDao().chercherCadreEmploiByLib(indiceCadreEmploi);
+		String nomFichier = "tabAvctCap_" + user.getUserName() + ".pdf";
+		
+		// on recupere la CAP et le cadre Emploi
+		Cap cap = getCapDao().chercherCapByCodeCap(indiceCap);
+		CadreEmploi cadre = getCadreEmploiDao().chercherCadreEmploiByLib(indiceCadreEmploi);
 
-			byte[] fileAsBytes = sirhService.downloadTableauAvancement(cap.getIdCap(), cadre.getIdCadreEmploi(), true, "PDF");
-			if (!saveFileToRemoteFileSystem(fileAsBytes, repPartage, destination)) {
-				// "ERR182",
-				// "Une erreur est survenue dans la génération du tableau. Merci de contacter le responsable du projet."
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR182"));
-				return false;
-			}
-		} catch (Exception e) {
-			logger.error("Erreur génération tableau AVCT : " + e.getMessage());
-			// "ERR182",
-			// "Une erreur est survenue dans la génération du tableau. Merci de contacter le responsable du projet."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR182"));
-			return false;
-		}
-		return true;
+		String url = "PrintDocument?fromPage="+this.getClass().getName()+"&nomFichier="+nomFichier+"&idCap="+cap.getIdCap()+"&idCadreEmploi="+cadre.getIdCadreEmploi();
+		setURLFichier(getScriptOuverture(url));
+			
+		return true;	
 	}
 
 	/**

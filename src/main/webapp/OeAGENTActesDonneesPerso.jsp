@@ -81,8 +81,9 @@
 							%>
 									<tr id="<%=indiceActes%>" onmouseover="SelectLigne(<%=indiceActes%>,<%=process.getListeDocuments().size()%>)">
 										<td class="sigp2NewTab-liste" style="position:relative;width:60px;" align="center">
-											<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, "") %>" name="<%=process.getNOM_PB_CONSULTER(indiceActes)%>">
-											<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_CONSULTER(indiceActes)%>">	
+											<a href="<%=process.getVAL_ST_URL_DOC(indiceActes)%>" title="Consulter le document" target="_blank" >
+												<img onkeydown="" onkeypress="" onkeyup="" src="images/oeil.gif" height="16px" width="16px" title="Voir le document" />
+											</a>
 										<%if (process.getVueCourant()!=null && !process.getVueCourant().equals("Sauvegarde")) {%>			
 											<INPUT title="supprimer" type="image" src="images/suppression.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_SUPPRIMER(indiceActes)%>">
 										<%} %>
@@ -252,7 +253,6 @@
 	</FIELDSET>
 	<% } %>
 	<INPUT type="submit" style="visibility:hidden;" name="<%=process.getNOM_PB_TYPE_DOCUMENT()%>" >
-	<%=process.getUrlFichier()%>
 </FORM>
 <%} %>
 </BODY>

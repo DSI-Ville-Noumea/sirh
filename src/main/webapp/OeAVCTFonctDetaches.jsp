@@ -342,30 +342,6 @@ function activeRegul() {
 				<INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
 			</div>
 		</FIELDSET>
-		<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
-				<legend class="sigp2Legend">Documents générés</legend>	
-				<br/>
-					<span style="position:relative;width:35px;"></span>
-					<span style="position:relative;text-align: left;">Nom Document</span>
-					<br/>
-					<div style="overflow: auto;height:50px;width:1000px;margin-right: 0px;margin-left: 0px;">
-						<table class="sigp2NewTab" style="text-align:left;width:980px;">
-						<%int indiceDoc = 0;
-						if (process.getListeDocuments()!=null){
-						for (int i = 0;i<process.getListeDocuments().size();i++){
-						%>
-							<tr id="<%=indiceDoc%>" onmouseover="SelectLigne(<%=indiceDoc%>,<%=process.getListeDocuments().size()%>)">
-								<td class="sigp2NewTab-liste" style="position:relative;width:30px;" align="center">
-									<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_VISUALISATION(indiceDoc)%>">				
-								</td>
-								<td class="sigp2NewTab-liste" style="position:relative;text-align: left;"><%=process.getVAL_ST_NOM_DOC(indiceDoc)%></td>
-							</tr>
-						<%indiceDoc++;
-						}
-						}%>
-						</table>	
-					</div>
-		</FIELDSET>
 	<%=process.getUrlFichier()%>
 		</FORM>
 </BODY>

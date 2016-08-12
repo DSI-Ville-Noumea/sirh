@@ -12,9 +12,13 @@ public interface TypeDocumentDaoInterface {
 
 	public TypeDocument chercherTypeDocumentByCod(String codTypeDocument) throws Exception;
 
-	public void creerTypeDocument(String libelleTypeDocument, String codTypeDocument, String moduleTypeDocument)
+	public void creerTypeDocument(String libelleTypeDocument, String codTypeDocument, String moduleTypeDocument, Integer idPathAlfresco)
 			throws Exception;
 
 	public void supprimerTypeDocument(Integer idTypeDocument) throws Exception;
+
+	ArrayList<TypeDocument> listerTypeDocument() throws Exception;
+
+	ArrayList<String> listerModuleDocument() throws Exception;
 
 }

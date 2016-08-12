@@ -12,6 +12,8 @@ import java.util.ListIterator;
 import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.enums.EnumEtatEAE;
+import nc.mairie.gestionagent.dto.ReturnMessageDto;
+import nc.mairie.gestionagent.radi.dto.LightUserDto;
 import nc.mairie.gestionagent.robot.MaClasse;
 import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
@@ -55,15 +57,18 @@ import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
+import nc.mairie.technique.UserAppli;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
 import nc.noumea.mairie.ads.dto.EntiteDto;
+import nc.noumea.mairie.alfresco.cmis.CmisUtils;
 import nc.noumea.spring.service.AdsService;
 import nc.noumea.spring.service.IAdsService;
+import nc.noumea.spring.service.IRadiService;
+import nc.noumea.spring.service.cmis.AlfrescoCMISService;
+import nc.noumea.spring.service.cmis.IAlfrescoCMISService;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 
 import com.oreilly.servlet.MultipartRequest;
@@ -73,8 +78,6 @@ import com.oreilly.servlet.MultipartRequest;
  * 
  */
 public class OeAGENTEae extends BasicProcess {
-
-	private Logger logger = LoggerFactory.getLogger(OeAGENTEae.class);
 	/**
 	 * 
 	 */
@@ -147,6 +150,8 @@ public class OeAGENTEae extends BasicProcess {
 	private AgentDao agentDao;
 
 	private IAdsService adsService;
+	private IAlfrescoCMISService alfrescoCMISService;
+	private IRadiService radiService;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -195,7 +200,7 @@ public class OeAGENTEae extends BasicProcess {
 
 		// Recherche des documents de l'agent
 		ArrayList<Document> listeDocAgent = getDocumentDao().listerDocumentAgent(getLienDocumentAgentDao(),
-				getAgentCourant().getIdAgent(), Const.CHAINE_VIDE, "EAE");
+				getAgentCourant().getIdAgent(), Const.CHAINE_VIDE, CmisUtils.CODE_TYPE_EAE);
 		setListeAncienEAE(listeDocAgent);
 
 		if (getListeAncienEAE() != null) {
@@ -207,6 +212,11 @@ public class OeAGENTEae extends BasicProcess {
 						: doc.getCommentaire());
 				addZone(getNOM_ST_DOCUMENT_ANCIEN_EAE(id), doc.getNomDocument());
 				addZone(getNOM_ST_NOM_ORI_DOC(id), doc.getNomOriginal() == null ? "&nbsp;" : doc.getNomOriginal());
+				addZone(getNOM_ST_URL_DOC(id),
+						(null == doc.getNodeRefAlfresco()
+							|| doc.getNodeRefAlfresco().equals(Const.CHAINE_VIDE))
+							? "&nbsp;" 
+							: AlfrescoCMISService.getUrlOfDocument(doc.getNodeRefAlfresco()));
 
 			}
 		}
@@ -355,6 +365,12 @@ public class OeAGENTEae extends BasicProcess {
 		}
 		if (null == adsService) {
 			adsService = (AdsService) context.getBean("adsService");
+		}
+		if (null == radiService) {
+			radiService = (IRadiService) context.getBean("radiService");
+		}
+		if (null == alfrescoCMISService) {
+			alfrescoCMISService = (IAlfrescoCMISService) context.getBean("alfrescoCMISService");
 		}
 	}
 
@@ -556,15 +572,6 @@ public class OeAGENTEae extends BasicProcess {
 			// Si clic sur le bouton PB_ANNULER
 			if (testerParametre(request, getNOM_PB_ANNULER())) {
 				return performPB_ANNULER(request);
-			}
-
-			// Si clic sur le bouton PB_CONSULTER_ANCIEN_EAE
-			for (int i = 0; i < getListeAncienEAE().size(); i++) {
-				Document d = getListeAncienEAE().get(i);
-				Integer id = d.getIdDocument();
-				if (testerParametre(request, getNOM_PB_CONSULTER_ANCIEN_EAE(id))) {
-					return performPB_CONSULTER_ANCIEN_EAE(request, id);
-				}
 			}
 
 			// Si clic sur le bouton PB_AJOUTER_ANCIEN_EAE
@@ -4276,7 +4283,7 @@ public class OeAGENTEae extends BasicProcess {
 
 		String extension = fichierUpload.getName().substring(fichierUpload.getName().indexOf('.'),
 				fichierUpload.getName().length());
-		if (!extension.equals(".pdf")) {
+		if (!extension.toLowerCase().equals(".pdf")) {
 			// "ERR165", "Le fichier doit être au format PDF."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR165"));
 			result &= false;
@@ -4430,34 +4437,6 @@ public class OeAGENTEae extends BasicProcess {
 		return getZone(getNOM_ST_DOCUMENT_ANCIEN_EAE(i));
 	}
 
-	public String getNOM_PB_CONSULTER_ANCIEN_EAE(int i) {
-		return "NOM_PB_CONSULTER_ANCIEN_EAE" + i;
-	}
-
-	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * regles de gestion du process - Positionne un statut en fonction de ces
-	 * regles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (29/09/11 10:03:38)
-	 * 
-	 */
-	public boolean performPB_CONSULTER_ANCIEN_EAE(HttpServletRequest request, int indiceEltAConsulter) throws Exception {
-
-		// On nomme l'action
-		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
-		String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_LECTURE");
-		logger.info("Rep stock : " + repertoireStockage);
-
-		// Récup du document courant
-		Document d = getDocumentDao().chercherDocumentById(indiceEltAConsulter);
-		// on affiche le document
-		logger.info("Lien doc : " + d.getLienDocument());
-		logger.info("Script : " + getScriptOuverture(repertoireStockage + d.getLienDocument()));
-		setURLFichier(getScriptOuverture(repertoireStockage + d.getLienDocument()));
-
-		return true;
-	}
-
 	public String getNOM_PB_AJOUTER_ANCIEN_EAE() {
 		return "NOM_PB_AJOUTER_ANCIEN_EAE";
 	}
@@ -4570,7 +4549,7 @@ public class OeAGENTEae extends BasicProcess {
 
 		String extension = fichierUpload.getName().substring(fichierUpload.getName().indexOf('.'),
 				fichierUpload.getName().length());
-		if (!extension.equals(".pdf")) {
+		if (!extension.toLowerCase().equals(".pdf")) {
 			// "ERR165", "Le fichier doit être au format PDF."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR165"));
 			result &= false;
@@ -4584,16 +4563,12 @@ public class OeAGENTEae extends BasicProcess {
 			getTransaction().declarerErreur("Err : le nom de fichier est incorrect");
 			return false;
 		}
-
-		String extension = fichierUpload.getName().substring(fichierUpload.getName().indexOf('.'),
-				fichierUpload.getName().length());
-		String nom = "EAE_" + getVAL_EF_ANNEE_ANCIEN_EAE() + "_" + getAgentCourant().getIdAgent() + extension;
-
+		
 		// on verifie si il y a deja un document pour cet année
 		boolean existDeja = false;
 		for (int i = 0; i < getListeAncienEAE().size(); i++) {
 			Document d = getListeAncienEAE().get(i);
-			if (d.getNomDocument().equals(nom)) {
+			if (d.getNomDocument().contains(getVAL_EF_ANNEE_ANCIEN_EAE())) {
 				existDeja = true;
 				break;
 			}
@@ -4605,30 +4580,27 @@ public class OeAGENTEae extends BasicProcess {
 			return false;
 		}
 
-		// on upload le fichier
-		boolean upload = false;
-		if (extension.equals(".pdf")) {
-			upload = uploadFichierPDFCristal(fichierUpload, nom);
-		}
-		if (!upload) {
-			// "ERR164",
-			// "Une erreur est survenue dans la sauvegarde de l'EAE. Merci de contacter le responsable du projet."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR164"));
-			return false;
-		}
-
+		String codTypeDoc = CmisUtils.CODE_TYPE_EAE;
 		// on crée le document en base de données
-		TypeDocument typeEAE = getTypeDocumentDao().chercherTypeDocumentByCod("EAE");
+		TypeDocument typeEAE = getTypeDocumentDao().chercherTypeDocumentByCod(codTypeDoc);
 		Document doc = new Document();
-		doc.setLienDocument("EAE/" + nom);
 		doc.setIdTypeDocument(typeEAE.getIdTypeDocument());
 		doc.setNomOriginal(fichierUpload.getName());
-		doc.setNomDocument(nom);
 		doc.setDateDocument(new Date());
 		doc.setCommentaire(getZone(getNOM_EF_COMMENTAIRE_ANCIEN_EAE()));
+
+		// on upload le fichier
+		ReturnMessageDto rmd = alfrescoCMISService.uploadDocument(getAgentConnecte(request).getIdAgent(), getAgentCourant(), doc, 
+				fichierUpload, new Integer(getVAL_EF_ANNEE_ANCIEN_EAE()), codTypeDoc);
+		
+		if (declarerErreurFromReturnMessageDto(rmd))
+			return false;
+
+		// on crée le document en base de données
 		Integer id = getDocumentDao().creerDocument(doc.getClasseDocument(), doc.getNomDocument(),
 				doc.getLienDocument(), doc.getDateDocument(), doc.getCommentaire(), doc.getIdTypeDocument(),
-				doc.getNomOriginal());
+				doc.getNomOriginal(), doc.getNodeRefAlfresco(), doc.getCommentaireAlfresco(),
+				doc.getReference());
 
 		DocumentAgent lien = new DocumentAgent();
 		lien.setIdAgent(getAgentCourant().getIdAgent());
@@ -4649,46 +4621,44 @@ public class OeAGENTEae extends BasicProcess {
 		return true;
 	}
 
-	private boolean uploadFichierPDFCristal(File f, String nomFichier) throws Exception {
-		boolean resultat = false;
-		String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ROOT");
-		// on verifie que les repertoires existent
-		verifieRepertoire("EAE");
+	private Agent getAgentConnecte(HttpServletRequest request) throws Exception {
+		Agent agent = null;
 
-		File newFile = new File(repPartage + "EAE/" + nomFichier);
-
-		FileInputStream in = new FileInputStream(f);
-
-		try {
-			FileOutputStream out = new FileOutputStream(newFile);
-			try {
-				byte[] byteBuffer = new byte[in.available()];
-				@SuppressWarnings("unused")
-				int s = in.read(byteBuffer);
-				out.write(byteBuffer);
-				out.flush();
-				resultat = true;
-			} finally {
-				out.close();
+		UserAppli uUser = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
+		// on fait la correspondance entre le login et l'agent via RADI
+		LightUserDto user = radiService.getAgentCompteADByLogin(uUser.getUserName());
+		if (user == null) {
+			getTransaction().traiterErreur();
+			// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
+			return null;
+		} else {
+			if (user != null && user.getEmployeeNumber() != null && user.getEmployeeNumber() != 0) {
+				try {
+					agent = getAgentDao().chercherAgentParMatricule(radiService.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
+				} catch (Exception e) {
+					// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
+					return null;
+				}
 			}
-		} finally {
-			in.close();
 		}
 
-		return resultat;
+		return agent;
 	}
-
-	private void verifieRepertoire(String codTypeDoc) {
-		// on verifie déjà que le repertoire source existe
-		String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ACTES");
-		File dossierParent = new File(repPartage);
-		if (!dossierParent.exists()) {
-			dossierParent.mkdir();
+	
+	private boolean declarerErreurFromReturnMessageDto(ReturnMessageDto rmd) {
+		
+		if(!rmd.getErrors().isEmpty()) {
+			String errors = "";
+			for(String error : rmd.getErrors()) {
+				errors += error;
+			}
+			
+			getTransaction().declarerErreur("Err : " + errors);
+			return true;
 		}
-		File ssDossier = new File(repPartage + codTypeDoc + "/");
-		if (!ssDossier.exists()) {
-			ssDossier.mkdir();
-		}
+		return false;
 	}
 
 	public String getNOM_ST_NOM_ORI_DOC(int i) {
@@ -4925,5 +4895,13 @@ public class OeAGENTEae extends BasicProcess {
 			}
 		}
 		return true;
+	}
+
+	public String getNOM_ST_URL_DOC(int i) {
+		return "NOM_ST_URL_ORI_DOC" + i;
+	}
+
+	public String getVAL_ST_URL_DOC(int i) {
+		return getZone(getNOM_ST_URL_DOC(i));
 	}
 }

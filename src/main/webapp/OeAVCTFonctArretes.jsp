@@ -287,35 +287,13 @@ function SelectLigne(id,tailleTableau)
 				</script>
 			<BR/>
 		</FIELDSET>
+		
 		<FIELDSET class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "sigp2Fieldset") %>" style="text-align:center;width:1030px;">
 			<INPUT type="submit" class="sigp2-Bouton-100" value="Enregistrer" name="<%=process.getNOM_PB_VALIDER()%>">
 			<INPUT type="submit" class="sigp2-Bouton-100" value="Imprimer" name="<%=process.getNOM_PB_IMPRIMER()%>">
 			<INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
 		</FIELDSET>
-		<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
-		<legend class="sigp2Legend">Documents générés</legend>	
-		<br/>
-			<span style="position:relative;width:35px;"></span>
-			<span style="position:relative;text-align: left;">Nom Document</span>
-			<br/>
-			<div style="overflow: auto;height:50px;width:1000px;margin-right: 0px;margin-left: 0px;">
-				<table class="sigp2NewTab" style="text-align:left;width:980px;">
-				<%int indiceDoc = 0;
-				if (process.getListeDocuments()!=null){
-				for (int i = 0;i<process.getListeDocuments().size();i++){
-				%>
-					<tr id="<%=indiceDoc%>" onmouseover="SelectLigne(<%=indiceDoc%>,<%=process.getListeDocuments().size()%>)">
-						<td class="sigp2NewTab-liste" style="position:relative;width:30px;" align="center">
-							<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_VISUALISATION(indiceDoc)%>">				
-						</td>
-						<td class="sigp2NewTab-liste" style="position:relative;text-align: left;"><%=process.getVAL_ST_NOM_DOC(indiceDoc)%></td>
-					</tr>
-				<%indiceDoc++;
-				}
-				}%>
-				</table>	
-			</div>
-		</FIELDSET>
+		
 		<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_RECHERCHER_AGENT()%>" value="RECHERCHERAGENTEVALUE">
 		<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT()%>" value="SUPPRECHERCHERAGENTEVALUE">
 	<%=process.getUrlFichier()%>

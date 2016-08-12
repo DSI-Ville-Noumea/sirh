@@ -1,7 +1,5 @@
 package nc.mairie.gestionagent.process.poste;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -10,6 +8,11 @@ import java.util.List;
 import java.util.ListIterator;
 
 import javax.servlet.http.HttpServletRequest;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
+import org.springframework.dao.EmptyResultDataAccessException;
 
 import nc.mairie.enums.EnumStatutFichePoste;
 import nc.mairie.enums.EnumTypeCompetence;
@@ -20,12 +23,9 @@ import nc.mairie.gestionagent.absence.dto.TypeAbsenceDto;
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
 import nc.mairie.gestionagent.pointage.dto.RefPrimeDto;
 import nc.mairie.gestionagent.radi.dto.LightUserDto;
-import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.Agent;
 import nc.mairie.metier.agent.Contrat;
-import nc.mairie.metier.agent.Document;
-import nc.mairie.metier.agent.DocumentAgent;
 import nc.mairie.metier.carriere.FiliereGrade;
 import nc.mairie.metier.carriere.Grade;
 import nc.mairie.metier.carriere.GradeGenerique;
@@ -64,8 +64,6 @@ import nc.mairie.metier.specificites.RegIndemFP;
 import nc.mairie.metier.specificites.RegimeIndemnitaire;
 import nc.mairie.spring.dao.metier.agent.AgentDao;
 import nc.mairie.spring.dao.metier.agent.ContratDao;
-import nc.mairie.spring.dao.metier.agent.DocumentAgentDao;
-import nc.mairie.spring.dao.metier.agent.DocumentDao;
 import nc.mairie.spring.dao.metier.parametrage.BaseHorairePointageDao;
 import nc.mairie.spring.dao.metier.parametrage.NatureAvantageDao;
 import nc.mairie.spring.dao.metier.parametrage.NatureCreditDao;
@@ -119,16 +117,6 @@ import nc.noumea.spring.service.IPtgService;
 import nc.noumea.spring.service.IRadiService;
 import nc.noumea.spring.service.ISirhService;
 import nc.noumea.spring.service.PtgService;
-
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.vfs2.FileObject;
-import org.apache.commons.vfs2.FileSystemException;
-import org.apache.commons.vfs2.FileSystemManager;
-import org.apache.commons.vfs2.VFS;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationContext;
-import org.springframework.dao.EmptyResultDataAccessException;
 
 /**
  * Process OePOSTEFichePoste Date de création : (07/07/11 10:59:29)
@@ -263,8 +251,6 @@ public class OePOSTEFichePoste extends BasicProcess {
 	private RegIndemnAffDao regIndemnAffDao;
 	private TypeCompetenceDao typeCompetenceDao;
 	private TypeContratDao typeContratDao;
-	private DocumentAgentDao lienDocumentAgentDao;
-	private DocumentDao documentDao;
 	private ContratDao contratDao;
 	private NiveauEtudeDao niveauEtudeDao;
 	private TitrePosteDao titrePosteDao;
@@ -551,12 +537,6 @@ public class OePOSTEFichePoste extends BasicProcess {
 		}
 		if (getTypeContratDao() == null) {
 			setTypeContratDao(new TypeContratDao((SirhDao) context.getBean("sirhDao")));
-		}
-		if (getLienDocumentAgentDao() == null) {
-			setLienDocumentAgentDao(new DocumentAgentDao((SirhDao) context.getBean("sirhDao")));
-		}
-		if (getDocumentDao() == null) {
-			setDocumentDao(new DocumentDao((SirhDao) context.getBean("sirhDao")));
 		}
 		if (getContratDao() == null) {
 			setContratDao(new ContratDao((SirhDao) context.getBean("sirhDao")));
@@ -2438,15 +2418,6 @@ public class OePOSTEFichePoste extends BasicProcess {
 			VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_LST_PRIME_POINTAGE_A_AJOUT);
 			VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_LST_PRIME_POINTAGE_A_SUPPR);
 
-			// si la FDP est affectée a un agent, alors on sauvegarde la fiche
-			// de poste
-			// RG_PE_FP_A02
-			if (estFpCouranteAffectee()) {
-				if (!sauvegardeFDP()) {
-					return false;
-				}
-			}
-
 		} else {
 			return false;
 		}
@@ -2523,56 +2494,6 @@ public class OePOSTEFichePoste extends BasicProcess {
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR126", statutCourant.getLibStatutFp(), "'Active'"));
 				return false;
 			}
-		}
-		return true;
-	}
-
-	private boolean sauvegardeFDP() throws Exception {
-		// on verifie que les repertoires existent
-		verifieRepertoire("SauvegardeFDP");
-
-		String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ACTES");
-		// bug #30580
-		String dateJour = new SimpleDateFormat("ddMMyyyy-hhmms-S").format(new Date()).toString();
-		String destinationFDP = "SauvegardeFDP/SauvFP_" + getFichePosteCourante().getIdFichePoste() + "_" + dateJour + ".doc";
-
-		try {
-			byte[] fileAsBytes = null;//sirhService.downloadFichePoste(getFichePosteCourante().getIdFichePoste());
-
-			if (!saveFileToRemoteFileSystem(fileAsBytes, repPartage, destinationFDP)) {
-				// "ERR185",
-				// "Une erreur est survenue dans la génération des documents. Merci de contacter le responsable du projet."
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR185"));
-				return false;
-			}
-
-			// Tout s'est bien passé
-			// on crée le document en base de données
-			Document d = new Document();
-			d.setIdTypeDocument(1);
-			d.setLienDocument(destinationFDP);
-			d.setNomDocument("SauvFP_" + getFichePosteCourante().getIdFichePoste() + "_" + dateJour + ".doc");
-			d.setDateDocument(new Date());
-			d.setCommentaire("Sauvegarde automatique lors modification FDP.");
-			Integer id = getDocumentDao().creerDocument(d.getClasseDocument(), d.getNomDocument(), d.getLienDocument(), d.getDateDocument(), d.getCommentaire(), d.getIdTypeDocument(),
-					d.getNomOriginal());
-
-			DocumentAgent lda = new DocumentAgent();
-			lda.setIdAgent(getAgentCourant().getIdAgent());
-			lda.setIdDocument(id);
-			getLienDocumentAgentDao().creerDocumentAgent(lda.getIdAgent(), lda.getIdDocument());
-
-			if (getTransaction().isErreur()) {
-				return false;
-			}
-
-			commitTransaction();
-
-		} catch (Exception e) {
-			// "ERR185",
-			// "Une erreur est survenue dans la génération des documents. Merci de contacter le responsable du projet."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR185"));
-			return false;
 		}
 		return true;
 	}
@@ -5120,47 +5041,12 @@ public class OePOSTEFichePoste extends BasicProcess {
 	}
 
 	private boolean imprimeModele(HttpServletRequest request) throws Exception {
-		// on verifie que les repertoires existent
-		verifieRepertoire("FichePosteVierge");
+		
+		String nomFichier = "FP_" + getFichePosteCourante().getIdFichePoste() + ".doc";
+		String url = "PrintDocument?fromPage="+this.getClass().getName()+"&nomFichier="+nomFichier+"&idFichePoste="+getFichePosteCourante().getIdFichePoste();
+		setURLFichier(getScriptOuverture(url));
 
-		String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ACTES");
-		String destinationFDP = "FichePosteVierge/FP_" + getFichePosteCourante().getIdFichePoste() + ".doc";
-
-		try {
-			byte[] fileAsBytes = null;//sirhService.downloadFichePoste(getFichePosteCourante().getIdFichePoste());
-
-			if (!saveFileToRemoteFileSystem(fileAsBytes, repPartage, destinationFDP)) {
-				// "ERR185",
-				// "Une erreur est survenue dans la génération des documents. Merci de contacter le responsable du projet."
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR185"));
-				return false;
-			}
-
-			destinationFDP = destinationFDP.substring(destinationFDP.lastIndexOf("/"), destinationFDP.length());
-			String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_LECTURE");
-			setURLFichier(getScriptOuverture(repertoireStockage + "FichePosteVierge" + destinationFDP));
-
-		} catch (Exception e) {
-			// "ERR185",
-			// "Une erreur est survenue dans la génération des documents. Merci de contacter le responsable du projet."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR185"));
-			return false;
-		}
 		return true;
-	}
-
-	private void verifieRepertoire(String codTypeDoc) {
-		// on verifie déjà que le repertoire source existe
-		String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ACTES");
-
-		File dossierParent = new File(repPartage);
-		if (!dossierParent.exists()) {
-			dossierParent.mkdir();
-		}
-		File ssDossier = new File(repPartage + codTypeDoc + "/");
-		if (!ssDossier.exists()) {
-			ssDossier.mkdir();
-		}
 	}
 
 	private void setURLFichier(String scriptOuverture) {
@@ -6492,31 +6378,6 @@ public class OePOSTEFichePoste extends BasicProcess {
 		}
 	}
 
-	public boolean saveFileToRemoteFileSystem(byte[] fileAsBytes, String chemin, String filename) throws Exception {
-
-		BufferedOutputStream bos = null;
-		FileObject docFile = null;
-
-		try {
-			FileSystemManager fsManager = VFS.getManager();
-			docFile = fsManager.resolveFile(String.format("%s", chemin + filename));
-			bos = new BufferedOutputStream(docFile.getContent().getOutputStream());
-			IOUtils.write(fileAsBytes, bos);
-			IOUtils.closeQuietly(bos);
-
-			if (docFile != null) {
-				try {
-					docFile.close();
-				} catch (FileSystemException e) {
-					// ignore the exception
-				}
-			}
-		} catch (Exception e) {
-			logger.error(String.format("An error occured while writing the report file to the following path  : " + chemin + filename + " : " + e));
-			return false;
-		}
-		return true;
-	}
 
 	public boolean estStatutGelee() {
 		// Statut de la fiche
@@ -6635,22 +6496,6 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 	public void setTypeContratDao(TypeContratDao typeContratDao) {
 		this.typeContratDao = typeContratDao;
-	}
-
-	public DocumentAgentDao getLienDocumentAgentDao() {
-		return lienDocumentAgentDao;
-	}
-
-	public void setLienDocumentAgentDao(DocumentAgentDao lienDocumentAgentDao) {
-		this.lienDocumentAgentDao = lienDocumentAgentDao;
-	}
-
-	public DocumentDao getDocumentDao() {
-		return documentDao;
-	}
-
-	public void setDocumentDao(DocumentDao documentDao) {
-		this.documentDao = documentDao;
 	}
 
 	public ContratDao getContratDao() {

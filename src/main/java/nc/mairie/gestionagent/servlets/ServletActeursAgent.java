@@ -93,7 +93,7 @@ public class ServletActeursAgent extends javax.servlet.http.HttpServlet {
 					switch (EnumTypeAbsence.getRefTypeAbsenceEnum(new Integer(typeDemande))) {
 						case CONGE:
 							result.append("\r Solde Congé Annuel année en cours : " + solde.getSoldeCongeAnnee() + " j");
-							result.append("\r Solde Congé Annuel  année précédente : " + solde.getSoldeCongeAnneePrec()
+							result.append("\r Solde Congé Annuel année précédente : " + solde.getSoldeCongeAnneePrec()
 									+ " j");
 							break;
 						case REPOS_COMP:

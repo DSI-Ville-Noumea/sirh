@@ -8,6 +8,7 @@ import java.util.Map;
 import nc.mairie.metier.agent.Contrat;
 import nc.mairie.spring.dao.utils.SirhDao;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 
 public class ContratDao extends SirhDao implements ContratDaoInterface {
@@ -44,8 +45,15 @@ public class ContratDao extends SirhDao implements ContratDaoInterface {
 	public Contrat chercherDernierContrat(Integer idAgent) throws Exception {
 		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID_AGENT + "=? and " + CHAMP_DATDEB
 				+ "=(select max(" + CHAMP_DATDEB + ") from " + NOM_TABLE + " where " + CHAMP_ID_AGENT + "=?)";
-		Contrat doc = (Contrat) jdbcTemplate.queryForObject(sql, new Object[] { idAgent, idAgent },
+		Contrat doc = null;
+		
+		try {
+			doc = (Contrat) jdbcTemplate.queryForObject(sql, new Object[] { idAgent, idAgent },
 				new BeanPropertyRowMapper<Contrat>(Contrat.class));
+		} catch(EmptyResultDataAccessException e) {
+			return doc;
+		}
+		
 		return doc;
 	}
 

@@ -1,3 +1,4 @@
+<%@page import="nc.mairie.gestionagent.pointage.dto.EtatsPayeurDto"%>
 <%@ page contentType="text/html; charset=UTF-8" %> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <%@page import="nc.mairie.enums.EnumTypeDroit"%>
 <%@page import="nc.mairie.utils.MairieUtils"%>
@@ -52,12 +53,15 @@ function SelectLigne(id,tailleTableau)
 					<%
 					if (null != process.getListEtatsPayeurDto()){
 						for (int i = 0; i < process.getListEtatsPayeurDto().size(); i++){
+							EtatsPayeurDto etatPayeur = process.getListEtatsPayeurDto().get(i);
 							%>
 						<tr id="<%=i%>" onmouseover="SelectLigne(<%=i%>, <%=process.getListEtatsPayeurDto().size()%>)">							
 							<td class="sigp2NewTab-liste" style="position:relative;width:210px;text-align: center;"><%=process.getVAL_ST_USER_DATE_EDITION(i) %></td>
 							<td class="sigp2NewTab-liste" style="position:relative;width:290px;text-align: center;"><%=process.getVAL_ST_LIBELLE_EDITION(i) %></td>
 							<td class="sigp2NewTab-liste" style="position:relative;width:150px;text-align: center;" align="center">
-								<INPUT title="voir le document" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_VISUALISER_DOC(i)%>">
+								<a class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" href="<%=etatPayeur.getUrlAlfresco() %>" title="<%=etatPayeur.getLabel() %>" target="_blank" >
+									<img onkeydown="" onkeypress="" onkeyup="" src="images/oeil.gif" height="16px" width="16px" title="Voir le document" />
+								</a>
 				    		</td>
 						</tr>
 						<%
@@ -66,9 +70,7 @@ function SelectLigne(id,tailleTableau)
 				</table>
 			</div>
 		
-		</FIELDSET>
-		
-	<%=process.getUrlFichier()%>		
+		</FIELDSET>		
 	</FORM>
 	</BODY>
 </HTML>

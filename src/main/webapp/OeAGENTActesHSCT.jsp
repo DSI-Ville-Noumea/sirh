@@ -71,16 +71,17 @@
 							%>
 									<tr id="<%=indiceActes%>" onmouseover="SelectLigne(<%=indiceActes%>,<%=process.getListeDocuments().size()%>)">
 										<td class="sigp2NewTab-liste" style="position:relative;width:50px;" align="center">
-											<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, "") %>" name="<%=process.getNOM_PB_CONSULTER(indiceActes)%>">
-											<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_CONSULTER(indiceActes)%>">	
+											<a href="<%=process.getVAL_ST_URL_DOC(indiceActes)%>" title="Consulter le document" target="_blank" >
+												<img onkeydown="" onkeypress="" onkeyup="" src="images/oeil.gif" height="16px" width="16px" title="Voir le document" />
+											</a>	
 											<INPUT title="supprimer" type="image" src="images/suppression.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_SUPPRIMER(indiceActes)%>">
 										</td>
 										<td class="sigp2NewTab-liste" style="position:relative;width:200px;text-align: left;"><%=process.getVAL_ST_NOM_DOC(indiceActes)%></td>
 										<td class="sigp2NewTab-liste" style="position:relative;width:200px;text-align: left;"><%=process.getVAL_ST_NOM_ORI_DOC(indiceActes)%></td>
 										<td class="sigp2NewTab-liste" style="position:relative;width:120px;text-align: center;"><%=process.getVAL_ST_TYPE_DOC(indiceActes)%></td>
 										<td class="sigp2NewTab-liste" style="position:relative;width:90px;text-align: center;"><%=process.getVAL_ST_DATE_DOC(indiceActes)%></td>
-										<td class="sigp2NewTab-liste" style="position:relative;width:300px;text-align: left;">&nbsp;<%=process.getVAL_ST_COMMENTAIRE(indiceActes)%></td>
-										<td class="sigp2NewTab-liste" style="position:relative;text-align: left;">&nbsp;<%=process.getVAL_ST_INFO(indiceActes)%></td>
+										<td class="sigp2NewTab-liste" style="position:relative;width:250px;text-align: left;">&nbsp;<%=process.getVAL_ST_COMMENTAIRE(indiceActes)%></td>
+										<td class="sigp2NewTab-liste" style="position:relative;width:250px;text-align: left;">&nbsp;<%=process.getVAL_ST_INFO(indiceActes)%></td>
 									</tr>
 									<%
 									indiceActes++;
@@ -183,7 +184,6 @@
 	</FIELDSET>
 	<% } %>
 	<INPUT type="submit" style="visibility:hidden;" name="<%=process.getNOM_PB_TYPE_DOCUMENT()%>" >
-	<%=process.getUrlFichier()%>
 </FORM>
 <%} %>
 </BODY>

@@ -214,11 +214,6 @@ public class PtgService implements IPtgService {
 	}
 
 	@Override
-	public byte[] downloadFicheEtatsPayeur(Integer idEtatPayeur) {
-		return ptgConsumer.downloadFicheEtatsPayeur(idEtatPayeur);
-	}
-
-	@Override
 	public RefPrimeDto getPrimeDetailFromRefPrime(Integer idRefPrime) {
 		return ptgConsumer.getPrimeDetailFromRefPrime(idRefPrime);
 	}

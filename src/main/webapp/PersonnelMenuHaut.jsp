@@ -242,6 +242,10 @@ var menuParametragePointage = new MenuHaut("Module_parametres_pointage");
 menuParametragePointage.ajouterFils(new Lien("ParamPointage", "POINTAGE", "Gestion des paramètres des pointages", true, false,"MOTIFS"));
 document.write(menuParametragePointage.afficher());
 
+var menuParametrageTypesDocument = new MenuHaut("Module_parametres_types_document");
+menuParametrageTypesDocument.ajouterFils(new Lien("ParamTypeDocument", "TYPES DOCUMENT", "Gestion des paramètres des types de document", true, false, "TYPES DOCUMENT"));
+document.write(menuParametrageTypesDocument.afficher());
+
 </script>
 
 </FORM>

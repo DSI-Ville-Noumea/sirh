@@ -86,6 +86,7 @@ import nc.mairie.gestionagent.process.parametre.OePARAMETRAGEKiosque;
 import nc.mairie.gestionagent.process.parametre.OePARAMETRAGEPointage;
 import nc.mairie.gestionagent.process.parametre.OePARAMETRAGERecrutement;
 import nc.mairie.gestionagent.process.parametre.OePARAMETRAGERubrique;
+import nc.mairie.gestionagent.process.parametre.OePARAMETRAGETypeDocument;
 import nc.mairie.gestionagent.process.pointage.OePTGPayeurContractuels;
 import nc.mairie.gestionagent.process.pointage.OePTGPayeurConvCol;
 import nc.mairie.gestionagent.process.pointage.OePTGPayeurFonct;
@@ -335,6 +336,8 @@ public class RobotAgent extends Robot {
 		} // Module PARAMETRAGE - AGENT
 		else if (activite.equals("ParamDonneesPerso")) {
 			return new OePARAMETRAGEDonneesPerso();
+		} else if (activite.equals("ParamTypeDocument")) {
+			return new OePARAMETRAGETypeDocument();
 		} else if (activite.equals("ParamHSCT")) {
 			return new OePARAMETRAGEHSCT();
 		} // Module PARAMETRAGE - GRADE

@@ -120,14 +120,23 @@ public class DiplomeAgentDao extends SirhDao implements DiplomeAgentDaoInterface
 	}
 
 	@Override
-	public void creerDiplomeAgent(Integer idTitreDiplome, Integer idAgent, Integer idDocument,
+	public Integer creerDiplomeAgent(Integer idTitreDiplome, Integer idAgent, Integer idDocument,
 			Integer idSpecialiteDiplome, Date dateObtention, String nomEcole) throws Exception {
+		
 		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_ID_TITRE_DIPLOME + "," + CHAMP_ID_AGENT + ","
 				+ CHAMP_ID_DOCUMENT + "," + CHAMP_ID_SPECIALITE_DIPLOME + "," + CHAMP_DATE_OBTENTION + ","
 				+ CHAMP_NOM_ECOLE + " ) VALUES (?,?,?,?,?,?)";
 		jdbcTemplate.update(sql, new Object[] { idTitreDiplome, idAgent, idDocument, idSpecialiteDiplome,
 				dateObtention, nomEcole });
+		
+		String sqlId = "select * from " + NOM_TABLE + " where " + CHAMP_ID_TITRE_DIPLOME + "=? and " 
+				+ CHAMP_ID_AGENT + "=? and " + CHAMP_ID_SPECIALITE_DIPLOME + "=? and " + CHAMP_DATE_OBTENTION + "=?";
 
+		DiplomeAgent form = (DiplomeAgent) jdbcTemplate.queryForObject(sqlId, new Object[] { idTitreDiplome,
+				idAgent, idSpecialiteDiplome, dateObtention },
+				new BeanPropertyRowMapper<DiplomeAgent>(DiplomeAgent.class));
+
+		return form.getIdDiplome();
 	}
 
 	@Override

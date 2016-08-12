@@ -14,7 +14,8 @@ public interface DocumentDaoInterface {
 	public void supprimerDocument(Integer idDocument) throws Exception;
 
 	public Integer creerDocument(String classeDocument, String nomDocument, String lienDocument, Date dateDocument,
-			String commentaire, Integer idTypeDocument, String nomOriginal) throws Exception;
+			String commentaire, Integer idTypeDocument, String nomOriginal, String nodeRefAlfresco, String commentaireAlfresco,
+			Integer reference) throws Exception;
 
 	public Document chercherDocumentByContainsNom(String nomFichier) throws Exception;
 

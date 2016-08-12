@@ -356,18 +356,17 @@
 			            	<% if (process.getVAL_ST_ACTION_MALADIE()!= null && !process.getVAL_ST_ACTION_MALADIE().equals("")) {%>
 			            	<br>
 				            <table width="400px">
-								<% if (!process.ACTION_SUPPRESSION.equals(process.getVAL_ST_ACTION_MALADIE())) { %>
-					            	<tr>
-					            		<td width="50px">
-											<label class="sigp2Mandatory">Code:</label>
+								<% if (!process.ACTION_SUPPRESSION.equals(process.getVAL_ST_ACTION_MALADIE())) { %><tr>
+					            		<td>
+											<label class="sigp2Mandatory">Code :</label>
 					            		</td>
 					            		<td>
-					            			<INPUT class="sigp2-saisiemajuscule" maxlength="30" name="<%= process.getNOM_EF_CODE_MALADIE() %>" size="35" type="text" value="<%= process.getVAL_EF_CODE_MALADIE() %>">
+					            			<INPUT class="sigp2-saisiemajuscule" maxlength="255" name="<%= process.getNOM_EF_CODE_MALADIE() %>" size="65" type="text" value="<%= process.getVAL_EF_CODE_MALADIE() %>">
 										</td>
 					            	</tr>	
 					            	<tr>
 					            		<td>
-											<label class="sigp2Mandatory">Libellé:</label>
+											<label class="sigp2Mandatory">Libellé :</label>
 					            		</td>
 					            		<td>
 					            			<INPUT class="sigp2-saisiemajuscule" maxlength="255" name="<%= process.getNOM_EF_LIBELLE_MALADIE() %>" size="65" type="text" value="<%= process.getVAL_EF_LIBELLE_MALADIE() %>">
@@ -383,11 +382,11 @@
 					            	</tr>		            	
 								<%} else {%>
 					            	<tr>
-					            		<td width="50px">
-											<label class="sigp2Mandatory">Code:</label>
+					            		<td>
+											<label class="sigp2Mandatory">Code :</label>
 					            		</td>
 					            		<td>
-					            			<INPUT class="sigp2-saisiemajuscule" maxlength="30" readonly="readonly" name="<%= process.getNOM_EF_CODE_MALADIE() %>" size="35" type="text" value="<%= process.getVAL_EF_CODE_MALADIE() %>">
+					            			<INPUT class="sigp2-saisiemajuscule" maxlength="255" readonly="readonly" name="<%= process.getNOM_EF_CODE_MALADIE() %>" size="35" type="text" value="<%= process.getVAL_EF_CODE_MALADIE() %>">
 										</td>
 					            	</tr>
 					            	<tr>
@@ -409,80 +408,7 @@
 				            <%}%>
 						</FIELDSET>
 					</td>
-				</tr>
-				<tr>
-					<td>
-						<FIELDSET class="sigp2Fieldset"  style="text-align:">
-					    	<legend class="sigp2Legend">Types de documents</legend>
-							<span class="sigp2-titre">
-							<SELECT name="<%= process.getNOM_LB_TYPE_DOCUMENT() %>" size="10" class="sigp2-liste">
-								<%=process.forComboHTML(process.getVAL_LB_TYPE_DOCUMENT(), process.getVAL_LB_TYPE_DOCUMENT_SELECT()) %>
-							</SELECT>
-			            	</span>
-			
-							<div class=<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>>
-								<INPUT type="image" src="images/ajout.gif" height="20px" width="20px" name="<%=process.getNOM_PB_CREER_TYPE_DOCUMENT()%>">
-			    	        	<INPUT type="image" src="images/suppression.gif" height="20px" width="20px" name="<%=process.getNOM_PB_SUPPRIMER_TYPE_DOCUMENT()%>">
-			    	        </div>
-			            	
-			            	<% if (process.getVAL_ST_ACTION_TYPE_DOCUMENT()!= null && !process.getVAL_ST_ACTION_TYPE_DOCUMENT().equals("")) {%>
-			            	<br>
-				            <table width="400px">
-								<% if (!process.ACTION_SUPPRESSION.equals(process.getVAL_ST_ACTION_TYPE_DOCUMENT())) { %>
-					            	<tr>
-					            		<td width="50px">
-											<label class="sigp2Mandatory">Libellé:</label>
-					            		</td>
-					            		<td>
-					            			<INPUT class="sigp2-saisiemajuscule" maxlength="30" name="<%= process.getNOM_EF_TYPE_DOCUMENT() %>" size="30" type="text" value="<%= process.getVAL_EF_TYPE_DOCUMENT() %>">
-										</td>
-					            	</tr>	
-					            	<tr>
-					            		<td>
-											<label class="sigp2Mandatory">Code:</label>
-					            		</td>
-					            		<td>
-					            			<INPUT class="sigp2-saisiemajuscule" maxlength="5" name="<%= process.getNOM_EF_CODE_TYPE_DOCUMENT() %>" size="5" type="text" value="<%= process.getVAL_EF_CODE_TYPE_DOCUMENT() %>">
-										</td>
-					            	</tr>	
-									<tr>
-					            		<td colspan="2" align="center">
-											<% if (process.ACTION_CREATION.equals(process.getVAL_ST_ACTION_TYPE_DOCUMENT())) { %>
-					            				<INPUT type="submit" class="sigp2-Bouton-100" value="Ajouter" name="<%=process.getNOM_PB_VALIDER_TYPE_DOCUMENT()%>">	
-											<% }%>
-											<INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER_TYPE_DOCUMENT()%>">						
-					            		</td>
-					            	</tr>		            	
-								<%} else {%>
-					            	<tr>
-					            		<td width="50px">
-											<label class="sigp2Mandatory">Libellé:</label>
-					            		</td>
-					            		<td>
-					            			<INPUT class="sigp2-saisiemajuscule" maxlength="30" readonly="readonly" name="<%= process.getNOM_EF_TYPE_DOCUMENT() %>" size="30" type="text" value="<%= process.getVAL_EF_TYPE_DOCUMENT() %>">
-										</td>
-					            	</tr>
-					            	<tr>
-					            		<td>
-											<label class="sigp2Mandatory">Code:</label>
-					            		</td>
-					            		<td>
-					            			<INPUT class="sigp2-saisiemajuscule" maxlength="5" name="<%= process.getNOM_EF_CODE_TYPE_DOCUMENT() %>" size="5" type="text" value="<%= process.getVAL_EF_CODE_TYPE_DOCUMENT() %>">
-										</td>
-					            	</tr>
-					            	<tr>
-					            		<td colspan="2" align="center">
-											<INPUT type="submit" class="sigp2-Bouton-100" value="Supprimer" name="<%=process.getNOM_PB_VALIDER_TYPE_DOCUMENT()%>">
-											<INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER_TYPE_DOCUMENT()%>">
-					            		</td>
-					            	</tr>
-				            	<%}%>
-				            </table>
-				            <%}%>			
-						</FIELDSET>
-					</td>
-					<td>&nbsp;</td>
-				</tr>
+				</tr>				
 			</table>
 		</FORM>
 	</BODY>

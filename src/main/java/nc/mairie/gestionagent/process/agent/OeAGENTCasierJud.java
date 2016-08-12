@@ -408,24 +408,6 @@ public class OeAGENTCasierJud extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'une zone de saisie pour la JSP : EF_DOCUMENT_ASSOCIE
-	 * Date de création : (12/05/11 15:48:38)
-	 * 
-	 */
-	public String getNOM_EF_DOCUMENT_ASSOCIE() {
-		return "NOM_EF_DOCUMENT_ASSOCIE";
-	}
-
-	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_DOCUMENT_ASSOCIE Date de création : (12/05/11 15:48:38)
-	 * 
-	 */
-	public String getVAL_EF_DOCUMENT_ASSOCIE() {
-		return getZone(getNOM_EF_DOCUMENT_ASSOCIE());
-	}
-
-	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_NUM_EXTRAIT Date de
 	 * création : (12/05/11 15:48:38)
 	 * 

@@ -1,6 +1,5 @@
 package nc.mairie.gestionagent.process.agent;
 
-import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -14,7 +13,6 @@ import nc.mairie.enums.EnumNationalite;
 import nc.mairie.enums.EnumSexe;
 import nc.mairie.enums.EnumTypeContact;
 import nc.mairie.gestionagent.robot.MaClasse;
-import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.Agent;
 import nc.mairie.metier.agent.Contact;
@@ -45,6 +43,8 @@ import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
 import nc.mairie.utils.VariablesActivite;
+import nc.noumea.mairie.alfresco.cmis.CmisUtils;
+import nc.noumea.spring.service.cmis.AlfrescoCMISService;
 
 import org.springframework.context.ApplicationContext;
 
@@ -2347,19 +2347,15 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		// //////////////////////////////////////////////////////////////////////////////////////
 		// zones de l'agent directement
 		// //////////////////////////////////////////////////////////////////////////////////////
-		addZone(getNOM_ST_PHOTO(), Const.CHAINE_VIDE);
-		try {
-			Document doc = getDocumentDao().chercherDocumentParTypeEtAgent("PHO", getAgentCourant().getIdAgent());
-			String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ROOT");
-			if (doc != null) {
-				if (new File(repPartage + doc.getLienDocument()).exists()) {
-					String repPartageLecture = (String) ServletAgent.getMesParametres().get("REPERTOIRE_LECTURE");
-					addZone(getNOM_ST_PHOTO(), repPartageLecture + doc.getLienDocument());
-				} else {
-					addZone(getNOM_ST_PHOTO(), Const.CHAINE_VIDE);
-				}
-			}
-		} catch (Exception e) {
+		Document doc = getDocumentDao().chercherDocumentParTypeEtAgent(CmisUtils.CODE_TYPE_PHO, getAgentCourant().getIdAgent());
+		if(null != doc
+				&& null != doc.getNodeRefAlfresco()){
+			addZone(getNOM_ST_PHOTO(),
+					(null == doc.getNodeRefAlfresco()
+						|| doc.getNodeRefAlfresco().equals(Const.CHAINE_VIDE))
+						? "&nbsp;" 
+						: AlfrescoCMISService.getUrlOfDocument(doc.getNodeRefAlfresco()));
+		}else{
 			addZone(getNOM_ST_PHOTO(), Const.CHAINE_VIDE);
 		}
 

@@ -1,23 +1,16 @@
 package nc.mairie.gestionagent.process.agent;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.ListIterator;
 
 import javax.servlet.http.HttpServletRequest;
 
+import nc.mairie.gestionagent.dto.ReturnMessageDto;
+import nc.mairie.gestionagent.radi.dto.LightUserDto;
 import nc.mairie.gestionagent.robot.MaClasse;
 import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
@@ -29,6 +22,7 @@ import nc.mairie.metier.hsct.AccidentTravail;
 import nc.mairie.metier.hsct.SiegeLesion;
 import nc.mairie.metier.hsct.TypeAT;
 import nc.mairie.metier.parametrage.TypeDocument;
+import nc.mairie.spring.dao.metier.agent.AgentDao;
 import nc.mairie.spring.dao.metier.agent.DocumentAgentDao;
 import nc.mairie.spring.dao.metier.agent.DocumentDao;
 import nc.mairie.spring.dao.metier.hsct.AccidentTravailDao;
@@ -40,15 +34,15 @@ import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
+import nc.mairie.technique.UserAppli;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
+import nc.noumea.mairie.alfresco.cmis.CmisUtils;
+import nc.noumea.spring.service.IRadiService;
+import nc.noumea.spring.service.cmis.AlfrescoCMISService;
+import nc.noumea.spring.service.cmis.IAlfrescoCMISService;
 
-import org.apache.commons.vfs2.FileObject;
-import org.apache.commons.vfs2.FileSystemManager;
-import org.apache.commons.vfs2.VFS;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 
 import com.oreilly.servlet.MultipartRequest;
@@ -63,7 +57,6 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 	 */
 	private static final long serialVersionUID = 1L;
 	public static final int STATUT_RECHERCHER_AGENT = 1;
-	private Logger logger = LoggerFactory.getLogger(OeAGENTAccidentTravail.class);
 
 	private String[] LB_SIEGE_LESION;
 	private String[] LB_TYPE;
@@ -89,7 +82,6 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 	private ArrayList<Document> listeDocuments;
 	private Document documentCourant;
 	private DocumentAgent lienDocumentAgentCourant;
-	private String urlFichier;
 	public boolean isImporting = false;
 	public MultipartRequest multi = null;
 	public File fichierUpload = null;
@@ -100,6 +92,10 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 	private TypeATDao typeATDao;
 	private DocumentAgentDao lienDocumentAgentDao;
 	private DocumentDao documentDao;
+	private AgentDao agentDao;
+
+	private IAlfrescoCMISService alfrescoCMISService;
+	private IRadiService radiService;
 
 	/**
 	 * Constructeur du process OeAGENTAccidentTravail. Date de création :
@@ -228,6 +224,15 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 		}
 		if (getDocumentDao() == null) {
 			setDocumentDao(new DocumentDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getAgentDao() == null) {
+			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (null == radiService) {
+			radiService = (IRadiService) context.getBean("radiService");
+		}
+		if (null == alfrescoCMISService) {
+			alfrescoCMISService = (IAlfrescoCMISService) context.getBean("alfrescoCMISService");
 		}
 	}
 
@@ -798,13 +803,6 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 				return performPB_CREER_DOC(request);
 			}
 
-			// Si clic sur le bouton PB_CONSULTER_DOC
-			for (int i = 0; i < getListeDocuments().size(); i++) {
-				if (testerParametre(request, getNOM_PB_CONSULTER_DOC(i))) {
-					return performPB_CONSULTER_DOC(request, i);
-				}
-			}
-
 			// Si clic sur le bouton PB_SUPPRIMER_DOC
 			for (int i = 0; i < getListeDocuments().size(); i++) {
 				if (testerParametre(request, getNOM_PB_SUPPRIMER_DOC(i))) {
@@ -961,7 +959,7 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		// Recherche des documents de l'agent
 		ArrayList<Document> listeDocAgent = getDocumentDao().listerDocumentAgentTYPE(getLienDocumentAgentDao(),
-				getAgentCourant().getIdAgent(), "HSCT", "AT", getAccidentTravailCourant().getIdAt());
+				getAgentCourant().getIdAgent(), "HSCT", CmisUtils.CODE_TYPE_AT, getAccidentTravailCourant().getIdAt());
 		setListeDocuments(listeDocAgent);
 
 		int indiceActeVM = 0;
@@ -980,6 +978,11 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 						doc.getDateDocument() == null ? "&nbsp;" : sdf.format(doc.getDateDocument()));
 				addZone(getNOM_ST_COMMENTAIRE(indiceActeVM), doc.getCommentaire().equals(Const.CHAINE_VIDE) ? "&nbsp;"
 						: doc.getCommentaire());
+				addZone(getNOM_ST_URL_DOC(indiceActeVM),
+						(null == doc.getNodeRefAlfresco()
+							|| doc.getNodeRefAlfresco().equals(Const.CHAINE_VIDE))
+							? "&nbsp;" 
+							: AlfrescoCMISService.getUrlOfDocument(doc.getNodeRefAlfresco()));
 
 				indiceActeVM++;
 			}
@@ -1051,57 +1054,6 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 		// On pose le statut
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
-	}
-
-	public String getNOM_PB_CONSULTER_DOC(int i) {
-		return "NOM_PB_CONSULTER_DOC" + i;
-	}
-
-	public boolean performPB_CONSULTER_DOC(HttpServletRequest request, int indiceEltAConsulter) throws Exception {
-		// Si pas d'agent courant alors erreur
-		if (getAgentCourant() == null) {
-			// "ERR004","Vous devez d'abord rechercher un agent"
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR004"));
-			return false;
-		}
-
-		// On nomme l'action
-		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
-		addZone(getNOM_ST_NOM_DOC(), Const.CHAINE_VIDE);
-		addZone(getNOM_ST_DATE_DOC(), Const.CHAINE_VIDE);
-		addZone(getNOM_ST_COMMENTAIRE_DOC(), Const.CHAINE_VIDE);
-
-		String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_LECTURE");
-
-		// Récup du document courant
-		Document d = (Document) getListeDocuments().get(indiceEltAConsulter);
-		// on affiche le document
-		setURLFichier(getScriptOuverture(repertoireStockage + d.getLienDocument()));
-
-		addZone(getNOM_ST_ACTION(), ACTION_DOCUMENT);
-
-		return true;
-	}
-
-	private void setURLFichier(String scriptOuverture) {
-		urlFichier = scriptOuverture;
-	}
-
-	public String getScriptOuverture(String cheminFichier) throws Exception {
-		StringBuffer scriptOuvPDF = new StringBuffer("<script language=\"JavaScript\" type=\"text/javascript\">");
-		scriptOuvPDF.append("window.open('" + cheminFichier + "');");
-		scriptOuvPDF.append("</script>");
-		return scriptOuvPDF.toString();
-	}
-
-	public String getUrlFichier() {
-		String res = urlFichier;
-		setURLFichier(null);
-		if (res == null) {
-			return Const.CHAINE_VIDE;
-		} else {
-			return res;
-		}
 	}
 
 	public String getNOM_PB_SUPPRIMER_DOC(int i) {
@@ -1198,21 +1150,16 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 			setStatut(STATUT_MEME_PROCESS, true, MessageUtils.getMessage("ERR006"));
 			return false;
 		}
+		
+		ReturnMessageDto rmd = alfrescoCMISService.removeDocument(getDocumentCourant());
+		if (declarerErreurFromReturnMessageDto(rmd))
+			return false;
+		
 		// suppression dans table DOCUMENT_AGENT
 		getLienDocumentAgentDao().supprimerDocumentAgent(getLienDocumentAgentCourant().getIdAgent(),
 				getLienDocumentAgentCourant().getIdDocument());
 		// Suppression dans la table DOCUMENT_ASSOCIE
 		getDocumentDao().supprimerDocument(getDocumentCourant().getIdDocument());
-
-		// on supprime le fichier physiquement sur le serveur
-		String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ROOT");
-		String cheminDoc = getDocumentCourant().getLienDocument();
-		File fichierASupp = new File(repertoireStockage + cheminDoc);
-		try {
-			fichierASupp.delete();
-		} catch (Exception e) {
-			logger.error("Erreur suppression physique du fichier : " + e.toString());
-		}
 
 		// tout s'est bien passé
 		commitTransaction();
@@ -1260,17 +1207,6 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 		AccidentTravail at = getAccidentTravailCourant();
 
 		if (getZone(getNOM_ST_WARNING()).equals(Const.CHAINE_VIDE)) {
-			// bug #30580
-			String dateJour = new SimpleDateFormat("ddMMyyyy-hhmms-S").format(new Date()).toString();
-
-			// on controle si il y a deja un fichier pour cet AT
-			if (!performControlerFichier(request, "AT_" + at.getIdAt() + "_" + dateJour)) {
-				// alors on affiche un message pour prevenir que l'on va ecraser
-				// le fichier precedent
-				addZone(getNOM_ST_WARNING(),
-						"Attention un fichier du même type existe déjà pour cette accident du travail. Etes-vous sûr de vouloir écraser la version précédente ?");
-				return true;
-			}
 
 			if (!creeDocument(request, at)) {
 				return false;
@@ -1282,11 +1218,10 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 			DocumentAgent l = getLienDocumentAgentDao().chercherDocumentAgent(getAgentCourant().getIdAgent(),
 					d.getIdDocument());
 
-			String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ROOT");
-			File f = new File(repertoireStockage + d.getLienDocument());
-			if (f.exists()) {
-				f.delete();
-			}
+			ReturnMessageDto rmd = alfrescoCMISService.removeDocument(d);
+			if (declarerErreurFromReturnMessageDto(rmd))
+				return false;
+			
 			getLienDocumentAgentDao().supprimerDocumentAgent(l.getIdAgent(), l.getIdDocument());
 			getDocumentDao().supprimerDocument(d.getIdDocument());
 
@@ -1316,36 +1251,30 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 		}
 
 		// on recupere le type de document
-		String codTypeDoc = "AT";
+		String codTypeDoc = CmisUtils.CODE_TYPE_AT;
 		TypeDocument td = getTypeDocumentDao().chercherTypeDocumentByCod(codTypeDoc);
-		String extension = fichierUpload.getName().substring(fichierUpload.getName().indexOf('.'),
-				fichierUpload.getName().length());
-		// bug #30580
-		String dateJour = new SimpleDateFormat("ddMMyyyy-hhmms-S").format(new Date()).toString();
-		String nom = codTypeDoc.toUpperCase() + "_" + at.getIdAt() + "_" + dateJour + extension;
 
+		// on crée le document en base de données
+		getDocumentCourant().setIdTypeDocument(td.getIdTypeDocument());
+		getDocumentCourant().setNomOriginal(fichierUpload.getName());
+		getDocumentCourant().setDateDocument(new Date());
+		getDocumentCourant().setCommentaire(getZone(getNOM_EF_COMMENTAIRE()));
+		getDocumentCourant().setReference(at.getIdAt());
+		
 		// on upload le fichier
-		boolean upload = false;
-		if (extension.equals(".pdf") || extension.equals(".tiff")) {
-			upload = uploadFichierPDF(fichierUpload, nom, codTypeDoc);
-		} else {
-			upload = uploadFichier(fichierUpload, nom, codTypeDoc);
-		}
-
-		if (!upload)
+		ReturnMessageDto rmd = alfrescoCMISService.uploadDocument(getAgentConnecte(request).getIdAgent(), getAgentCourant(), getDocumentCourant(), 
+				fichierUpload, codTypeDoc);
+		
+		if (declarerErreurFromReturnMessageDto(rmd))
 			return false;
 
 		// on crée le document en base de données
-		getDocumentCourant().setLienDocument(codTypeDoc + "/" + nom);
-		getDocumentCourant().setIdTypeDocument(td.getIdTypeDocument());
-		getDocumentCourant().setNomOriginal(fichierUpload.getName());
-		getDocumentCourant().setNomDocument(nom);
-		getDocumentCourant().setDateDocument(new Date());
-		getDocumentCourant().setCommentaire(getZone(getNOM_EF_COMMENTAIRE()));
 		Integer id = getDocumentDao().creerDocument(getDocumentCourant().getClasseDocument(),
 				getDocumentCourant().getNomDocument(), getDocumentCourant().getLienDocument(),
 				getDocumentCourant().getDateDocument(), getDocumentCourant().getCommentaire(),
-				getDocumentCourant().getIdTypeDocument(), getDocumentCourant().getNomOriginal());
+				getDocumentCourant().getIdTypeDocument(), getDocumentCourant().getNomOriginal(),
+				getDocumentCourant().getNodeRefAlfresco(), getDocumentCourant().getCommentaireAlfresco(),
+				getDocumentCourant().getReference());
 
 		setLienDocumentAgentCourant(new DocumentAgent());
 		getLienDocumentAgentCourant().setIdAgent(getAgentCourant().getIdAgent());
@@ -1367,92 +1296,45 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 
 		return true;
 	}
-
-	private boolean uploadFichierPDF(File f, String nomFichier, String codTypeDoc) throws Exception {
-		boolean resultat = false;
-		String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ROOT");
-		// on verifie que les repertoires existent
-		verifieRepertoire(codTypeDoc);
-
-		File newFile = new File(repPartage + codTypeDoc + "/" + nomFichier);
-
-		FileInputStream in = new FileInputStream(f);
-
-		try {
-			FileOutputStream out = new FileOutputStream(newFile);
-			try {
-				byte[] byteBuffer = new byte[in.available()];
-				@SuppressWarnings("unused")
-				int s = in.read(byteBuffer);
-				out.write(byteBuffer);
-				out.flush();
-				resultat = true;
-			} finally {
-				out.close();
+	
+	private boolean declarerErreurFromReturnMessageDto(ReturnMessageDto rmd) {
+		
+		if(!rmd.getErrors().isEmpty()) {
+			String errors = "";
+			for(String error : rmd.getErrors()) {
+				errors += error;
 			}
-		} finally {
-			in.close();
+			
+			getTransaction().declarerErreur("Err : " + errors);
+			return true;
 		}
-
-		return resultat;
+		return false;
 	}
 
-	private boolean uploadFichier(File f, String nomFichier, String codTypeDoc) throws Exception {
-		boolean resultat = false;
-		String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ACTES");
+	private Agent getAgentConnecte(HttpServletRequest request) throws Exception {
+		Agent agent = null;
 
-		// on verifie que les repertoires existent
-		verifieRepertoire(codTypeDoc);
-
-		FileSystemManager fsManager = VFS.getManager();
-		// LECTURE
-		FileObject fo = fsManager.toFileObject(f);
-		InputStream is = fo.getContent().getInputStream();
-		InputStreamReader inR = new InputStreamReader(is, "UTF8");
-		BufferedReader in = new BufferedReader(inR);
-
-		// ECRITURE
-		FileObject destinationFile = fsManager.resolveFile(repPartage + codTypeDoc + "/" + nomFichier);
-		destinationFile.createFile();
-		OutputStream os = destinationFile.getContent().getOutputStream();
-		OutputStreamWriter ouw = new OutputStreamWriter(os, "UTF8");
-		BufferedWriter out = new BufferedWriter(ouw);
-
-		String ligne;
-		try {
-			while ((ligne = in.readLine()) != null) {
-				out.write(ligne);
+		UserAppli uUser = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
+		// on fait la correspondance entre le login et l'agent via RADI
+		LightUserDto user = radiService.getAgentCompteADByLogin(uUser.getUserName());
+		if (user == null) {
+			getTransaction().traiterErreur();
+			// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
+			return null;
+		} else {
+			if (user != null && user.getEmployeeNumber() != null && user.getEmployeeNumber() != 0) {
+				try {
+					agent = getAgentDao().chercherAgentParMatricule(radiService.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
+				} catch (Exception e) {
+					// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
+					return null;
+				}
 			}
-			resultat = true;
-		} catch (Exception e) {
-			logger.error("erreur d'execution " + e.toString());
 		}
 
-		// FERMETURE DES FLUX
-		in.close();
-		inR.close();
-		is.close();
-		fo.close();
-
-		out.close();
-		ouw.close();
-		os.close();
-		destinationFile.close();
-
-		return resultat;
-	}
-
-	private void verifieRepertoire(String codTypeDoc) {
-		// on verifie déjà que le repertoire source existe
-		String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ACTES");
-		File dossierParent = new File(repPartage);
-		if (!dossierParent.exists()) {
-			dossierParent.mkdir();
-		}
-		File ssDossier = new File(repPartage + codTypeDoc + "/");
-		if (!ssDossier.exists()) {
-			ssDossier.mkdir();
-		}
+		return agent;
 	}
 
 	private boolean performControlerSaisieDocument(HttpServletRequest request) throws Exception {
@@ -1465,21 +1347,6 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 			// ERR002:La zone parcourir est obligatoire.
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "parcourir"));
 			result &= false;
-		}
-		return result;
-	}
-
-	private boolean performControlerFichier(HttpServletRequest request, String nomFichier) {
-		boolean result = true;
-		// on regarde dans la liste des document si il y a une entrée avec ce
-		// nom de contrat
-		for (Iterator<Document> iter = getListeDocuments().iterator(); iter.hasNext();) {
-			Document doc = (Document) iter.next();
-			// on supprime l'extension
-			String nomDocSansExtension = doc.getNomDocument().substring(0, doc.getNomDocument().indexOf("."));
-			if (nomFichier.equals(nomDocSansExtension)) {
-				result = false;
-			}
 		}
 		return result;
 	}
@@ -1568,5 +1435,21 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 
 	public void setDocumentDao(DocumentDao documentDao) {
 		this.documentDao = documentDao;
+	}
+
+	public AgentDao getAgentDao() {
+		return agentDao;
+	}
+
+	public void setAgentDao(AgentDao agentDao) {
+		this.agentDao = agentDao;
+	}
+	
+	public String getNOM_ST_URL_DOC(int i) {
+		return "NOM_ST_URL_DOC" + i;
+	}
+	
+	public String getVAL_ST_URL_DOC(int i) {
+		return getZone(getNOM_ST_URL_DOC(i));
 	}
 }

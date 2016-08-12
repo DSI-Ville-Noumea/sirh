@@ -163,36 +163,17 @@
 		name="AFFICHAGE_CAMPAGNE_EAE" override="false" value="TRUE" />
 	<Parameter description="Paramètre pour savoir si on affiche le module Election"
 		name="AFFICHAGE_ELECTION" override="false" value="TRUE" />
+		
 
 	<!-- -->
 	<!-- Parametres pour la gestion des documents -->
 	<!-- -->
-<!-- 	<Parameter description="repertoire pour les documents issus des modeles" -->
-<!-- 		name="REPERTOIRE_ACTES" override="false" -->
-<!-- 		value="file://///cristal/drh$/DRH/SIRH-document/DEV/Document_Associe/" /> -->
-<!-- 	<Parameter description="repertoire pour les documents issus des modeles" -->
-<!-- 		name="REPERTOIRE_ROOT" override="false" -->
-<!-- 		value="//cristal/drh$/DRH/SIRH-document/DEV/Document_Associe/" /> -->
-<!-- 	<Parameter description="repertoire pour les documents temporaires" -->
-<!-- 		name="REPERTOIRE_TEMP" override="false" -->
-<!-- 		value="//cristal/drh$/DRH/SIRH-document/DEV/temp/" /> -->
-<!-- 	<Parameter description="repertoire pour les documents" name="REPERTOIRE_LECTURE" -->
-<!-- 		override="false" -->
-<!-- 		value="file://///cristal/drh$/DRH/SIRH-document/DEV/Document_Associe/" /> -->
-	<Parameter description="repertoire pour les documents issus des modeles"
-		name="REPERTOIRE_ACTES" override="false"
-		value="file://///home/rebjo84/Bureau/" />
-	<Parameter description="repertoire pour les documents issus des modeles"
-		name="REPERTOIRE_ROOT" override="false"
-		value="//home/rebjo84/sirh/sirhdata/Document_Associe/" />
 	<Parameter description="repertoire pour les documents temporaires"
 		name="REPERTOIRE_TEMP" override="false"
-		value="//home/rebjo84/sirh/sirhdata/temp/" />
-	<Parameter description="repertoire pour les documents" name="REPERTOIRE_LECTURE"
-		override="false"
-		value="file://///home/rebjo84/sirh/sirhdata/Document_Associe/"  />
+		value="." />
+	<!-- Gestion des fichiers EAE -->
 	<Parameter description="repertoire pour les documents issus des modeles"
-		name="REPERTOIRE_SP" override="false" value="//home/rebjo84/sirh/sirhdata/temp/" />
+		name="REPERTOIRE_SP" override="false" value="//svq-sp/SIRH/FILEWATCHER_EAE/" />
 
 	<!-- -->
 	<!-- Parametres extrait du web.xml -->
@@ -232,4 +213,17 @@
 	<!-- -->
 	<Parameter description="Url de l'application organigramme"
 		name="URL_APPLI_ORGANIGRAMME" override="false" value="http://svi-tomcat0:8087/" />
+		
+	<!--  -->
+	<!-- ALFRESCO -->
+	<!--  -->
+	<!-- ATTENTION : bien mettre le "/" apres le port -->
+	<Environment name="ALFRESCO_URL" type="java.lang.String" description="Alfresco endpoint url" 
+		value="http://localhost:8080/" override="false" />
+		
+	<Environment name="ALFRESCO_LOGIN" type="java.lang.String" description="Login to Alfresco" 
+		value=***REMOVED*** override="false" />
+		
+	<Environment name="ALFRESCO_PASSWORD" type="java.lang.String" description="Password to Alfresco" 
+		value=***REMOVED*** override="false" />
 </Context>
