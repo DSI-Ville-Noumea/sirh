@@ -163,7 +163,7 @@ public class OeSMCalcul extends BasicProcess {
 			Integer moisCourant = Integer.parseInt(Services.dateDuJour().substring(3, 5));
 			getListeMois().clear();
 
-			for (int i = 0; i < 13; i++) {
+			for (int i = 1; i < 13; i++) {
 				getListeMois().add(i);
 			}
 
