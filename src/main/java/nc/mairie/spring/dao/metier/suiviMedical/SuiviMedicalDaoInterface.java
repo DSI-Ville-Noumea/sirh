@@ -10,7 +10,7 @@ import nc.mairie.metier.suiviMedical.SuiviMedical;
 public interface SuiviMedicalDaoInterface {
 
 	public ArrayList<SuiviMedical> listerSuiviMedicalAvecMoisetAnneeBetweenDate(Date dateDebut, Date dateFin, List<Integer> listeAgent,
-			List<Integer> listeSousService, String statut, boolean CDD, Recommandation recommandation, String etat) throws Exception;
+			List<Integer> listeSousService, String statut, boolean CDD, Recommandation recommandation, String etat,String motif) throws Exception;
 
 	public ArrayList<SuiviMedical> listerSuiviMedicalNonEffectue(Integer mois, Integer annee, String etat) throws Exception;
 

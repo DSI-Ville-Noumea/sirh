@@ -25,6 +25,7 @@ import nc.mairie.metier.agent.Agent;
 import nc.mairie.metier.hsct.Medecin;
 import nc.mairie.metier.hsct.Recommandation;
 import nc.mairie.metier.hsct.VisiteMedicale;
+import nc.mairie.metier.suiviMedical.MotifVisiteMed;
 import nc.mairie.metier.suiviMedical.SuiviMedical;
 import nc.mairie.spring.dao.metier.agent.AgentDao;
 import nc.mairie.spring.dao.metier.hsct.MedecinDao;
@@ -64,6 +65,7 @@ public class OeSMConvocation extends BasicProcess {
 	private String[]					LB_STATUT;
 	private String[]					LB_RECOMMANDATION;
 	private String[]					LB_ETAT;
+	private String[]					LB_MOTIF;
 
 	private ArrayList<SuiviMedical>		listeSuiviMed;
 
@@ -97,6 +99,7 @@ public class OeSMConvocation extends BasicProcess {
 	private ArrayList<String>			listeStatut;
 	private ArrayList<Recommandation>	listeRecommandation;
 	private ArrayList<EnumEtatSuiviMed>	listeEnumEtatSuiviMed;
+	private ArrayList<MotifVisiteMed>	listeMotif;
 
 	@Override
 	public void initialiseZones(HttpServletRequest request) throws Exception {
@@ -345,6 +348,22 @@ public class OeSMConvocation extends BasicProcess {
 			setLB_STATUT(aFormat.getListeFormatee(true));
 			addZone(getNOM_LB_STATUT_SELECT(), Const.ZERO);
 		}
+
+		// Si liste motif vide alors affectation
+		if (getLB_MOTIF() == LBVide) {
+			ArrayList<MotifVisiteMed> listeMotif = (ArrayList<MotifVisiteMed>) getMotifVisiteMedDao().listerMotifVisiteMed();
+			setListeMotif(listeMotif);
+			int[] tailles = { 30 };
+			FormateListe aFormat = new FormateListe(tailles);
+			for (ListIterator<MotifVisiteMed> list = listeMotif.listIterator(); list.hasNext();) {
+				MotifVisiteMed motif = (MotifVisiteMed) list.next();
+				String ligne[] = { motif.getLibMotifVm() };
+				aFormat.ajouteLigne(ligne);
+			}
+			setLB_MOTIF(aFormat.getListeFormatee(true));
+			addZone(getNOM_LB_MOTIF_SELECT(), Const.ZERO);
+		}
+
 		// Si liste etat vide alors affectation
 		if (getLB_ETAT() == LBVide) {
 			ArrayList<EnumEtatSuiviMed> listeEtat = EnumEtatSuiviMed.getValues();
@@ -498,6 +517,13 @@ public class OeSMConvocation extends BasicProcess {
 			dateFin = new SimpleDateFormat("dd/MM/yyyy").parse(dateF);
 		}
 
+		// recupération motif
+		int indiceMotif = (Services.estNumerique(getVAL_LB_MOTIF_SELECT()) ? Integer.parseInt(getVAL_LB_MOTIF_SELECT()) : -1);
+		String motif = Const.CHAINE_VIDE;
+		if (indiceMotif > 0) {
+			motif = getListeMotif().get(indiceMotif - 1).getIdMotifVm().toString();
+		}
+
 		// récupération de l'etat
 		int indiceEtat = (Services.estNumerique(getVAL_LB_ETAT_SELECT()) ? Integer.parseInt(getVAL_LB_ETAT_SELECT()) : -1);
 		String etat = Const.CHAINE_VIDE;
@@ -551,7 +577,7 @@ public class OeSMConvocation extends BasicProcess {
 
 		// #31345 : on ne cherche plus sur relance/motif
 		setListeSuiviMed(getSuiviMedDao().listerSuiviMedicalAvecMoisetAnneeBetweenDate(dateDebut, dateFin, listeAgent, listeSousService, statut,
-				isCocheCDD, recommandation, etat));
+				isCocheCDD, recommandation, etat, motif));
 		afficheListeSuiviMed();
 
 		return true;
@@ -1531,5 +1557,39 @@ public class OeSMConvocation extends BasicProcess {
 
 	public void setListeEnumEtatSuiviMed(ArrayList<EnumEtatSuiviMed> listeEnumEtatSuiviMed) {
 		this.listeEnumEtatSuiviMed = listeEnumEtatSuiviMed;
+	}
+
+	private String[] getLB_MOTIF() {
+		if (LB_MOTIF == null)
+			LB_MOTIF = initialiseLazyLB();
+		return LB_MOTIF;
+	}
+
+	private void setLB_MOTIF(String[] newLB_MOTIF) {
+		LB_MOTIF = newLB_MOTIF;
+	}
+
+	public String getNOM_LB_MOTIF() {
+		return "NOM_LB_MOTIF";
+	}
+
+	public String getNOM_LB_MOTIF_SELECT() {
+		return "NOM_LB_MOTIF_SELECT";
+	}
+
+	public String[] getVAL_LB_MOTIF() {
+		return getLB_MOTIF();
+	}
+
+	public String getVAL_LB_MOTIF_SELECT() {
+		return getZone(getNOM_LB_MOTIF_SELECT());
+	}
+
+	public ArrayList<MotifVisiteMed> getListeMotif() {
+		return listeMotif;
+	}
+
+	public void setListeMotif(ArrayList<MotifVisiteMed> listeMotif) {
+		this.listeMotif = listeMotif;
 	}
 }

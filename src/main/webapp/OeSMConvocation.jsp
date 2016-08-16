@@ -74,6 +74,10 @@
 			</SELECT>
 			
 			<BR/>
+			<span class="sigp2" style="width:40px">Motif : </span>
+			<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_MOTIF() %>" style="width:150px;margin-right:20px;">
+				<%=process.forComboHTML(process.getVAL_LB_MOTIF(), process.getVAL_LB_MOTIF_SELECT()) %>
+			</SELECT>
             <span class="sigp2">Agent en CDD :</span>
 			<INPUT style="visibility: visible;" type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_AGENT_CDD(),process.getVAL_CK_AGENT_CDD())%>><span  class="sigp2">Oui</span>
 			<span class="sigp2" style="width:75px">Par supérieur hiérarchique :</span>

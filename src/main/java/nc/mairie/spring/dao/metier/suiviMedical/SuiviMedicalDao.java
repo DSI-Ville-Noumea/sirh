@@ -6,38 +6,38 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+
 import nc.mairie.metier.Const;
 import nc.mairie.metier.hsct.Recommandation;
 import nc.mairie.metier.suiviMedical.SuiviMedical;
 import nc.mairie.spring.dao.utils.SirhDao;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
-
 public class SuiviMedicalDao extends SirhDao implements SuiviMedicalDaoInterface {
 
-	private Logger				logger							= LoggerFactory.getLogger(SuiviMedicalDao.class);
+	private Logger				logger									= LoggerFactory.getLogger(SuiviMedicalDao.class);
 
-	public static final String	CHAMP_ID_AGENT					= "ID_AGENT";
-	public static final String	CHAMP_NOMATR					= "NOMATR";
-	public static final String	CHAMP_AGENT						= "AGENT";
-	public static final String	CHAMP_STATUT					= "STATUT";
-	public static final String	CHAMP_ID_SERVI					= "ID_SERVI";
-	public static final String	CHAMP_DATE_DERNIERE_VISITE		= "DATE_DERNIERE_VISITE";
-	public static final String	CHAMP_DATE_PREVISION_VISITE		= "DATE_PREVISION_VISITE";
-	public static final String	CHAMP_ID_MOTIF_VM				= "ID_MOTIF_VM";
-	public static final String	CHAMP_NB_VISITES_RATEES			= "NB_VISITES_RATEES";
-	public static final String	CHAMP_ID_MEDECIN				= "ID_MEDECIN";
-	public static final String	CHAMP_DATE_PROCHAINE_VISITE		= "DATE_PROCHAINE_VISITE";
-	public static final String	CHAMP_HEURE_PROCHAINE_VISITE	= "HEURE_PROCHAINE_VISITE";
-	public static final String	CHAMP_ETAT						= "ETAT";
-	public static final String	CHAMP_MOIS						= "MOIS";
-	public static final String	CHAMP_ANNEE						= "ANNEE";
-	public static final String	CHAMP_RELANCE					= "RELANCE";
-	public static final String	CHAMP_ID_SERVICE_ADS			= "ID_SERVICE_ADS";
-	public static final String	CHAMP_ID_RECOMMANDATION_DERNIERE_VISITE		= "ID_RECOMMANDATION_DERNIERE_VISITE";
-	public static final String	CHAMP_COMMENTAIRE_DERNIERE_VISITE			= "COMMENTAIRE_DERNIERE_VISITE";
+	public static final String	CHAMP_ID_AGENT							= "ID_AGENT";
+	public static final String	CHAMP_NOMATR							= "NOMATR";
+	public static final String	CHAMP_AGENT								= "AGENT";
+	public static final String	CHAMP_STATUT							= "STATUT";
+	public static final String	CHAMP_ID_SERVI							= "ID_SERVI";
+	public static final String	CHAMP_DATE_DERNIERE_VISITE				= "DATE_DERNIERE_VISITE";
+	public static final String	CHAMP_DATE_PREVISION_VISITE				= "DATE_PREVISION_VISITE";
+	public static final String	CHAMP_ID_MOTIF_VM						= "ID_MOTIF_VM";
+	public static final String	CHAMP_NB_VISITES_RATEES					= "NB_VISITES_RATEES";
+	public static final String	CHAMP_ID_MEDECIN						= "ID_MEDECIN";
+	public static final String	CHAMP_DATE_PROCHAINE_VISITE				= "DATE_PROCHAINE_VISITE";
+	public static final String	CHAMP_HEURE_PROCHAINE_VISITE			= "HEURE_PROCHAINE_VISITE";
+	public static final String	CHAMP_ETAT								= "ETAT";
+	public static final String	CHAMP_MOIS								= "MOIS";
+	public static final String	CHAMP_ANNEE								= "ANNEE";
+	public static final String	CHAMP_RELANCE							= "RELANCE";
+	public static final String	CHAMP_ID_SERVICE_ADS					= "ID_SERVICE_ADS";
+	public static final String	CHAMP_ID_RECOMMANDATION_DERNIERE_VISITE	= "ID_RECOMMANDATION_DERNIERE_VISITE";
+	public static final String	CHAMP_COMMENTAIRE_DERNIERE_VISITE		= "COMMENTAIRE_DERNIERE_VISITE";
 
 	public SuiviMedicalDao(SirhDao sirhDao) {
 		super.dataSource = sirhDao.getDataSource();
@@ -79,16 +79,19 @@ public class SuiviMedicalDao extends SirhDao implements SuiviMedicalDaoInterface
 
 	@Override
 	public void creerSuiviMedical(Integer idAgent, Integer nomatr, String agent, String statut, Date dateDerniereVisite, Date datePrevisionVisite,
-			Integer idMotifVM, Integer nbVisitesRatees, Integer idMedecin, Date dateProchaineVisite, String heureProchaineVisite, String etat, Integer mois,
-			Integer annee, Integer relance, Integer idServiceADS, String idServi,Integer idRecommandationDerniereVisite,String commentaireDerniereVisite) throws Exception {
+			Integer idMotifVM, Integer nbVisitesRatees, Integer idMedecin, Date dateProchaineVisite, String heureProchaineVisite, String etat,
+			Integer mois, Integer annee, Integer relance, Integer idServiceADS, String idServi, Integer idRecommandationDerniereVisite,
+			String commentaireDerniereVisite) throws Exception {
 		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_ID_AGENT + "," + CHAMP_NOMATR + "," + CHAMP_AGENT + "," + CHAMP_STATUT + ","
 				+ CHAMP_DATE_DERNIERE_VISITE + "," + CHAMP_DATE_PREVISION_VISITE + "," + CHAMP_ID_MOTIF_VM + "," + CHAMP_NB_VISITES_RATEES + ","
-				+ CHAMP_ID_MEDECIN + "," + CHAMP_DATE_PROCHAINE_VISITE + "," + CHAMP_HEURE_PROCHAINE_VISITE + "," + CHAMP_ETAT + "," + CHAMP_MOIS + ","
-				+ CHAMP_ANNEE + "," + CHAMP_RELANCE + "," + CHAMP_ID_SERVICE_ADS + "," + CHAMP_ID_SERVI
-				+ "," + CHAMP_ID_RECOMMANDATION_DERNIERE_VISITE+"," + CHAMP_COMMENTAIRE_DERNIERE_VISITE				
+				+ CHAMP_ID_MEDECIN + "," + CHAMP_DATE_PROCHAINE_VISITE + "," + CHAMP_HEURE_PROCHAINE_VISITE + "," + CHAMP_ETAT + "," + CHAMP_MOIS
+				+ "," + CHAMP_ANNEE + "," + CHAMP_RELANCE + "," + CHAMP_ID_SERVICE_ADS + "," + CHAMP_ID_SERVI + ","
+				+ CHAMP_ID_RECOMMANDATION_DERNIERE_VISITE + "," + CHAMP_COMMENTAIRE_DERNIERE_VISITE
 				+ ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?)";
-		jdbcTemplate.update(sql, new Object[] { idAgent, nomatr, agent, statut, dateDerniereVisite, datePrevisionVisite, idMotifVM, nbVisitesRatees, idMedecin,
-				dateProchaineVisite, heureProchaineVisite, etat, mois, annee, relance, idServiceADS, idServi, idRecommandationDerniereVisite,commentaireDerniereVisite });
+		jdbcTemplate.update(sql,
+				new Object[] { idAgent, nomatr, agent, statut, dateDerniereVisite, datePrevisionVisite, idMotifVM, nbVisitesRatees, idMedecin,
+						dateProchaineVisite, heureProchaineVisite, etat, mois, annee, relance, idServiceADS, idServi, idRecommandationDerniereVisite,
+						commentaireDerniereVisite });
 	}
 
 	@Override
@@ -137,8 +140,8 @@ public class SuiviMedicalDao extends SirhDao implements SuiviMedicalDaoInterface
 	public SuiviMedical chercherSuiviMedicalAgentMoisetAnnee(Integer idAgent, Integer mois, Integer annee) throws Exception {
 		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID_AGENT + " = ? and " + CHAMP_MOIS + "=? and " + CHAMP_ANNEE + "=? ";
 
-		SuiviMedical sm = (SuiviMedical) jdbcTemplate.queryForObject(sql, new Object[] { idAgent, mois, annee }, new BeanPropertyRowMapper<SuiviMedical>(
-				SuiviMedical.class));
+		SuiviMedical sm = (SuiviMedical) jdbcTemplate.queryForObject(sql, new Object[] { idAgent, mois, annee },
+				new BeanPropertyRowMapper<SuiviMedical>(SuiviMedical.class));
 
 		return sm;
 	}
@@ -147,8 +150,8 @@ public class SuiviMedicalDao extends SirhDao implements SuiviMedicalDaoInterface
 	public SuiviMedical chercherSuiviMedicalAgentNomatrMoisetAnnee(Integer noMatr, Integer mois, Integer annee) throws Exception {
 		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_NOMATR + " = ? and " + CHAMP_MOIS + "=? and " + CHAMP_ANNEE + "=? ";
 
-		SuiviMedical sm = (SuiviMedical) jdbcTemplate.queryForObject(sql, new Object[] { noMatr, mois, annee }, new BeanPropertyRowMapper<SuiviMedical>(
-				SuiviMedical.class));
+		SuiviMedical sm = (SuiviMedical) jdbcTemplate.queryForObject(sql, new Object[] { noMatr, mois, annee },
+				new BeanPropertyRowMapper<SuiviMedical>(SuiviMedical.class));
 
 		return sm;
 	}
@@ -156,15 +159,16 @@ public class SuiviMedicalDao extends SirhDao implements SuiviMedicalDaoInterface
 	@Override
 	public void modifierSuiviMedicalTravail(Integer idSuiviMed, SuiviMedical smSelct) throws Exception {
 		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_ID_AGENT + "=?," + CHAMP_NOMATR + "=?," + CHAMP_AGENT + "=?," + CHAMP_STATUT + "=?,"
-				+ CHAMP_DATE_DERNIERE_VISITE + "=?," + CHAMP_DATE_PREVISION_VISITE + "=?," + CHAMP_ID_MOTIF_VM + "=?," + CHAMP_NB_VISITES_RATEES + "=?,"
-				+ CHAMP_ID_MEDECIN + "=?," + CHAMP_DATE_PROCHAINE_VISITE + "=?," + CHAMP_HEURE_PROCHAINE_VISITE + "=?," + CHAMP_ETAT + "=?," + CHAMP_MOIS
-				+ "=?," + CHAMP_ANNEE + "=?, " + CHAMP_RELANCE + "=?, " + CHAMP_ID_SERVICE_ADS + "=? , " + CHAMP_ID_SERVI + "=? , " + CHAMP_ID_RECOMMANDATION_DERNIERE_VISITE + "=?, " + CHAMP_COMMENTAIRE_DERNIERE_VISITE + "=? where " + CHAMP_ID + "=?";
-		jdbcTemplate.update(
-				sql,
+				+ CHAMP_DATE_DERNIERE_VISITE + "=?," + CHAMP_DATE_PREVISION_VISITE + "=?," + CHAMP_ID_MOTIF_VM + "=?," + CHAMP_NB_VISITES_RATEES
+				+ "=?," + CHAMP_ID_MEDECIN + "=?," + CHAMP_DATE_PROCHAINE_VISITE + "=?," + CHAMP_HEURE_PROCHAINE_VISITE + "=?," + CHAMP_ETAT + "=?,"
+				+ CHAMP_MOIS + "=?," + CHAMP_ANNEE + "=?, " + CHAMP_RELANCE + "=?, " + CHAMP_ID_SERVICE_ADS + "=? , " + CHAMP_ID_SERVI + "=? , "
+				+ CHAMP_ID_RECOMMANDATION_DERNIERE_VISITE + "=?, " + CHAMP_COMMENTAIRE_DERNIERE_VISITE + "=? where " + CHAMP_ID + "=?";
+		jdbcTemplate.update(sql,
 				new Object[] { smSelct.getIdAgent(), smSelct.getNomatr(), smSelct.getAgent(), smSelct.getStatut(), smSelct.getDateDerniereVisite(),
 						smSelct.getDatePrevisionVisite(), smSelct.getIdMotifVm(), smSelct.getNbVisitesRatees(), smSelct.getIdMedecin(),
 						smSelct.getDateProchaineVisite(), smSelct.getHeureProchaineVisite(), smSelct.getEtat(), smSelct.getMois(), smSelct.getAnnee(),
-						smSelct.getRelance(), smSelct.getIdServiceAds(), smSelct.getIdServi(),smSelct.getIdRecommandationDerniereVisite(),smSelct.getCommentaireDerniereViste(), idSuiviMed });
+						smSelct.getRelance(), smSelct.getIdServiceAds(), smSelct.getIdServi(), smSelct.getIdRecommandationDerniereVisite(),
+						smSelct.getCommentaireDerniereViste(), idSuiviMed });
 	}
 
 	@Override
@@ -173,8 +177,7 @@ public class SuiviMedicalDao extends SirhDao implements SuiviMedicalDaoInterface
 	}
 
 	@Override
-	public ArrayList<SuiviMedical> listerHistoriqueSuiviMedical(Integer annee, Integer mois,  String etatPlanif)
-			throws Exception {
+	public ArrayList<SuiviMedical> listerHistoriqueSuiviMedical(Integer annee, Integer mois, String etatPlanif) throws Exception {
 		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ANNEE + "=? and " + CHAMP_MOIS + "=? and " + CHAMP_ETAT + "= ? ";
 		ArrayList<SuiviMedical> listeSuiviMedical = new ArrayList<SuiviMedical>();
 
@@ -209,12 +212,11 @@ public class SuiviMedicalDao extends SirhDao implements SuiviMedicalDaoInterface
 	}
 
 	@Override
-	public ArrayList<SuiviMedical> listerSuiviMedicalEtatAgent(Integer idAgentChoisi, String etatPlanif)
-			throws Exception {
+	public ArrayList<SuiviMedical> listerSuiviMedicalEtatAgent(Integer idAgentChoisi, String etatPlanif) throws Exception {
 		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID_AGENT + "=? and " + CHAMP_ETAT + "= ? ";
 		ArrayList<SuiviMedical> listeSuiviMedical = new ArrayList<SuiviMedical>();
 
-		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { idAgentChoisi,  etatPlanif});
+		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { idAgentChoisi, etatPlanif });
 		for (Map<String, Object> row : rows) {
 			SuiviMedical sm = new SuiviMedical();
 			logger.info("List suiviMed listerSuiviMedicalNonEffectue : " + row.toString());
@@ -281,18 +283,18 @@ public class SuiviMedicalDao extends SirhDao implements SuiviMedicalDaoInterface
 
 	@Override
 	public SuiviMedical chercherDernierSuiviMedicalAgent(Integer idAgent) throws Exception {
-		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID_AGENT + " = ? and " + CHAMP_ID + " in (select max(" + CHAMP_ID + ") from " + NOM_TABLE
-				+ " where " + CHAMP_ID_AGENT + "=" + CHAMP_ID_AGENT + ")";
+		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID_AGENT + " = ? and " + CHAMP_ID + " in (select max(" + CHAMP_ID + ") from "
+				+ NOM_TABLE + " where " + CHAMP_ID_AGENT + "=" + CHAMP_ID_AGENT + ")";
 
-		SuiviMedical sm = (SuiviMedical) jdbcTemplate
-				.queryForObject(sql, new Object[] { idAgent }, new BeanPropertyRowMapper<SuiviMedical>(SuiviMedical.class));
+		SuiviMedical sm = (SuiviMedical) jdbcTemplate.queryForObject(sql, new Object[] { idAgent },
+				new BeanPropertyRowMapper<SuiviMedical>(SuiviMedical.class));
 
 		return sm;
 	}
 
 	@Override
 	public ArrayList<SuiviMedical> listerSuiviMedicalAvecMoisetAnneeBetweenDate(Date dateDebut, Date dateFin, List<Integer> listeAgent,
-			List<Integer> listeSousService, String statut, boolean CDD, Recommandation recommandation, String etat) throws Exception {
+			List<Integer> listeSousService, String statut, boolean CDD, Recommandation recommandation, String etat, String motifVM) throws Exception {
 
 		String sql = "select * from " + NOM_TABLE + " sm ";
 		if (CDD) {
@@ -314,8 +316,12 @@ public class SuiviMedicalDao extends SirhDao implements SuiviMedicalDaoInterface
 			sql += " and " + CHAMP_ID_AGENT + " in (" + list + ") ";
 		}
 
-		if (recommandation!=null) {
+		if (recommandation != null) {
 			sql += " and " + CHAMP_ID_RECOMMANDATION_DERNIERE_VISITE + " =" + recommandation.getIdRecommandation() + " ";
+		}
+
+		if (!motifVM.equals(Const.CHAINE_VIDE)) {
+			sql += " and " + CHAMP_ID_MOTIF_VM + " = " + motifVM + " ";
 		}
 
 		if (!statut.equals(Const.CHAINE_VIDE)) {
