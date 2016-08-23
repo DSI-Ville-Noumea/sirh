@@ -800,7 +800,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 		getTransaction().commitTransaction();
 
 		initialiseListeGrille();
-		// initialiseGrilleCourante(request);
+		initialiseGrilleCourante(request);
 
 		setGradeCourant(null);
 		setGrilleCourant(null);
