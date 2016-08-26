@@ -4294,7 +4294,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 				// bug #31433
 				if (null == fichePoste.getIdServi() || "".equals(fichePoste.getIdServi().trim())) {
 
-					EntiteDto entite = adsService.getEntiteByIdEntite(fichePoste.getIdServiceAds());
+					EntiteDto entite = adsService.getInfoSiservByIdEntite(fichePoste.getIdServiceAds());
 
 					if (null != entite && null != entite.getCodeServi() && !"".equals(entite.getCodeServi().trim())) {
 						fichePoste.setIdServi(entite.getCodeServi());
