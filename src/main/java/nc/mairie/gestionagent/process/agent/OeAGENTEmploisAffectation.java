@@ -4479,7 +4479,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 							FichePosteTreeNodeDto fichePosteTreeNodeDtoOfFP = sirhService.getFichePosteTreeNodeDtoByIdFichePoste(listFP,
 									getFichePosteCourant().getIdFichePoste());
 							List<FichePosteTreeNodeDto> listFichePosteTreeNodeDtoOfFP = new ArrayList<FichePosteTreeNodeDto>();
-							listFichePosteTreeNodeDtoOfFP.add(fichePosteTreeNodeDtoOfFP);
+							if (fichePosteTreeNodeDtoOfFP != null)
+								listFichePosteTreeNodeDtoOfFP.add(fichePosteTreeNodeDtoOfFP);
 
 							if (!sirhService.isFPEnfantValideGeleeTransitoire(listFichePosteTreeNodeDtoOfFP, getFichePosteCourant().getIdFichePoste())
 									&& (EnumStatutFichePoste.TRANSITOIRE.getId().equals(getFichePosteCourant().getIdStatutFp().toString())
