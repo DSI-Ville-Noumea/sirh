@@ -125,44 +125,13 @@
 	<!-- -->
 	<!-- Parametres pour l'affichage des nouveaux modules -->
 	<!-- -->
-	<Parameter
-		description="Paramètre pour savoir si on affiche l&apos;onglet avancement CAP"
-		name="AFFICHAGE_AVCT_CAP" override="false" value="TRUE" />
-	<Parameter
-		description="Paramètre pour savoir si on affiche l&apos;onglet avancement Edition des arretés"
-		name="AFFICHAGE_AVCT_ARR" override="false" value="TRUE" />
-	<Parameter
-		description="Paramètre pour savoir si on affiche l&apos;onglet avancement mise à jour des carrières"
-		name="AFFICHAGE_AVCT_CARR" override="false" value="TRUE" />
 	<Parameter description="Paramètre pour savoir si on affiche la page de test"
 		name="AFFICHAGE_TEST" override="false" value="TRUE" />
 	<Parameter
-		description="Paramètre pour savoir si on affiche la page de paramétrage des éléments de salaire"
-		name="AFFICHAGE_PARAM_ELEM_SALAIRE" override="false" value="TRUE" />
-	<Parameter description="Paramètre pour savoir si on affiche le module pointage"
-		name="AFFICHAGE_POINTAGE" override="false" value="TRUE" />
-	<Parameter description="Paramètre pour savoir si on affiche le module absence"
-		name="AFFICHAGE_ABSENCE" override="false" value="TRUE" />
-	<Parameter
 		description="Paramètre pour savoir si on affiche la simulation de la masse salariale"
 		name="AFFICHAGE_SIMU" override="false" value="TRUE" />
-	<Parameter
-		description="Paramètre pour savoir si on affiche le module suivi médicale"
-		name="AFFICHAGE_SUIVI_MEDICAL" override="false" value="TRUE" />
-	<Parameter description="Paramètre pour savoir si on affiche le module fiche emploi"
-		name="AFFICHAGE_FICHE_EMPLOI" override="false" value="TRUE" />
-	<Parameter
-		description="Paramètre pour savoir si on affiche le module HSCT de l&apos;agent"
-		name="AFFICHAGE_HSCT" override="false" value="TRUE" />
-	<Parameter
-		description="Paramètre pour savoir si on affiche le module EAE de l&apos;agent"
-		name="AFFICHAGE_EAE_AGENT" override="false" value="TRUE" />
 	<Parameter description="Paramètre pour savoir si on affiche le module Avancement"
 		name="AFFICHAGE_AVCT" override="false" value="TRUE" />
-	<Parameter description="Paramètre pour savoir si on affiche le module Campagne EAE"
-		name="AFFICHAGE_CAMPAGNE_EAE" override="false" value="TRUE" />
-	<Parameter description="Paramètre pour savoir si on affiche le module Election"
-		name="AFFICHAGE_ELECTION" override="false" value="TRUE" />
 		
 
 	<!-- -->

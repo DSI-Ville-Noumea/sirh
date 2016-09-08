@@ -103,23 +103,12 @@ document.write(menuAgentEAE.afficher());
 //*               Le menu haut Gestion des avancements
 //***************************************************************
 var menuAVCTAvancementFonctionnaire = new MenuHaut("Module_avct_simulationFonctionnaires");
-menuAVCTAvancementFonctionnaire.ajouterFils(new Lien("AVCTSimulationFonctionnaires", "SIMU FONCTIONNAIRES", "Simulation pour les fonctionnaires", true, false,"SIMULATION"));
-menuAVCTAvancementFonctionnaire.ajouterFils(new Lien("AVCTFonctPrepaAvct", "prepa avct", "Avancement des fonctionnaires", true, false,"PREPARATION AVANCEMENT"));
-<% 
-String affAvctCAP =  (String) ServletAgent.getMesParametres().get("AFFICHAGE_AVCT_CAP");
-if (affAvctCAP.equals("TRUE")){ %>
-menuAVCTAvancementFonctionnaire.ajouterFils(new Lien("AVCTFonctPrepaCAP", "prepa cap", "Avancement des fonctionnaires", true, false,"PREPARATION CAP"));
-<%}%>
-<% 
-String affAvctArr =  (String) ServletAgent.getMesParametres().get("AFFICHAGE_AVCT_ARR");
-if (affAvctArr.equals("TRUE")){ %>
-menuAVCTAvancementFonctionnaire.ajouterFils(new Lien("AVCTFonctArretes", "arretes", "Avancement des fonctionnaires", true, false,"EDITION DES ARRETES"));
-<%}%>
-<% 
-String affAvctCarr =  (String) ServletAgent.getMesParametres().get("AFFICHAGE_AVCT_CARR");
-if (affAvctCarr.equals("TRUE")){ %>
-menuAVCTAvancementFonctionnaire.ajouterFils(new Lien("AVCTFonctCarrieres", "carr", "Avancement des fonctionnaires", true, false,"MISE A JOUR DES CARRIERES"));
-<%}%>
+	menuAVCTAvancementFonctionnaire.ajouterFils(new Lien("AVCTSimulationFonctionnaires", "SIMU FONCTIONNAIRES", "Simulation pour les fonctionnaires", true, false,"SIMULATION"));
+	menuAVCTAvancementFonctionnaire.ajouterFils(new Lien("AVCTFonctPrepaAvct", "prepa avct", "Avancement des fonctionnaires", true, false,"PREPARATION AVANCEMENT"));
+	menuAVCTAvancementFonctionnaire.ajouterFils(new Lien("AVCTFonctPrepaCAP", "prepa cap", "Avancement des fonctionnaires", true, false,"PREPARATION CAP"));
+	menuAVCTAvancementFonctionnaire.ajouterFils(new Lien("AVCTFonctArretes", "arretes", "Avancement des fonctionnaires", true, false,"EDITION DES ARRETES"));
+	menuAVCTAvancementFonctionnaire.ajouterFils(new Lien("AVCTFonctCarrieres", "carr", "Avancement des fonctionnaires", true, false,"MISE A JOUR DES CARRIERES"));
+
 document.write(menuAVCTAvancementFonctionnaire.afficher());
 
 var menuAVCTAvancementContractuels = new MenuHaut("Module_avct_simulationContractuels");
