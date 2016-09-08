@@ -414,6 +414,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	 * @return listeAvantageAFF
 	 */
 	public ArrayList<AvantageNature> getListeAvantageAFF() {
+		if (listeAvantageAFF == null)
+			listeAvantageAFF = new ArrayList<AvantageNature>();
 		return listeAvantageAFF;
 	}
 
@@ -434,6 +436,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	 * @return listeAvantageFP
 	 */
 	public ArrayList<AvantageNature> getListeAvantageFP() {
+		if (listeAvantageFP == null)
+			listeAvantageFP = new ArrayList<AvantageNature>();
 		return listeAvantageFP;
 	}
 
@@ -454,6 +458,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	 * @return listeDelegationAFF
 	 */
 	public ArrayList<Delegation> getListeDelegationAFF() {
+		if (listeDelegationAFF == null)
+			listeDelegationAFF = new ArrayList<Delegation>();
 		return listeDelegationAFF;
 	}
 
@@ -474,6 +480,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	 * @return listeDelegationFP
 	 */
 	public ArrayList<Delegation> getListeDelegationFP() {
+		if (listeDelegationFP == null)
+			listeDelegationFP = new ArrayList<Delegation>();
 		return listeDelegationFP;
 	}
 
@@ -561,6 +569,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	 * @return listeRegimeAFF
 	 */
 	public ArrayList<RegimeIndemnitaire> getListeRegimeAFF() {
+		if (listeRegimeAFF == null)
+			listeRegimeAFF = new ArrayList<RegimeIndemnitaire>();
 		return listeRegimeAFF;
 	}
 
@@ -581,6 +591,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	 * @return listeRegimeFP
 	 */
 	public ArrayList<RegimeIndemnitaire> getListeRegimeFP() {
+		if (listeRegimeFP == null)
+			listeRegimeFP = new ArrayList<RegimeIndemnitaire>();
 		return listeRegimeFP;
 	}
 
