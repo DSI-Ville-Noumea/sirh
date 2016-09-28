@@ -1318,8 +1318,8 @@ public class OeAVCTMasseSalarialeFonctionnaire extends BasicProcess {
 						// pourla date d'avancement
 						Date dateAvctFinale = null;
 						String idAvisEmp = null;
-						if (avct.getIdAvisEmp() != null) {
-							idAvisEmp = getAvisCapDao().chercherAvisCap(avct.getIdAvisEmp()).getLibCourtAvisCap().toUpperCase();
+						if (avct.getIdAvisCap() != null) {
+							idAvisEmp = getAvisCapDao().chercherAvisCap(avct.getIdAvisCap()).getLibCourtAvisCap().toUpperCase();
 							if (idAvisEmp.equals("MIN")) {
 								dateAvctFinale = avct.getDateAvctMini();
 							} else if (idAvisEmp.equals("MOY")) {
@@ -1378,8 +1378,8 @@ public class OeAVCTMasseSalarialeFonctionnaire extends BasicProcess {
 						avct.setNumArrete(getVAL_EF_NUM_ARRETE(i));
 
 						// on recalcul la date d'avancement
-						if (avct.getIdAvisEmp() != null) {
-							idAvisEmp = getAvisCapDao().chercherAvisCap(avct.getIdAvisEmp()).getLibCourtAvisCap().toUpperCase();
+						if (avct.getIdAvisCap() != null) {
+							idAvisEmp = getAvisCapDao().chercherAvisCap(avct.getIdAvisCap()).getLibCourtAvisCap().toUpperCase();
 							if (idAvisEmp.equals("MIN")) {
 								dateAvctFinale = avct.getDateAvctMini();
 							} else if (idAvisEmp.equals("MOY")) {
