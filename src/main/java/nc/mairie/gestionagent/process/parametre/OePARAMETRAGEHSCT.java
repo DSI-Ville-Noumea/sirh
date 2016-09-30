@@ -84,7 +84,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	private InaptitudeDao inaptitudeDao;
 
 	/**
-	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones à  afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
 	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
 	 * addZone(getNOMxxx, String); Date de création : (15/09/11 08:57:49)
@@ -1051,7 +1051,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 			for (TypeAT at : getListeAT()) {
 				if (at.getDescTypeAt().equals(getVAL_EF_DESC_AT().toUpperCase())) {
 					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
+					// "Attention, il existe déjà  @ avec @. Veuillez contrôler."
 					getTransaction().declarerErreur(
 							MessageUtils.getMessage("ERR974", "un type d'AT", "cette description"));
 					return false;
@@ -1150,7 +1150,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 			for (TypeInaptitude titre : getListeInaptitude()) {
 				if (titre.getDescTypeInaptitude().equals(getVAL_EF_DESC_INAPTITUDE().toUpperCase())) {
 					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
+					// "Attention, il existe déjà  @ avec @. Veuillez contrôler."
 					getTransaction().declarerErreur(
 							MessageUtils.getMessage("ERR974", "un type d'inaptitude", "cette description"));
 					return false;
@@ -1249,7 +1249,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 			for (SiegeLesion siege : getListeLesion()) {
 				if (siege.getDescSiege().equals(getVAL_EF_DESC_LESION().toUpperCase())) {
 					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
+					// "Attention, il existe déjà  @ avec @. Veuillez contrôler."
 					getTransaction().declarerErreur(
 							MessageUtils.getMessage("ERR974", "un siège de lésion", "cette description"));
 					return false;
@@ -1357,7 +1357,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 			for (MaladiePro maladie : getListeMaladie()) {
 				if (maladie.getCodeMaladiePro().equals(getVAL_EF_CODE_MALADIE().toUpperCase())) {
 					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
+					// "Attention, il existe déjà  @ avec @. Veuillez contrôler."
 					getTransaction().declarerErreur(
 							MessageUtils.getMessage("ERR974", "une maladie professionnelle", "ce code"));
 					return false;
@@ -1365,7 +1365,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 
 				if (maladie.getLibMaladiePro().equals(getVAL_EF_LIBELLE_MALADIE().toUpperCase())) {
 					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
+					// "Attention, il existe déjà  @ avec @. Veuillez contrôler."
 					getTransaction().declarerErreur(
 							MessageUtils.getMessage("ERR974", "une maladie professionnelle", "ce libellé"));
 					return false;
@@ -1482,7 +1482,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 				if (medecin.getNomMedecin().equals(getVAL_EF_NOM_MEDECIN().toUpperCase())
 						&& medecin.getPrenomMedecin().equals(getVAL_EF_PRENOM_MEDECIN().toUpperCase())) {
 					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
+					// "Attention, il existe déjà  @ avec @. Veuillez contrôler."
 					getTransaction().declarerErreur(
 							MessageUtils.getMessage("ERR974", "un médecin", "ce nom et ce prénom"));
 					return false;
@@ -1582,7 +1582,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 			for (Recommandation rec : getListeRecommandation()) {
 				if (rec.getDescRecommandation().equals(getVAL_EF_DESC_RECOMMANDATION().toUpperCase())) {
 					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
+					// "Attention, il existe déjà  @ avec @. Veuillez contrôler."
 					getTransaction().declarerErreur(
 							MessageUtils.getMessage("ERR974", "une recommandation", "cette description"));
 					return false;
@@ -1603,7 +1603,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACTION_AT Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_ACTION_AT Date
 	 * de création : (15/09/11 08:57:49)
 	 * 
 	 */
@@ -1621,7 +1621,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
+	 * Retourne la valeur à  afficher par la JSP pour la zone :
 	 * ST_ACTION_INAPTITUDE Date de création : (15/09/11 08:57:49)
 	 * 
 	 */
@@ -1639,7 +1639,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACTION_LESION
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_ACTION_LESION
 	 * Date de création : (15/09/11 08:57:49)
 	 * 
 	 */
@@ -1657,7 +1657,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACTION_MALADIE
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_ACTION_MALADIE
 	 * Date de création : (15/09/11 08:57:49)
 	 * 
 	 */
@@ -1675,7 +1675,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACTION_MEDECIN
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_ACTION_MEDECIN
 	 * Date de création : (15/09/11 08:57:49)
 	 * 
 	 */
@@ -1693,7 +1693,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
+	 * Retourne la valeur à  afficher par la JSP pour la zone :
 	 * ST_ACTION_RECOMMANDATION Date de création : (15/09/11 08:57:49)
 	 * 
 	 */
@@ -1711,7 +1711,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_CODE_MALADIE Date de création : (15/09/11 08:57:49)
 	 * 
 	 */
@@ -1729,7 +1729,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_DESC_AT Date de création : (15/09/11 08:57:49)
 	 * 
 	 */
@@ -1747,7 +1747,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_DESC_INAPTITUDE Date de création : (15/09/11 08:57:49)
 	 * 
 	 */
@@ -1765,7 +1765,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_DESC_LESION Date de création : (15/09/11 08:57:49)
 	 * 
 	 */
@@ -1783,7 +1783,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_DESC_RECOMMANDATION Date de création : (15/09/11 08:57:49)
 	 * 
 	 */
@@ -1801,7 +1801,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_LIBELLE_MALADIE Date de création : (15/09/11 08:57:49)
 	 * 
 	 */
@@ -1819,7 +1819,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_NOM_MEDECIN Date de création : (15/09/11 08:57:49)
 	 * 
 	 */
@@ -1837,7 +1837,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_PRENOM_MEDECIN Date de création : (15/09/11 08:57:49)
 	 * 
 	 */
@@ -1855,7 +1855,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_TITRE_MEDECIN Date de création : (15/09/11 08:57:49)
 	 * 
 	 */
@@ -1901,7 +1901,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_AT Date de création : (15/09/11 08:57:49)
 	 * 
 	 */
@@ -1910,7 +1910,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_AT Date de création : (15/09/11 08:57:49)
 	 * 
 	 */
@@ -1956,7 +1956,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_INAPTITUDE Date de création : (15/09/11 08:57:49)
 	 * 
 	 */
@@ -1965,7 +1965,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_INAPTITUDE Date de création : (15/09/11 08:57:49)
 	 * 
 	 */
@@ -2011,7 +2011,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_LESION Date de création : (15/09/11 08:57:49)
 	 * 
 	 */
@@ -2020,7 +2020,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_LESION Date de création : (15/09/11 08:57:49)
 	 * 
 	 */
@@ -2066,7 +2066,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_MALADIE Date de création : (15/09/11 08:57:49)
 	 * 
 	 */
@@ -2075,7 +2075,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_MALADIE Date de création : (15/09/11 08:57:49)
 	 * 
 	 */
@@ -2121,7 +2121,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_MEDECIN Date de création : (15/09/11 08:57:49)
 	 * 
 	 */
@@ -2130,7 +2130,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_MEDECIN Date de création : (15/09/11 08:57:49)
 	 * 
 	 */
@@ -2177,7 +2177,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_RECOMMANDATION Date de création : (15/09/11 08:57:49)
 	 * 
 	 */
@@ -2186,7 +2186,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_RECOMMANDATION Date de création : (15/09/11 08:57:49)
 	 * 
 	 */

@@ -167,7 +167,7 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
+	 * Retourne la valeur à  afficher par la JSP pour la zone :
 	 * ST_ACTIVITE_PRINCIPALE Date de création : (21/06/11 16:27:37)
 	 * 
 	 */
@@ -185,7 +185,7 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
+	 * Retourne la valeur à  afficher par la JSP pour la zone :
 	 * ST_AUTRE_APPELLATION Date de création : (21/06/11 16:27:37)
 	 * 
 	 */
@@ -203,7 +203,7 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_CADRE_EMPLOI
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_CADRE_EMPLOI
 	 * Date de création : (21/06/11 16:27:37)
 	 * 
 	 */
@@ -221,7 +221,7 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_CATEGORIE Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_CATEGORIE Date
 	 * de création : (21/06/11 16:27:37)
 	 * 
 	 */
@@ -239,7 +239,7 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DIPLOME Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_DIPLOME Date
 	 * de création : (21/06/11 16:27:37)
 	 * 
 	 */
@@ -257,7 +257,7 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DOMAINE Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_DOMAINE Date
 	 * de création : (21/06/11 16:27:37)
 	 * 
 	 */
@@ -275,7 +275,7 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_FAMILLE_EMPLOI
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_FAMILLE_EMPLOI
 	 * Date de création : (21/06/11 16:27:37)
 	 * 
 	 */
@@ -293,7 +293,7 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_NIVEAU_ETUDE
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_NIVEAU_ETUDE
 	 * Date de création : (21/06/11 16:27:37)
 	 * 
 	 */
@@ -311,7 +311,7 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_CODE_ROME Date de création : (21/06/11 16:27:37)
 	 * 
 	 */
@@ -329,7 +329,7 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_DEFINITION_EMPLOI Date de création : (21/06/11 16:27:37)
 	 * 
 	 */
@@ -347,7 +347,7 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_PRECISIONS_DIPLOMES Date de création : (24/06/11 10:48:00)
 	 * 
 	 */
@@ -365,7 +365,7 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_NOM_METIER Date de création : (21/06/11 16:27:37)
 	 * 
 	 */
@@ -383,7 +383,7 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_REF_MAIRIE Date de création : (21/06/11 16:27:37)
 	 * 
 	 */
@@ -430,7 +430,7 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_AUTRE_APPELLATION Date de création : (21/06/11 16:27:37)
 	 * 
 	 */
@@ -439,7 +439,7 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_AUTRE_APPELLATION Date de création : (21/06/11 16:27:37)
 	 * 
 	 */
@@ -486,7 +486,7 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_CADRE_EMPLOI Date de création : (21/06/11 16:27:37)
 	 * 
 	 */
@@ -495,7 +495,7 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_CADRE_EMPLOI Date de création : (21/06/11 16:27:37)
 	 * 
 	 */
@@ -541,7 +541,7 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_CATEGORIE Date de création : (21/06/11 16:27:37)
 	 * 
 	 */
@@ -550,7 +550,7 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_CATEGORIE Date de création : (21/06/11 16:27:37)
 	 * 
 	 */
@@ -596,7 +596,7 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_DIPLOME Date de création : (21/06/11 16:27:37)
 	 * 
 	 */
@@ -605,7 +605,7 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_DIPLOME Date de création : (21/06/11 16:27:37)
 	 * 
 	 */
@@ -651,7 +651,7 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_DOMAINE Date de création : (21/06/11 16:27:37)
 	 * 
 	 */
@@ -660,7 +660,7 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_DOMAINE Date de création : (21/06/11 16:27:37)
 	 * 
 	 */
@@ -707,7 +707,7 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_FAMILLE_EMPLOI Date de création : (21/06/11 16:27:37)
 	 * 
 	 */
@@ -716,7 +716,7 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_FAMILLE_EMPLOI Date de création : (21/06/11 16:27:37)
 	 * 
 	 */
@@ -763,7 +763,7 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_NIVEAU_ETUDE Date de création : (21/06/11 16:27:37)
 	 * 
 	 */
@@ -772,7 +772,7 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_NIVEAU_ETUDE Date de création : (21/06/11 16:27:37)
 	 * 
 	 */
@@ -1319,7 +1319,7 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones à  afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
 	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
 	 * addZone(getNOMxxx, String); Date de création : (22/06/11 13:59:14)
@@ -1358,7 +1358,7 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 		// ---------------------------//
 		// Initialisation de la page.//
 		// ---------------------------//
-		// Mise à jour de la liste des compétences
+		// Mise à  jour de la liste des compétences
 		if (getTypeCompetenceCourant() == null || getTypeCompetenceCourant().getIdTypeCompetence() == null) {
 			setTypeCompetenceCourant(getTypeCompetenceDao().chercherTypeCompetence(1));
 			addZone(getNOM_RG_TYPE_COMPETENCE(), getNOM_RB_TYPE_COMPETENCE_S());
@@ -1393,7 +1393,7 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 		initialiseActivitePrinc();
 		initialiserCompetence();
 
-		// Mise à jour de l'action
+		// Mise à  jour de l'action
 		if (Const.CHAINE_VIDE.equals(getVAL_ST_ACTION()))
 			addZone(getNOM_ST_ACTION(), ACTION_RECHERCHE);
 	}
@@ -2036,7 +2036,7 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_CADRE_EMPLOI_MULTI Date de création : (22/06/11 13:59:15)
 	 * 
 	 */
@@ -2045,7 +2045,7 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_CADRE_EMPLOI_MULTI Date de création : (22/06/11 13:59:15)
 	 * 
 	 */
@@ -2548,7 +2548,7 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_DIPLOME_MULTI Date de création : (23/06/11 17:14:10)
 	 * 
 	 */
@@ -2557,7 +2557,7 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_DIPLOME_MULTI Date de création : (23/06/11 17:14:10)
 	 * 
 	 */
@@ -2595,7 +2595,7 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_NIVEAU_ETUDE_MULTI Date de création : (23/06/11 17:14:10)
 	 * 
 	 */
@@ -2604,7 +2604,7 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_NIVEAU_ETUDE_MULTI Date de création : (23/06/11 17:14:10)
 	 * 
 	 */
@@ -2736,7 +2736,7 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
+	 * Retourne la valeur à  afficher par la JSP pour la zone :
 	 * EF_CATEGORIE_MULTI Date de création : (27/06/11 09:09:10)
 	 * 
 	 */
@@ -2754,7 +2754,7 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_NIVEAU_ETUDE_MULTI Date de création : (27/06/11 14:22:21)
 	 * 
 	 */
@@ -2778,7 +2778,7 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 
 	/**
 	 * @param focus
-	 *            focus à définir.
+	 *            focus à  définir.
 	 */
 	public void setFocus(String focus) {
 		this.focus = focus;
@@ -2794,7 +2794,7 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_AUTRE_APPELLATION Date de création : (28/06/11 11:33:58)
 	 * 
 	 */
@@ -2812,7 +2812,7 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_RECHERCHE_REF_MAIRIE Date de création : (28/06/11 11:33:58)
 	 * 
 	 */
@@ -2846,7 +2846,7 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 				return false;
 			}
 
-			// Mise à jour de l'action menee
+			// Mise à  jour de l'action menee
 			addZone(getNOM_ST_ACTION(), ACTION_RECHERCHE);
 
 			if (fiche != null && !fiche.getRefMairie().equals(getFicheEmploiCourant().getRefMairie())) {
@@ -3844,7 +3844,7 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Efface tous les objets lies à la fiche emploi courante.
+	 * Efface tous les objets lies à  la fiche emploi courante.
 	 */
 	private void viderObjetsFicheEmploi() {
 		setFicheEmploiCourant(null);
@@ -3950,7 +3950,7 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACTION Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_ACTION Date de
 	 * création : (12/09/11 11:49:01)
 	 * 
 	 */
@@ -4233,7 +4233,7 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_LIB_ACTI Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_LIB_ACTI Date
 	 * de création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -4251,7 +4251,7 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_LIB_COMP_SF
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_LIB_COMP_SF
 	 * Date de création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -4269,7 +4269,7 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_LIB_COMP_S
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_LIB_COMP_S
 	 * Date de création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -4287,7 +4287,7 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_LIB_COMP_PRO
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_LIB_COMP_PRO
 	 * Date de création : (18/08/11 10:21:15)
 	 * 
 	 */

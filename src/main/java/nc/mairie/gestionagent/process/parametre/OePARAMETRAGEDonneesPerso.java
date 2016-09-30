@@ -87,7 +87,7 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 	private AutreAdministrationAgentDao autreAdministrationAgentDao;
 
 	/**
-	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones à  afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
 	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
 	 * addZone(getNOMxxx, String); Date de création : (14/09/11 15:57:59)
@@ -825,7 +825,7 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 			for (CentreFormation centre : getListeCentreFormation()) {
 				if (centre.getLibCentreFormation().equals(getVAL_EF_CENTRE_FORMATION().toUpperCase())) {
 					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
+					// "Attention, il existe déjà  @ avec @. Veuillez contrôler."
 					getTransaction().declarerErreur(
 							MessageUtils.getMessage("ERR974", "un centre de formation", "ce libellé"));
 					return false;
@@ -839,7 +839,7 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 				if (centre.getLibCentreFormation().equals(getVAL_EF_CENTRE_FORMATION().toUpperCase())
 						&& (!centre.equals(getCentreFormationCourant()))) {
 					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
+					// "Attention, il existe déjà  @ avec @. Veuillez contrôler."
 					getTransaction().declarerErreur(
 							MessageUtils.getMessage("ERR974", "un centre de formation", "ce libellé"));
 					return false;
@@ -940,7 +940,7 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 			for (TitreFormation titre : getListeTitreFormation()) {
 				if (titre.getLibTitreFormation().equals(getVAL_EF_TITRE_FORMATION().toUpperCase())) {
 					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
+					// "Attention, il existe déjà  @ avec @. Veuillez contrôler."
 					getTransaction().declarerErreur(
 							MessageUtils.getMessage("ERR974", "un titre de formation", "ce libellé"));
 					return false;
@@ -954,7 +954,7 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 				if (titre.getLibTitreFormation().equals(getVAL_EF_TITRE_FORMATION().toUpperCase())
 						&& (!titre.equals(getTitreFormationCourant()))) {
 					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
+					// "Attention, il existe déjà  @ avec @. Veuillez contrôler."
 					getTransaction().declarerErreur(
 							MessageUtils.getMessage("ERR974", "un titre de formation", "ce libellé"));
 					return false;
@@ -1054,7 +1054,7 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 			for (TitrePermis titre : getListeTitrePermis()) {
 				if (titre.getLibPermis().equals(getVAL_EF_TITRE_PERMIS().toUpperCase())) {
 					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
+					// "Attention, il existe déjà  @ avec @. Veuillez contrôler."
 					getTransaction().declarerErreur(
 							MessageUtils.getMessage("ERR974", "un titre de permis", "ce libellé"));
 					return false;
@@ -1068,7 +1068,7 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 				if (titre.getLibPermis().equals(getVAL_EF_TITRE_PERMIS().toUpperCase())
 						&& (!titre.equals(getTitrePermisCourant()))) {
 					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
+					// "Attention, il existe déjà  @ avec @. Veuillez contrôler."
 					getTransaction().declarerErreur(
 							MessageUtils.getMessage("ERR974", "un titre de permis", "ce libellé"));
 					return false;
@@ -1183,7 +1183,7 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 			for (TitreDiplome titre : getListeDiplome()) {
 				if (titre.getLibTitreDiplome().equals(getVAL_EF_DIPLOME().toUpperCase())) {
 					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
+					// "Attention, il existe déjà  @ avec @. Veuillez contrôler."
 					getTransaction().declarerErreur(
 							MessageUtils.getMessage("ERR974", "un titre de diplôme", "ce libellé"));
 					return false;
@@ -1197,7 +1197,7 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 				if (titre.getLibTitreDiplome().equals(getVAL_EF_DIPLOME().toUpperCase())
 						&& (!titre.equals(diplomeCourant))) {
 					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
+					// "Attention, il existe déjà  @ avec @. Veuillez contrôler."
 					getTransaction().declarerErreur(
 							MessageUtils.getMessage("ERR974", "un titre de diplôme", "ce libellé"));
 					return false;
@@ -1297,7 +1297,7 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 			for (SpecialiteDiplome specialite : getListeSpecialite()) {
 				if (specialite.getLibSpecialiteDiplome().equals(getVAL_EF_SPECIALITE().toUpperCase())) {
 					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
+					// "Attention, il existe déjà  @ avec @. Veuillez contrôler."
 					getTransaction().declarerErreur(
 							MessageUtils.getMessage("ERR974", "une spécialité de diplôme", "ce libellé"));
 					return false;
@@ -1318,7 +1318,7 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
+	 * Retourne la valeur à  afficher par la JSP pour la zone :
 	 * ST_ACTION_TITRE_PERMIS Date de création : (14/09/11 15:57:59)
 	 * 
 	 */
@@ -1336,7 +1336,7 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
+	 * Retourne la valeur à  afficher par la JSP pour la zone :
 	 * ST_ACTION_TITRE_FORMATION Date de création : (14/09/11 15:57:59)
 	 * 
 	 */
@@ -1354,7 +1354,7 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
+	 * Retourne la valeur à  afficher par la JSP pour la zone :
 	 * ST_ACTION_CENTRE_FORMATION Date de création : (14/09/11 15:57:59)
 	 * 
 	 */
@@ -1372,7 +1372,7 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACTION_DIPLOME
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_ACTION_DIPLOME
 	 * Date de création : (14/09/11 15:57:59)
 	 * 
 	 */
@@ -1390,7 +1390,7 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
+	 * Retourne la valeur à  afficher par la JSP pour la zone :
 	 * ST_ACTION_SPECIALITE Date de création : (14/09/11 15:57:59)
 	 * 
 	 */
@@ -1408,7 +1408,7 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_TITRE_PERMIS Date de création : (14/09/11 15:57:59)
 	 * 
 	 */
@@ -1426,7 +1426,7 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_TITRE_FORMATION Date de création : (14/09/11 15:57:59)
 	 * 
 	 */
@@ -1444,7 +1444,7 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_CENTRE_FORMATION Date de création : (14/09/11 15:57:59)
 	 * 
 	 */
@@ -1462,7 +1462,7 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_DIPLOME Date de création : (14/09/11 15:57:59)
 	 * 
 	 */
@@ -1480,7 +1480,7 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_SPECIALITE Date de création : (14/09/11 15:57:59)
 	 * 
 	 */
@@ -1526,7 +1526,7 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_DIPLOME Date de création : (14/09/11 15:57:59)
 	 * 
 	 */
@@ -1535,7 +1535,7 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_DIPLOME Date de création : (14/09/11 15:57:59)
 	 * 
 	 */
@@ -1582,7 +1582,7 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_CENTRE_FORMATION Date de création : (14/09/11 15:57:59)
 	 * 
 	 */
@@ -1591,7 +1591,7 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_CENTRE_FORMATION Date de création : (14/09/11 15:57:59)
 	 * 
 	 */
@@ -1638,7 +1638,7 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_TITRE_FORMATION Date de création : (14/09/11 15:57:59)
 	 * 
 	 */
@@ -1647,7 +1647,7 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_TITRE_FORMATION Date de création : (14/09/11 15:57:59)
 	 * 
 	 */
@@ -1694,7 +1694,7 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_TITRE_PERMIS Date de création : (14/09/11 15:57:59)
 	 * 
 	 */
@@ -1703,7 +1703,7 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_TITRE_PERMIS Date de création : (14/09/11 15:57:59)
 	 * 
 	 */
@@ -1749,7 +1749,7 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_SPECIALITE Date de création : (14/09/11 15:57:59)
 	 * 
 	 */
@@ -1758,7 +1758,7 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_SPECIALITE Date de création : (14/09/11 15:57:59)
 	 * 
 	 */
@@ -1776,7 +1776,7 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_NIV_ETUDE Date de création : (14/09/11 16:15:50)
 	 * 
 	 */
@@ -2154,7 +2154,7 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 			for (AutreAdministration admin : getListeAdmin()) {
 				if (admin.getLibAutreAdmin().equals(getVAL_EF_ADMIN().toUpperCase())) {
 					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
+					// "Attention, il existe déjà  @ avec @. Veuillez contrôler."
 					getTransaction().declarerErreur(
 							MessageUtils.getMessage("ERR974", "une administration", "ce libellé"));
 					return false;
@@ -2175,7 +2175,7 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACTION_ADMIN
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_ACTION_ADMIN
 	 * Date de création : (15/09/11 14:14:43)
 	 * 
 	 */
@@ -2193,7 +2193,7 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_ADMIN Date de création : (15/09/11 14:14:43)
 	 * 
 	 */
@@ -2239,7 +2239,7 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_ADMIN Date de création : (15/09/11 14:14:43)
 	 * 
 	 */
@@ -2248,7 +2248,7 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_ADMIN Date de création : (15/09/11 14:14:43)
 	 * 
 	 */

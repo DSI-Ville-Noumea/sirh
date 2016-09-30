@@ -60,7 +60,7 @@ public class OePARAMETRAGEJour extends BasicProcess {
 	private IAbsService absService;
 
 	/**
-	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones à  afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
 	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
 	 * addZone(getNOMxxx, String); Date de création : (14/09/11 13:52:54)
@@ -247,7 +247,7 @@ public class OePARAMETRAGEJour extends BasicProcess {
 
 	/**
 	 * @param focus
-	 *            focus à définir.
+	 *            focus à  définir.
 	 */
 	public void setFocus(String focus) {
 		this.focus = focus;
@@ -279,7 +279,7 @@ public class OePARAMETRAGEJour extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ANNEE Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_ANNEE Date de
 	 * création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -446,7 +446,7 @@ public class OePARAMETRAGEJour extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACTION Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_ACTION Date de
 	 * création : (05/09/11 11:39:24)
 	 * 
 	 */
@@ -472,7 +472,7 @@ public class OePARAMETRAGEJour extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE_JOUR Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_DATE_JOUR Date
 	 * de création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -490,7 +490,7 @@ public class OePARAMETRAGEJour extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_TYPE_JOUR Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_TYPE_JOUR Date
 	 * de création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -508,7 +508,7 @@ public class OePARAMETRAGEJour extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
+	 * Retourne la valeur à  afficher par la JSP pour la zone :
 	 * ST_DESCRIPTION_JOUR Date de création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -585,7 +585,7 @@ public class OePARAMETRAGEJour extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * ST_DATE_JOUR Date de création : (05/09/11 16:01:29)
 	 * 
 	 */
@@ -603,7 +603,7 @@ public class OePARAMETRAGEJour extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * ST_DESCRIPTION Date de création : (05/09/11 16:01:29)
 	 * 
 	 */
@@ -621,7 +621,7 @@ public class OePARAMETRAGEJour extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACTION_JOUR
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_ACTION_JOUR
 	 * Date de création : (05/09/11 11:39:24)
 	 * 
 	 */
@@ -772,7 +772,7 @@ public class OePARAMETRAGEJour extends BasicProcess {
 
 		Date dateSaisie = new SimpleDateFormat("dd/MM/yyyy").parse(getVAL_ST_DATE_JOUR());
 		if (dateSaisie.compareTo(new Date()) <= 0) {
-			// "ERR148", "La date doit être supérieure à la date du jour."
+			// "ERR148", "La date doit être supérieure à  la date du jour."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR148"));
 			return false;
 		}
@@ -847,7 +847,7 @@ public class OePARAMETRAGEJour extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_TYPE_JOUR Date de création : (05/09/11 14:28:45)
 	 * 
 	 */
@@ -856,7 +856,7 @@ public class OePARAMETRAGEJour extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_TYPE_JOUR Date de création : (05/09/11 14:28:45)
 	 * 
 	 */

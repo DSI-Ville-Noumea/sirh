@@ -496,7 +496,7 @@ public class OeSMConvocation extends BasicProcess {
 	 * 
 	 */
 	public boolean performPB_RECHERCHER(HttpServletRequest request) throws Exception {
-		// Mise à jour de l'action menee
+		// Mise à  jour de l'action menee
 		addZone(getNOM_ST_ACTION(), ACTION_RECHERCHE);
 
 		if (!performControlerFiltres()) {
@@ -603,7 +603,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_NUM_SM Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_NUM_SM Date de
 	 * création : (21/11/11 09:55:36)
 	 * 
 	 */
@@ -621,7 +621,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_MATR Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_MATR Date de
 	 * création : (21/11/11 09:55:36)
 	 * 
 	 */
@@ -639,7 +639,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_AGENT Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_AGENT Date de
 	 * création : (21/11/11 09:55:36)
 	 * 
 	 */
@@ -657,7 +657,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_NUM_CAFAT Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_NUM_CAFAT Date
 	 * de création : (21/11/11 09:55:36)
 	 * 
 	 */
@@ -675,7 +675,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_STATUT Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_STATUT Date de
 	 * création : (21/11/11 09:55:36)
 	 * 
 	 */
@@ -693,7 +693,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_SERVICE Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_SERVICE Date
 	 * de création : (21/11/11 09:55:36)
 	 * 
 	 */
@@ -711,7 +711,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
+	 * Retourne la valeur à  afficher par la JSP pour la zone :
 	 * ST_DATE_DERNIERE_VISITE Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
@@ -729,7 +729,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
+	 * Retourne la valeur à  afficher par la JSP pour la zone :
 	 * ST_DATE_PREVISION_VISITE Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
@@ -747,7 +747,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_MOTIF Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_MOTIF Date de
 	 * création : (21/11/11 09:55:36)
 	 * 
 	 */
@@ -765,7 +765,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
+	 * Retourne la valeur à  afficher par la JSP pour la zone :
 	 * ST_NB_VISITES_RATEES Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
@@ -783,7 +783,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
+	 * Retourne la valeur à  afficher par la JSP pour la zone :
 	 * ST_DATE_PROCHAIN_RDV Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
@@ -801,7 +801,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ETAT Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_ETAT Date de
 	 * création : (21/11/11 09:55:36)
 	 * 
 	 */
@@ -847,7 +847,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_MEDECIN Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
@@ -856,7 +856,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_MEDECIN Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
@@ -975,11 +975,11 @@ public class OeSMConvocation extends BasicProcess {
 					addZone(getNOM_ST_DATE_PROCHAIN_RDV(i), Services.formateDate(dateRDV));
 				}
 
-				// si la date du prochain RDV est inferieur à la date du jour
+				// si la date du prochain RDV est inferieur à  la date du jour
 				if (sm.getEtat().equals(EnumEtatSuiviMed.PLANIFIE.getCode()) && Services.compareDates(dateRDV, Services.dateDuJour()) < 0) {
 					// "ERR302",
 					// "La date du prochain RDV pour l'agent @ doit être
-					// supérieure ou egale à la date du jour"
+					// supérieure ou egale à  la date du jour"
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR302", agentConcerne));
 					return false;
 				}
@@ -1014,7 +1014,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACTION Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_ACTION Date de
 	 * création : (12/09/11 11:49:01)
 	 * 
 	 */
@@ -1068,7 +1068,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_HEURE_RDV Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
@@ -1077,7 +1077,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_HEURE_RDV Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
@@ -1125,7 +1125,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_AGENT Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_AGENT Date de
 	 * création : (02/08/11 09:40:42)
 	 * 
 	 */
@@ -1190,7 +1190,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_SERVICE Date de création : (13/09/11 11:47:15)
 	 * 
 	 */
@@ -1241,7 +1241,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_CODE_SERVICE
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_CODE_SERVICE
 	 * Date de création : (13/09/11 08:45:29)
 	 * 
 	 */
@@ -1287,7 +1287,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_STATUT Date de création : (28/11/11 09:55:36)
 	 * 
 	 */
@@ -1296,7 +1296,7 @@ public class OeSMConvocation extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_STATUT Date de création : (28/11/11)
 	 * 
 	 */

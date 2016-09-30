@@ -3,7 +3,12 @@ package nc.mairie.gestionagent.pointage.dto;
 import java.io.Serializable;
 import java.util.Date;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import nc.mairie.gestionagent.dto.AgentDto;
+import nc.noumea.mairie.ads.dto.JsonDateDeserializer;
+import nc.noumea.mairie.ads.dto.JsonDateSerializer;
 
 public class TitreRepasEtatPayeurDto implements Serializable {
 
@@ -15,8 +20,12 @@ public class TitreRepasEtatPayeurDto implements Serializable {
 	private static final long serialVersionUID = -5252910063935208786L;
 	
 	private Integer idTrEtatPayeur;
+	@JsonSerialize(using = JsonDateSerializer.class)
+	@JsonDeserialize(using = JsonDateDeserializer.class)
 	private Date dateEtatPayeur;
 	private Integer idAgent;
+	@JsonSerialize(using = JsonDateSerializer.class)
+	@JsonDeserialize(using = JsonDateDeserializer.class)
 	private Date dateEdition;
 	private String label;
 	private String fichier;

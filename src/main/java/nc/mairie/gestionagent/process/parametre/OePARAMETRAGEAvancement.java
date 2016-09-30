@@ -95,7 +95,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	public String focus = null;
 
 	/**
-	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones à  afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
 	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
 	 * addZone(getNOMxxx, String); Date de création : (14/09/11 13:52:54)
@@ -590,7 +590,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
+	 * Retourne la valeur à  afficher par la JSP pour la zone :
 	 * ST_ACTION_EMPLOYEUR Date de création : (14/09/11 13:52:54)
 	 * 
 	 */
@@ -608,7 +608,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_EMPLOYEUR Date de création : (14/09/11 13:52:54)
 	 * 
 	 */
@@ -626,7 +626,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_TITRE_EMPLOYEUR Date de création : (14/09/11 13:52:54)
 	 * 
 	 */
@@ -672,7 +672,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_EMPLOYEUR Date de création : (14/09/11 13:52:54)
 	 * 
 	 */
@@ -681,7 +681,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_EMPLOYEUR Date de création : (14/09/11 13:52:54)
 	 * 
 	 */
@@ -879,13 +879,13 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 			for (Employeur emp : getListeEmployeur()) {
 				if (emp.getLibEmployeur().equals(getVAL_EF_EMPLOYEUR())) {
 					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
+					// "Attention, il existe déjà  @ avec @. Veuillez contrôler."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "un employeur", "ce libellé"));
 					return false;
 				}
 				if (emp.getTitreEmployeur().equals(getVAL_EF_TITRE_EMPLOYEUR())) {
 					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
+					// "Attention, il existe déjà  @ avec @. Veuillez contrôler."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "un employeur", "ce titre"));
 					return false;
 				}
@@ -950,7 +950,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_REPRESENTANT Date de création : (14/09/11 13:52:54)
 	 * 
 	 */
@@ -968,7 +968,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
+	 * Retourne la valeur à  afficher par la JSP pour la zone :
 	 * ST_ACTION_REPRESENTANT Date de création : (14/09/11 13:52:54)
 	 * 
 	 */
@@ -977,7 +977,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_REPRESENTANT Date de création : (14/09/11 13:52:54)
 	 * 
 	 */
@@ -1191,7 +1191,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 						&& repre.getPrenomRepresentant().trim()
 								.equals(getVAL_EF_PRENOM_REPRESENTANT().toUpperCase().trim())) {
 					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
+					// "Attention, il existe déjà  @ avec @. Veuillez contrôler."
 					getTransaction().declarerErreur(
 							MessageUtils.getMessage("ERR974", "un représentant", "ce nom et ce prénom"));
 					return false;
@@ -1241,7 +1241,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_TYPE_REPRESENTANT Date de création : (14/09/11 13:52:54)
 	 * 
 	 */
@@ -1250,7 +1250,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_TYPE_REPRESENTANT Date de création : (14/09/11 13:52:54)
 	 * 
 	 */
@@ -1286,7 +1286,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_NOM_REPRESENTANT Date de création : (14/09/11 13:52:54)
 	 * 
 	 */
@@ -1304,7 +1304,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_PRENOM_REPRESENTANT Date de création : (14/09/11 13:52:54)
 	 * 
 	 */
@@ -1375,7 +1375,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_DELIBERATION Date de création : (14/09/11 13:52:54)
 	 * 
 	 */
@@ -1384,7 +1384,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_DELIBERATION Date de création : (14/09/11 13:52:54)
 	 * 
 	 */
@@ -1402,7 +1402,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
+	 * Retourne la valeur à  afficher par la JSP pour la zone :
 	 * ST_ACTION_DELIBERATION Date de création : (14/09/11 13:52:54)
 	 * 
 	 */
@@ -1586,7 +1586,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_CODE_DELIBERATION Date de création : (14/09/11 13:52:54)
 	 * 
 	 */
@@ -1604,7 +1604,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_LIB_DELIBERATION Date de création : (14/09/11 13:52:54)
 	 * 
 	 */
@@ -1622,7 +1622,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_TEXTE_CAP_DELIBERATION Date de création : (14/09/11 13:52:54)
 	 * 
 	 */
@@ -1680,13 +1680,13 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 			for (Deliberation delib : getListeDeliberation()) {
 				if (delib.getCodeDeliberation().equals(getVAL_EF_CODE_DELIBERATION().toUpperCase())) {
 					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
+					// "Attention, il existe déjà  @ avec @. Veuillez contrôler."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "une délibération", "ce code"));
 					return false;
 				}
 				if (delib.getLibDeliberation().equals(getVAL_EF_LIB_DELIBERATION().toUpperCase())) {
 					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
+					// "Attention, il existe déjà  @ avec @. Veuillez contrôler."
 					getTransaction()
 							.declarerErreur(MessageUtils.getMessage("ERR974", "une délibération", "ce libellé"));
 					return false;
@@ -1744,7 +1744,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_TYPE_DELIBERATION Date de création : (14/09/11 13:52:54)
 	 * 
 	 */
@@ -1753,7 +1753,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_TYPE_DELIBERATION Date de création : (14/09/11 13:52:54)
 	 * 
 	 */
@@ -1790,7 +1790,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_CAP Date de création : (14/09/11 13:52:54)
 	 * 
 	 */
@@ -1799,7 +1799,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_CAP Date de création : (14/09/11 13:52:54)
 	 * 
 	 */
@@ -1817,7 +1817,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACTION_CAP
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_ACTION_CAP
 	 * Date de création : (14/09/11 13:52:54)
 	 * 
 	 */
@@ -2116,7 +2116,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_CODE_CAP Date de création : (14/09/11 13:52:54)
 	 * 
 	 */
@@ -2134,7 +2134,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_REF_CAP Date de création : (14/09/11 13:52:54)
 	 * 
 	 */
@@ -2152,7 +2152,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_DESCRIPTION_CAP Date de création : (14/09/11 13:52:54)
 	 * 
 	 */
@@ -2229,7 +2229,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 			for (Cap cap : getListeCap()) {
 				if (cap.getCodeCap().equals(getVAL_EF_CODE_CAP().toUpperCase())) {
 					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
+					// "Attention, il existe déjà  @ avec @. Veuillez contrôler."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "une CAP", "ce code"));
 					setFocus(getDefaultFocus());
 					return false;
@@ -2242,7 +2242,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 			for (Cap cap : getListeCap()) {
 				if (cap.getCodeCap().equals(getVAL_EF_CODE_CAP().toUpperCase()) && (!cap.equals(getCapCourant()))) {
 					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
+					// "Attention, il existe déjà  @ avec @. Veuillez contrôler."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "une CAP", "ce code"));
 					setFocus(getDefaultFocus());
 					return false;
@@ -2339,7 +2339,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_CORPS Date de création : (14/09/11 13:52:54)
 	 * 
 	 */
@@ -2348,7 +2348,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la case à cocher sélectionnée pour la JSP :
+	 * Retourne le nom de la case à  cocher sélectionnée pour la JSP :
 	 * CK_SELECT_LIGNE_CORPS Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
@@ -2357,7 +2357,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur de la case à cocher à afficher par la JSP pour la case
+	 * Retourne la valeur de la case à  cocher à  afficher par la JSP pour la case
 	 * a cocher : CK_SELECT_LIGNE_CORPS Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
@@ -2528,7 +2528,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_TYPE_CAP Date de création : (14/09/11 13:52:54)
 	 * 
 	 */
@@ -2537,7 +2537,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_TYPE_CAP Date de création : (14/09/11 13:52:54)
 	 * 
 	 */
@@ -2724,7 +2724,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_REPRE_CAP Date de création : (08/07/11 09:13:07)
 	 * 
 	 * 
@@ -2734,7 +2734,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_REPRE_CAP Date de création : (08/07/11 09:13:07)
 	 * 
 	 * 
@@ -2744,7 +2744,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_REPRE_CAP_MULTI Date de création : (08/07/11 09:13:07)
 	 * 
 	 * 
@@ -2774,7 +2774,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_REPRE_CAP_MULTI Date de création : (08/07/11 09:13:07)
 	 * 
 	 * 
@@ -2959,7 +2959,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_EMP_CAP Date de création : (08/07/11 09:13:07)
 	 * 
 	 * 
@@ -2979,7 +2979,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_EMP_CAP Date de création : (08/07/11 09:13:07)
 	 * 
 	 * 
@@ -3021,7 +3021,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_EMP_CAP_MULTI Date de création : (08/07/11 09:13:07)
 	 * 
 	 * 
@@ -3041,7 +3041,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_EMP_CAP_MULTI Date de création : (08/07/11 09:13:07)
 	 * 
 	 * 
@@ -3066,7 +3066,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 
 	/**
 	 * @param focus
-	 *            focus à définir.
+	 *            focus à  définir.
 	 */
 	public void setFocus(String focus) {
 		this.focus = focus;

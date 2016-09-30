@@ -42,7 +42,7 @@ public class OeAGENTHomonyme extends BasicProcess {
 	private AgentDao agentDao;
 
 	/**
-	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones à  afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
 	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
 	 * addZone(getNOMxxx, String); Date de création : (29/09/11 08:36:13)
@@ -198,7 +198,7 @@ public class OeAGENTHomonyme extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_AGENT_HOMONYME Date de création : (29/09/11 08:36:13)
 	 * 
 	 */
@@ -207,7 +207,7 @@ public class OeAGENTHomonyme extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_AGENT_HOMONYME Date de création : (29/09/11 08:36:13)
 	 * 
 	 */
@@ -347,7 +347,7 @@ public class OeAGENTHomonyme extends BasicProcess {
 	 * Setter de la liste des agents homonymes.
 	 * 
 	 * @param listeAgtHomonyme
-	 *            listeAgtHomonyme à définir
+	 *            listeAgtHomonyme à  définir
 	 */
 	private void setListeAgtHomonyme(ArrayList<Agent> listeAgtHomonyme) {
 		this.listeAgtHomonyme = listeAgtHomonyme;

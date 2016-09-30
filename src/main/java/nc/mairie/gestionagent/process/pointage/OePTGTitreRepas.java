@@ -852,7 +852,7 @@ public class OePTGTitreRepas extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_ETAT Date de création : (28/11/11)
 	 * 
 	 */
@@ -870,7 +870,7 @@ public class OePTGTitreRepas extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_ETAT Date de création : (28/11/11)
 	 * 
 	 */
@@ -888,7 +888,7 @@ public class OePTGTitreRepas extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_ETAT Date de création : (28/11/11)
 	 * 
 	 */
@@ -897,7 +897,7 @@ public class OePTGTitreRepas extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE_CAP Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_DATE_CAP Date
 	 * de création : (21/11/11 09:55:36)
 	 * 
 	 */
@@ -906,7 +906,7 @@ public class OePTGTitreRepas extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE_CAP Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_DATE_CAP Date
 	 * de création : (21/11/11 09:55:36)
 	 * 
 	 */
@@ -915,7 +915,7 @@ public class OePTGTitreRepas extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE_CAP Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_DATE_CAP Date
 	 * de création : (21/11/11 09:55:36)
 	 * 
 	 */
@@ -979,7 +979,7 @@ public class OePTGTitreRepas extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_SERVICE Date de création : (13/09/11 11:47:15)
 	 * 
 	 */
@@ -997,7 +997,7 @@ public class OePTGTitreRepas extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_CODE_SERVICE
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_CODE_SERVICE
 	 * Date de création : (13/09/11 08:45:29)
 	 * 
 	 */

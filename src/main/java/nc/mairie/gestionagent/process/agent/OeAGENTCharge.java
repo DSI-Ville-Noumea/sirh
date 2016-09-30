@@ -90,7 +90,7 @@ public class OeAGENTCharge extends BasicProcess {
 	private HistoChargeDao histoChargeDao;
 
 	/**
-	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones à  afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
 	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
 	 * addZone(getNOMxxx, String); Date de création : (10/08/11 09:33:52)
@@ -798,7 +798,7 @@ public class OeAGENTCharge extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACTION Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_ACTION Date de
 	 * création : (10/08/11 09:33:52)
 	 * 
 	 */
@@ -816,7 +816,7 @@ public class OeAGENTCharge extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_CODE_CHARGE
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_CODE_CHARGE
 	 * Date de création : (10/08/11 09:33:52)
 	 * 
 	 */
@@ -834,7 +834,7 @@ public class OeAGENTCharge extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_CREANCIER Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_CREANCIER Date
 	 * de création : (10/08/11 09:33:52)
 	 * 
 	 */
@@ -852,7 +852,7 @@ public class OeAGENTCharge extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_RUBRIQUE Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_RUBRIQUE Date
 	 * de création : (10/08/11 09:33:52)
 	 * 
 	 */
@@ -870,7 +870,7 @@ public class OeAGENTCharge extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_DATE_DEBUT Date de création : (10/08/11 09:33:52)
 	 * 
 	 */
@@ -888,7 +888,7 @@ public class OeAGENTCharge extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_DATE_FIN Date de création : (10/08/11 09:33:52)
 	 * 
 	 */
@@ -906,7 +906,7 @@ public class OeAGENTCharge extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_MONTANT Date de création : (10/08/11 09:33:52)
 	 * 
 	 */
@@ -924,7 +924,7 @@ public class OeAGENTCharge extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie : EF_TAUX
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie : EF_TAUX
 	 * Date de création : (10/08/11 09:33:52)
 	 * 
 	 */
@@ -970,7 +970,7 @@ public class OeAGENTCharge extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_CODE_CHARGE Date de création : (10/08/11 09:33:52)
 	 * 
 	 */
@@ -979,7 +979,7 @@ public class OeAGENTCharge extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_CODE_CHARGE Date de création : (10/08/11 09:33:52)
 	 * 
 	 */
@@ -1025,7 +1025,7 @@ public class OeAGENTCharge extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_CREANCIER Date de création : (10/08/11 09:33:52)
 	 * 
 	 */
@@ -1034,7 +1034,7 @@ public class OeAGENTCharge extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_CREANCIER Date de création : (10/08/11 09:33:52)
 	 * 
 	 */
@@ -1274,7 +1274,7 @@ public class OeAGENTCharge extends BasicProcess {
 	 *             RG_AG_CG_C09 RG_AG_CG_C08 RG_AG_CG_C10 RG_AG_CG_C11
 	 */
 	private void initialiseChamp(Rubrique r) throws Exception {
-		// #17621 : on rend paramétrable les choses à saisir
+		// #17621 : on rend paramétrable les choses à  saisir
 
 		addZone(getNOM_EF_MAT_CHARGE(), Const.CHAINE_VIDE);
 		addZone(getNOM_EF_MONTANT(), Const.CHAINE_VIDE);
@@ -1383,7 +1383,7 @@ public class OeAGENTCharge extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_MATRICULE Date de création : (11/08/11 09:43:07)
 	 * 
 	 */
@@ -1401,7 +1401,7 @@ public class OeAGENTCharge extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_MAT_CHARGE Date de création : (11/08/11 16:10:45)
 	 * 
 	 */
@@ -1544,7 +1544,7 @@ public class OeAGENTCharge extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
+	 * Retourne la valeur à  afficher par la JSP pour la zone :
 	 * ST_INFO_CODE_CHARGE Date de création : (29/11/11 16:42:44)
 	 * 
 	 */
@@ -1562,7 +1562,7 @@ public class OeAGENTCharge extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_RUBRIQUE Date de création : (30/08/11 10:25:41)
 	 * 
 	 */
@@ -1580,7 +1580,7 @@ public class OeAGENTCharge extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_CODE_RUBR Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_CODE_RUBR Date
 	 * de création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -1598,7 +1598,7 @@ public class OeAGENTCharge extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_RUBRIQUE Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_RUBRIQUE Date
 	 * de création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -1616,7 +1616,7 @@ public class OeAGENTCharge extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_MAT_CHARGE
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_MAT_CHARGE
 	 * Date de création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -1634,7 +1634,7 @@ public class OeAGENTCharge extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_LIB_CHARGE
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_LIB_CHARGE
 	 * Date de création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -1652,7 +1652,7 @@ public class OeAGENTCharge extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_TAUX Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_TAUX Date de
 	 * création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -1670,7 +1670,7 @@ public class OeAGENTCharge extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_MONTANT Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_MONTANT Date
 	 * de création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -1688,7 +1688,7 @@ public class OeAGENTCharge extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE_DEBUT
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_DATE_DEBUT
 	 * Date de création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -1706,7 +1706,7 @@ public class OeAGENTCharge extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE_FIN Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_DATE_FIN Date
 	 * de création : (18/08/11 10:21:15)
 	 * 
 	 */

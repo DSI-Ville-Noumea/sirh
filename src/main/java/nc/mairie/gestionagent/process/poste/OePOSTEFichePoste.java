@@ -285,7 +285,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	private IRadiService radiService;
 
 	/**
-	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones à  afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
 	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
 	 * addZone(getNOMxxx, String); Date de création : (25/07/11 14:53:21)
@@ -428,7 +428,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 			afficheFES();
 			initialiseMission();
 			initialiseInfoEmploi();
-			// si changement de FES, on ajoute la mission à la mission actuelle
+			// si changement de FES, on ajoute la mission à  la mission actuelle
 			if (getEmploiSecondaire() != null) {
 				if (!getMission().toUpperCase().contains(getEmploiSecondaire().getDefinitionEmploi().toUpperCase())) {
 					setMission(getMission() + " " + getEmploiSecondaire().getDefinitionEmploi());
@@ -457,7 +457,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 			afficheFEP();
 			initialiseMission();
 			initialiseInfoEmploi();
-			// si changement de FES, on ajoute la mission à la mission actuelle
+			// si changement de FES, on ajoute la mission à  la mission actuelle
 			if (getEmploiPrimaire() != null) {
 				if (!getMission().toUpperCase().contains(getEmploiPrimaire().getDefinitionEmploi().toUpperCase())) {
 					setMission(getMission() + " " + getEmploiPrimaire().getDefinitionEmploi());
@@ -1177,7 +1177,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 				}
 				if (getListeAjoutCompFP() != null) {
 					// si la competence fait partie de la liste des competences
-					// ajoutées à la FDP
+					// ajoutées à  la FDP
 					for (int j = 0; j < getListeAjoutCompFP().size(); j++) {
 						Competence competenceFP = (Competence) getListeAjoutCompFP().get(j);
 						if (competenceFP.getIdCompetence().toString().equals(competence.getIdCompetence().toString())) {
@@ -1395,7 +1395,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Efface tous les objets lies à la fiche emploi courante.
+	 * Efface tous les objets lies à  la fiche emploi courante.
 	 */
 	private void viderObjetsFichePoste() throws Exception {
 
@@ -2424,9 +2424,9 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 		majChangementFEAutorise();
 
-		// appel WS mise à jour Arbre FDP
+		// appel WS mise à  jour Arbre FDP
 		if (!sirhService.miseAJourArbreFDP()) {
-			// "ERR970","Une erreur est survenue lors de la mise à jour de l'arbre des Fiche de poste. Merci de contacter le responsable du projet car cela engendre un soucis sur le Kiosque RH."
+			// "ERR970","Une erreur est survenue lors de la mise à  jour de l'arbre des Fiche de poste. Merci de contacter le responsable du projet car cela engendre un soucis sur le Kiosque RH."
 			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
 			}
@@ -2440,7 +2440,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 		if (getFichePosteCourante().getIdStatutFp().toString().equals(EnumStatutFichePoste.TRANSITOIRE.getId())) {
 			if (getFichePosteCourante().getIdCdthorReg() != 0 || getFichePosteCourante().getIdCdthorBud() != 0) {
 				// "INF112",
-				// "Attention : la FDP @ est transitoire, budgeté et reglementaire devrait être à non."
+				// "Attention : la FDP @ est transitoire, budgeté et reglementaire devrait être à  non."
 				messageInf = MessageUtils.getMessage("INF112", getFichePosteCourante().getNumFp());
 			}
 		}
@@ -2518,7 +2518,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	 */
 	public boolean performPB_RECHERCHER(HttpServletRequest request) throws Exception {
 
-		// Mise à jour de l'action menee
+		// Mise à  jour de l'action menee
 		addZone(getNOM_ST_ACTION(), ACTION_RECHERCHE);
 
 		// ////////////////////////////////
@@ -2637,7 +2637,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_RECHERCHE_BY_AGENT Date de création : (07/07/11 11:20:20)
 	 * 
 	 * 
@@ -2657,7 +2657,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_RECHERCHE Date de création : (07/07/11 11:20:20)
 	 * 
 	 * 
@@ -2677,7 +2677,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_NFA Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_NFA Date de
 	 * création : (07/07/11 13:23:11)
 	 * 
 	 * 
@@ -2697,7 +2697,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_NUMERO Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_NUMERO Date de
 	 * création : (07/07/11 13:23:11)
 	 * 
 	 * 
@@ -2749,7 +2749,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_BUDGET Date de création : (07/07/11 13:23:11)
 	 * 
 	 * 
@@ -2759,7 +2759,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_BUDGET Date de création : (07/07/11 13:23:11)
 	 * 
 	 * 
@@ -2811,7 +2811,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_BUDGETE Date de création : (07/07/11 13:23:11)
 	 * 
 	 * 
@@ -2821,7 +2821,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_BUDGETE Date de création : (07/07/11 13:23:11)
 	 * 
 	 * 
@@ -2874,7 +2874,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_REGLEMENTAIRE Date de création : (07/07/11 13:23:11)
 	 * 
 	 * 
@@ -2884,7 +2884,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_REGLEMENTAIRE Date de création : (07/07/11 13:23:11)
 	 * 
 	 * 
@@ -2936,7 +2936,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_STATUT Date de création : (07/07/11 13:23:11)
 	 * 
 	 * 
@@ -2946,7 +2946,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_STATUT Date de création : (07/07/11 13:23:11)
 	 * 
 	 * 
@@ -2966,7 +2966,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_ANNEE Date de création : (07/07/11 14:19:57)
 	 * 
 	 * 
@@ -2986,7 +2986,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_GRADE Date de création : (07/07/11 14:19:57)
 	 * 
 	 * 
@@ -3006,7 +3006,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_CODE_GRADE Date de création : (07/07/11 14:19:57)
 	 * 
 	 * 
@@ -3059,7 +3059,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_NIVEAU_ETUDE Date de création : (08/07/11 09:13:07)
 	 * 
 	 * 
@@ -3069,7 +3069,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_NIVEAU_ETUDE Date de création : (08/07/11 09:13:07)
 	 * 
 	 * 
@@ -3263,7 +3263,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_GRADE Date de création : (11/07/11 11:08:04)
 	 * 
 	 * 
@@ -3273,7 +3273,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_GRADE Date de création : (11/07/11 11:08:04)
 	 * 
 	 * 
@@ -3325,7 +3325,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_LOC Date de création : (11/07/11 11:08:04)
 	 * 
 	 * 
@@ -3335,7 +3335,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_LOC Date de création : (11/07/11 11:08:04)
 	 * 
 	 * 
@@ -3387,7 +3387,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_TITRE_POSTE Date de création : (11/07/11 11:08:04)
 	 * 
 	 * 
@@ -3397,7 +3397,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_TITRE_POSTE Date de création : (11/07/11 11:08:04)
 	 * 
 	 * 
@@ -3660,7 +3660,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 				}
 				if (getListeAjoutActiFP() != null) {
 					// si l'activite fait partie de la liste des activites
-					// ajoutées à la FDP
+					// ajoutées à  la FDP
 					for (Activite activiteFP : getListeAjoutActiFP()) {
 						if (activiteFP.getIdActivite().toString().equals(activite.getIdActivite().toString())) {
 							addZone(getNOM_CK_SELECT_LIGNE_ACTI(i), getCHECKED_ON());
@@ -3874,7 +3874,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
+	 * Retourne la valeur à  afficher par la JSP pour la zone :
 	 * ST_EMPLOI_PRIMAIRE Date de création : (13/07/11 11:51:02)
 	 * 
 	 * 
@@ -3894,7 +3894,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
+	 * Retourne la valeur à  afficher par la JSP pour la zone :
 	 * ST_EMPLOI_SECONDAIRE Date de création : (13/07/11 11:51:02)
 	 * 
 	 * 
@@ -4070,7 +4070,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_SERVICE Date de création : (26/07/11 09:08:33)
 	 * 
 	 * 
@@ -4116,7 +4116,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	 * 
 	 */
 	public boolean performPB_MODIFIER_SPECIFICITES(HttpServletRequest request) throws Exception {
-		// Mise à jour des liste de spécificités a modifier.
+		// Mise à  jour des liste de spécificités a modifier.
 		if (getListeAvantage() != null) {
 			VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_LST_AV_NATURE, getListeAvantage());
 		}
@@ -4174,7 +4174,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_RESPONSABLE
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_RESPONSABLE
 	 * Date de création : (29/07/11 13:47:43)
 	 * 
 	 * 
@@ -4199,7 +4199,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 	/**
 	 * @param focus
-	 *            à définir.
+	 *            à  définir.
 	 */
 	public void setFocus(String focus) {
 		this.focus = focus;
@@ -4270,7 +4270,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	 * Met a jour la liste des AvantageNature a ajouter.
 	 * 
 	 * @param listeAvantageAAjouter
-	 *            listeAvantageAAjouter à définir
+	 *            listeAvantageAAjouter à  définir
 	 */
 	private void setListeAvantageAAjouter(ArrayList<AvantageNature> listeAvantageAAjouter) {
 		this.listeAvantageAAjouter = listeAvantageAAjouter;
@@ -4313,7 +4313,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	 * Met a jour la liste des Delegation.
 	 * 
 	 * @param listeDelegation
-	 *            listeDelegation à définir
+	 *            listeDelegation à  définir
 	 */
 	private void setListeDelegation(ArrayList<Delegation> listeDelegation) {
 		this.listeDelegation = listeDelegation;
@@ -4498,7 +4498,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_OBSERVATION Date de création : (01/08/11 09:12:27)
 	 * 
 	 * 
@@ -4518,7 +4518,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_MISSIONS Date de création : (01/08/11 09:12:27)
 	 * 
 	 * 
@@ -4540,7 +4540,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	 * Met a jour le service sélectionné.
 	 * 
 	 * @param service
-	 *            service à définir
+	 *            service à  définir
 	 */
 	private void setService(EntiteDto service) {
 		this.service = service;
@@ -4557,7 +4557,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_DATE_DEBUT_APPLI_SERV Date de création : (22/08/11 09:09:51)
 	 * 
 	 * 
@@ -4577,7 +4577,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie : EF_OPI
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie : EF_OPI
 	 * Date de création : (22/08/11 11:07:24)
 	 * 
 	 * 
@@ -4683,7 +4683,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_TITRE_POSTE Date de création : (30/08/11 10:25:41)
 	 * 
 	 * 
@@ -4703,7 +4703,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_NIVEAU_ETUDE_MULTI Date de création : (31/08/11 10:18:01)
 	 * 
 	 * 
@@ -4821,7 +4821,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACTION Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_ACTION Date de
 	 * création : (12/09/11 11:49:01)
 	 * 
 	 * 
@@ -4971,7 +4971,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_REMPLACEMENT
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_REMPLACEMENT
 	 * Date de création : (11/10/11 10:23:53)
 	 * 
 	 * 
@@ -5081,7 +5081,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_INFO_FP Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_INFO_FP Date
 	 * de création : (29/11/11 16:42:44)
 	 * 
 	 * 
@@ -5101,7 +5101,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_INFO_GRADE
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_INFO_GRADE
 	 * Date de création : (29/11/11 16:42:44)
 	 * 
 	 * 
@@ -5121,7 +5121,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_INFO_SERVICE
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_INFO_SERVICE
 	 * Date de création : (29/11/11 16:42:44)
 	 * 
 	 * 
@@ -5141,7 +5141,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_INFO_REMP Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_INFO_REMP Date
 	 * de création : (29/11/11 16:42:44)
 	 * 
 	 * 
@@ -5161,7 +5161,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_INFO_RESP Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_INFO_RESP Date
 	 * de création : (29/11/11 16:42:44)
 	 * 
 	 * 
@@ -5228,7 +5228,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	 * Setter de la HashTable des types de nature d'avantage.
 	 * 
 	 * @param hashNatAv
-	 *            hashNatAv à définir
+	 *            hashNatAv à  définir
 	 */
 	public void setHashNatAv(HashMap<Integer, NatureAvantage> hashNatAv) {
 		this.hashNatAv = hashNatAv;
@@ -5469,7 +5469,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	 * Setter du type de contrat courant de l'agent affecte.
 	 * 
 	 * @param typeContratCourant
-	 *            typeContratCourant à définir
+	 *            typeContratCourant à  définir
 	 */
 	private void setTypeContratCourant(TypeContrat typeContratCourant) {
 		this.typeContratCourant = typeContratCourant;
@@ -5697,7 +5697,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ID_ACTI Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_ID_ACTI Date
 	 * de création : (21/11/11 09:55:36)
 	 * 
 	 * 
@@ -5717,7 +5717,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_LIB_ACTI Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_LIB_ACTI Date
 	 * de création : (21/11/11 09:55:36)
 	 * 
 	 * 
@@ -5727,7 +5727,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la case à cocher sélectionnée pour la JSP :
+	 * Retourne le nom de la case à  cocher sélectionnée pour la JSP :
 	 * CK_SELECT_LIGNE_ACTI Date de création : (21/11/11 09:55:36)
 	 * 
 	 * 
@@ -5737,7 +5737,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur de la case à cocher à afficher par la JSP pour la case
+	 * Retourne la valeur de la case à  cocher à  afficher par la JSP pour la case
 	 * a cocher : CK_SELECT_LIGNE_ACTI Date de création : (21/11/11 09:55:36)
 	 * 
 	 * 
@@ -5784,7 +5784,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
+	 * Retourne la valeur à  afficher par la JSP pour la zone :
 	 * ST_LIB_ORIGINE_ACTI Date de création : (21/11/11 09:55:36)
 	 * 
 	 * 
@@ -5859,7 +5859,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ID_COMP Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_ID_COMP Date
 	 * de création : (21/11/11 09:55:36)
 	 * 
 	 * 
@@ -5879,7 +5879,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_LIB_COMP Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_LIB_COMP Date
 	 * de création : (21/11/11 09:55:36)
 	 * 
 	 * 
@@ -5899,7 +5899,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_TYPE_COMP Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_TYPE_COMP Date
 	 * de création : (21/11/11 09:55:36)
 	 * 
 	 * 
@@ -5909,7 +5909,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la case à cocher sélectionnée pour la JSP :
+	 * Retourne le nom de la case à  cocher sélectionnée pour la JSP :
 	 * CK_SELECT_LIGNE_COMP Date de création : (21/11/11 09:55:36)
 	 * 
 	 * 
@@ -5919,7 +5919,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur de la case à cocher à afficher par la JSP pour la case
+	 * Retourne la valeur de la case à  cocher à  afficher par la JSP pour la case
 	 * a cocher : CK_SELECT_LIGNE_COMP Date de création : (21/11/11 09:55:36)
 	 * 
 	 * 
@@ -5939,7 +5939,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
+	 * Retourne la valeur à  afficher par la JSP pour la zone :
 	 * ST_LIB_ORIGINE_COMP Date de création : (21/11/11 09:55:36)
 	 * 
 	 * 
@@ -5990,7 +5990,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_COMPPRO Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_COMPPRO Date
 	 * de création : (18/08/11 10:21:15)
 	 * 
 	 * 
@@ -6010,7 +6010,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_COMPPRO Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_COMPPRO Date
 	 * de création : (18/08/11 10:21:15)
 	 * 
 	 * 
@@ -6030,7 +6030,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_COMPPRO Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_COMPPRO Date
 	 * de création : (18/08/11 10:21:15)
 	 * 
 	 * 
@@ -6050,7 +6050,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_COMPPRO Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_COMPPRO Date
 	 * de création : (18/08/11 10:21:15)
 	 * 
 	 * 
@@ -6070,7 +6070,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_COMPPRO Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_COMPPRO Date
 	 * de création : (18/08/11 10:21:15)
 	 * 
 	 * 
@@ -6090,7 +6090,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_COMPPRO Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_COMPPRO Date
 	 * de création : (18/08/11 10:21:15)
 	 * 
 	 * 
@@ -6110,7 +6110,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_COMPPRO Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_COMPPRO Date
 	 * de création : (18/08/11 10:21:15)
 	 * 
 	 * 
@@ -6130,7 +6130,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_COMPPRO Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_COMPPRO Date
 	 * de création : (18/08/11 10:21:15)
 	 * 
 	 * 
@@ -6150,7 +6150,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_COMPPRO Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_COMPPRO Date
 	 * de création : (18/08/11 10:21:15)
 	 * 
 	 * 
@@ -6734,7 +6734,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 		if (getFichePosteCourante() != null && getFichePosteCourante().getIdFichePoste() != null) {
 
-			// on fait appel à SIRH-WS pour la suppression
+			// on fait appel à  SIRH-WS pour la suppression
 			ReturnMessageDto srm = sirhService.deleteFDP(getFichePosteCourante().getIdFichePoste(), getAgentConnecte(request).getIdAgent());
 
 			String err = Const.CHAINE_VIDE;

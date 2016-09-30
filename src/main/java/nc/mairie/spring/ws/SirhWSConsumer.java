@@ -208,7 +208,7 @@ public class SirhWSConsumer extends BaseWsConsumer implements ISirhWSConsumer {
 	}
 
 	/**
-	 * Retourne la liste des bases horaires par rapport à la liste des
+	 * Retourne la liste des bases horaires par rapport à  la liste des
 	 * affectations de l'agent triees par date de debut dans l ordre croissant
 	 */
 	@Override

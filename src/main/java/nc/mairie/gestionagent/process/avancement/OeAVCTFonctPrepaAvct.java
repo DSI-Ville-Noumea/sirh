@@ -10,6 +10,10 @@ import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.enums.EnumEtatAvancement;
 import nc.mairie.enums.EnumEtatEAE;
+import nc.mairie.gestionagent.eae.dto.CampagneEaeDto;
+import nc.mairie.gestionagent.eae.dto.EaeDto;
+import nc.mairie.gestionagent.eae.dto.FormRehercheGestionEae;
+import nc.mairie.gestionagent.radi.dto.LightUserDto;
 import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.Agent;
@@ -17,14 +21,9 @@ import nc.mairie.metier.agent.PositionAdm;
 import nc.mairie.metier.avancement.AvancementFonctionnaires;
 import nc.mairie.metier.carriere.FiliereGrade;
 import nc.mairie.metier.carriere.Grade;
-import nc.mairie.metier.eae.CampagneEAE;
-import nc.mairie.metier.eae.EAE;
-import nc.mairie.spring.dao.metier.EAE.CampagneEAEDao;
-import nc.mairie.spring.dao.metier.EAE.EaeEAEDao;
 import nc.mairie.spring.dao.metier.agent.AgentDao;
 import nc.mairie.spring.dao.metier.avancement.AvancementFonctionnairesDao;
 import nc.mairie.spring.dao.metier.referentiel.AutreAdministrationDao;
-import nc.mairie.spring.dao.utils.EaeDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
@@ -36,6 +35,8 @@ import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
 import nc.mairie.utils.VariablesActivite;
 import nc.noumea.spring.service.IAdsService;
+import nc.noumea.spring.service.IEaeService;
+import nc.noumea.spring.service.IRadiService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,18 +65,20 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 
 	private ArrayList<AvancementFonctionnaires> listeAvct;
 
-	private EaeEAEDao eaeDao;
-	private CampagneEAEDao campagneEAEDao;
 	private AutreAdministrationDao autreAdministrationDao;
 	private AvancementFonctionnairesDao avancementFonctionnairesDao;
 	private AgentDao agentDao;
 
 	private IAdsService adsService;
 
+	private IEaeService	eaeService;
+
+	private IRadiService radiService;
+
 	private SimpleDateFormat sdfFormatDate = new SimpleDateFormat("dd/MM/yyyy");
 
 	/**
-	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones à  afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
 	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
 	 * addZone(getNOMxxx, String); Date de création : (21/11/11 09:55:36)
@@ -159,12 +162,6 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 		// on initialise le dao
 		ApplicationContext context = ApplicationContextProvider.getContext();
 
-		if (getEAEDao() == null) {
-			setEAEDao(new EaeEAEDao((EaeDao) context.getBean("eaeDao")));
-		}
-		if (getCampagneEAEDao() == null) {
-			setCampagneEAEDao(new CampagneEAEDao((EaeDao) context.getBean("eaeDao")));
-		}
 		if (getAutreAdministrationDao() == null) {
 			setAutreAdministrationDao(new AutreAdministrationDao((SirhDao) context.getBean("sirhDao")));
 		}
@@ -176,6 +173,12 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 		}
 		if (null == adsService) {
 			adsService = (IAdsService) context.getBean("adsService");
+		}
+		if (null == eaeService) {
+			eaeService = (IEaeService) context.getBean("eaeService");
+		}
+		if (null == radiService) {
+			radiService = (IRadiService) context.getBean("radiService");
 		}
 	}
 
@@ -426,17 +429,18 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 				// on regarde si il y a une campagne pour l'année en cours de
 				// l'avancement
 				try {
-					CampagneEAE campagne = getCampagneEAEDao().chercherCampagneEAEAnnee(avct.getAnnee());
-					// on regarde si il y a une ligne dans EAE
-					try {
-						EAE eaeAgentAnne = getEAEDao().chercherEAEAgent(avct.getIdAgent(), campagne.getIdCampagneEae());
-						if (!eaeAgentAnne.getEtat().equals(EnumEtatEAE.CONTROLE.getCode())) {
-							// si oui alors on flag CAP a true;
-							getEAEDao().modifierCAP(eaeAgentAnne.getIdEae(), true);
-						}
-					} catch (Exception e) {
-						// il n'y a pas de ligne dans EAE
-						logger.info("Erreur dans la recherche de l'eae : " + e);
+					CampagneEaeDto campagneEAE = eaeService.getCampagneAnneePrecedente(getAgentConnecte(request).getIdAgent(), avct.getAnnee());
+					
+					// on cherche l'eae correspondant ainsi que l'eae evaluation
+					FormRehercheGestionEae form  = new FormRehercheGestionEae();
+					form.setIdCampagneEae(campagneEAE.getIdCampagneEae());
+					form.setIdAgentEvalue(avct.getIdAgent());
+					List<EaeDto> listEae = eaeService.getListeEaeDto(getAgentConnecte(request).getIdAgent(), form);
+					EaeDto eaeAgentAnne = eaeService.getEaeDtoByIdAgent(listEae, avct.getIdAgent());
+					
+					if (!eaeAgentAnne.getEtat().equals(EnumEtatEAE.CONTROLE.getCode())) {
+						// si oui alors on flag CAP a true;
+						eaeService.updateCapEae(getAgentConnecte(request).getIdAgent(), eaeAgentAnne.getIdEae(), true);
 					}
 				} catch (Exception e) {
 					// il n'y a pas de campagne pour l'année d'avancement
@@ -466,16 +470,18 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 				// on regarde si il y a une campagne pour l'année en cours de
 				// l'avancement
 				try {
-					CampagneEAE campagne = getCampagneEAEDao().chercherCampagneEAEAnnee(avct.getAnnee());
-					// on regarde si il y a une ligne dans EAE
-					try {
-						EAE eaeAgentAnne = getEAEDao().chercherEAEAgent(avct.getIdAgent(), campagne.getIdCampagneEae());
-						if (!eaeAgentAnne.getEtat().equals(EnumEtatEAE.CONTROLE.getCode())) {
-							// si oui alors on flag CAP a false;
-							getEAEDao().modifierCAP(eaeAgentAnne.getIdEae(), false);
-						}
-					} catch (Exception e) {
-						// il n'y a pas de ligne dans EAE
+					CampagneEaeDto campagneEAE = eaeService.getCampagneAnneePrecedente(getAgentConnecte(request).getIdAgent(), avct.getAnnee());
+					
+					// on cherche l'eae correspondant ainsi que l'eae evaluation
+					FormRehercheGestionEae form  = new FormRehercheGestionEae();
+					form.setIdCampagneEae(campagneEAE.getIdCampagneEae());
+					form.setIdAgentEvalue(avct.getIdAgent());
+					List<EaeDto> listEae = eaeService.getListeEaeDto(getAgentConnecte(request).getIdAgent(), form);
+					EaeDto eaeAgentAnne = eaeService.getEaeDtoByIdAgent(listEae, avct.getIdAgent());
+					
+					if (!eaeAgentAnne.getEtat().equals(EnumEtatEAE.CONTROLE.getCode())) {
+						// si oui alors on flag CAP a false;
+						eaeService.updateCapEae(getAgentConnecte(request).getIdAgent(), eaeAgentAnne.getIdEae(), true);
 					}
 				} catch (Exception e) {
 					// il n'y a pas de campagne pour l'année d'avancement
@@ -501,7 +507,7 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACC_A Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_ACC_A Date de
 	 * création : (21/11/11 09:55:36)
 	 * 
 	 */
@@ -519,7 +525,7 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACC_J Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_ACC_J Date de
 	 * création : (21/11/11 09:55:36)
 	 * 
 	 */
@@ -537,7 +543,7 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACC_M Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_ACC_M Date de
 	 * création : (21/11/11 09:55:36)
 	 * 
 	 */
@@ -555,7 +561,7 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_AGENT Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_AGENT Date de
 	 * création : (21/11/11 09:55:36)
 	 * 
 	 */
@@ -573,7 +579,7 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_BM_A Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_BM_A Date de
 	 * création : (21/11/11 09:55:36)
 	 * 
 	 */
@@ -591,7 +597,7 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_BM_J Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_BM_J Date de
 	 * création : (21/11/11 09:55:36)
 	 * 
 	 */
@@ -609,7 +615,7 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_BM_M Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_BM_M Date de
 	 * création : (21/11/11 09:55:36)
 	 * 
 	 */
@@ -627,7 +633,7 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_CATEGORIE Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_CATEGORIE Date
 	 * de création : (21/11/11 09:55:36)
 	 * 
 	 */
@@ -645,7 +651,7 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE_AVCT Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_DATE_AVCT Date
 	 * de création : (21/11/11 09:55:36)
 	 * 
 	 */
@@ -663,7 +669,7 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE_DEBUT
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_DATE_DEBUT
 	 * Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
@@ -681,7 +687,7 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_IBA Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_IBA Date de
 	 * création : (21/11/11 09:55:36)
 	 * 
 	 */
@@ -699,7 +705,7 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_INM Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_INM Date de
 	 * création : (21/11/11 09:55:36)
 	 * 
 	 */
@@ -717,7 +723,7 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_INA Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_INA Date de
 	 * création : (21/11/11 09:55:36)
 	 * 
 	 */
@@ -735,7 +741,7 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DIRECTION Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_DIRECTION Date
 	 * de création : (21/11/11 09:55:36)
 	 * 
 	 */
@@ -753,7 +759,7 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_GRADE_LIB Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_GRADE_LIB Date
 	 * de création : (21/11/11 09:55:36)
 	 * 
 	 */
@@ -795,7 +801,7 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_PERIODE_STD
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_PERIODE_STD
 	 * Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
@@ -813,7 +819,7 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_NUM_AVCT Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_NUM_AVCT Date
 	 * de création : (21/11/11 09:55:36)
 	 * 
 	 */
@@ -831,7 +837,7 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ETAT Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_ETAT Date de
 	 * création : (21/11/11 09:55:36)
 	 * 
 	 */
@@ -840,7 +846,7 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la case à cocher sélectionnée pour la JSP :
+	 * Retourne le nom de la case à  cocher sélectionnée pour la JSP :
 	 * CK_VALID_SGC Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
@@ -849,7 +855,7 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur de la case à cocher à afficher par la JSP pour la case
+	 * Retourne la valeur de la case à  cocher à  afficher par la JSP pour la case
 	 * a cocher : CK_VALID_DRH Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
@@ -923,7 +929,7 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_ANNEE Date de création : (28/11/11 09:55:36)
 	 * 
 	 */
@@ -932,7 +938,7 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_ANNEE Date de création : (28/11/11)
 	 * 
 	 */
@@ -968,7 +974,7 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_CARRIERE_SIMU
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_CARRIERE_SIMU
 	 * Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
@@ -986,7 +992,7 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_USER_VALID_SGC
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_USER_VALID_SGC
 	 * Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
@@ -1032,7 +1038,7 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_FILIERE Date de création : (28/11/11 09:55:36)
 	 * 
 	 */
@@ -1041,7 +1047,7 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_FILIERE Date de création : (28/11/11)
 	 * 
 	 */
@@ -1067,7 +1073,7 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_AGENT Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_AGENT Date de
 	 * création : (02/08/11 09:40:42)
 	 * 
 	 */
@@ -1132,7 +1138,7 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_SERVICE Date de création : (13/09/11 11:47:15)
 	 * 
 	 */
@@ -1183,7 +1189,7 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_CODE_SERVICE
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_CODE_SERVICE
 	 * Date de création : (13/09/11 08:45:29)
 	 * 
 	 */
@@ -1197,22 +1203,6 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 
 	public String getVAL_ST_PA(int i) {
 		return getZone(getNOM_ST_PA(i));
-	}
-
-	public EaeEAEDao getEAEDao() {
-		return eaeDao;
-	}
-
-	public void setEAEDao(EaeEAEDao eaeDao) {
-		this.eaeDao = eaeDao;
-	}
-
-	public CampagneEAEDao getCampagneEAEDao() {
-		return campagneEAEDao;
-	}
-
-	public void setCampagneEAEDao(CampagneEAEDao campagneEAEDao) {
-		this.campagneEAEDao = campagneEAEDao;
 	}
 
 	public AutreAdministrationDao getAutreAdministrationDao() {
@@ -1237,5 +1227,31 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 
 	public void setAgentDao(AgentDao agentDao) {
 		this.agentDao = agentDao;
+	}
+
+	private Agent getAgentConnecte(HttpServletRequest request) throws Exception {
+		Agent agent = null;
+
+		UserAppli uUser = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
+		// on fait la correspondance entre le login et l'agent via RADI
+		LightUserDto user = radiService.getAgentCompteADByLogin(uUser.getUserName());
+		if (user == null) {
+			getTransaction().traiterErreur();
+			// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
+			return null;
+		} else {
+			if (user != null && user.getEmployeeNumber() != null && user.getEmployeeNumber() != 0) {
+				try {
+					agent = getAgentDao().chercherAgentParMatricule(radiService.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
+				} catch (Exception e) {
+					// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
+					return null;
+				}
+			}
+		}
+
+		return agent;
 	}
 }

@@ -43,7 +43,7 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 	public String focus = null;
 
 	/**
-	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones à  afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
 	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
 	 * addZone(getNOMxxx, String); Date de création : (14/09/11 13:52:54)
@@ -181,7 +181,7 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 
 	/**
 	 * @param focus
-	 *            focus à définir.
+	 *            focus à  définir.
 	 */
 	public void setFocus(String focus) {
 		this.focus = focus;
@@ -197,7 +197,7 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACTION_MOTIF
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_ACTION_MOTIF
 	 * Date de création : (14/09/11 13:52:54)
 	 * 
 	 */
@@ -215,7 +215,7 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_LIB_MOTIF Date de création : (14/09/11 13:52:54)
 	 * 
 	 */
@@ -261,7 +261,7 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_MOTIF Date de création : (14/09/11 13:52:54)
 	 * 
 	 */
@@ -270,7 +270,7 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_MOTIF Date de création : (14/09/11 13:52:54)
 	 * 
 	 */
@@ -454,7 +454,7 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 			for (MotifCarriere motif : getListeMotif()) {
 				if (motif.getLibMotifCarriere().toUpperCase().equals(getVAL_EF_LIB_MOTIF().toUpperCase())) {
 					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
+					// "Attention, il existe déjà  @ avec @. Veuillez contrôler."
 					getTransaction().declarerErreur(
 							MessageUtils.getMessage("ERR974", "un motif de carrière", "ce libellé"));
 					return false;

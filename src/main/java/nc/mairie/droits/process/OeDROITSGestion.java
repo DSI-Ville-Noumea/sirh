@@ -174,7 +174,7 @@ public class OeDROITSGestion extends BasicProcess {
 	 * Setter de la liste des éléments.
 	 * 
 	 * @param listeElement
-	 *            listeElement à définir
+	 *            listeElement à  définir
 	 */
 	private void setListeElement(ArrayList<Element> listeElement) {
 		this.listeElement = listeElement;
@@ -214,7 +214,7 @@ public class OeDROITSGestion extends BasicProcess {
 
 	/**
 	 * @param focus
-	 *            focus à définir.
+	 *            focus à  définir.
 	 */
 	public void setFocus(String focus) {
 		this.focus = focus;
@@ -318,7 +318,7 @@ public class OeDROITSGestion extends BasicProcess {
 	}
 
 	/**
-	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones à  afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
 	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
 	 * addZone(getNOMxxx, String); Date de création : (10/10/11 16:15:05)
@@ -421,7 +421,7 @@ public class OeDROITSGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACTION Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_ACTION Date de
 	 * création : (10/10/11 16:15:06)
 	 * 
 	 * @return String
@@ -443,7 +443,7 @@ public class OeDROITSGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_NOM_ELEMENT Date de création : (10/10/11 16:15:06)
 	 * 
 	 * @return String
@@ -465,7 +465,7 @@ public class OeDROITSGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_NOM_GROUPE Date de création : (10/10/11 16:15:06)
 	 * 
 	 * @return String
@@ -594,7 +594,7 @@ public class OeDROITSGestion extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_TYPE_DROIT Date de création : (11/10/11 11:39:06)
 	 * 
 	 * @param i
@@ -609,7 +609,7 @@ public class OeDROITSGestion extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_TYPE_DROIT Date de création : (11/10/11 11:39:06)
 	 * 
 	 * @param i
@@ -891,7 +891,7 @@ public class OeDROITSGestion extends BasicProcess {
 		getGroupeDao().supprimerGroupe(getGroupeCourant().getIdGroupe());
 		commitTransaction();
 
-		// Mise à jour de la liste de droits
+		// Mise à  jour de la liste de droits
 		ArrayList<Droit> droitsASupprimer = new ArrayList<Droit>();
 		for (int i = 0; i < getListeDroits().size(); i++) {
 			Droit d = (Droit) getListeDroits().get(i);
@@ -900,7 +900,7 @@ public class OeDROITSGestion extends BasicProcess {
 		}
 		getListeDroits().removeAll(droitsASupprimer);
 
-		// Mise à jour de la liste des groupes.
+		// Mise à  jour de la liste des groupes.
 		getListeGroupe().remove(getGroupeCourant());
 
 		setGroupeCourant(null);
@@ -921,7 +921,7 @@ public class OeDROITSGestion extends BasicProcess {
 	 * Setter du groupe courant.
 	 * 
 	 * @param groupeCourant
-	 *            groupeCourant à définir
+	 *            groupeCourant à  définir
 	 */
 	private void setGroupeCourant(Groupe groupeCourant) {
 		this.groupeCourant = groupeCourant;

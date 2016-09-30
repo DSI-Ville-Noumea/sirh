@@ -20,7 +20,6 @@
 	<!-- Declaration des datasources recupéré depuis context.xml -->
 	<jee:jndi-lookup id="dataSourceSIRH" jndi-name="jdbc/SIRH_DS1" />
 	<jee:jndi-lookup id="dataSourceMairie" jndi-name="jdbc/SIRH_DS2" />
-	<jee:jndi-lookup id="dataSourceEae" jndi-name="jdbc/SIRH_DS3" />
 
 	<!-- DAO SIRH -->
 	<bean id="sirhDao" class="nc.mairie.spring.dao.utils.DefaultSirhDao">
@@ -32,19 +31,12 @@
 		<property name="dataSource" ref="dataSourceMairie" />
 	</bean>
 
-	<!-- DAO EAE -->
-	<bean id="eaeDao" class="nc.mairie.spring.dao.utils.DefaultEaeDao">
-		<property name="dataSource" ref="dataSourceEae" />
-	</bean>
-	<bean id="eaeNumIncrementDocumentDao" class="nc.mairie.spring.dao.metier.EAE.EaeNumIncrementDocumentDao">
-		<property name="dataSource" ref="dataSourceEae" />
-	</bean>
-
 	<jee:jndi-lookup id="adsWsBaseUrl" jndi-name="ADS_WS_URL" expected-type="java.lang.String"/>
 	<jee:jndi-lookup id="radiWsBaseUrl" jndi-name="RADI_WS_URL" expected-type="java.lang.String"/>	
 	<jee:jndi-lookup id="sirhWsBaseUrl" jndi-name="SIRH_WS_URL" expected-type="java.lang.String"/>	
 	<jee:jndi-lookup id="absWsBaseUrl" jndi-name="SIRH_ABS_WS_URL" expected-type="java.lang.String"/>
 	<jee:jndi-lookup id="ptgWsBaseUrl" jndi-name="SIRH_PTG_WS_URL" expected-type="java.lang.String"/>
+	<jee:jndi-lookup id="eaeWsBaseUrl" jndi-name="SIRH_EAE_WS_URL" expected-type="java.lang.String"/>
 
 	<!-- ALFRESCO -->
 	<jee:jndi-lookup id="alfrescoUrl" jndi-name="ALFRESCO_URL" expected-type="java.lang.String"/>

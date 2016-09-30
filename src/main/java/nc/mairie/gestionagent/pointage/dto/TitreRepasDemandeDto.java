@@ -2,14 +2,23 @@ package nc.mairie.gestionagent.pointage.dto;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import nc.mairie.gestionagent.dto.AgentDto;
+import nc.noumea.mairie.ads.dto.JsonDateDeserializer;
+import nc.noumea.mairie.ads.dto.JsonDateSerializer;
 
 public class TitreRepasDemandeDto {
 
 	private Integer idTrDemande;
 	private AgentDto agent;
 	private Integer idRefEtat;
+	@JsonSerialize(using = JsonDateSerializer.class)
+	@JsonDeserialize(using = JsonDateDeserializer.class)
 	private Date dateSaisie;
+	@JsonSerialize(using = JsonDateSerializer.class)
+	@JsonDeserialize(using = JsonDateDeserializer.class)
 	private Date dateMonth;
 	private Boolean commande;
 	private String commentaire;

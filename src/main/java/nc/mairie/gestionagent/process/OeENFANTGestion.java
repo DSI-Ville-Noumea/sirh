@@ -701,7 +701,7 @@ public class OeENFANTGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_DATE_DECES Date de création : (25/03/03 15:33:11)
 	 * 
 	 */
@@ -710,7 +710,7 @@ public class OeENFANTGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_DATE_NAISS Date de création : (25/03/03 15:33:11)
 	 * 
 	 */
@@ -719,7 +719,7 @@ public class OeENFANTGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie : EF_NOM
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie : EF_NOM
 	 * Date de création : (25/03/03 15:33:11)
 	 * 
 	 */
@@ -728,7 +728,7 @@ public class OeENFANTGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_PRENOM Date de création : (25/03/03 15:33:11)
 	 * 
 	 */
@@ -737,7 +737,7 @@ public class OeENFANTGestion extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_NATIONALITE Date de création : (25/03/03 15:33:11)
 	 * 
 	 */
@@ -746,7 +746,7 @@ public class OeENFANTGestion extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_NATIONALITE Date de création : (25/03/03 15:33:11)
 	 * 
 	 */
@@ -773,7 +773,7 @@ public class OeENFANTGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACTION Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_ACTION Date de
 	 * création : (11/02/03 14:20:31)
 	 * 
 	 */
@@ -782,7 +782,7 @@ public class OeENFANTGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_AGENT Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_AGENT Date de
 	 * création : (25/03/03 15:33:11)
 	 * 
 	 */
@@ -791,7 +791,7 @@ public class OeENFANTGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_AUTRE_PARENT
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_AUTRE_PARENT
 	 * Date de création : (25/03/03 15:33:11)
 	 * 
 	 */
@@ -800,7 +800,7 @@ public class OeENFANTGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_COMMUNE_NAISS
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_COMMUNE_NAISS
 	 * Date de création : (25/03/03 15:33:11)
 	 * 
 	 */
@@ -809,7 +809,7 @@ public class OeENFANTGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_PAYS_NAISS
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_PAYS_NAISS
 	 * Date de création : (25/03/03 15:33:11)
 	 * 
 	 */
@@ -862,7 +862,7 @@ public class OeENFANTGestion extends BasicProcess {
 	}
 
 	/**
-	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones à  afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
 	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
 	 * addZone(getNOMxxx, String); Date de création : (25/03/03 15:33:10)
@@ -994,11 +994,11 @@ public class OeENFANTGestion extends BasicProcess {
 				setFocus(getNOM_EF_DATE_NAISS());
 				return false;
 			}
-			// La date de naissance ne doit pas être supérieure à la date du
+			// La date de naissance ne doit pas être supérieure à  la date du
 			// jour
 			// RG_AG_EN_C02
 			if (Services.compareDates(getZone(getNOM_EF_DATE_NAISS()), Services.dateDuJour()) >= 0) {
-				// ERR204 : La date @ doit être inferieure à la date @.
+				// ERR204 : La date @ doit être inferieure à  la date @.
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR204", "de naissance", "du jour"));
 				setFocus(getNOM_EF_DATE_NAISS());
 				return false;
@@ -1012,14 +1012,14 @@ public class OeENFANTGestion extends BasicProcess {
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR203"));
 				return false;
 			} else if (compare < 1) {
-				// ERR205 : La date @ doit être supérieure à la date @.
+				// ERR205 : La date @ doit être supérieure à  la date @.
 				getTransaction().declarerErreur(
 						MessageUtils.getMessage("ERR205", "de naissance de l'enfant", "de naissance de l'agent ("
 								+ getAgentCourant().getDateNaissance() + ")"));
 				setFocus(getNOM_EF_DATE_NAISS());
 				return false;
 			}
-			// la date de naissance ne doit pas être supérieure à la date de
+			// la date de naissance ne doit pas être supérieure à  la date de
 			// début de scolarité -2
 			// RG_AG_EN_C04
 			for (int i = 0; i < getListeScolarites().size(); i++) {
@@ -1029,7 +1029,7 @@ public class OeENFANTGestion extends BasicProcess {
 					// Si date de début inferieure a date de naissance + 2 ans
 					if (Services.compareDates(sdf.format(scol.getDateDebutScolarite()),
 							Services.ajouteAnnee(Services.formateDate(getZone(getNOM_EF_DATE_NAISS())), 2)) < 0) {
-						// "ERR205","La date @ doit être supérieure à la date @"
+						// "ERR205","La date @ doit être supérieure à  la date @"
 						getTransaction().declarerErreur(
 								MessageUtils.getMessage("ERR205", "début scolarité", "de naissance + 2 ans"));
 						return false;
@@ -1050,18 +1050,18 @@ public class OeENFANTGestion extends BasicProcess {
 				setFocus(getNOM_EF_DATE_DECES());
 				return false;
 			}
-			// la date de déces ne doit pas être supérieure à la date du jour
+			// la date de déces ne doit pas être supérieure à  la date du jour
 			// RG_AG_EN_C03
 			if (Services.compareDates(getZone(getNOM_EF_DATE_DECES()), Services.dateDuJour()) >= 0) {
-				// ERR204 : La date @ doit être inferieure à la date @.
+				// ERR204 : La date @ doit être inferieure à  la date @.
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR204", "de décès", "du jour"));
 				setFocus(getNOM_EF_DATE_NAISS());
 				return false;
 			}
 
-			// La date de déces doit être supérieure à la date de naissance
+			// La date de déces doit être supérieure à  la date de naissance
 			if (Services.compareDates(getZone(getNOM_EF_DATE_NAISS()), getZone(getNOM_EF_DATE_DECES())) >= 0) {
-				// ERR204 : La date @ doit être inferieure à la date @.
+				// ERR204 : La date @ doit être inferieure à  la date @.
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR204", "de naissance", "de décès"));
 				setFocus(getNOM_EF_DATE_DECES());
 				return false;
@@ -1097,7 +1097,7 @@ public class OeENFANTGestion extends BasicProcess {
 				// RG_AG_EN_C04
 				if (Services.compareDates(dateDebutScol,
 						Services.ajouteAnnee(Services.formateDate(getZone(getNOM_EF_DATE_NAISS())), 2)) < 0) {
-					// "ERR205","La date @ doit être supérieure à la date @"
+					// "ERR205","La date @ doit être supérieure à  la date @"
 					getTransaction().declarerErreur(
 							MessageUtils.getMessage("ERR205", "début scolarité", "de naissance + 2 ans"));
 					return false;
@@ -1114,11 +1114,11 @@ public class OeENFANTGestion extends BasicProcess {
 					return false;
 				}
 
-				// Si Date fin scolarité saisie, elle doit être supérieure à la
+				// Si Date fin scolarité saisie, elle doit être supérieure à  la
 				// Date début scolarité
 				// RG_AG_EN_C05
 				if (Services.compareDates(dateDebutScol, dateFinScol) >= 0) {
-					// "ERR204","La date @ doit être inferieure à la date @"
+					// "ERR204","La date @ doit être inferieure à  la date @"
 					getTransaction().declarerErreur(
 							MessageUtils.getMessage("ERR204", "début scolarité", "fin scolarité"));
 					return false;
@@ -1291,7 +1291,7 @@ public class OeENFANTGestion extends BasicProcess {
 		// Affectation des zones
 		alimenterEnfantCourant(request);
 
-		// Verif enfant pas déjà existant (même nom, prénom, date de Naissance)
+		// Verif enfant pas déjà  existant (même nom, prénom, date de Naissance)
 		Date dateNaiss = sdf.parse(Services.formateDate(getVAL_EF_DATE_NAISS()));
 		ArrayList<Enfant> listEnfant = getEnfantDao().listerEnfantHomonyme(getVAL_EF_NOM(), getVAL_EF_PRENOM(),
 				dateNaiss);
@@ -1314,7 +1314,7 @@ public class OeENFANTGestion extends BasicProcess {
 					getEnfantCourant().getDateDeces(), getEnfantCourant().getNationalite(),
 					getEnfantCourant().getCommentaire());
 
-			// Mise à jour du lien enfant parent
+			// Mise à  jour du lien enfant parent
 			boolean estACharge = getVAL_RG_CHARGE().equals(getNOM_RB_CHARGE_O());
 			if (getAgentCourant() != null) {
 				LienEnfantAgent newLien = new LienEnfantAgent();
@@ -1327,7 +1327,7 @@ public class OeENFANTGestion extends BasicProcess {
 					return false;
 			}
 
-			// Mise à jour du lien enfant autreParent
+			// Mise à  jour du lien enfant autreParent
 			// RG_AG_EN_C01
 			if (getAutreParentCourant() != null) {
 				setLienEnfantAutreParent(new LienEnfantAgent());
@@ -1380,12 +1380,12 @@ public class OeENFANTGestion extends BasicProcess {
 				getEnfantCourant().getDateDeces(), getEnfantCourant().getNationalite(),
 				getEnfantCourant().getCommentaire());
 
-		// Mise à jour du lien enfant parent
+		// Mise à  jour du lien enfant parent
 		getLienEnfantAgentCourant().setEnfantACharge(getVAL_RG_CHARGE().equals(getNOM_RB_CHARGE_O()));
 		getLienEnfantAgentDao().modifierLienEnfantAgent(getLienEnfantAgentCourant().getIdAgent(),
 				getLienEnfantAgentCourant().getIdEnfant(), getLienEnfantAgentCourant().isEnfantACharge());
 
-		// Mise à jour du lien enfant autreParent
+		// Mise à  jour du lien enfant autreParent
 		// RG_AG_EN_C01
 		if (getLienEnfantAutreParent() == null && getAutreParentCourant() != null) {
 			LienEnfantAgent newLien = new LienEnfantAgent();
@@ -1570,7 +1570,7 @@ public class OeENFANTGestion extends BasicProcess {
 
 	/**
 	 * @param focus
-	 *            focus à définir.
+	 *            focus à  définir.
 	 */
 	public void setFocus(String focus) {
 		this.focus = focus;
@@ -1586,7 +1586,7 @@ public class OeENFANTGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACHARGE Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_ACHARGE Date
 	 * de création : (29/09/08 10:53:21)
 	 * 
 	 */
@@ -1604,7 +1604,7 @@ public class OeENFANTGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_AUTREPARENT
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_AUTREPARENT
 	 * Date de création : (29/09/08 10:53:21)
 	 * 
 	 */
@@ -1622,7 +1622,7 @@ public class OeENFANTGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATEDECES Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_DATEDECES Date
 	 * de création : (29/09/08 10:53:21)
 	 * 
 	 */
@@ -1640,7 +1640,7 @@ public class OeENFANTGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATENAISS Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_DATENAISS Date
 	 * de création : (29/09/08 10:53:21)
 	 * 
 	 */
@@ -1658,7 +1658,7 @@ public class OeENFANTGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_LIEUNAISS Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_LIEUNAISS Date
 	 * de création : (29/09/08 10:53:21)
 	 * 
 	 */
@@ -1676,7 +1676,7 @@ public class OeENFANTGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_NATIONALITE
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_NATIONALITE
 	 * Date de création : (29/09/08 10:53:21)
 	 * 
 	 */
@@ -1694,7 +1694,7 @@ public class OeENFANTGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_NOM Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_NOM Date de
 	 * création : (29/09/08 10:53:21)
 	 * 
 	 */
@@ -1712,7 +1712,7 @@ public class OeENFANTGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_PRENOM Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_PRENOM Date de
 	 * création : (29/09/08 10:53:21)
 	 * 
 	 */
@@ -1730,7 +1730,7 @@ public class OeENFANTGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_SCOLARISE Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_SCOLARISE Date
 	 * de création : (29/09/08 10:53:21)
 	 * 
 	 */
@@ -1748,7 +1748,7 @@ public class OeENFANTGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_SEXE Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_SEXE Date de
 	 * création : (29/09/08 10:53:21)
 	 * 
 	 */
@@ -1766,7 +1766,7 @@ public class OeENFANTGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_COMMENTAIRE Date de création : (18/04/11 12:00:12)
 	 * 
 	 */
@@ -1784,7 +1784,7 @@ public class OeENFANTGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_DATE_DEBUT_SCOLARITE Date de création : (18/04/11 12:07:21)
 	 * 
 	 */
@@ -1802,7 +1802,7 @@ public class OeENFANTGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_DATE_FIN_SCOLARITE Date de création : (18/04/11 12:07:21)
 	 * 
 	 */
@@ -1848,7 +1848,7 @@ public class OeENFANTGestion extends BasicProcess {
 			getScolariteCourant().setDateDebutScolarite(sdf.parse(dateDebutScolarite));
 			getScolariteCourant().setDateFinScolarite(dateFinScolarite == null ? null : sdf.parse(dateFinScolarite));
 
-			// Ajout à la liste
+			// Ajout à  la liste
 			getListeScolarites().add(getScolariteCourant());
 			rafraichirListeScolarite(request);
 		}
@@ -1940,7 +1940,7 @@ public class OeENFANTGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_COMMENTAIRE
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_COMMENTAIRE
 	 * Date de création : (08/06/11 11:38:56)
 	 * 
 	 */
@@ -2064,7 +2064,7 @@ public class OeENFANTGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_NOM Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_NOM Date de
 	 * création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -2082,7 +2082,7 @@ public class OeENFANTGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_PRENOM Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_PRENOM Date de
 	 * création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -2100,7 +2100,7 @@ public class OeENFANTGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_SEXE Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_SEXE Date de
 	 * création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -2118,7 +2118,7 @@ public class OeENFANTGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE_NAISS
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_DATE_NAISS
 	 * Date de création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -2136,7 +2136,7 @@ public class OeENFANTGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_LIEU_NAISS
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_LIEU_NAISS
 	 * Date de création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -2274,7 +2274,7 @@ public class OeENFANTGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE_DEBUT
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_DATE_DEBUT
 	 * Date de création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -2292,7 +2292,7 @@ public class OeENFANTGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE_FIN Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_DATE_FIN Date
 	 * de création : (18/08/11 10:21:15)
 	 * 
 	 */

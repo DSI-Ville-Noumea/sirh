@@ -139,7 +139,7 @@ public class RobotAgent extends Robot {
 	}
 
 	/**
-	 * Insérez la description de la Méthode à cet endroit. Date de création :
+	 * Insérez la description de la Méthode à  cet endroit. Date de création :
 	 * (28/10/02 10:16:34)
 	 */
 	public BasicProcess getDefaultProcess() {
@@ -147,7 +147,7 @@ public class RobotAgent extends Robot {
 	}
 
 	/**
-	 * Insérez la description de la Méthode à cet endroit. Date de création :
+	 * Insérez la description de la Méthode à  cet endroit. Date de création :
 	 * (28/10/02 10:16:34)
 	 */
 	public BasicProcess getFirstProcess(String activite) throws Exception {

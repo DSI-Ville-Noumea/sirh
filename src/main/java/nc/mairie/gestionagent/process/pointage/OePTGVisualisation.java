@@ -136,7 +136,7 @@ public class OePTGVisualisation extends BasicProcess {
 					+ opPtg.getIdAgent().toString().substring(3, opPtg.getIdAgent().toString().length()) + ")");
 
 			addZone(getNOM_ST_ETAT(i), EtatPointageEnum.getEtatPointageEnum(ptg.getIdRefEtat()).name());
-			addZone(getNOM_ST_DATE_SAISIE(i), sdf.format(ptg.getDateSaisie()) + " à " + hrs.format(ptg.getDateSaisie()));
+			addZone(getNOM_ST_DATE_SAISIE(i), sdf.format(ptg.getDateSaisie()) + " à  " + hrs.format(ptg.getDateSaisie()));
 		}
 	}
 
@@ -506,7 +506,7 @@ public class OePTGVisualisation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_SERVICE Date de création : (13/09/11 11:47:15)
 	 * 
 	 */
@@ -515,7 +515,7 @@ public class OePTGVisualisation extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_ETAT Date de création : (28/11/11 09:55:36)
 	 * 
 	 */
@@ -524,7 +524,7 @@ public class OePTGVisualisation extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_ETAT Date de création : (28/11/11)
 	 * 
 	 */
@@ -533,7 +533,7 @@ public class OePTGVisualisation extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_TYPE Date de création : (28/11/11 09:55:36)
 	 * 
 	 */
@@ -546,7 +546,7 @@ public class OePTGVisualisation extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_TYPE Date de création : (28/11/11)
 	 * 
 	 */
@@ -559,7 +559,7 @@ public class OePTGVisualisation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_AGENT Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_AGENT Date de
 	 * création : (21/11/11 09:55:36)
 	 * 
 	 */
@@ -579,7 +579,7 @@ public class OePTGVisualisation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_AGENT_MAX Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_AGENT_MAX Date
 	 * de création : (02/08/11 09:40:42)
 	 * 
 	 */
@@ -588,7 +588,7 @@ public class OePTGVisualisation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_AGENT_MIN Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_AGENT_MIN Date
 	 * de création : (02/08/11 09:40:42)
 	 * 
 	 */
@@ -597,7 +597,7 @@ public class OePTGVisualisation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_CODE_SERVICE
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_CODE_SERVICE
 	 * Date de création : (13/09/11 08:45:29)
 	 * 
 	 */
@@ -606,7 +606,7 @@ public class OePTGVisualisation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_DATE Date de
 	 * création : (21/11/11 09:55:36)
 	 * 
 	 */
@@ -615,7 +615,7 @@ public class OePTGVisualisation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone
+	 * Retourne la valeur à  afficher par la JSP pour la zone
 	 * 
 	 */
 	public String getVAL_ST_DATE_DEB(int i) {
@@ -623,7 +623,7 @@ public class OePTGVisualisation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone
+	 * Retourne la valeur à  afficher par la JSP pour la zone
 	 * 
 	 */
 	public String getVAL_ST_DATE_FIN(int i) {
@@ -631,7 +631,7 @@ public class OePTGVisualisation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE_CAP Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_DATE_CAP Date
 	 * de création : (21/11/11 09:55:36)
 	 * 
 	 */
@@ -640,7 +640,7 @@ public class OePTGVisualisation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE_CAP Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_DATE_CAP Date
 	 * de création : (21/11/11 09:55:36)
 	 * 
 	 */
@@ -649,7 +649,7 @@ public class OePTGVisualisation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE_CAP Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_DATE_CAP Date
 	 * de création : (21/11/11 09:55:36)
 	 * 
 	 */
@@ -658,7 +658,7 @@ public class OePTGVisualisation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone
+	 * Retourne la valeur à  afficher par la JSP pour la zone
 	 * 
 	 */
 	public String getVAL_ST_DATE_SAISIE(int i) {
@@ -666,7 +666,7 @@ public class OePTGVisualisation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone
+	 * Retourne la valeur à  afficher par la JSP pour la zone
 	 * 
 	 */
 	public String getVAL_ST_DUREE(int i) {
@@ -674,7 +674,7 @@ public class OePTGVisualisation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone
+	 * Retourne la valeur à  afficher par la JSP pour la zone
 	 * 
 	 */
 	public String getVAL_ST_ETAT(int i) {
@@ -682,7 +682,7 @@ public class OePTGVisualisation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone
+	 * Retourne la valeur à  afficher par la JSP pour la zone
 	 * 
 	 */
 	public String getVAL_ST_MOTIF(int i) {
@@ -690,7 +690,7 @@ public class OePTGVisualisation extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_TYPE Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_TYPE Date de
 	 * création : (21/11/11 09:55:36)
 	 * 
 	 */

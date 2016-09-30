@@ -12,17 +12,6 @@ import java.util.Map;
 import javax.activation.MimetypesFileTypeMap;
 import javax.annotation.PostConstruct;
 
-import nc.mairie.gestionagent.dto.ReturnMessageDto;
-import nc.mairie.metier.agent.Agent;
-import nc.mairie.metier.parametrage.PathAlfresco;
-import nc.mairie.metier.parametrage.TypeDocument;
-import nc.mairie.spring.dao.metier.parametrage.PathAlfrescoDao;
-import nc.mairie.spring.dao.metier.parametrage.TypeDocumentDao;
-import nc.mairie.spring.dao.utils.SirhDao;
-import nc.noumea.mairie.alfresco.cmis.CmisService;
-import nc.noumea.mairie.alfresco.cmis.CmisUtils;
-import nc.noumea.mairie.alfresco.cmis.CreateSession;
-
 import org.apache.chemistry.opencmis.client.api.CmisObject;
 import org.apache.chemistry.opencmis.client.api.Document;
 import org.apache.chemistry.opencmis.client.api.Folder;
@@ -43,6 +32,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+
+import nc.mairie.gestionagent.dto.ReturnMessageDto;
+import nc.mairie.metier.agent.Agent;
+import nc.mairie.metier.parametrage.PathAlfresco;
+import nc.mairie.metier.parametrage.TypeDocument;
+import nc.mairie.spring.dao.metier.parametrage.PathAlfrescoDao;
+import nc.mairie.spring.dao.metier.parametrage.TypeDocumentDao;
+import nc.mairie.spring.dao.utils.SirhDao;
+import nc.noumea.mairie.alfresco.cmis.CmisService;
+import nc.noumea.mairie.alfresco.cmis.CmisUtils;
+import nc.noumea.mairie.alfresco.cmis.CreateSession;
 
 @Service
 public class AlfrescoCMISService implements IAlfrescoCMISService {

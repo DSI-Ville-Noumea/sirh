@@ -1,7 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" %> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<%@page import="nc.mairie.metier.eae.CampagneAction"%>
+<%@page import="nc.mairie.gestionagent.eae.dto.EaeCampagneActionDto"%>
 <%@page import="nc.mairie.technique.Services"%>
-<%@page import="nc.mairie.metier.eae.CampagneEAE"%>
+<%@page import="nc.mairie.gestionagent.eae.dto.CampagneEaeDto"%>
 <%@page import="nc.mairie.utils.MairieUtils"%>
 <%@page import="nc.mairie.enums.EnumTypeDroit"%>
 <HTML>
@@ -14,12 +14,12 @@
 <SCRIPT type="text/javascript" src="js/GestionCalendrier.js"></SCRIPT> 
 <SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT> 
 		
-		<link rel="stylesheet" href="css/custom-theme/jquery-ui-1.8.16.custom.css" type="text/css">
-		<script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
-		<script type="text/javascript" src="development-bundle/ui/jquery.ui.core.js"></script>
-		<script type="text/javascript" src="development-bundle/ui/jquery.ui.widget.js"></script>
-		<script type="text/javascript" src="development-bundle/ui/jquery.ui.position.js"></script>
-		<script type="text/javascript" src="development-bundle/ui/jquery.ui.autocomplete.js"></script>
+<link rel="stylesheet" href="css/custom-theme/jquery-ui-1.8.16.custom.css" type="text/css">
+<script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="development-bundle/ui/jquery.ui.core.js"></script>
+<script type="text/javascript" src="development-bundle/ui/jquery.ui.widget.js"></script>
+<script type="text/javascript" src="development-bundle/ui/jquery.ui.position.js"></script>
+<script type="text/javascript" src="development-bundle/ui/jquery.ui.autocomplete.js"></script>
 
 <SCRIPT language="JavaScript">
 //afin de sélectionner un élément dans une liste
@@ -83,7 +83,7 @@ function SelectLigne(id,tailleTableau)
 						int indiceAction = 0;
 						if (process.getListeAction()!=null){
 							for (int i = 0;i<process.getListeAction().size();i++){
-								CampagneAction action = process.getListeAction().get(i);
+								EaeCampagneActionDto action = process.getListeAction().get(i);
 						%>
 							<tr id="<%=indiceAction%>" onmouseover="SelectLigne(<%=indiceAction%>,<%=process.getListeAction().size()%>)">
 								<td class="sigp2NewTab-liste" style="position:relative;width:60px;" align="left">

@@ -46,7 +46,7 @@ public class OePARAMETRAGERubrique extends BasicProcess {
 	public String focus = null;
 
 	/**
-	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones à  afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
 	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
 	 * addZone(getNOMxxx, String); Date de création : (14/09/11 13:52:54)
@@ -182,7 +182,7 @@ public class OePARAMETRAGERubrique extends BasicProcess {
 
 	/**
 	 * @param focus
-	 *            focus à définir.
+	 *            focus à  définir.
 	 */
 	public void setFocus(String focus) {
 		this.focus = focus;
@@ -419,7 +419,7 @@ public class OePARAMETRAGERubrique extends BasicProcess {
 			for (RubriqueCharge rubr : getListeRubriqueCharge()) {
 				if (rubr.getNorubr().toString().toUpperCase().equals(getVAL_EF_LIB_RUBRIQUE().toUpperCase())) {
 					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
+					// "Attention, il existe déjà  @ avec @. Veuillez contrôler."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "une rubrique", "ce numéro"));
 					return false;
 				}

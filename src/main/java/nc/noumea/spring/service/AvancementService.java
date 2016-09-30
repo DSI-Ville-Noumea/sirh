@@ -65,7 +65,7 @@ public class AvancementService implements IAvancementService {
 		// L'agent doit avoir 3 ans d'anciennete minimum et 30 maximum pour
 		// être eligible.
 		// on cherche la carriere consecutive en tant que Convention
-		// collective pour savoir si l'agent repond à la regle de
+		// collective pour savoir si l'agent repond à  la regle de
 		// l'anciennete
 		ArrayList<Carriere> listeCarriereConvCol = Carriere.listerCarriereAgentByType(aTransaction, a.getNomatr(), "CC");
 		Carriere plusAnciennCarrConvColl = null;
@@ -398,7 +398,7 @@ public class AvancementService implements IAvancementService {
 		if (aTransaction.isErreur()) {
 			aTransaction.traiterErreur();
 		}
-		// si la carriere à un grade (contractualisation des conventions
+		// si la carriere à  un grade (contractualisation des conventions
 		// collectives)
 		if (carr.getCodeGrade() != null && !carr.getCodeGrade().equals(Const.CHAINE_VIDE)) {
 

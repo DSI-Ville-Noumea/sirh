@@ -72,7 +72,7 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 	private ArrayList<AlerteKiosque> listeAlerteKiosque;
 
 	/**
-	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones à  afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
 	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
 	 * addZone(getNOMxxx, String); Date de création : (14/09/11 13:52:54)
@@ -314,7 +314,7 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 			for (ReferentRh repre : getListeReferentRh()) {
 				if (repre.getIdAgentReferent().toString().equals("900" + getVAL_EF_ID_REFERENT_RH().trim())) {
 					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
+					// "Attention, il existe déjà  @ avec @. Veuillez contrôler."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "un référent", "ce matricule"));
 					return false;
 				}
@@ -612,7 +612,7 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 
 	/**
 	 * @param focus
-	 *            focus à définir.
+	 *            focus à  définir.
 	 */
 	public void setFocus(String focus) {
 		this.focus = focus;
@@ -1413,7 +1413,7 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 
 		// testdate debut < date fin
 		if (Services.compareDates(getVAL_EF_DATE_DEBUT(), getVAL_EF_DATE_FIN()) >= 0) {
-			// "ERR204", "La date @ doit être inferieure à la date @."
+			// "ERR204", "La date @ doit être inferieure à  la date @."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR204", "de début", "de fin"));
 			return false;
 		}

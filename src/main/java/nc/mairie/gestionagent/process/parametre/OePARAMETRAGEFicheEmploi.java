@@ -73,7 +73,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	private FicheEmploiDao ficheEmploiDao;
 
 	/**
-	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones à  afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
 	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
 	 * addZone(getNOMxxx, String); Date de création : (09/09/11 11:54:33)
@@ -466,7 +466,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 			for (DomaineEmploi domaine : getListeDomaine()) {
 				if (domaine.getCodeDomaineFe().equals(getVAL_EF_CODE_DOMAINE().toUpperCase())) {
 					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
+					// "Attention, il existe déjà  @ avec @. Veuillez contrôler."
 					getTransaction().declarerErreur(
 							MessageUtils.getMessage("ERR974", "un domaine d'activité", "ce code"));
 					return false;
@@ -492,7 +492,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACTION_DOMAINE
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_ACTION_DOMAINE
 	 * Date de création : (09/09/11 11:54:33)
 	 * 
 	 */
@@ -510,7 +510,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_LIB_DOMAINE Date de création : (09/09/11 11:54:33)
 	 * 
 	 */
@@ -556,7 +556,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_DOMAINE Date de création : (09/09/11 11:54:33)
 	 * 
 	 */
@@ -565,7 +565,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_DOMAINE Date de création : (09/09/11 11:54:33)
 	 * 
 	 */
@@ -755,7 +755,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 			for (FamilleEmploi famille : getListeFamille()) {
 				if (famille.getCodeFamilleEmploi().equals(getVAL_EF_CODE_FAMILLE().toUpperCase())) {
 					// "ERR974",
-					// "Attention, il existe déjà @ avec @ a Veuillez contrôler."
+					// "Attention, il existe déjà  @ avec @ a Veuillez contrôler."
 					getTransaction().declarerErreur(
 							MessageUtils.getMessage("ERR974", "une famille d'emploi", "ce code"));
 					return false;
@@ -781,7 +781,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACTION_FAMILLE
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_ACTION_FAMILLE
 	 * Date de création : (09/09/11 13:30:20)
 	 * 
 	 */
@@ -799,7 +799,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_FAMILLE Date de création : (09/09/11 13:30:20)
 	 * 
 	 */
@@ -845,7 +845,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_FAMILLE Date de création : (09/09/11 13:30:20)
 	 * 
 	 */
@@ -854,7 +854,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_FAMILLE Date de création : (09/09/11 13:30:20)
 	 * 
 	 */
@@ -1053,7 +1053,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_ACTION_DIPLOME Date de création : (09/09/11 13:37:43)
 	 * 
 	 */
@@ -1071,7 +1071,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_DIPLOME Date de création : (09/09/11 13:37:43)
 	 * 
 	 */
@@ -1117,7 +1117,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_DIPLOME Date de création : (09/09/11 13:37:43)
 	 * 
 	 */
@@ -1126,7 +1126,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_DIPLOME Date de création : (09/09/11 13:37:43)
 	 * 
 	 */
@@ -1318,7 +1318,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
+	 * Retourne la valeur à  afficher par la JSP pour la zone :
 	 * ST_ACTION_CATEGORIE Date de création : (09/09/11 11:54:33)
 	 * 
 	 */
@@ -1336,7 +1336,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_LIB_CATEGORIE Date de création : (09/09/11 11:54:33)
 	 * 
 	 */
@@ -1382,7 +1382,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_CATEGORIE Date de création : (09/09/11 11:54:33)
 	 * 
 	 */
@@ -1391,7 +1391,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_CATEGORIE Date de création : (09/09/11 11:54:33)
 	 * 
 	 */
@@ -1481,7 +1481,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_CODE_DOMAINE Date de création : (12/09/11 16:28:59)
 	 * 
 	 */
@@ -1632,7 +1632,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_CODE_FAMILLE Date de création : (12/09/11 16:36:11)
 	 * 
 	 */
@@ -1847,7 +1847,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_ACTION_CODE_ROME Date de création : (09/09/11 13:36:47)
 	 * 
 	 */
@@ -1865,7 +1865,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_CODE_ROME Date de création : (09/09/11 13:36:47)
 	 * 
 	 */
@@ -1883,7 +1883,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_DESC_CODE_ROME Date de création : (09/09/11 13:36:47)
 	 * 
 	 */
@@ -1929,7 +1929,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_CODE_ROME Date de création : (09/09/11 13:36:47)
 	 * 
 	 */
@@ -1938,7 +1938,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_CODE_ROME Date de création : (09/09/11 13:36:47)
 	 * 
 	 */

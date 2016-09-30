@@ -1,10 +1,12 @@
+<%@page import="nc.mairie.gestionagent.eae.dto.BirtDto"%>
 <%@ page contentType="text/html; charset=UTF-8" %> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<%@page import="nc.mairie.metier.eae.EaeEvalue"%>
-<%@page import="nc.mairie.metier.eae.EAE"%>
 <%@page import="nc.mairie.enums.EnumEtatEAE"%>
 <%@page import="nc.mairie.utils.MairieUtils"%>
 <%@page import="nc.mairie.enums.EnumTypeDroit"%>
 <%@page import="nc.mairie.gestionagent.servlets.ServletAgent"%>
+<%@page import="nc.mairie.gestionagent.eae.dto.EaeDto"%>
+<%@page import="nc.mairie.gestionagent.eae.dto.AgentEaeDto"%>
+
 <HTML>
 <HEAD>
 <META name="GENERATOR" content="IBM WebSphere Page Designer V3.5.3 for Windows">
@@ -53,7 +55,7 @@ function setfocus(nom)
 	function activeMAJ() {						
 			<%
 			for (int j = 0;j<process.getListeEAE().size();j++){
-				EAE eae = process.getListeEAE().get(j);
+				EaeDto eae = process.getListeEAE().get(j);
 				Integer i = eae.getIdEae();
 			%>
 			var box = document.formu.elements['NOM_CK_VALID_MAJ_'+<%=i %>];  		
@@ -152,9 +154,9 @@ function setfocus(nom)
 				</thead>
 				<tbody>
 				<%for (int i = 0;i<process.getListeEAE().size();i++){
-				EAE eae = process.getListeEAE().get(i);
+				EaeDto eae = process.getListeEAE().get(i);
 				Integer indiceAvct = eae.getIdEae();
-				EaeEvalue eaeEvalue = process.getEaeEvalueDao().chercherEaeEvalue(eae.getIdEae());
+				BirtDto eaeEvalue = eae.getEvalue();
 				%>
 						<tr>
 							<td><%=process.getVAL_ST_DIRECTION(indiceAvct)%></td>
@@ -163,14 +165,14 @@ function setfocus(nom)
 							<td><%=process.getVAL_ST_STATUT(indiceAvct)%></td>
 							<td><%=process.getVAL_ST_SHD(indiceAvct)%></td>
 							<td><%=process.getVAL_ST_EVALUATEURS(indiceAvct)%>							
-							<%if(process.getCampagneCourante()!=null && process.getCampagneCourante().estOuverte() && !eaeEvalue.isAgentDetache() &&  !eae.getEtat().equals(EnumEtatEAE.FINALISE.getCode())&& !eae.getEtat().equals(EnumEtatEAE.CONTROLE.getCode())&& !eae.getEtat().equals(EnumEtatEAE.SUPPRIME.getCode())){ %>
+							<%if(process.getCampagneCourante()!=null && process.getCampagneCourante().estOuverte() && !eaeEvalue.isEstDetache() &&  !eae.getEtat().equals(EnumEtatEAE.FINALISE.getCode())&& !eae.getEtat().equals(EnumEtatEAE.CONTROLE.getCode())&& !eae.getEtat().equals(EnumEtatEAE.SUPPRIME.getCode())){ %>
 							<INPUT title="gérer les évaluateurs" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_GERER_EVALUATEUR(indiceAvct)%>"></td>
 							<%} %>
 							<td><%=process.getVAL_ST_DELEGATAIRE(indiceAvct)%>
-							<%if(!eaeEvalue.isAgentDetache()){ %>							
+							<%if(!eaeEvalue.isEstDetache()){ %>							
 								<%if(process.getCampagneCourante()!=null && process.getCampagneCourante().estOuverte()&& !eae.getEtat().equals(EnumEtatEAE.NON_AFFECTE.getCode())&&!eae.getEtat().equals(EnumEtatEAE.FINALISE.getCode())&& !eae.getEtat().equals(EnumEtatEAE.CONTROLE.getCode())&& !eae.getEtat().equals(EnumEtatEAE.SUPPRIME.getCode())){ %>
 									<br/>
-									<%if(eae.getIdDelegataire()==null){ %>
+									<%if(eae.getIdAgentDelegataire()==null){ %>
 									<INPUT title="rechercher agent" type="image" src="images/loupe.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_RECHERCHER_AGENT(indiceAvct)%>">
 					    			<%}else{ %>
 					    			<INPUT title="supprimer agent" type="image" src="images/suppression.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT(indiceAvct)%>">
@@ -179,7 +181,7 @@ function setfocus(nom)
 							<%}else{ %>
 								<%if(process.getCampagneCourante()!=null && process.getCampagneCourante().estOuverte()&&!eae.getEtat().equals(EnumEtatEAE.FINALISE.getCode())&& !eae.getEtat().equals(EnumEtatEAE.CONTROLE.getCode())&& !eae.getEtat().equals(EnumEtatEAE.SUPPRIME.getCode())){ %>
 									<br/>
-									<%if(eae.getIdDelegataire()==null){ %>
+									<%if(eae.getIdAgentDelegataire()==null){ %>
 									<INPUT title="rechercher agent" type="image" src="images/loupe.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_RECHERCHER_AGENT(indiceAvct)%>">
 					    			<%}else{ %>
 					    			<INPUT title="supprimer agent" type="image" src="images/suppression.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT(indiceAvct)%>">
@@ -220,7 +222,9 @@ function setfocus(nom)
 							</td>
 							<td>							
 							<%if( process.getCampagneCourante()!=null && process.getCampagneCourante().estOuverte() &&eae!=null && (eae.getEtat().equals(EnumEtatEAE.FINALISE.getCode()) ||eae.getEtat().equals(EnumEtatEAE.CONTROLE.getCode()) )){ %>
-								<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_CONSULTER_DOC(indiceAvct)%>">	
+								<a href="<%=process.getVAL_ST_URL_DOC(indiceAvct)%>" title="Consulter le document" target="_blank" >
+									<img onkeydown="" onkeypress="" onkeyup="" src="images/oeil.gif" height="16px" width="16px" title="Voir le document" />
+								</a>	
 							<%} %>
 							</td>
 						</tr>
@@ -245,31 +249,6 @@ function setfocus(nom)
 			<BR/>	
 		</FIELDSET>
 		
-		
-       	<br/><br/>
-        <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1000px;">	
-        	<legend class="sigp2Legend">Erreurs eventuelles sur le calcul des EAEs</legend>
-				<table class="sigp2NewTab" style="text-align:left;width:980px;">
-					<tr bgcolor="#EFEFEF">
-						<td>Agent</td>
-						<td>Date lancement</td>
-						<td>Statut</td>
-						<td>Erreur</td>
-					</tr>
-					<%
-						for (int i = 0;i<process.getListeCampagneTask().size();i++){
-							int indiceCarr = process.getListeCampagneTask().get(i).getIdCampagneTask();
-					%>
-					<tr id="<%=indiceCarr%>" onmouseover="SelectLigne(<%=indiceCarr%>,<%=process.getListeCampagneTask().size()%>)">
-						<td class="sigp2NewTab-liste"><%=process.getVAL_ST_AGENT_TASK(indiceCarr)%></td>
-						<td class="sigp2NewTab-liste"><%=process.getVAL_ST_DATE_TASK(indiceCarr)%></td>
-						<td class="sigp2NewTab-liste"><%=process.getVAL_ST_STATUT_TASK(indiceCarr)%></td>
-						<td class="sigp2NewTab-liste"><%=process.getVAL_ST_ERREUR_TASK(indiceCarr)%></td>
-					</tr>
-					<%}%>
-				</table>	
-		</FIELDSET>
-		
 		<INPUT name="JSP" type="hidden" value="<%= process.getJSP() %>">
 		
 		<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_RECHERCHER_AGENT_EVALUATEUR()%>" value="RECHERCHERAGENTEVALUATEUR">
@@ -277,7 +256,6 @@ function setfocus(nom)
 		<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_RECHERCHER_AGENT_EVALUE()%>" value="RECHERCHERAGENTEVALUE">
 		<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_EVALUE()%>" value="SUPPRECHERCHERAGENTEVALUE">
 		
-	<%=process.getUrlFichier()%>
 		</FORM>
 </BODY>
 </HTML>

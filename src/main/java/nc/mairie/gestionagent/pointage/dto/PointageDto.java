@@ -2,10 +2,20 @@ package nc.mairie.gestionagent.pointage.dto;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import nc.noumea.mairie.ads.dto.JsonDateDeserializer;
+import nc.noumea.mairie.ads.dto.JsonDateSerializer;
+
 public abstract class PointageDto {
 
 	private Integer idPointage;
+	@JsonSerialize(using = JsonDateSerializer.class)
+	@JsonDeserialize(using = JsonDateDeserializer.class)
 	private Date heureDebut;
+	@JsonSerialize(using = JsonDateSerializer.class)
+	@JsonDeserialize(using = JsonDateDeserializer.class)
 	private Date heureFin;
 	private String motif;
 	private String commentaire;

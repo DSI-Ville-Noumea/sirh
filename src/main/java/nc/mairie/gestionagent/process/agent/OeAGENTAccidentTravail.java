@@ -107,7 +107,7 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 	}
 
 	/**
-	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones à  afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
 	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
 	 * addZone(getNOMxxx, String); Date de création : (30/06/11 14:19:10)
@@ -227,7 +227,7 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 		}
 		if (getAgentDao() == null) {
 			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
-		}
+	}
 		if (null == radiService) {
 			radiService = (IRadiService) context.getBean("radiService");
 		}
@@ -1264,7 +1264,7 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 		// on upload le fichier
 		ReturnMessageDto rmd = alfrescoCMISService.uploadDocument(getAgentConnecte(request).getIdAgent(), getAgentCourant(), getDocumentCourant(), 
 				fichierUpload, codTypeDoc);
-		
+
 		if (declarerErreurFromReturnMessageDto(rmd))
 			return false;
 
@@ -1296,20 +1296,20 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 
 		return true;
 	}
-	
+
 	private boolean declarerErreurFromReturnMessageDto(ReturnMessageDto rmd) {
-		
+
 		if(!rmd.getErrors().isEmpty()) {
 			String errors = "";
 			for(String error : rmd.getErrors()) {
 				errors += error;
 			}
-			
+
 			getTransaction().declarerErreur("Err : " + errors);
 			return true;
-		}
+			}
 		return false;
-	}
+		}
 
 	private Agent getAgentConnecte(HttpServletRequest request) throws Exception {
 		Agent agent = null;
@@ -1324,18 +1324,18 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 			return null;
 		} else {
 			if (user != null && user.getEmployeeNumber() != null && user.getEmployeeNumber() != 0) {
-				try {
+		try {
 					agent = getAgentDao().chercherAgentParMatricule(radiService.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
-				} catch (Exception e) {
+		} catch (Exception e) {
 					// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
 					return null;
-				}
-			}
+		}
+	}
 		}
 
 		return agent;
-	}
+		}
 
 	private boolean performControlerSaisieDocument(HttpServletRequest request) throws Exception {
 		addZone(getNOM_EF_LIENDOCUMENT(), fichierUpload != null ? fichierUpload.getPath() : Const.CHAINE_VIDE);
@@ -1439,7 +1439,7 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 
 	public AgentDao getAgentDao() {
 		return agentDao;
-	}
+}
 
 	public void setAgentDao(AgentDao agentDao) {
 		this.agentDao = agentDao;

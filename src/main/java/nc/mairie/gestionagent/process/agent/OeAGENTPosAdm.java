@@ -68,7 +68,7 @@ public class OeAGENTPosAdm extends BasicProcess {
 	private String calculPaye;
 
 	/**
-	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones à  afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
 	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
 	 * addZone(getNOMxxx, String); Date de création : (04/08/11 09:22:55)
@@ -602,7 +602,7 @@ public class OeAGENTPosAdm extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_POSA Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_POSA Date de
 	 * création : (04/08/11 09:25:27)
 	 * 
 	 */
@@ -620,7 +620,7 @@ public class OeAGENTPosAdm extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_DATE_ARR Date de création : (04/08/11 09:25:28)
 	 * 
 	 */
@@ -638,7 +638,7 @@ public class OeAGENTPosAdm extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_DATE_DEBUT Date de création : (04/08/11 09:25:28)
 	 * 
 	 */
@@ -656,7 +656,7 @@ public class OeAGENTPosAdm extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_DATE_FIN Date de création : (04/08/11 09:25:28)
 	 * 
 	 */
@@ -674,7 +674,7 @@ public class OeAGENTPosAdm extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_REF_ARR Date de création : (04/08/11 09:25:28)
 	 * 
 	 */
@@ -692,7 +692,7 @@ public class OeAGENTPosAdm extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACTION Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_ACTION Date de
 	 * création : (04/08/11 09:28:25)
 	 * 
 	 */
@@ -816,7 +816,7 @@ public class OeAGENTPosAdm extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie : EF_POSA
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie : EF_POSA
 	 * Date de création : (30/08/11 10:25:41)
 	 * 
 	 */
@@ -857,7 +857,7 @@ public class OeAGENTPosAdm extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_POSA Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_POSA Date de
 	 * création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -875,7 +875,7 @@ public class OeAGENTPosAdm extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_LIB_POSA Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_LIB_POSA Date
 	 * de création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -893,7 +893,7 @@ public class OeAGENTPosAdm extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_REF_ARR Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_REF_ARR Date
 	 * de création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -911,7 +911,7 @@ public class OeAGENTPosAdm extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE_ARR Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_DATE_ARR Date
 	 * de création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -929,7 +929,7 @@ public class OeAGENTPosAdm extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE_DEBUT
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_DATE_DEBUT
 	 * Date de création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -947,7 +947,7 @@ public class OeAGENTPosAdm extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE_FIN Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_DATE_FIN Date
 	 * de création : (18/08/11 10:21:15)
 	 * 
 	 */

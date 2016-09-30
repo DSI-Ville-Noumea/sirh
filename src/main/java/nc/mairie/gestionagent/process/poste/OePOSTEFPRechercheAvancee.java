@@ -67,7 +67,7 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 	private IAdsService adsService;
 
 	/**
-	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones à  afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
 	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
 	 * addZone(getNOMxxx, String); Date de création : (13/09/11 08:45:29)
@@ -339,7 +339,7 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 				agent = getAgentDao().chercherAgentParMatricule(Integer.valueOf(getVAL_ST_AGENT()));
 			} catch (Exception e) {
 				// "ERR1120",
-				// "Aucun agent correspondant à votre recherche. Merci de passer par la recherche avancée des agents."
+				// "Aucun agent correspondant à  votre recherche. Merci de passer par la recherche avancée des agents."
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR1120"));
 				return false;
 			}
@@ -347,14 +347,14 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 			List<Agent> aListe = getAgentDao().listerAgentAvecNomCommencant(getVAL_ST_NOM_AGENT());
 			if (aListe.size() == 0) {
 				// "ERR1120",
-				// "Aucun agent correspondant à votre recherche. Merci de passer par la recherche avancée des agents."
+				// "Aucun agent correspondant à  votre recherche. Merci de passer par la recherche avancée des agents."
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR1120"));
 				return false;
 			} else if (aListe.size() == 1) {
 				agent = aListe.get(0);
 			} else if (aListe.size() > 1) {
 				// "ERR1119",
-				// "Plusieurs agents correspondent à votre recherche. Merci de passer par la recherche avancée des agents."
+				// "Plusieurs agents correspondent à  votre recherche. Merci de passer par la recherche avancée des agents."
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR1119"));
 				return false;
 			}
@@ -367,7 +367,7 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 					agent = getAgentDao().chercherAgentParMatricule(Integer.valueOf(getVAL_ST_MATR_AGENT()));
 				} catch (Exception e) {
 					// "ERR1120",
-					// "Aucun agent correspondant à votre recherche. Merci de passer par la recherche avancée des agents."
+					// "Aucun agent correspondant à  votre recherche. Merci de passer par la recherche avancée des agents."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR1120"));
 					return false;
 				}
@@ -459,7 +459,7 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_TITRE_POSTE Date de création : (13/09/11 08:45:29)
 	 * 
 	 */
@@ -505,7 +505,7 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_STATUT Date de création : (13/09/11 08:45:29)
 	 * 
 	 */
@@ -514,7 +514,7 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_STATUT Date de création : (13/09/11 08:45:29)
 	 * 
 	 */
@@ -560,7 +560,7 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_TITRE_POSTE Date de création : (13/09/11 10:33:47)
 	 * 
 	 */
@@ -569,7 +569,7 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_TITRE_POSTE Date de création : (13/09/11 10:33:47)
 	 * 
 	 */
@@ -629,7 +629,7 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 
 	/**
 	 * @param focus
-	 *            focus à définir.
+	 *            focus à  définir.
 	 */
 	public void setFocus(String focus) {
 		this.focus = focus;
@@ -654,7 +654,7 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_SERVICE Date de création : (13/09/11 11:47:15)
 	 * 
 	 */
@@ -756,7 +756,7 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_NUM_FICHE_POSTE Date de création : (07/11/11 16:40:08)
 	 * 
 	 */
@@ -774,7 +774,7 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_AGENT Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_AGENT Date de
 	 * création : (02/08/11 09:40:42)
 	 * 
 	 */
@@ -882,7 +882,7 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_NUM Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_NUM Date de
 	 * création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -900,7 +900,7 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_TITRE Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_TITRE Date de
 	 * création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -918,7 +918,7 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_AGENT Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_AGENT Date de
 	 * création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -936,7 +936,7 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_NUM_FICHE_POSTE_AFF Date de création : (07/11/11 16:40:08)
 	 * 
 	 */
@@ -1021,7 +1021,7 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_AGENT_AFF Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_AGENT_AFF Date
 	 * de création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -1039,7 +1039,7 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DIR_AFF Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_DIR_AFF Date
 	 * de création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -1057,7 +1057,7 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_SERV_AFF Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_SERV_AFF Date
 	 * de création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -1075,7 +1075,7 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE_DEBUT_AFF
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_DATE_DEBUT_AFF
 	 * Date de création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -1093,7 +1093,7 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE_FIN_AFF
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_DATE_FIN_AFF
 	 * Date de création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -1111,7 +1111,7 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_NUM_FP_AFF
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_NUM_FP_AFF
 	 * Date de création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -1129,7 +1129,7 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_TITRE_AFF Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_TITRE_AFF Date
 	 * de création : (18/08/11 10:21:15)
 	 * 
 	 */

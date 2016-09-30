@@ -1,6 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" %> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <%@page import="nc.mairie.technique.Services"%>
-<%@page import="nc.mairie.metier.eae.CampagneEAE"%>
+<%@page import="nc.mairie.gestionagent.eae.dto.CampagneEaeDto"%>
 <%@page import="nc.mairie.utils.MairieUtils"%>
 <%@page import="nc.mairie.enums.EnumTypeDroit"%>
 <HTML>
@@ -83,7 +83,7 @@ function SelectLigneTabDoc(id,tailleTableau)
 						int indiceCamp = 0;
 						if (process.getListeCampagne()!=null){
 							for (int i = 0;i<process.getListeCampagne().size();i++){
-								CampagneEAE camp = process.getListeCampagne().get(i);
+								CampagneEaeDto camp = process.getListeCampagne().get(i);
 						%>
 							<tr id="<%=indiceCamp%>" onmouseover="SelectLigne(<%=indiceCamp%>,<%=process.getListeCampagne().size()%>)">
 								<td class="sigp2NewTab-liste" style="position:relative;width:40px;" align="left">

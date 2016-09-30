@@ -2,11 +2,21 @@ package nc.mairie.gestionagent.eae.dto;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import nc.noumea.mairie.ads.dto.JsonDateDeserializer;
+import nc.noumea.mairie.ads.dto.JsonDateSerializer;
+
 public class AutreAdministrationAgentDto {
 
 	private Integer idAutreAdmin;
 	private Integer idAgent;
+	@JsonSerialize(using = JsonDateSerializer.class)
+	@JsonDeserialize(using = JsonDateDeserializer.class)
 	private Date dateEntree;
+	@JsonSerialize(using = JsonDateSerializer.class)
+	@JsonDeserialize(using = JsonDateDeserializer.class)
 	private Date dateSortie;
 	private Integer fonctionnaire;
 	private String libelleAdministration;
@@ -41,9 +51,11 @@ public class AutreAdministrationAgentDto {
 	public void setFonctionnaire(Integer fonctionnaire) {
 		this.fonctionnaire = fonctionnaire;
 	}
+
 	public String getLibelleAdministration() {
 		return libelleAdministration;
 	}
+
 	public void setLibelleAdministration(String libelleAdministration) {
 		this.libelleAdministration = libelleAdministration;
 	}

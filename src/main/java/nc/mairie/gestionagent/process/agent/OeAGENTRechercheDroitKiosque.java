@@ -59,7 +59,7 @@ public class OeAGENTRechercheDroitKiosque extends BasicProcess {
 		AgentWithServiceDto approbateur = (AgentWithServiceDto) VariableActivite.recuperer(this, VariableActivite.ACTIVITE_AGENT_MAIRIE);
 		VariableActivite.enlever(this, VariableActivite.ACTIVITE_AGENT_MAIRIE);
 
-		// Récup des agents dejà affectés
+		// Récup des agents dejà  affectés
 		@SuppressWarnings("unchecked")
 		List<AgentDto> listAgentExistant = (List<AgentDto>) VariableActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE_DROIT);
 		VariableActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE_DROIT);

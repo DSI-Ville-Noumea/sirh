@@ -42,7 +42,7 @@ public class OeAGENTEnfantHomonyme extends BasicProcess {
 	private AgentDao agentDao;
 
 	/**
-	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones à  afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
 	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
 	 * addZone(getNOMxxx, String); Date de création : (03/10/11 14:00:29)
@@ -224,7 +224,7 @@ public class OeAGENTEnfantHomonyme extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_ENFANT_HOMONYME Date de création : (03/10/11 14:00:29)
 	 * 
 	 */
@@ -233,7 +233,7 @@ public class OeAGENTEnfantHomonyme extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_ENFANT_HOMONYME Date de création : (03/10/11 14:00:29)
 	 * 
 	 */

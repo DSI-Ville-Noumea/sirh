@@ -356,7 +356,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_DATE_OBTENTION Date de création : (11/06/03 15:05:22)
 	 * 
 	 */
@@ -365,7 +365,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_TITRE_DIPLOME Date de création : (11/02/03 14:20:32)
 	 * 
 	 */
@@ -374,7 +374,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_TITRE_DIPLOME Date de création : (11/02/03 14:20:32)
 	 * 
 	 */
@@ -383,7 +383,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACTION_DIPLOME
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_ACTION_DIPLOME
 	 * Date de création : (11/02/03 14:20:31)
 	 * 
 	 */
@@ -392,7 +392,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_AGENT Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_AGENT Date de
 	 * création : (11/02/03 14:20:31)
 	 * 
 	 */
@@ -401,7 +401,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DIPLOME Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_DIPLOME Date
 	 * de création : (11/06/03 15:05:22)
 	 * 
 	 */
@@ -410,7 +410,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_NIVEAU Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_NIVEAU Date de
 	 * création : (11/06/03 15:05:22)
 	 * 
 	 */
@@ -553,7 +553,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones à  afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
 	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
 	 * addZone(getNOMxxx, String); Date de création : (11/02/03 14:20:31)
@@ -1008,7 +1008,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 						&& diplome.getNomEcole().equals(getVAL_EF_NOM_ECOLE().toUpperCase())
 						&& diplome.getIdTitreDiplome() == newTitre.getIdTitreDiplome()) {
 					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
+					// "Attention, il existe déjà  @ avec @. Veuillez contrôler."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "un diplôme", "ces valeurs"));
 					return false;
 				}
@@ -1394,7 +1394,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 	/**
 	 * @param focus
-	 *            focus à définir.
+	 *            focus à  définir.
 	 */
 	public void setFocus(String focus) {
 		this.focus = focus;
@@ -1410,7 +1410,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATEOBT Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_DATEOBT Date
 	 * de création : (29/09/08 10:18:46)
 	 * 
 	 */
@@ -1428,7 +1428,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATEVAL Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_DATEVAL Date
 	 * de création : (29/09/08 10:18:46)
 	 * 
 	 */
@@ -1446,7 +1446,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_TITRE Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_TITRE Date de
 	 * création : (29/09/08 10:18:46)
 	 * 
 	 */
@@ -1464,7 +1464,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_NOM_ECOLE Date de création : (09/05/11 16:27:58)
 	 * 
 	 */
@@ -1482,7 +1482,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_NOM_ECOLE Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_NOM_ECOLE Date
 	 * de création : (10/05/11 14:47:09)
 	 * 
 	 */
@@ -1503,7 +1503,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	 * Met a jour la liste des specialites des diplomes
 	 * 
 	 * @param listeSpeDiplome
-	 *            listeSpeDiplome à définir
+	 *            listeSpeDiplome à  définir
 	 */
 	private void setListeSpeDiplome(ArrayList<SpecialiteDiplome> listeSpeDiplome) {
 		this.listeSpeDiplome = listeSpeDiplome;
@@ -1561,7 +1561,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_SPECIALITE_DIPLOME Date de création : (15/06/11 13:49:36)
 	 * 
 	 */
@@ -1570,7 +1570,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_SPECIALITE_DIPLOME Date de création : (15/06/11 13:49:36)
 	 * 
 	 */
@@ -1597,7 +1597,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
+	 * Retourne la valeur à  afficher par la JSP pour la zone :
 	 * ST_SPECIALITE_DIPLOME Date de création : (15/06/11 14:04:19)
 	 * 
 	 */
@@ -1801,7 +1801,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DIPLOME Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_DIPLOME Date
 	 * de création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -1819,7 +1819,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DIPLOME Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_DIPLOME Date
 	 * de création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -1837,7 +1837,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_NIVEAU Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_NIVEAU Date de
 	 * création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -1985,7 +1985,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_FORMATION Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_FORMATION Date
 	 * de création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -2003,7 +2003,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ANNEE Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_ANNEE Date de
 	 * création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -2120,7 +2120,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
+	 * Retourne la valeur à  afficher par la JSP pour la zone :
 	 * ST_DUREE_FORMATION Date de création : (11/02/03 14:20:31)
 	 * 
 	 */
@@ -2138,7 +2138,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
+	 * Retourne la valeur à  afficher par la JSP pour la zone :
 	 * ST_ANNEE_FORMATION Date de création : (11/02/03 14:20:31)
 	 * 
 	 */
@@ -2156,7 +2156,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
+	 * Retourne la valeur à  afficher par la JSP pour la zone :
 	 * ST_ACTION_FORMATION Date de création : (11/02/03 14:20:31)
 	 * 
 	 */
@@ -2534,7 +2534,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 						&& formation.getDureeFormation().toString().equals(getVAL_ST_DUREE_FORMATION())
 						&& formation.getUniteDuree().equals(uniteDuree)) {
 					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
+					// "Attention, il existe déjà  @ avec @. Veuillez contrôler."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "une formation", "ces valeurs"));
 					return false;
 				}
@@ -2708,7 +2708,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_UNITE_DUREE Date de création : (28/11/11 09:55:36)
 	 * 
 	 */
@@ -2717,7 +2717,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_UNITE_DUREE Date de création : (28/11/11)
 	 * 
 	 */
@@ -2799,7 +2799,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_TITRE_PERMIS Date de création : (28/11/11 09:55:36)
 	 * 
 	 */
@@ -2808,7 +2808,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_TITRE_PERMIS Date de création : (28/11/11)
 	 * 
 	 */
@@ -2842,7 +2842,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACTION_PERMIS
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_ACTION_PERMIS
 	 * Date de création : (11/02/03 14:20:31)
 	 * 
 	 */
@@ -3024,7 +3024,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones à  afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
 	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
 	 * addZone(getNOMxxx, String); Date de création : (11/02/03 14:20:31)
@@ -3201,7 +3201,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 						&& permis.getDateObtention().toString()
 								.equals(sdf.parse(getVAL_EF_DATE_OBTENTION_PERMIS()).toString())) {
 					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
+					// "Attention, il existe déjà  @ avec @. Veuillez contrôler."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "un permis", "ces valeurs"));
 					return false;
 				}
@@ -3373,7 +3373,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_PERMIS Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_PERMIS Date de
 	 * création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -3391,7 +3391,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_PERMIS Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_PERMIS Date de
 	 * création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -3409,7 +3409,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DUREE_PERMIS
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_DUREE_PERMIS
 	 * Date de création : (11/02/03 14:20:31)
 	 * 
 	 */
@@ -3427,7 +3427,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_DATE_OBTENTION_PERMIS Date de création : (11/06/03 15:05:22)
 	 * 
 	 */
@@ -3445,7 +3445,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_NOM_DOC Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_NOM_DOC Date
 	 * de création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -3463,7 +3463,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE_DOC Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_DATE_DOC Date
 	 * de création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -3481,7 +3481,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_COMMENTAIRE
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_COMMENTAIRE
 	 * Date de création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -3581,7 +3581,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_LIENDOCUMENT Date de création : (11/10/11 08:38:48)
 	 * 
 	 */
@@ -3770,7 +3770,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
+	 * Retourne la valeur à  afficher par la JSP pour la zone :
 	 * ST_ACTION_DOCUMENT Date de création : (05/09/11 11:39:24)
 	 * 
 	 */
@@ -3982,7 +3982,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_NB_DOC_PERMIS
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_NB_DOC_PERMIS
 	 * Date de création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -4000,7 +4000,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
+	 * Retourne la valeur à  afficher par la JSP pour la zone :
 	 * ST_NB_DOC_FORMATION Date de création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -4018,7 +4018,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_NB_DOC_DIPLOME
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_NB_DOC_DIPLOME
 	 * Date de création : (18/08/11 10:21:15)
 	 * 
 	 */

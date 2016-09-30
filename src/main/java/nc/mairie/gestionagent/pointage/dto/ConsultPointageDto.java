@@ -2,20 +2,33 @@ package nc.mairie.gestionagent.pointage.dto;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import nc.mairie.gestionagent.dto.AgentDto;
+import nc.noumea.mairie.ads.dto.JsonDateDeserializer;
+import nc.noumea.mairie.ads.dto.JsonDateSerializer;
 
 public class ConsultPointageDto {
 
 	private Integer idPointage;
 	private AgentDto agent;
 	private String typePointage;
+	@JsonSerialize(using = JsonDateSerializer.class)
+	@JsonDeserialize(using = JsonDateDeserializer.class)
 	private Date date;
+	@JsonSerialize(using = JsonDateSerializer.class)
+	@JsonDeserialize(using = JsonDateDeserializer.class)
 	private Date debut;
+	@JsonSerialize(using = JsonDateSerializer.class)
+	@JsonDeserialize(using = JsonDateDeserializer.class)
 	private Date fin;
 	private String quantite;
 	private String motif;
 	private String commentaire;
 	private Integer idRefEtat;
+	@JsonSerialize(using = JsonDateSerializer.class)
+	@JsonDeserialize(using = JsonDateDeserializer.class)
 	private Date dateSaisie;
 	private AgentDto operateur;
 	private boolean heuresSupRecuperees;

@@ -41,12 +41,6 @@
 		driverClassName="com.ibm.as400.access.AS400JDBCDriver"
 		url="jdbc:as400://robinnw;naming=system;libraries=MAIRIE,SIRH,SYSIBM;errors=full;date format=iso;" />
 
-	<Resource name="jdbc/SIRH_DS3" auth="Container" type="javax.sql.DataSource"
-		maxActive="100" maxIdle="30" minIdle="0" validationQuery="select 1"
-		maxWait="10000" initialSize="1" username="eae_adm" password="changemi"
-		driverClassName="org.postgresql.Driver" url="jdbc:postgresql://svi-pg0.site-mairie.noumea.nc:5432/sirh"
-		poolPreparedStatements="true" />
-
 	<!-- -->
 	<!-- WS DES POINTAGES -->
 	<!-- -->
@@ -60,6 +54,12 @@
 	<Environment description="SIRH ABS WS url" name="SIRH_ABS_WS_URL"
 		type="java.lang.String" override="false"
 		value="http://svi-tomcat0:8085/sirh-abs-ws/" />
+		
+	<!-- -->
+	<!-- WS DES EAEs -->
+	<!-- -->
+	<Environment description="SIRH EAE WS url" name="SIRH_EAE_WS_URL"
+		type="java.lang.String" override="false" value="http://localhost:8080/sirh-eae-ws/" />
 
 	<!-- -->
 	<!-- WS RADI pour interroger AD -->
@@ -79,33 +79,6 @@
 	<Environment name="ADS_WS_URL" type="java.lang.String"
 		description="ADS WS endpoint url" value="http://svi-tomcat0:8077/"
 		override="false" />
-
-
-	<!-- -->
-	<!-- SHAREPOINT -->
-	<!-- -->
-	<!-- Pour les fichiers sotckés sur la GED Sharepoint -->
-	<Parameter description="URL GED Shareoint" name="URL_SHAREPOINT_GED"
-		override="false"
-		value="http://qual.portail.ville-noumeanc/kiosque-rh/_layouts/DocIdRedir.aspx?ID=" />
-	<Parameter description="URL GED Shareoint avec version" name="URL_SHAREPOINT_GED_VERSION"
-		override="false"
-		value="http://qual.portail.ville-noumea.nc/kiosque-rh/_layouts/Noumea.RH.Eae/EAEDownloadVersion.aspx?documentId=" />
-	<!-- Pour la mise à jour des droits sur les fichiers EAEs sotckés sur la 
-		GED Sharepoint -->
-	<Parameter description="User pour connexion NTLM à Sharepoint"
-		name="USER_SHAREPOINT_DROIT_EAE" override="false" value="setupAdmin" />
-	<Parameter description="User Pws pour connexion NTLM à Sharepoint"
-		name="USER_PWD_SHAREPOINT_DROIT_EAE" override="false" value="Pass@word1" />
-	<Parameter description="Domain pour connexion NTLM à Sharepoint"
-		name="DOMAIN_SHAREPOINT_DROIT_EAE" override="false" value="KELIOSDEV" />
-	<Parameter description="URL pour connexion NTLM à Sharepoint"
-		name="URL_SHAREPOINT_DROIT_EAE" override="false" value="172.16.24.42" />
-	<Parameter description="PORT pour connexion NTLM à Sharepoint"
-		name="PORT_SHAREPOINT_DROIT_EAE" override="false" value="80" />
-	<Parameter description="URL mise à jour droit EAE Sharepoint"
-		name="URL_DROIT_EAE_SHAREPOINT" override="false"
-		value="/sites/publication/_layouts/Noumea.RH.Eae/ApprouverEvalue.aspx" />
 
 	<!-- -->
 	<!-- AVANCEMENT / SIMULATION -->
@@ -132,7 +105,7 @@
 		name="AFFICHAGE_SIMU" override="false" value="TRUE" />
 	<Parameter description="Paramètre pour savoir si on affiche le module Avancement"
 		name="AFFICHAGE_AVCT" override="false" value="TRUE" />
-		
+
 
 	<!-- -->
 	<!-- Parametres pour la gestion des documents -->
@@ -140,9 +113,6 @@
 	<Parameter description="repertoire pour les documents temporaires"
 		name="REPERTOIRE_TEMP" override="false"
 		value="." />
-	<!-- Gestion des fichiers EAE -->
-	<Parameter description="repertoire pour les documents issus des modeles"
-		name="REPERTOIRE_SP" override="false" value="//svq-sp/SIRH/FILEWATCHER_EAE/" />
 
 	<!-- -->
 	<!-- Parametres extrait du web.xml -->

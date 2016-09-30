@@ -244,7 +244,7 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_DATE_DEBUT Date de création : (11/02/03 14:20:31)
 	 * 
 	 */
@@ -253,7 +253,7 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_DATE_FIN Date de création : (11/02/03 14:20:31)
 	 * 
 	 */
@@ -262,7 +262,7 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_ADMINISTRATION Date de création : (11/02/03 14:20:32)
 	 * 
 	 */
@@ -271,7 +271,7 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_ADMINISTRATION Date de création : (11/02/03 14:20:32)
 	 * 
 	 */
@@ -280,7 +280,7 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACTION Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_ACTION Date de
 	 * création : (11/02/03 14:20:31)
 	 * 
 	 */
@@ -289,7 +289,7 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_AGENT Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_AGENT Date de
 	 * création : (11/02/03 14:20:31)
 	 * 
 	 */
@@ -349,7 +349,7 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	}
 
 	/**
-	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones à  afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
 	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
 	 * addZone(getNOMxxx, String); Date de création : (11/02/03 14:20:31)
@@ -578,7 +578,7 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 					setFocus(getNOM_EF_DATE_FIN());
 					return false;
 				} else if (Services.compareDates(getZone(getNOM_EF_DATE_DEBUT()), getZone(getNOM_EF_DATE_FIN())) >= 0) {
-					// ERR205 : La date @ doit être supérieure à la date @.
+					// ERR205 : La date @ doit être supérieure à  la date @.
 					// RG_AG_AA_C01
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR205", "de sortie", "d'entrée"));
 					setFocus(getNOM_EF_DATE_FIN());
@@ -693,7 +693,7 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 
 	/**
 	 * @param focus
-	 *            focus à définir.
+	 *            focus à  définir.
 	 */
 	public void setFocus(String focus) {
 		this.focus = focus;
@@ -709,7 +709,7 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ADMINISTRATION
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_ADMINISTRATION
 	 * Date de création : (29/09/08 10:39:32)
 	 * 
 	 */
@@ -727,7 +727,7 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_FONCTIONNAIRE
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_FONCTIONNAIRE
 	 * Date de création : (29/09/08 10:39:32)
 	 * 
 	 */
@@ -745,7 +745,7 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DEBUT Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_DEBUT Date de
 	 * création : (29/09/08 10:39:32)
 	 * 
 	 */
@@ -763,7 +763,7 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_FIN Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_FIN Date de
 	 * création : (29/09/08 10:39:32)
 	 * 
 	 */
@@ -891,7 +891,7 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ADMINISTRATION
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_ADMINISTRATION
 	 * Date de création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -909,7 +909,7 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_FONCTIONNAIRE
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_FONCTIONNAIRE
 	 * Date de création : (29/09/08 10:39:32)
 	 * 
 	 */
@@ -927,7 +927,7 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE_ENTREE
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_DATE_ENTREE
 	 * Date de création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -945,7 +945,7 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE_SORTIE
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_DATE_SORTIE
 	 * Date de création : (18/08/11 10:21:15)
 	 * 
 	 */

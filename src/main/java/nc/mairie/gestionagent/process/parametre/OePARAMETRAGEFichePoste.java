@@ -108,7 +108,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	private IAdsService						adsService;
 
 	/**
-	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones à  afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
 	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
 	 * addZone(getNOMxxx, String); Date de création : (13/09/11 15:49:10)
@@ -1108,7 +1108,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 			for (EntiteGeo entite : getListeEntite()) {
 				if (entite.getLibEntiteGeo().equals(getVAL_EF_ENTITE_GEO().toUpperCase())) {
 					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
+					// "Attention, il existe déjà  @ avec @. Veuillez contrôler."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "une entité géographique", "ce libellé"));
 					return false;
 				}
@@ -1205,7 +1205,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 			for (NatureAvantage nature : getListeNatureAvantage()) {
 				if (nature.getLibNatureAvantage().equals(getVAL_EF_NATURE_AVANTAGE().toUpperCase())) {
 					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
+					// "Attention, il existe déjà  @ avec @. Veuillez contrôler."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "une nature d'avantage en nature", "ce libellé"));
 					return false;
 				}
@@ -1308,7 +1308,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 			for (TitrePoste titre : getListeTitrePoste()) {
 				if (titre.getLibTitrePoste().equals(getVAL_EF_TITRE().toUpperCase())) {
 					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
+					// "Attention, il existe déjà  @ avec @. Veuillez contrôler."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "un titre de poste", "ce libellé"));
 					return false;
 				}
@@ -1405,7 +1405,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 			for (TypeAvantage type : getListeTypeAvantage()) {
 				if (type.getLibTypeAvantage().equals(getVAL_EF_TYPE_AVANTAGE().toUpperCase())) {
 					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
+					// "Attention, il existe déjà  @ avec @. Veuillez contrôler."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "un type d'avantage en nature", "ce libellé"));
 					return false;
 				}
@@ -1502,7 +1502,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 			for (TypeDelegation type : getListeTypeDelegation()) {
 				if (type.getLibTypeDelegation().equals(getVAL_EF_TYPE_DELEGATION().toUpperCase())) {
 					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
+					// "Attention, il existe déjà  @ avec @. Veuillez contrôler."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "un type de délégation", "ce libellé"));
 					return false;
 				}
@@ -1599,7 +1599,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 			for (TypeRegIndemn type : getListeTypeRegime()) {
 				if (type.getLibTypeRegIndemn().equals(getVAL_EF_TYPE_REGIME().toUpperCase())) {
 					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
+					// "Attention, il existe déjà  @ avec @. Veuillez contrôler."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "un type de régime idemnitaire", "ce libellé"));
 					return false;
 				}
@@ -1619,7 +1619,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
+	 * Retourne la valeur à  afficher par la JSP pour la zone :
 	 * ST_ACTION_ENTITE_GEO Date de création : (13/09/11 15:49:10)
 	 * 
 	 */
@@ -1637,7 +1637,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
+	 * Retourne la valeur à  afficher par la JSP pour la zone :
 	 * ST_ACTION_NATURE_AVANTAGE Date de création : (13/09/11 15:49:10)
 	 * 
 	 */
@@ -1655,7 +1655,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACTION_TITRE
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_ACTION_TITRE
 	 * Date de création : (13/09/11 15:49:10)
 	 * 
 	 */
@@ -1673,7 +1673,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
+	 * Retourne la valeur à  afficher par la JSP pour la zone :
 	 * ST_ACTION_TYPE_AVANTAGE Date de création : (13/09/11 15:49:10)
 	 * 
 	 */
@@ -1691,7 +1691,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
+	 * Retourne la valeur à  afficher par la JSP pour la zone :
 	 * ST_ACTION_TYPE_DELEGATION Date de création : (13/09/11 15:49:10)
 	 * 
 	 */
@@ -1709,7 +1709,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
+	 * Retourne la valeur à  afficher par la JSP pour la zone :
 	 * ST_ACTION_TYPE_REGIME Date de création : (13/09/11 15:49:10)
 	 * 
 	 */
@@ -1727,7 +1727,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_ENTITE_GEO Date de création : (13/09/11 15:49:10)
 	 * 
 	 */
@@ -1745,7 +1745,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_NATURE_AVANTAGE Date de création : (13/09/11 15:49:10)
 	 * 
 	 */
@@ -1763,7 +1763,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_TITRE Date de création : (13/09/11 15:49:10)
 	 * 
 	 */
@@ -1781,7 +1781,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_TYPE_AVANTAGE Date de création : (13/09/11 15:49:10)
 	 * 
 	 */
@@ -1799,7 +1799,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_TYPE_DELEGATION Date de création : (13/09/11 15:49:10)
 	 * 
 	 */
@@ -1817,7 +1817,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_TYPE_REGIME Date de création : (13/09/11 15:49:10)
 	 * 
 	 */
@@ -1863,7 +1863,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_ENTITE_GEO Date de création : (13/09/11 15:49:10)
 	 * 
 	 */
@@ -1872,7 +1872,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_ENTITE_GEO Date de création : (13/09/11 15:49:10)
 	 * 
 	 */
@@ -1919,7 +1919,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_ENTITE_GEO_ECOLE Date de création : (13/09/11 15:49:10)
 	 * 
 	 */
@@ -1928,7 +1928,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_ENTITE_GEO_ECOLE Date de création : (13/09/11 15:49:10)
 	 * 
 	 */
@@ -1975,7 +1975,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_NATURE_AVANTAGE Date de création : (13/09/11 15:49:10)
 	 * 
 	 */
@@ -1984,7 +1984,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_NATURE_AVANTAGE Date de création : (13/09/11 15:49:10)
 	 * 
 	 */
@@ -2030,7 +2030,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_TITRE Date de création : (13/09/11 15:49:10)
 	 * 
 	 */
@@ -2039,7 +2039,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_TITRE Date de création : (13/09/11 15:49:10)
 	 * 
 	 */
@@ -2086,7 +2086,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_TYPE_AVANTAGE Date de création : (13/09/11 15:49:10)
 	 * 
 	 */
@@ -2095,7 +2095,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_TYPE_AVANTAGE Date de création : (13/09/11 15:49:10)
 	 * 
 	 */
@@ -2142,7 +2142,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_TYPE_DELEGATION Date de création : (13/09/11 15:49:10)
 	 * 
 	 */
@@ -2151,7 +2151,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_TYPE_DELEGATION Date de création : (13/09/11 15:49:10)
 	 * 
 	 */
@@ -2197,7 +2197,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_TYPE_REGIME Date de création : (13/09/11 15:49:10)
 	 * 
 	 */
@@ -2206,7 +2206,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_TYPE_REGIME Date de création : (13/09/11 15:49:10)
 	 * 
 	 */
@@ -2718,7 +2718,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 			for (Ecole ecole : getListeEcole()) {
 				if (ecole.getCdecol().equals(getVAL_EF_ECOLE_CODE_ECOLE().toUpperCase())) {
 					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
+					// "Attention, il existe déjà  @ avec @. Veuillez contrôler."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "une école", "ce code école"));
 					return false;
 				}
@@ -2729,7 +2729,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 			for (Ecole ecole : getListeEcole()) {
 				if (ecole.getLiecol().equals(getVAL_EF_ECOLE().toUpperCase())) {
 					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
+					// "Attention, il existe déjà  @ avec @. Veuillez contrôler."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "une école", "ce libellé"));
 					return false;
 				}
@@ -2748,7 +2748,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACTION_ECOLE
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_ACTION_ECOLE
 	 * Date de création : (04/11/11 11:33:55)
 	 * 
 	 */
@@ -2775,7 +2775,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_ECOLE_CODE_ECOLE Date de création : (04/11/11 11:33:55)
 	 * 
 	 */
@@ -2784,7 +2784,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_ECOLE Date de création : (04/11/11 11:33:55)
 	 * 
 	 */
@@ -2830,7 +2830,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_ECOLE Date de création : (04/11/11 11:33:55)
 	 * 
 	 */
@@ -2839,7 +2839,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_ECOLE Date de création : (04/11/11 11:33:55)
 	 * 
 	 */
@@ -3209,13 +3209,13 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 			for (BaseHorairePointage base : getListeBaseHorairePointage()) {
 				if (base.getLibelleBaseHorairePointage().trim().equals(getVAL_EF_LIB_BASE_HORAIRE_POINTAGE().toUpperCase().trim())) {
 					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
+					// "Attention, il existe déjà  @ avec @. Veuillez contrôler."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "une base horaire de pointage", "ce libellé"));
 					return false;
 				}
 				if (base.getCodeBaseHorairePointage().trim().equals(getVAL_EF_CODE_BASE_HORAIRE_POINTAGE().toUpperCase().trim())) {
 					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
+					// "Attention, il existe déjà  @ avec @. Veuillez contrôler."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "une base horaire de pointage", "ce code"));
 					return false;
 				}

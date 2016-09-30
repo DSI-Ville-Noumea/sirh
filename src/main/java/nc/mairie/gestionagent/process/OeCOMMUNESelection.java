@@ -96,7 +96,7 @@ public class OeCOMMUNESelection extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie : EF_PAYS
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie : EF_PAYS
 	 * Date de création : (24/01/03 15:27:10)
 	 * 
 	 */
@@ -105,7 +105,7 @@ public class OeCOMMUNESelection extends BasicProcess {
 	}
 
 	/**
-	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones à  afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
 	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
 	 * addZone(getNOMxxx, String); Date de création : (24/01/03 15:27:10)
@@ -215,7 +215,7 @@ public class OeCOMMUNESelection extends BasicProcess {
 
 	/**
 	 * @param focus
-	 *            focus à définir.
+	 *            focus à  définir.
 	 */
 	public void setFocus(String focus) {
 		this.focus = focus;
@@ -334,7 +334,7 @@ public class OeCOMMUNESelection extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_COMMUNE_FRANCE Date de création : (31/03/11 10:11:15)
 	 * 
 	 */
@@ -501,7 +501,7 @@ public class OeCOMMUNESelection extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_CODE_PAYS Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_CODE_PAYS Date
 	 * de création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -519,7 +519,7 @@ public class OeCOMMUNESelection extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_LIB_PAYS Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_LIB_PAYS Date
 	 * de création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -537,7 +537,7 @@ public class OeCOMMUNESelection extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_CODE Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_CODE Date de
 	 * création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -555,7 +555,7 @@ public class OeCOMMUNESelection extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_LIB Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_LIB Date de
 	 * création : (18/08/11 10:21:15)
 	 * 
 	 */

@@ -98,7 +98,7 @@ public class OeAGENTRecherche extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie : EF_ZONE
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie : EF_ZONE
 	 * Date de création : (01/01/03 09:35:10)
 	 * 
 	 */
@@ -107,7 +107,7 @@ public class OeAGENTRecherche extends BasicProcess {
 	}
 
 	/**
-	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones à  afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
 	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
 	 * addZone(getNOMxxx, String); Date de création : (01/01/03 09:35:10)
@@ -344,7 +344,7 @@ public class OeAGENTRecherche extends BasicProcess {
 
 	/**
 	 * @param focus
-	 *            focus à définir.
+	 *            focus à  définir.
 	 */
 	public void setFocus(String focus) {
 		this.focus = focus;
@@ -515,7 +515,7 @@ public class OeAGENTRecherche extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_CODE_SERVICE
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_CODE_SERVICE
 	 * Date de création : (15/09/11 09:37:35)
 	 * 
 	 */
@@ -533,7 +533,7 @@ public class OeAGENTRecherche extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_SERVICE Date de création : (15/09/11 09:37:35)
 	 * 
 	 */
@@ -638,7 +638,7 @@ public class OeAGENTRecherche extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_MATR Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_MATR Date de
 	 * création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -656,7 +656,7 @@ public class OeAGENTRecherche extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_PRENOM Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_PRENOM Date de
 	 * création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -674,7 +674,7 @@ public class OeAGENTRecherche extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_NOM Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_NOM Date de
 	 * création : (18/08/11 10:21:15)
 	 * 
 	 */

@@ -270,7 +270,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
+	 * Retourne la valeur à  afficher par la JSP pour la zone :
 	 * ST_CODE_RUBRIQUE_AVANTAGE Date de création : (27/07/11 12:13:47)
 	 * 
 	 */
@@ -288,7 +288,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
+	 * Retourne la valeur à  afficher par la JSP pour la zone :
 	 * ST_CODE_RUBRIQUE_REGIME Date de création : (27/07/11 12:13:47)
 	 * 
 	 */
@@ -306,7 +306,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_COMMENT_DELEGATION Date de création : (27/07/11 12:13:47)
 	 * 
 	 */
@@ -324,7 +324,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_FORFAIT_REGIME Date de création : (27/07/11 12:13:47)
 	 * 
 	 */
@@ -342,7 +342,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_MONTANT_AVANTAGE Date de création : (27/07/11 12:13:47)
 	 * 
 	 */
@@ -360,7 +360,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_NB_POINTS_REGIME Date de création : (27/07/11 12:13:47)
 	 * 
 	 */
@@ -407,7 +407,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_NATURE_AVANTAGE Date de création : (27/07/11 12:13:47)
 	 * 
 	 */
@@ -416,7 +416,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_NATURE_AVANTAGE Date de création : (27/07/11 12:13:47)
 	 * 
 	 */
@@ -463,7 +463,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_RUBRIQUE_AVANTAGE Date de création : (27/07/11 12:13:47)
 	 * 
 	 */
@@ -472,7 +472,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_RUBRIQUE_AVANTAGE Date de création : (27/07/11 12:13:47)
 	 * 
 	 */
@@ -519,7 +519,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_RUBRIQUE_REGIME Date de création : (27/07/11 12:13:47)
 	 * 
 	 */
@@ -528,7 +528,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_RUBRIQUE_REGIME Date de création : (27/07/11 12:13:47)
 	 * 
 	 */
@@ -576,7 +576,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_RUBRIQUE_PRIME_POINTAGE Date de création : (27/07/11 12:13:47)
 	 * 
 	 */
@@ -585,7 +585,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_RUBRIQUE_PRIME_POINTAGE Date de création : (27/07/11
 	 * 12:13:47)
 	 * 
@@ -633,7 +633,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_TYPE_AVANTAGE Date de création : (27/07/11 12:13:47)
 	 * 
 	 */
@@ -642,7 +642,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_TYPE_AVANTAGE Date de création : (27/07/11 12:13:47)
 	 * 
 	 */
@@ -689,7 +689,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_TYPE_DELEGATION Date de création : (27/07/11 12:13:47)
 	 * 
 	 */
@@ -698,7 +698,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_TYPE_DELEGATION Date de création : (27/07/11 12:13:47)
 	 * 
 	 */
@@ -744,7 +744,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_TYPE_REGIME Date de création : (27/07/11 12:13:47)
 	 * 
 	 */
@@ -753,7 +753,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_TYPE_REGIME Date de création : (27/07/11 12:13:47)
 	 * 
 	 */
@@ -777,7 +777,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 
 	/**
 	 * @param focus
-	 *            focus à définir.
+	 *            focus à  définir.
 	 */
 	public void setFocus(String focus) {
 		this.focus = focus;
@@ -1070,7 +1070,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_AVANTAGE Date de création : (27/07/11 14:09:02)
 	 * 
 	 */
@@ -1079,7 +1079,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_AVANTAGE Date de création : (27/07/11 14:09:02)
 	 * 
 	 */
@@ -1125,7 +1125,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_DELEGATION Date de création : (27/07/11 14:09:02)
 	 * 
 	 */
@@ -1134,7 +1134,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_DELEGATION Date de création : (27/07/11 14:09:02)
 	 * 
 	 */
@@ -1181,7 +1181,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_PRIME_POINTAGE Date de création : (27/07/11 14:09:02)
 	 * 
 	 */
@@ -1190,7 +1190,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_PRIME_POINTAGE Date de création : (27/07/11 14:09:02)
 	 * 
 	 */
@@ -1236,7 +1236,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_REGIME Date de création : (27/07/11 14:09:02)
 	 * 
 	 */
@@ -1245,7 +1245,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_REGIME Date de création : (27/07/11 14:09:02)
 	 * 
 	 */
@@ -1308,7 +1308,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones à  afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
 	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
 	 * addZone(getNOMxxx, String); Date de création : (27/07/11 14:55:24)
@@ -1606,7 +1606,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACTION Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_ACTION Date de
 	 * création : (27/07/11 14:55:25)
 	 * 
 	 */
@@ -1624,7 +1624,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_SPECIFICITE
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_SPECIFICITE
 	 * Date de création : (28/07/11 12:09:49)
 	 * 
 	 */

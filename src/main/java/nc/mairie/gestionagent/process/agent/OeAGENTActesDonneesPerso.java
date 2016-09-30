@@ -95,12 +95,12 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 	private FichePosteDao fichePosteDao;
 	private AffectationDao affectationDao;
 	private AgentDao agentDao;
-	
+
 	private IAlfrescoCMISService alfrescoCMISService;
 	private IRadiService radiService;
 
 	/**
-	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones à  afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
 	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
 	 * addZone(getNOMxxx, String); Date de création : (11/10/11 08:38:48)
@@ -183,7 +183,7 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 		}
 		if (alfrescoCMISService == null) {
 			alfrescoCMISService = (IAlfrescoCMISService) context.getBean("alfrescoCMISService");
-		}
+	}
 		if (null == radiService) {
 			radiService = (IRadiService) context.getBean("radiService");
 		}
@@ -438,7 +438,7 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 			ajoutPhoto = true;
 		}
 		if (getZone(getNOM_ST_WARNING()).equals(Const.CHAINE_VIDE)) {
-			
+
 			if (!creeDocument(request, ajoutContrat, c, ajoutAffectation, aff, ajoutFichePoste,
 					fichePoste, ajoutPhoto)) {
 				return false;
@@ -541,13 +541,13 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 		} else if(null != fp) {
 			reference = fp.getIdFichePoste();
 		}
-		
+
 		getDocumentCourant().setReference(reference);
 		
 		// on upload le fichier
 		ReturnMessageDto rmd = alfrescoCMISService.uploadDocument(getAgentConnecte(request).getIdAgent(), getAgentCourant(), getDocumentCourant(), 
 				fichierUpload, codTypeDoc);
-		
+
 		if (declarerErreurFromReturnMessageDto(rmd))
 			return false;
 
@@ -598,15 +598,15 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 			return null;
 		} else {
 			if (user != null && user.getEmployeeNumber() != null && user.getEmployeeNumber() != 0) {
-				try {
+		try {
 					agent = getAgentDao().chercherAgentParMatricule(radiService.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
-				} catch (Exception e) {
+		} catch (Exception e) {
 					// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
 					return null;
-				}
-			}
 		}
+	}
+			}
 
 		return agent;
 	}
@@ -621,7 +621,7 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_LIENDOCUMENT Date de création : (11/10/11 08:38:48)
 	 * 
 	 */
@@ -645,7 +645,7 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 
 	/**
 	 * @param focus
-	 *            focus à définir.
+	 *            focus à  définir.
 	 */
 	public void setFocus(String focus) {
 		this.focus = focus;
@@ -871,7 +871,7 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 		initialiseListeDocuments(request);
 		return true;
 	}
-	
+
 	private boolean declarerErreurFromReturnMessageDto(ReturnMessageDto rmd) {
 		
 		if(!rmd.getErrors().isEmpty()) {
@@ -1130,7 +1130,7 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_WARNING Date de création : (16/05/11 09:36:20)
 	 * 
 	 */
@@ -1286,7 +1286,7 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 	 * 
 	 */
 	public boolean performPB_CHANGER_VUE(HttpServletRequest request) throws Exception {
-		// Mise à jour de la liste des compétences
+		// Mise à  jour de la liste des compétences
 		if (getVAL_RG_VUE().equals(getNOM_RB_VUE_AUTRE()))
 			setVueCourant("Autre");
 		if (getVAL_RG_VUE().equals(getNOM_RB_VUE_SAUVEGARDE()))
@@ -1352,7 +1352,7 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_NOM_DOC Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_NOM_DOC Date
 	 * de création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -1370,7 +1370,7 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_TYPE_DOC Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_TYPE_DOC Date
 	 * de création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -1388,7 +1388,7 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE_DOC Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_DATE_DOC Date
 	 * de création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -1406,7 +1406,7 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_COMMENTAIRE
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_COMMENTAIRE
 	 * Date de création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -1533,7 +1533,7 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 
 	public AgentDao getAgentDao() {
 		return agentDao;
-	}
+}
 
 	public void setAgentDao(AgentDao agentDao) {
 		this.agentDao = agentDao;

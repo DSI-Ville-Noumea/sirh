@@ -76,7 +76,7 @@ public class OeVOIESelection extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie : EF_VOIE
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie : EF_VOIE
 	 * Date de création : (27/01/03 15:03:41)
 	 */
 	public String getVAL_EF_VOIE() {
@@ -84,7 +84,7 @@ public class OeVOIESelection extends BasicProcess {
 	}
 
 	/**
-	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones à  afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
 	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
 	 * addZone(getNOMxxx, String); Date de création : (27/01/03 15:03:41)
@@ -206,7 +206,7 @@ public class OeVOIESelection extends BasicProcess {
 
 	/**
 	 * @param focus
-	 *            focus à définir.
+	 *            focus à  définir.
 	 */
 	public void setFocus(String focus) {
 		this.focus = focus;
@@ -221,7 +221,7 @@ public class OeVOIESelection extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_CODE Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_CODE Date de
 	 * création : (18/08/11 10:21:15)
 	 */
 	public String getVAL_ST_CODE(int i) {
@@ -237,7 +237,7 @@ public class OeVOIESelection extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_LIB Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_LIB Date de
 	 * création : (18/08/11 10:21:15)
 	 */
 	public String getVAL_ST_LIB(int i) {
@@ -253,7 +253,7 @@ public class OeVOIESelection extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_QUARTIER Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_QUARTIER Date
 	 * de création : (18/08/11 10:21:15)
 	 */
 	public String getVAL_ST_QUARTIER(int i) {

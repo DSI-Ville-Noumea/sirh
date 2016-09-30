@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.context.ApplicationContext;
+
 import nc.mairie.metier.agent.Agent;
 import nc.mairie.spring.dao.metier.agent.AgentDao;
 import nc.mairie.spring.dao.utils.SirhDao;
@@ -14,8 +16,6 @@ import nc.mairie.utils.VariablesActivite;
 import nc.noumea.mairie.ads.dto.EntiteDto;
 import nc.noumea.spring.service.AdsService;
 import nc.noumea.spring.service.IAdsService;
-
-import org.springframework.context.ApplicationContext;
 
 /**
  * Process OePOSTEFEActiviteSelection Date de création : (03/02/09 14:56:59)
@@ -52,7 +52,7 @@ public class OeAVCTSelectionActeurs extends BasicProcess {
 	}
 
 	/**
-	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones à  afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
 	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
 	 * addZone(getNOMxxx, String); Date de création : (03/02/09 14:56:59)
@@ -141,7 +141,7 @@ public class OeAVCTSelectionActeurs extends BasicProcess {
 
 	/**
 	 * @param focus
-	 *            focus à définir.
+	 *            focus à  définir.
 	 */
 	public void setFocus(String focus) {
 		this.focus = focus;
@@ -233,7 +233,7 @@ public class OeAVCTSelectionActeurs extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ID_AGENT Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_ID_AGENT Date
 	 * de création : (21/11/11 09:55:36)
 	 * 
 	 */
@@ -251,7 +251,7 @@ public class OeAVCTSelectionActeurs extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_LIB_AGENT Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_LIB_AGENT Date
 	 * de création : (21/11/11 09:55:36)
 	 * 
 	 */
@@ -260,7 +260,7 @@ public class OeAVCTSelectionActeurs extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom de la case à cocher sélectionnée pour la JSP :
+	 * Retourne le nom de la case à  cocher sélectionnée pour la JSP :
 	 * CK_SELECT_LIGNE Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
@@ -269,7 +269,7 @@ public class OeAVCTSelectionActeurs extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur de la case à cocher à afficher par la JSP pour la case
+	 * Retourne la valeur de la case à  cocher à  afficher par la JSP pour la case
 	 * a cocher : CK_SELECT_LIGNE Date de création : (21/11/11 09:55:36)
 	 * 
 	 */

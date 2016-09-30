@@ -203,7 +203,7 @@ public class OeSMCalcul extends BasicProcess {
 	 * 
 	 */
 	public boolean performPB_CALCULER(HttpServletRequest request) throws Exception {
-		// Mise à jour de l'action menee
+		// Mise à  jour de l'action menee
 		addZone(getNOM_ST_ACTION(), ACTION_CALCUL);
 
 		int indiceAnnee = (Services.estNumerique(getVAL_LB_ANNEE_SELECT()) ? Integer.parseInt(getVAL_LB_ANNEE_SELECT()) : -1);
@@ -280,7 +280,7 @@ public class OeSMCalcul extends BasicProcess {
 	private void performCalculCas9(Integer moisChoisi, Integer anneeChoisi) throws Exception {
 		// CAS N 9 : AGENT SANS VISITES MEDICALES
 		// on liste tous les agents sans visites medicales
-		// avec une PA active à la date du jour
+		// avec une PA active à  la date du jour
 		ArrayList<PositionAdmAgent> listeAgentActivite = PositionAdmAgent.listerPositionAdmAgentEnActivite(getTransaction());
 		String listeNomatr = Const.CHAINE_VIDE;
 		for (PositionAdmAgent pa : listeAgentActivite) {
@@ -1378,7 +1378,7 @@ public class OeSMCalcul extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_MOIS Date de création : (28/11/11 09:55:36)
 	 * 
 	 */
@@ -1387,7 +1387,7 @@ public class OeSMCalcul extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_MOIS Date de création : (28/11/11)
 	 * 
 	 */
@@ -1405,7 +1405,7 @@ public class OeSMCalcul extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACTION Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_ACTION Date de
 	 * création : (12/09/11 11:49:01)
 	 * 
 	 */

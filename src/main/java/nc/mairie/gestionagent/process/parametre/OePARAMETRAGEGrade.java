@@ -88,7 +88,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_GRADE Date de création : (04/10/11 09:04:41)
 	 * 
 	 */
@@ -134,7 +134,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_CLASSE Date de création : (04/10/11 09:04:41)
 	 * 
 	 */
@@ -143,7 +143,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_CLASSE Date de création : (04/10/11 09:04:41)
 	 * 
 	 */
@@ -189,7 +189,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_ECHELON Date de création : (04/10/11 09:04:41)
 	 * 
 	 */
@@ -198,7 +198,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_ECHELON Date de création : (04/10/11 09:04:41)
 	 * 
 	 */
@@ -245,7 +245,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_GRADE_GENERIQUE Date de création : (04/10/11 09:04:41)
 	 * 
 	 */
@@ -254,7 +254,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_GRADE_GENERIQUE Date de création : (04/10/11 09:04:41)
 	 * 
 	 */
@@ -263,7 +263,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones à  afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
 	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
 	 * addZone(getNOMxxx, String); Date de création : (04/10/11 09:12:33)
@@ -586,7 +586,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACTION_GRADE
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_ACTION_GRADE
 	 * Date de création : (04/10/11 09:12:40)
 	 * 
 	 */
@@ -604,7 +604,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACTION_GRILLE
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_ACTION_GRILLE
 	 * Date de création : (04/10/11 09:12:40)
 	 * 
 	 */
@@ -830,7 +830,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 			}
 
 			if (Grade.listerGradeAvecTypeGrade(getTransaction(), getVAL_EF_GRADE().trim()).size() != 0) {
-				// "ERR141","Cette grille existe déjà."
+				// "ERR141","Cette grille existe déjà ."
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR141"));
 				return false;
 			}
@@ -940,7 +940,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 			Grade gradeExist = Grade.chercherGrade(getTransaction(), getVAL_EF_CODE_GRADE().toUpperCase());
 			if (!getTransaction().isErreur()) {
 				// listeMessages.put("ERR974",
-				// "Attention, il existe déjà @ avec @. Veuillez contrôler.");
+				// "Attention, il existe déjà  @ avec @. Veuillez contrôler.");
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "un grade", "ce code"));
 				return false;
 			} else {
@@ -993,12 +993,12 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 		if (motifAvct != null && motifAvct.getCode().equals("AD")) {
 			// durée : min <= moy <= max
 			if (Integer.parseInt(getVAL_EF_DUREE_MIN()) > Integer.parseInt(getVAL_EF_DUREE_MOY())) {
-				// "ERR968", "La zone @ ne peut être supérieure à la zone @."
+				// "ERR968", "La zone @ ne peut être supérieure à  la zone @."
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR968", "durée min", "durée moyenne"));
 				return false;
 			}
 			if (Integer.parseInt(getVAL_EF_DUREE_MOY()) > Integer.parseInt(getVAL_EF_DUREE_MAX())) {
-				// "ERR968", "La zone @ ne peut être supérieure à la zone @."
+				// "ERR968", "La zone @ ne peut être supérieure à  la zone @."
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR968", "durée moyenne", "durée max"));
 				return false;
 			}
@@ -1278,7 +1278,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_CODE_GRADE Date de création : (04/10/11 11:47:54)
 	 * 
 	 */
@@ -1296,7 +1296,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_DUREE_MAX Date de création : (04/10/11 11:47:54)
 	 * 
 	 */
@@ -1314,7 +1314,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_DUREE_MIN Date de création : (04/10/11 11:47:54)
 	 * 
 	 */
@@ -1332,7 +1332,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_DUREE_MOY Date de création : (04/10/11 11:47:54)
 	 * 
 	 */
@@ -1350,7 +1350,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_MONTANT_FORFAIT Date de création : (04/10/11 11:47:54)
 	 * 
 	 */
@@ -1368,7 +1368,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_MONTANT_PRIME Date de création : (04/10/11 11:47:54)
 	 * 
 	 */
@@ -1750,7 +1750,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_BAREME Date de création : (02/11/11 08:44:31)
 	 * 
 	 */
@@ -1759,7 +1759,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_BAREME Date de création : (02/11/11 08:44:31)
 	 * 
 	 */
@@ -1791,7 +1791,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_CODE_GRADE
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_CODE_GRADE
 	 * Date de création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -1809,7 +1809,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_LIB_GRADE Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_LIB_GRADE Date
 	 * de création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -1827,7 +1827,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_IBA_GRADE Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_IBA_GRADE Date
 	 * de création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -1845,7 +1845,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_GRADE_SUIVANT
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_GRADE_SUIVANT
 	 * Date de création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -1863,7 +1863,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
+	 * Retourne la valeur à  afficher par la JSP pour la zone :
 	 * ST_LIB_GRADE_GRILLE Date de création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -1881,7 +1881,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
+	 * Retourne la valeur à  afficher par la JSP pour la zone :
 	 * ST_ACTIF_GRADE_GRILLE Date de création : (18/08/11 10:21:15)
 	 * 
 	 */

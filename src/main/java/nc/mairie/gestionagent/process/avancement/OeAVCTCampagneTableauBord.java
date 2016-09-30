@@ -1,25 +1,27 @@
 package nc.mairie.gestionagent.process.avancement;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import nc.mairie.enums.EnumEtatEAE;
+import nc.mairie.gestionagent.eae.dto.CampagneEaeDto;
+import nc.mairie.gestionagent.eae.dto.EaeDashboardItemDto;
+import nc.mairie.gestionagent.radi.dto.LightUserDto;
 import nc.mairie.metier.Const;
-import nc.mairie.metier.eae.CampagneEAE;
-import nc.mairie.metier.eae.EaeFichePoste;
-import nc.mairie.spring.dao.metier.EAE.CampagneEAEDao;
-import nc.mairie.spring.dao.metier.EAE.EaeEAEDao;
-import nc.mairie.spring.dao.metier.EAE.EaeEvaluationDao;
-import nc.mairie.spring.dao.metier.EAE.EaeFichePosteDao;
-import nc.mairie.spring.dao.utils.EaeDao;
+import nc.mairie.metier.agent.Agent;
+import nc.mairie.spring.dao.metier.agent.AgentDao;
+import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
+import nc.mairie.technique.UserAppli;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
+import nc.noumea.spring.service.IEaeService;
+import nc.noumea.spring.service.IRadiService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,20 +38,20 @@ public class OeAVCTCampagneTableauBord extends BasicProcess {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private ArrayList<EaeFichePoste> listeTableauBord;
-
-	private EaeEAEDao eaeDao;
-	private CampagneEAEDao campagneEAEDao;
-	private EaeEvaluationDao eaeEvaluationDao;
-	private EaeFichePosteDao eaeFichePosteDao;
+	private Logger logger = LoggerFactory.getLogger(OeAVCTCampagneTableauBord.class);
+	
+	private List<EaeDashboardItemDto> listeTableauBord;
 
 	private ArrayList<String> listeAnnee;
 	private String[] LB_ANNEE;
 
-	private Logger logger = LoggerFactory.getLogger(OeAVCTCampagneTableauBord.class);
+	private AgentDao agentDao;
+	
+	private IEaeService eaeService;
+	private IRadiService radiService;
 
 	/**
-	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones à  afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
 	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
 	 * addZone(getNOMxxx, String); Date de création : (21/11/11 09:55:36)
@@ -68,21 +70,35 @@ public class OeAVCTCampagneTableauBord extends BasicProcess {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
-
 		initialiseDao();
 
-		initialiseListeDeroulante();
+		initialiseListeDeroulante(request);
 	}
 
-	private void initialiseListeDeroulante() throws Exception {
+	private void initialiseDao() {
+		// on initialise le dao
+		ApplicationContext context = ApplicationContextProvider.getContext();
+
+		if (getAgentDao() == null) {
+			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (null == eaeService) {
+			eaeService = (IEaeService) context.getBean("eaeService");
+		}
+		if (null == radiService) {
+			radiService = (IRadiService) context.getBean("radiService");
+		}
+	}
+
+	private void initialiseListeDeroulante(HttpServletRequest request) throws Exception {
 		// Si liste annee vide alors affectation
 		if (getLB_ANNEE() == LBVide) {
 
-			ArrayList<CampagneEAE> listCampagne = getCampagneEAEDao().listerCampagneEAE();
+			List<CampagneEaeDto> listCampagne = eaeService.getListeCampagnesEae(getAgentConnecte(request).getIdAgent());
 			int[] tailles = { 50 };
 			FormateListe aFormat = new FormateListe(tailles);
 			ArrayList<String> listannee = new ArrayList<String>();
-			for (CampagneEAE camp : listCampagne) {
+			for (CampagneEaeDto camp : listCampagne) {
 				listannee.add(camp.getAnnee().toString());
 				String ligne[] = { camp.getAnnee().toString() };
 				aFormat.ajouteLigne(ligne);
@@ -91,27 +107,6 @@ public class OeAVCTCampagneTableauBord extends BasicProcess {
 
 			setLB_ANNEE(aFormat.getListeFormatee(false));
 			addZone(getNOM_LB_ANNEE_SELECT(), Const.ZERO);
-		}
-	}
-
-	private void initialiseDao() {
-		// on initialise le dao
-		ApplicationContext context = ApplicationContextProvider.getContext();
-
-		if (getCampagneEAEDao() == null) {
-			setCampagneEAEDao(new CampagneEAEDao((EaeDao) context.getBean("eaeDao")));
-		}
-
-		if (getEaeDao() == null) {
-			setEaeDao(new EaeEAEDao((EaeDao) context.getBean("eaeDao")));
-		}
-
-		if (getEaeEvaluationDao() == null) {
-			setEaeEvaluationDao(new EaeEvaluationDao((EaeDao) context.getBean("eaeDao")));
-		}
-
-		if (getEaeFichePosteDao() == null) {
-			setEaeFichePosteDao(new EaeFichePosteDao((EaeDao) context.getBean("eaeDao")));
 		}
 	}
 
@@ -183,76 +178,28 @@ public class OeAVCTCampagneTableauBord extends BasicProcess {
 		setListeTableauBord(null);
 		// RG-EAE-24
 		try {
-			CampagneEAE campEnCours = getCampagneEAEDao().chercherCampagneEAEAnnee(new Integer(annee));
-			// on determine les section differentes
-			ArrayList<EaeFichePoste> listeDirectionSection = getEaeFichePosteDao().listerEaeFichePosteGrouperParDirectionSection(campEnCours.getIdCampagneEae());
-			Integer nbNonAff = 0;
-			Integer nbNonDeb = 0;
-			Integer nbCree = 0;
-			Integer nbEnCours = 0;
-			Integer nbFinalise = 0;
-			Integer nbControle = 0;
-			Integer nbTotalEae = 0;
-			Integer nbCAP = 0;
-			Integer nbNonDef = 0;
-			Integer nbMini = 0;
-			Integer nbMoy = 0;
-			Integer nbMaxi = 0;
-			Integer nbChangementClasse = 0;
+			
+			List<EaeDashboardItemDto> listeDirectionSection = eaeService.getEaesDashboard(getAgentConnecte(request).getIdAgent(), new Integer(annee));
+			
 			for (int i = 0; i < listeDirectionSection.size(); i++) {
-				EaeFichePoste eaeFDP = listeDirectionSection.get(i);
-				// on cherche la liste des EAE pour cette direction et section
-				// et par etat
-				Integer nbEAENonAffecte = getEaeDao().compterEAEDirectionSectionEtat(campEnCours.getIdCampagneEae(), eaeFDP.getDirectionService(), eaeFDP.getSectionService(),
-						EnumEtatEAE.NON_AFFECTE.getCode());
-				nbNonAff += nbEAENonAffecte;
-				Integer nbEAENonDebute = getEaeDao().compterEAEDirectionSectionEtat(campEnCours.getIdCampagneEae(), eaeFDP.getDirectionService(), eaeFDP.getSectionService(),
-						EnumEtatEAE.NON_DEBUTE.getCode());
-				nbNonDeb += nbEAENonDebute;
-				Integer nbEAECRee = getEaeDao().compterEAEDirectionSectionEtat(campEnCours.getIdCampagneEae(), eaeFDP.getDirectionService(), eaeFDP.getSectionService(), EnumEtatEAE.CREE.getCode());
-				nbCree += nbEAECRee;
-				Integer nbEAEEnCours = getEaeDao().compterEAEDirectionSectionEtat(campEnCours.getIdCampagneEae(), eaeFDP.getDirectionService(), eaeFDP.getSectionService(),
-						EnumEtatEAE.EN_COURS.getCode());
-				nbEnCours += nbEAEEnCours;
-				Integer nbEAEFinalise = getEaeDao().compterEAEDirectionSectionEtat(campEnCours.getIdCampagneEae(), eaeFDP.getDirectionService(), eaeFDP.getSectionService(),
-						EnumEtatEAE.FINALISE.getCode());
-				nbFinalise += nbEAEFinalise;
-				Integer nbEAEControle = getEaeDao().compterEAEDirectionSectionEtat(campEnCours.getIdCampagneEae(), eaeFDP.getDirectionService(), eaeFDP.getSectionService(),
-						EnumEtatEAE.CONTROLE.getCode());
-				nbControle += nbEAEControle;
-				Integer nbEAECAP = getEaeDao().compterEAEDirectionSectionCAP(campEnCours.getIdCampagneEae(), eaeFDP.getDirectionService(), eaeFDP.getSectionService());
-				nbCAP += nbEAECAP;
-				Integer totalEAE = nbEAENonAffecte + nbEAENonDebute + nbEAECRee + nbEAEEnCours + nbEAEFinalise + nbEAEControle;
-				nbTotalEae += totalEAE;
+				EaeDashboardItemDto eaeFDP = listeDirectionSection.get(i);
+				
+				addZone(getNOM_ST_DIRECTION(i), eaeFDP.getDirection());
+				addZone(getNOM_ST_SECTION(i), eaeFDP.getSection());
+				addZone(getNOM_ST_NON_AFF(i), eaeFDP.getNonAffecte() == 0 ? "&nbsp;" : new Integer(eaeFDP.getNonAffecte()).toString());
+				addZone(getNOM_ST_NON_DEB(i), eaeFDP.getNonDebute() == 0 ? "&nbsp;" : new Integer(eaeFDP.getNonDebute()).toString());
+				addZone(getNOM_ST_CREE(i), eaeFDP.getCree() == 0 ? "&nbsp;" : new Integer(eaeFDP.getCree()).toString());
+				addZone(getNOM_ST_EN_COURS(i), eaeFDP.getEnCours() == 0 ? "&nbsp;" : new Integer(eaeFDP.getEnCours()).toString());
+				addZone(getNOM_ST_FINALISE(i), eaeFDP.getFinalise() == 0 ? "&nbsp;" : new Integer(eaeFDP.getFinalise()).toString());
+				addZone(getNOM_ST_CONTROLE(i), eaeFDP.getNbEaeControle() == 0 ? "&nbsp;" : new Integer(eaeFDP.getNbEaeControle()).toString());
+				addZone(getNOM_ST_TOTAL_EAE(i), eaeFDP.getTotalEAE() == 0 ? "&nbsp;" : new Integer(eaeFDP.getTotalEAE()).toString());
+				addZone(getNOM_ST_PASSAGE_CAP(i), eaeFDP.getNbEaeCAP() == 0 ? "&nbsp;" : new Integer(eaeFDP.getNbEaeCAP()).toString());
 
-				// on cherche les propositions d'avancement
-				Integer nbAvctNonDefini = getEaeEvaluationDao().compterAvisSHDNonDefini(campEnCours.getIdCampagneEae(), eaeFDP.getDirectionService(), eaeFDP.getSectionService());
-				nbNonDef += nbAvctNonDefini;
-				Integer nbAvctMini = getEaeEvaluationDao().compterAvisSHDAvct(campEnCours.getIdCampagneEae(), eaeFDP.getDirectionService(), eaeFDP.getSectionService(), "MINI");
-				nbMini += nbAvctMini;
-				Integer nbAvctMoy = getEaeEvaluationDao().compterAvisSHDAvct(campEnCours.getIdCampagneEae(), eaeFDP.getDirectionService(), eaeFDP.getSectionService(), "MOY");
-				nbMoy += nbAvctMoy;
-				Integer nbAvctMAxi = getEaeEvaluationDao().compterAvisSHDAvct(campEnCours.getIdCampagneEae(), eaeFDP.getDirectionService(), eaeFDP.getSectionService(), "MAXI");
-				nbMaxi += nbAvctMAxi;
-				Integer nbAvctChangementClasse = getEaeEvaluationDao().compterAvisSHDChangementClasse(campEnCours.getIdCampagneEae(), eaeFDP.getSectionService(), eaeFDP.getSectionService());
-				nbChangementClasse += nbAvctChangementClasse;
-
-				addZone(getNOM_ST_DIRECTION(i), eaeFDP.getDirectionService());
-				addZone(getNOM_ST_SECTION(i), eaeFDP.getSectionService());
-				addZone(getNOM_ST_NON_AFF(i), nbEAENonAffecte == 0 ? "&nbsp;" : nbEAENonAffecte.toString());
-				addZone(getNOM_ST_NON_DEB(i), nbEAENonDebute == 0 ? "&nbsp;" : nbEAENonDebute.toString());
-				addZone(getNOM_ST_CREE(i), nbEAECRee == 0 ? "&nbsp;" : nbEAECRee.toString());
-				addZone(getNOM_ST_EN_COURS(i), nbEAEEnCours == 0 ? "&nbsp;" : nbEAEEnCours.toString());
-				addZone(getNOM_ST_FINALISE(i), nbEAEFinalise == 0 ? "&nbsp;" : nbEAEFinalise.toString());
-				addZone(getNOM_ST_CONTROLE(i), nbEAEControle == 0 ? "&nbsp;" : nbEAEControle.toString());
-				addZone(getNOM_ST_TOTAL_EAE(i), totalEAE == 0 ? "&nbsp;" : totalEAE.toString());
-				addZone(getNOM_ST_PASSAGE_CAP(i), nbEAECAP == 0 ? "&nbsp;" : nbEAECAP.toString());
-
-				addZone(getNOM_ST_NON_DEFINI(i), nbAvctNonDefini == 0 ? "&nbsp;" : nbAvctNonDefini.toString());
-				addZone(getNOM_ST_MINI(i), nbAvctMini == 0 ? "&nbsp;" : nbAvctMini.toString());
-				addZone(getNOM_ST_MOY(i), nbAvctMoy == 0 ? "&nbsp;" : nbAvctMoy.toString());
-				addZone(getNOM_ST_MAXI(i), nbAvctMAxi == 0 ? "&nbsp;" : nbAvctMAxi.toString());
-				addZone(getNOM_ST_CHANGEMENT_CLASSE(i), nbAvctChangementClasse == 0 ? "&nbsp;" : nbAvctChangementClasse.toString());
+				addZone(getNOM_ST_NON_DEFINI(i), eaeFDP.getNonDefini() == 0 ? "&nbsp;" : new Integer(eaeFDP.getNonDefini()).toString());
+				addZone(getNOM_ST_MINI(i), eaeFDP.getMini() == 0 ? "&nbsp;" : new Integer(eaeFDP.getMini()).toString());
+				addZone(getNOM_ST_MOY(i), eaeFDP.getMoy() == 0 ? "&nbsp;" : new Integer(eaeFDP.getMoy()).toString());
+				addZone(getNOM_ST_MAXI(i), eaeFDP.getMaxi() == 0 ? "&nbsp;" : new Integer(eaeFDP.getMaxi()).toString());
+				addZone(getNOM_ST_CHANGEMENT_CLASSE(i), eaeFDP.getChangClasse() == 0 ? "&nbsp;" : new Integer(eaeFDP.getChangClasse()).toString());
 
 			}
 			setListeTableauBord(listeDirectionSection);
@@ -284,7 +231,7 @@ public class OeAVCTCampagneTableauBord extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DIRECTION Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_DIRECTION Date
 	 * de création : (21/11/11 09:55:36)
 	 * 
 	 */
@@ -302,7 +249,7 @@ public class OeAVCTCampagneTableauBord extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_SECTION Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_SECTION Date
 	 * de création : (21/11/11 09:55:36)
 	 * 
 	 */
@@ -320,7 +267,7 @@ public class OeAVCTCampagneTableauBord extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_NON_AFF Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_NON_AFF Date
 	 * de création : (21/11/11 09:55:36)
 	 * 
 	 */
@@ -338,7 +285,7 @@ public class OeAVCTCampagneTableauBord extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_NON_DEB Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_NON_DEB Date
 	 * de création : (21/11/11 09:55:36)
 	 * 
 	 */
@@ -356,7 +303,7 @@ public class OeAVCTCampagneTableauBord extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_CREE Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_CREE Date de
 	 * création : (21/11/11 09:55:36)
 	 * 
 	 */
@@ -374,7 +321,7 @@ public class OeAVCTCampagneTableauBord extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_EN_COURS Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_EN_COURS Date
 	 * de création : (21/11/11 09:55:36)
 	 * 
 	 */
@@ -392,7 +339,7 @@ public class OeAVCTCampagneTableauBord extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_FINALISE Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_FINALISE Date
 	 * de création : (21/11/11 09:55:36)
 	 * 
 	 */
@@ -410,7 +357,7 @@ public class OeAVCTCampagneTableauBord extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_CONTROLE Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_CONTROLE Date
 	 * de création : (21/11/11 09:55:36)
 	 * 
 	 */
@@ -428,7 +375,7 @@ public class OeAVCTCampagneTableauBord extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_TOTAL_EAE Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_TOTAL_EAE Date
 	 * de création : (21/11/11 09:55:36)
 	 * 
 	 */
@@ -446,7 +393,7 @@ public class OeAVCTCampagneTableauBord extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_PASSAGE_CAP
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_PASSAGE_CAP
 	 * Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
@@ -464,7 +411,7 @@ public class OeAVCTCampagneTableauBord extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_NON_DEFINI
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_NON_DEFINI
 	 * Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
@@ -482,7 +429,7 @@ public class OeAVCTCampagneTableauBord extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_MINI Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_MINI Date de
 	 * création : (21/11/11 09:55:36)
 	 * 
 	 */
@@ -500,7 +447,7 @@ public class OeAVCTCampagneTableauBord extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_MOY Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_MOY Date de
 	 * création : (21/11/11 09:55:36)
 	 * 
 	 */
@@ -518,7 +465,7 @@ public class OeAVCTCampagneTableauBord extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_MAXI Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_MAXI Date de
 	 * création : (21/11/11 09:55:36)
 	 * 
 	 */
@@ -536,7 +483,7 @@ public class OeAVCTCampagneTableauBord extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
+	 * Retourne la valeur à  afficher par la JSP pour la zone :
 	 * ST_CHANGEMENT_CLASSE Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
@@ -544,46 +491,14 @@ public class OeAVCTCampagneTableauBord extends BasicProcess {
 		return getZone(getNOM_ST_CHANGEMENT_CLASSE(i));
 	}
 
-	public ArrayList<EaeFichePoste> getListeTableauBord() {
+	public List<EaeDashboardItemDto> getListeTableauBord() {
 		if (listeTableauBord == null)
-			return new ArrayList<EaeFichePoste>();
+			return new ArrayList<EaeDashboardItemDto>();
 		return listeTableauBord;
 	}
 
-	public void setListeTableauBord(ArrayList<EaeFichePoste> listeTableauBord) {
+	public void setListeTableauBord(List<EaeDashboardItemDto> listeTableauBord) {
 		this.listeTableauBord = listeTableauBord;
-	}
-
-	public EaeEAEDao getEaeDao() {
-		return eaeDao;
-	}
-
-	public void setEaeDao(EaeEAEDao eaeDao) {
-		this.eaeDao = eaeDao;
-	}
-
-	public CampagneEAEDao getCampagneEAEDao() {
-		return campagneEAEDao;
-	}
-
-	public void setCampagneEAEDao(CampagneEAEDao campagneEAEDao) {
-		this.campagneEAEDao = campagneEAEDao;
-	}
-
-	public EaeEvaluationDao getEaeEvaluationDao() {
-		return eaeEvaluationDao;
-	}
-
-	public void setEaeEvaluationDao(EaeEvaluationDao eaeEvaluationDao) {
-		this.eaeEvaluationDao = eaeEvaluationDao;
-	}
-
-	public EaeFichePosteDao getEaeFichePosteDao() {
-		return eaeFichePosteDao;
-	}
-
-	public void setEaeFichePosteDao(EaeFichePosteDao eaeFichePosteDao) {
-		this.eaeFichePosteDao = eaeFichePosteDao;
 	}
 
 	private String[] getLB_ANNEE() {
@@ -619,4 +534,31 @@ public class OeAVCTCampagneTableauBord extends BasicProcess {
 	public void setListeAnnee(ArrayList<String> listeAnnee) {
 		this.listeAnnee = listeAnnee;
 	}
+
+	private Agent getAgentConnecte(HttpServletRequest request) throws Exception {
+		UserAppli u = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
+		Agent agentConnecte = null;
+		// on fait la correspondance entre le login et l'agent via RADI
+
+		LightUserDto user = radiService.getAgentCompteADByLogin(u.getUserName());
+		if (user == null) {
+			return null;
+		}
+		try {
+			agentConnecte = getAgentDao().chercherAgentParMatricule(radiService.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
+		} catch (Exception e) {
+			return null;
+		}
+
+		return agentConnecte;
+	}
+
+	public AgentDao getAgentDao() {
+		return agentDao;
+	}
+
+	public void setAgentDao(AgentDao agentDao) {
+		this.agentDao = agentDao;
+	}
+	
 }

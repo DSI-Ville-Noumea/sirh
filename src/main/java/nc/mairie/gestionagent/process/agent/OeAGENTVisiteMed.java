@@ -138,7 +138,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
 	/**
-	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones à  afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
 	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
 	 * addZone(getNOMxxx, String); Date de création : (21/06/11 09:36:41)
@@ -657,7 +657,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_DATE_VISITE Date de création : (21/06/11 15:04:18)
 	 * 
 	 */
@@ -675,7 +675,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_DUREE Date de création : (21/06/11 15:04:18)
 	 * 
 	 */
@@ -721,7 +721,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_MEDECIN Date de création : (21/06/11 15:04:18)
 	 * 
 	 */
@@ -730,7 +730,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_MEDECIN Date de création : (21/06/11 15:04:18)
 	 * 
 	 */
@@ -776,7 +776,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_MOTIF Date de création : (21/06/11 15:04:18)
 	 * 
 	 */
@@ -785,7 +785,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_MOTIF Date de création : (21/06/11 15:04:18)
 	 * 
 	 */
@@ -832,7 +832,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_RECOMMANDATION Date de création : (21/06/11 15:04:18)
 	 * 
 	 */
@@ -841,7 +841,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_RECOMMANDATION Date de création : (21/06/11 15:04:18)
 	 * 
 	 */
@@ -894,7 +894,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACTION Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_ACTION Date de
 	 * création : (21/06/11 16:31:57)
 	 * 
 	 */
@@ -992,7 +992,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 					}
 				}
 				// RG_AG_VM_C01 - Vérification si la PA de l'agent donne le
-				// droit a visite médicale à la date donnée
+				// droit a visite médicale à  la date donnée
 				PositionAdmAgent posAgent = PositionAdmAgent.chercherPositionAdmAgentDateComprise(getTransaction(),
 						getAgentCourant().getNomatr(), Services.convertitDate(
 								Services.formateDate(getZone(getNOM_EF_DATE_VISITE())), "dd/MM/yyyy", "yyyyMMdd"));
@@ -1459,7 +1459,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_AVIS Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_AVIS Date de
 	 * création : (27/06/11 09:10:43)
 	 * 
 	 */
@@ -1477,7 +1477,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE_VISITE
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_DATE_VISITE
 	 * Date de création : (27/06/11 09:10:43)
 	 * 
 	 */
@@ -1495,7 +1495,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DUREE_VALIDITE
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_DUREE_VALIDITE
 	 * Date de création : (27/06/11 09:10:43)
 	 * 
 	 */
@@ -1513,7 +1513,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_NOM_MEDECIN
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_NOM_MEDECIN
 	 * Date de création : (27/06/11 09:10:43)
 	 * 
 	 */
@@ -1531,7 +1531,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_MOTIF Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_MOTIF Date de
 	 * création : (27/06/11 09:10:43)
 	 * 
 	 */
@@ -1549,7 +1549,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_RECOMMANDATION
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_RECOMMANDATION
 	 * Date de création : (27/06/11 09:10:43)
 	 * 
 	 */
@@ -1575,7 +1575,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
+	 * Retourne la valeur à  afficher par la JSP pour la zone :
 	 * ST_ACTION_INAPTITUDE Date de création : (27/06/11 14:32:47)
 	 * 
 	 */
@@ -1593,7 +1593,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
+	 * Retourne la valeur à  afficher par la JSP pour la zone :
 	 * ST_DEBUT_INAPTITUDE Date de création : (27/06/11 15:30:43)
 	 * 
 	 */
@@ -1611,7 +1611,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DUREE_ANNEES
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_DUREE_ANNEES
 	 * Date de création : (27/06/11 15:30:43)
 	 * 
 	 */
@@ -1629,7 +1629,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DUREE_JOURS
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_DUREE_JOURS
 	 * Date de création : (27/06/11 15:30:43)
 	 * 
 	 */
@@ -1647,7 +1647,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DUREE_MOIS
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_DUREE_MOIS
 	 * Date de création : (27/06/11 15:30:43)
 	 * 
 	 */
@@ -1665,7 +1665,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_TYPE Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_TYPE Date de
 	 * création : (27/06/11 15:30:43)
 	 * 
 	 */
@@ -1683,7 +1683,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_DEBUT_INAPTITUDE Date de création : (27/06/11 15:30:43)
 	 * 
 	 */
@@ -1701,7 +1701,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_DUREE_ANNEES Date de création : (27/06/11 15:30:43)
 	 * 
 	 */
@@ -1719,7 +1719,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_DUREE_JOURS Date de création : (27/06/11 15:30:43)
 	 * 
 	 */
@@ -1737,7 +1737,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_DUREE_MOIS Date de création : (27/06/11 15:30:43)
 	 * 
 	 */
@@ -1783,7 +1783,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_TYPE Date de création : (27/06/11 15:30:43)
 	 * 
 	 */
@@ -1792,7 +1792,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_TYPE Date de création : (27/06/11 15:30:43)
 	 * 
 	 */
@@ -1845,7 +1845,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_AMENAGEMENT
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_AMENAGEMENT
 	 * Date de création : (04/07/11 16:01:48)
 	 * 
 	 */
@@ -1863,7 +1863,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_RECO_CRDHNC
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_RECO_CRDHNC
 	 * Date de création : (04/07/11 16:01:48)
 	 * 
 	 */
@@ -1881,7 +1881,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_RECO_MP Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_RECO_MP Date
 	 * de création : (04/07/11 16:01:48)
 	 * 
 	 */
@@ -2047,7 +2047,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE_VISITE
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_DATE_VISITE
 	 * Date de création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -2065,7 +2065,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DUREE Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_DUREE Date de
 	 * création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -2083,7 +2083,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_NOM_MEDECIN
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_NOM_MEDECIN
 	 * Date de création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -2101,7 +2101,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_MOTIF Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_MOTIF Date de
 	 * création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -2119,7 +2119,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_AVIS Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_AVIS Date de
 	 * création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -2137,7 +2137,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_RECOMMANDATION
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_RECOMMANDATION
 	 * Date de création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -2155,7 +2155,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_NB_DOC Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_NB_DOC Date de
 	 * création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -2333,7 +2333,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_TYPE_INAPT
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_TYPE_INAPT
 	 * Date de création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -2351,7 +2351,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DEBUT_INAPT
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_DEBUT_INAPT
 	 * Date de création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -2369,7 +2369,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ANNEES_INAPT
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_ANNEES_INAPT
 	 * Date de création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -2387,7 +2387,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_MOIS_INAPT
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_MOIS_INAPT
 	 * Date de création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -2405,7 +2405,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_JOURS_INAPT
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_JOURS_INAPT
 	 * Date de création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -2710,7 +2710,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_NOM_DOC Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_NOM_DOC Date
 	 * de création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -2728,7 +2728,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_TYPE_DOC Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_TYPE_DOC Date
 	 * de création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -2746,7 +2746,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE_DOC Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_DATE_DOC Date
 	 * de création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -2764,7 +2764,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_COMMENTAIRE
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_COMMENTAIRE
 	 * Date de création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -2991,7 +2991,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_LIENDOCUMENT Date de création : (11/10/11 08:38:48)
 	 * 
 	 */
@@ -3156,7 +3156,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_WARNING Date de création : (16/05/11 09:36:20)
 	 * 
 	 */

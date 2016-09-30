@@ -29,7 +29,7 @@ public class AdsService implements IAdsService {
 
 	@Override
 	public EntiteDto getCurrentWholeTree() {
-		// #16549 : on ne veut afficher l'arbre qu'à partir de VDN
+		// #16549 : on ne veut afficher l'arbre qu'à  partir de VDN
 		// on recupere l'entite VDN
 		EntiteDto entiteVDN = adsConsumer.getEntiteBySigle("VDN");
 		if (entiteVDN == null || entiteVDN.getIdEntite() == null) {

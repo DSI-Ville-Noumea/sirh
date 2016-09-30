@@ -48,7 +48,7 @@ public class OePARAMETRAGERecrutement extends BasicProcess {
 	private RecrutementDao recrutementDao;
 
 	/**
-	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones à  afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
 	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
 	 * addZone(getNOMxxx, String); Date de création : (14/09/11 13:52:54)
@@ -322,7 +322,7 @@ public class OePARAMETRAGERecrutement extends BasicProcess {
 			for (MotifRecrutement motif : getListeMotif()) {
 				if (motif.getLibMotifRecrut().equals(getVAL_EF_MOTIF().toUpperCase())) {
 					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
+					// "Attention, il existe déjà  @ avec @. Veuillez contrôler."
 					getTransaction().declarerErreur(
 							MessageUtils.getMessage("ERR974", "un motif de recrutement", "ce libellé"));
 					return false;
@@ -343,7 +343,7 @@ public class OePARAMETRAGERecrutement extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACTION_MOTIF
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_ACTION_MOTIF
 	 * Date de création : (14/09/11 13:52:54)
 	 * 
 	 */
@@ -361,7 +361,7 @@ public class OePARAMETRAGERecrutement extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_MOTIF Date de création : (14/09/11 13:52:54)
 	 * 
 	 */
@@ -407,7 +407,7 @@ public class OePARAMETRAGERecrutement extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_MOTIF Date de création : (14/09/11 13:52:54)
 	 * 
 	 */
@@ -416,7 +416,7 @@ public class OePARAMETRAGERecrutement extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_MOTIF Date de création : (14/09/11 13:52:54)
 	 * 
 	 */
@@ -683,7 +683,7 @@ public class OePARAMETRAGERecrutement extends BasicProcess {
 			for (MotifNonRecrutement motif : getListeNonRec()) {
 				if (motif.getLibMotifNonRecrut().equals(getVAL_EF_NON_REC().toUpperCase())) {
 					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
+					// "Attention, il existe déjà  @ avec @. Veuillez contrôler."
 					getTransaction().declarerErreur(
 							MessageUtils.getMessage("ERR974", "un motif de non recrutement", "ce libellé"));
 					return false;
@@ -704,7 +704,7 @@ public class OePARAMETRAGERecrutement extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACTION_NON_REC
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_ACTION_NON_REC
 	 * Date de création : (14/09/11 15:20:21)
 	 * 
 	 */
@@ -722,7 +722,7 @@ public class OePARAMETRAGERecrutement extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_NON_REC Date de création : (14/09/11 15:20:21)
 	 * 
 	 */
@@ -768,7 +768,7 @@ public class OePARAMETRAGERecrutement extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_NON_REC Date de création : (14/09/11 15:20:21)
 	 * 
 	 */
@@ -777,7 +777,7 @@ public class OePARAMETRAGERecrutement extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_NON_REC Date de création : (14/09/11 15:20:21)
 	 * 
 	 */

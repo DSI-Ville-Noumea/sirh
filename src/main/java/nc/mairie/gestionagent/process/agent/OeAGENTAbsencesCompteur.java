@@ -101,7 +101,7 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 	}
 
 	/**
-	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones à  afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
 	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
 	 * addZone(getNOMxxx, String); Date de création : (05/09/11 11:39:24)
@@ -637,7 +637,7 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 		} else {
 			if (soldeNegatif) {
 				// "ERR808",
-				// "ATTENTION : Le compteur @ a bien été mis à jour mais il est NEGATIF ."
+				// "ATTENTION : Le compteur @ a bien été mis à  jour mais il est NEGATIF ."
 				setStatut(STATUT_MEME_PROCESS, false, MessageUtils.getMessage("ERR808", getTypeAbsenceCourant().getLibelle()));
 			} else {
 				// "INF010", "Le compteur @ a bien été mis a jour."

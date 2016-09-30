@@ -1,13 +1,15 @@
+<%@page import="nc.mairie.gestionagent.eae.dto.BirtDto"%>
 <%@ page contentType="text/html; charset=UTF-8" %> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <%@page import="nc.mairie.metier.agent.Document"%>
 <%@page import="nc.mairie.technique.VariableGlobale"%>
 <%@page import="nc.mairie.technique.UserAppli"%>
-<%@page import="nc.mairie.metier.eae.CampagneEAE"%>
-<%@page import="nc.mairie.metier.eae.EaeDeveloppement"%>
-<%@page import="nc.mairie.metier.eae.EaePlanAction"%>
-<%@page import="nc.mairie.metier.eae.EaeEvaluateur"%>
+<%@page import="nc.mairie.gestionagent.eae.dto.CampagneEaeDto"%>
+<%@page import="nc.mairie.gestionagent.eae.dto.EaePlanActionDto"%>
+<%@page import="nc.mairie.gestionagent.eae.dto.AgentEaeDto"%>
 <%@page import="nc.mairie.enums.EnumEtatEAE"%>
-<%@page import="nc.mairie.metier.eae.EAE"%>
+<%@page import="nc.mairie.gestionagent.eae.dto.EaeDto"%>
+<%@page import="nc.mairie.gestionagent.eae.dto.EaeObjectifProDto"%>
+<%@page import="nc.mairie.gestionagent.eae.dto.EaeItemPlanActionDto"%>
 <%@page import="nc.mairie.enums.EnumTypeDroit"%>
 <%@page import="nc.mairie.utils.MairieUtils"%>
 <HTML>
@@ -68,19 +70,19 @@
 							<td>Statut</td>
 						</tr>
 						<%
-						UserAppli aUser= (UserAppli)VariableGlobale.recuperer(request,VariableGlobale.GLOBAL_USER_APPLI);
+						UserAppli aUser = (UserAppli)VariableGlobale.recuperer(request,VariableGlobale.GLOBAL_USER_APPLI);
 			
 							int indiceEae = 0;
-								for (int i = 0;i<process.getListeEae().size();i++){
-									EAE eae = process.getListeEae().get(i);
+								for(int i = 0; i<process.getListeEae().size(); i++){
+									EaeDto eae = process.getListeEae().get(i);
 							%>
 									<tr id="<%=indiceEae%>" onmouseover="SelectLigne(<%=indiceEae%>,<%=process.getListeEae().size()%>)">
 										<td class="sigp2NewTab-liste" align="center">&nbsp;
 											<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, "") %>" name="<%=process.getNOM_PB_CONSULTER(indiceEae)%>">
 											<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_CONSULTER(indiceEae)%>">
-					    					<%if(!process.isCampagneOuverte(eae.getIdCampagneEae()) && eae.getEtat().equals(EnumEtatEAE.CONTROLE.getCode())){ %>
+					    					<%if(!process.isCampagneOuverte(eae.getCampagne()) && eae.getEtat().equals(EnumEtatEAE.CONTROLE.getCode())){ %>
 													<INPUT title="modifier" type="image" src="images/modifier.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_MODIFIER(indiceEae)%>">
-						    				<%}else if(process.isCampagneOuverte(eae.getIdCampagneEae()) && !(eae.getEtat().equals(EnumEtatEAE.CONTROLE.getCode())||eae.getEtat().equals(EnumEtatEAE.FINALISE.getCode()))){ %>
+						    				<%}else if(process.isCampagneOuverte(eae.getCampagne()) && !(eae.getEtat().equals(EnumEtatEAE.CONTROLE.getCode())||eae.getEtat().equals(EnumEtatEAE.FINALISE.getCode()))){ %>
 						    					<INPUT title="modifier les dates" type="image" src="images/modifier.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_MODIFIER_DATE(indiceEae)%>">
 						    				<%} %>								
 											<INPUT title="documents" type="image" src="images/ajout-doc.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_DOCUMENT(indiceEae)%>">
@@ -91,7 +93,9 @@
 										<td class="sigp2NewTab-liste" style="text-align: center;"><%=process.getVAL_ST_SERVICE(indiceEae)%></td>
 										<td class="sigp2NewTab-liste" style="text-align: center;">
 										<%if(eae.getEtat().equals(EnumEtatEAE.CONTROLE.getCode())){ %>
-											<INPUT title="voir le document" type="image" src="images/oeil.gif" height="15px" width="15px" name="<%=process.getNOM_PB_VISUALISER_DOC(indiceEae)%>">
+											<a href="<%=process.getVAL_ST_URL_DOC(indiceEae)%>" title="Consulter le document" target="_blank" >
+												<img onkeydown="" onkeypress="" onkeyup="" src="images/oeil.gif" height="16px" width="16px" title="Voir le document" />
+											</a>	
 				    					<%}else{ %>
 				    					&nbsp;
 				    					<%} %>
@@ -153,7 +157,7 @@
 									<%
 									int indiceEvaluateur = 0;
 										for (int i = 0;i<process.getListeEvaluateurEae().size();i++){
-											EaeEvaluateur evaluateur = process.getListeEvaluateurEae().get(i);
+											BirtDto evaluateur = process.getListeEvaluateurEae().get(i);
 									%>
 											<tr>
 												<td class="sigp2NewTab-liste" style="position:relative;width:250px;text-align: center;"><%=process.getVAL_ST_EVALUATEUR_NOM(indiceEvaluateur)%></td>
@@ -217,7 +221,7 @@
 									<%
 									int indiceObjPro = 0;
 										for (int i = 0;i<process.getListeObjectifPro().size();i++){
-											EaePlanAction plan = process.getListeObjectifPro().get(i);
+											EaeObjectifProDto plan = process.getListeObjectifPro().get(i);
 									%>
 											<tr>
 												<td width="500px" class="sigp2NewTab-liste" style="position:relative;text-align: left;"><%=process.getVAL_ST_LIB_OBJ_PRO(indiceObjPro)%></td>
@@ -240,7 +244,7 @@
 									<%
 									int indiceObjIndi = 0;
 										for (int i = 0;i<process.getListeObjectifIndi().size();i++){
-											EaePlanAction plan = process.getListeObjectifIndi().get(i);
+											EaeItemPlanActionDto plan = process.getListeObjectifIndi().get(i);
 									%>
 											<tr>
 												<td class="sigp2NewTab-liste" style="position:relative;text-align: left;"><%=process.getVAL_ST_LIB_OBJ_INDI(indiceObjIndi)%></td>
@@ -401,7 +405,7 @@
 									<%
 									int indiceEvaluateur = 0;
 										for (int i = 0;i<process.getListeEvaluateurEae().size();i++){
-											EaeEvaluateur evaluateur = process.getListeEvaluateurEae().get(i);
+											BirtDto evaluateur = process.getListeEvaluateurEae().get(i);
 									%>
 											<tr>
 												<td class="sigp2NewTab-liste" style="position:relative;width:250px;text-align: center;"><%=process.getVAL_ST_EVALUATEUR_NOM(indiceEvaluateur)%></td>
@@ -479,7 +483,7 @@
 									<%
 									int indiceObjPro = 0;
 										for (int i = 0;i<process.getListeObjectifPro().size();i++){
-											EaePlanAction plan = process.getListeObjectifPro().get(i);
+											EaeObjectifProDto plan = process.getListeObjectifPro().get(i);
 									%>
 											<tr>
 												<td class="sigp2NewTab-liste" style="position:relative;width:40px;" align="center">
@@ -542,7 +546,7 @@
 									<%
 									int indiceObjIndi = 0;
 										for (int i = 0;i<process.getListeObjectifIndi().size();i++){
-											EaePlanAction plan = process.getListeObjectifIndi().get(i);
+											EaeItemPlanActionDto plan = process.getListeObjectifIndi().get(i);
 									%>
 											<tr>
 												<td class="sigp2NewTab-liste" style="position:relative;width:40px;" align="center">
@@ -774,9 +778,8 @@
 									<span style="position:relative;width:35px;">
 									<INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_CREER_DOC()%>">
 									</span>
-									<span style="margin-left:5px;position:relative;width:90px;text-align: center;">Date</span> 
-									<span style="position:relative;width:200px;text-align: left;">Nom</span> 
-									<span style="position:relative;text-align: left">Commentaire</span> 
+									<span style="margin-left:20px;position:relative;width:90px;text-align: center;">Date</span> 
+									<span style="margin-left:70px;position:relative;text-align: left">Commentaire</span> 
 								
 									<div style="overflow: auto;height: 250px;width:1000px;margin-right: 0px;margin-left: 0px;">
 										<table class="sigp2NewTab" style="text-align:left;width:980px;">
@@ -787,11 +790,11 @@
 											%>
 											<tr>
 												<td class="sigp2NewTab-liste" style="position:relative;width:30px;" align="center">
-													<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, "") %>" name="<%=process.getNOM_PB_CONSULTER_DOC(indiceActes)%>">
-													<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_CONSULTER_DOC(indiceActes)%>">	
-												</td>
+													<a href="<%=process.getVAL_ST_URL_DOC_LISTE_DOC(indiceActes)%>" title="Consulter le document" target="_blank" >
+														<img onkeydown="" onkeypress="" onkeyup="" src="images/oeil.gif" height="16px" width="16px" title="Voir le document" />
+													</a>	
+				    							</td>
 												<td class="sigp2NewTab-liste" style="position:relative;width:90px;text-align: center;"><%=process.getVAL_ST_DATE_DOC(indiceActes)%></td>
-												<td class="sigp2NewTab-liste" style="position:relative;width:200px;text-align: left;"><%=process.getVAL_ST_NOM_DOC(indiceActes)%></td>
 												<td class="sigp2NewTab-liste" style="position:relative;text-align: left;">&nbsp;<%=process.getVAL_ST_COMMENTAIRE(indiceActes)%></td>
 											</tr>
 										<%
@@ -837,7 +840,7 @@
 									<%
 									int indiceEvaluateur = 0;
 										for (int i = 0;i<process.getListeEvaluateurEae().size();i++){
-											EaeEvaluateur evaluateur = process.getListeEvaluateurEae().get(i);
+											BirtDto evaluateur = process.getListeEvaluateurEae().get(i);
 									%>
 											<tr>
 												<td class="sigp2NewTab-liste" style="position:relative;width:250px;text-align: center;"><%=process.getVAL_ST_EVALUATEUR_NOM(indiceEvaluateur)%></td>
@@ -855,13 +858,13 @@
 									</table>	
 								<BR/><BR/>
 								<%} %>	
-								<span class="sigp2" style="width:130px;" >Date d'éntrée en qualité de fonctionnaire :</span>
+								<span class="sigp2" style="width:130px;" >Date d'entrée en qualité de fonctionnaire :</span>
 								<INPUT class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_DATE_FONCTIONNAIRE() %>" size="10" type="text" value="<%= process.getVAL_EF_DATE_FONCTIONNAIRE() %>">
 								<BR/><BR/>
-								<span class="sigp2" style="width:130px;" >Date d'éntrée dans l'administration :</span>
+								<span class="sigp2" style="width:130px;" >Date d'entrée dans l'administration :</span>
 								<INPUT class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_DATE_ADMINISTRATION() %>" size="10" type="text" value="<%= process.getVAL_EF_DATE_ADMINISTRATION() %>">
 								<BR/><BR/>
-								<span class="sigp2" style="width:130px;" >Date d'éntrée dans la fonction :</span>
+								<span class="sigp2" style="width:130px;" >Date d'entrée dans la fonction :</span>
 								<INPUT class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_DATE_FONCTION() %>" size="10" type="text" value="<%= process.getVAL_EF_DATE_FONCTION() %>">
 								<BR/><BR/>
 								<div style="text-align: center">
@@ -963,7 +966,6 @@
 		<INPUT type="submit" name = "NOM_PB_ONGLET" value="ONGLET4" id="ONGLET4" style="visibility: hidden;">
 		<INPUT type="submit" name = "NOM_PB_ONGLET" value="ONGLET5" id="ONGLET5" style="visibility: hidden;">
 		<INPUT type="submit" name = "NOM_PB_ONGLET" value="ONGLET6" id="ONGLET6" style="visibility: hidden;">		
-		<%=process.getUrlFichier()%>
 		</FORM>
 	<%} %>	
 	</BODY>

@@ -31,7 +31,7 @@ public class OePOSTEEmploiSelection extends BasicProcess {
 	private FicheEmploiDao ficheEmploiDao;
 
 	/**
-	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones à  afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
 	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
 	 * addZone(getNOMxxx, String); Date de création : (13/07/11 10:23:55)
@@ -140,7 +140,7 @@ public class OePOSTEEmploiSelection extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_RECHERCHE Date de création : (13/07/11 10:23:55)
 	 * 
 	 */
@@ -234,7 +234,7 @@ public class OePOSTEEmploiSelection extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_CODE Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_CODE Date de
 	 * création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -252,7 +252,7 @@ public class OePOSTEEmploiSelection extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_LIB Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_LIB Date de
 	 * création : (18/08/11 10:21:15)
 	 * 
 	 */

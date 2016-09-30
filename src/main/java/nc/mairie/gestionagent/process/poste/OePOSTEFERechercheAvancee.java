@@ -50,7 +50,7 @@ public class OePOSTEFERechercheAvancee extends BasicProcess {
 	private FicheEmploiDao ficheEmploiDao;
 
 	/**
-	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones à  afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
 	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
 	 * addZone(getNOMxxx, String); Date de création : (13/09/11 08:45:29)
@@ -152,7 +152,7 @@ public class OePOSTEFERechercheAvancee extends BasicProcess {
 
 	/**
 	 * @param focus
-	 *            focus à définir.
+	 *            focus à  définir.
 	 */
 	public void setFocus(String focus) {
 		this.focus = focus;
@@ -385,7 +385,7 @@ public class OePOSTEFERechercheAvancee extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_DOMAINE_EMPLOI Date de création : (13/09/11 08:45:29)
 	 * 
 	 */
@@ -394,7 +394,7 @@ public class OePOSTEFERechercheAvancee extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_DOMAINE_EMPLOI Date de création : (13/09/11 08:45:29)
 	 * 
 	 */
@@ -441,7 +441,7 @@ public class OePOSTEFERechercheAvancee extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_FAMILLE_EMPLOI Date de création : (13/09/11 08:45:29)
 	 * 
 	 */
@@ -450,7 +450,7 @@ public class OePOSTEFERechercheAvancee extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_FAMILLE_EMPLOI Date de création : (13/09/11 08:45:29)
 	 * 
 	 */
@@ -468,7 +468,7 @@ public class OePOSTEFERechercheAvancee extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_REF_MAIRIE_RECH Date de création : (21/06/11 16:27:37)
 	 * 
 	 */
@@ -486,7 +486,7 @@ public class OePOSTEFERechercheAvancee extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_CODE_ROME_RECH Date de création : (21/06/11 16:27:37)
 	 * 
 	 */
@@ -502,7 +502,7 @@ public class OePOSTEFERechercheAvancee extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_NOM_EMPLOI
 	 * 
 	 */
@@ -634,7 +634,7 @@ public class OePOSTEFERechercheAvancee extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_REF Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_REF Date de
 	 * création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -652,7 +652,7 @@ public class OePOSTEFERechercheAvancee extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_NOM Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_NOM Date de
 	 * création : (18/08/11 10:21:15)
 	 * 
 	 */

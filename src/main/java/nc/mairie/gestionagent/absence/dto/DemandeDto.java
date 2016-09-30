@@ -2,9 +2,14 @@ package nc.mairie.gestionagent.absence.dto;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import nc.mairie.gestionagent.dto.AgentWithServiceDto;
 import nc.mairie.gestionagent.dto.IJSONDeserialize;
 import nc.mairie.gestionagent.pointage.dto.RefEtatDto;
+import nc.noumea.mairie.ads.dto.JsonDateDeserializer;
+import nc.noumea.mairie.ads.dto.JsonDateSerializer;
 import flexjson.JSONDeserializer;
 
 public class DemandeDto implements IJSONDeserialize<DemandeDto> {
@@ -15,13 +20,21 @@ public class DemandeDto implements IJSONDeserialize<DemandeDto> {
 	private Integer idTypeDemande;
 	private String libelleTypeDemande;
 	private RefGroupeAbsenceDto groupeAbsence;
+	@JsonSerialize(using = JsonDateSerializer.class)
+	@JsonDeserialize(using = JsonDateDeserializer.class)
 	private Date dateDemande;
+	@JsonSerialize(using = JsonDateSerializer.class)
+	@JsonDeserialize(using = JsonDateDeserializer.class)
 	private Date dateDebut;
 	private boolean isDateDebutAM;
 	private boolean isDateDebutPM;
+	@JsonSerialize(using = JsonDateSerializer.class)
+	@JsonDeserialize(using = JsonDateDeserializer.class)
 	private Date dateFin;
 	private boolean isDateFinAM;
 	private boolean isDateFinPM;
+	@JsonSerialize(using = JsonDateSerializer.class)
+	@JsonDeserialize(using = JsonDateDeserializer.class)
 	private Date dateReprise;
 	private Double duree;
 	private boolean forceSaisieManuelleDuree;
@@ -29,6 +42,8 @@ public class DemandeDto implements IJSONDeserialize<DemandeDto> {
 
 	private Integer idRefEtat;
 	private RefEtatDto etatDto;
+	@JsonSerialize(using = JsonDateSerializer.class)
+	@JsonDeserialize(using = JsonDateDeserializer.class)
 	private Date dateSaisie;
 	private String motif;
 	private AgentWithServiceDto agentEtat;

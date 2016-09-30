@@ -30,7 +30,7 @@ public class PersonnelMain extends BasicProcess {
 	}
 
 	/**
-	 Initialisation des zones à afficher dans le JSP
+	 Initialisation des zones à  afficher dans le JSP
 	 */
 	public void initialiseZones(javax.servlet.http.HttpServletRequest request) throws Exception {
 		//POUR RESTER SUR LA MEME PAGE LORS DE LA RECHERCHE D'UN AGENT

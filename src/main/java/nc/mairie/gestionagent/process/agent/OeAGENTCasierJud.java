@@ -47,7 +47,7 @@ public class OeAGENTCasierJud extends BasicProcess {
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
 	/**
-	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones à  afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
 	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
 	 * addZone(getNOMxxx, String); Date de création : (12/05/11 15:48:38)
@@ -331,10 +331,10 @@ public class OeAGENTCasierJud extends BasicProcess {
 			setFocus(getNOM_EF_DATE_EXTRAIT());
 			return false;
 		} else {
-			// date de l'extrait doit être inferieure à la date du jour
+			// date de l'extrait doit être inferieure à  la date du jour
 			// RG_AG_CJ_C01
 			if (Services.compareDates(getZone(getNOM_EF_DATE_EXTRAIT()), Services.dateDuJour()) >= 0) {
-				// ERR204 : La date @ doit être inferieure à la date @.
+				// ERR204 : La date @ doit être inferieure à  la date @.
 				getTransaction().declarerErreur(
 						MessageUtils.getMessage("ERR204", "d'extrait de casier judiciaire", "du jour"));
 				setFocus(getNOM_EF_DATE_EXTRAIT());
@@ -363,7 +363,7 @@ public class OeAGENTCasierJud extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_AGENT Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_AGENT Date de
 	 * création : (12/05/11 15:48:38)
 	 * 
 	 */
@@ -381,7 +381,7 @@ public class OeAGENTCasierJud extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_COMMENTAIRE_EXTRAIT Date de création : (12/05/11 15:48:38)
 	 * 
 	 */
@@ -399,7 +399,7 @@ public class OeAGENTCasierJud extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_DATE_EXTRAIT Date de création : (12/05/11 15:48:38)
 	 * 
 	 */
@@ -417,7 +417,7 @@ public class OeAGENTCasierJud extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_NUM_EXTRAIT Date de création : (12/05/11 15:48:38)
 	 * 
 	 */
@@ -525,7 +525,7 @@ public class OeAGENTCasierJud extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACTION Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_ACTION Date de
 	 * création : (13/05/11 10:14:23)
 	 * 
 	 */
@@ -570,7 +570,7 @@ public class OeAGENTCasierJud extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
+	 * Retourne la valeur à  afficher par la JSP pour la zone :
 	 * ST_PRIV_DROITS_CIV Date de création : (13/05/11 11:30:57)
 	 * 
 	 */
@@ -657,7 +657,7 @@ public class OeAGENTCasierJud extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_DATE Date de
 	 * création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -675,7 +675,7 @@ public class OeAGENTCasierJud extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_NUM Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_NUM Date de
 	 * création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -693,7 +693,7 @@ public class OeAGENTCasierJud extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_PRIVATION Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_PRIVATION Date
 	 * de création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -711,7 +711,7 @@ public class OeAGENTCasierJud extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_COMMENTAIRE
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_COMMENTAIRE
 	 * Date de création : (18/08/11 10:21:15)
 	 * 
 	 */

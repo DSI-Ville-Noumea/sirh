@@ -99,7 +99,7 @@ public class OeAGENTHandicap extends BasicProcess {
 	private IRadiService radiService;
 
 	/**
-	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones à  afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
 	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
 	 * addZone(getNOMxxx, String); Date de création : (01/07/11 09:42:08)
@@ -660,7 +660,7 @@ public class OeAGENTHandicap extends BasicProcess {
 		// RG_AG_HC_C07
 		if (getZone(getNOM_RG_RECO_CRDHNC()).equals(getNOM_RB_RECO_CRDHNC_OUI())
 				&& Const.CHAINE_VIDE.equals(getZone(getNOM_EF_NUM_CRDHNC()))) {
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "n° carte CRDHNC"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "nÂ° carte CRDHNC"));
 			return false;
 		}
 
@@ -677,7 +677,7 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACTION Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_ACTION Date de
 	 * création : (01/07/11 09:42:08)
 	 * 
 	 */
@@ -695,7 +695,7 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_COMMENTAIRE
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_COMMENTAIRE
 	 * Date de création : (01/07/11 09:42:08)
 	 * 
 	 */
@@ -713,7 +713,7 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE_DEBUT
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_DATE_DEBUT
 	 * Date de création : (01/07/11 09:42:08)
 	 * 
 	 */
@@ -731,7 +731,7 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE_FIN Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_DATE_FIN Date
 	 * de création : (01/07/11 09:42:08)
 	 * 
 	 */
@@ -749,7 +749,7 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_INCAPACITE
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_INCAPACITE
 	 * Date de création : (01/07/11 09:42:08)
 	 * 
 	 */
@@ -767,7 +767,7 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_NOM Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_NOM Date de
 	 * création : (01/07/11 09:42:08)
 	 * 
 	 */
@@ -785,7 +785,7 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_NOM_MP Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_NOM_MP Date de
 	 * création : (01/07/11 09:42:08)
 	 * 
 	 */
@@ -803,7 +803,7 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_NUM_CRDHNC
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_NUM_CRDHNC
 	 * Date de création : (01/07/11 09:42:08)
 	 * 
 	 */
@@ -821,7 +821,7 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_COMMENTAIRE Date de création : (01/07/11 09:42:08)
 	 * 
 	 */
@@ -839,7 +839,7 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_DATE_DEBUT Date de création : (01/07/11 09:42:08)
 	 * 
 	 */
@@ -857,7 +857,7 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_DATE_FIN Date de création : (01/07/11 09:42:08)
 	 * 
 	 */
@@ -875,7 +875,7 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_INCAPACITE Date de création : (01/07/11 09:42:08)
 	 * 
 	 */
@@ -893,7 +893,7 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_NUM_CRDHNC Date de création : (01/07/11 09:42:08)
 	 * 
 	 */
@@ -939,7 +939,7 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_NOM Date de création : (01/07/11 09:42:08)
 	 * 
 	 */
@@ -948,7 +948,7 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_NOM Date de création : (01/07/11 09:42:08)
 	 * 
 	 */
@@ -994,7 +994,7 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_NOM_MP Date de création : (01/07/11 09:42:08)
 	 * 
 	 */
@@ -1003,7 +1003,7 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_NOM_MP Date de création : (01/07/11 09:42:08)
 	 * 
 	 */
@@ -1241,7 +1241,7 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_AMENAGEMENT
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_AMENAGEMENT
 	 * Date de création : (04/07/11 16:06:38)
 	 * 
 	 */
@@ -1259,7 +1259,7 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_RECO_CRDHNC
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_RECO_CRDHNC
 	 * Date de création : (04/07/11 16:06:38)
 	 * 
 	 */
@@ -1277,7 +1277,7 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_RECO_MP Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_RECO_MP Date
 	 * de création : (04/07/11 16:06:38)
 	 * 
 	 */
@@ -1489,7 +1489,7 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_RENOUV_CRDHNC
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_RENOUV_CRDHNC
 	 * Date de création : (04/07/11 16:06:38)
 	 * 
 	 */
@@ -1507,7 +1507,7 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_TYPE TYPE de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_TYPE TYPE de
 	 * création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -1525,7 +1525,7 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DEBUT DEBUT de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_DEBUT DEBUT de
 	 * création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -1543,7 +1543,7 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_FIN FIN de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_FIN FIN de
 	 * création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -1561,7 +1561,7 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_INCAPACITE
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_INCAPACITE
 	 * INCAPACITE de création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -1579,7 +1579,7 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_MALADIE_PROF
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_MALADIE_PROF
 	 * MALADIE_PROF de création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -1597,7 +1597,7 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_CRDHNC CRDHNC
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_CRDHNC CRDHNC
 	 * de création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -1615,7 +1615,7 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_NUM_CARTE
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_NUM_CARTE
 	 * NUM_CARTE de création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -1633,7 +1633,7 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_RENOUVELLEMENT
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_RENOUVELLEMENT
 	 * RENOUVELLEMENT de création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -1651,7 +1651,7 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_AMENAGEMENT
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_AMENAGEMENT
 	 * AMENAGEMENT de création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -1669,7 +1669,7 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_NB_DOC Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_NB_DOC Date de
 	 * création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -1884,7 +1884,7 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_NOM_DOC Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_NOM_DOC Date
 	 * de création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -1902,7 +1902,7 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_TYPE_DOC Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_TYPE_DOC Date
 	 * de création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -1920,7 +1920,7 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE_DOC Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_DATE_DOC Date
 	 * de création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -1938,7 +1938,7 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_COMMENTAIRE
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_COMMENTAIRE
 	 * Date de création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -2164,7 +2164,7 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_LIENDOCUMENT Date de création : (11/10/11 08:38:48)
 	 * 
 	 */
@@ -2331,7 +2331,7 @@ public class OeAGENTHandicap extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_WARNING Date de création : (16/05/11 09:36:20)
 	 * 
 	 */

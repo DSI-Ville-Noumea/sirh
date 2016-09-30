@@ -121,14 +121,14 @@ public class OeDROITSKiosque extends BasicProcess {
 
 	/**
 	 * @param focus
-	 *            focus à définir.
+	 *            focus à  définir.
 	 */
 	public void setFocus(String focus) {
 		this.focus = focus;
 	}
 
 	/**
-	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones à  afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
 	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
 	 * addZone(getNOMxxx, String); Date de création : (10/10/11 16:15:05)
@@ -970,7 +970,7 @@ public class OeDROITSKiosque extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_AGENT Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_AGENT Date de
 	 * création : (18/08/11 10:21:15)
 	 * 
 	 * @param i
@@ -996,7 +996,7 @@ public class OeDROITSKiosque extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_SERVICE Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_SERVICE Date
 	 * de création : (18/08/11 10:21:15)
 	 * 
 	 * @param i
@@ -1020,7 +1020,7 @@ public class OeDROITSKiosque extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACTION Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_ACTION Date de
 	 * création : (05/09/11 11:39:24)
 	 * 
 	 * @return String
@@ -1197,7 +1197,7 @@ public class OeDROITSKiosque extends BasicProcess {
 		agentDto.setIdAgent(agentDestinataire.getIdAgent());
 
 		if(getListeApprobateurs().contains(newApprobateur)) {
-			getTransaction().declarerErreur("ERREUR : L'agent saisi existe déjà en tant que approbateur.");
+			getTransaction().declarerErreur("ERREUR : L'agent saisi existe déjà  en tant que approbateur.");
 			return false;
 		}
 		

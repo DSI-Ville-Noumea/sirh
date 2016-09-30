@@ -332,14 +332,14 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		// on re-initialise la liste des contacts
 		initialiseListeContact(request);
 
-		// si date de premiere embauche sup à la date du jour alors on affiche
+		// si date de premiere embauche sup à  la date du jour alors on affiche
 		// un message d'information
-		// La date de premiere entrée ne doit pas être posterieure à la date du
+		// La date de premiere entrée ne doit pas être posterieure à  la date du
 		// jour
 		// RG_AG_EC_C05
 		String messageDateEmbauche = Const.CHAINE_VIDE;
 		if (Services.compareDates(sdf.format(getAgentCourant().getDatePremiereEmbauche()), Services.dateDuJour()) > 0) {
-			messageDateEmbauche = "Attention, vous avez saisi une date d'embauche supérieure à la date du jour.";
+			messageDateEmbauche = "Attention, vous avez saisi une date d'embauche supérieure à  la date du jour.";
 		}
 
 		if (creation) // "INF001","Agent @ créé"
@@ -578,19 +578,19 @@ public class OeAGENTEtatCivil extends BasicProcess {
 			result &= false;
 		}
 
-		// La date de naissance doit être anterieure à la date du jour
+		// La date de naissance doit être anterieure à  la date du jour
 		// RG_AG_EC_C04
 		if (Services.compareDates(getVAL_EF_DATE_NAISSANCE(), Services.dateDuJour()) >= 0) {
-			// "ERR013","La date de naissance doit être anterieure à la date du jour"
+			// "ERR013","La date de naissance doit être anterieure à  la date du jour"
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR013"));
 			result &= false;
 		}
 
-		// La date de premiere entrée doit être posterieure à la date de
+		// La date de premiere entrée doit être posterieure à  la date de
 		// naissance + 16 ans
 		// RG_AG_EC_C05
 		if (Services.compareDates(getVAL_EF_DATE_PREM_EMB(), Services.ajouteAnnee(Services.formateDate(getVAL_EF_DATE_NAISSANCE()), 16)) <= 0) {
-			// "ERR015","La date d'embauche doit être posterieure à la date de naissance"
+			// "ERR015","La date d'embauche doit être posterieure à  la date de naissance"
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR015"));
 			result &= false;
 		}
@@ -634,11 +634,11 @@ public class OeAGENTEtatCivil extends BasicProcess {
 			setFocus(getNOM_EF_SERVICE_FIN());
 			result &= false;
 		}
-		// La date de début de service ne doit pas être posterieure à la date de
+		// La date de début de service ne doit pas être posterieure à  la date de
 		// fin de service
 		// RG_AG_EC_C09
 		if (Services.compareDates(getVAL_EF_SERVICE_DEBUT(), getVAL_EF_SERVICE_FIN()) > 0) {
-			// "ERR204", "La date @ doit être inferieure à la date @.");
+			// "ERR204", "La date @ doit être inferieure à  la date @.");
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR204", "de début de service", " de fin de service"));
 			result &= false;
 		}
@@ -716,10 +716,10 @@ public class OeAGENTEtatCivil extends BasicProcess {
 				result &= false;
 			}
 
-			// n° compte obligatoire
+			// nÂ° compte obligatoire
 			if (getVAL_EF_NUM_COMPTE().length() == 0 || getVAL_EF_RIB().length() == 0 || getVAL_EF_INTITULE_COMPTE().length() == 0) {
 				// "ERR002", "La zone @ est obligatoire."
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "N° de compte, RIB et Intitulé de compte"));
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "NÂ° de compte, RIB et Intitulé de compte"));
 				setFocus(getNOM_EF_NUM_COMPTE());
 				result &= false;
 			}
@@ -728,7 +728,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		if (!getVAL_LB_BANQUE_GUICHET_SELECT().equals("0")) {
 			if (getVAL_EF_NUM_COMPTE().length() == 0 || getVAL_EF_RIB().length() == 0 || getVAL_EF_INTITULE_COMPTE().length() == 0) {
 				// "ERR002", "La zone @ est obligatoire."
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "N° de compte, RIB et Intitulé de compte"));
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "NÂ° de compte, RIB et Intitulé de compte"));
 				setFocus(getNOM_EF_NUM_COMPTE());
 				result &= false;
 			}
@@ -739,7 +739,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		// ******************************************
 
 		// **************************************
-		// Vérification n° CAFAT
+		// Vérification nÂ° CAFAT
 		// **************************************
 
 		if (getVAL_EF_NUM_CAFAT().length() != 0) {
@@ -749,14 +749,14 @@ public class OeAGENTEtatCivil extends BasicProcess {
 				result &= false;
 			}
 			// **************************************
-			// Vérification unicité n° CAFAT
+			// Vérification unicité nÂ° CAFAT
 			// **************************************
 			try {
 				Agent cafatAg = getAgentDao().chercherCafat(getVAL_EF_NUM_CAFAT(), getAgentCourant().getIdAgent());
 
 				if (cafatAg != null && cafatAg.getIdAgent() != null) {
 					// "ERR997",
-					// "Ce numéro de @ est déjà utilise, il doit être unique."
+					// "Ce numéro de @ est déjà  utilise, il doit être unique."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR997", "cafat"));
 					result &= false;
 
@@ -767,7 +767,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		}
 
 		// **************************************
-		// Vérification n° RUAM
+		// Vérification nÂ° RUAM
 		// **************************************
 
 		if (getVAL_EF_NUM_RUAMM().length() != 0) {
@@ -778,14 +778,14 @@ public class OeAGENTEtatCivil extends BasicProcess {
 			}
 
 			// **************************************
-			// Vérification unicité n° RUAM
+			// Vérification unicité nÂ° RUAM
 			// **************************************
 			try {
 				Agent ruamAg = getAgentDao().chercherRuam(getVAL_EF_NUM_RUAMM(), getAgentCourant().getIdAgent());
 
 				if (ruamAg != null && ruamAg.getIdAgent() != null) {
 					// "ERR997",
-					// "Ce numéro de @ est déjà utilise, il doit être unique."
+					// "Ce numéro de @ est déjà  utilise, il doit être unique."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR997", "ruamm"));
 					result &= false;
 				}
@@ -795,7 +795,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		}
 
 		// **************************************
-		// Vérification unicité n° MUTUELLE
+		// Vérification unicité nÂ° MUTUELLE
 		// **************************************
 
 		if (getVAL_EF_NUM_MUTUELLE().length() != 0) {
@@ -804,7 +804,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 
 				if (mutuelleAg != null && mutuelleAg.getIdAgent() != null) {
 					// "ERR997",
-					// "Ce numéro de @ est déjà utilise, il doit être unique."
+					// "Ce numéro de @ est déjà  utilise, il doit être unique."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR997", "mutuelle"));
 					result &= false;
 				}
@@ -814,7 +814,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		}
 
 		// **************************************
-		// Vérification unicité n° CLR
+		// Vérification unicité nÂ° CLR
 		// **************************************
 
 		if (getVAL_EF_NUM_CLR().length() != 0) {
@@ -822,7 +822,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 				Agent clrAg = getAgentDao().chercherClr(getVAL_EF_NUM_CLR(), getAgentCourant().getIdAgent());
 				if (clrAg != null && clrAg.getIdAgent() != null) {
 					// "ERR997",
-					// "Ce numéro de @ est déjà utilise, il doit être unique."
+					// "Ce numéro de @ est déjà  utilise, il doit être unique."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR997", "CLR"));
 					result &= false;
 				}
@@ -832,7 +832,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		}
 
 		// **************************************
-		// Vérification unicité n° CRE
+		// Vérification unicité nÂ° CRE
 		// **************************************
 
 		if (getVAL_EF_NUM_CRE().length() != 0) {
@@ -841,7 +841,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 
 				if (creAg != null && creAg.getIdAgent() != null) {
 					// "ERR997",
-					// "Ce numéro de @ est déjà utilise, il doit être unique."
+					// "Ce numéro de @ est déjà  utilise, il doit être unique."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR997", "CRE"));
 					result &= false;
 				}
@@ -851,7 +851,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		}
 
 		// **************************************
-		// Vérification unicité n° IRCAFEX
+		// Vérification unicité nÂ° IRCAFEX
 		// **************************************
 
 		if (getVAL_EF_NUM_IRCAFEX().length() != 0) {
@@ -861,7 +861,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 
 				if (ircafexAg != null && ircafexAg.getIdAgent() != null) {
 					// "ERR997",
-					// "Ce numéro de @ est déjà utilise, il doit être unique."
+					// "Ce numéro de @ est déjà  utilise, il doit être unique."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR997", "Ircafex"));
 					result &= false;
 				}
@@ -977,7 +977,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 
 	private int calculCleRIB(Agent a, boolean compteNumerique) {
 		String numCompte = a.getNumCompte();
-		// si n° compte numerique
+		// si nÂ° compte numerique
 		if (!compteNumerique) {
 			numCompte = transformeNumCompteEnNumerique(numCompte);
 		}
@@ -1151,7 +1151,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACTION_CONTACT
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_ACTION_CONTACT
 	 * Date de création : (15/03/11 10:49:55)
 	 * 
 	 * 
@@ -1171,7 +1171,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE_DERN_EMB
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_DATE_DERN_EMB
 	 * Date de création : (15/03/11 10:49:55)
 	 * 
 	 * 
@@ -1191,7 +1191,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE_PREM_EMB
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_DATE_PREM_EMB
 	 * Date de création : (15/03/11 10:49:55)
 	 * 
 	 * 
@@ -1211,7 +1211,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
+	 * Retourne la valeur à  afficher par la JSP pour la zone :
 	 * ST_LIBELLE_CONTACT Date de création : (15/03/11 10:49:55)
 	 * 
 	 * 
@@ -1231,7 +1231,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_PAYS_NAISSANCE
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_PAYS_NAISSANCE
 	 * Date de création : (15/03/11 10:49:55)
 	 * 
 	 * 
@@ -1251,7 +1251,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_PHOTO Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_PHOTO Date de
 	 * création : (15/03/11 10:49:55)
 	 * 
 	 * 
@@ -1271,7 +1271,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_TCONTACT Date
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_TCONTACT Date
 	 * de création : (15/03/11 10:49:55)
 	 * 
 	 * 
@@ -1291,7 +1291,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_LIEU_NAISSANCE
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_LIEU_NAISSANCE
 	 * Date de création : (15/03/11 10:49:55)
 	 * 
 	 * 
@@ -1311,7 +1311,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_ADRESSE_COMPLEMENTAIRE Date de création : (15/03/11 10:49:55)
 	 * 
 	 * 
@@ -1331,7 +1331,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_RUE_NON_NOUMEA Date de création : (15/03/11 10:49:55)
 	 * 
 	 * 
@@ -1351,7 +1351,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie : EF_BP
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie : EF_BP
 	 * Date de création : (15/03/11 10:49:55)
 	 * 
 	 * 
@@ -1371,7 +1371,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_CLE_RIB Date de création : (15/03/11 10:49:55)
 	 * 
 	 * 
@@ -1391,7 +1391,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_DATE_NAISSANCE Date de création : (15/03/11 10:49:55)
 	 * 
 	 * 
@@ -1411,7 +1411,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_INTITULE_COMPTE Date de création : (15/03/11 10:49:55)
 	 * 
 	 * 
@@ -1431,7 +1431,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_LIBELLE_CONTACT Date de création : (15/03/11 10:49:55)
 	 * 
 	 * 
@@ -1451,7 +1451,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_NOM_MARITAL Date de création : (15/03/11 10:49:55)
 	 * 
 	 * 
@@ -1471,7 +1471,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_NOM_PATRONYMIQUE Date de création : (15/03/11 10:49:55)
 	 * 
 	 * 
@@ -1491,7 +1491,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_NOM_USAGE Date de création : (15/03/11 10:49:55)
 	 * 
 	 * 
@@ -1511,7 +1511,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_NUM_CARTE_SEJOUR Date de création : (15/03/11 10:49:55)
 	 * 
 	 * 
@@ -1531,7 +1531,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_NUM_COMPTE Date de création : (15/03/11 10:49:55)
 	 * 
 	 * 
@@ -1551,7 +1551,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_NUM_RUE Date de création : (15/03/11 10:49:55)
 	 * 
 	 * 
@@ -1571,7 +1571,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_PRENOM Date de création : (15/03/11 10:49:55)
 	 * 
 	 * 
@@ -1591,7 +1591,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_SERVICE_DEBUT Date de création : (15/03/11 10:49:55)
 	 * 
 	 * 
@@ -1611,7 +1611,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_SERVICE_FIN Date de création : (15/03/11 10:49:55)
 	 * 
 	 * 
@@ -1664,7 +1664,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_BANQUE_GUICHET Date de création : (15/03/11 10:49:55)
 	 * 
 	 * 
@@ -1674,7 +1674,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_BANQUE_GUICHET Date de création : (15/03/11 10:49:55)
 	 * 
 	 * 
@@ -1726,7 +1726,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_NATIONALITE Date de création : (15/03/11 10:49:55)
 	 * 
 	 * 
@@ -1736,7 +1736,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_NATIONALITE Date de création : (15/03/11 10:49:55)
 	 * 
 	 * 
@@ -1788,7 +1788,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_SITUATION Date de création : (15/03/11 10:49:55)
 	 * 
 	 * 
@@ -1798,7 +1798,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_SITUATION Date de création : (15/03/11 10:49:55)
 	 * 
 	 * 
@@ -1850,7 +1850,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_TCONTACT Date de création : (15/03/11 10:49:55)
 	 * 
 	 * 
@@ -1860,7 +1860,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_TCONTACT Date de création : (15/03/11 10:49:55)
 	 * 
 	 * 
@@ -1913,7 +1913,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_TYPE_SERVICE Date de création : (15/03/11 10:49:55)
 	 * 
 	 * 
@@ -1923,7 +1923,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_TYPE_SERVICE Date de création : (15/03/11 10:49:55)
 	 * 
 	 * 
@@ -2023,7 +2023,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_AGENT Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_AGENT Date de
 	 * création : (15/03/11 15:30:49)
 	 * 
 	 * 
@@ -2033,7 +2033,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	}
 
 	/**
-	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * Initialisation des zones à  afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
 	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
 	 * addZone(getNOMxxx, String); Date de création : (16/03/11 09:31:43)
@@ -2751,7 +2751,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_CIVILITE Date de création : (16/03/11 09:31:44)
 	 * 
 	 * 
@@ -2761,7 +2761,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_CIVILITE Date de création : (16/03/11 09:31:44)
 	 * 
 	 * 
@@ -2801,7 +2801,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_SEXE Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_SEXE Date de
 	 * création : (17/03/11 09:44:22)
 	 * 
 	 * 
@@ -2904,7 +2904,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_DATE_VALIDITE_CARTE_SEJOUR Date de création : (17/03/11 15:43:50)
 	 * 
 	 * 
@@ -2968,7 +2968,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_BP Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_BP Date de
 	 * création : (18/03/11 11:04:52)
 	 * 
 	 * 
@@ -2988,7 +2988,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_COMMUNE_DOM
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_COMMUNE_DOM
 	 * Date de création : (18/03/11 11:04:52)
 	 * 
 	 * 
@@ -3008,7 +3008,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_VOIE Date de
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_VOIE Date de
 	 * création : (18/03/11 11:04:52)
 	 * 
 	 * 
@@ -3028,7 +3028,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie : EF_RIB
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie : EF_RIB
 	 * Date de création : (18/03/11 11:04:52)
 	 * 
 	 * 
@@ -3139,7 +3139,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_COMMUNE_DOM Date de création : (24/03/11 15:27:46)
 	 * 
 	 */
@@ -3148,7 +3148,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_COMMUNE_DOM Date de création : (24/03/11 15:27:46)
 	 * 
 	 */
@@ -3214,7 +3214,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_CODE_POSTAL_DOM Date de création : (25/03/11 10:30:28)
 	 * 
 	 */
@@ -3253,7 +3253,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_BANQUE_GUICHET
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_BANQUE_GUICHET
 	 * Date de création : (29/03/11 16:13:41)
 	 * 
 	 */
@@ -3292,7 +3292,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_NUM_CAFAT Date de création : (30/03/11 09:27:03)
 	 * 
 	 */
@@ -3310,7 +3310,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_NUM_CRE Date de création : (30/03/11 09:27:03)
 	 * 
 	 */
@@ -3328,7 +3328,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_NUM_IRCAFEX Date de création : (30/03/11 09:27:03)
 	 * 
 	 */
@@ -3346,7 +3346,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_NUM_CLR Date de création : (08/09/11)
 	 * 
 	 */
@@ -3364,7 +3364,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_NUM_MUTUELLE Date de création : (30/03/11 09:27:03)
 	 * 
 	 */
@@ -3382,7 +3382,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_NUM_RUAMM Date de création : (30/03/11 09:27:03)
 	 * 
 	 */
@@ -3461,7 +3461,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 
 	/**
 	 * @param focus
-	 *            focus à définir.
+	 *            focus à  définir.
 	 */
 	public void setFocus(String focus) {
 		this.focus = focus;
@@ -3477,7 +3477,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_DATE_DERN_EMB Date de création : (30/03/11 11:38:17)
 	 * 
 	 */
@@ -3495,7 +3495,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_DATE_PREM_EMB Date de création : (30/03/11 11:38:17)
 	 * 
 	 */
@@ -3619,7 +3619,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_BIS_TER Date de création : (26/05/11 11:31:12)
 	 * 
 	 */
@@ -3637,7 +3637,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_CODE_POSTAL_BP Date de création : (26/05/11 11:31:12)
 	 * 
 	 */
@@ -3684,7 +3684,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_COMMUNE_BP Date de création : (26/05/11 11:31:12)
 	 * 
 	 */
@@ -3693,7 +3693,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_COMMUNE_BP Date de création : (26/05/11 11:31:12)
 	 * 
 	 */
@@ -3880,7 +3880,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_COLLECTIVITE
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_COLLECTIVITE
 	 * Date de création : (31/05/11 09:01:30)
 	 * 
 	 */
@@ -3928,7 +3928,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
 	 * JSP : LB_COLLECTIVITE Date de création : (31/05/11 09:01:30)
 	 * 
 	 */
@@ -3937,7 +3937,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à personnaliser Retourne l'indice a selectionner pour la zone de
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
 	 * la JSP : LB_COLLECTIVITE Date de création : (31/05/11 09:01:30)
 	 * 
 	 */
@@ -3976,7 +3976,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	 * Met a jour le mode de création.
 	 * 
 	 * @param modeCreation
-	 *            modeCreation à définir
+	 *            modeCreation à  définir
 	 */
 	private void setModeCreation(boolean modeCreation) {
 		this.modeCreation = modeCreation;
@@ -4131,7 +4131,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
 	 * EF_PRENOM_USAGE Date de création : (10/06/11 10:49:54)
 	 * 
 	 */
@@ -4265,7 +4265,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_TYPE_CONTACT
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_TYPE_CONTACT
 	 * Date de création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -4283,7 +4283,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
+	 * Retourne la valeur à  afficher par la JSP pour la zone :
 	 * ST_DIFFUSABLE_CONTACT Date de création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -4301,7 +4301,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
+	 * Retourne la valeur à  afficher par la JSP pour la zone :
 	 * ST_DESCRIPTION_CONTACT Date de création : (18/08/11 10:21:15)
 	 * 
 	 */
@@ -4319,7 +4319,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
+	 * Retourne la valeur à  afficher par la JSP pour la zone :
 	 * ST_PRIORITAIRE_CONTACT Date de création : (18/08/11 10:21:15)
 	 * 
 	 */

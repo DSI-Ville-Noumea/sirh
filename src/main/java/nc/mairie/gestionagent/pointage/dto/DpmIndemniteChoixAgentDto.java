@@ -4,10 +4,14 @@ import java.beans.Transient;
 import java.io.Serializable;
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import nc.mairie.gestionagent.dto.AgentWithServiceDto;
 import nc.mairie.gestionagent.process.pointage.OePTGPrimeDpm;
-
-import org.codehaus.jackson.annotate.JsonIgnore;
+import nc.noumea.mairie.ads.dto.JsonDateDeserializer;
+import nc.noumea.mairie.ads.dto.JsonDateSerializer;
 
 public class DpmIndemniteChoixAgentDto implements Serializable {
 
@@ -22,6 +26,8 @@ public class DpmIndemniteChoixAgentDto implements Serializable {
 	private Integer idAgentCreation;
 	private AgentWithServiceDto agent;
 	private AgentWithServiceDto agentOperateur;
+	@JsonSerialize(using = JsonDateSerializer.class)
+	@JsonDeserialize(using = JsonDateDeserializer.class)
 	private Date dateMaj;
 	private boolean isChoixRecuperation;
 	private boolean isChoixIndemnite;
