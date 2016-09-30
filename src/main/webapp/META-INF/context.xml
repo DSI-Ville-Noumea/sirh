@@ -59,7 +59,7 @@
 	<!-- WS DES EAEs -->
 	<!-- -->
 	<Environment description="SIRH EAE WS url" name="SIRH_EAE_WS_URL"
-		type="java.lang.String" override="false" value="http://svi-tomcat0:808/sirh-eae-ws/" />
+		type="java.lang.String" override="false" value="http://svi-tomcat0:8085/sirh-eae-ws/" />
 
 	<!-- -->
 	<!-- WS RADI pour interroger AD -->
