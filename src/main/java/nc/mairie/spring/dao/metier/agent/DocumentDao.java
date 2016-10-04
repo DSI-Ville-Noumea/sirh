@@ -5,25 +5,26 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+
 import nc.mairie.metier.agent.Document;
 import nc.mairie.metier.agent.DocumentAgent;
 import nc.mairie.spring.dao.utils.SirhDao;
 
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
-
 public class DocumentDao extends SirhDao implements DocumentDaoInterface {
 
-	public static final String CHAMP_CLASSE_DOCUMENT = "CLASSE_DOCUMENT";
-	public static final String CHAMP_NOM_DOCUMENT = "NOM_DOCUMENT";
-	public static final String CHAMP_LIEN_DOCUMENT = "LIEN_DOCUMENT";
-	public static final String CHAMP_DATE_DOCUMENT = "DATE_DOCUMENT";
-	public static final String CHAMP_COMMENTAIRE = "COMMENTAIRE";
-	public static final String CHAMP_ID_TYPE_DOCUMENT = "ID_TYPE_DOCUMENT";
-	public static final String CHAMP_NOM_ORIGINAL = "NOM_ORIGINAL";
-	public static final String CHAMP_NODE_REF_ALFRESCO = "NODE_REF_ALFRESCO";
-	public static final String CHAMP_COMMENTAIRE_ALFRESCO = "COMMENTAIRE_ALFRESCO";
-	public static final String CHAMP_REFERENCE = "REFERENCE";
+	public static final String	CHAMP_CLASSE_DOCUMENT			= "CLASSE_DOCUMENT";
+	public static final String	CHAMP_NOM_DOCUMENT				= "NOM_DOCUMENT";
+	public static final String	CHAMP_LIEN_DOCUMENT				= "LIEN_DOCUMENT";
+	public static final String	CHAMP_DATE_DOCUMENT				= "DATE_DOCUMENT";
+	public static final String	CHAMP_DATE_DOCUMENT_TIMESTAMP	= "DATE_DOCUMENT_TIMESTAMP";
+	public static final String	CHAMP_COMMENTAIRE				= "COMMENTAIRE";
+	public static final String	CHAMP_ID_TYPE_DOCUMENT			= "ID_TYPE_DOCUMENT";
+	public static final String	CHAMP_NOM_ORIGINAL				= "NOM_ORIGINAL";
+	public static final String	CHAMP_NODE_REF_ALFRESCO			= "NODE_REF_ALFRESCO";
+	public static final String	CHAMP_COMMENTAIRE_ALFRESCO		= "COMMENTAIRE_ALFRESCO";
+	public static final String	CHAMP_REFERENCE					= "REFERENCE";
 
 	public DocumentDao(SirhDao sirhDao) {
 		super.dataSource = sirhDao.getDataSource();
@@ -69,17 +70,15 @@ public class DocumentDao extends SirhDao implements DocumentDaoInterface {
 	}
 
 	@Override
-	public Integer creerDocument(String classeDocument, String nomDocument, String lienDocument, Date dateDocument,
-			String commentaire, Integer idTypeDocument, String nomOriginal, String nodeRefAlfresco, String commentaireAlfresco,
-			Integer reference) throws Exception {
-		String sql = "select " + CHAMP_ID + " from NEW TABLE (INSERT INTO " + NOM_TABLE + " (" + CHAMP_CLASSE_DOCUMENT
-				+ "," + CHAMP_NOM_DOCUMENT + "," + CHAMP_LIEN_DOCUMENT + "," + CHAMP_DATE_DOCUMENT + ","
-				+ CHAMP_COMMENTAIRE + "," + CHAMP_ID_TYPE_DOCUMENT + "," + CHAMP_NOM_ORIGINAL + "," 
-				+ CHAMP_NODE_REF_ALFRESCO + "," + CHAMP_COMMENTAIRE_ALFRESCO + "," + CHAMP_REFERENCE + ") "
-				+ "VALUES (?,?,?,?,?,?,?,?,?,?))";
+	public Integer creerDocument(String classeDocument, String nomDocument, String lienDocument, Date dateDocument, String commentaire,
+			Integer idTypeDocument, String nomOriginal, String nodeRefAlfresco, String commentaireAlfresco, Integer reference) throws Exception {
+		String sql = "select " + CHAMP_ID + " from NEW TABLE (INSERT INTO " + NOM_TABLE + " (" + CHAMP_CLASSE_DOCUMENT + "," + CHAMP_NOM_DOCUMENT
+				+ "," + CHAMP_LIEN_DOCUMENT + "," + CHAMP_DATE_DOCUMENT + "," + CHAMP_COMMENTAIRE + "," + CHAMP_ID_TYPE_DOCUMENT + ","
+				+ CHAMP_NOM_ORIGINAL + "," + CHAMP_NODE_REF_ALFRESCO + "," + CHAMP_COMMENTAIRE_ALFRESCO + "," + CHAMP_REFERENCE + ","
+				+ CHAMP_DATE_DOCUMENT_TIMESTAMP + ") " + "VALUES (?,?,?,?,?,?,?,?,?,?,?))";
 
-		Integer id = jdbcTemplate.queryForObject(sql, new Object[] { classeDocument, nomDocument, lienDocument,
-				dateDocument, commentaire, idTypeDocument, nomOriginal, nodeRefAlfresco, commentaireAlfresco, reference }, Integer.class);
+		Integer id = jdbcTemplate.queryForObject(sql, new Object[] { classeDocument, nomDocument, lienDocument, dateDocument, commentaire,
+				idTypeDocument, nomOriginal, nodeRefAlfresco, commentaireAlfresco, reference, new Date() }, Integer.class);
 		return id;
 	}
 
@@ -93,27 +92,26 @@ public class DocumentDao extends SirhDao implements DocumentDaoInterface {
 
 	@Override
 	public Document chercherDocumentParTypeEtAgent(String typeFichier, Integer idAgent) throws Exception {
-		String sql = "select d.* from " + NOM_TABLE + " d,  P_TYPE_DOCUMENT t, DOCUMENT_AGENT da where d." + CHAMP_ID
-				+ " = da.ID_DOCUMENT and d." + CHAMP_ID_TYPE_DOCUMENT
-				+ " = t.ID_TYPE_DOCUMENT and d." + CHAMP_NODE_REF_ALFRESCO + " is NOT NULL and t.COD_TYPE_DOCUMENT = ? and da.ID_AGENT =?";
-		
+		String sql = "select d.* from " + NOM_TABLE + " d,  P_TYPE_DOCUMENT t, DOCUMENT_AGENT da where d." + CHAMP_ID + " = da.ID_DOCUMENT and d."
+				+ CHAMP_ID_TYPE_DOCUMENT + " = t.ID_TYPE_DOCUMENT and d." + CHAMP_NODE_REF_ALFRESCO
+				+ " is NOT NULL and t.COD_TYPE_DOCUMENT = ? and da.ID_AGENT =?";
+
 		Document doc = null;
 		try {
 			doc = (Document) jdbcTemplate.queryForObject(sql, new Object[] { typeFichier, idAgent },
-				new BeanPropertyRowMapper<Document>(Document.class));
-		} catch(EmptyResultDataAccessException e) {
+					new BeanPropertyRowMapper<Document>(Document.class));
+		} catch (EmptyResultDataAccessException e) {
 			return doc;
 		}
-		
+
 		return doc;
 	}
 
 	@Override
-	public ArrayList<Document> listerDocumentAgentTYPE(DocumentAgentDao daoLienDocument, Integer idAgent,
-			String module, String typDoc, Integer idDansListe) throws Exception {
+	public ArrayList<Document> listerDocumentAgentTYPE(DocumentAgentDao daoLienDocument, Integer idAgent, String module, String typDoc,
+			Integer idDansListe) throws Exception {
 		// Recherche de tous les liens Agent/ Document
-		ArrayList<DocumentAgent> liens = daoLienDocument.listerDocumentAgentAvecModuleEtVue(idAgent, module, typDoc,
-				idDansListe);
+		ArrayList<DocumentAgent> liens = daoLienDocument.listerDocumentAgentAvecModuleEtVue(idAgent, module, typDoc, idDansListe);
 		if (liens.size() == 0)
 			return new ArrayList<Document>();
 
@@ -132,8 +130,7 @@ public class DocumentDao extends SirhDao implements DocumentDaoInterface {
 	}
 
 	@Override
-	public ArrayList<Document> listerDocumentAgent(DocumentAgentDao daoLienDocument, Integer idAgent, String vue,
-			String module) throws Exception {
+	public ArrayList<Document> listerDocumentAgent(DocumentAgentDao daoLienDocument, Integer idAgent, String vue, String module) throws Exception {
 		// Recherche de tous les liens Agent/ Document
 		ArrayList<DocumentAgent> liens = daoLienDocument.listerDocumentAgentAvecModule(idAgent, module);
 		if (liens.size() == 0)

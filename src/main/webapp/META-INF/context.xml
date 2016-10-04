@@ -158,7 +158,7 @@
 	<!--  -->
 	<!-- ATTENTION : bien mettre le "/" apres le port -->
 	<Environment name="ALFRESCO_URL" type="java.lang.String" description="Alfresco endpoint url" 
-		value="http://localhost:8080/" override="false" />
+		value="http://svi-alfresco.site-mairie.noumea.nc:8080/" override="false" />
 		
 	<Environment name="ALFRESCO_LOGIN" type="java.lang.String" description="Login to Alfresco" 
 		value=***REMOVED*** override="false" />
