@@ -815,10 +815,10 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 		form.setEtat(etat);
 		form.setStatut(statut);
 		form.setListeSousService(listeSousService);
-		form.setCap(cap.equals("oui") ? true : false);
+		form.setCap(cap.equals(Const.CHAINE_VIDE)? null : cap.equals("oui") ? true : false);
 		form.setIdAgentEvaluateur(agentEvaluateur == null || null == agentEvaluateur.getIdAgent() ? null : agentEvaluateur.getIdAgent());
 		form.setIdAgentEvalue(agentEvalue == null || null == agentEvalue.getIdAgent() ? null : agentEvalue.getIdAgent());
-		form.setIsEstDetache(affecte.equals("oui") ? true : false);
+		form.setIsEstDetache(affecte.equals(Const.CHAINE_VIDE)? null :affecte.equals("oui") ? true : false);
 
 		List<EaeDto> listeEAE = eaeService.getListeEaeDto(getAgentConnecte(request).getIdAgent(), form);
 
