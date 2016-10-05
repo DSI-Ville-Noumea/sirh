@@ -49,7 +49,7 @@ public class SirhEaeWSConsumer extends BaseWsConsumer implements ISirhEaeWSConsu
 
 	private static final String	sirhEaeCampagneTaskUrl			= "sirhEaes/eaeCampagneTask";
 
-	private static final String	sirhUpdateEaeUrl				= "sirhEaes/eaeCampagneTask";
+	private static final String	sirhUpdateEaeUrl				= "sirhEaes/updateEae";
 	private static final String	sirhLastDocumentEaeFinaliseUrl	= "sirhEaes/lastDocumentEaeFinalise";
 	private static final String	sirhUpdateCapEaeUrl				= "sirhEaes/updateCapEae";
 	private static final String	sirhTableauDeBordUrl			= "sirhEaes/tableauDeBord";

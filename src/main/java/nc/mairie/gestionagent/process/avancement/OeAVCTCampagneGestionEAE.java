@@ -876,7 +876,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 					EaeCampagneTaskDto eaeCampagneTask = eaeService.findEaeCampagneTaskByIdCampagneEae(getAgentConnecte(request).getIdAgent(),
 							getCampagneCourante().getIdCampagneEae());
 
-					if (null == eaeCampagneTask.getDateCalculEae()) {
+					if (null == eaeCampagneTask.getDateCalculEae() && eaeCampagneTask.getIdEaeCampagneTask() != null) {
 						getTransaction().declarerErreur(MessageUtils.getMessage("ERR216"));
 						return false;
 					} else {
