@@ -509,7 +509,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	 * @return listePrimePointageAFF
 	 */
 	public ArrayList<PrimePointageAff> getListePrimePointageAFF() {
-		return listePrimePointageAFF;
+		return listePrimePointageAFF == null ? new ArrayList<PrimePointageAff>() : listePrimePointageAFF;
 	}
 
 	/**
