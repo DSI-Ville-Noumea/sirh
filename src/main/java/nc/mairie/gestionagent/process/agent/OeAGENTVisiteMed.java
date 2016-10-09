@@ -533,6 +533,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		addZone(getNOM_EF_DATE_VISITE(), sdf.format(getVisiteCourante().getDateDerniereVisite()));
 		addZone(getNOM_EF_DUREE(),
 				getVisiteCourante().getDureeValidite() == 0 ? Const.CHAINE_VIDE : getVisiteCourante().getDureeValidite().toString());
+		addZone(getNOM_ST_COMMENTAIRE(), getVisiteCourante().getCommentaire() == null ? Const.CHAINE_VIDE : getVisiteCourante().getCommentaire());
 
 		int ligneMedecin = getListeMedecin().indexOf(medecin);
 		addZone(getNOM_LB_MEDECIN_SELECT(), String.valueOf(ligneMedecin));
