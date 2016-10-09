@@ -392,7 +392,7 @@
 					    	<INPUT type="submit" class="sigp2-Bouton-100" value="Valider" name="<%=process.getNOM_PB_VALIDER()%>">
 					    	</TD>
 						<TD height="18" width="15">
-							<INPUT type="submit" class="sigp2-Bouton-100" value="Imprimer" name="<%=process.getNOM_PB_IMPRIMER_CERTIFICAT_APTITUDE()%>">
+<%-- 							<INPUT type="submit" class="sigp2-Bouton-100" value="Imprimer" name="<%=process.getNOM_PB_IMPRIMER_CERTIFICAT_APTITUDE()%>"> --%>
 					    </TD>
 					<%} %>
 					<TD class="sigp2" style="text-align : center;"
