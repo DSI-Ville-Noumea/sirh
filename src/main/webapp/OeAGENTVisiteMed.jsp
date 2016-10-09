@@ -388,10 +388,12 @@
 			<TBODY>
 				<TR>
 					<% if (!process.getVAL_ST_ACTION().equals(process.ACTION_CONSULTATION)){ %>
-					    <TD width="31"><INPUT type="submit"
-							class="sigp2-Bouton-100" value="Valider"
-							name="<%=process.getNOM_PB_VALIDER()%>"></TD>
-						<TD height="18" width="15"></TD>
+					    <TD width="31">
+					    	<INPUT type="submit" class="sigp2-Bouton-100" value="Valider" name="<%=process.getNOM_PB_VALIDER()%>">
+					    	</TD>
+						<TD height="18" width="15">
+							<INPUT type="submit" class="sigp2-Bouton-100" value="Imprimer" name="<%=process.getNOM_PB_IMPRIMER_CERTIFICAT_APTITUDE()%>">
+					    </TD>
 					<%} %>
 					<TD class="sigp2" style="text-align : center;"
 						height="18" width="23"><INPUT type="submit"
@@ -524,6 +526,7 @@
 		<% } %>
 		<% } %>
 		<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_SELECT_MOTIF()%>" value="x">
+	<%=process.getUrlFichier()%>
 	</FORM>
 <%} %>
 	</BODY>

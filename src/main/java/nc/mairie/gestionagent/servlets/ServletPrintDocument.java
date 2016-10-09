@@ -13,12 +13,14 @@ import org.springframework.context.ApplicationContext;
 import nc.mairie.gestionagent.process.agent.OeAGENTContrat;
 import nc.mairie.gestionagent.process.agent.OeAGENTEmploisAffectation;
 import nc.mairie.gestionagent.process.agent.OeAGENTEmploisPoste;
+import nc.mairie.gestionagent.process.agent.OeAGENTVisiteMed;
 import nc.mairie.gestionagent.process.avancement.OeAVCTFonctArretes;
 import nc.mairie.gestionagent.process.avancement.OeAVCTFonctDetaches;
 import nc.mairie.gestionagent.process.avancement.OeAVCTFonctPrepaCAP;
 import nc.mairie.gestionagent.process.avancement.OeAVCTFonctionnaireAutre;
 import nc.mairie.gestionagent.process.poste.OePOSTEFichePoste;
 import nc.mairie.spring.utils.ApplicationContextProvider;
+import nc.noumea.spring.service.IReportingService;
 import nc.noumea.spring.service.ISirhService;
 
 public class ServletPrintDocument extends javax.servlet.http.HttpServlet {
@@ -41,6 +43,12 @@ public class ServletPrintDocument extends javax.servlet.http.HttpServlet {
 			if (!nomFichier.contains(".doc") && !nomFichier.contains(".pdf")) {
 				nomFichier += ".pdf";
 			}
+		}
+
+		IReportingService reportingService = null;
+		if (null == reportingService) {
+			ApplicationContext context = ApplicationContextProvider.getContext();
+			reportingService = (IReportingService) context.getBean("reportingService");
 		}
 
 		ISirhService sirhService = null;
@@ -143,6 +151,13 @@ public class ServletPrintDocument extends javax.servlet.http.HttpServlet {
 				String idFichePoste = req.getParameter("idFichePoste");
 
 				fileByte = sirhService.downloadFichePoste(Integer.valueOf(idFichePoste));
+			}
+
+			//// OeAGENTVisiteMed ////
+			if (OeAGENTVisiteMed.class.getName().equals(fromPage)) {
+				String idVm = req.getParameter("idVm");
+
+				fileByte = reportingService.getCertificatAptitudePDF(idVm);
 			}
 
 		} catch (NumberFormatException e) {

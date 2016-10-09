@@ -11,6 +11,12 @@ import java.util.ListIterator;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
+
+import com.oreilly.servlet.MultipartRequest;
+
 import nc.mairie.enums.EnumEtatSuiviMed;
 import nc.mairie.enums.EnumMotifVisiteMed;
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
@@ -52,14 +58,9 @@ import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
 import nc.noumea.mairie.alfresco.cmis.CmisUtils;
 import nc.noumea.spring.service.IRadiService;
+import nc.noumea.spring.service.IReportingService;
 import nc.noumea.spring.service.cmis.AlfrescoCMISService;
 import nc.noumea.spring.service.cmis.IAlfrescoCMISService;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationContext;
-
-import com.oreilly.servlet.MultipartRequest;
 
 /**
  * Process OeAGENTVisiteMed Date de création : (20/06/11 15:25:51)
@@ -69,73 +70,75 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-	public static final int STATUT_RECHERCHER_AGENT = 1;
-	private Logger logger = LoggerFactory.getLogger(OeAGENTVisiteMed.class);
+	private static final long					serialVersionUID				= 1L;
+	public static final int						STATUT_RECHERCHER_AGENT			= 1;
+	private Logger								logger							= LoggerFactory.getLogger(OeAGENTVisiteMed.class);
 
-	private String[] LB_TYPE;
-	private String[] LB_MEDECIN;
-	private String[] LB_MOTIF;
-	private String[] LB_RECOMMANDATION;
+	private String[]							LB_TYPE;
+	private String[]							LB_MEDECIN;
+	private String[]							LB_MOTIF;
+	private String[]							LB_RECOMMANDATION;
 
-	private Agent agentCourant;
-	private VisiteMedicale visiteCourante;
-	private Inaptitude inaptitudeCourante;
+	private Agent								agentCourant;
+	private VisiteMedicale						visiteCourante;
+	private Inaptitude							inaptitudeCourante;
 
-	private ArrayList<VisiteMedicale> listeVisites;
-	private ArrayList<Medecin> listeMedecin;
-	private ArrayList<MotifVisiteMed> listeMotif;
-	private ArrayList<Recommandation> listeRecommandation;
-	private ArrayList<Inaptitude> listeInaptitude;
-	private ArrayList<TypeInaptitude> listeTypeInaptitude;
+	private ArrayList<VisiteMedicale>			listeVisites;
+	private ArrayList<Medecin>					listeMedecin;
+	private ArrayList<MotifVisiteMed>			listeMotif;
+	private ArrayList<Recommandation>			listeRecommandation;
+	private ArrayList<Inaptitude>				listeInaptitude;
+	private ArrayList<TypeInaptitude>			listeTypeInaptitude;
 
-	private Hashtable<Integer, Medecin> hashMedecin;
-	private Hashtable<Integer, MotifVisiteMed> hashMotif;
-	private Hashtable<Integer, Recommandation> hashRecommandation;
-	private Hashtable<Integer, TypeInaptitude> hashTypeInaptitude;
+	private Hashtable<Integer, Medecin>			hashMedecin;
+	private Hashtable<Integer, MotifVisiteMed>	hashMotif;
+	private Hashtable<Integer, Recommandation>	hashRecommandation;
+	private Hashtable<Integer, TypeInaptitude>	hashTypeInaptitude;
 
-	public String ACTION_SUPPRESSION = "Suppression d'une fiche visite médicale.";
-	public String ACTION_CONSULTATION = "Consultation d'une fiche visite médicale.";
-	private String ACTION_MODIFICATION = "Modification d'une fiche visite médicale.";
-	private String ACTION_CREATION = "Création d'une fiche visite médicale.";
+	public String								ACTION_SUPPRESSION				= "Suppression d'une fiche visite médicale.";
+	public String								ACTION_CONSULTATION				= "Consultation d'une fiche visite médicale.";
+	private String								ACTION_MODIFICATION				= "Modification d'une fiche visite médicale.";
+	private String								ACTION_CREATION					= "Création d'une fiche visite médicale.";
 
-	public String ACTION_INAPTITUDE_SUPPRESSION = "Suppression d'une fiche inpatitude.";
-	public String ACTION_INAPTITUDE_CONSULTATION = "Consultation d'une fiche inpatitude.";
-	private String ACTION_INAPTITUDE_MODIFICATION = "Modification d'une fiche inpatitude.";
-	private String ACTION_INAPTITUDE_CREATION = "Création d'une fiche inpatitude.";
+	public String								ACTION_INAPTITUDE_SUPPRESSION	= "Suppression d'une fiche inpatitude.";
+	public String								ACTION_INAPTITUDE_CONSULTATION	= "Consultation d'une fiche inpatitude.";
+	private String								ACTION_INAPTITUDE_MODIFICATION	= "Modification d'une fiche inpatitude.";
+	private String								ACTION_INAPTITUDE_CREATION		= "Création d'une fiche inpatitude.";
 
-	public String ACTION_DOCUMENT = "Documents d'une fiche visite médicale.";
-	public String ACTION_DOCUMENT_SUPPRESSION = "Suppression d'un document d'une fiche visite médicale.";
-	public String ACTION_DOCUMENT_CREATION = "Création d'un document d'une fiche visite médicale.";
-	private ArrayList<Document> listeDocuments;
-	private Document documentCourant;
-	private DocumentAgent lienDocumentAgentCourant;
-	public boolean isImporting = false;
-	public MultipartRequest multi = null;
-	public File fichierUpload = null;
+	public String								ACTION_DOCUMENT					= "Documents d'une fiche visite médicale.";
+	public String								ACTION_DOCUMENT_SUPPRESSION		= "Suppression d'un document d'une fiche visite médicale.";
+	public String								ACTION_DOCUMENT_CREATION		= "Création d'un document d'une fiche visite médicale.";
+	private ArrayList<Document>					listeDocuments;
+	private Document							documentCourant;
+	private DocumentAgent						lienDocumentAgentCourant;
+	public boolean								isImporting						= false;
+	public MultipartRequest						multi							= null;
+	public File									fichierUpload					= null;
 
-	public String focus = null;
+	public String								focus							= null;
 
-	private String messageInf = Const.CHAINE_VIDE;
-	public boolean elementModifibale = true;
-	public boolean champMotifModifiable = true;
+	private String								messageInf						= Const.CHAINE_VIDE;
+	public boolean								elementModifibale				= true;
+	public boolean								champMotifModifiable			= true;
 
-	private SuiviMedicalDao suiviMedDao;
-	private MotifVisiteMedDao motifVisiteMedDao;
-	private TypeDocumentDao typeDocumentDao;
-	private MedecinDao medecinDao;
-	private RecommandationDao recommandationDao;
-	private TypeInaptitudeDao typeInaptitudeDao;
-	private VisiteMedicaleDao visiteMedicaleDao;
-	private DocumentAgentDao lienDocumentAgentDao;
-	private DocumentDao documentDao;
-	private InaptitudeDao inaptitudeDao;
-	private AgentDao agentDao;
-	
-	private IAlfrescoCMISService alfrescoCMISService;
-	private IRadiService radiService;
-	
-	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+	private SuiviMedicalDao						suiviMedDao;
+	private MotifVisiteMedDao					motifVisiteMedDao;
+	private TypeDocumentDao						typeDocumentDao;
+	private MedecinDao							medecinDao;
+	private RecommandationDao					recommandationDao;
+	private TypeInaptitudeDao					typeInaptitudeDao;
+	private VisiteMedicaleDao					visiteMedicaleDao;
+	private DocumentAgentDao					lienDocumentAgentDao;
+	private DocumentDao							documentDao;
+	private InaptitudeDao						inaptitudeDao;
+	private AgentDao							agentDao;
+
+	private IAlfrescoCMISService				alfrescoCMISService;
+	private IRadiService						radiService;
+	private IReportingService					reportingService;
+	private String								urlFichier;
+
+	private SimpleDateFormat					sdf								= new SimpleDateFormat("dd/MM/yyyy");
 
 	/**
 	 * Initialisation des zones à  afficher dans la JSP Alimentation des listes,
@@ -158,7 +161,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		// Vérification des droits d'acces.
 		if (MairieUtils.estInterdit(request, getNomEcran())) {
 			// "ERR190",
-			// "Operation impossible. Vous ne disposez pas des droits d'acces a cette option."
+			// "Operation impossible. Vous ne disposez pas des droits d'acces a
+			// cette option."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
@@ -223,6 +227,9 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		if (radiService == null) {
 			radiService = (IRadiService) context.getBean("radiService");
 		}
+		if (reportingService == null) {
+			reportingService = (IReportingService) context.getBean("reportingService");
+		}
 	}
 
 	/**
@@ -254,8 +261,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		}
 		// Si hashtable des motifs vide
 		if (getHashMotif().size() == 0) {
-			ArrayList<MotifVisiteMed> listeMotif = (ArrayList<MotifVisiteMed>) getMotifVisiteMedDao()
-					.listerMotifVisiteMed();
+			ArrayList<MotifVisiteMed> listeMotif = (ArrayList<MotifVisiteMed>) getMotifVisiteMedDao().listerMotifVisiteMed();
 			setListeMotif(listeMotif);
 
 			int[] tailles = { 40 };
@@ -333,13 +339,12 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	private void initialiseListeVisiteMed(HttpServletRequest request) throws Exception {
 		final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		// Recherche des visites médicales de l'agent
-		ArrayList<VisiteMedicale> listeVisiteMed = getVisiteMedicaleDao().listerVisiteMedicaleAgent(
-				getAgentCourant().getIdAgent());
+		ArrayList<VisiteMedicale> listeVisiteMed = getVisiteMedicaleDao().listerVisiteMedicaleAgent(getAgentCourant().getIdAgent());
 
 		// Recherche des suivi médicaux de l'agent en statut planifié ou
 		// convoque
-		ArrayList<SuiviMedical> listeSuiviMed = getSuiviMedDao().listerSuiviMedicalEtatAgent(
-				getAgentCourant().getIdAgent(), EnumEtatSuiviMed.PLANIFIE.getCode());
+		ArrayList<SuiviMedical> listeSuiviMed = getSuiviMedDao().listerSuiviMedicalEtatAgent(getAgentCourant().getIdAgent(),
+				EnumEtatSuiviMed.PLANIFIE.getCode());
 		for (int i = 0; i < listeSuiviMed.size(); i++) {
 			// on recupere le suivi medical que l'on transforme en visite
 			// medicale
@@ -362,8 +367,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 				if (o1.getDateDerniereVisite() == null || o2.getDateDerniereVisite() == null) {
 					return 0;
 				}
-				return Services.compareDates(sdf.format(o1.getDateDerniereVisite()),
-						sdf.format(o2.getDateDerniereVisite()));
+				return Services.compareDates(sdf.format(o1.getDateDerniereVisite()), sdf.format(o2.getDateDerniereVisite()));
 			}
 		});
 		Collections.reverse(listeVisiteMed);
@@ -392,22 +396,16 @@ public class OeAGENTVisiteMed extends BasicProcess {
 				if (listeDocAgent != null) {
 					nbDoc = listeDocAgent.size();
 				}
-				addZone(getNOM_ST_DATE_VISITE(indiceVisite),
-						vm.getDateDerniereVisite() == null ? "&nbsp;" : sdf.format(vm.getDateDerniereVisite()));
+				addZone(getNOM_ST_DATE_VISITE(indiceVisite), vm.getDateDerniereVisite() == null ? "&nbsp;" : sdf.format(vm.getDateDerniereVisite()));
 				addZone(getNOM_ST_DUREE(indiceVisite),
-						vm == null || vm.getDureeValidite() == null || vm.getDureeValidite() == 0 ? "&nbsp;" : vm
-								.getDureeValidite().toString());
-				addZone(getNOM_ST_NOM_MEDECIN(indiceVisite),
-						m == null || m.getNomMedecin().equals(Const.CHAINE_VIDE) ? "&nbsp;" : m.getTitreMedecin() + " "
-								+ m.getPrenomMedecin() + " " + m.getNomMedecin());
+						vm == null || vm.getDureeValidite() == null || vm.getDureeValidite() == 0 ? "&nbsp;" : vm.getDureeValidite().toString());
+				addZone(getNOM_ST_NOM_MEDECIN(indiceVisite), m == null || m.getNomMedecin().equals(Const.CHAINE_VIDE) ? "&nbsp;"
+						: m.getTitreMedecin() + " " + m.getPrenomMedecin() + " " + m.getNomMedecin());
 				addZone(getNOM_ST_MOTIF(indiceVisite),
-						motif == null || motif.getLibMotifVm().equals(Const.CHAINE_VIDE) ? "&nbsp;" : motif
-								.getLibMotifVm());
-				addZone(getNOM_ST_AVIS(indiceVisite), vm.getApte() == null ? "&nbsp;" : vm.getApte() == 1 ? "Apte"
-						: "Inapte");
+						motif == null || motif.getLibMotifVm().equals(Const.CHAINE_VIDE) ? "&nbsp;" : motif.getLibMotifVm());
+				addZone(getNOM_ST_AVIS(indiceVisite), vm.getApte() == null ? "&nbsp;" : vm.getApte() == 1 ? "Apte" : "Inapte");
 				addZone(getNOM_ST_RECOMMANDATION(indiceVisite),
-						r == null || r.getDescRecommandation().equals(Const.CHAINE_VIDE) ? "&nbsp;" : r
-								.getDescRecommandation());
+						r == null || r.getDescRecommandation().equals(Const.CHAINE_VIDE) ? "&nbsp;" : r.getDescRecommandation());
 				addZone(getNOM_ST_NB_DOC(indiceVisite), nbDoc == 0 ? "&nbsp;" : String.valueOf(nbDoc));
 
 				indiceVisite++;
@@ -422,8 +420,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	 */
 	private void initialiseListeInpatitude(HttpServletRequest request) throws Exception {
 		// Recherche des visites médicales de l'agent
-		ArrayList<Inaptitude> listeInaptitudes = getInaptitudeDao().listerInaptitudeVisite(
-				getVisiteCourante().getIdVisite());
+		ArrayList<Inaptitude> listeInaptitudes = getInaptitudeDao().listerInaptitudeVisite(getVisiteCourante().getIdVisite());
 		setListeInaptitude(listeInaptitudes);
 		int indiceInaptitude = 0;
 		if (getListeInaptitude() != null) {
@@ -434,12 +431,9 @@ public class OeAGENTVisiteMed extends BasicProcess {
 				addZone(getNOM_ST_TYPE_INAPT(indiceInaptitude),
 						ti.getDescTypeInaptitude().equals(Const.CHAINE_VIDE) ? "&nbsp;" : ti.getDescTypeInaptitude());
 				addZone(getNOM_ST_DEBUT_INAPT(indiceInaptitude), sdf.format(inapt.getDateDebutInaptitude()));
-				addZone(getNOM_ST_ANNEES_INAPT(indiceInaptitude), inapt.getDureeAnnee() != null ? inapt.getDureeAnnee()
-						.toString() : Const.ZERO);
-				addZone(getNOM_ST_MOIS_INAPT(indiceInaptitude), inapt.getDureeMois() != null ? inapt.getDureeMois()
-						.toString() : Const.ZERO);
-				addZone(getNOM_ST_JOURS_INAPT(indiceInaptitude), inapt.getDureeJour() != null ? inapt.getDureeJour()
-						.toString() : Const.ZERO);
+				addZone(getNOM_ST_ANNEES_INAPT(indiceInaptitude), inapt.getDureeAnnee() != null ? inapt.getDureeAnnee().toString() : Const.ZERO);
+				addZone(getNOM_ST_MOIS_INAPT(indiceInaptitude), inapt.getDureeMois() != null ? inapt.getDureeMois().toString() : Const.ZERO);
+				addZone(getNOM_ST_JOURS_INAPT(indiceInaptitude), inapt.getDureeJour() != null ? inapt.getDureeJour().toString() : Const.ZERO);
 
 				indiceInaptitude++;
 			}
@@ -537,8 +531,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 		// Alim zones
 		addZone(getNOM_EF_DATE_VISITE(), sdf.format(getVisiteCourante().getDateDerniereVisite()));
-		addZone(getNOM_EF_DUREE(), getVisiteCourante().getDureeValidite() == 0 ? Const.CHAINE_VIDE
-				: getVisiteCourante().getDureeValidite().toString());
+		addZone(getNOM_EF_DUREE(),
+				getVisiteCourante().getDureeValidite() == 0 ? Const.CHAINE_VIDE : getVisiteCourante().getDureeValidite().toString());
 
 		int ligneMedecin = getListeMedecin().indexOf(medecin);
 		addZone(getNOM_LB_MEDECIN_SELECT(), String.valueOf(ligneMedecin));
@@ -599,17 +593,13 @@ public class OeAGENTVisiteMed extends BasicProcess {
 			return false;
 
 		addZone(getNOM_ST_DATE_VISITE(), sdf.format(getVisiteCourante().getDateDerniereVisite()));
-		addZone(getNOM_ST_DUREE_VALIDITE(), getVisiteCourante().getDureeValidite() == 0 ? Const.CHAINE_VIDE
-				: getVisiteCourante().getDureeValidite().toString());
-		addZone(getNOM_ST_NOM_MEDECIN(),
-				medecin.getTitreMedecin() + " " + medecin.getPrenomMedecin() + " " + medecin.getNomMedecin());
+		addZone(getNOM_ST_DUREE_VALIDITE(),
+				getVisiteCourante().getDureeValidite() == 0 ? Const.CHAINE_VIDE : getVisiteCourante().getDureeValidite().toString());
+		addZone(getNOM_ST_NOM_MEDECIN(), medecin.getTitreMedecin() + " " + medecin.getPrenomMedecin() + " " + medecin.getNomMedecin());
 		addZone(getNOM_ST_MOTIF(), motif != null ? motif.getLibMotifVm() : Const.CHAINE_VIDE);
-		addZone(getNOM_ST_AVIS(), getVisiteCourante().getApte() == null ? Const.CHAINE_VIDE : getVisiteCourante()
-				.getApte() == 1 ? "APTE" : "INAPTE");
-		addZone(getNOM_ST_RECOMMANDATION(),
-				recommandation == null ? Const.CHAINE_VIDE : recommandation.getDescRecommandation());
-		addZone(getNOM_ST_COMMENTAIRE(),
-				getVisiteCourante().getCommentaire() == null ? Const.CHAINE_VIDE : getVisiteCourante().getCommentaire());
+		addZone(getNOM_ST_AVIS(), getVisiteCourante().getApte() == null ? Const.CHAINE_VIDE : getVisiteCourante().getApte() == 1 ? "APTE" : "INAPTE");
+		addZone(getNOM_ST_RECOMMANDATION(), recommandation == null ? Const.CHAINE_VIDE : recommandation.getDescRecommandation());
+		addZone(getNOM_ST_COMMENTAIRE(), getVisiteCourante().getCommentaire() == null ? Const.CHAINE_VIDE : getVisiteCourante().getCommentaire());
 
 		return true;
 	}
@@ -721,8 +711,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
-	 * JSP : LB_MEDECIN Date de création : (21/06/11 15:04:18)
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de
+	 * la JSP : LB_MEDECIN Date de création : (21/06/11 15:04:18)
 	 * 
 	 */
 	public String[] getVAL_LB_MEDECIN() {
@@ -776,8 +766,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
-	 * JSP : LB_MOTIF Date de création : (21/06/11 15:04:18)
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de
+	 * la JSP : LB_MOTIF Date de création : (21/06/11 15:04:18)
 	 * 
 	 */
 	public String[] getVAL_LB_MOTIF() {
@@ -832,8 +822,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
-	 * JSP : LB_RECOMMANDATION Date de création : (21/06/11 15:04:18)
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de
+	 * la JSP : LB_RECOMMANDATION Date de création : (21/06/11 15:04:18)
 	 * 
 	 */
 	public String[] getVAL_LB_RECOMMANDATION() {
@@ -894,8 +884,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_ACTION Date de
-	 * création : (21/06/11 16:31:57)
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_ACTION Date
+	 * de création : (21/06/11 16:31:57)
 	 * 
 	 */
 	public String getVAL_ST_ACTION() {
@@ -993,9 +983,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 				}
 				// RG_AG_VM_C01 - Vérification si la PA de l'agent donne le
 				// droit a visite médicale à  la date donnée
-				PositionAdmAgent posAgent = PositionAdmAgent.chercherPositionAdmAgentDateComprise(getTransaction(),
-						getAgentCourant().getNomatr(), Services.convertitDate(
-								Services.formateDate(getZone(getNOM_EF_DATE_VISITE())), "dd/MM/yyyy", "yyyyMMdd"));
+				PositionAdmAgent posAgent = PositionAdmAgent.chercherPositionAdmAgentDateComprise(getTransaction(), getAgentCourant().getNomatr(),
+						Services.convertitDate(Services.formateDate(getZone(getNOM_EF_DATE_VISITE())), "dd/MM/yyyy", "yyyyMMdd"));
 				if (getTransaction().isErreur()) {
 					getTransaction().traiterErreur();
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR132"));
@@ -1020,19 +1009,18 @@ public class OeAGENTVisiteMed extends BasicProcess {
 					}
 				}
 
-				int numLigneMedecin = (Services.estNumerique(getZone(getNOM_LB_MEDECIN_SELECT())) ? Integer
-						.parseInt(getZone(getNOM_LB_MEDECIN_SELECT())) : -1);
+				int numLigneMedecin = (Services.estNumerique(getZone(getNOM_LB_MEDECIN_SELECT()))
+						? Integer.parseInt(getZone(getNOM_LB_MEDECIN_SELECT())) : -1);
 
-				if (numLigneMedecin == -1 || getListeMedecin().size() == 0
-						|| numLigneMedecin > getListeMedecin().size()) {
+				if (numLigneMedecin == -1 || getListeMedecin().size() == 0 || numLigneMedecin > getListeMedecin().size()) {
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "médecins"));
 					return false;
 				}
 
 				Medecin medecin = (Medecin) getListeMedecin().get(numLigneMedecin);
 
-				int numLigneMotif = (Services.estNumerique(getZone(getNOM_LB_MOTIF_SELECT())) ? Integer
-						.parseInt(getZone(getNOM_LB_MOTIF_SELECT())) : -1);
+				int numLigneMotif = (Services.estNumerique(getZone(getNOM_LB_MOTIF_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_MOTIF_SELECT()))
+						: -1);
 
 				if (numLigneMotif == -1 || getListeMotif().size() == 0 || numLigneMotif > getListeMotif().size()) {
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "motif"));
@@ -1043,8 +1031,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 				Recommandation recommandation = null;
 				if (elementModifibale) {
-					int numLigneRecommandation = (Services.estNumerique(getZone(getNOM_LB_RECOMMANDATION_SELECT())) ? Integer
-							.parseInt(getZone(getNOM_LB_RECOMMANDATION_SELECT())) : -1);
+					int numLigneRecommandation = (Services.estNumerique(getZone(getNOM_LB_RECOMMANDATION_SELECT()))
+							? Integer.parseInt(getZone(getNOM_LB_RECOMMANDATION_SELECT())) : -1);
 
 					if (numLigneRecommandation == -1 || getListeRecommandation().size() == 0
 							|| numLigneRecommandation > getListeRecommandation().size()) {
@@ -1056,15 +1044,13 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 				// RG_AG_VM_C01 - Vérification si la PA de l'agent donne le
 				// droit a visite médicale.
-				ArrayList<PositionAdmAgent> listePA = PositionAdmAgent.listerPositionAdmAgentAvecAgent(
-						getTransaction(), getAgentCourant());
+				ArrayList<PositionAdmAgent> listePA = PositionAdmAgent.listerPositionAdmAgentAvecAgent(getTransaction(), getAgentCourant());
 				if (getTransaction().isErreur()) {
 					getTransaction().traiterErreur();
 				}
 				for (PositionAdmAgent pa : listePA) {
-					if (Services.compareDates(pa.getDatdeb(), dateVisite) <= 0
-							&& (pa.getDatfin() == null || pa.getDatfin().equals(Const.DATE_NULL) || Services
-									.compareDates(pa.getDatfin(), dateVisite) >= 0)) {
+					if (Services.compareDates(pa.getDatdeb(), dateVisite) <= 0 && (pa.getDatfin() == null || pa.getDatfin().equals(Const.DATE_NULL)
+							|| Services.compareDates(pa.getDatfin(), dateVisite) >= 0)) {
 						if (!pa.permetVM()) {
 							messageInf = MessageUtils.getMessage("INF009", "visites médicales");
 						}
@@ -1081,8 +1067,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 				getVisiteCourante().setApte(apteVM);
 				getVisiteCourante().setIdMedecin(medecin.getIdMedecin());
 				getVisiteCourante().setIdMotifVm(motif.getIdMotifVm());
-				getVisiteCourante().setIdRecommandation(
-						recommandation != null ? recommandation.getIdRecommandation() : null);
+				getVisiteCourante().setIdRecommandation(recommandation != null ? recommandation.getIdRecommandation() : null);
 				getVisiteCourante().setCommentaire(getVAL_ST_COMMENTAIRE());
 
 				if (getZone(getNOM_ST_ACTION()).equals(ACTION_MODIFICATION)) {
@@ -1091,11 +1076,9 @@ public class OeAGENTVisiteMed extends BasicProcess {
 					if (getVisiteCourante().getIdVisite() == null) {
 						// fermeture des lignes de convocations
 						try {
-							SuiviMedical sm = getSuiviMedDao()
-									.chercherSuiviMedical(getVisiteCourante().getIdSuiviMed());
+							SuiviMedical sm = getSuiviMedDao().chercherSuiviMedical(getVisiteCourante().getIdSuiviMed());
 							ArrayList<SuiviMedical> listeSmAModif = getSuiviMedDao()
-									.listerSuiviMedicalAgentAnterieurDate(getAgentCourant().getIdAgent(), sm.getMois(),
-											sm.getAnnee());
+									.listerSuiviMedicalAgentAnterieurDate(getAgentCourant().getIdAgent(), sm.getMois(), sm.getAnnee());
 							for (int i = 0; i < listeSmAModif.size(); i++) {
 								SuiviMedical smModif = listeSmAModif.get(i);
 								smModif.setEtat(EnumEtatSuiviMed.EFFECTUE.getCode());
@@ -1109,37 +1092,31 @@ public class OeAGENTVisiteMed extends BasicProcess {
 						// alors il faut supprimer la visite medicale
 						// correspondante
 						Medecin med = getMedecinDao().chercherMedecinARenseigner("A", "RENSEIGNER");
-						if (getVisiteCourante().getIdMotifVm().toString()
-								.equals(EnumMotifVisiteMed.VM_DEMANDE_AGENT.getCode().toString())
-								|| getVisiteCourante().getIdMotifVm().toString()
-										.equals(EnumMotifVisiteMed.VM_DEMANDE_SERVICE.getCode().toString())) {
-							VisiteMedicale vmASupp = getVisiteMedicaleDao().chercherVisiteMedicaleCriteres(
-									getAgentCourant().getIdAgent(), med.getIdMedecin(),
-									getVisiteCourante().getIdMotifVm());
+						if (getVisiteCourante().getIdMotifVm().toString().equals(EnumMotifVisiteMed.VM_DEMANDE_AGENT.getCode().toString())
+								|| getVisiteCourante().getIdMotifVm().toString().equals(EnumMotifVisiteMed.VM_DEMANDE_SERVICE.getCode().toString())) {
+							VisiteMedicale vmASupp = getVisiteMedicaleDao().chercherVisiteMedicaleCriteres(getAgentCourant().getIdAgent(),
+									med.getIdMedecin(), getVisiteCourante().getIdMotifVm());
 							getVisiteMedicaleDao().supprimerVisiteMedicale(vmASupp.getIdVisite());
 						}
 						// si tout s'est bien passé
 						// Création de la visite medicale
-						getVisiteMedicaleDao().creerVisiteMedicale(getVisiteCourante().getIdAgent(),
-								getVisiteCourante().getIdMedecin(), getVisiteCourante().getIdRecommandation(),
-								getVisiteCourante().getDateDerniereVisite(), getVisiteCourante().getDureeValidite(),
-								getVisiteCourante().getApte(), getVisiteCourante().getIdMotifVm(),
-								getVisiteCourante().getIdSuiviMed(),getVisiteCourante().getCommentaire());
+						getVisiteMedicaleDao().creerVisiteMedicale(getVisiteCourante().getIdAgent(), getVisiteCourante().getIdMedecin(),
+								getVisiteCourante().getIdRecommandation(), getVisiteCourante().getDateDerniereVisite(),
+								getVisiteCourante().getDureeValidite(), getVisiteCourante().getApte(), getVisiteCourante().getIdMotifVm(),
+								getVisiteCourante().getIdSuiviMed(), getVisiteCourante().getCommentaire());
 					} else {
 						// Modification
-						getVisiteMedicaleDao().modifierVisiteMedicale(getVisiteCourante().getIdVisite(),
-								getVisiteCourante().getIdAgent(), getVisiteCourante().getIdMedecin(),
-								getVisiteCourante().getIdRecommandation(), getVisiteCourante().getDateDerniereVisite(),
-								getVisiteCourante().getDureeValidite(), getVisiteCourante().getApte(),
-								getVisiteCourante().getIdMotifVm(), getVisiteCourante().getIdSuiviMed(),getVisiteCourante().getCommentaire());
+						getVisiteMedicaleDao().modifierVisiteMedicale(getVisiteCourante().getIdVisite(), getVisiteCourante().getIdAgent(),
+								getVisiteCourante().getIdMedecin(), getVisiteCourante().getIdRecommandation(),
+								getVisiteCourante().getDateDerniereVisite(), getVisiteCourante().getDureeValidite(), getVisiteCourante().getApte(),
+								getVisiteCourante().getIdMotifVm(), getVisiteCourante().getIdSuiviMed(), getVisiteCourante().getCommentaire());
 					}
 				} else if (getZone(getNOM_ST_ACTION()).equals(ACTION_CREATION)) {
 					// Création
-					getVisiteMedicaleDao().creerVisiteMedicale(getVisiteCourante().getIdAgent(),
-							getVisiteCourante().getIdMedecin(), getVisiteCourante().getIdRecommandation(),
-							getVisiteCourante().getDateDerniereVisite(), getVisiteCourante().getDureeValidite(),
-							getVisiteCourante().getApte(), getVisiteCourante().getIdMotifVm(),
-							getVisiteCourante().getIdSuiviMed(),getVisiteCourante().getCommentaire());
+					getVisiteMedicaleDao().creerVisiteMedicale(getVisiteCourante().getIdAgent(), getVisiteCourante().getIdMedecin(),
+							getVisiteCourante().getIdRecommandation(), getVisiteCourante().getDateDerniereVisite(),
+							getVisiteCourante().getDureeValidite(), getVisiteCourante().getApte(), getVisiteCourante().getIdMotifVm(),
+							getVisiteCourante().getIdSuiviMed(), getVisiteCourante().getCommentaire());
 				}
 				if (getTransaction().isErreur())
 					return false;
@@ -1182,8 +1159,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 				String dureeMois = getZone(getNOM_EF_DUREE_MOIS());
 				String dureeJours = getZone(getNOM_EF_DUREE_JOURS());
 
-				int numLigneTypeInaptitude = (Services.estNumerique(getZone(getNOM_LB_TYPE_SELECT())) ? Integer
-						.parseInt(getZone(getNOM_LB_TYPE_SELECT())) : -1);
+				int numLigneTypeInaptitude = (Services.estNumerique(getZone(getNOM_LB_TYPE_SELECT()))
+						? Integer.parseInt(getZone(getNOM_LB_TYPE_SELECT())) : -1);
 
 				if (numLigneTypeInaptitude == -1 || getListeTypeInaptitude().size() == 0
 						|| numLigneTypeInaptitude > getListeTypeInaptitude().size()) {
@@ -1191,8 +1168,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 					return false;
 				}
 
-				TypeInaptitude typeInaptitude = (TypeInaptitude) getListeTypeInaptitude().get(
-						numLigneTypeInaptitude - 1);
+				TypeInaptitude typeInaptitude = (TypeInaptitude) getListeTypeInaptitude().get(numLigneTypeInaptitude - 1);
 
 				// verification des regles de gestions
 				// RG_AG_VM_A01
@@ -1200,15 +1176,12 @@ public class OeAGENTVisiteMed extends BasicProcess {
 				if (listeInaptitudes != null) {
 					for (int i = 0; i < listeInaptitudes.size(); i++) {
 						Inaptitude inaptitude = (Inaptitude) listeInaptitudes.get(i);
-						if (!inaptitude.getIdInaptitude().toString()
-								.equals(getInaptitudeCourante().getIdInaptitude().toString())
-								&& inaptitude.getIdTypeInaptitude().toString()
-										.equals(typeInaptitude.getIdTypeInaptitude().toString())) {
-							if (!testDate(sdf.format(inaptitude.getDateDebutInaptitude()), debutInaptitude,
-									dureeAnnees, dureeMois, dureeJours)
+						if (!inaptitude.getIdInaptitude().toString().equals(getInaptitudeCourante().getIdInaptitude().toString())
+								&& inaptitude.getIdTypeInaptitude().toString().equals(typeInaptitude.getIdTypeInaptitude().toString())) {
+							if (!testDate(sdf.format(inaptitude.getDateDebutInaptitude()), debutInaptitude, dureeAnnees, dureeMois, dureeJours)
 									|| !testDate(debutInaptitude, sdf.format(inaptitude.getDateDebutInaptitude()),
-											inaptitude.getDureeAnnee().toString(),
-											inaptitude.getDureeMois().toString(), inaptitude.getDureeJour().toString())) {
+											inaptitude.getDureeAnnee().toString(), inaptitude.getDureeMois().toString(),
+											inaptitude.getDureeJour().toString())) {
 								getTransaction().declarerErreur(MessageUtils.getMessage("ERR041"));
 								return false;
 							}
@@ -1223,23 +1196,18 @@ public class OeAGENTVisiteMed extends BasicProcess {
 				getInaptitudeCourante().setIdTypeInaptitude(typeInaptitude.getIdTypeInaptitude());
 				getInaptitudeCourante().setDateDebutInaptitude(sdf.parse(debutInaptitude));
 
-				getInaptitudeCourante().setDureeAnnee(
-						dureeAnnees.equals(Const.CHAINE_VIDE) ? null : Integer.valueOf(dureeAnnees));
-				getInaptitudeCourante().setDureeMois(
-						dureeMois.equals(Const.CHAINE_VIDE) ? null : Integer.valueOf(dureeMois));
-				getInaptitudeCourante().setDureeJour(
-						dureeJours.equals(Const.CHAINE_VIDE) ? null : Integer.valueOf(dureeJours));
+				getInaptitudeCourante().setDureeAnnee(dureeAnnees.equals(Const.CHAINE_VIDE) ? null : Integer.valueOf(dureeAnnees));
+				getInaptitudeCourante().setDureeMois(dureeMois.equals(Const.CHAINE_VIDE) ? null : Integer.valueOf(dureeMois));
+				getInaptitudeCourante().setDureeJour(dureeJours.equals(Const.CHAINE_VIDE) ? null : Integer.valueOf(dureeJours));
 
 				if (getZone(getNOM_ST_ACTION_INAPTITUDE()).equals(ACTION_INAPTITUDE_MODIFICATION)) {
 					// Modification
-					getInaptitudeDao().modifierInaptitude(getInaptitudeCourante().getIdInaptitude(),
-							getInaptitudeCourante().getIdVisite(), getInaptitudeCourante().getIdTypeInaptitude(),
-							getInaptitudeCourante().getDateDebutInaptitude(), getInaptitudeCourante().getDureeAnnee(),
-							getInaptitudeCourante().getDureeMois(), getInaptitudeCourante().getDureeJour());
+					getInaptitudeDao().modifierInaptitude(getInaptitudeCourante().getIdInaptitude(), getInaptitudeCourante().getIdVisite(),
+							getInaptitudeCourante().getIdTypeInaptitude(), getInaptitudeCourante().getDateDebutInaptitude(),
+							getInaptitudeCourante().getDureeAnnee(), getInaptitudeCourante().getDureeMois(), getInaptitudeCourante().getDureeJour());
 				} else if (getZone(getNOM_ST_ACTION_INAPTITUDE()).equals(ACTION_INAPTITUDE_CREATION)) {
 					// Création
-					getInaptitudeDao().creerInaptitude(getInaptitudeCourante().getIdVisite(),
-							getInaptitudeCourante().getIdTypeInaptitude(),
+					getInaptitudeDao().creerInaptitude(getInaptitudeCourante().getIdVisite(), getInaptitudeCourante().getIdTypeInaptitude(),
 							getInaptitudeCourante().getDateDebutInaptitude(), getInaptitudeCourante().getDureeAnnee(),
 							getInaptitudeCourante().getDureeMois(), getInaptitudeCourante().getDureeJour());
 				}
@@ -1270,8 +1238,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		int nbMois = (mois != null && !mois.equals(Const.CHAINE_VIDE)) ? Integer.parseInt(mois) : 0;
 		int nbAnnees = (annees != null && !annees.equals(Const.CHAINE_VIDE)) ? Integer.parseInt(annees) : 0;
 
-		String dateFin = Services.ajouteJours(
-				Services.ajouteMois(Services.ajouteAnnee(Services.formateDate(dateDebut), nbAnnees), nbMois), nbJours);
+		String dateFin = Services.ajouteJours(Services.ajouteMois(Services.ajouteAnnee(Services.formateDate(dateDebut), nbAnnees), nbMois), nbJours);
 
 		int compareTestDebut = Services.compareDates(dateTest, dateDebut);
 		int compareTestFin = Services.compareDates(dateTest, dateFin);
@@ -1316,8 +1283,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		}
 
 		// médecin obligatoire
-		int indiceMedecin = (Services.estNumerique(getVAL_LB_MEDECIN_SELECT()) ? Integer
-				.parseInt(getVAL_LB_MEDECIN_SELECT()) : -1);
+		int indiceMedecin = (Services.estNumerique(getVAL_LB_MEDECIN_SELECT()) ? Integer.parseInt(getVAL_LB_MEDECIN_SELECT()) : -1);
 		if (indiceMedecin < 1) {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "médecin"));
 			setFocus(getNOM_LB_MEDECIN());
@@ -1325,8 +1291,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		}
 
 		// motif obligatoire
-		int indiceMotif = (Services.estNumerique(getVAL_LB_MOTIF_SELECT()) ? Integer.parseInt(getVAL_LB_MOTIF_SELECT())
-				: -1);
+		int indiceMotif = (Services.estNumerique(getVAL_LB_MOTIF_SELECT()) ? Integer.parseInt(getVAL_LB_MOTIF_SELECT()) : -1);
 		if (indiceMotif < 1) {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "motif"));
 			setFocus(getNOM_LB_MOTIF());
@@ -1334,8 +1299,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		}
 
 		// recommandation obligatoire
-		int indiceRecommandation = (Services.estNumerique(getVAL_LB_RECOMMANDATION_SELECT()) ? Integer
-				.parseInt(getVAL_LB_RECOMMANDATION_SELECT()) : -1);
+		int indiceRecommandation = (Services.estNumerique(getVAL_LB_RECOMMANDATION_SELECT()) ? Integer.parseInt(getVAL_LB_RECOMMANDATION_SELECT())
+				: -1);
 		if (indiceRecommandation < 1) {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "recommandation"));
 			setFocus(getNOM_LB_MEDECIN());
@@ -1357,8 +1322,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	public boolean performControlerChampsInaptitude(HttpServletRequest request) throws Exception {
 
 		// type inaptitude obligatoire
-		int indiceTypeInap = (Services.estNumerique(getVAL_LB_TYPE_SELECT()) ? Integer
-				.parseInt(getVAL_LB_TYPE_SELECT()) : -1);
+		int indiceTypeInap = (Services.estNumerique(getVAL_LB_TYPE_SELECT()) ? Integer.parseInt(getVAL_LB_TYPE_SELECT()) : -1);
 		if (indiceTypeInap < 1) {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "type"));
 			setFocus(getNOM_LB_TYPE());
@@ -1373,8 +1337,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		}
 
 		// duree obligatoire
-		if ((Const.CHAINE_VIDE).equals(getZone(getNOM_EF_DUREE_ANNEES()))
-				&& (Const.CHAINE_VIDE).equals(getZone(getNOM_EF_DUREE_MOIS()))
+		if ((Const.CHAINE_VIDE).equals(getZone(getNOM_EF_DUREE_ANNEES())) && (Const.CHAINE_VIDE).equals(getZone(getNOM_EF_DUREE_MOIS()))
 				&& (Const.CHAINE_VIDE).equals(getZone(getNOM_EF_DUREE_JOURS()))) {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "durée (année ou mois ou jours)"));
 			setFocus(getNOM_EF_DUREE_ANNEES());
@@ -1495,8 +1458,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_DUREE_VALIDITE
-	 * Date de création : (27/06/11 09:10:43)
+	 * Retourne la valeur à  afficher par la JSP pour la zone :
+	 * ST_DUREE_VALIDITE Date de création : (27/06/11 09:10:43)
 	 * 
 	 */
 	public String getVAL_ST_DUREE_VALIDITE() {
@@ -1549,8 +1512,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_RECOMMANDATION
-	 * Date de création : (27/06/11 09:10:43)
+	 * Retourne la valeur à  afficher par la JSP pour la zone :
+	 * ST_RECOMMANDATION Date de création : (27/06/11 09:10:43)
 	 * 
 	 */
 	public String getVAL_ST_RECOMMANDATION() {
@@ -1783,8 +1746,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
-	 * JSP : LB_TYPE Date de création : (27/06/11 15:30:43)
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de
+	 * la JSP : LB_TYPE Date de création : (27/06/11 15:30:43)
 	 * 
 	 */
 	public String[] getVAL_LB_TYPE() {
@@ -1922,77 +1885,62 @@ public class OeAGENTVisiteMed extends BasicProcess {
 				return performPB_VALIDER(request);
 			}
 
+			// Si clic sur le bouton PB_IMPRIMER_CERTIFICAT_APTITUDE
+			if (testerParametre(request, getNOM_PB_IMPRIMER_CERTIFICAT_APTITUDE())) {
+				return performPB_IMPRIMER_CERTIFICAT_APTITUDE(request);
+			}
+
 			// Si clic sur le bouton PB_CREER
 			if (testerParametre(request, getNOM_PB_CREER())) {
 				return performPB_CREER(request);
 			}
 
-			// Si clic sur le bouton PB_MODIFIER
 			for (int i = 0; i < getListeVisites().size(); i++) {
+				// Si clic sur le bouton PB_MODIFIER
 				if (testerParametre(request, getNOM_PB_MODIFIER(i))) {
 					return performPB_MODIFIER(request, i);
 				}
-			}
-
-			// Si clic sur le bouton PB_CONSULTER
-			for (int i = 0; i < getListeVisites().size(); i++) {
+				// Si clic sur le bouton PB_CONSULTER
 				if (testerParametre(request, getNOM_PB_CONSULTER(i))) {
 					return performPB_CONSULTER(request, i);
 				}
-			}
-
-			// Si clic sur le bouton PB_SUPPRIMER
-			for (int i = 0; i < getListeVisites().size(); i++) {
+				// Si clic sur le bouton PB_SUPPRIMER
 				if (testerParametre(request, getNOM_PB_SUPPRIMER(i))) {
 					return performPB_SUPPRIMER(request, i);
 				}
-			}
-
-			// Si clic sur le bouton PB_INIT_INAP
-			for (int i = 0; i < getListeVisites().size(); i++) {
+				// Si clic sur le bouton PB_INIT_INAP
 				if (testerParametre(request, getNOM_PB_INIT_INAPT(i))) {
 					return performPB_INIT_INAPT(request, i);
 				}
+				// Si clic sur le bouton PB_DOCUMENT
+				if (testerParametre(request, getNOM_PB_DOCUMENT(i))) {
+					return performPB_DOCUMENT(request, i);
+				}
+
 			}
 
-			// Si clic sur le bouton PB_CONSULTER_INAPTITUDE
 			for (int i = 0; i < getListeInaptitude().size(); i++) {
+				// Si clic sur le bouton PB_CONSULTER_INAPTITUDE
 				if (testerParametre(request, getNOM_PB_CONSULTER_INAPTITUDE(i))) {
 					return performPB_CONSULTER_INAPTITUDE(request, i);
 				}
-			}
-
-			// Si clic sur le bouton PB_SELECT_INAPTITUDE
-			for (int i = 0; i < getListeInaptitude().size(); i++) {
+				// Si clic sur le bouton PB_SELECT_INAPTITUDE
 				if (testerParametre(request, getNOM_PB_SELECT_INAPTITUDE(i))) {
 					return performPB_SELECT_INAPTITUDE(request, i);
+				}
+				// Si clic sur le bouton PB_MODIFIER_INAPTITUDE
+				if (testerParametre(request, getNOM_PB_MODIFIER_INAPTITUDE(i))) {
+					return performPB_MODIFIER_INAPTITUDE(request, i);
+				}
+				// Si clic sur le bouton PB_SUPPRIMER_INAPTITUDE
+				if (testerParametre(request, getNOM_PB_SUPPRIMER_INAPTITUDE(i))) {
+					return performPB_SUPPRIMER_INAPTITUDE(request, i);
 				}
 			}
 
 			// Si clic sur le bouton PB_CREER_INAPTITUDE
 			if (testerParametre(request, getNOM_PB_CREER_INAPTITUDE())) {
 				return performPB_CREER_INAPTITUDE(request);
-			}
-
-			// Si clic sur le bouton PB_MODIFIER_INAPTITUDE
-			for (int i = 0; i < getListeInaptitude().size(); i++) {
-				if (testerParametre(request, getNOM_PB_MODIFIER_INAPTITUDE(i))) {
-					return performPB_MODIFIER_INAPTITUDE(request, i);
-				}
-			}
-
-			// Si clic sur le bouton PB_SUPPRIMER_INAPTITUDE
-			for (int i = 0; i < getListeInaptitude().size(); i++) {
-				if (testerParametre(request, getNOM_PB_SUPPRIMER_INAPTITUDE(i))) {
-					return performPB_SUPPRIMER_INAPTITUDE(request, i);
-				}
-			}
-
-			// Si clic sur le bouton PB_DOCUMENT
-			for (int i = 0; i < getListeVisites().size(); i++) {
-				if (testerParametre(request, getNOM_PB_DOCUMENT(i))) {
-					return performPB_DOCUMENT(request, i);
-				}
 			}
 
 			// Si clic sur le bouton PB_CREER_DOC
@@ -2137,8 +2085,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_RECOMMANDATION
-	 * Date de création : (18/08/11 10:21:15)
+	 * Retourne la valeur à  afficher par la JSP pour la zone :
+	 * ST_RECOMMANDATION Date de création : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_RECOMMANDATION(int i) {
@@ -2155,8 +2103,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_NB_DOC Date de
-	 * création : (18/08/11 10:21:15)
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_NB_DOC Date
+	 * de création : (18/08/11 10:21:15)
 	 * 
 	 */
 	public String getVAL_ST_NB_DOC(int i) {
@@ -2194,10 +2142,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		if (getVisiteCourante().getIdVisite() != null) {
 			champMotifModifiable = false;
 			if (getVisiteCourante().getIdMotifVm() != null
-					&& (getVisiteCourante().getIdMotifVm().toString()
-							.equals(EnumMotifVisiteMed.VM_DEMANDE_AGENT.getCode().toString()) || getVisiteCourante()
-							.getIdMotifVm().toString()
-							.equals(EnumMotifVisiteMed.VM_DEMANDE_SERVICE.getCode().toString()))
+					&& (getVisiteCourante().getIdMotifVm().toString().equals(EnumMotifVisiteMed.VM_DEMANDE_AGENT.getCode().toString())
+							|| getVisiteCourante().getIdMotifVm().toString().equals(EnumMotifVisiteMed.VM_DEMANDE_SERVICE.getCode().toString()))
 					&& getVisiteCourante().getIdRecommandation() == null && getVisiteCourante().getApte() == null) {
 				elementModifibale = false;
 			} else {
@@ -2670,8 +2616,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
 		// Recherche des documents de l'agent
-		ArrayList<Document> listeDocAgent = getDocumentDao().listerDocumentAgentTYPE(getLienDocumentAgentDao(),
-				getAgentCourant().getIdAgent(), "HSCT", CmisUtils.CODE_TYPE_VM, getVisiteCourante().getIdVisite());
+		ArrayList<Document> listeDocAgent = getDocumentDao().listerDocumentAgentTYPE(getLienDocumentAgentDao(), getAgentCourant().getIdAgent(),
+				"HSCT", CmisUtils.CODE_TYPE_VM, getVisiteCourante().getIdVisite());
 		setListeDocuments(listeDocAgent);
 
 		int indiceActeVM = 0;
@@ -2680,20 +2626,13 @@ public class OeAGENTVisiteMed extends BasicProcess {
 				Document doc = (Document) getListeDocuments().get(i);
 				TypeDocument td = (TypeDocument) getTypeDocumentDao().chercherTypeDocument(doc.getIdTypeDocument());
 
-				addZone(getNOM_ST_NOM_DOC(indiceActeVM), doc.getNomDocument().equals(Const.CHAINE_VIDE) ? "&nbsp;"
-						: doc.getNomDocument());
-				addZone(getNOM_ST_NOM_ORI_DOC(indiceActeVM),
-						doc.getNomOriginal() == null ? "&nbsp;" : doc.getNomOriginal());
-				addZone(getNOM_ST_TYPE_DOC(indiceActeVM), td.getLibTypeDocument().equals(Const.CHAINE_VIDE) ? "&nbsp;"
-						: td.getLibTypeDocument());
+				addZone(getNOM_ST_NOM_DOC(indiceActeVM), doc.getNomDocument().equals(Const.CHAINE_VIDE) ? "&nbsp;" : doc.getNomDocument());
+				addZone(getNOM_ST_NOM_ORI_DOC(indiceActeVM), doc.getNomOriginal() == null ? "&nbsp;" : doc.getNomOriginal());
+				addZone(getNOM_ST_TYPE_DOC(indiceActeVM), td.getLibTypeDocument().equals(Const.CHAINE_VIDE) ? "&nbsp;" : td.getLibTypeDocument());
 				addZone(getNOM_ST_DATE_DOC(indiceActeVM), sdf.format(doc.getDateDocument()));
-				addZone(getNOM_ST_COMMENTAIRE(indiceActeVM), doc.getCommentaire().equals(Const.CHAINE_VIDE) ? "&nbsp;"
-						: doc.getCommentaire());
-				addZone(getNOM_ST_URL_DOC(indiceActeVM),
-						(null == doc.getNodeRefAlfresco()
-							|| doc.getNodeRefAlfresco().equals(Const.CHAINE_VIDE))
-							? "&nbsp;" 
-							: AlfrescoCMISService.getUrlOfDocument(doc.getNodeRefAlfresco()));
+				addZone(getNOM_ST_COMMENTAIRE(indiceActeVM), doc.getCommentaire().equals(Const.CHAINE_VIDE) ? "&nbsp;" : doc.getCommentaire());
+				addZone(getNOM_ST_URL_DOC(indiceActeVM), (null == doc.getNodeRefAlfresco() || doc.getNodeRefAlfresco().equals(Const.CHAINE_VIDE))
+						? "&nbsp;" : AlfrescoCMISService.getUrlOfDocument(doc.getNodeRefAlfresco()));
 
 				indiceActeVM++;
 			}
@@ -2845,8 +2784,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		// Récup du Diplome courant
 		Document d = getDocumentCourant();
 
-		DocumentAgent lda = getLienDocumentAgentDao().chercherDocumentAgent(getAgentCourant().getIdAgent(),
-				getDocumentCourant().getIdDocument());
+		DocumentAgent lda = getLienDocumentAgentDao().chercherDocumentAgent(getAgentCourant().getIdAgent(), getDocumentCourant().getIdDocument());
 		setLienDocumentAgentCourant(lda);
 
 		if (getTransaction().isErreur())
@@ -2929,15 +2867,14 @@ public class OeAGENTVisiteMed extends BasicProcess {
 			setStatut(STATUT_MEME_PROCESS, true, MessageUtils.getMessage("ERR006"));
 			return false;
 		}
-		
+
 		// on supprime le fichier physiquement sur alfresco
 		ReturnMessageDto rmd = alfrescoCMISService.removeDocument(getDocumentCourant());
 		if (declarerErreurFromReturnMessageDto(rmd))
 			return false;
-		
+
 		// suppression dans table DOCUMENT_AGENT
-		getLienDocumentAgentDao().supprimerDocumentAgent(getLienDocumentAgentCourant().getIdAgent(),
-				getLienDocumentAgentCourant().getIdDocument());
+		getLienDocumentAgentDao().supprimerDocumentAgent(getLienDocumentAgentCourant().getIdAgent(), getLienDocumentAgentCourant().getIdDocument());
 		// Suppression dans la table DOCUMENT_ASSOCIE
 		getDocumentDao().supprimerDocument(getDocumentCourant().getIdDocument());
 
@@ -2958,15 +2895,15 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		initialiseListeDocuments(request);
 		return true;
 	}
-	
+
 	private boolean declarerErreurFromReturnMessageDto(ReturnMessageDto rmd) {
-		
-		if(!rmd.getErrors().isEmpty()) {
+
+		if (!rmd.getErrors().isEmpty()) {
 			String errors = "";
-			for(String error : rmd.getErrors()) {
+			for (String error : rmd.getErrors()) {
 				errors += error;
 			}
-			
+
 			getTransaction().declarerErreur("Err : " + errors);
 			return true;
 		}
@@ -3030,8 +2967,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		} else {
 			// on supprime le document existant dans la base de données
 			Document d = getDocumentDao().chercherDocumentByContainsNom("VM_" + vm.getIdVisite());
-			DocumentAgent l = getLienDocumentAgentDao().chercherDocumentAgent(getAgentCourant().getIdAgent(),
-					d.getIdDocument());
+			DocumentAgent l = getLienDocumentAgentDao().chercherDocumentAgent(getAgentCourant().getIdAgent(), d.getIdDocument());
 			File f = new File(d.getLienDocument());
 			if (f.exists()) {
 				f.delete();
@@ -3058,7 +2994,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	private boolean creeDocument(HttpServletRequest request, VisiteMedicale vm) throws Exception {
 		// on crée l'entrée dans la table
 		setDocumentCourant(new Document());
-		
+
 		// on recupere le fichier mis dans le repertoire temporaire
 		if (fichierUpload == null) {
 			getTransaction().declarerErreur("Err : le nom de fichier est incorrect");
@@ -3075,26 +3011,23 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		getDocumentCourant().setDateDocument(new Date());
 		getDocumentCourant().setCommentaire(getZone(getNOM_EF_COMMENTAIRE()));
 		getDocumentCourant().setReference(vm.getIdVisite());
-		
+
 		// on upload le fichier
-		ReturnMessageDto rmd = alfrescoCMISService.uploadDocument(getAgentConnecte(request).getIdAgent(), getAgentCourant(), getDocumentCourant(), 
+		ReturnMessageDto rmd = alfrescoCMISService.uploadDocument(getAgentConnecte(request).getIdAgent(), getAgentCourant(), getDocumentCourant(),
 				fichierUpload, codTypeDoc);
-		
+
 		if (declarerErreurFromReturnMessageDto(rmd))
 			return false;
 
-		Integer id = getDocumentDao().creerDocument(getDocumentCourant().getClasseDocument(),
-				getDocumentCourant().getNomDocument(), getDocumentCourant().getLienDocument(),
-				getDocumentCourant().getDateDocument(), getDocumentCourant().getCommentaire(),
-				getDocumentCourant().getIdTypeDocument(), getDocumentCourant().getNomOriginal(),
-				getDocumentCourant().getNodeRefAlfresco(), getDocumentCourant().getCommentaireAlfresco(),
-				getDocumentCourant().getReference());
+		Integer id = getDocumentDao().creerDocument(getDocumentCourant().getClasseDocument(), getDocumentCourant().getNomDocument(),
+				getDocumentCourant().getLienDocument(), getDocumentCourant().getDateDocument(), getDocumentCourant().getCommentaire(),
+				getDocumentCourant().getIdTypeDocument(), getDocumentCourant().getNomOriginal(), getDocumentCourant().getNodeRefAlfresco(),
+				getDocumentCourant().getCommentaireAlfresco(), getDocumentCourant().getReference());
 
 		setLienDocumentAgentCourant(new DocumentAgent());
 		getLienDocumentAgentCourant().setIdAgent(getAgentCourant().getIdAgent());
 		getLienDocumentAgentCourant().setIdDocument(id);
-		getLienDocumentAgentDao().creerDocumentAgent(getLienDocumentAgentCourant().getIdAgent(),
-				getLienDocumentAgentCourant().getIdDocument());
+		getLienDocumentAgentDao().creerDocumentAgent(getLienDocumentAgentCourant().getIdAgent(), getLienDocumentAgentCourant().getIdDocument());
 
 		if (getTransaction().isErreur())
 			return false;
@@ -3119,7 +3052,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		LightUserDto user = radiService.getAgentCompteADByLogin(uUser.getUserName());
 		if (user == null) {
 			getTransaction().traiterErreur();
-			// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
+			// "Votre login ne nous permet pas de trouver votre identifiant.
+			// Merci de contacter le responsable du projet."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
 			return null;
 		} else {
@@ -3127,7 +3061,9 @@ public class OeAGENTVisiteMed extends BasicProcess {
 				try {
 					agent = getAgentDao().chercherAgentParMatricule(radiService.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
 				} catch (Exception e) {
-					// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
+					// "Votre login ne nous permet pas de trouver votre
+					// identifiant. Merci de contacter le responsable du
+					// projet."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
 					return null;
 				}
@@ -3156,8 +3092,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
-	 * JSP : LB_WARNING Date de création : (16/05/11 09:36:20)
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de
+	 * la JSP : LB_WARNING Date de création : (16/05/11 09:36:20)
 	 * 
 	 */
 	public String getVAL_ST_WARNING() {
@@ -3168,8 +3104,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	 * méthode qui teste si un parametre se trouve dans le formulaire
 	 */
 	public boolean testerParametre(HttpServletRequest request, String param) {
-		return (request.getParameter(param) != null || request.getParameter(param + ".x") != null || (multi != null && multi
-				.getParameter(param) != null));
+		return (request.getParameter(param) != null || request.getParameter(param + ".x") != null
+				|| (multi != null && multi.getParameter(param) != null));
 	}
 
 	/**
@@ -3214,8 +3150,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	public boolean performPB_SELECT_MOTIF(HttpServletRequest request) throws Exception {
 		if (getVAL_ST_ACTION().equals(ACTION_CREATION)) {
 
-			int numMotif = (Services.estNumerique(getZone(getNOM_LB_MOTIF_SELECT())) ? Integer
-					.parseInt(getZone(getNOM_LB_MOTIF_SELECT())) : -1);
+			int numMotif = (Services.estNumerique(getZone(getNOM_LB_MOTIF_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_MOTIF_SELECT())) : -1);
 			if (numMotif <= 0 || getListeMotif().size() == 0 || numMotif > getListeMotif().size())
 				return false;
 			MotifVisiteMed motif = (MotifVisiteMed) getListeMotif().get(numMotif - 1);
@@ -3236,11 +3171,11 @@ public class OeAGENTVisiteMed extends BasicProcess {
 				// si elle est de type 'non-effectuee' alors on en peut pas
 				// créer de VM
 				try {
-					SuiviMedical smInterdit = getSuiviMedDao().chercherDernierSuiviMedicalAgent(
-							getAgentCourant().getIdAgent());
+					SuiviMedical smInterdit = getSuiviMedDao().chercherDernierSuiviMedicalAgent(getAgentCourant().getIdAgent());
 					if (!smInterdit.getEtat().equals(EnumEtatSuiviMed.EFFECTUE.getCode())) {
 						// "ERR091",
-						// "Une convocation est en attente, vous ne pouvez pas créer de visite médicale avec ce motif.");
+						// "Une convocation est en attente, vous ne pouvez pas
+						// créer de visite médicale avec ce motif.");
 						getTransaction().declarerErreur(MessageUtils.getMessage("ERR091"));
 						return false;
 					}
@@ -3357,9 +3292,11 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	public void setInaptitudeDao(InaptitudeDao inaptitudeDao) {
 		this.inaptitudeDao = inaptitudeDao;
 	}
+
 	public String getNOM_ST_COMMENTAIRE() {
 		return "NOM_ST_COMMENTAIRE";
 	}
+
 	public String getVAL_ST_COMMENTAIRE() {
 		return getZone(getNOM_ST_COMMENTAIRE());
 	}
@@ -3378,5 +3315,47 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	 */
 	public String getVAL_ST_URL_DOC(int i) {
 		return getZone(getNOM_ST_URL_DOC(i));
+	}
+
+	public String getNOM_PB_IMPRIMER_CERTIFICAT_APTITUDE() {
+		return "NOM_PB_IMPRIMER_CERTIFICAT_APTITUDE";
+	}
+
+	public boolean performPB_IMPRIMER_CERTIFICAT_APTITUDE(HttpServletRequest request) throws Exception {
+
+		String nomFichier = "certificat_aptitude.pdf";
+
+		String url = "PrintDocument?fromPage=" + this.getClass().getName() + "&nomFichier=" + nomFichier + "&idVm="
+				+ getVisiteCourante().getIdVisite();
+		setURLFichier(getScriptOuverture(url));
+
+		// on re-initialise l'affichage
+		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+
+		// On pose le statut
+		setStatut(STATUT_MEME_PROCESS);
+		return true;
+
+	}
+
+	public String getUrlFichier() {
+		String res = urlFichier;
+		setURLFichier(null);
+		if (res == null) {
+			return Const.CHAINE_VIDE;
+		} else {
+			return res;
+		}
+	}
+
+	private void setURLFichier(String scriptOuverture) {
+		urlFichier = scriptOuverture;
+	}
+
+	public String getScriptOuverture(String cheminFichier) throws Exception {
+		StringBuffer scriptOuvPDF = new StringBuffer("<script language=\"JavaScript\" type=\"text/javascript\">");
+		scriptOuvPDF.append("window.open('" + cheminFichier + "');");
+		scriptOuvPDF.append("</script>");
+		return scriptOuvPDF.toString();
 	}
 }
