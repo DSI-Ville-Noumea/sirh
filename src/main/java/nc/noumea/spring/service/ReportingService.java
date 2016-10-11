@@ -1,9 +1,11 @@
 package nc.noumea.spring.service;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -12,12 +14,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
+import com.itextpdf.text.BadElementException;
 import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.FontFactory;
+import com.itextpdf.text.Image;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
@@ -134,6 +138,59 @@ public class ReportingService implements IReportingService {
 		return pdfWordCell;
 	}
 
+	protected void writeTitle(Document document, String title, URL urlImage, boolean border, boolean isBold) throws DocumentException {
+
+		PdfPCell cellLogo = null;
+		if (null != urlImage) {
+			Image logo = null;
+			try {
+				logo = Image.getInstance(urlImage);
+				logo.scaleToFit(100, 100);
+			} catch (BadElementException e) {
+				logger.debug(e.getMessage());
+			} catch (MalformedURLException e) {
+				logger.debug(e.getMessage());
+			} catch (IOException e) {
+				logger.debug(e.getMessage());
+			}
+
+			cellLogo = new PdfPCell();
+			cellLogo.addElement(logo);
+
+			if (!border)
+				cellLogo.setBorder(Rectangle.NO_BORDER);
+		}
+		Paragraph paragraph = null;
+		if (isBold)
+			paragraph = new Paragraph(title, fontBold9);
+		else
+			paragraph = new Paragraph(title);
+
+		paragraph.setAlignment(Element.ALIGN_CENTER);
+
+		PdfPCell cellTitre = new PdfPCell();
+		cellTitre.addElement(paragraph);
+		cellTitre.setVerticalAlignment(Element.ALIGN_MIDDLE);
+		cellTitre.setHorizontalAlignment(Element.ALIGN_CENTER);
+		cellTitre.setFixedHeight(40);
+
+		if (!border)
+			cellTitre.setBorder(Rectangle.NO_BORDER);
+
+		PdfPTable table = null;
+		if (null != urlImage) {
+			table = new PdfPTable(new float[] { 1, 7 });
+			table.addCell(cellLogo);
+		} else {
+			table = new PdfPTable(new float[] { 1 });
+		}
+
+		table.setWidthPercentage(100f);
+		table.addCell(cellTitre);
+
+		document.add(table);
+	}
+
 	@Override
 	public byte[] getCertificatAptitudePDF(String idVm) throws NumberFormatException, Exception {
 		logger.debug("entered getCertificatAptitudePDF with parameter idVm = {} ", idVm);
@@ -205,7 +262,8 @@ public class ReportingService implements IReportingService {
 			}
 
 			// on commence le document
-			genereEnteteDocument(document, agent);
+			// on ajoute le titre, le logo sur le document
+			writeTitle(document, getTitre(agent), this.getClass().getClassLoader().getResource("images/logo_DRH.png"), false, true);
 
 			genereTableau(document, vm.getDateDerniereVisite(), nomMedecin.toUpperCase(), poste.toUpperCase(), recommandation, vm.getCommentaire(),
 					dateARevoir);
@@ -228,54 +286,45 @@ public class ReportingService implements IReportingService {
 		List<CellVo> listValuesLigne1 = new ArrayList<CellVo>();
 		listValuesLigne1.add(new CellVo("Medecin : ", true, 1, null, Element.ALIGN_LEFT, true, fontBold8));
 		listValuesLigne1.add(new CellVo(nomMedecin, true, 1, null, Element.ALIGN_LEFT, true, fontNormal8));
-		writeLine(table, 3, listValuesLigne1);
+		writeLine(table, 7, listValuesLigne1);
 
 		// 2er ligne : date visite
 		List<CellVo> listValuesLigne2 = new ArrayList<CellVo>();
 		listValuesLigne2.add(new CellVo("Date de la visite : ", true, 1, null, Element.ALIGN_LEFT, true, fontBold8));
 		listValuesLigne2.add(new CellVo(sdf.format(dateVisite), true, 1, null, Element.ALIGN_LEFT, true, fontNormal8));
-		writeLine(table, 3, listValuesLigne2);
+		writeLine(table, 7, listValuesLigne2);
 
 		// 3eme ligne : poste
 		List<CellVo> listValuesLigne3 = new ArrayList<CellVo>();
 		listValuesLigne3.add(new CellVo("Poste : ", true, 1, null, Element.ALIGN_LEFT, true, fontBold8));
 		listValuesLigne3.add(new CellVo(poste, true, 1, null, Element.ALIGN_LEFT, true, fontNormal8));
-		writeLine(table, 3, listValuesLigne3);
+		writeLine(table, 7, listValuesLigne3);
 
 		// 4eme ligne : avis
 		List<CellVo> listValuesLigne4 = new ArrayList<CellVo>();
 		listValuesLigne4.add(new CellVo("Avis médical : ", true, 1, null, Element.ALIGN_LEFT, true, fontBold8));
 		listValuesLigne4.add(new CellVo(avis, true, 1, null, Element.ALIGN_LEFT, true, fontNormal8));
-		writeLine(table, 3, listValuesLigne4);
+		writeLine(table, 7, listValuesLigne4);
 
 		// 5eme ligne : restrictions
 		List<CellVo> listValuesLigne5 = new ArrayList<CellVo>();
 		listValuesLigne5.add(new CellVo("Restrictions éventuelles : ", true, 1, null, Element.ALIGN_LEFT, true, fontBold8));
 		listValuesLigne5.add(new CellVo(restriction, true, 1, null, Element.ALIGN_LEFT, true, fontNormal8));
-		writeLine(table, 3, listValuesLigne5);
+		writeLine(table, 7, listValuesLigne5);
 
 		// 6eme ligne : restrictions
 		List<CellVo> listValuesLigne6 = new ArrayList<CellVo>();
 		listValuesLigne6.add(new CellVo("A revoir dans : ", true, 1, null, Element.ALIGN_LEFT, true, fontBold8));
 		listValuesLigne6.add(new CellVo(aRevoir, true, 1, null, Element.ALIGN_LEFT, true, fontNormal8));
-		writeLine(table, 3, listValuesLigne6);
+		writeLine(table, 7, listValuesLigne6);
 
 		document.add(table);
 	}
 
-	private void genereEnteteDocument(Document document, Agent agent) throws DocumentException {
-		// Espace avant l'entête (pour le papier à entête)
-		writeSpacing(document, 1);
+	private String getTitre(Agent agent) {
 		String civilite = agent.getCivilite().equals(EnumCivilite.M.getCode()) ? "MONSIEUR " : "MADAME ";
 		String nomPrenom = agent.getNomAgent() + " " + agent.getPrenomAgent();
-
-		List<String> lignesEntete = Arrays.asList("CERTIFICAT D'APTITUDE DE ", civilite + nomPrenom.toUpperCase());
-
-		// Insère les lignes d'entête dans le document
-		writeParagraph(document, lignesEntete, fontBold9, Element.ALIGN_CENTER);
-
-		// Espace après l'entête (pour le papier à entête)
-		writeSpacing(document, 3);
+		return "CERTIFICAT D'APTITUDE DE " + civilite + nomPrenom.toUpperCase();
 	}
 
 }
