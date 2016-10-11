@@ -2758,7 +2758,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			}
 		}
 
-		if (getListePrimePointageAFF() == null && getFichePosteCourant() != null && getAffectationCourant().getIdAffectation() != null) {
+		if ((getListePrimePointageAFF() == null|| getListePrimePointageAFF().isEmpty()) && getFichePosteCourant() != null && getAffectationCourant().getIdAffectation() != null) {
 			setListePrimePointageAFF(getPrimePointageAffDao().listerPrimePointageAff(getAffectationCourant().getIdAffectation()));
 		}
 		int indicePrime = 0;
