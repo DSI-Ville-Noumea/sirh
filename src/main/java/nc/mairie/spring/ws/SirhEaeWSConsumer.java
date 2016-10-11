@@ -269,7 +269,7 @@ public class SirhEaeWSConsumer extends BaseWsConsumer implements ISirhEaeWSConsu
 		String url = eaeWsBaseUrl + sirhUpdateEaeUrl;
 
 		HashMap<String, String> params = new HashMap<>();
-		params.put("idAgentSirh", idAgentSirh.toString());
+		params.put("idAgent", idAgentSirh.toString());
 		params.put("idEae", idEae.toString());
 
 		ClientResponse res = createAndFireRequest(params, url);
