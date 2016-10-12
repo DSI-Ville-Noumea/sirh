@@ -12,10 +12,12 @@ import nc.mairie.enums.EnumEtatSuiviMed;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.Agent;
 import nc.mairie.metier.hsct.Medecin;
+import nc.mairie.metier.hsct.Recommandation;
 import nc.mairie.metier.hsct.VisiteMedicale;
 import nc.mairie.metier.suiviMedical.SuiviMedical;
 import nc.mairie.spring.dao.metier.agent.AgentDao;
 import nc.mairie.spring.dao.metier.hsct.MedecinDao;
+import nc.mairie.spring.dao.metier.hsct.RecommandationDao;
 import nc.mairie.spring.dao.metier.hsct.VisiteMedicaleDao;
 import nc.mairie.spring.dao.metier.suiviMedical.MotifVisiteMedDao;
 import nc.mairie.spring.dao.metier.suiviMedical.SuiviMedicalDao;
@@ -54,6 +56,7 @@ public class OeSMHistorique extends BasicProcess {
 	private MotifVisiteMedDao motifVisiteMedDao;
 	private MedecinDao medecinDao;
 	private VisiteMedicaleDao visiteMedicaleDao;
+	private RecommandationDao recommandationDao;
 	private AgentDao agentDao;
 	private IAdsService adsService;
 
@@ -107,6 +110,9 @@ public class OeSMHistorique extends BasicProcess {
 		}
 		if (getAgentDao() == null) {
 			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getRecommandationDao() == null) {
+			setRecommandationDao(new RecommandationDao((SirhDao) context.getBean("sirhDao")));
 		}
 		if(null == adsService) {
 			adsService = (IAdsService)context.getBean("adsService");
@@ -174,8 +180,11 @@ public class OeSMHistorique extends BasicProcess {
 					VisiteMedicale vm = getVisiteMedicaleDao().chercherVisiteMedicaleLieeSM(sm.getIdSuiviMed(),
 							sm.getIdAgent());
 					if (vm != null && vm.getIdVisite() != null) {
-						addZone(getNOM_ST_AVIS(i), vm.getApte() == null ? "&nbsp;" : vm.getApte() == 1 ? "Apte"
-								: "Inapte");
+						Recommandation recomm = null;
+						if(vm.getIdRecommandation()!=null){
+							recomm = getRecommandationDao().chercherRecommandation(vm.getIdRecommandation());
+						}
+						addZone(getNOM_ST_AVIS(i), recomm == null ? "&nbsp;" : recomm.getDescRecommandation());
 					} else {
 						addZone(getNOM_ST_AVIS(i), "&nbsp;");
 					}
@@ -733,5 +742,13 @@ public class OeSMHistorique extends BasicProcess {
 
 	public void setAgentDao(AgentDao agentDao) {
 		this.agentDao = agentDao;
+	}
+
+	public RecommandationDao getRecommandationDao() {
+		return recommandationDao;
+	}
+
+	public void setRecommandationDao(RecommandationDao recommandationDao) {
+		this.recommandationDao = recommandationDao;
 	}
 }

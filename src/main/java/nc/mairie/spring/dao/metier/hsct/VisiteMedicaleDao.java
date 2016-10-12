@@ -91,7 +91,6 @@ public class VisiteMedicaleDao extends SirhDao implements
 			a.setIdRecommandation((Integer) row.get(CHAMP_ID_RECOMMANDATION));
 			a.setDateDerniereVisite((Date) row.get(CHAMP_DATE_DERNIERE_VISITE));
 			a.setDureeValidite((Integer) row.get(CHAMP_DUREE_VALIDITE));
-			a.setApte((Integer) row.get(CHAMP_APTE));
 			a.setIdMotifVm((Integer) row.get(CHAMP_ID_MOTIF_VM));
 			BigDecimal idSuiviMed = (BigDecimal) row.get(CHAMP_ID_SUIVI_MED);
 			a.setIdSuiviMed(idSuiviMed != null ? idSuiviMed.intValue() : null);
@@ -140,7 +139,6 @@ public class VisiteMedicaleDao extends SirhDao implements
 			a.setIdRecommandation((Integer) row.get(CHAMP_ID_RECOMMANDATION));
 			a.setDateDerniereVisite((Date) row.get(CHAMP_DATE_DERNIERE_VISITE));
 			a.setDureeValidite((Integer) row.get(CHAMP_DUREE_VALIDITE));
-			a.setApte((Integer) row.get(CHAMP_APTE));
 			a.setIdMotifVm((Integer) row.get(CHAMP_ID_MOTIF_VM));
 			BigDecimal idSuiviMed = (BigDecimal) row.get(CHAMP_ID_SUIVI_MED);
 			a.setIdSuiviMed(idSuiviMed != null ? idSuiviMed.intValue() : null);
@@ -181,7 +179,6 @@ public class VisiteMedicaleDao extends SirhDao implements
 			a.setIdRecommandation((Integer) row.get(CHAMP_ID_RECOMMANDATION));
 			a.setDateDerniereVisite((Date) row.get(CHAMP_DATE_DERNIERE_VISITE));
 			a.setDureeValidite((Integer) row.get(CHAMP_DUREE_VALIDITE));
-			a.setApte((Integer) row.get(CHAMP_APTE));
 			a.setIdMotifVm((Integer) row.get(CHAMP_ID_MOTIF_VM));
 			BigDecimal idSuiviMed = (BigDecimal) row.get(CHAMP_ID_SUIVI_MED);
 			a.setIdSuiviMed(idSuiviMed != null ? idSuiviMed.intValue() : null);
@@ -210,7 +207,6 @@ public class VisiteMedicaleDao extends SirhDao implements
 			a.setIdRecommandation((Integer) row.get(CHAMP_ID_RECOMMANDATION));
 			a.setDateDerniereVisite((Date) row.get(CHAMP_DATE_DERNIERE_VISITE));
 			a.setDureeValidite((Integer) row.get(CHAMP_DUREE_VALIDITE));
-			a.setApte((Integer) row.get(CHAMP_APTE));
 			a.setIdMotifVm((Integer) row.get(CHAMP_ID_MOTIF_VM));
 			BigDecimal idSuiviMed = (BigDecimal) row.get(CHAMP_ID_SUIVI_MED);
 			a.setIdSuiviMed(idSuiviMed != null ? idSuiviMed.intValue() : null);
@@ -239,7 +235,6 @@ public class VisiteMedicaleDao extends SirhDao implements
 			a.setIdRecommandation((Integer) row.get(CHAMP_ID_RECOMMANDATION));
 			a.setDateDerniereVisite((Date) row.get(CHAMP_DATE_DERNIERE_VISITE));
 			a.setDureeValidite((Integer) row.get(CHAMP_DUREE_VALIDITE));
-			a.setApte((Integer) row.get(CHAMP_APTE));
 			a.setIdMotifVm((Integer) row.get(CHAMP_ID_MOTIF_VM));
 			BigDecimal idSuiviMed = (BigDecimal) row.get(CHAMP_ID_SUIVI_MED);
 			a.setIdSuiviMed(idSuiviMed != null ? idSuiviMed.intValue() : null);

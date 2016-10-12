@@ -28,10 +28,8 @@ import nc.mairie.metier.agent.Agent;
 import nc.mairie.metier.agent.Document;
 import nc.mairie.metier.agent.DocumentAgent;
 import nc.mairie.metier.agent.PositionAdmAgent;
-import nc.mairie.metier.hsct.Inaptitude;
 import nc.mairie.metier.hsct.Medecin;
 import nc.mairie.metier.hsct.Recommandation;
-import nc.mairie.metier.hsct.TypeInaptitude;
 import nc.mairie.metier.hsct.VisiteMedicale;
 import nc.mairie.metier.parametrage.TypeDocument;
 import nc.mairie.metier.suiviMedical.MotifVisiteMed;
@@ -39,10 +37,8 @@ import nc.mairie.metier.suiviMedical.SuiviMedical;
 import nc.mairie.spring.dao.metier.agent.AgentDao;
 import nc.mairie.spring.dao.metier.agent.DocumentAgentDao;
 import nc.mairie.spring.dao.metier.agent.DocumentDao;
-import nc.mairie.spring.dao.metier.hsct.InaptitudeDao;
 import nc.mairie.spring.dao.metier.hsct.MedecinDao;
 import nc.mairie.spring.dao.metier.hsct.RecommandationDao;
-import nc.mairie.spring.dao.metier.hsct.TypeInaptitudeDao;
 import nc.mairie.spring.dao.metier.hsct.VisiteMedicaleDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeDocumentDao;
 import nc.mairie.spring.dao.metier.suiviMedical.MotifVisiteMedDao;
@@ -70,75 +66,61 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	/**
 	 * 
 	 */
-	private static final long					serialVersionUID				= 1L;
-	public static final int						STATUT_RECHERCHER_AGENT			= 1;
-	private Logger								logger							= LoggerFactory.getLogger(OeAGENTVisiteMed.class);
+	private static final long					serialVersionUID			= 1L;
+	public static final int						STATUT_RECHERCHER_AGENT		= 1;
+	private Logger								logger						= LoggerFactory.getLogger(OeAGENTVisiteMed.class);
 
-	private String[]							LB_TYPE;
 	private String[]							LB_MEDECIN;
 	private String[]							LB_MOTIF;
 	private String[]							LB_RECOMMANDATION;
 
 	private Agent								agentCourant;
 	private VisiteMedicale						visiteCourante;
-	private Inaptitude							inaptitudeCourante;
 
 	private ArrayList<VisiteMedicale>			listeVisites;
 	private ArrayList<Medecin>					listeMedecin;
 	private ArrayList<MotifVisiteMed>			listeMotif;
 	private ArrayList<Recommandation>			listeRecommandation;
-	private ArrayList<Inaptitude>				listeInaptitude;
-	private ArrayList<TypeInaptitude>			listeTypeInaptitude;
 
 	private Hashtable<Integer, Medecin>			hashMedecin;
 	private Hashtable<Integer, MotifVisiteMed>	hashMotif;
 	private Hashtable<Integer, Recommandation>	hashRecommandation;
-	private Hashtable<Integer, TypeInaptitude>	hashTypeInaptitude;
 
-	public String								ACTION_SUPPRESSION				= "Suppression d'une fiche visite médicale.";
-	public String								ACTION_CONSULTATION				= "Consultation d'une fiche visite médicale.";
-	private String								ACTION_MODIFICATION				= "Modification d'une fiche visite médicale.";
-	private String								ACTION_CREATION					= "Création d'une fiche visite médicale.";
+	public String								ACTION_SUPPRESSION			= "Suppression d'une fiche visite médicale.";
+	public String								ACTION_CONSULTATION			= "Consultation d'une fiche visite médicale.";
+	private String								ACTION_MODIFICATION			= "Modification d'une fiche visite médicale.";
+	private String								ACTION_CREATION				= "Création d'une fiche visite médicale.";
 
-	public String								ACTION_INAPTITUDE_SUPPRESSION	= "Suppression d'une fiche inpatitude.";
-	public String								ACTION_INAPTITUDE_CONSULTATION	= "Consultation d'une fiche inpatitude.";
-	private String								ACTION_INAPTITUDE_MODIFICATION	= "Modification d'une fiche inpatitude.";
-	private String								ACTION_INAPTITUDE_CREATION		= "Création d'une fiche inpatitude.";
-
-	public String								ACTION_DOCUMENT					= "Documents d'une fiche visite médicale.";
-	public String								ACTION_DOCUMENT_SUPPRESSION		= "Suppression d'un document d'une fiche visite médicale.";
-	public String								ACTION_DOCUMENT_CREATION		= "Création d'un document d'une fiche visite médicale.";
+	public String								ACTION_DOCUMENT				= "Documents d'une fiche visite médicale.";
+	public String								ACTION_DOCUMENT_SUPPRESSION	= "Suppression d'un document d'une fiche visite médicale.";
+	public String								ACTION_DOCUMENT_CREATION	= "Création d'un document d'une fiche visite médicale.";
 	private ArrayList<Document>					listeDocuments;
 	private Document							documentCourant;
 	private DocumentAgent						lienDocumentAgentCourant;
-	public boolean								isImporting						= false;
-	public MultipartRequest						multi							= null;
-	public File									fichierUpload					= null;
+	public boolean								isImporting					= false;
+	public MultipartRequest						multi						= null;
+	public File									fichierUpload				= null;
 
-	public String								focus							= null;
+	public String								focus						= null;
 
-	private String								messageInf						= Const.CHAINE_VIDE;
-	public boolean								elementModifibale				= true;
-	public boolean								champMotifModifiable			= true;
+	private String								messageInf					= Const.CHAINE_VIDE;
+	public boolean								elementModifibale			= true;
+	public boolean								champMotifModifiable		= true;
 
 	private SuiviMedicalDao						suiviMedDao;
 	private MotifVisiteMedDao					motifVisiteMedDao;
 	private TypeDocumentDao						typeDocumentDao;
 	private MedecinDao							medecinDao;
 	private RecommandationDao					recommandationDao;
-	private TypeInaptitudeDao					typeInaptitudeDao;
 	private VisiteMedicaleDao					visiteMedicaleDao;
 	private DocumentAgentDao					lienDocumentAgentDao;
 	private DocumentDao							documentDao;
-	private InaptitudeDao						inaptitudeDao;
 	private AgentDao							agentDao;
 
 	private IAlfrescoCMISService				alfrescoCMISService;
 	private IRadiService						radiService;
 	private IReportingService					reportingService;
 	private String								urlFichier;
-
-	private SimpleDateFormat					sdf								= new SimpleDateFormat("dd/MM/yyyy");
 
 	/**
 	 * Initialisation des zones à  afficher dans la JSP Alimentation des listes,
@@ -152,7 +134,6 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		VariableGlobale.ajouter(request, "PROCESS_MEMORISE", this);
 		if (MaClasse.STATUT_RECHERCHE_AGENT == etatStatut()) {
 			addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
-			addZone(getNOM_ST_ACTION_INAPTITUDE(), Const.CHAINE_VIDE);
 			setVisiteCourante(null);
 			multi = null;
 			isImporting = false;
@@ -203,9 +184,6 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		if (getRecommandationDao() == null) {
 			setRecommandationDao(new RecommandationDao((SirhDao) context.getBean("sirhDao")));
 		}
-		if (getTypeInaptitudeDao() == null) {
-			setTypeInaptitudeDao(new TypeInaptitudeDao((SirhDao) context.getBean("sirhDao")));
-		}
 		if (getVisiteMedicaleDao() == null) {
 			setVisiteMedicaleDao(new VisiteMedicaleDao((SirhDao) context.getBean("sirhDao")));
 		}
@@ -214,9 +192,6 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		}
 		if (getDocumentDao() == null) {
 			setDocumentDao(new DocumentDao((SirhDao) context.getBean("sirhDao")));
-		}
-		if (getInaptitudeDao() == null) {
-			setInaptitudeDao(new InaptitudeDao((SirhDao) context.getBean("sirhDao")));
 		}
 		if (getAgentDao() == null) {
 			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
@@ -300,27 +275,6 @@ public class OeAGENTVisiteMed extends BasicProcess {
 				getHashRecommandation().put(r.getIdRecommandation(), r);
 			}
 		}
-
-		// Si hashtable des types d'inpatitude vide
-		if (getHashTypeInaptitude().size() == 0) {
-			ArrayList<TypeInaptitude> listeTypeInaptitude = getTypeInaptitudeDao().listerTypeInaptitude();
-			setListeTypeInaptitude(listeTypeInaptitude);
-
-			int[] tailles = { 150 };
-			FormateListe aFormat = new FormateListe(tailles);
-			for (ListIterator<TypeInaptitude> list = getListeTypeInaptitude().listIterator(); list.hasNext();) {
-				TypeInaptitude motif = (TypeInaptitude) list.next();
-				String ligne[] = { motif.getDescTypeInaptitude() };
-				aFormat.ajouteLigne(ligne);
-			}
-			setLB_TYPE(aFormat.getListeFormatee(true));
-
-			// remplissage de la hashTable
-			for (int i = 0; i < listeTypeInaptitude.size(); i++) {
-				TypeInaptitude t = (TypeInaptitude) listeTypeInaptitude.get(i);
-				getHashTypeInaptitude().put(t.getIdTypeInaptitude(), t);
-			}
-		}
 	}
 
 	/**
@@ -356,7 +310,6 @@ public class OeAGENTVisiteMed extends BasicProcess {
 			vm.setIdRecommandation(null);
 			vm.setDateDerniereVisite(sm.getDateProchaineVisite() == null ? null : sm.getDateProchaineVisite());
 			vm.setDureeValidite(0);
-			vm.setApte(null);
 			vm.setIdMotifVm(sm.getIdMotifVm());
 			vm.setIdSuiviMed(sm.getIdSuiviMed());
 			listeVisiteMed.add(vm);
@@ -403,39 +356,11 @@ public class OeAGENTVisiteMed extends BasicProcess {
 						: m.getTitreMedecin() + " " + m.getPrenomMedecin() + " " + m.getNomMedecin());
 				addZone(getNOM_ST_MOTIF(indiceVisite),
 						motif == null || motif.getLibMotifVm().equals(Const.CHAINE_VIDE) ? "&nbsp;" : motif.getLibMotifVm());
-				addZone(getNOM_ST_AVIS(indiceVisite), vm.getApte() == null ? "&nbsp;" : vm.getApte() == 1 ? "Apte" : "Inapte");
 				addZone(getNOM_ST_RECOMMANDATION(indiceVisite),
 						r == null || r.getDescRecommandation().equals(Const.CHAINE_VIDE) ? "&nbsp;" : r.getDescRecommandation());
 				addZone(getNOM_ST_NB_DOC(indiceVisite), nbDoc == 0 ? "&nbsp;" : String.valueOf(nbDoc));
 
 				indiceVisite++;
-			}
-		}
-	}
-
-	/**
-	 * Initialisation la liste des inaptitudes pour la visite médicale
-	 * sélectionnée
-	 * 
-	 */
-	private void initialiseListeInpatitude(HttpServletRequest request) throws Exception {
-		// Recherche des visites médicales de l'agent
-		ArrayList<Inaptitude> listeInaptitudes = getInaptitudeDao().listerInaptitudeVisite(getVisiteCourante().getIdVisite());
-		setListeInaptitude(listeInaptitudes);
-		int indiceInaptitude = 0;
-		if (getListeInaptitude() != null) {
-			for (int i = 0; i < getListeInaptitude().size(); i++) {
-				Inaptitude inapt = (Inaptitude) getListeInaptitude().get(i);
-				TypeInaptitude ti = (TypeInaptitude) getHashTypeInaptitude().get(inapt.getIdTypeInaptitude());
-
-				addZone(getNOM_ST_TYPE_INAPT(indiceInaptitude),
-						ti.getDescTypeInaptitude().equals(Const.CHAINE_VIDE) ? "&nbsp;" : ti.getDescTypeInaptitude());
-				addZone(getNOM_ST_DEBUT_INAPT(indiceInaptitude), sdf.format(inapt.getDateDebutInaptitude()));
-				addZone(getNOM_ST_ANNEES_INAPT(indiceInaptitude), inapt.getDureeAnnee() != null ? inapt.getDureeAnnee().toString() : Const.ZERO);
-				addZone(getNOM_ST_MOIS_INAPT(indiceInaptitude), inapt.getDureeMois() != null ? inapt.getDureeMois().toString() : Const.ZERO);
-				addZone(getNOM_ST_JOURS_INAPT(indiceInaptitude), inapt.getDureeJour() != null ? inapt.getDureeJour().toString() : Const.ZERO);
-
-				indiceInaptitude++;
 			}
 		}
 	}
@@ -479,27 +404,11 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 		// On vide les zone de saisie
 		addZone(getNOM_EF_DATE_VISITE(), Const.CHAINE_VIDE);
+		addZone(getNOM_ST_COMMENTAIRE_VM(), Const.CHAINE_VIDE);
 		addZone(getNOM_EF_DUREE(), Const.CHAINE_VIDE);
 		addZone(getNOM_LB_MEDECIN_SELECT(), Const.ZERO);
 		addZone(getNOM_LB_MOTIF_SELECT(), Const.ZERO);
-		addZone(getNOM_RG_AVIS(), getNOM_RB_APTE());
 		addZone(getNOM_LB_RECOMMANDATION_SELECT(), Const.ZERO);
-	}
-
-	/**
-	 * Réinitilise les champs du formulaire de création/modification d'une
-	 * inaptitude
-	 * 
-	 */
-	private void videZonesDeSaisieInaptitude(HttpServletRequest request) throws Exception {
-
-		// On vide les zone de saisie
-		addZone(getNOM_LB_TYPE_SELECT(), Const.ZERO);
-		addZone(getNOM_EF_DEBUT_INAPTITUDE(), Const.CHAINE_VIDE);
-
-		addZone(getNOM_EF_DUREE_ANNEES(), Const.CHAINE_VIDE);
-		addZone(getNOM_EF_DUREE_MOIS(), Const.CHAINE_VIDE);
-		addZone(getNOM_EF_DUREE_JOURS(), Const.CHAINE_VIDE);
 	}
 
 	/**
@@ -533,41 +442,10 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		addZone(getNOM_EF_DATE_VISITE(), sdf.format(getVisiteCourante().getDateDerniereVisite()));
 		addZone(getNOM_EF_DUREE(),
 				getVisiteCourante().getDureeValidite() == 0 ? Const.CHAINE_VIDE : getVisiteCourante().getDureeValidite().toString());
-		addZone(getNOM_ST_COMMENTAIRE(), getVisiteCourante().getCommentaire() == null ? Const.CHAINE_VIDE : getVisiteCourante().getCommentaire());
+		addZone(getNOM_ST_COMMENTAIRE_VM(), getVisiteCourante().getCommentaire() == null ? Const.CHAINE_VIDE : getVisiteCourante().getCommentaire());
 
 		int ligneMedecin = getListeMedecin().indexOf(medecin);
 		addZone(getNOM_LB_MEDECIN_SELECT(), String.valueOf(ligneMedecin));
-
-		if (getVisiteCourante().getApte() != null) {
-			if (getVisiteCourante().getApte() == 1)
-				addZone(getNOM_RG_AVIS(), getNOM_RB_APTE());
-			else
-				addZone(getNOM_RG_AVIS(), getNOM_RB_INAPTE());
-		}
-
-		return true;
-	}
-
-	/**
-	 * Initilise les zones de saisie du formulaire de modification d'une
-	 * inaptitude Date de création : 11/06/27
-	 * 
-	 */
-	private boolean initialiseInaptitudeCourante(HttpServletRequest request) throws Exception {
-
-		// Récup de la visite médicale courante
-		Inaptitude inaptitude = getInaptitudeCourante();
-		setInaptitudeCourante(inaptitude);
-		TypeInaptitude type = (TypeInaptitude) getHashTypeInaptitude().get(inaptitude.getIdTypeInaptitude());
-
-		// Alim zones
-		addZone(getNOM_EF_DEBUT_INAPTITUDE(), sdf.format(inaptitude.getDateDebutInaptitude()));
-		addZone(getNOM_EF_DUREE_ANNEES(), inaptitude.getDureeAnnee().toString());
-		addZone(getNOM_EF_DUREE_MOIS(), inaptitude.getDureeMois().toString());
-		addZone(getNOM_EF_DUREE_JOURS(), inaptitude.getDureeJour().toString());
-
-		int ligneType = getListeTypeInaptitude().indexOf(type);
-		addZone(getNOM_LB_TYPE_SELECT(), String.valueOf(ligneType + 1));
 
 		return true;
 	}
@@ -598,34 +476,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 				getVisiteCourante().getDureeValidite() == 0 ? Const.CHAINE_VIDE : getVisiteCourante().getDureeValidite().toString());
 		addZone(getNOM_ST_NOM_MEDECIN(), medecin.getTitreMedecin() + " " + medecin.getPrenomMedecin() + " " + medecin.getNomMedecin());
 		addZone(getNOM_ST_MOTIF(), motif != null ? motif.getLibMotifVm() : Const.CHAINE_VIDE);
-		addZone(getNOM_ST_AVIS(), getVisiteCourante().getApte() == null ? Const.CHAINE_VIDE : getVisiteCourante().getApte() == 1 ? "APTE" : "INAPTE");
 		addZone(getNOM_ST_RECOMMANDATION(), recommandation == null ? Const.CHAINE_VIDE : recommandation.getDescRecommandation());
-		addZone(getNOM_ST_COMMENTAIRE(), getVisiteCourante().getCommentaire() == null ? Const.CHAINE_VIDE : getVisiteCourante().getCommentaire());
-
-		return true;
-	}
-
-	/**
-	 * Initialisation de la suppression d'une inaptitude
-	 * 
-	 * @param request
-	 * @return true si la suppression peut être effectuee
-	 * @throws Exception
-	 */
-	private boolean initialiseInaptitudeSuppression(HttpServletRequest request) throws Exception {
-
-		// Récup de la visite médicale courante
-		Inaptitude inaptitude = getInaptitudeCourante();
-		TypeInaptitude type = (TypeInaptitude) getHashTypeInaptitude().get(inaptitude.getIdTypeInaptitude());
-
-		if (getTransaction().isErreur())
-			return false;
-
-		addZone(getNOM_ST_DEBUT_INAPTITUDE(), sdf.format(inaptitude.getDateDebutInaptitude()));
-		addZone(getNOM_ST_DUREE_ANNEES(), inaptitude.getDureeAnnee().toString());
-		addZone(getNOM_ST_DUREE_MOIS(), inaptitude.getDureeMois().toString());
-		addZone(getNOM_ST_DUREE_JOURS(), inaptitude.getDureeJour().toString());
-		addZone(getNOM_ST_TYPE(), type.getDescTypeInaptitude());
+		addZone(getNOM_ST_COMMENTAIRE_VM(), getVisiteCourante().getCommentaire() == null ? Const.CHAINE_VIDE : getVisiteCourante().getCommentaire());
 
 		return true;
 	}
@@ -910,19 +762,12 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	 * 
 	 */
 	public boolean performPB_ANNULER(HttpServletRequest request) throws Exception {
-		if (Const.CHAINE_VIDE.equals(getVAL_ST_ACTION()) && Const.CHAINE_VIDE.equals(getVAL_ST_ACTION_INAPTITUDE())) {
-			setStatut(STATUT_PROCESS_APPELANT);
-		} else if (!Const.CHAINE_VIDE.equals(getVAL_ST_ACTION_INAPTITUDE())) {
-			// initialiseVisiteCourante();
-			setVisiteCourante(null);
-			addZone(getNOM_ST_ACTION_INAPTITUDE(), Const.CHAINE_VIDE);
-			setStatut(STATUT_MEME_PROCESS);
-		} else {
-			setVisiteCourante(null);
-			// initialiseVisiteCourante();
-			addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
-			setStatut(STATUT_MEME_PROCESS);
-		}
+
+		setVisiteCourante(null);
+		// initialiseVisiteCourante();
+		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+		setStatut(STATUT_MEME_PROCESS);
+
 		return true;
 	}
 
@@ -947,7 +792,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		messageInf = Const.CHAINE_VIDE;
 
 		// Si aucune action en cours
-		if (getZone(getNOM_ST_ACTION()).length() == 0 && getZone(getNOM_ST_ACTION_INAPTITUDE()).length() == 0) {
+		if (getZone(getNOM_ST_ACTION()).length() == 0) {
 			// "Vous ne pouvez pas valider, il n'y a pas d'action en cours."
 			setStatut(STATUT_MEME_PROCESS, true, MessageUtils.getMessage("ERR006"));
 			return false;
@@ -1000,15 +845,6 @@ public class OeAGENTVisiteMed extends BasicProcess {
 				// saisie
 				String dateVisite = Services.formateDate(getZone(getNOM_EF_DATE_VISITE()));
 				String duree = getZone(getNOM_EF_DUREE());
-				Boolean apte = getZone(getNOM_RG_AVIS()).equals(getNOM_RB_APTE());
-				Integer apteVM = null;
-				if (elementModifibale) {
-					if (apte) {
-						apteVM = 1;
-					} else {
-						apteVM = 0;
-					}
-				}
 
 				int numLigneMedecin = (Services.estNumerique(getZone(getNOM_LB_MEDECIN_SELECT()))
 						? Integer.parseInt(getZone(getNOM_LB_MEDECIN_SELECT())) : -1);
@@ -1065,11 +901,10 @@ public class OeAGENTVisiteMed extends BasicProcess {
 				getVisiteCourante().setIdAgent(agentCourant.getIdAgent());
 				getVisiteCourante().setDateDerniereVisite(sdf.parse(dateVisite));
 				getVisiteCourante().setDureeValidite(duree.equals(Const.CHAINE_VIDE) ? 0 : Integer.valueOf(duree));
-				getVisiteCourante().setApte(apteVM);
 				getVisiteCourante().setIdMedecin(medecin.getIdMedecin());
 				getVisiteCourante().setIdMotifVm(motif.getIdMotifVm());
 				getVisiteCourante().setIdRecommandation(recommandation != null ? recommandation.getIdRecommandation() : null);
-				getVisiteCourante().setCommentaire(getVAL_ST_COMMENTAIRE());
+				getVisiteCourante().setCommentaire(getVAL_ST_COMMENTAIRE_VM());
 
 				if (getZone(getNOM_ST_ACTION()).equals(ACTION_MODIFICATION)) {
 					// si tranformation d'un suivi medical en VM
@@ -1103,21 +938,21 @@ public class OeAGENTVisiteMed extends BasicProcess {
 						// Création de la visite medicale
 						getVisiteMedicaleDao().creerVisiteMedicale(getVisiteCourante().getIdAgent(), getVisiteCourante().getIdMedecin(),
 								getVisiteCourante().getIdRecommandation(), getVisiteCourante().getDateDerniereVisite(),
-								getVisiteCourante().getDureeValidite(), getVisiteCourante().getApte(), getVisiteCourante().getIdMotifVm(),
-								getVisiteCourante().getIdSuiviMed(), getVisiteCourante().getCommentaire());
+								getVisiteCourante().getDureeValidite(), null, getVisiteCourante().getIdMotifVm(), getVisiteCourante().getIdSuiviMed(),
+								getVisiteCourante().getCommentaire());
 					} else {
 						// Modification
 						getVisiteMedicaleDao().modifierVisiteMedicale(getVisiteCourante().getIdVisite(), getVisiteCourante().getIdAgent(),
 								getVisiteCourante().getIdMedecin(), getVisiteCourante().getIdRecommandation(),
-								getVisiteCourante().getDateDerniereVisite(), getVisiteCourante().getDureeValidite(), getVisiteCourante().getApte(),
+								getVisiteCourante().getDateDerniereVisite(), getVisiteCourante().getDureeValidite(), null,
 								getVisiteCourante().getIdMotifVm(), getVisiteCourante().getIdSuiviMed(), getVisiteCourante().getCommentaire());
 					}
 				} else if (getZone(getNOM_ST_ACTION()).equals(ACTION_CREATION)) {
 					// Création
 					getVisiteMedicaleDao().creerVisiteMedicale(getVisiteCourante().getIdAgent(), getVisiteCourante().getIdMedecin(),
 							getVisiteCourante().getIdRecommandation(), getVisiteCourante().getDateDerniereVisite(),
-							getVisiteCourante().getDureeValidite(), getVisiteCourante().getApte(), getVisiteCourante().getIdMotifVm(),
-							getVisiteCourante().getIdSuiviMed(), getVisiteCourante().getCommentaire());
+							getVisiteCourante().getDureeValidite(), null, getVisiteCourante().getIdMotifVm(), getVisiteCourante().getIdSuiviMed(),
+							getVisiteCourante().getCommentaire());
 				}
 				if (getTransaction().isErreur())
 					return false;
@@ -1135,119 +970,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 				getTransaction().declarerErreur(messageInf);
 			}
 
-		} else {
-			// Si Action Suppression
-			if (getZone(getNOM_ST_ACTION_INAPTITUDE()).equals(ACTION_INAPTITUDE_SUPPRESSION)) {
-
-				// Suppression
-				getInaptitudeDao().supprimerInaptitude(getInaptitudeCourante().getIdInaptitude());
-
-				setVisiteCourante(null);
-				setInaptitudeCourante(null);
-				addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
-				setStatut(STATUT_MEME_PROCESS);
-			} else {
-
-				// Vérification de la validité du formulaire
-				if (!performControlerChampsInaptitude(request)) {
-					return false;
-				}
-
-				// récupération des informations remplies dans les zones de
-				// saisie
-				String debutInaptitude = getZone(getNOM_EF_DEBUT_INAPTITUDE());
-				String dureeAnnees = getZone(getNOM_EF_DUREE_ANNEES());
-				String dureeMois = getZone(getNOM_EF_DUREE_MOIS());
-				String dureeJours = getZone(getNOM_EF_DUREE_JOURS());
-
-				int numLigneTypeInaptitude = (Services.estNumerique(getZone(getNOM_LB_TYPE_SELECT()))
-						? Integer.parseInt(getZone(getNOM_LB_TYPE_SELECT())) : -1);
-
-				if (numLigneTypeInaptitude == -1 || getListeTypeInaptitude().size() == 0
-						|| numLigneTypeInaptitude > getListeTypeInaptitude().size()) {
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "types d'inaptitude"));
-					return false;
-				}
-
-				TypeInaptitude typeInaptitude = (TypeInaptitude) getListeTypeInaptitude().get(numLigneTypeInaptitude - 1);
-
-				// verification des regles de gestions
-				// RG_AG_VM_A01
-				ArrayList<Inaptitude> listeInaptitudes = getListeInaptitude();
-				if (listeInaptitudes != null) {
-					for (int i = 0; i < listeInaptitudes.size(); i++) {
-						Inaptitude inaptitude = (Inaptitude) listeInaptitudes.get(i);
-						if (!inaptitude.getIdInaptitude().toString().equals(getInaptitudeCourante().getIdInaptitude().toString())
-								&& inaptitude.getIdTypeInaptitude().toString().equals(typeInaptitude.getIdTypeInaptitude().toString())) {
-							if (!testDate(sdf.format(inaptitude.getDateDebutInaptitude()), debutInaptitude, dureeAnnees, dureeMois, dureeJours)
-									|| !testDate(debutInaptitude, sdf.format(inaptitude.getDateDebutInaptitude()),
-											inaptitude.getDureeAnnee().toString(), inaptitude.getDureeMois().toString(),
-											inaptitude.getDureeJour().toString())) {
-								getTransaction().declarerErreur(MessageUtils.getMessage("ERR041"));
-								return false;
-							}
-						}
-					}
-				}
-
-				// Création de l'objet VisiteMedicale a créer/modifier
-				VisiteMedicale visiteCourante = getVisiteCourante();
-				getInaptitudeCourante().setIdVisite(visiteCourante.getIdVisite());
-
-				getInaptitudeCourante().setIdTypeInaptitude(typeInaptitude.getIdTypeInaptitude());
-				getInaptitudeCourante().setDateDebutInaptitude(sdf.parse(debutInaptitude));
-
-				getInaptitudeCourante().setDureeAnnee(dureeAnnees.equals(Const.CHAINE_VIDE) ? null : Integer.valueOf(dureeAnnees));
-				getInaptitudeCourante().setDureeMois(dureeMois.equals(Const.CHAINE_VIDE) ? null : Integer.valueOf(dureeMois));
-				getInaptitudeCourante().setDureeJour(dureeJours.equals(Const.CHAINE_VIDE) ? null : Integer.valueOf(dureeJours));
-
-				if (getZone(getNOM_ST_ACTION_INAPTITUDE()).equals(ACTION_INAPTITUDE_MODIFICATION)) {
-					// Modification
-					getInaptitudeDao().modifierInaptitude(getInaptitudeCourante().getIdInaptitude(), getInaptitudeCourante().getIdVisite(),
-							getInaptitudeCourante().getIdTypeInaptitude(), getInaptitudeCourante().getDateDebutInaptitude(),
-							getInaptitudeCourante().getDureeAnnee(), getInaptitudeCourante().getDureeMois(), getInaptitudeCourante().getDureeJour());
-				} else if (getZone(getNOM_ST_ACTION_INAPTITUDE()).equals(ACTION_INAPTITUDE_CREATION)) {
-					// Création
-					getInaptitudeDao().creerInaptitude(getInaptitudeCourante().getIdVisite(), getInaptitudeCourante().getIdTypeInaptitude(),
-							getInaptitudeCourante().getDateDebutInaptitude(), getInaptitudeCourante().getDureeAnnee(),
-							getInaptitudeCourante().getDureeMois(), getInaptitudeCourante().getDureeJour());
-				}
-				if (getTransaction().isErreur())
-					return false;
-			}
-
-			// On a fini l'action
-			addZone(getNOM_ST_ACTION_INAPTITUDE(), Const.CHAINE_VIDE);
-
-			// Tout s'est bien passé
-			commitTransaction();
-			initialiseListeInpatitude(request);
 		}
 
-		return true;
-	}
-
-	/**
-	 * Test si la date1 est comprise entre date2 et date2 + annees + mois +
-	 * jours
-	 * 
-	 * @return boolean
-	 */
-	private boolean testDate(String dateTest, String dateDebut, String annees, String mois, String jours) {
-
-		int nbJours = (jours != null && !jours.equals(Const.CHAINE_VIDE)) ? Integer.parseInt(jours) : 0;
-		int nbMois = (mois != null && !mois.equals(Const.CHAINE_VIDE)) ? Integer.parseInt(mois) : 0;
-		int nbAnnees = (annees != null && !annees.equals(Const.CHAINE_VIDE)) ? Integer.parseInt(annees) : 0;
-
-		String dateFin = Services.ajouteJours(Services.ajouteMois(Services.ajouteAnnee(Services.formateDate(dateDebut), nbAnnees), nbMois), nbJours);
-
-		int compareTestDebut = Services.compareDates(dateTest, dateDebut);
-		int compareTestFin = Services.compareDates(dateTest, dateFin);
-
-		// Test si la date a tester est entre la date début( == 0 -> inclue) et
-		// la date fin (exclue)
-		if (compareTestDebut == 0 || (compareTestDebut == 1 && compareTestFin == -1))
-			return false;
 		return true;
 	}
 
@@ -1311,79 +1035,6 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		return true;
 	}
 
-	/**
-	 * Vérifie les regles de gestion de saisie (champs obligatoires, ...) du
-	 * formulaire d'inaptitude
-	 * 
-	 * @param request
-	 * @return true si les regles de gestion sont respectées. false sinon.
-	 * @throws Exception
-	 * 
-	 */
-	public boolean performControlerChampsInaptitude(HttpServletRequest request) throws Exception {
-
-		// type inaptitude obligatoire
-		int indiceTypeInap = (Services.estNumerique(getVAL_LB_TYPE_SELECT()) ? Integer.parseInt(getVAL_LB_TYPE_SELECT()) : -1);
-		if (indiceTypeInap < 1) {
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "type"));
-			setFocus(getNOM_LB_TYPE());
-			return false;
-		}
-
-		// date de début obligatoire
-		if ((Const.CHAINE_VIDE).equals(getZone(getNOM_EF_DEBUT_INAPTITUDE()))) {
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "date de début"));
-			setFocus(getNOM_EF_DEBUT_INAPTITUDE());
-			return false;
-		}
-
-		// duree obligatoire
-		if ((Const.CHAINE_VIDE).equals(getZone(getNOM_EF_DUREE_ANNEES())) && (Const.CHAINE_VIDE).equals(getZone(getNOM_EF_DUREE_MOIS()))
-				&& (Const.CHAINE_VIDE).equals(getZone(getNOM_EF_DUREE_JOURS()))) {
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "durée (année ou mois ou jours)"));
-			setFocus(getNOM_EF_DUREE_ANNEES());
-			return false;
-		}
-
-		return true;
-	}
-
-	/**
-	 * Retourne le nom du groupe de radio boutons coché pour la JSP : RG_AVIS
-	 * Date de création : (22/06/11 11:10:15)
-	 * 
-	 */
-	public String getNOM_RG_AVIS() {
-		return "NOM_RG_AVIS";
-	}
-
-	/**
-	 * Retourne la valeur du radio bouton (RB_) coché dans la JSP : RG_AVIS Date
-	 * de création : (22/06/11 11:10:15)
-	 * 
-	 */
-	public String getVAL_RG_AVIS() {
-		return getZone(getNOM_RG_AVIS());
-	}
-
-	/**
-	 * Retourne le nom du radio bouton pour la JSP : RB_APTE Date de création :
-	 * (22/06/11 11:10:15)
-	 * 
-	 */
-	public String getNOM_RB_APTE() {
-		return "NOM_RB_APTE";
-	}
-
-	/**
-	 * Retourne le nom du radio bouton pour la JSP : RB_INAPTE Date de création
-	 * : (22/06/11 11:10:15)
-	 * 
-	 */
-	public String getNOM_RB_INAPTE() {
-		return "NOM_RB_INAPTE";
-	}
-
 	private ArrayList<Recommandation> getListeRecommandation() {
 		return listeRecommandation;
 	}
@@ -1411,24 +1062,6 @@ public class OeAGENTVisiteMed extends BasicProcess {
 			hashRecommandation = new Hashtable<Integer, Recommandation>();
 		}
 		return hashRecommandation;
-	}
-
-	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_AVIS Date de
-	 * création : (27/06/11 09:10:43)
-	 * 
-	 */
-	public String getNOM_ST_AVIS() {
-		return "NOM_ST_AVIS";
-	}
-
-	/**
-	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_AVIS Date de
-	 * création : (27/06/11 09:10:43)
-	 * 
-	 */
-	public String getVAL_ST_AVIS() {
-		return getZone(getNOM_ST_AVIS());
 	}
 
 	/**
@@ -1527,276 +1160,6 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 	public void setFocus(String focus) {
 		this.focus = focus;
-	}
-
-	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_ACTION_INAPTITUDE
-	 * Date de création : (27/06/11 14:32:47)
-	 * 
-	 */
-	public String getNOM_ST_ACTION_INAPTITUDE() {
-		return "NOM_ST_ACTION_INAPTITUDE";
-	}
-
-	/**
-	 * Retourne la valeur à  afficher par la JSP pour la zone :
-	 * ST_ACTION_INAPTITUDE Date de création : (27/06/11 14:32:47)
-	 * 
-	 */
-	public String getVAL_ST_ACTION_INAPTITUDE() {
-		return getZone(getNOM_ST_ACTION_INAPTITUDE());
-	}
-
-	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_DEBUT_INAPTITUDE
-	 * Date de création : (27/06/11 15:30:43)
-	 * 
-	 */
-	public String getNOM_ST_DEBUT_INAPTITUDE() {
-		return "NOM_ST_DEBUT_INAPTITUDE";
-	}
-
-	/**
-	 * Retourne la valeur à  afficher par la JSP pour la zone :
-	 * ST_DEBUT_INAPTITUDE Date de création : (27/06/11 15:30:43)
-	 * 
-	 */
-	public String getVAL_ST_DEBUT_INAPTITUDE() {
-		return getZone(getNOM_ST_DEBUT_INAPTITUDE());
-	}
-
-	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_DUREE_ANNEES Date de
-	 * création : (27/06/11 15:30:43)
-	 * 
-	 */
-	public String getNOM_ST_DUREE_ANNEES() {
-		return "NOM_ST_DUREE_ANNEES";
-	}
-
-	/**
-	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_DUREE_ANNEES
-	 * Date de création : (27/06/11 15:30:43)
-	 * 
-	 */
-	public String getVAL_ST_DUREE_ANNEES() {
-		return getZone(getNOM_ST_DUREE_ANNEES());
-	}
-
-	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_DUREE_JOURS Date de
-	 * création : (27/06/11 15:30:43)
-	 * 
-	 */
-	public String getNOM_ST_DUREE_JOURS() {
-		return "NOM_ST_DUREE_JOURS";
-	}
-
-	/**
-	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_DUREE_JOURS
-	 * Date de création : (27/06/11 15:30:43)
-	 * 
-	 */
-	public String getVAL_ST_DUREE_JOURS() {
-		return getZone(getNOM_ST_DUREE_JOURS());
-	}
-
-	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_DUREE_MOIS Date de
-	 * création : (27/06/11 15:30:43)
-	 * 
-	 */
-	public String getNOM_ST_DUREE_MOIS() {
-		return "NOM_ST_DUREE_MOIS";
-	}
-
-	/**
-	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_DUREE_MOIS
-	 * Date de création : (27/06/11 15:30:43)
-	 * 
-	 */
-	public String getVAL_ST_DUREE_MOIS() {
-		return getZone(getNOM_ST_DUREE_MOIS());
-	}
-
-	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_TYPE Date de
-	 * création : (27/06/11 15:30:43)
-	 * 
-	 */
-	public String getNOM_ST_TYPE() {
-		return "NOM_ST_TYPE";
-	}
-
-	/**
-	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_TYPE Date de
-	 * création : (27/06/11 15:30:43)
-	 * 
-	 */
-	public String getVAL_ST_TYPE() {
-		return getZone(getNOM_ST_TYPE());
-	}
-
-	/**
-	 * Retourne le nom d'une zone de saisie pour la JSP : EF_DEBUT_INAPTITUDE
-	 * Date de création : (27/06/11 15:30:43)
-	 * 
-	 */
-	public String getNOM_EF_DEBUT_INAPTITUDE() {
-		return "NOM_EF_DEBUT_INAPTITUDE";
-	}
-
-	/**
-	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
-	 * EF_DEBUT_INAPTITUDE Date de création : (27/06/11 15:30:43)
-	 * 
-	 */
-	public String getVAL_EF_DEBUT_INAPTITUDE() {
-		return getZone(getNOM_EF_DEBUT_INAPTITUDE());
-	}
-
-	/**
-	 * Retourne le nom d'une zone de saisie pour la JSP : EF_DUREE_ANNEES Date
-	 * de création : (27/06/11 15:30:43)
-	 * 
-	 */
-	public String getNOM_EF_DUREE_ANNEES() {
-		return "NOM_EF_DUREE_ANNEES";
-	}
-
-	/**
-	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
-	 * EF_DUREE_ANNEES Date de création : (27/06/11 15:30:43)
-	 * 
-	 */
-	public String getVAL_EF_DUREE_ANNEES() {
-		return getZone(getNOM_EF_DUREE_ANNEES());
-	}
-
-	/**
-	 * Retourne le nom d'une zone de saisie pour la JSP : EF_DUREE_JOURS Date de
-	 * création : (27/06/11 15:30:43)
-	 * 
-	 */
-	public String getNOM_EF_DUREE_JOURS() {
-		return "NOM_EF_DUREE_JOURS";
-	}
-
-	/**
-	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
-	 * EF_DUREE_JOURS Date de création : (27/06/11 15:30:43)
-	 * 
-	 */
-	public String getVAL_EF_DUREE_JOURS() {
-		return getZone(getNOM_EF_DUREE_JOURS());
-	}
-
-	/**
-	 * Retourne le nom d'une zone de saisie pour la JSP : EF_DUREE_MOIS Date de
-	 * création : (27/06/11 15:30:43)
-	 * 
-	 */
-	public String getNOM_EF_DUREE_MOIS() {
-		return "NOM_EF_DUREE_MOIS";
-	}
-
-	/**
-	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
-	 * EF_DUREE_MOIS Date de création : (27/06/11 15:30:43)
-	 * 
-	 */
-	public String getVAL_EF_DUREE_MOIS() {
-		return getZone(getNOM_EF_DUREE_MOIS());
-	}
-
-	/**
-	 * Getter de la liste avec un lazy initialize : LB_TYPE Date de création :
-	 * (27/06/11 15:30:43)
-	 * 
-	 */
-	private String[] getLB_TYPE() {
-		if (LB_TYPE == null)
-			LB_TYPE = initialiseLazyLB();
-		return LB_TYPE;
-	}
-
-	/**
-	 * Setter de la liste: LB_TYPE Date de création : (27/06/11 15:30:43)
-	 * 
-	 */
-	private void setLB_TYPE(String[] newLB_TYPE) {
-		LB_TYPE = newLB_TYPE;
-	}
-
-	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_TYPE Date de création :
-	 * (27/06/11 15:30:43)
-	 * 
-	 */
-	public String getNOM_LB_TYPE() {
-		return "NOM_LB_TYPE";
-	}
-
-	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_TYPE_SELECT Date de création : (27/06/11 15:30:43)
-	 * 
-	 */
-	public String getNOM_LB_TYPE_SELECT() {
-		return "NOM_LB_TYPE_SELECT";
-	}
-
-	/**
-	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de
-	 * la JSP : LB_TYPE Date de création : (27/06/11 15:30:43)
-	 * 
-	 */
-	public String[] getVAL_LB_TYPE() {
-		return getLB_TYPE();
-	}
-
-	/**
-	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
-	 * la JSP : LB_TYPE Date de création : (27/06/11 15:30:43)
-	 * 
-	 */
-	public String getVAL_LB_TYPE_SELECT() {
-		return getZone(getNOM_LB_TYPE_SELECT());
-	}
-
-	private Hashtable<Integer, TypeInaptitude> getHashTypeInaptitude() {
-		if (hashTypeInaptitude == null) {
-			hashTypeInaptitude = new Hashtable<Integer, TypeInaptitude>();
-		}
-
-		return hashTypeInaptitude;
-	}
-
-	private ArrayList<TypeInaptitude> getListeTypeInaptitude() {
-		return listeTypeInaptitude;
-	}
-
-	private void setListeTypeInaptitude(ArrayList<TypeInaptitude> listeTypeInaptitude) {
-		this.listeTypeInaptitude = listeTypeInaptitude;
-	}
-
-	public ArrayList<Inaptitude> getListeInaptitude() {
-		if (listeInaptitude == null) {
-			listeInaptitude = new ArrayList<Inaptitude>();
-		}
-		return listeInaptitude;
-	}
-
-	private void setListeInaptitude(ArrayList<Inaptitude> listeInaptitude) {
-		this.listeInaptitude = listeInaptitude;
-	}
-
-	private Inaptitude getInaptitudeCourante() {
-		return inaptitudeCourante;
-	}
-
-	private void setInaptitudeCourante(Inaptitude inaptitudeCourante) {
-		this.inaptitudeCourante = inaptitudeCourante;
 	}
 
 	/**
@@ -1909,39 +1272,11 @@ public class OeAGENTVisiteMed extends BasicProcess {
 				if (testerParametre(request, getNOM_PB_SUPPRIMER(i))) {
 					return performPB_SUPPRIMER(request, i);
 				}
-				// Si clic sur le bouton PB_INIT_INAP
-				if (testerParametre(request, getNOM_PB_INIT_INAPT(i))) {
-					return performPB_INIT_INAPT(request, i);
-				}
 				// Si clic sur le bouton PB_DOCUMENT
 				if (testerParametre(request, getNOM_PB_DOCUMENT(i))) {
 					return performPB_DOCUMENT(request, i);
 				}
 
-			}
-
-			for (int i = 0; i < getListeInaptitude().size(); i++) {
-				// Si clic sur le bouton PB_CONSULTER_INAPTITUDE
-				if (testerParametre(request, getNOM_PB_CONSULTER_INAPTITUDE(i))) {
-					return performPB_CONSULTER_INAPTITUDE(request, i);
-				}
-				// Si clic sur le bouton PB_SELECT_INAPTITUDE
-				if (testerParametre(request, getNOM_PB_SELECT_INAPTITUDE(i))) {
-					return performPB_SELECT_INAPTITUDE(request, i);
-				}
-				// Si clic sur le bouton PB_MODIFIER_INAPTITUDE
-				if (testerParametre(request, getNOM_PB_MODIFIER_INAPTITUDE(i))) {
-					return performPB_MODIFIER_INAPTITUDE(request, i);
-				}
-				// Si clic sur le bouton PB_SUPPRIMER_INAPTITUDE
-				if (testerParametre(request, getNOM_PB_SUPPRIMER_INAPTITUDE(i))) {
-					return performPB_SUPPRIMER_INAPTITUDE(request, i);
-				}
-			}
-
-			// Si clic sur le bouton PB_CREER_INAPTITUDE
-			if (testerParametre(request, getNOM_PB_CREER_INAPTITUDE())) {
-				return performPB_CREER_INAPTITUDE(request);
 			}
 
 			// Si clic sur le bouton PB_CREER_DOC
@@ -2059,24 +1394,6 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_AVIS Date de
-	 * création : (18/08/11 10:21:15)
-	 * 
-	 */
-	public String getNOM_ST_AVIS(int i) {
-		return "NOM_ST_AVIS" + i;
-	}
-
-	/**
-	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_AVIS Date de
-	 * création : (18/08/11 10:21:15)
-	 * 
-	 */
-	public String getVAL_ST_AVIS(int i) {
-		return getZone(getNOM_ST_AVIS(i));
-	}
-
-	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_RECOMMANDATION Date
 	 * de création : (18/08/11 10:21:15)
 	 * 
@@ -2145,7 +1462,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 			if (getVisiteCourante().getIdMotifVm() != null
 					&& (getVisiteCourante().getIdMotifVm().toString().equals(EnumMotifVisiteMed.VM_DEMANDE_AGENT.getCode().toString())
 							|| getVisiteCourante().getIdMotifVm().toString().equals(EnumMotifVisiteMed.VM_DEMANDE_SERVICE.getCode().toString()))
-					&& getVisiteCourante().getIdRecommandation() == null && getVisiteCourante().getApte() == null) {
+					&& getVisiteCourante().getIdRecommandation() == null) {
 				elementModifibale = false;
 			} else {
 				if (getVisiteCourante().getIdMotifVm() == null) {
@@ -2226,326 +1543,6 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION(), ACTION_SUPPRESSION);
-
-		// On pose le statut
-		setStatut(STATUT_MEME_PROCESS);
-		return true;
-	}
-
-	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_INIT_INAPT Date de création
-	 * : (28/06/11 11:58:09)
-	 * 
-	 */
-	public String getNOM_PB_INIT_INAPT(int i) {
-		return "NOM_PB_INIT_INAPT" + i;
-	}
-
-	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * regles de gestion du process - Positionne un statut en fonction de ces
-	 * regles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (28/06/11 11:58:09)
-	 * 
-	 */
-	public boolean performPB_INIT_INAPT(HttpServletRequest request, int indiceEltSelectionne) throws Exception {
-
-		// Si pas d'agent courant alors erreur
-		if (getAgentCourant() == null) {
-			// "ERR004","Vous devez d'abord rechercher un agent"
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR004"));
-			return false;
-		}
-
-		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
-		addZone(getNOM_ST_ACTION_INAPTITUDE(), Const.CHAINE_VIDE);
-
-		// Récup de la visite médicale courante
-		VisiteMedicale visiteCourante = (VisiteMedicale) getListeVisites().get(indiceEltSelectionne);
-		setVisiteCourante(visiteCourante);
-		if (visiteCourante.getApte() != null)
-			if (visiteCourante.getApte() == 0)
-				initialiseListeInpatitude(request);
-
-		return true;
-	}
-
-	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_TYPE_INAPT Date de
-	 * création : (18/08/11 10:21:15)
-	 * 
-	 */
-	public String getNOM_ST_TYPE_INAPT(int i) {
-		return "NOM_ST_TYPE_INAPT" + i;
-	}
-
-	/**
-	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_TYPE_INAPT
-	 * Date de création : (18/08/11 10:21:15)
-	 * 
-	 */
-	public String getVAL_ST_TYPE_INAPT(int i) {
-		return getZone(getNOM_ST_TYPE_INAPT(i));
-	}
-
-	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_DEBUT_INAPT Date de
-	 * création : (18/08/11 10:21:15)
-	 * 
-	 */
-	public String getNOM_ST_DEBUT_INAPT(int i) {
-		return "NOM_ST_DEBUT_INAPT" + i;
-	}
-
-	/**
-	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_DEBUT_INAPT
-	 * Date de création : (18/08/11 10:21:15)
-	 * 
-	 */
-	public String getVAL_ST_DEBUT_INAPT(int i) {
-		return getZone(getNOM_ST_DEBUT_INAPT(i));
-	}
-
-	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_ANNEES_INAPT Date de
-	 * création : (18/08/11 10:21:15)
-	 * 
-	 */
-	public String getNOM_ST_ANNEES_INAPT(int i) {
-		return "NOM_ST_ANNEES_INAPT" + i;
-	}
-
-	/**
-	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_ANNEES_INAPT
-	 * Date de création : (18/08/11 10:21:15)
-	 * 
-	 */
-	public String getVAL_ST_ANNEES_INAPT(int i) {
-		return getZone(getNOM_ST_ANNEES_INAPT(i));
-	}
-
-	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_MOIS_INAPT Date de
-	 * création : (18/08/11 10:21:15)
-	 * 
-	 */
-	public String getNOM_ST_MOIS_INAPT(int i) {
-		return "NOM_ST_MOIS_INAPT" + i;
-	}
-
-	/**
-	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_MOIS_INAPT
-	 * Date de création : (18/08/11 10:21:15)
-	 * 
-	 */
-	public String getVAL_ST_MOIS_INAPT(int i) {
-		return getZone(getNOM_ST_MOIS_INAPT(i));
-	}
-
-	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_JOURS_INAPT Date de
-	 * création : (18/08/11 10:21:15)
-	 * 
-	 */
-	public String getNOM_ST_JOURS_INAPT(int i) {
-		return "NOM_ST_JOURS_INAPT" + i;
-	}
-
-	/**
-	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_JOURS_INAPT
-	 * Date de création : (18/08/11 10:21:15)
-	 * 
-	 */
-	public String getVAL_ST_JOURS_INAPT(int i) {
-		return getZone(getNOM_ST_JOURS_INAPT(i));
-	}
-
-	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_SELECT_INAPTITUDE Date de
-	 * création : (29/06/11 09:16:38)
-	 * 
-	 */
-	public String getNOM_PB_SELECT_INAPTITUDE(int i) {
-		return "NOM_PB_SELECT_INAPTITUDE" + i;
-	}
-
-	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * regles de gestion du process - Positionne un statut en fonction de ces
-	 * regles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (29/06/11 09:16:38)
-	 * 
-	 */
-	public boolean performPB_SELECT_INAPTITUDE(HttpServletRequest request, int indiceEltSelectionne) throws Exception {
-		if (!getNOM_ST_ACTION_INAPTITUDE().equals(ACTION_INAPTITUDE_CREATION))
-			addZone(getNOM_ST_ACTION_INAPTITUDE(), Const.CHAINE_VIDE);
-		return true;
-	}
-
-	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_CREER_INAPTITUDE Date de
-	 * création : (27/06/11 14:51:36)
-	 * 
-	 */
-	public String getNOM_PB_CREER_INAPTITUDE() {
-		return "NOM_PB_CREER_INAPTITUDE";
-	}
-
-	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * regles de gestion du process - Positionne un statut en fonction de ces
-	 * regles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (27/06/11 14:51:36)
-	 * 
-	 * RG_AG_VM_A02
-	 */
-	public boolean performPB_CREER_INAPTITUDE(HttpServletRequest request) throws Exception {
-
-		// Si pas d'agent courant alors erreur
-		if (getAgentCourant() == null) {
-			// "ERR004","Vous devez d'abord rechercher un agent"
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR004"));
-			return false;
-		}
-
-		if (getVisiteCourante() == null) {
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "visites médicales"));
-			return false;
-		}
-
-		// RG_AG_VM_A02
-		VisiteMedicale dernVisite = (VisiteMedicale) getListeVisites().get(0);
-		if (!dernVisite.getIdVisite().equals(getVisiteCourante().getIdVisite())) {
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR040"));
-			return false;
-		}
-
-		// On nomme l'action
-		addZone(getNOM_ST_ACTION_INAPTITUDE(), ACTION_INAPTITUDE_CREATION);
-
-		// init de l'inpatitude courante
-		setInaptitudeCourante(new Inaptitude());
-		videZonesDeSaisieInaptitude(request);
-
-		setStatut(STATUT_MEME_PROCESS);
-		return true;
-
-	}
-
-	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_MODIFIER_INAPTITUDE Date de
-	 * création : (27/06/11 14:51:36)
-	 * 
-	 */
-	public String getNOM_PB_MODIFIER_INAPTITUDE(int i) {
-		return "NOM_PB_MODIFIER_INAPTITUDE" + i;
-	}
-
-	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * regles de gestion du process - Positionne un statut en fonction de ces
-	 * regles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (27/06/11 14:51:36)
-	 * 
-	 */
-	public boolean performPB_MODIFIER_INAPTITUDE(HttpServletRequest request, int indiceEltAModifier) throws Exception {
-
-		addZone(getNOM_ST_ACTION_INAPTITUDE(), Const.CHAINE_VIDE);
-
-		if (getVisiteCourante() == null) {
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "visites médicales"));
-			return false;
-		}
-
-		// Récup de la visite médicale courante
-		setInaptitudeCourante((Inaptitude) getListeInaptitude().get(indiceEltAModifier));
-
-		// On nomme l'action
-		addZone(getNOM_ST_ACTION_INAPTITUDE(), ACTION_INAPTITUDE_MODIFICATION);
-
-		//
-		initialiseInaptitudeCourante(request);
-
-		setStatut(STATUT_MEME_PROCESS);
-		return true;
-	}
-
-	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMER_INAPTITUDE Date de
-	 * création : (27/06/11 14:51:36)
-	 * 
-	 */
-	public String getNOM_PB_SUPPRIMER_INAPTITUDE(int i) {
-		return "NOM_PB_SUPPRIMER_INAPTITUDE" + i;
-	}
-
-	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * regles de gestion du process - Positionne un statut en fonction de ces
-	 * regles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (27/06/11 14:51:36)
-	 * 
-	 */
-	public boolean performPB_SUPPRIMER_INAPTITUDE(HttpServletRequest request, int indiceEltASupprimer) throws Exception {
-
-		addZone(getNOM_ST_ACTION_INAPTITUDE(), Const.CHAINE_VIDE);
-
-		if (getVisiteCourante() == null) {
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "visites médicales"));
-			return false;
-		}
-
-		// Récup de la visite médicale courante
-		setInaptitudeCourante((Inaptitude) getListeInaptitude().get(indiceEltASupprimer));
-
-		// init du diplome courant
-		initialiseInaptitudeSuppression(request);
-
-		// On nomme l'action
-		addZone(getNOM_ST_ACTION_INAPTITUDE(), ACTION_INAPTITUDE_SUPPRESSION);
-
-		// On pose le statut
-		setStatut(STATUT_MEME_PROCESS);
-		return true;
-	}
-
-	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_CONSULTER_INAPTITUDE Date de
-	 * création : (17/10/11 15:48:16)
-	 * 
-	 */
-	public String getNOM_PB_CONSULTER_INAPTITUDE(int i) {
-		return "NOM_PB_CONSULTER_INAPTITUDE";
-	}
-
-	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * regles de gestion du process - Positionne un statut en fonction de ces
-	 * regles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (17/10/11 15:48:16)
-	 * 
-	 */
-	public boolean performPB_CONSULTER_INAPTITUDE(HttpServletRequest request, int indiceEltAConsulter) throws Exception {
-		// Si pas d'agent courant alors erreur
-		if (getAgentCourant() == null) {
-			// "ERR004","Vous devez d'abord rechercher un agent"
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR004"));
-			return false;
-		}
-
-		if (getVisiteCourante() == null) {
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "visites médicales"));
-			return false;
-		}
-
-		// Récup de la visite médicale courante
-		setInaptitudeCourante((Inaptitude) getListeInaptitude().get(indiceEltAConsulter));
-
-		// init du diplome courant
-		initialiseInaptitudeSuppression(request);
-
-		// On nomme l'action
-		addZone(getNOM_ST_ACTION_INAPTITUDE(), ACTION_INAPTITUDE_CONSULTATION);
 
 		// On pose le statut
 		setStatut(STATUT_MEME_PROCESS);
@@ -3166,7 +2163,6 @@ public class OeAGENTVisiteMed extends BasicProcess {
 				Medecin medecin = getMedecinDao().chercherMedecinARenseigner("A", "RENSEIGNER");
 				int ligneMedecin = getListeMedecin().indexOf(getHashMedecin().get(medecin.getIdMedecin()));
 				addZone(getNOM_LB_MEDECIN_SELECT(), String.valueOf(ligneMedecin));
-				addZone(getNOM_RG_AVIS(), Const.CHAINE_VIDE);
 			} else {
 				// si autre motif alors on cherche la derniere convocation
 				// si elle est de type 'non-effectuee' alors on en peut pas
@@ -3246,14 +2242,6 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		this.recommandationDao = recommandationDao;
 	}
 
-	public TypeInaptitudeDao getTypeInaptitudeDao() {
-		return typeInaptitudeDao;
-	}
-
-	public void setTypeInaptitudeDao(TypeInaptitudeDao typeInaptitudeDao) {
-		this.typeInaptitudeDao = typeInaptitudeDao;
-	}
-
 	public VisiteMedicaleDao getVisiteMedicaleDao() {
 		return visiteMedicaleDao;
 	}
@@ -3278,10 +2266,6 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		this.documentDao = documentDao;
 	}
 
-	public InaptitudeDao getInaptitudeDao() {
-		return inaptitudeDao;
-	}
-
 	public AgentDao getAgentDao() {
 		return agentDao;
 	}
@@ -3290,16 +2274,12 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		this.agentDao = agentDao;
 	}
 
-	public void setInaptitudeDao(InaptitudeDao inaptitudeDao) {
-		this.inaptitudeDao = inaptitudeDao;
+	public String getNOM_ST_COMMENTAIRE_VM() {
+		return "NOM_ST_COMMENTAIRE_VM";
 	}
 
-	public String getNOM_ST_COMMENTAIRE() {
-		return "NOM_ST_COMMENTAIRE";
-	}
-
-	public String getVAL_ST_COMMENTAIRE() {
-		return getZone(getNOM_ST_COMMENTAIRE());
+	public String getVAL_ST_COMMENTAIRE_VM() {
+		return getZone(getNOM_ST_COMMENTAIRE_VM());
 	}
 
 	/**

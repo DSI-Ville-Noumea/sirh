@@ -75,8 +75,7 @@
 								    		<td align="center">Durée de validité (mois)</td>
 								    		<td align="left">Nom du medecin</td>
 								    		<td align="left">Motif</td>
-								    		<td align="center">Avis</td>
-								    		<td align="left">Recommandation</td>
+								    		<td align="left">Recommandations</td>
 								    		<td align="center">Nb docs</td>
 								    	</tr>
 										<%
@@ -85,7 +84,7 @@
 											for (int i = 0;i<process.getListeVisites().size();i++){
 												VisiteMedicale vm = (VisiteMedicale) process.getListeVisites().get(i);
 										%>
-												<tr id="<%=indiceVisite%>" <%if(vm.getIdVisite()==null){%> bgcolor="#B0C4DE"<%}else{%> onmouseover="SelectLigne(<%=indiceVisite%>,<%=process.getListeVisites().size()%>)"  <%} %>  ondblclick='executeBouton("<%=process.getNOM_PB_INIT_INAPT(indiceVisite)%>")'>
+												<tr id="<%=indiceVisite%>" <%if(vm.getIdVisite()==null){%> bgcolor="#B0C4DE"<%}else{%> onmouseover="SelectLigne(<%=indiceVisite%>,<%=process.getListeVisites().size()%>)"  <%} %> >
 													<td class="sigp2NewTab-liste" style="position:relative;width:90px;" align="center">
 													<%if(vm.getIdVisite()!=null){ %>
 														<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, "") %>" name="<%=process.getNOM_PB_CONSULTER(indiceVisite)%>">								
@@ -102,9 +101,8 @@
 													<td class="sigp2NewTab-liste" style="width:50px;text-align: center;"><%=process.getVAL_ST_DUREE(indiceVisite)%></td>
 													<td class="sigp2NewTab-liste" style="width:150px;text-align: left;"><%=process.getVAL_ST_NOM_MEDECIN(indiceVisite)%></td>
 													<td class="sigp2NewTab-liste" style="width:150px;text-align: left;"><%=process.getVAL_ST_MOTIF(indiceVisite)%></td>
-													<td class="sigp2NewTab-liste" style="width:80px;text-align: center;"><%=process.getVAL_ST_AVIS(indiceVisite)%></td>
 													<td class="sigp2NewTab-liste" style="width:300px;text-align: left;"><%=process.getVAL_ST_RECOMMANDATION(indiceVisite)%></td>
-													<td class="sigp2NewTab-liste" style="text-align: center;"><%=process.getVAL_ST_NB_DOC(indiceVisite)%><INPUT type="submit" style="display:none;" name="<%=process.getNOM_PB_INIT_INAPT(indiceVisite)%>" value="x"></td>
+													<td class="sigp2NewTab-liste" style="text-align: center;"><%=process.getVAL_ST_NB_DOC(indiceVisite)%></td>
 												</tr>
 												<%
 												indiceVisite++;
@@ -159,16 +157,7 @@
 				</tr>
 				<tr>
 					<td>
-						<span class="sigp2Mandatory">Avis :</span> 
-					</td>
-					<td>
-						<input <%= process.elementModifibale ? "" : "disabled='disabled'" %> type="radio" <%= process.forRadioHTML(process.getNOM_RG_AVIS(), process.getNOM_RB_APTE()) %> > <span class="sigp2Mandatory">Apte</span> 
-						<input <%= process.elementModifibale ? "" : "disabled='disabled'" %> type="radio" <%= process.forRadioHTML(process.getNOM_RG_AVIS(), process.getNOM_RB_INAPTE()) %> > <span class="sigp2Mandatory">Inapte</span> 
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<span class="sigp2Mandatory"> Recommandation :</span>
+						<span class="sigp2Mandatory"> Avis :</span>
 					</td>
 					<td>
 						<SELECT <%= process.elementModifibale ? "" : "disabled='disabled'" %> class="sigp2-saisie" name="<%= process.getNOM_LB_RECOMMANDATION() %>" >
@@ -178,10 +167,10 @@
 				</tr>
 				<tr>
 					<td>
-						<span class="sigp2">Commentaire :</span>
+						<span class="sigp2">Recommandations :</span>
 					</td>
 					<td>
-						<textarea <%= process.elementModifibale ? "" : "disabled='disabled'" %> class="sigp2-saisie" rows="3" maxlength="2500" style="position:relative;width:600px" name="<%= process.getNOM_ST_COMMENTAIRE() %>" ><%= process.getVAL_ST_COMMENTAIRE() %></textarea>
+						<textarea <%= process.elementModifibale ? "" : "disabled='disabled'" %> class="sigp2-saisie" rows="3" maxlength="2500" style="position:relative;width:600px" name="<%= process.getNOM_ST_COMMENTAIRE_VM() %>" ><%= process.getVAL_ST_COMMENTAIRE_VM() %></textarea>
 					</td>
 				</tr>		
 			</table>
@@ -361,23 +350,17 @@
 					<span class="sigp2">Avis : </span>
 					</td>
 					<td>
-					<span class="sigp2-saisie"><%=process.getVAL_ST_AVIS()%></span>
-					</td>
-				</tr>
-				<tr>
-					<td>
-					<span class="sigp2">Recommandation : </span>
-					</td>
-					<td>
 					<span class="sigp2-saisie"><%=process.getVAL_ST_RECOMMANDATION()%></span>
 					</td>
 				</tr>
 				<tr>
 					<td>
-						<span class="sigp2">Commentaire :</span>
+						<span class="sigp2">Recommandations :</span>
 					</td>
 					<td>
-						<span class="sigp2-saisie"><%=process.getVAL_ST_COMMENTAIRE()%></span>
+						<span class="sigp2-saisie">
+							<textarea disabled="disabled" class="sigp2-saisie" rows="3" maxlength="2500" style="position:relative;width:600px" name="<%= process.getNOM_ST_COMMENTAIRE_VM() %>" ><%= process.getVAL_ST_COMMENTAIRE_VM() %></textarea>
+						</span>
 					</td>
 				</tr>
 			</table>
@@ -392,7 +375,9 @@
 					    	<INPUT type="submit" class="sigp2-Bouton-100" value="Valider" name="<%=process.getNOM_PB_VALIDER()%>">
 					    	</TD>
 						<TD height="18" width="15">
-<%-- 							<INPUT type="submit" class="sigp2-Bouton-100" value="Imprimer" name="<%=process.getNOM_PB_IMPRIMER_CERTIFICAT_APTITUDE()%>"> --%>
+						<% if (!process.getVAL_ST_ACTION().equals(process.ACTION_SUPPRESSION)){ %>
+							<INPUT type="submit" class="sigp2-Bouton-200" value="Générer certificat aptitude" name="<%=process.getNOM_PB_IMPRIMER_CERTIFICAT_APTITUDE()%>">
+							<%} %>
 					    </TD>
 					<%} %>
 					<TD class="sigp2" style="text-align : center;"
@@ -403,127 +388,7 @@
 			</TBODY>
 		</TABLE>
 		<%} %>
-		</FIELDSET>
-		<% } else if (process.getVisiteCourante() != null && process.getVisiteCourante().getApte()!=null && process.getVisiteCourante().getApte()==0) { %>		
-		<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
-				    <legend class="sigp2Legend">Liste des inaptitudes</legend>
-				    <br/>
-				    <span style="position:relative;width:9px;"></span>
-				    <span style="position:relative;width:65px;"><INPUT type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_CREER_INAPTITUDE()%>"></span>
-				    <span style="position:relative;width:300px;text-align: left;">Type</span>
-					<span style="position:relative;width:90px;text-align: center;">Début</span>
-					<span style="position:relative;width:43px;text-align: left;">années</span>
-					<span style="position:relative;width:43px;text-align: left;">mois</span>
-					<span style="position:relative;text-align: left;">jours</span>
-					<br/>
-				<div style="overflow: auto;height: 250px;width:1000px;margin-right: 0px;margin-left: 0px;">
-						<table class="sigp2NewTab" style="text-align:left;width:980px;">
-							<%
-							int indiceInaptitude = 0;
-							if (process.getListeInaptitude()!=null){
-								for (int i = 0;i<process.getListeInaptitude().size();i++){								
-							%>
-									<tr id="ligne<%=indiceInaptitude%>" onmouseover="SelectLigneAutreTab(<%=indiceInaptitude%>,<%=process.getListeInaptitude().size()%>)" onclick='executeBouton("<%=process.getNOM_PB_SELECT_INAPTITUDE(indiceInaptitude)%>")'>
-										<td class="sigp2NewTab-liste" style="position:relative;width:70px;" align="center">
-											<INPUT type="image" src="images/modifier.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_MODIFIER_INAPTITUDE(indiceInaptitude)%>">
-											<INPUT type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, "") %>" name="<%=process.getNOM_PB_CONSULTER_INAPTITUDE(indiceInaptitude)%>">
-											<INPUT type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_CONSULTER_INAPTITUDE(indiceInaptitude)%>">				
-											<INPUT type="image" src="images/suppression.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_SUPPRIMER_INAPTITUDE(indiceInaptitude)%>">
-										</td>
-										<td class="sigp2NewTab-liste" style="position:relative;width:300px;text-align: left;"><%=process.getVAL_ST_TYPE_INAPT(indiceInaptitude)%></td>
-										<td class="sigp2NewTab-liste" style="position:relative;width:90px;text-align: center;"><%=process.getVAL_ST_DEBUT_INAPT(indiceInaptitude)%></td>
-										<td class="sigp2NewTab-liste" style="position:relative;width:40px;text-align: left;"><%=process.getVAL_ST_ANNEES_INAPT(indiceInaptitude)%></td>
-										<td class="sigp2NewTab-liste" style="position:relative;width:40px;text-align: left;"><%=process.getVAL_ST_MOIS_INAPT(indiceInaptitude)%></td>
-										<td class="sigp2NewTab-liste" style="position:relative;text-align: left;"><%=process.getVAL_ST_JOURS_INAPT(indiceInaptitude)%></td>
-										<td><INPUT type="submit" style="display:none;" name="<%=process.getNOM_PB_SELECT_INAPTITUDE(indiceInaptitude)%>" value="x"></td>
-									</tr>
-									<%
-									indiceInaptitude++;
-								}
-							}%>
-						</table>	
-						</div>	
-				</FIELDSET>
-		
-		
-		
-		<% if (! "".equals(process.getVAL_ST_ACTION_INAPTITUDE())){ %>
-		<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
-			<legend class="sigp2Legend"><%=process.getVAL_ST_ACTION_INAPTITUDE()%></legend>
-			<%if(!process.getVAL_ST_ACTION_INAPTITUDE().equals(process.ACTION_INAPTITUDE_SUPPRESSION) && !process.getVAL_ST_ACTION_INAPTITUDE().equals(process.ACTION_INAPTITUDE_CONSULTATION)){ %>
-			
-			<div>
-				<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Type :</span>
-				<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_TYPE() %>">
-					<%=process.forComboHTML(process.getVAL_LB_TYPE(), process.getVAL_LB_TYPE_SELECT()) %>
-				</SELECT>
-
-				<BR/><BR/>
-
-				<span class="sigp2Mandatory"  style="margin-left:20px;position:relative;width:150px;">Date de début :</span>
-				<input id="<%=process.getNOM_EF_DEBUT_INAPTITUDE()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DEBUT_INAPTITUDE() %>" size="10" type="text"	value="<%= process.getVAL_EF_DEBUT_INAPTITUDE() %>">
-				<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_EF_DEBUT_INAPTITUDE()%>', 'dd/mm/y');">
-
-				<BR/><BR/>
-				
-				<span class="sigp2" style="margin-left:20px;position:relative;width:150px;">Durée de validité (année) :</span>
-				<INPUT class="sigp2-saisie" maxlength="5" name="<%= process.getNOM_EF_DUREE_ANNEES() %>" size="5" type="text" value="<%= process.getVAL_EF_DUREE_ANNEES() %>">
-
-				<BR/><BR/>
-				
-				<span class="sigp2" style="margin-left:20px;position:relative;width:150px;">Durée de validité (mois) :</span>
-				<INPUT class="sigp2-saisie" maxlength="5" name="<%= process.getNOM_EF_DUREE_MOIS() %>" size="5" type="text" value="<%= process.getVAL_EF_DUREE_MOIS() %>">
-				
-				<BR/><BR/>
-				
-				<span class="sigp2" style="margin-left:20px;position:relative;width:150px;">Durée de validité (jours) :</span>
-				<INPUT class="sigp2-saisie" maxlength="5" name="<%= process.getNOM_EF_DUREE_JOURS() %>" size="5" type="text" value="<%= process.getVAL_EF_DUREE_JOURS() %>">
-			</div>
-			
-			<% } else { %>
-			<div>
-				<% if (!process.getVAL_ST_ACTION_INAPTITUDE().equals(process.ACTION_INAPTITUDE_CONSULTATION)) { %>
-			
-		    	<FONT color='red'>Veuillez valider votre choix.</FONT>
-		    	<BR/><BR/>
-		    	
-		    	<% } %>
-		    	
-		    	<span class="sigp2" style="width:150px">Type : </span>
-				<span class="sigp2-saisie"><%=process.getVAL_ST_TYPE()%></span>
-				<BR/>
-				<span class="sigp2" style="width:150px">Début : </span>
-				<span class="sigp2-saisie"><%=process.getVAL_ST_DEBUT_INAPTITUDE()%></span>
-				<BR/>
-				<span class="sigp2" style="width:150px">Durée (années)</span>
-				<span class="sigp2-saisie"><%=process.getVAL_ST_DUREE_ANNEES()%></span>
-				<BR/>
-				<span class="sigp2" style="width:150px">Durée (mois)</span>
-				<span class="sigp2-saisie"><%=process.getVAL_ST_DUREE_MOIS()%></span>
-				<BR/>
-				<span class="sigp2" style="width:150px">Durée (jours)</span>
-				<span class="sigp2-saisie"><%=process.getVAL_ST_DUREE_JOURS()%></span>
-				</div>
-			<%} %>
-			<BR/>
-			<TABLE align="center" border="0" cellpadding="0" cellspacing="0">
-			<TBODY>
-				<TR>
-					<% if (!process.getVAL_ST_ACTION_INAPTITUDE().equals(process.ACTION_INAPTITUDE_CONSULTATION)) { %>
-					<TD width="31"><INPUT type="submit"
-						class="sigp2-Bouton-100" value="Valider"
-						name="<%=process.getNOM_PB_VALIDER()%>"></TD>
-					<TD height="18" width="15"></TD>
-					<% } %>
-					<TD class="sigp2" style="text-align : center;"
-						height="18" width="23"><INPUT type="submit"
-						class="sigp2-Bouton-100" value="Annuler"
-						name="<%=process.getNOM_PB_ANNULER()%>"></TD>
-				</TR>
-			</TBODY>
-		</TABLE>
-		</FIELDSET>
-		<% } %>
+		</FIELDSET>		
 		<% } %>
 		<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_SELECT_MOTIF()%>" value="x">
 	<%=process.getUrlFichier()%>

@@ -268,6 +268,8 @@ public class ReportingService implements IReportingService {
 			genereTableau(document, vm.getDateDerniereVisite(), nomMedecin.toUpperCase(), poste.toUpperCase(), recommandation, vm.getCommentaire(),
 					dateARevoir);
 
+			genereSignature(document);
+
 		}
 
 		// on ferme le document
@@ -308,7 +310,7 @@ public class ReportingService implements IReportingService {
 
 		// 5eme ligne : restrictions
 		List<CellVo> listValuesLigne5 = new ArrayList<CellVo>();
-		listValuesLigne5.add(new CellVo("Restrictions éventuelles : ", true, 1, null, Element.ALIGN_LEFT, true, fontBold8));
+		listValuesLigne5.add(new CellVo("Recommandations éventuelles : ", true, 1, null, Element.ALIGN_LEFT, true, fontBold8));
 		listValuesLigne5.add(new CellVo(restriction, true, 1, null, Element.ALIGN_LEFT, true, fontNormal8));
 		writeLine(table, 7, listValuesLigne5);
 
@@ -325,6 +327,22 @@ public class ReportingService implements IReportingService {
 		String civilite = agent.getCivilite().equals(EnumCivilite.M.getCode()) ? "MONSIEUR " : "MADAME ";
 		String nomPrenom = agent.getNomAgent() + " " + agent.getPrenomAgent();
 		return "CERTIFICAT D'APTITUDE DE " + civilite + nomPrenom.toUpperCase();
+	}
+
+	protected void genereSignature(Document document) throws DocumentException {
+		PdfPTable table = null;
+		table = new PdfPTable(1);
+		table.setWidthPercentage(80f);
+		table.setHorizontalAlignment(Element.ALIGN_LEFT);
+
+		// 1er ligne : entete
+		List<CellVo> listValuesLigne1 = new ArrayList<CellVo>();
+		String dateJour = new SimpleDateFormat("dd/MM/yyyy").format(new Date());
+		listValuesLigne1.add(new CellVo(new String("nouméa le "+dateJour).toUpperCase(), true, 1, null, Element.ALIGN_RIGHT, false, fontNormal8));
+		writeLine(table, 3, listValuesLigne1);
+
+		writeSpacing(document, 1);
+		document.add(table);
 	}
 
 }
