@@ -128,7 +128,7 @@ public abstract class BaseWsConsumer {
 			result = targetClass.newInstance();
 		} catch (Exception ex) {
 			throw new SirhWSConsumerException(
-					"An error occured when instantiating return type when deserializing JSON from SIRH ABS WS request.",
+					"An error occured when instantiating return type when deserializing JSON from " + url + " request.",
 					ex);
 		}
 
@@ -221,5 +221,24 @@ public abstract class BaseWsConsumer {
 		}
 
 		return reponseData;
+	}
+	
+	protected Integer readResponseAsInteger(ClientResponse response, String url) {
+
+		Integer result = 0;
+
+		if (response.getStatus() == HttpStatus.NO_CONTENT.value()) {
+			return null;
+		}
+
+		if (response.getStatus() != HttpStatus.OK.value()) {
+			throw new SirhWSConsumerException(String.format(
+					"An error occured when querying '%s'. Return code is : %s", url, response.getStatus()));
+		}
+
+		String output = response.getEntity(String.class);
+		logger.trace("json recu:" + output);
+		result = new Integer(output);
+		return result;
 	}
 }

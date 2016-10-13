@@ -135,7 +135,7 @@ public class SirhEaeWSConsumer extends BaseWsConsumer implements ISirhEaeWSConsu
 		params.put("idAgentSirh", idAgentSirh.toString());
 
 		ClientResponse res = createAndFireRequest(params, url);
-		return readResponse(Integer.class, res, url);
+		return readResponseAsInteger(res, url);
 	}
 
 	@Override

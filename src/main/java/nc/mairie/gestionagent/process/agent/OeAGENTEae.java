@@ -4084,6 +4084,7 @@ public class OeAGENTEae extends BasicProcess {
 
 		Integer numIncrement = eaeService.chercherEaeNumIncrement(getAgentConnecte(request).getIdAgent());
 
+		// TODO premierEvaluateur.get(0).getAgent().getIdAgent() =+> ID AGENT de l agent lui meme plutot
 		String extension = fichierUpload.getName().substring(fichierUpload.getName().indexOf('.'), fichierUpload.getName().length());
 		String nom = "EAE_" + premierEvaluateur.get(0).getAgent().getIdAgent() + "_" + eae.getIdEae() + "_" + numIncrement.toString() + extension;
 
@@ -4110,7 +4111,7 @@ public class OeAGENTEae extends BasicProcess {
 
 	private boolean uploadFichierPDF(File f, String nomFichier) throws Exception {
 		boolean resultat = false;
-		String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_SP");
+		String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_TEMP");
 
 		File newFile = new File(repPartage + "/" + nomFichier);
 
