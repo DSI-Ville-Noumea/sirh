@@ -14,6 +14,7 @@ import nc.mairie.gestionagent.eae.dto.EaeDocumentDto;
 import nc.mairie.gestionagent.eae.dto.EaeDto;
 import nc.mairie.gestionagent.eae.dto.EaeEvaluationDto;
 import nc.mairie.gestionagent.eae.dto.EaeEvolutionDto;
+import nc.mairie.gestionagent.eae.dto.EaeFinalizationDto;
 import nc.mairie.gestionagent.eae.dto.EaePlanActionDto;
 import nc.mairie.gestionagent.eae.dto.FormRehercheGestionEae;
 import nc.mairie.gestionagent.eae.dto.ListItemDto;
@@ -53,11 +54,6 @@ public class EaeService implements IEaeService {
 	@Override
 	public List<ListItemDto> getListeTypeDeveloppement() {
 		return eaeConsumer.getListeTypeDeveloppement();
-	}
-
-	@Override
-	public Integer chercherEaeNumIncrement(Integer idAgentSirh) {
-		return eaeConsumer.chercherEaeNumIncrement(idAgentSirh);
 	}
 
 	@Override
@@ -148,6 +144,11 @@ public class EaeService implements IEaeService {
 	@Override
 	public ReturnMessageDto saveDateEvalueFromSirh(Integer idAgentSirh, Integer idEae, BirtDto evalue) {
 		return eaeConsumer.saveDateEvalueFromSirh(idAgentSirh, idEae, evalue);
+	}
+
+	@Override
+	public ReturnMessageDto finalizeEae(Integer idEae, Integer idAgent, EaeFinalizationDto eaeFinalisationDto) {
+		return eaeConsumer.finalizeEae(idEae, idAgent, eaeFinalisationDto);
 	}
 
 }

@@ -11,6 +11,7 @@ import nc.mairie.gestionagent.eae.dto.EaeDocumentDto;
 import nc.mairie.gestionagent.eae.dto.EaeDto;
 import nc.mairie.gestionagent.eae.dto.EaeEvaluationDto;
 import nc.mairie.gestionagent.eae.dto.EaeEvolutionDto;
+import nc.mairie.gestionagent.eae.dto.EaeFinalizationDto;
 import nc.mairie.gestionagent.eae.dto.EaePlanActionDto;
 import nc.mairie.gestionagent.eae.dto.FormRehercheGestionEae;
 import nc.mairie.gestionagent.eae.dto.ListItemDto;
@@ -24,8 +25,6 @@ public interface ISirhEaeWSConsumer {
 	ReturnMessageDto savePlanAction(Integer idAgentSirh, Integer idEae, EaePlanActionDto eaePlanActionDto);
 
 	ReturnMessageDto saveEvolution(Integer idAgentSirh, Integer idEae, EaeEvolutionDto eaeEvolutionDto);
-
-	Integer chercherEaeNumIncrement(Integer idAgentSirh);
 
 	List<ListItemDto> getListeTypeDeveloppement();
 
@@ -60,5 +59,7 @@ public interface ISirhEaeWSConsumer {
 	ReturnMessageDto saveDateEvaluateurFromSirh(Integer idAgentSirh, Integer idEae, BirtDto evaluateur);
 
 	ReturnMessageDto saveDateEvalueFromSirh(Integer idAgentSirh, Integer idEae, BirtDto evalue);
+
+	ReturnMessageDto finalizeEae(Integer idEae, Integer idAgent, EaeFinalizationDto eaeFinalisationDto);
 
 }

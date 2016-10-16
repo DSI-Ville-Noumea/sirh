@@ -817,10 +817,6 @@
 										<% }%>
 										<br />
 									</div>
-									<div style="text-align: left">
-										<BR/><BR/>
-										<span class="sigp2Mandatory" >Une fois la validation terminée, il faut attendre environ 3min que le document soit bien téléchargé. Si passez ce délai, et après rafraichissement de la page, le document n'apparait pas, merci de contacter le chef de projet.</span>
-									</div>
 									<div style="text-align: center">
 										<BR/><BR/>
 										<INPUT type="submit" class="sigp2-Bouton-100" value="Valider" name="<%=process.getNOM_PB_VALIDER_DOCUMENT_CREATION()%>">

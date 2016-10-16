@@ -20,6 +20,7 @@ import nc.mairie.gestionagent.eae.dto.EaeDocumentDto;
 import nc.mairie.gestionagent.eae.dto.EaeDto;
 import nc.mairie.gestionagent.eae.dto.EaeEvaluationDto;
 import nc.mairie.gestionagent.eae.dto.EaeEvolutionDto;
+import nc.mairie.gestionagent.eae.dto.EaeFinalizationDto;
 import nc.mairie.gestionagent.eae.dto.EaePlanActionDto;
 import nc.mairie.gestionagent.eae.dto.FormRehercheGestionEae;
 import nc.mairie.gestionagent.eae.dto.ListItemDto;
@@ -35,7 +36,6 @@ public class SirhEaeWSConsumer extends BaseWsConsumer implements ISirhEaeWSConsu
 	private static final String	sirhSaveEvaluationUrl			= "sirhEaes/eaeEvaluation";
 	private static final String	sirhSavePlanActionUrl			= "sirhEaes/eaePlanAction";
 	private static final String	sirhSaveEvolutionUrl			= "sirhEaes/eaeEvolution";
-	private static final String	sirhEaeNumIncrementUrl			= "sirhEaes/eaeNumIncrement";
 	private static final String	sirhListeTypeDeveloppementUrl	= "sirhEaes/listeTypeDeveloppement";
 	private static final String	sirhDetailsEaeUrl				= "sirhEaes/detailsEae";
 
@@ -57,6 +57,7 @@ public class SirhEaeWSConsumer extends BaseWsConsumer implements ISirhEaeWSConsu
 	// sur l'EAE de l'agent
 	private static final String	saveDateEvaluateurFromSirhUrl	= "sirhEaes/saveDateEvaluateurFromSirh";
 	private static final String	saveDateEvalueFromSirhUrl		= "sirhEaes/saveDateEvalueFromSirh";
+	private static final String	eaeFinalizeEaeUrl				= "sirhEaes/finalizeEaeFromSIRH";
 
 	@Override
 	public List<EaeDto> getListEaesByidAgent(Integer idAgentSirh, Integer idAgent) {
@@ -124,18 +125,6 @@ public class SirhEaeWSConsumer extends BaseWsConsumer implements ISirhEaeWSConsu
 		ClientResponse res = createAndPostRequest(params, url,
 				new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class).deepSerialize(eaeEvolutionDto));
 		return readResponse(ReturnMessageDto.class, res, url);
-	}
-
-	@Override
-	public Integer chercherEaeNumIncrement(Integer idAgentSirh) {
-
-		String url = eaeWsBaseUrl + sirhEaeNumIncrementUrl;
-
-		HashMap<String, String> params = new HashMap<>();
-		params.put("idAgentSirh", idAgentSirh.toString());
-
-		ClientResponse res = createAndFireRequest(params, url);
-		return readResponseAsInteger(res, url);
 	}
 
 	@Override
@@ -341,6 +330,19 @@ public class SirhEaeWSConsumer extends BaseWsConsumer implements ISirhEaeWSConsu
 
 		ClientResponse res = createAndPostRequest(params, url,
 				new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class).deepSerialize(evalue));
+		return readResponse(ReturnMessageDto.class, res, url);
+	}
+
+	@Override
+	public ReturnMessageDto finalizeEae(Integer idEae, Integer idAgent, EaeFinalizationDto eaeFinalisationDto) {
+		String url = eaeWsBaseUrl + eaeFinalizeEaeUrl;
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idAgent", idAgent.toString());
+		params.put("idEae", idEae.toString());
+
+		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class).deepSerialize(eaeFinalisationDto);
+
+		ClientResponse res = createAndPostRequest(params, url, json);
 		return readResponse(ReturnMessageDto.class, res, url);
 	}
 }

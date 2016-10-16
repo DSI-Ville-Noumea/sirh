@@ -2,7 +2,6 @@ package nc.mairie.gestionagent.process.agent;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -3919,8 +3918,6 @@ public class OeAGENTEae extends BasicProcess {
 				addZone(getNOM_ST_URL_DOC_LISTE_DOC(indiceDocEae),
 						(null == idDocument || idDocument.equals(Const.CHAINE_VIDE)) ? "&nbsp;" : AlfrescoCMISService.getUrlOfDocument(idDocument));
 
-				
-
 				indiceDocEae++;
 			}
 		}
@@ -4080,26 +4077,28 @@ public class OeAGENTEae extends BasicProcess {
 			getTransaction().declarerErreur("Err : le nom de fichier est incorrect");
 			return false;
 		}
-		List<BirtDto> premierEvaluateur = eae.getEvaluateurs();
 
-		Integer numIncrement = eaeService.chercherEaeNumIncrement(getAgentConnecte(request).getIdAgent());
-
-		// TODO premierEvaluateur.get(0).getAgent().getIdAgent() =+> ID AGENT de l agent lui meme plutot
 		String extension = fichierUpload.getName().substring(fichierUpload.getName().indexOf('.'), fichierUpload.getName().length());
-		String nom = "EAE_" + premierEvaluateur.get(0).getAgent().getIdAgent() + "_" + eae.getIdEae() + "_" + numIncrement.toString() + extension;
+		CampagneEaeDto camp = eae.getCampagne();
 
-		// on upload le fichier
-		boolean upload = false;
-		if (extension.equals(".pdf")) {
-			upload = uploadFichierPDF(fichierUpload, nom);
-		}
-		if (!upload) {
-			// "ERR164",
-			// "Une erreur est survenue dans la sauvegarde de l'EAE. Merci de
-			// contacter le responsable du projet."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR164"));
+		if (!extension.toLowerCase().equals(".pdf")) {
+			// "ERR165", "Le fichier doit étre au format PDF."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR165"));
 			return false;
 		}
+
+		// on upload le document
+		EaeFinalizationDto eaeFinalisationDto = new EaeFinalizationDto();
+		eaeFinalisationDto.setAnnee(camp.getAnnee().toString());
+		eaeFinalisationDto.setCommentaire("Fichier importé depuis SIRH : Agent/EAE");
+		eaeFinalisationDto.setDateFinalisation(new Date());
+		eaeFinalisationDto.setTypeFile("application/pdf");
+		eaeFinalisationDto.setbFile(getByteOfFile(fichierUpload));
+
+		ReturnMessageDto result = eaeService.finalizeEae(eae.getIdEae(), getAgentConnecte(request).getIdAgent(), eaeFinalisationDto);
+
+		if (declarerErreurFromReturnMessageDto(result))
+			return false;
 
 		// on supprime le fichier temporaire
 		fichierUpload.delete();
@@ -4109,31 +4108,21 @@ public class OeAGENTEae extends BasicProcess {
 		return true;
 	}
 
-	private boolean uploadFichierPDF(File f, String nomFichier) throws Exception {
-		boolean resultat = false;
-		String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_TEMP");
+	private byte[] getByteOfFile(File fichier) {
+		FileInputStream fileInputStream = null;
 
-		File newFile = new File(repPartage + "/" + nomFichier);
-
-		FileInputStream in = new FileInputStream(f);
+		byte[] bFile = new byte[(int) fichier.length()];
 
 		try {
-			FileOutputStream out = new FileOutputStream(newFile);
-			try {
-				byte[] byteBuffer = new byte[in.available()];
-				@SuppressWarnings("unused")
-				int s = in.read(byteBuffer);
-				out.write(byteBuffer);
-				out.flush();
-				resultat = true;
-			} finally {
-				out.close();
-			}
-		} finally {
-			in.close();
-		}
+			// convert file into array of bytes
+			fileInputStream = new FileInputStream(fichier);
+			fileInputStream.read(bFile);
+			fileInputStream.close();
 
-		return resultat;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return bFile;
 	}
 
 	/**
