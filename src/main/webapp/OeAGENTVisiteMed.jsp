@@ -375,9 +375,9 @@
 					    	<INPUT type="submit" class="sigp2-Bouton-100" value="Valider" name="<%=process.getNOM_PB_VALIDER()%>">
 					    	</TD>
 						<TD height="18" width="15">
-						<% if (!process.getVAL_ST_ACTION().equals(process.ACTION_SUPPRESSION)){ %>
-							<INPUT type="submit" class="sigp2-Bouton-200" value="Générer certificat aptitude" name="<%=process.getNOM_PB_IMPRIMER_CERTIFICAT_APTITUDE()%>">
-							<%} %>
+						<% if (!process.getVAL_ST_ACTION().equals(process.ACTION_SUPPRESSION) && MairieUtils.estEdition(request, process.getNomDroitGenererCertificat())){ %>
+							<INPUT <%= MairieUtils.getDisabled(request, process.getNomDroitGenererCertificat()) %> type="submit" class="sigp2-Bouton-200" value="Générer certificat aptitude" name="<%=process.getNOM_PB_IMPRIMER_CERTIFICAT_APTITUDE()%>">
+						<%} %>
 					    </TD>
 					<%} %>
 					<TD class="sigp2" style="text-align : center;"

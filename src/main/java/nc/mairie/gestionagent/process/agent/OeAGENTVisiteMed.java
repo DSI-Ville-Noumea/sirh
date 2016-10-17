@@ -1221,6 +1221,10 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		return "ECR-AG-HSCT-VISITESMED";
 	}
 
+	public String getNomDroitGenererCertificat() {
+		return "ECR-AG-HSCT-VISITESMED-CERTIFICAT";
+	}
+
 	/**
 	 * méthode appelee par la servlet qui aiguille le traitement : en fonction
 	 * du bouton de la JSP Date de création : (20/06/11 15:25:51)
@@ -2304,6 +2308,16 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	public boolean performPB_IMPRIMER_CERTIFICAT_APTITUDE(HttpServletRequest request) throws Exception {
+
+		// Vérification des droits d'acces.
+		if (!MairieUtils.estEdition(request, getNomDroitGenererCertificat())) {
+			// "ERR190",
+			// "Operation impossible. Vous ne disposez pas des droits d'acces a
+			// cette option."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
+			throw new Exception();
+		}
+
 		// on fait appel à SIRH-WS pour avoir le document
 		byte[] doc = sirhService.downloadCertificatAptitude(getVisiteCourante().getIdVisite());
 		String nomFichier = "certificat_aptitude.pdf";
@@ -2376,6 +2390,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 		// on supprime le fichier temporaire
 		isImporting = false;
+		// on re-affiche le tableau pour le rafraichir le nombre de documents
+		initialiseListeVisiteMed(request);
 
 		return true;
 	}
