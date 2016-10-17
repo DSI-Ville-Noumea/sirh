@@ -19,6 +19,7 @@ import com.oreilly.servlet.MultipartRequest;
 
 import nc.mairie.enums.EnumEtatSuiviMed;
 import nc.mairie.enums.EnumMotifVisiteMed;
+import nc.mairie.enums.EnumTypeHisto;
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
 import nc.mairie.gestionagent.radi.dto.LightUserDto;
 import nc.mairie.gestionagent.robot.MaClasse;
@@ -32,6 +33,7 @@ import nc.mairie.metier.hsct.Medecin;
 import nc.mairie.metier.hsct.Recommandation;
 import nc.mairie.metier.hsct.VisiteMedicale;
 import nc.mairie.metier.parametrage.TypeDocument;
+import nc.mairie.metier.poste.HistoVisiteMedicale;
 import nc.mairie.metier.suiviMedical.MotifVisiteMed;
 import nc.mairie.metier.suiviMedical.SuiviMedical;
 import nc.mairie.spring.dao.metier.agent.AgentDao;
@@ -41,6 +43,7 @@ import nc.mairie.spring.dao.metier.hsct.MedecinDao;
 import nc.mairie.spring.dao.metier.hsct.RecommandationDao;
 import nc.mairie.spring.dao.metier.hsct.VisiteMedicaleDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeDocumentDao;
+import nc.mairie.spring.dao.metier.poste.HistoVisiteMedicaleDao;
 import nc.mairie.spring.dao.metier.suiviMedical.MotifVisiteMedDao;
 import nc.mairie.spring.dao.metier.suiviMedical.SuiviMedicalDao;
 import nc.mairie.spring.dao.utils.SirhDao;
@@ -113,6 +116,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	private MedecinDao							medecinDao;
 	private RecommandationDao					recommandationDao;
 	private VisiteMedicaleDao					visiteMedicaleDao;
+	private HistoVisiteMedicaleDao				histoVisiteMedicaleDao;
 	private DocumentAgentDao					lienDocumentAgentDao;
 	private DocumentDao							documentDao;
 	private AgentDao							agentDao;
@@ -187,6 +191,9 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		}
 		if (getVisiteMedicaleDao() == null) {
 			setVisiteMedicaleDao(new VisiteMedicaleDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getHistoVisiteMedicaleDao() == null) {
+			setHistoVisiteMedicaleDao(new HistoVisiteMedicaleDao((SirhDao) context.getBean("sirhDao")));
 		}
 		if (getLienDocumentAgentDao() == null) {
 			setLienDocumentAgentDao(new DocumentAgentDao((SirhDao) context.getBean("sirhDao")));
@@ -790,6 +797,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	 * RG_AG_VM_C01 RG_AG_VM_A01 RG-SVM-20 RG-SVM-19
 	 */
 	public boolean performPB_VALIDER(HttpServletRequest request) throws Exception {
+		UserAppli user = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
 		messageInf = Const.CHAINE_VIDE;
 
 		// Si aucune action en cours
@@ -813,6 +821,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 					return false;
 				}
 				// Suppression
+				HistoVisiteMedicale histo = new HistoVisiteMedicale(getVisiteCourante());
+				getHistoVisiteMedicaleDao().creerHistoVisiteMedicale(histo, user, EnumTypeHisto.SUPPRESSION);
 				getVisiteMedicaleDao().supprimerVisiteMedicale(getVisiteCourante().getIdVisite());
 				if (getTransaction().isErreur())
 					return false;
@@ -936,6 +946,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 							getVisiteMedicaleDao().supprimerVisiteMedicale(vmASupp.getIdVisite());
 						}
 						// si tout s'est bien passé
+						HistoVisiteMedicale histo = new HistoVisiteMedicale(getVisiteCourante());
+						getHistoVisiteMedicaleDao().creerHistoVisiteMedicale(histo, user, EnumTypeHisto.CREATION);
 						// Création de la visite medicale
 						getVisiteMedicaleDao().creerVisiteMedicale(getVisiteCourante().getIdAgent(), getVisiteCourante().getIdMedecin(),
 								getVisiteCourante().getIdRecommandation(), getVisiteCourante().getDateDerniereVisite(),
@@ -943,6 +955,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 								getVisiteCourante().getCommentaire());
 					} else {
 						// Modification
+						HistoVisiteMedicale histo = new HistoVisiteMedicale(getVisiteCourante());
+						getHistoVisiteMedicaleDao().creerHistoVisiteMedicale(histo, user, EnumTypeHisto.MODIFICATION);
 						getVisiteMedicaleDao().modifierVisiteMedicale(getVisiteCourante().getIdVisite(), getVisiteCourante().getIdAgent(),
 								getVisiteCourante().getIdMedecin(), getVisiteCourante().getIdRecommandation(),
 								getVisiteCourante().getDateDerniereVisite(), getVisiteCourante().getDureeValidite(), null,
@@ -950,6 +964,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 					}
 				} else if (getZone(getNOM_ST_ACTION()).equals(ACTION_CREATION)) {
 					// Création
+					HistoVisiteMedicale histo = new HistoVisiteMedicale(getVisiteCourante());
+					getHistoVisiteMedicaleDao().creerHistoVisiteMedicale(histo, user, EnumTypeHisto.CREATION);
 					getVisiteMedicaleDao().creerVisiteMedicale(getVisiteCourante().getIdAgent(), getVisiteCourante().getIdMedecin(),
 							getVisiteCourante().getIdRecommandation(), getVisiteCourante().getDateDerniereVisite(),
 							getVisiteCourante().getDureeValidite(), null, getVisiteCourante().getIdMotifVm(), getVisiteCourante().getIdSuiviMed(),
@@ -2327,6 +2343,11 @@ public class OeAGENTVisiteMed extends BasicProcess {
 			return false;
 		}
 
+		// on historise la genaration
+		UserAppli user = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
+		HistoVisiteMedicale histo = new HistoVisiteMedicale(getVisiteCourante());
+		getHistoVisiteMedicaleDao().creerHistoVisiteMedicale(histo, user, EnumTypeHisto.GENERATION_APTITUDE_VM);
+
 		// on ouvre le fichier à l'ecran
 		if (null != getDocumentCourant().getNodeRefAlfresco() && !getDocumentCourant().getNodeRefAlfresco().equals(Const.CHAINE_VIDE)) {
 			setURLFichier(getScriptOuverture(AlfrescoCMISService.getUrlOfDocument(getDocumentCourant().getNodeRefAlfresco())));
@@ -2415,5 +2436,13 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		scriptOuvPDF.append("window.open('" + cheminFichier + "');");
 		scriptOuvPDF.append("</script>");
 		return scriptOuvPDF.toString();
+	}
+
+	public HistoVisiteMedicaleDao getHistoVisiteMedicaleDao() {
+		return histoVisiteMedicaleDao;
+	}
+
+	public void setHistoVisiteMedicaleDao(HistoVisiteMedicaleDao histoVisiteMedicaleDao) {
+		this.histoVisiteMedicaleDao = histoVisiteMedicaleDao;
 	}
 }
