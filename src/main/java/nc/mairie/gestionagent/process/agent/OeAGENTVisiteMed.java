@@ -54,7 +54,7 @@ import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
 import nc.noumea.mairie.alfresco.cmis.CmisUtils;
 import nc.noumea.spring.service.IRadiService;
-import nc.noumea.spring.service.IReportingService;
+import nc.noumea.spring.service.ISirhService;
 import nc.noumea.spring.service.cmis.AlfrescoCMISService;
 import nc.noumea.spring.service.cmis.IAlfrescoCMISService;
 
@@ -117,9 +117,10 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	private DocumentDao							documentDao;
 	private AgentDao							agentDao;
 
+	private ISirhService						sirhService;
+
 	private IAlfrescoCMISService				alfrescoCMISService;
 	private IRadiService						radiService;
-	private IReportingService					reportingService;
 	private String								urlFichier;
 
 	/**
@@ -202,8 +203,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		if (radiService == null) {
 			radiService = (IRadiService) context.getBean("radiService");
 		}
-		if (reportingService == null) {
-			reportingService = (IReportingService) context.getBean("reportingService");
+		if (null == sirhService) {
+			sirhService = (ISirhService) context.getBean("sirhService");
 		}
 	}
 
@@ -2303,12 +2304,21 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	}
 
 	public boolean performPB_IMPRIMER_CERTIFICAT_APTITUDE(HttpServletRequest request) throws Exception {
-
+		// on fait appel à SIRH-WS pour avoir le document
+		byte[] doc = sirhService.downloadCertificatAptitude(getVisiteCourante().getIdVisite());
 		String nomFichier = "certificat_aptitude.pdf";
 
-		String url = "PrintDocument?fromPage=" + this.getClass().getName() + "&nomFichier=" + nomFichier + "&idVm="
-				+ getVisiteCourante().getIdVisite();
-		setURLFichier(getScriptOuverture(url));
+		// on sauvegarde le document dans Alfresco
+		if (!creeDocumentFromAlfresco(request, getVisiteCourante(), doc, nomFichier)) {
+			return false;
+		}
+
+		// on ouvre le fichier à l'ecran
+		if (null != getDocumentCourant().getNodeRefAlfresco() && !getDocumentCourant().getNodeRefAlfresco().equals(Const.CHAINE_VIDE)) {
+			setURLFichier(getScriptOuverture(AlfrescoCMISService.getUrlOfDocument(getDocumentCourant().getNodeRefAlfresco())));
+		} else {
+			return false;
+		}
 
 		// on re-initialise l'affichage
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
@@ -2317,6 +2327,57 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 
+	}
+
+	private boolean creeDocumentFromAlfresco(HttpServletRequest request, VisiteMedicale vm, byte[] doc, String fileName) throws Exception {
+		// on crée l'entrée dans la table
+		setDocumentCourant(new Document());
+
+		// on recupere le fichier mis dans le repertoire temporaire
+		if (doc == null) {
+			getTransaction().declarerErreur("Err : le fichier est incorrect");
+			return false;
+		}
+
+		// on recupere le type de document
+		String codTypeDoc = CmisUtils.CODE_TYPE_VM;
+		TypeDocument td = getTypeDocumentDao().chercherTypeDocumentByCod(codTypeDoc);
+
+		// on crée le document en base de données
+		getDocumentCourant().setIdTypeDocument(td.getIdTypeDocument());
+		getDocumentCourant().setNomOriginal(fileName);
+		getDocumentCourant().setDateDocument(new Date());
+		getDocumentCourant().setCommentaire("Document issu de SIRH lors de la génération du certificat d'aptitude.");
+		getDocumentCourant().setReference(vm.getIdVisite());
+
+		// on upload le fichier
+		ReturnMessageDto rmd = alfrescoCMISService.uploadDocumentWithByte(getAgentConnecte(request).getIdAgent(), getAgentCourant(),
+				getDocumentCourant(), doc, codTypeDoc);
+
+		if (declarerErreurFromReturnMessageDto(rmd))
+			return false;
+
+		Integer id = getDocumentDao().creerDocument(getDocumentCourant().getClasseDocument(), getDocumentCourant().getNomDocument(),
+				getDocumentCourant().getLienDocument(), getDocumentCourant().getDateDocument(), getDocumentCourant().getCommentaire(),
+				getDocumentCourant().getIdTypeDocument(), getDocumentCourant().getNomOriginal(), getDocumentCourant().getNodeRefAlfresco(),
+				getDocumentCourant().getCommentaireAlfresco(), getDocumentCourant().getReference());
+
+		setLienDocumentAgentCourant(new DocumentAgent());
+		getLienDocumentAgentCourant().setIdAgent(getAgentCourant().getIdAgent());
+		getLienDocumentAgentCourant().setIdDocument(id);
+		getLienDocumentAgentDao().creerDocumentAgent(getLienDocumentAgentCourant().getIdAgent(), getLienDocumentAgentCourant().getIdDocument());
+
+		if (getTransaction().isErreur())
+			return false;
+
+		// Tout s'est bien passé
+		commitTransaction();
+		addZone(getNOM_EF_COMMENTAIRE(), Const.CHAINE_VIDE);
+
+		// on supprime le fichier temporaire
+		isImporting = false;
+
+		return true;
 	}
 
 	public String getUrlFichier() {

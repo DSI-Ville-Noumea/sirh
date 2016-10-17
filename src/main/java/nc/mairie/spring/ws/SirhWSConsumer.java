@@ -10,16 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import nc.mairie.gestionagent.dto.AgentDto;
-import nc.mairie.gestionagent.dto.AgentWithServiceDto;
-import nc.mairie.gestionagent.dto.BaseHorairePointageDto;
-import nc.mairie.gestionagent.dto.DateAvctDto;
-import nc.mairie.gestionagent.dto.EntiteWithAgentWithServiceDto;
-import nc.mairie.gestionagent.dto.FichePosteTreeNodeDto;
-import nc.mairie.gestionagent.dto.ReturnMessageDto;
-import nc.mairie.gestionagent.eae.dto.AutreAdministrationAgentDto;
-import nc.mairie.gestionagent.eae.dto.CalculEaeInfosDto;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,40 +21,50 @@ import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 
 import flexjson.JSONSerializer;
+import nc.mairie.gestionagent.dto.AgentDto;
+import nc.mairie.gestionagent.dto.AgentWithServiceDto;
+import nc.mairie.gestionagent.dto.BaseHorairePointageDto;
+import nc.mairie.gestionagent.dto.DateAvctDto;
+import nc.mairie.gestionagent.dto.EntiteWithAgentWithServiceDto;
+import nc.mairie.gestionagent.dto.FichePosteTreeNodeDto;
+import nc.mairie.gestionagent.dto.ReturnMessageDto;
+import nc.mairie.gestionagent.eae.dto.AutreAdministrationAgentDto;
+import nc.mairie.gestionagent.eae.dto.CalculEaeInfosDto;
 
 @Service
 public class SirhWSConsumer extends BaseWsConsumer implements ISirhWSConsumer {
 
 	@Autowired
 	@Qualifier("sirhWsBaseUrl")
-	private String sirhWsBaseUrl;
+	private String				sirhWsBaseUrl;
 
-	private static final String sirhDateAvancementUrl = "calculEae/calculDateAvancement";
-	private static final String sirhConstruitArbreFDPUrl = "fichePostes/rebuildFichePosteTree";
-	private static final String sirhAffectationActiveByAgentUrl = "calculEae/affectationActiveByAgent";
-	private static final String sirhListeAutreAdministrationAgentUrl = "calculEae/listeAutreAdministrationAgent";
-	private static final String sirhDeleteFDPUrl = "fichePostes/deleteFichePosteByIdFichePoste";
+	private static final String	sirhDateAvancementUrl							= "calculEae/calculDateAvancement";
+	private static final String	sirhConstruitArbreFDPUrl						= "fichePostes/rebuildFichePosteTree";
+	private static final String	sirhAffectationActiveByAgentUrl					= "calculEae/affectationActiveByAgent";
+	private static final String	sirhListeAutreAdministrationAgentUrl			= "calculEae/listeAutreAdministrationAgent";
+	private static final String	sirhDeleteFDPUrl								= "fichePostes/deleteFichePosteByIdFichePoste";
 
 	// Pour les editions BIRT
-	private static final String sirhDownloadTabAvctPDFUrl = "avancements/downloadTableauAvancementsPDF"; // edition PDF
-	private static final String sirhDownloadArretesPUrl = "avancements/downloadArretes";
-	private static final String sirhDownloadFichePosteSIRHPUrl = "fichePostes/downloadFichePosteSIRH";
-	private static final String sirhDownloadNoteServiceSIRHPUrl = "noteService/downloadNoteServiceSIRH";
-	private static final String sirhDownloadNoteServiceInterneSIRHPUrl = "noteService/downloadNoteServiceInterneSIRH";
-	private static final String sirhDownloadContratUrl = "contrat/downloadContratSIRH";
-	private static final String sirhBaseHorairePointageUrl = "pointages/baseHoraire";
+	private static final String	sirhDownloadTabAvctPDFUrl						= "avancements/downloadTableauAvancementsPDF";
+	private static final String	sirhdownloadCertificatAptitudePDFUrl			= "suiviMedical/downloadCertificatAptitudePDF";
+
+	private static final String	sirhDownloadArretesPUrl							= "avancements/downloadArretes";
+	private static final String	sirhDownloadFichePosteSIRHPUrl					= "fichePostes/downloadFichePosteSIRH";
+	private static final String	sirhDownloadNoteServiceSIRHPUrl					= "noteService/downloadNoteServiceSIRH";
+	private static final String	sirhDownloadNoteServiceInterneSIRHPUrl			= "noteService/downloadNoteServiceInterneSIRH";
+	private static final String	sirhDownloadContratUrl							= "contrat/downloadContratSIRH";
+	private static final String	sirhBaseHorairePointageUrl						= "pointages/baseHoraire";
 
 	// pour la gestion des droits
-	private static final String sirhAgentSubordonnesUrl = "agents/agentsSubordonnes";
-	private static final String sirhArbreServicesWithListAgentsByServiceUrl = "agents/arbreServicesWithListAgentsByServiceWithoutAgentConnecte";
-	private static final String sirhListAgentsWithServiceUrl = "services/listAgentsWithService";
-	
+	private static final String	sirhAgentSubordonnesUrl							= "agents/agentsSubordonnes";
+	private static final String	sirhArbreServicesWithListAgentsByServiceUrl		= "agents/arbreServicesWithListAgentsByServiceWithoutAgentConnecte";
+	private static final String	sirhListAgentsWithServiceUrl					= "services/listAgentsWithService";
 
-	private static final String sirhListeAgentWithIndemniteForfaitTravailDPMUrl = "agents/listeAgentWithIndemniteForfaitTravailDPM";
+	private static final String	sirhListeAgentWithIndemniteForfaitTravailDPMUrl	= "agents/listeAgentWithIndemniteForfaitTravailDPM";
 
-	private static final String sirhTreeFichesPosteByIdEntiteUrl = "fichePostes/treeFichesPosteByIdEntite";
+	private static final String	sirhTreeFichesPosteByIdEntiteUrl				= "fichePostes/treeFichesPosteByIdEntite";
 
-	private Logger logger = LoggerFactory.getLogger(SirhWSConsumer.class);
+	private Logger				logger											= LoggerFactory.getLogger(SirhWSConsumer.class);
 
 	@Override
 	public DateAvctDto getCalculDateAvct(Integer idAgent) throws Exception {
@@ -109,7 +109,7 @@ public class SirhWSConsumer extends BaseWsConsumer implements ISirhWSConsumer {
 		String url = String.format(sirhWsBaseUrl + sirhDownloadTabAvctPDFUrl);
 
 		String urlWSTableauAvctCAP = url + "?idCap=" + idCap + "&idCadreEmploi=" + idCadreEmploi + "&avisEAE=" + avisEAE;
-		
+
 		logger.debug("downloadTableauAvancement : URL génération tableau AVCT : " + urlWSTableauAvctCAP);
 
 		Client client = Client.create();
@@ -117,7 +117,7 @@ public class SirhWSConsumer extends BaseWsConsumer implements ISirhWSConsumer {
 		WebResource webResource = client.resource(urlWSTableauAvctCAP);
 
 		ClientResponse response = webResource.get(ClientResponse.class);
-		
+
 		logger.debug("downloadTableauAvancement : ClientResponse : " + response);
 
 		return readResponseAsByteArray(response, urlWSTableauAvctCAP);
@@ -126,7 +126,8 @@ public class SirhWSConsumer extends BaseWsConsumer implements ISirhWSConsumer {
 	@Override
 	public byte[] downloadArrete(String csvAgents, boolean isChangementClasse, int anneeAvct, boolean isAffecte) throws Exception {
 		String url = String.format(sirhWsBaseUrl + sirhDownloadArretesPUrl);
-		String urlWSArretes = url + "?isChangementClasse=" + isChangementClasse + "&csvIdAgents=" + csvAgents + "&annee=" + anneeAvct + "&isDetache=" + isAffecte;
+		String urlWSArretes = url + "?isChangementClasse=" + isChangementClasse + "&csvIdAgents=" + csvAgents + "&annee=" + anneeAvct + "&isDetache="
+				+ isAffecte;
 
 		Client client = Client.create();
 
@@ -160,7 +161,8 @@ public class SirhWSConsumer extends BaseWsConsumer implements ISirhWSConsumer {
 		if (typeDocument == null) {
 			url = String.format(sirhWsBaseUrl + sirhDownloadNoteServiceInterneSIRHPUrl + "?idAffectation=" + idAffectation);
 		} else {
-			url = String.format(sirhWsBaseUrl + sirhDownloadNoteServiceSIRHPUrl + "?idAffectation=" + idAffectation + "&typeNoteService=" + typeDocument);
+			url = String
+					.format(sirhWsBaseUrl + sirhDownloadNoteServiceSIRHPUrl + "?idAffectation=" + idAffectation + "&typeNoteService=" + typeDocument);
 		}
 
 		Client client = Client.create();
@@ -252,26 +254,25 @@ public class SirhWSConsumer extends BaseWsConsumer implements ISirhWSConsumer {
 	}
 
 	@Override
-	public EntiteWithAgentWithServiceDto getListeEntiteWithAgentWithServiceDtoByIdServiceAds(
-			Integer idServiceAds, Integer idAgent, List<AgentDto> listAgentsAInclureDansArbre) {
-		
+	public EntiteWithAgentWithServiceDto getListeEntiteWithAgentWithServiceDtoByIdServiceAds(Integer idServiceAds, Integer idAgent,
+			List<AgentDto> listAgentsAInclureDansArbre) {
+
 		String url = String.format(sirhWsBaseUrl + sirhArbreServicesWithListAgentsByServiceUrl);
-		
+
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idServiceADS", idServiceAds.toString());
-		
+
 		if (idAgent != null)
 			params.put("idAgent", String.valueOf(idAgent));
-		
+
 		String json = null;
-		if(null != listAgentsAInclureDansArbre
-				&& !listAgentsAInclureDansArbre.isEmpty()) {
-			
+		if (null != listAgentsAInclureDansArbre && !listAgentsAInclureDansArbre.isEmpty()) {
+
 			List<Integer> listIdsAgent = new ArrayList<Integer>();
-			for(AgentDto agent : listAgentsAInclureDansArbre) {
+			for (AgentDto agent : listAgentsAInclureDansArbre) {
 				listIdsAgent.add(agent.getIdAgent());
 			}
-			
+
 			json = new JSONSerializer().exclude("*.class").deepSerialize(listIdsAgent);
 		}
 
@@ -300,9 +301,9 @@ public class SirhWSConsumer extends BaseWsConsumer implements ISirhWSConsumer {
 
 	@Override
 	public List<AgentWithServiceDto> getListeAgentWithIndemniteForfaitTravailDPM(Set<Integer> listIdsAgent) {
-		
+
 		String url = String.format(sirhWsBaseUrl + sirhListeAgentWithIndemniteForfaitTravailDPMUrl);
-		
+
 		Map<String, String> parameters = new HashMap<String, String>();
 
 		String json = new JSONSerializer().exclude("*.class").deepSerialize(listIdsAgent);
@@ -320,10 +321,24 @@ public class SirhWSConsumer extends BaseWsConsumer implements ISirhWSConsumer {
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put("idEntite", idEntite.toString());
 		parameters.put("withFichesPosteNonReglemente", new Boolean(withFichesPosteNonReglemente).toString());
-		
+
 		ClientResponse res = createAndFireRequest(parameters, url);
 
 		return readResponseAsList(FichePosteTreeNodeDto.class, res, url);
+	}
+
+	@Override
+	public byte[] downloadCertificatAptitude(Integer idVisite) throws Exception {
+		String url = String.format(sirhWsBaseUrl + sirhdownloadCertificatAptitudePDFUrl);
+		String urlWSCertificat = url + "?idVM=" + idVisite;
+
+		Client client = Client.create();
+
+		WebResource webResource = client.resource(urlWSCertificat);
+
+		ClientResponse response = webResource.get(ClientResponse.class);
+
+		return readResponseAsByteArray(response, urlWSCertificat);
 	}
 
 }

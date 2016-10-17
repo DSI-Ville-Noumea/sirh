@@ -16,7 +16,6 @@ import nc.mairie.gestionagent.eae.dto.CalculEaeInfosDto;
 
 public interface ISirhService {
 
-
 	byte[] downloadContrat(Integer idAgent, Integer idContrat) throws Exception;
 
 	byte[] downloadNoteService(Integer idAffectation, String typeDocument) throws Exception;
@@ -41,32 +40,38 @@ public interface ISirhService {
 
 	List<AutreAdministrationAgentDto> getListeAutreAdministrationAgent(Integer idAgent);
 
-	EntiteWithAgentWithServiceDto getListeEntiteWithAgentWithServiceDtoByIdServiceAdsWithoutAgentConnecte(
-			Integer idServiceAds, Integer idAgent, List<AgentDto> listAgentsAInclureDansArbre);
+	EntiteWithAgentWithServiceDto getListeEntiteWithAgentWithServiceDtoByIdServiceAdsWithoutAgentConnecte(Integer idServiceAds, Integer idAgent,
+			List<AgentDto> listAgentsAInclureDansArbre);
 
-	List<AgentWithServiceDto> getListAgentsWithService(
-			List<Integer> listAgentDto, Date date);
+	List<AgentWithServiceDto> getListAgentsWithService(List<Integer> listAgentDto, Date date);
 
 	List<AgentWithServiceDto> getListeAgentWithIndemniteForfaitTravailDPM(Set<Integer> listIdsAgent);
 
 	/**
 	 * Retourne l arbre des fiches de poste par rapport a l entite
 	 * 
-	 * @param idEntite Integer ID entite
-	 * @param withFichesPosteNonReglemente boolean Avec FP non reglementaire ou non
+	 * @param idEntite
+	 *            Integer ID entite
+	 * @param withFichesPosteNonReglemente
+	 *            boolean Avec FP non reglementaire ou non
 	 * @return Arbre fiches de poste
 	 */
 	List<FichePosteTreeNodeDto> getFichePosteTreeNodeDto(Integer idEntite, boolean withFichesPosteNonReglemente);
 
 	/**
-	 * Retourne vrai si une FP est Valide Gelee ou Transitoire :
-	 * parcours tout l'arbre
+	 * Retourne vrai si une FP est Valide Gelee ou Transitoire : parcours tout
+	 * l'arbre
 	 * 
-	 * @param listFP List<FichePosteTreeNodeDto
-	 * @param idFichePosteConcerne Integer FP que l on va passer a inactif
+	 * @param listFP
+	 *            List<FichePosteTreeNodeDto
+	 * @param idFichePosteConcerne
+	 *            Integer FP que l on va passer a inactif
 	 * @return boolean
 	 */
 	boolean isFPEnfantValideGeleeTransitoire(List<FichePosteTreeNodeDto> listFP, Integer idFichePosteConcerne);
 
 	FichePosteTreeNodeDto getFichePosteTreeNodeDtoByIdFichePoste(List<FichePosteTreeNodeDto> listFP, Integer idFichePosteConcerne);
+
+	byte[] downloadCertificatAptitude(Integer idVisite) throws Exception;
+
 }

@@ -43,14 +43,14 @@ public interface ISirhWSConsumer {
 
 	List<AutreAdministrationAgentDto> getListeAutreAdministrationAgent(Integer idAgent);
 
-	List<AgentWithServiceDto> getListAgentsWithService(
-			List<Integer> listAgentDto, Date date);
+	List<AgentWithServiceDto> getListAgentsWithService(List<Integer> listAgentDto, Date date);
 
-	EntiteWithAgentWithServiceDto getListeEntiteWithAgentWithServiceDtoByIdServiceAds(
-			Integer idServiceAds, Integer idAgent,
+	EntiteWithAgentWithServiceDto getListeEntiteWithAgentWithServiceDtoByIdServiceAds(Integer idServiceAds, Integer idAgent,
 			List<AgentDto> listAgentsAInclure);
 
 	List<AgentWithServiceDto> getListeAgentWithIndemniteForfaitTravailDPM(Set<Integer> listIdsAgent);
 
 	List<FichePosteTreeNodeDto> getFichePosteTreeNodeDto(Integer idEntite, boolean withFichesPosteNonReglemente);
+
+	byte[] downloadCertificatAptitude(Integer idVisite) throws Exception;
 }

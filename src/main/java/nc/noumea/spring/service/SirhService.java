@@ -154,4 +154,9 @@ public class SirhService implements ISirhService {
 		return result;
 	}
 
+	@Override
+	public byte[] downloadCertificatAptitude(Integer idVisite) throws Exception {
+		return sirhConsumer.downloadCertificatAptitude(idVisite);
+	}
+
 }
