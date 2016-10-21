@@ -85,7 +85,7 @@
 							<span class="sigp2">Numero :</span>
 						</td>
 						<td width="200px">
-							<INPUT class="sigp2-saisie" maxlength="8" name="<%= process.getNOM_EF_NUM_FICHE_POSTE() %>" size="10" type="text" value="<%= process.getVAL_EF_NUM_FICHE_POSTE() %>" style="margin-right:10px;">
+							<INPUT class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_NUM_FICHE_POSTE() %>" size="10" type="text" value="<%= process.getVAL_EF_NUM_FICHE_POSTE() %>" style="margin-right:10px;">
 						</td>
 						<td width="100px">
 							<span class="sigp2">Recherche agent :</span>
@@ -221,7 +221,7 @@
 			<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;" >
 				<LEGEND class="sigp2Legend">Voir toutes les affectations d'une fiche de poste</LEGEND>
 				<span class="sigp2" style="width:60px;">Numero :</span>
-				<INPUT class="sigp2-saisie" maxlength="8" name="<%= process.getNOM_EF_NUM_FICHE_POSTE_AFF() %>" size="10" type="text" value="<%= process.getVAL_EF_NUM_FICHE_POSTE_AFF() %>" style="margin-right:10px;">
+				<INPUT class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_NUM_FICHE_POSTE_AFF() %>" size="10" type="text" value="<%= process.getVAL_EF_NUM_FICHE_POSTE_AFF() %>" style="margin-right:10px;">
 				<BR/>
 				<BR/>
 				<INPUT type="submit" value="Rechercher" class="sigp2-Bouton-100" name="<%=process.getNOM_PB_RECHERCHER_AFF()%>" accesskey="R">

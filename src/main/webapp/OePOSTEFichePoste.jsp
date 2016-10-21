@@ -74,7 +74,7 @@
 			<fieldset class="sigp2Fieldset" style="width:1020px">
 				<legend class="sigp2Legend">Actions</legend>
 				<span class="sigp2Mandatory"> Recherche : </span> 
-				<INPUT class="sigp2-saisie" maxlength="8" name="<%= process.getNOM_EF_RECHERCHE() %>" size="10"	type="text" value="<%= process.getVAL_EF_RECHERCHE() %>" style="margin-right:10px;">
+				<INPUT class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_RECHERCHE() %>" size="10"	type="text" value="<%= process.getVAL_EF_RECHERCHE() %>" style="margin-right:10px;">
 				<span class="sigp2Mandatory"> Par matricule agent : </span>
 				<INPUT class="sigp2-saisie" maxlength="8" name="<%= process.getNOM_EF_RECHERCHE_BY_AGENT() %>" size="10"	type="text" value="<%= process.getVAL_EF_RECHERCHE_BY_AGENT() %>" style="margin-right:10px;">
 				
