@@ -12,7 +12,7 @@ public interface FichePosteDaoInterface {
 
 	public boolean estAffectee(Integer idFichePoste, ArrayList<Affectation> listeAff) throws Exception;
 
-	public FichePoste chercherDerniereFichePoste(Integer annee) throws Exception;
+	public FichePoste chercherDernierNumFichePoste(Integer annee) throws Exception;
 
 	public FichePoste chercherFichePosteAvecNumeroFP(String numeroFP) throws Exception;
 

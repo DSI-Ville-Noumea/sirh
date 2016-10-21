@@ -62,8 +62,10 @@ public class FichePosteDao extends SirhDao implements FichePosteDaoInterface {
 	}
 
 	@Override
-	public FichePoste chercherDerniereFichePoste(Integer annee) throws Exception {
-		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ANNEE_CREATION + " = ? order by " + CHAMP_ID + " desc";
+	public FichePoste chercherDernierNumFichePoste(Integer annee) throws Exception {
+		String orderBy = "order by cast(substr("+CHAMP_NUM_FP+",1,4) as Integer) desc,cast(substr("+CHAMP_NUM_FP+",6) as Integer) desc";
+		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ANNEE_CREATION + " = ? " + orderBy;
+
 		ArrayList<FichePoste> liste = new ArrayList<FichePoste>();
 
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { annee });
@@ -538,7 +540,7 @@ public class FichePosteDao extends SirhDao implements FichePosteDaoInterface {
 		// RG_PE_FP_C01
 		FichePoste derniereFP = null;
 		try {
-			derniereFP = chercherDerniereFichePoste(annee);
+			derniereFP = chercherDernierNumFichePoste(annee);
 		} catch (Exception e) {
 
 		}
