@@ -6,23 +6,22 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+
 import nc.mairie.metier.hsct.VisiteMedicale;
 import nc.mairie.spring.dao.utils.SirhDao;
 
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
+public class VisiteMedicaleDao extends SirhDao implements VisiteMedicaleDaoInterface {
 
-public class VisiteMedicaleDao extends SirhDao implements
-		VisiteMedicaleDaoInterface {
-
-	public static final String CHAMP_ID_AGENT = "ID_AGENT";
-	public static final String CHAMP_ID_MEDECIN = "ID_MEDECIN";
-	public static final String CHAMP_ID_RECOMMANDATION = "ID_RECOMMANDATION";
-	public static final String CHAMP_DATE_DERNIERE_VISITE = "DATE_DERNIERE_VISITE";
-	public static final String CHAMP_DUREE_VALIDITE = "DUREE_VALIDITE";
-	public static final String CHAMP_APTE = "APTE";
-	public static final String CHAMP_ID_MOTIF_VM = "ID_MOTIF_VM";
-	public static final String CHAMP_ID_SUIVI_MED = "ID_SUIVI_MED";
-	public static final String CHAMP_COMMENTAIRE = "COMMENTAIRE";
+	public static final String	CHAMP_ID_AGENT				= "ID_AGENT";
+	public static final String	CHAMP_ID_MEDECIN			= "ID_MEDECIN";
+	public static final String	CHAMP_ID_RECOMMANDATION		= "ID_RECOMMANDATION";
+	public static final String	CHAMP_DATE_DERNIERE_VISITE	= "DATE_DERNIERE_VISITE";
+	public static final String	CHAMP_DUREE_VALIDITE		= "DUREE_VALIDITE";
+	public static final String	CHAMP_APTE					= "APTE";
+	public static final String	CHAMP_ID_MOTIF_VM			= "ID_MOTIF_VM";
+	public static final String	CHAMP_ID_SUIVI_MED			= "ID_SUIVI_MED";
+	public static final String	CHAMP_COMMENTAIRE			= "COMMENTAIRE";
 
 	public VisiteMedicaleDao(SirhDao sirhDao) {
 		super.dataSource = sirhDao.getDataSource();
@@ -37,33 +36,25 @@ public class VisiteMedicaleDao extends SirhDao implements
 	}
 
 	@Override
-	public void creerVisiteMedicale(Integer idAgent, Integer idMedecin,
-			Integer idRecommandation, Date dateDerniereVisite,
-			Integer dureeValidite, Integer apte, Integer idMotifVm,
-			Integer idSuiviMed,String commentaire) throws Exception {
-		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_ID_AGENT + ","
-				+ CHAMP_ID_MEDECIN + "," + CHAMP_ID_RECOMMANDATION + ","
-				+ CHAMP_DATE_DERNIERE_VISITE + "," + CHAMP_DUREE_VALIDITE + ","
-				+ CHAMP_APTE + "," + CHAMP_ID_MOTIF_VM + ","
-				+ CHAMP_ID_SUIVI_MED + ","+CHAMP_COMMENTAIRE+") " + "VALUES (?,?,?,?,?,?,?,?,?)";
-		jdbcTemplate.update(sql, new Object[] { idAgent, idMedecin,
-				idRecommandation, dateDerniereVisite, dureeValidite, apte,
-				idMotifVm, idSuiviMed, commentaire });
+	public Integer creerVisiteMedicale(Integer idAgent, Integer idMedecin, Integer idRecommandation, Date dateDerniereVisite, Integer dureeValidite,
+			Integer apte, Integer idMotifVm, Integer idSuiviMed, String commentaire) throws Exception {
+		String sql = "select " + CHAMP_ID + " from NEW TABLE (INSERT INTO " + NOM_TABLE + " (" + CHAMP_ID_AGENT + "," + CHAMP_ID_MEDECIN + ","
+				+ CHAMP_ID_RECOMMANDATION + "," + CHAMP_DATE_DERNIERE_VISITE + "," + CHAMP_DUREE_VALIDITE + "," + CHAMP_APTE + "," + CHAMP_ID_MOTIF_VM
+				+ "," + CHAMP_ID_SUIVI_MED + "," + CHAMP_COMMENTAIRE + ") " + "VALUES (?,?,?,?,?,?,?,?,?))";
+		Integer id = jdbcTemplate.queryForObject(sql,
+				new Object[] { idAgent, idMedecin, idRecommandation, dateDerniereVisite, dureeValidite, apte, idMotifVm, idSuiviMed, commentaire },
+				Integer.class);
+		return id;
 	}
 
 	@Override
-	public void modifierVisiteMedicale(Integer idVM, Integer idAgent,
-			Integer idMedecin, Integer idRecommandation,
-			Date dateDerniereVisite, Integer dureeValidite, Integer apte,
-			Integer idMotifVm, Integer idSuiviMed,String commentaire) throws Exception {
-		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_ID_AGENT + "=?,"
-				+ CHAMP_ID_MEDECIN + "=?," + CHAMP_ID_RECOMMANDATION + "=?,"
-				+ CHAMP_DATE_DERNIERE_VISITE + "=?," + CHAMP_DUREE_VALIDITE
-				+ "=?," + CHAMP_APTE + "=?," + CHAMP_ID_MOTIF_VM + "=?,"
+	public void modifierVisiteMedicale(Integer idVM, Integer idAgent, Integer idMedecin, Integer idRecommandation, Date dateDerniereVisite,
+			Integer dureeValidite, Integer apte, Integer idMotifVm, Integer idSuiviMed, String commentaire) throws Exception {
+		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_ID_AGENT + "=?," + CHAMP_ID_MEDECIN + "=?," + CHAMP_ID_RECOMMANDATION + "=?,"
+				+ CHAMP_DATE_DERNIERE_VISITE + "=?," + CHAMP_DUREE_VALIDITE + "=?," + CHAMP_APTE + "=?," + CHAMP_ID_MOTIF_VM + "=?,"
 				+ CHAMP_ID_SUIVI_MED + "=?," + CHAMP_COMMENTAIRE + "=? where " + CHAMP_ID + " =?";
-		jdbcTemplate.update(sql, new Object[] { idAgent, idMedecin,
-				idRecommandation, dateDerniereVisite, dureeValidite, apte,
-				idMotifVm, idSuiviMed,commentaire, idVM });
+		jdbcTemplate.update(sql, new Object[] { idAgent, idMedecin, idRecommandation, dateDerniereVisite, dureeValidite, apte, idMotifVm, idSuiviMed,
+				commentaire, idVM });
 	}
 
 	@Override
@@ -72,17 +63,13 @@ public class VisiteMedicaleDao extends SirhDao implements
 	}
 
 	@Override
-	public ArrayList<VisiteMedicale> listerVisiteMedicalePourSMCas2(
-			Integer moisChoisi, Integer anneeChoisi) {
-		String sql = "select * from " + NOM_TABLE + " where month(ADD_MONTHS("
-				+ CHAMP_DATE_DERNIERE_VISITE + ", " + CHAMP_DUREE_VALIDITE
-				+ ")) = ? and year(ADD_MONTHS(" + CHAMP_DATE_DERNIERE_VISITE
-				+ ", " + CHAMP_DUREE_VALIDITE + ")) =? ";
+	public ArrayList<VisiteMedicale> listerVisiteMedicalePourSMCas2(Integer moisChoisi, Integer anneeChoisi) {
+		String sql = "select * from " + NOM_TABLE + " where month(ADD_MONTHS(" + CHAMP_DATE_DERNIERE_VISITE + ", " + CHAMP_DUREE_VALIDITE
+				+ ")) = ? and year(ADD_MONTHS(" + CHAMP_DATE_DERNIERE_VISITE + ", " + CHAMP_DUREE_VALIDITE + ")) =? ";
 
 		ArrayList<VisiteMedicale> liste = new ArrayList<VisiteMedicale>();
 
-		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql,
-				new Object[] { moisChoisi, anneeChoisi });
+		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { moisChoisi, anneeChoisi });
 		for (Map<String, Object> row : rows) {
 			VisiteMedicale a = new VisiteMedicale();
 			a.setIdVisite((Integer) row.get(CHAMP_ID));
@@ -102,35 +89,23 @@ public class VisiteMedicaleDao extends SirhDao implements
 	}
 
 	@Override
-	public VisiteMedicale chercherVisiteMedicaleCriteres(Integer idAgent,
-			Integer idMedecin, Integer idMotif) throws Exception {
-		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID_AGENT
-				+ " = ? and " + CHAMP_ID_MEDECIN + " =? and "
-				+ CHAMP_ID_MOTIF_VM + "=? and " + CHAMP_DUREE_VALIDITE
-				+ "=0 and " + CHAMP_APTE + " is null and "
-				+ CHAMP_ID_RECOMMANDATION + " is null";
-		VisiteMedicale vm = (VisiteMedicale) jdbcTemplate
-				.queryForObject(sql,
-						new Object[] { idAgent, idMedecin, idMotif },
-						new BeanPropertyRowMapper<VisiteMedicale>(
-								VisiteMedicale.class));
+	public VisiteMedicale chercherVisiteMedicaleCriteres(Integer idAgent, Integer idMedecin, Integer idMotif) throws Exception {
+		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID_AGENT + " = ? and " + CHAMP_ID_MEDECIN + " =? and " + CHAMP_ID_MOTIF_VM
+				+ "=? and " + CHAMP_DUREE_VALIDITE + "=0 and " + CHAMP_APTE + " is null and " + CHAMP_ID_RECOMMANDATION + " is null";
+		VisiteMedicale vm = (VisiteMedicale) jdbcTemplate.queryForObject(sql, new Object[] { idAgent, idMedecin, idMotif },
+				new BeanPropertyRowMapper<VisiteMedicale>(VisiteMedicale.class));
 		return vm;
 	}
 
 	@Override
-	public ArrayList<VisiteMedicale> listerVisiteMedicalePourSMCas1(
-			Integer idMotifAgent, Integer idMotifService, Integer idMedecin)
+	public ArrayList<VisiteMedicale> listerVisiteMedicalePourSMCas1(Integer idMotifAgent, Integer idMotifService, Integer idMedecin)
 			throws Exception {
-		String sql = "select * from " + NOM_TABLE + " where ("
-				+ CHAMP_ID_MOTIF_VM + " = ? or " + CHAMP_ID_MOTIF_VM
-				+ "=?) and " + CHAMP_DUREE_VALIDITE + "=0 and "
-				+ CHAMP_ID_MEDECIN + "=? and " + CHAMP_ID_RECOMMANDATION
-				+ " is null and APTE is null";
+		String sql = "select * from " + NOM_TABLE + " where (" + CHAMP_ID_MOTIF_VM + " = ? or " + CHAMP_ID_MOTIF_VM + "=?) and "
+				+ CHAMP_DUREE_VALIDITE + "=0 and " + CHAMP_ID_MEDECIN + "=? and " + CHAMP_ID_RECOMMANDATION + " is null and APTE is null";
 
 		ArrayList<VisiteMedicale> liste = new ArrayList<VisiteMedicale>();
 
-		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql,
-				new Object[] { idMotifAgent, idMotifService, idMedecin });
+		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { idMotifAgent, idMotifService, idMedecin });
 		for (Map<String, Object> row : rows) {
 			VisiteMedicale a = new VisiteMedicale();
 			a.setIdVisite((Integer) row.get(CHAMP_ID));
@@ -150,27 +125,20 @@ public class VisiteMedicaleDao extends SirhDao implements
 	}
 
 	@Override
-	public VisiteMedicale chercherVisiteMedicaleLieeSM(Integer idSuiviMed,
-			Integer idAgent) throws Exception {
-		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID_AGENT
-				+ " = ? and " + CHAMP_ID_SUIVI_MED + " =?";
-		VisiteMedicale vm = (VisiteMedicale) jdbcTemplate
-				.queryForObject(sql, new Object[] { idAgent, idSuiviMed },
-						new BeanPropertyRowMapper<VisiteMedicale>(
-								VisiteMedicale.class));
+	public VisiteMedicale chercherVisiteMedicaleLieeSM(Integer idSuiviMed, Integer idAgent) throws Exception {
+		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID_AGENT + " = ? and " + CHAMP_ID_SUIVI_MED + " =?";
+		VisiteMedicale vm = (VisiteMedicale) jdbcTemplate.queryForObject(sql, new Object[] { idAgent, idSuiviMed },
+				new BeanPropertyRowMapper<VisiteMedicale>(VisiteMedicale.class));
 		return vm;
 	}
 
 	@Override
-	public ArrayList<VisiteMedicale> listerVisiteMedicaleAgent(Integer idAgent)
-			throws Exception {
-		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID_AGENT
-				+ "=? order by " + CHAMP_DATE_DERNIERE_VISITE + " desc";
+	public ArrayList<VisiteMedicale> listerVisiteMedicaleAgent(Integer idAgent) throws Exception {
+		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID_AGENT + "=? order by " + CHAMP_DATE_DERNIERE_VISITE + " desc";
 
 		ArrayList<VisiteMedicale> liste = new ArrayList<VisiteMedicale>();
 
-		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql,
-				new Object[] { idAgent });
+		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { idAgent });
 		for (Map<String, Object> row : rows) {
 			VisiteMedicale a = new VisiteMedicale();
 			a.setIdVisite((Integer) row.get(CHAMP_ID));
@@ -190,15 +158,12 @@ public class VisiteMedicaleDao extends SirhDao implements
 	}
 
 	@Override
-	public ArrayList<VisiteMedicale> listerVisiteMedicaleAvecMedecin(
-			Integer idMedecin) throws Exception {
-		String sql = "select * from " + NOM_TABLE + " where "
-				+ CHAMP_ID_MEDECIN + "=? ";
+	public ArrayList<VisiteMedicale> listerVisiteMedicaleAvecMedecin(Integer idMedecin) throws Exception {
+		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID_MEDECIN + "=? ";
 
 		ArrayList<VisiteMedicale> liste = new ArrayList<VisiteMedicale>();
 
-		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql,
-				new Object[] { idMedecin });
+		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { idMedecin });
 		for (Map<String, Object> row : rows) {
 			VisiteMedicale a = new VisiteMedicale();
 			a.setIdVisite((Integer) row.get(CHAMP_ID));
@@ -218,15 +183,12 @@ public class VisiteMedicaleDao extends SirhDao implements
 	}
 
 	@Override
-	public ArrayList<VisiteMedicale> listerVisiteMedicaleAvecRecommandation(
-			Integer idRecommandation) throws Exception {
-		String sql = "select * from " + NOM_TABLE + " where "
-				+ CHAMP_ID_RECOMMANDATION + "=? ";
+	public ArrayList<VisiteMedicale> listerVisiteMedicaleAvecRecommandation(Integer idRecommandation) throws Exception {
+		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID_RECOMMANDATION + "=? ";
 
 		ArrayList<VisiteMedicale> liste = new ArrayList<VisiteMedicale>();
 
-		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql,
-				new Object[] { idRecommandation });
+		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { idRecommandation });
 		for (Map<String, Object> row : rows) {
 			VisiteMedicale a = new VisiteMedicale();
 			a.setIdVisite((Integer) row.get(CHAMP_ID));
@@ -246,8 +208,7 @@ public class VisiteMedicaleDao extends SirhDao implements
 	}
 
 	@Override
-	public VisiteMedicale chercherDerniereVisiteMedicale(Integer idAgent)
-			throws Exception {
+	public VisiteMedicale chercherDerniereVisiteMedicale(Integer idAgent) throws Exception {
 		List<VisiteMedicale> vmAgent = listerVisiteMedicaleAgent(idAgent);
 		if (vmAgent.size() > 0) {
 			return vmAgent.get(0);

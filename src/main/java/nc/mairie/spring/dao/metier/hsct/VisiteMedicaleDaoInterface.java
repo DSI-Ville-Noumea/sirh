@@ -9,7 +9,7 @@ public interface VisiteMedicaleDaoInterface {
 
 	public VisiteMedicale chercherVisiteMedicale(Integer idVM) throws Exception;
 
-	public void creerVisiteMedicale(Integer idAgent, Integer idMedecin, Integer idRecommandation,
+	public Integer creerVisiteMedicale(Integer idAgent, Integer idMedecin, Integer idRecommandation,
 			Date dateDerniereVisite, Integer dureeValidite, Integer apte, Integer idMotifVm, Integer idSuiviMed,String commentaire)
 			throws Exception;
 

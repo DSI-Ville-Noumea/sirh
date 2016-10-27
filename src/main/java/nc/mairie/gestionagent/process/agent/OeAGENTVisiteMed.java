@@ -946,13 +946,17 @@ public class OeAGENTVisiteMed extends BasicProcess {
 							getVisiteMedicaleDao().supprimerVisiteMedicale(vmASupp.getIdVisite());
 						}
 						// si tout s'est bien passé
-						HistoVisiteMedicale histo = new HistoVisiteMedicale(getVisiteCourante());
-						getHistoVisiteMedicaleDao().creerHistoVisiteMedicale(histo, user, EnumTypeHisto.CREATION);
 						// Création de la visite medicale
-						getVisiteMedicaleDao().creerVisiteMedicale(getVisiteCourante().getIdAgent(), getVisiteCourante().getIdMedecin(),
+						Integer idCree =getVisiteMedicaleDao().creerVisiteMedicale(getVisiteCourante().getIdAgent(), getVisiteCourante().getIdMedecin(),
 								getVisiteCourante().getIdRecommandation(), getVisiteCourante().getDateDerniereVisite(),
 								getVisiteCourante().getDureeValidite(), null, getVisiteCourante().getIdMotifVm(), getVisiteCourante().getIdSuiviMed(),
 								getVisiteCourante().getCommentaire());
+						//historisation
+						getVisiteCourante().setIdVisite(idCree);
+						HistoVisiteMedicale histo = new HistoVisiteMedicale(getVisiteCourante());
+						getHistoVisiteMedicaleDao().creerHistoVisiteMedicale(histo, user, EnumTypeHisto.CREATION);
+						
+
 					} else {
 						// Modification
 						HistoVisiteMedicale histo = new HistoVisiteMedicale(getVisiteCourante());
@@ -964,12 +968,16 @@ public class OeAGENTVisiteMed extends BasicProcess {
 					}
 				} else if (getZone(getNOM_ST_ACTION()).equals(ACTION_CREATION)) {
 					// Création
-					HistoVisiteMedicale histo = new HistoVisiteMedicale(getVisiteCourante());
-					getHistoVisiteMedicaleDao().creerHistoVisiteMedicale(histo, user, EnumTypeHisto.CREATION);
-					getVisiteMedicaleDao().creerVisiteMedicale(getVisiteCourante().getIdAgent(), getVisiteCourante().getIdMedecin(),
+					Integer idCree =getVisiteMedicaleDao().creerVisiteMedicale(getVisiteCourante().getIdAgent(), getVisiteCourante().getIdMedecin(),
 							getVisiteCourante().getIdRecommandation(), getVisiteCourante().getDateDerniereVisite(),
 							getVisiteCourante().getDureeValidite(), null, getVisiteCourante().getIdMotifVm(), getVisiteCourante().getIdSuiviMed(),
 							getVisiteCourante().getCommentaire());
+					
+
+					//historisation
+					getVisiteCourante().setIdVisite(idCree);
+					HistoVisiteMedicale histo = new HistoVisiteMedicale(getVisiteCourante());
+					getHistoVisiteMedicaleDao().creerHistoVisiteMedicale(histo, user, EnumTypeHisto.CREATION);
 				}
 				if (getTransaction().isErreur())
 					return false;
@@ -2332,6 +2340,11 @@ public class OeAGENTVisiteMed extends BasicProcess {
 			// cette option."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
+		}
+		
+		//on sauvegarde les modifs de la VM
+		if(!performPB_VALIDER(request)){
+			return false;
 		}
 
 		// on fait appel à SIRH-WS pour avoir le document
