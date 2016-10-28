@@ -8,6 +8,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+
+import com.sun.jersey.api.client.ClientResponse;
+
+import flexjson.JSONSerializer;
 import nc.mairie.gestionagent.absence.dto.TypeAbsenceDto;
 import nc.mairie.gestionagent.dto.AgentDto;
 import nc.mairie.gestionagent.dto.ApprobateurDto;
@@ -29,17 +39,6 @@ import nc.mairie.gestionagent.pointage.dto.TitreRepasEtatPayeurDto;
 import nc.mairie.gestionagent.pointage.dto.VentilDateDto;
 import nc.mairie.gestionagent.pointage.dto.VentilErreurDto;
 import nc.mairie.metier.Const;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
-
-import com.sun.jersey.api.client.ClientResponse;
-
-import flexjson.JSONSerializer;
 
 @Service
 public class SirhPtgWSConsumer extends BaseWsConsumer implements ISirhPtgWSConsumer {
@@ -728,7 +727,7 @@ public class SirhPtgWSConsumer extends BaseWsConsumer implements ISirhPtgWSConsu
 
 		ReturnMessageDto dto = new ReturnMessageDto();
 		try {
-			readResponse(ReturnMessageDto.class, res, url);
+			readResponse( res, url);
 		} catch (BaseWsConsumerException e) {
 			dto.setErrors(Arrays.asList("Une erreur est survenue lors de la sauvegarde des agents à approuver."));
 		}
@@ -772,7 +771,7 @@ public class SirhPtgWSConsumer extends BaseWsConsumer implements ISirhPtgWSConsu
 		ClientResponse res = createAndPostRequest(params, url, json);
 		ReturnMessageDto dto = new ReturnMessageDto();
 		try {
-			readResponse(ReturnMessageDto.class, res, url);
+			readResponse( res, url);
 		} catch (BaseWsConsumerException e) {
 			dto.setErrors(Arrays.asList("Une erreur est survenue lors de la sauvegarde des agents à approuver."));
 		}

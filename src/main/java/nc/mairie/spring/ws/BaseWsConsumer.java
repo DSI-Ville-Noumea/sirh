@@ -119,6 +119,16 @@ public abstract class BaseWsConsumer {
 		result = new JSONDeserializer<T>().use(Date.class, new MSDateTransformer()).deserializeInto(output, result);
 		return result;
 	}
+
+	public void readResponse(ClientResponse response, String url) {
+
+		if (response.getStatus() == HttpStatus.OK.value())
+			return;
+
+		throw new SirhWSConsumerException(String.format(
+				"An error occured when querying '%s'. Return code is : %s, content is %s", url, response.getStatus(),
+				response.getEntity(String.class)));
+	}
 	
 	protected <T> T readResponse(Class<T> targetClass, ClientResponse response, String url) {
 
