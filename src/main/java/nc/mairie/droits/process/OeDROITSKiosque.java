@@ -1183,6 +1183,18 @@ public class OeDROITSKiosque extends BasicProcess {
 		
 		AgentWithServiceDto oldApprobateur = getApprobateurCourant();
 		
+		//#34213 : on recupere les infos de l'approbateur pour voir si il a un delegatire pour le supprimer d'abord : 
+		ApprobateurDto approAbs = absService.getApprobateurs(null, oldApprobateur.getIdAgent()).get(0);
+		if(approAbs.getDelegataire()!=null){
+			getTransaction().declarerErreur("ERREUR : veuillez supprimer le délégaire de cet approbateur pour pouvoir dupliquer.");
+			return false;
+		}
+		ApprobateurDto appPtg = ptgService.getApprobateurs(null, oldApprobateur.getIdAgent()).get(0);
+		if(appPtg.getDelegataire()!=null){
+			getTransaction().declarerErreur("ERREUR : veuillez supprimer le délégaire de cet approbateur pour pouvoir dupliquer.");
+			return false;
+		}
+		
 		// recuperation agent
 		Agent agentDestinataire = null;
 		agentDestinataire = getAgentDao().chercherAgentParMatricule(Integer.valueOf(getVAL_ST_AGENT_DUPLICATION()));
