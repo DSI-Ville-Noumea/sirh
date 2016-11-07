@@ -27,9 +27,6 @@ import nc.mairie.metier.agent.Agent;
 import nc.mairie.metier.avancement.AvancementFonctionnaires;
 import nc.mairie.metier.carriere.Grade;
 import nc.mairie.metier.parametrage.MotifAvancement;
-import nc.mairie.metier.poste.Affectation;
-import nc.mairie.metier.poste.FichePoste;
-import nc.mairie.metier.poste.TitrePoste;
 import nc.mairie.spring.dao.metier.agent.AgentDao;
 import nc.mairie.spring.dao.metier.agent.AutreAdministrationAgentDao;
 import nc.mairie.spring.dao.metier.avancement.AvancementDetachesDao;
@@ -234,60 +231,17 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 						BirtDto eval = new BirtDto();
 						eval.setIdAgent(agentEvaluateur.getIdAgent());
 
-						// on recupere le poste
-						Affectation aff = null;
-						try {
-							aff = getAffectationDao().chercherAffectationActiveAvecAgent(agentEvaluateur.getIdAgent());
-						} catch (Exception e) {
-
-						}
-
-						if (aff != null && aff.getIdFichePoste() != null) {
-							FichePoste fp = getFichePosteDao().chercherFichePoste(aff.getIdFichePoste());
-							TitrePoste tp = getTitrePosteDao().chercherTitrePoste(fp.getIdTitrePoste());
-							eval.setFonction(tp.getLibTitrePoste());
-							// on cherche toutes les affectations sur la FDP
-							// on prend la date la plus ancienne
-							List<Affectation> listeAffectationSurMemeFDP = getAffectationDao().listerAffectationAvecFPEtAgent(fp.getIdFichePoste(),
-									agentEvaluateur.getIdAgent());
-							if (listeAffectationSurMemeFDP.size() > 0) {
-								eval.setDateEntreeFonction(listeAffectationSurMemeFDP.get(0).getDateDebutAff());
-							}
-							// on cherche toutes les affectations sur le meme
-							// service et
-							// on prend la date la plus ancienne
-							// NB : pour les affectations successives
-							List<Affectation> listeAffectationService = getAffectationDao()
-									.listerAffectationAgentAvecService(agentEvaluateur.getIdAgent(), fp.getIdServiceAds());
-							Date dateDebutService = null;
-							for (int i = 0; i < listeAffectationService.size(); i++) {
-								Affectation affCours = listeAffectationService.get(i);
-								if (listeAffectationService.size() > i + 1) {
-									if (listeAffectationService.get(i + 1) != null) {
-										Affectation affPrecedente = listeAffectationService.get(i + 1);
-										if (sdf.format(affCours.getDateDebutAff())
-												.equals(Services.ajouteJours(sdf.format(affPrecedente.getDateFinAff()), 1))) {
-											dateDebutService = affPrecedente.getDateDebutAff();
-										} else {
-											dateDebutService = affCours.getDateDebutAff();
-										}
-									} else {
-										dateDebutService = affCours.getDateDebutAff();
-									}
-								} else {
-									dateDebutService = affCours.getDateDebutAff();
-								}
-							}
-							eval.setDateEntreeService(dateDebutService);
-						}
-
-						eval.setDateEntreeCollectivite(agentEvaluateur.getDateDerniereEmbauche());
-
 						getEaeCourant().getEvaluateurs().add(eval);
 					}
 				}
 				// on sort de la boucle, on change l'etat de l'EAE en NON-DEBUTE
 				getEaeCourant().setEtat(EnumEtatEAE.NON_DEBUTE.getCode());
+
+				ReturnMessageDto result = eaeService.setEae(getAgentConnecte(request).getIdAgent(), getEaeCourant());
+
+				if (!result.getErrors().isEmpty()) {
+					getTransaction().declarerErreur(result.getErrors().get(0).toString());
+				}
 
 			} else {
 				if (getEaeCourant() != null) {
@@ -815,10 +769,10 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 		form.setEtat(etat);
 		form.setStatut(statut);
 		form.setListeSousService(listeSousService);
-		form.setCap(cap.equals(Const.CHAINE_VIDE)? null : cap.equals("oui") ? true : false);
+		form.setCap(cap.equals(Const.CHAINE_VIDE) ? null : cap.equals("oui") ? true : false);
 		form.setIdAgentEvaluateur(agentEvaluateur == null || null == agentEvaluateur.getIdAgent() ? null : agentEvaluateur.getIdAgent());
 		form.setIdAgentEvalue(agentEvalue == null || null == agentEvalue.getIdAgent() ? null : agentEvalue.getIdAgent());
-		form.setIsEstDetache(affecte.equals(Const.CHAINE_VIDE)? null :affecte.equals("oui") ? true : false);
+		form.setIsEstDetache(affecte.equals(Const.CHAINE_VIDE) ? null : affecte.equals("oui") ? true : false);
 
 		List<EaeDto> listeEAE = eaeService.getListeEaeDto(getAgentConnecte(request).getIdAgent(), form);
 

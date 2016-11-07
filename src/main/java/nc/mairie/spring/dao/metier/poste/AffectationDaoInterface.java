@@ -11,11 +11,7 @@ public interface AffectationDaoInterface {
 
 	public Affectation chercherAffectationAgentAvecDateDebut(Integer idAgent, Date dateDebut) throws Exception;
 
-	public ArrayList<Affectation> listerAffectationAvecFPEtAgent(Integer idFichePoste, Integer idAgent) throws Exception;
-
 	public ArrayList<Affectation> listerAffectationAvecFPOrderDatDeb(Integer idFichePoste) throws Exception;
-
-	public ArrayList<Affectation> listerAffectationAgentAvecService(Integer idAgent, Integer idServiceADS) throws Exception;
 
 	public Affectation chercherAffectationActiveAvecFP(Integer idFichePoste) throws Exception;
 
