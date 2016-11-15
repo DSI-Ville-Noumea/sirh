@@ -31,4 +31,17 @@ public interface IAlfrescoCMISService {
 	ReturnMessageDto uploadDocumentWithByte(Integer idAgent, Agent agentCourant, Document documentCourant, byte[] doc, String codTypeDoc)
 			throws Exception;
 
+	/**
+	 * Cree le dossier pour un agent dans le site SIRH sous Alfresco.
+	 * 
+	 * @param idAgent
+	 *            Integer ID de l agent
+	 * @param nomAgent
+	 *            String Nom de l agent
+	 * @param prenomAgent
+	 *            String Prenom de l agent
+	 * @return ReturnMessageDto
+	 */
+	ReturnMessageDto createFolderAgent(Integer idAgent, String nomAgent, String prenomAgent);
+
 }

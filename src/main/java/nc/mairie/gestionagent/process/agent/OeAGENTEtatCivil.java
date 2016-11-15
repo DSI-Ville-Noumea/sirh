@@ -45,6 +45,7 @@ import nc.mairie.utils.MessageUtils;
 import nc.mairie.utils.VariablesActivite;
 import nc.noumea.mairie.alfresco.cmis.CmisUtils;
 import nc.noumea.spring.service.cmis.AlfrescoCMISService;
+import nc.noumea.spring.service.cmis.IAlfrescoCMISService;
 
 import org.springframework.context.ApplicationContext;
 
@@ -112,6 +113,11 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	private TypeContactDao typeContactDao;
 	private SituationFamilialeDao situationFamilialeDao;
 	private AgentDao agentDao;
+	
+	/**
+	 * Service de Alfresco pour communiquer en CMIS
+	 */
+	private IAlfrescoCMISService alfrescoCMISService;
 
 	SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
@@ -329,6 +335,11 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		getListeContactASupprimer().clear();
 
 		commitTransaction();
+		
+		// #34379
+		// creation du dossier agent dans alfresco
+		alfrescoCMISService.createFolderAgent(getAgentCourant().getIdAgent(), getAgentCourant().getNomUsage(), getAgentCourant().getPrenomUsage());
+
 		// on re-initialise la liste des contacts
 		initialiseListeContact(request);
 
@@ -2174,6 +2185,9 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		}
 		if (getAgentDao() == null) {
 			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (alfrescoCMISService == null) {
+			alfrescoCMISService = (IAlfrescoCMISService) context.getBean("alfrescoCMISService");
 		}
 	}
 

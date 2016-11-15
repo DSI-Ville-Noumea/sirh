@@ -118,7 +118,7 @@ public class AlfrescoCMISService implements IAlfrescoCMISService {
 
 		ReturnMessageDto returnDto = new ReturnMessageDto();
 
-		//////////////////// verification des donnees /////////////////////
+		// ////////////////// verification des donnees /////////////////////
 		if (null == file || null == document) {
 			logger.debug("Aucun document à ajouter.");
 			returnDto.getErrors().add("Aucun document à ajouter.");
@@ -147,7 +147,7 @@ public class AlfrescoCMISService implements IAlfrescoCMISService {
 			return returnDto;
 		}
 
-		//////////////////////// connexion alfresco //////////////////////////
+		// ////////////////////// connexion alfresco //////////////////////////
 		Session session = null;
 		try {
 			session = createSession.getSession(alfrescoUrl, alfrescoLogin, alfrescoPassword);
@@ -157,7 +157,7 @@ public class AlfrescoCMISService implements IAlfrescoCMISService {
 			return returnDto;
 		}
 
-		//////////// on cherche le repertoire distant /////////////////////
+		// ////////// on cherche le repertoire distant /////////////////////
 		CmisObject object = null;
 
 		Integer idAgent = null != agent && null != agent.getIdAgent() ? agent.getIdAgent() : null;
@@ -311,7 +311,8 @@ public class AlfrescoCMISService implements IAlfrescoCMISService {
 	 * exemple de nodeRef :
 	 * "workspace://SpacesStore/1a344bd7-6422-45c6-94f7-5640048b20ab" exemple d
 	 * URL a retourner :
-	 * http://localhost:8080/alfresco/service/api/node/workspace/SpacesStore/418c511a-7c0a-4bb1-95a2-37e5946be726/content
+	 * http://localhost:8080/alfresco/service/api/node/workspace
+	 * /SpacesStore/418c511a-7c0a-4bb1-95a2-37e5946be726/content
 	 * 
 	 * @param nodeRef
 	 *            String
@@ -328,7 +329,7 @@ public class AlfrescoCMISService implements IAlfrescoCMISService {
 
 		ReturnMessageDto returnDto = new ReturnMessageDto();
 
-		//////////////////// verification des donnees /////////////////////
+		// ////////////////// verification des donnees /////////////////////
 		if (null == doc || null == document) {
 			logger.debug("Aucun document à ajouter.");
 			returnDto.getErrors().add("Aucun document à ajouter.");
@@ -357,7 +358,7 @@ public class AlfrescoCMISService implements IAlfrescoCMISService {
 			return returnDto;
 		}
 
-		//////////////////////// connexion alfresco //////////////////////////
+		// ////////////////////// connexion alfresco //////////////////////////
 		Session session = null;
 		try {
 			session = createSession.getSession(alfrescoUrl, alfrescoLogin, alfrescoPassword);
@@ -367,7 +368,7 @@ public class AlfrescoCMISService implements IAlfrescoCMISService {
 			return returnDto;
 		}
 
-		//////////// on cherche le repertoire distant /////////////////////
+		// ////////// on cherche le repertoire distant /////////////////////
 		CmisObject object = null;
 
 		Integer idAgent = null != agent && null != agent.getIdAgent() ? agent.getIdAgent() : null;
@@ -447,6 +448,37 @@ public class AlfrescoCMISService implements IAlfrescoCMISService {
 		document.setNomDocument(nomDocument);
 		document.setNodeRefAlfresco(docAlfresco.getProperty("alfcmis:nodeRef").getFirstValue().toString());
 
+		return returnDto;
+	}
+
+	/**
+	 * Cree le dossier pour un agent dans le site SIRH sous Alfresco.
+	 * 
+	 * @param idAgent
+	 *            Integer ID de l agent
+	 * @param nomAgent
+	 *            String Nom de l agent
+	 * @param prenomAgent
+	 *            String Prenom de l agent
+	 * @return ReturnMessageDto
+	 */
+	public ReturnMessageDto createFolderAgent(Integer idAgent, String nomAgent, String prenomAgent) {
+
+		ReturnMessageDto returnDto = new ReturnMessageDto();
+		
+		// ////////////////////// connexion alfresco //////////////////////////
+		Session session = null;
+		try {
+			session = createSession.getSession(alfrescoUrl, alfrescoLogin, alfrescoPassword);
+		} catch (CmisConnectionException e) {
+			logger.debug("Erreur de connexion a Alfresco CMIS : " + e.getMessage());
+			returnDto.getErrors().add("Erreur de connexion à Alfresco CMIS");
+			return returnDto;
+		}
+		
+		/////////////////////// creation du dossier agent ////////////////////////
+		cmisService.createArborescenceAgent(idAgent, nomAgent, prenomAgent, session);
+		
 		return returnDto;
 	}
 
