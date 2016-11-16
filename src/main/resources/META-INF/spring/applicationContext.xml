@@ -44,6 +44,12 @@
 	<jee:jndi-lookup id="alfrescoLogin" jndi-name="ALFRESCO_LOGIN" expected-type="java.lang.String"/>
 
 	<jee:jndi-lookup id="alfrescoPassword" jndi-name="ALFRESCO_PASSWORD" expected-type="java.lang.String"/>
+	
+	<!-- #33982 : on est obligé d'etre admin pour lancer le script de creation de l'arboresecnce -->
+
+	<jee:jndi-lookup id="adminAlfrescoLogin" jndi-name="ADMIN_ALFRESCO_LOGIN" expected-type="java.lang.String"/>
+
+	<jee:jndi-lookup id="adminAlfrescoPassword" jndi-name="ADMIN_ALFRESCO_PASSWORD" expected-type="java.lang.String"/>
 	<!-- FIN ALFRESCO -->
 
 </beans>

@@ -165,4 +165,10 @@
 		
 	<Environment name="ALFRESCO_PASSWORD" type="java.lang.String" description="Password to Alfresco" 
 		value=***REMOVED*** override="false" />
+		
+	<Environment name="ADMIN_ALFRESCO_LOGIN" type="java.lang.String" description="Login to Alfresco" 
+		value="admin" override="false" />
+		
+	<Environment name="ADMIN_ALFRESCO_PASSWORD" type="java.lang.String" description="Password to Alfresco" 
+		value="***REMOVED***" override="false" />
 </Context>

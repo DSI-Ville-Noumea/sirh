@@ -62,6 +62,14 @@ public class AlfrescoCMISService implements IAlfrescoCMISService {
 	private String				alfrescoPassword;
 
 	@Autowired
+	@Qualifier("adminAlfrescoLogin")
+	private String				adminAlfrescoLogin;
+
+	@Autowired
+	@Qualifier("adminAlfrescoPassword")
+	private String				adminAlfrescoPassword;
+
+	@Autowired
 	private CreateSession		createSession;
 
 	@Autowired
@@ -465,20 +473,24 @@ public class AlfrescoCMISService implements IAlfrescoCMISService {
 	public ReturnMessageDto createFolderAgent(Integer idAgent, String nomAgent, String prenomAgent) {
 
 		ReturnMessageDto returnDto = new ReturnMessageDto();
-		
+
 		// ////////////////////// connexion alfresco //////////////////////////
 		Session session = null;
 		try {
-			session = createSession.getSession(alfrescoUrl, alfrescoLogin, alfrescoPassword);
+			// on crée la session avec le user admin car sinon on a pas le droit
+			// d'executer le script de creation arborescence (à cause des
+			// groupes qui ne sont gerables aue par admin et non par adminSIRH)
+			session = createSession.getSession(alfrescoUrl, adminAlfrescoLogin, adminAlfrescoPassword);
 		} catch (CmisConnectionException e) {
 			logger.debug("Erreur de connexion a Alfresco CMIS : " + e.getMessage());
 			returnDto.getErrors().add("Erreur de connexion à Alfresco CMIS");
 			return returnDto;
 		}
-		
-		/////////////////////// creation du dossier agent ////////////////////////
+
+		/////////////////////// creation du dossier agent
+		/////////////////////// ////////////////////////
 		cmisService.createArborescenceAgent(idAgent, nomAgent, prenomAgent, session);
-		
+
 		return returnDto;
 	}
 
