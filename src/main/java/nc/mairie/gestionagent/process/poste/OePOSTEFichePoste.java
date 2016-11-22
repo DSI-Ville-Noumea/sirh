@@ -2591,13 +2591,16 @@ public class OePOSTEFichePoste extends BasicProcess {
 			// recuperation agent
 			Agent agent = null;
 			if (getVAL_EF_RECHERCHE_BY_AGENT().length() != 0) {
-				agent = getAgentDao().chercherAgentParMatricule(Integer.valueOf(getVAL_EF_RECHERCHE_BY_AGENT()));
-			}
-			// l agent n existe pas
-			if (null == agent || null == agent.getIdAgent()) {
-				getTransaction().traiterErreur();
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR005", "agent"));
-				return false;
+				String id = getVAL_EF_RECHERCHE_BY_AGENT().startsWith("900") ? getVAL_EF_RECHERCHE_BY_AGENT().substring(3) : getVAL_EF_RECHERCHE_BY_AGENT();
+				try {
+					agent = getAgentDao().chercherAgentParMatricule(Integer.valueOf(id));
+				}
+				// l agent n existe pas
+				catch (EmptyResultDataAccessException e) {
+					getTransaction().traiterErreur();
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR005", "agent"));
+					return false;
+				}
 			}
 
 			ArrayList<FichePoste> fp = getFichePosteDao().listerFichePosteAvecCriteresAvances(new ArrayList<Integer>(), null, null,
