@@ -208,11 +208,8 @@ public class OePTGPrimeDpm extends BasicProcess {
 
 		// agent
 		String idAgentDemande = getVAL_ST_AGENT_DEMANDE().equals(Const.CHAINE_VIDE) ? null : "900" + getVAL_ST_AGENT_DEMANDE();
-		if (!getVAL_ST_AGENT_DEMANDE().equals(Const.CHAINE_VIDE)) {
+		if (idAgentDemande != null)
 			addZone(getNOM_ST_AGENT_DEMANDE(), getVAL_ST_AGENT_DEMANDE());
-		} else {
-			idAgentDemande = null;
-		}
 
 		// SERVICE
 		String sigle = getVAL_EF_SERVICE().toUpperCase();
@@ -242,6 +239,9 @@ public class OePTGPrimeDpm extends BasicProcess {
 					}
 				}
 			}
+		} else if (idAgentDemande != null) {
+			// Si un agent est renseigné, on feinte le filtre en renseignant son id dans le filtre par service
+			listIdAgentService.add(Integer.valueOf(idAgentDemande));
 		}
 
 		if (listIdAgentService.size() >= 1000) {
