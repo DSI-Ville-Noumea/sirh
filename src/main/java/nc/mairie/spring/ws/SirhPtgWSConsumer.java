@@ -108,6 +108,7 @@ public class SirhPtgWSConsumer extends BaseWsConsumer implements ISirhPtgWSConsu
 	// Prime DPM #30544 */
 	private static final String ptgSaveListIndemniteChoixAgentUrl = "dpm/saveIndemniteChoixAgentForSIRH";
 	private static final String ptgListDpmIndemniteChoixAgentForSIRHUrl = "dpm/listDpmIndemniteChoixAgentForSIRH";
+	private static final String ptgCreateDpmIndemAnneeUrl = "dpm/createDpmIndemAnnee";
 	private static final String ptgSaveDpmIndemAnneeUrl = "dpm/saveDpmIndemAnnee";
 	private static final String ptgListDpmIndemAnneeUrl = "dpm/listDpmIndemAnnee";
 	private static final String ptgListDpmIndemAnneeOuverteUrl = "dpm/listDpmIndemAnneeOuverte";
@@ -870,6 +871,24 @@ public class SirhPtgWSConsumer extends BaseWsConsumer implements ISirhPtgWSConsu
 		ClientResponse res = createAndFireRequest(params, url);
 
 		return readResponseAsList(DpmIndemniteAnneeDto.class, res, url);
+	}
+
+	@Override
+	public ReturnMessageDto createDpmIndemAnnee(Integer idAgentConnecte, DpmIndemniteAnneeDto dto) {
+		
+		String url = String.format(ptgWsBaseUrl + ptgCreateDpmIndemAnneeUrl);
+		
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idAgentConnecte", idAgentConnecte.toString());
+
+		String json = new JSONSerializer()
+				.exclude("*.class").exclude("*.radioButtonZK")
+				.exclude("*.civilite").exclude("*.selectedDroitAbs").exclude("*.position")
+				.exclude("*.signature").exclude("*.statut")
+				.transform(new MSDateTransformer(), Date.class).deepSerialize(dto);
+		
+		ClientResponse res = createAndPostRequest(params, url, json);
+		return readResponse(ReturnMessageDto.class, res, url);
 	}
 
 	@Override

@@ -128,6 +128,8 @@ public interface IPtgService {
 	ReturnMessageDto dupliqueApprobateur(Integer idAgentConnecte, Integer idAgentSource, Integer idAgentDestinataire);
 
 	///////// Prime DPM ////////
+	ReturnMessageDto createDpmIndemAnnee(Integer idAgentConnecte, DpmIndemniteAnneeDto dto);
+	
 	ReturnMessageDto saveDpmIndemAnnee(Integer idAgentConnecte, DpmIndemniteAnneeDto dto);
 
 	List<DpmIndemniteAnneeDto> getListDpmIndemAnnee(Integer idAgent);

@@ -1,11 +1,13 @@
 package nc.mairie.gestionagent.process.pointage;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
+import javax.management.InvalidAttributeValueException;
 import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
@@ -164,6 +166,13 @@ public class OePTGPrimeDpmParametrage extends BasicProcess {
 
 	public boolean performPB_CREATION(HttpServletRequest request) throws Exception {
 
+		// On vérifie si c'est le clic d'ouverture ou d'enregistrement
+		if (getZone(getNOM_ST_ACTION()) != ACTION_CREATION) {
+			// On nomme l'action
+			addZone(getNOM_ST_ACTION(), ACTION_CREATION);
+			return true;
+		}
+
 		if (getVAL_ST_ANNEE().equals(Const.CHAINE_VIDE)) {
 			// "ERR002","La zone @ est obligatoire."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "année"));
@@ -191,7 +200,10 @@ public class OePTGPrimeDpmParametrage extends BasicProcess {
 		dto.setDateDebut(dateDebut);
 		dto.setDateFin(dateFin);
 
-		ReturnMessageDto srm = ptgService.saveDpmIndemAnnee(getAgentConnecte(request).getIdAgent(), dto);
+		if (!verifyDpmIndemniteAnnee(dto))
+			return false;
+
+		ReturnMessageDto srm = ptgService.createDpmIndemAnnee(getAgentConnecte(request).getIdAgent(), dto);
 
 		if (srm.getErrors().size() > 0) {
 			String err = Const.CHAINE_VIDE;
@@ -258,6 +270,9 @@ public class OePTGPrimeDpmParametrage extends BasicProcess {
 		dto.setDateDebut(dateDebut);
 		dto.setDateFin(dateFin);
 		dto.setListDpmIndemniteChoixAgentDto(null);
+		
+		if (!verifyDpmIndemniteAnnee(dto))
+			return false;
 
 		ReturnMessageDto srm = ptgService.saveDpmIndemAnnee(getAgentConnecte(request).getIdAgent(), dto);
 
@@ -282,6 +297,36 @@ public class OePTGPrimeDpmParametrage extends BasicProcess {
 		afficheListeAnnees(request);
 		
 		setStatut(STATUT_MEME_PROCESS);
+		
+		return true;
+	}
+	
+	/**
+	 * Vérifie que l'indémnité est correctement renseignée
+	 * @param dto
+	 * @throws InvalidAttributeValueException 
+	 * @throws ParseException 
+	 */
+	private boolean verifyDpmIndemniteAnnee(DpmIndemniteAnneeDto dto) throws ParseException {
+		if (dto.getAnnee().toString().length() != 4) {
+			getTransaction().declarerErreur("L'année n'est pas dans un format correct.");
+			return false;
+		}
+
+		if (dto.getDateDebut().after(dto.getDateFin())){
+			getTransaction().declarerErreur("La date de début doit être antérieur à la date de fin.");
+			return false;
+		}
+
+		String startYearFormat = dto.getAnnee() + "-01-01";
+		String endYearFormat = dto.getAnnee() + "-12-31";
+		Date starYear = new SimpleDateFormat("yyyy-MM-dd").parse(startYearFormat);
+		Date endYear = new SimpleDateFormat("yyyy-MM-dd").parse(endYearFormat);
+		
+		if ((dto.getDateDebut().after(endYear) || dto.getDateDebut().before(starYear)) || (dto.getDateFin().before(starYear) || dto.getDateFin().after(endYear))){
+			getTransaction().declarerErreur("Les dates doivent être comprises dans l'année voulue.");
+			return false;
+		}
 		
 		return true;
 	}

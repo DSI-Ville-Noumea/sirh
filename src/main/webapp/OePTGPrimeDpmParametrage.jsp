@@ -109,7 +109,12 @@
                 <table width="190px" cellpadding="0" cellspacing="0" border="0" class="display" id="VisualisationTitreRepasList"> 
                     <thead>
                         <tr>
-                            <th width="20px" align="center"></th>
+                            <th width="20px" align="center">
+                            	<img src="images/ajout.gif" height="16px" width="16px" title="Ajouter une période." 
+	                            	onClick="executeBouton('<%=process.getNOM_PB_CREATION()%>')" 
+	                            	class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>">
+	                            	<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_CREATION()%>" value="">
+	                        </th>
                             <th>Année</th>
                             <th>Date de début</th>
                             <th>Date de fin</th>
@@ -159,7 +164,7 @@
 	                    <BR/>
 	                    
 	                    <div align="center">
-		                    <INPUT onkeydown="" onkeypress="" onkeyup="" type="submit" class="sigp2-Bouton-100" value="Creer" name="<%=process.getNOM_PB_CREATION()%>">
+		                    <INPUT onkeydown="" onkeypress="" onkeyup="" type="submit" class="sigp2-Bouton-100" value="Créer" name="<%=process.getNOM_PB_CREATION()%>">
 		                    <INPUT onkeydown="" onkeypress="" onkeyup="" type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
 	                    </div>
 	            </FIELDSET>

@@ -138,6 +138,8 @@ public interface ISirhPtgWSConsumer {
 	ReturnMessageDto dupliqueApprobateur(Integer idAgentConnecte,
 			Integer idAgentSource, Integer idAgentDestinataire);
 
+	ReturnMessageDto createDpmIndemAnnee(Integer idAgentConnecte, DpmIndemniteAnneeDto dto);
+
 	ReturnMessageDto saveDpmIndemAnnee(Integer idAgentConnecte, DpmIndemniteAnneeDto dto);
 
 	List<DpmIndemniteAnneeDto> getListDpmIndemAnnee(Integer idAgent);

@@ -323,6 +323,10 @@ public class PtgService implements IPtgService {
 		return ptgConsumer.getListDpmIndemAnneeOuverte();
 	}
 	@Override
+	public ReturnMessageDto createDpmIndemAnnee(Integer idAgentConnecte, DpmIndemniteAnneeDto dto) {
+		return ptgConsumer.createDpmIndemAnnee(idAgentConnecte, dto);
+	}
+	@Override
 	public ReturnMessageDto saveDpmIndemAnnee(Integer idAgentConnecte, DpmIndemniteAnneeDto dto) {
 		return ptgConsumer.saveDpmIndemAnnee(idAgentConnecte, dto);
 	}
