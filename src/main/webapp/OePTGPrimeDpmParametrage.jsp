@@ -147,7 +147,7 @@
             <%if(process.getVAL_ST_ACTION().equals(process.ACTION_CREATION)){ %>
             
 				<FIELDSET class="sigp2Fieldset" style="text-align:left;" id="<%=process.ACTION_CREATION %>">
-					<legend class="sigp2Legend">Création d'une demande de titre repas pour le mois en cours</legend>
+					<legend class="sigp2Legend">Création d'une nouvelle ouverture kiosque pour les primes DPM 7718 et 7719</legend>
            				<INPUT name="JSP" type="hidden" value="<%= process.getJSP()%>">
            				
 	                    <span class="sigp2Mandatory" style="width:50px;margin-left: 20px;">Année :</span>
