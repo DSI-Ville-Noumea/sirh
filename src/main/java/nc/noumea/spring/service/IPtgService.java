@@ -132,6 +132,8 @@ public interface IPtgService {
 	
 	ReturnMessageDto saveDpmIndemAnnee(Integer idAgentConnecte, DpmIndemniteAnneeDto dto);
 
+	DpmIndemniteAnneeDto getDpmIndemAnneeByAnnee(Integer annee);
+
 	List<DpmIndemniteAnneeDto> getListDpmIndemAnnee(Integer idAgent);
 
 	List<DpmIndemniteChoixAgentDto> getListDpmIndemniteChoixAgent(Integer idAgent, Integer annee, Boolean isChoixIndemnite,

@@ -121,8 +121,7 @@ public interface ISirhPtgWSConsumer {
 			Boolean commande, String dateMonth, Integer idServiceAds,
 			Integer idAgent, List<Integer> listIdsAgent);
 
-	ReturnMessageDto setTRState(
-			List<TitreRepasDemandeDto> listTitreRepasDemandeDto, Integer idAgent);
+	ReturnMessageDto setTRState(List<TitreRepasDemandeDto> listTitreRepasDemandeDto, Integer idAgent);
 
 	ReturnMessageDto enregistreTitreRepas(List<TitreRepasDemandeDto> dto,
 			Integer idAgent);
@@ -141,6 +140,8 @@ public interface ISirhPtgWSConsumer {
 	ReturnMessageDto createDpmIndemAnnee(Integer idAgentConnecte, DpmIndemniteAnneeDto dto);
 
 	ReturnMessageDto saveDpmIndemAnnee(Integer idAgentConnecte, DpmIndemniteAnneeDto dto);
+
+	DpmIndemniteAnneeDto getDpmIndemAnneeByAnnee(Integer annee);
 
 	List<DpmIndemniteAnneeDto> getListDpmIndemAnnee(Integer idAgent);
 

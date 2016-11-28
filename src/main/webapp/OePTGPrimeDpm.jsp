@@ -154,7 +154,7 @@
                 <BR/>
                 <INPUT type="submit" class="sigp2-Bouton-100" value="Afficher" name="<%=process.getNOM_PB_FILTRER()%>" />
                 <INPUT type="submit" class="sigp2-Bouton-100" style="width:280px;" value="Afficher les agents n'ayant pas fait de choix" name="<%=process.getNOM_PB_AFFICHER_AGENT_SANS_CHOIX()%>" 
-					title="Pas de filtre pour ce bouton. Affiche tous les agents n'ayant pas fait de choix pour l'année ouverte en cours." width="220px" />
+					title="Pas de filtre pour ce bouton. Affiche tous les agents n'ayant pas fait de choix pour l'année en cours." width="220px" />
              </FIELDSET>
             
             <FIELDSET class="sigp2Fieldset" style="text-align:left;">

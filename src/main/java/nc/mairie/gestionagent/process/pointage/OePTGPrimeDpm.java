@@ -34,6 +34,7 @@ import nc.noumea.spring.service.IRadiService;
 import nc.noumea.spring.service.ISirhService;
 import nc.noumea.spring.service.PtgService;
 
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -276,43 +277,48 @@ public class OePTGPrimeDpm extends BasicProcess {
 	
 	public boolean performPB_AFFICHER_AGENTS_SANS_CHOIX(HttpServletRequest request) throws Exception {
 		
-		if(null != getDpmAnneeOuverte()) {
-			// on cherche les agents ayant fait un choix
-			List<DpmIndemniteChoixAgentDto> listChoixAgent = 
-						ptgService.getListDpmIndemniteChoixAgent(
-								getAgentConnecte(request).getIdAgent(), getDpmAnneeOuverte().getAnnee(), null, null, null);
-			
-			List<Integer> listIdsAgentAvecChoix = new ArrayList<Integer>();
-			if(null != listChoixAgent) {
-				for(DpmIndemniteChoixAgentDto choixAgent : listChoixAgent) {
-					if(!listIdsAgentAvecChoix.contains(choixAgent.getIdAgent()))
-						listIdsAgentAvecChoix.add(choixAgent.getIdAgent());
-				}
-			}
-			
-			// on cherche les agents ayant la prime DPM 7718 ou 7719
-			List<AgentWithServiceDto> listAgentsAvecPrimeDpm = sirhService.getListeAgentWithIndemniteForfaitTravailDPM(new HashSet<Integer>());
-			
-			List<DpmIndemniteChoixAgentDto> listSansChoixAgent = new ArrayList<DpmIndemniteChoixAgentDto>();
-			// puis on trie pour ne recuperer que les agents sans choix
-			if(null != listAgentsAvecPrimeDpm) {
-				for(AgentWithServiceDto agent : listAgentsAvecPrimeDpm) {
-					if(!listIdsAgentAvecChoix.contains(agent.getIdAgent())) {
-						DpmIndemniteChoixAgentDto dto = new DpmIndemniteChoixAgentDto();
-						dto.setIdAgent(agent.getIdAgent());
-						dto.setAgent(agent);
-						dto.setDpmIndemniteAnnee(getDpmAnneeOuverte());
-						
-						listSansChoixAgent.add(dto);
-					}
-				}
-			}
-			
-			setListeChoixAgent((ArrayList<DpmIndemniteChoixAgentDto>) listSansChoixAgent);
-		}else{
-			getTransaction().declarerErreur("Il n'y a pas de campagne de choix ouverte pour la prime DPM.");
+		// @Comment by theo on 28th Nov. 2016 : 
+		/* La liste des agents n'ayant pas fait de choix est disponible même lorsque l'année en cours n'est pas ouverte.
+		 Les changements ont été fait sur la condition uniquement, l'algorithme de récupération de ces agents n'a pas été vérifié/changé. */
+		
+		Integer annee = new DateTime().getYear();
+		DpmIndemniteAnneeDto dpmIndemnAnnee = ptgService.getDpmIndemAnneeByAnnee(annee);
+		if (dpmIndemnAnnee.getAnnee() == null) {
+			getTransaction().declarerErreur("Aucune correspondance n'a été trouvé à cette date : " + annee);
 			return false;
 		}
+		
+		// on cherche les agents ayant fait un choix pour l'année en cours
+		List<DpmIndemniteChoixAgentDto> listChoixAgent = 
+					ptgService.getListDpmIndemniteChoixAgent(getAgentConnecte(request).getIdAgent(), annee, null, null, null);
+		
+		List<Integer> listIdsAgentAvecChoix = new ArrayList<Integer>();
+		if(null != listChoixAgent) {
+			for(DpmIndemniteChoixAgentDto choixAgent : listChoixAgent) {
+				if(!listIdsAgentAvecChoix.contains(choixAgent.getIdAgent()))
+					listIdsAgentAvecChoix.add(choixAgent.getIdAgent());
+			}
+		}
+		
+		// on cherche les agents ayant la prime DPM 7718 ou 7719
+		List<AgentWithServiceDto> listAgentsAvecPrimeDpm = sirhService.getListeAgentWithIndemniteForfaitTravailDPM(new HashSet<Integer>());
+		
+		List<DpmIndemniteChoixAgentDto> listSansChoixAgent = new ArrayList<DpmIndemniteChoixAgentDto>();
+		// puis on trie pour ne récuperer que les agents sans choix
+		if(null != listAgentsAvecPrimeDpm) {
+			for(AgentWithServiceDto agent : listAgentsAvecPrimeDpm) {
+				if(!listIdsAgentAvecChoix.contains(agent.getIdAgent())) {
+					DpmIndemniteChoixAgentDto dto = new DpmIndemniteChoixAgentDto();
+					dto.setIdAgent(agent.getIdAgent());
+					dto.setAgent(agent);
+					dto.setDpmIndemniteAnnee(dpmIndemnAnnee);
+					
+					listSansChoixAgent.add(dto);
+				}
+			}
+		}
+		
+		setListeChoixAgent((ArrayList<DpmIndemniteChoixAgentDto>) listSansChoixAgent);
 
 		afficheListeChoixAgent();
 
@@ -438,7 +444,7 @@ public class OePTGPrimeDpm extends BasicProcess {
 
 		if (getZone(getNOM_RG_CHOIX()).equals(Const.CHAINE_VIDE)) {
 			// "ERR002","La zone @ est obligatoire."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "Indemnité ou Récupération"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "indemnité ou récupération"));
 			return false;
 		}
 		
@@ -628,7 +634,7 @@ public class OePTGPrimeDpm extends BasicProcess {
 	public String getNOM_PB_VALIDATION() {
 		return "NOM_PB_VALIDATION";
 	}
-	
+
 	public String getNOM_LB_ANNEE_SELECT() {
 		return "NOM_LB_ANNEE_SELECT";
 	}
@@ -639,6 +645,7 @@ public class OePTGPrimeDpm extends BasicProcess {
 	private void setLB_ANNEE(String[] newLB_ANNEE) {
 		LB_ANNEE = newLB_ANNEE;
 	}
+	
 	private String[] getLB_ANNEE() {
 		if (LB_ANNEE == null) {
 			LB_ANNEE = initialiseLazyLB();
@@ -647,7 +654,7 @@ public class OePTGPrimeDpm extends BasicProcess {
 	}
 	public String[] getVAL_LB_ANNEE() {
 		return getLB_ANNEE();
-	}
+	}	
 	
 	public String getNOM_EF_SERVICE() {
 		return "NOM_EF_SERVICE";

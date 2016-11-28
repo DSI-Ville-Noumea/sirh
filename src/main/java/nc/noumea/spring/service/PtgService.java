@@ -315,6 +315,10 @@ public class PtgService implements IPtgService {
 		return ptgConsumer.saveIndemniteChoixAgent(idAgentConnecte, annee, dto);
 	}
 	@Override
+	public DpmIndemniteAnneeDto getDpmIndemAnneeByAnnee(Integer annee) {
+		return ptgConsumer.getDpmIndemAnneeByAnnee(annee);
+	}
+	@Override
 	public List<DpmIndemniteAnneeDto> getListDpmIndemAnnee(Integer idAgent) {
 		return ptgConsumer.getListDpmIndemAnnee(idAgent);
 	}

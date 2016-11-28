@@ -111,6 +111,7 @@ public class SirhPtgWSConsumer extends BaseWsConsumer implements ISirhPtgWSConsu
 	private static final String ptgCreateDpmIndemAnneeUrl = "dpm/createDpmIndemAnnee";
 	private static final String ptgSaveDpmIndemAnneeUrl = "dpm/saveDpmIndemAnnee";
 	private static final String ptgListDpmIndemAnneeUrl = "dpm/listDpmIndemAnnee";
+	private static final String ptgGetDpmIndemAnneeUrl = "dpm/getDpmIndemAnneeByAnnee";
 	private static final String ptgListDpmIndemAnneeOuverteUrl = "dpm/listDpmIndemAnneeOuverte";
 	private static final String ptgDeleteIndemniteChoixAgentUrl = "dpm/deleteIndemniteChoixAgent";
 	
@@ -859,6 +860,18 @@ public class SirhPtgWSConsumer extends BaseWsConsumer implements ISirhPtgWSConsu
 		ClientResponse res = createAndFireRequest(params, url);
 
 		return readResponseAsList(DpmIndemniteAnneeDto.class, res, url);
+	}
+
+	@Override
+	public DpmIndemniteAnneeDto getDpmIndemAnneeByAnnee(Integer annee) {
+
+		String url = String.format(ptgWsBaseUrl + ptgGetDpmIndemAnneeUrl);
+		HashMap<String, String> params = new HashMap<>();
+		params.put("annee", annee.toString());
+
+		ClientResponse res = createAndFireRequest(params, url);
+
+		return readResponse(DpmIndemniteAnneeDto.class, res, url);
 	}
 
 	@Override
