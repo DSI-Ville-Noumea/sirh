@@ -141,7 +141,7 @@ public interface IPtgService {
 
 	List<DpmIndemniteAnneeDto> getListDpmIndemAnneeOuverte();
 
-	ReturnMessageDto saveIndemniteChoixAgent(Integer idAgentConnecte, Integer annee, DpmIndemniteChoixAgentDto dto);
+	ReturnMessageDto saveIndemniteChoixAgent(Integer idAgentConnecte, DpmIndemniteChoixAgentDto dto);
 
 	ReturnMessageDto deleteIndemniteChoixAgent(Integer idAgentConnecte, Integer id);
 }

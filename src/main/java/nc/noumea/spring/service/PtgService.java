@@ -311,8 +311,8 @@ public class PtgService implements IPtgService {
 		return ptgConsumer.getListDpmIndemniteChoixAgent(idAgent, annee, isChoixIndemnite, isChoixRecuperation, listIdsAgent);
 	}
 	@Override
-	public ReturnMessageDto saveIndemniteChoixAgent(Integer idAgentConnecte, Integer annee, DpmIndemniteChoixAgentDto dto) {
-		return ptgConsumer.saveIndemniteChoixAgent(idAgentConnecte, annee, dto);
+	public ReturnMessageDto saveIndemniteChoixAgent(Integer idAgentConnecte, DpmIndemniteChoixAgentDto dto) {
+		return ptgConsumer.saveIndemniteChoixAgent(idAgentConnecte, dto);
 	}
 	@Override
 	public DpmIndemniteAnneeDto getDpmIndemAnneeByAnnee(Integer annee) {

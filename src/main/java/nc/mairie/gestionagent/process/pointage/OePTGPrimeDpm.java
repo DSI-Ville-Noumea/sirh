@@ -55,7 +55,10 @@ public class OePTGPrimeDpm extends BasicProcess {
 	public static final int STATUT_RECHERCHER_AGENT_CREATION = 2;
 
 	public String focus = null;
+	// Liste des années pour la recherche
 	private String[] LB_ANNEE;
+	// Liste des années pour la création
+	private String[] LB_ANNEE_CREATION;
 	private String[] LB_CHOIX;
 
 	private IPtgService ptgService;
@@ -156,7 +159,9 @@ public class OePTGPrimeDpm extends BasicProcess {
 				aFormat.ajouteLigne(ligne);
 			}
 			setLB_ANNEE(aFormat.getListeFormatee(true));
+			setLB_ANNEE_CREATION(aFormat.getListeFormatee(true));
 			addZone(getNOM_LB_ANNEE_SELECT(), Const.ZERO);
+			addZone(getNOM_LB_ANNEE_CREATION_SELECT(), Const.ZERO);
 		}
 		
 		int[] tailles = { 30 };
@@ -424,7 +429,14 @@ public class OePTGPrimeDpm extends BasicProcess {
 	}
 
 	public boolean performPB_CREATION(HttpServletRequest request) throws Exception {
-
+		
+		// date annee
+		int numAnnee = (Services.estNumerique(getZone(getNOM_LB_ANNEE_CREATION_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_ANNEE_CREATION_SELECT())) : -1);
+		Integer annee = null;
+		if (numAnnee != -1 && numAnnee != 0) {
+			annee = (Integer) getListeAnnee().get(numAnnee - 1);
+		}
+		
 		String idAgent = Const.CHAINE_VIDE;
 		if (getVAL_ST_AGENT_CREATION().equals(Const.CHAINE_VIDE)) {
 			// "ERR002","La zone @ est obligatoire."
@@ -447,9 +459,21 @@ public class OePTGPrimeDpm extends BasicProcess {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "indemnité ou récupération"));
 			return false;
 		}
+
+		if (annee == null) {
+			// "ERR002","La zone @ est obligatoire."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "année"));
+			return false;
+		}
 		
 		AgentWithServiceDto agentDto = new AgentWithServiceDto();
 		agentDto.setIdAgent(new Integer(idAgent));
+
+		DpmIndemniteAnneeDto dpmIndemnAnnee = ptgService.getDpmIndemAnneeByAnnee(annee);
+		if (dpmIndemnAnnee == null) {
+			getTransaction().declarerErreur("L'année " + annee + " n'a pas encore été paramétrée.");
+			return false;
+		}
 
 		DpmIndemniteChoixAgentDto dto = new DpmIndemniteChoixAgentDto();
 		dto.setIdAgent(new Integer(idAgent));
@@ -457,9 +481,9 @@ public class OePTGPrimeDpm extends BasicProcess {
 		dto.setChoixIndemnite(getVAL_RG_CHOIX().equals(getNOM_RB_INDEMNITE()));
 		dto.setChoixRecuperation(getVAL_RG_CHOIX().equals(getNOM_RB_RECUPERATION()));
 		dto.setIdAgentCreation(getAgentConnecte(request).getIdAgent());
-		dto.setDpmIndemniteAnnee(getDpmAnneeOuverte());
+		dto.setDpmIndemniteAnnee(dpmIndemnAnnee);
 
-		ReturnMessageDto srm = ptgService.saveIndemniteChoixAgent(getAgentConnecte(request).getIdAgent(), getDpmAnneeOuverte().getAnnee(), dto);
+		ReturnMessageDto srm = ptgService.saveIndemniteChoixAgent(getAgentConnecte(request).getIdAgent(), dto);
 
 		if (srm.getErrors().size() > 0) {
 			String err = Const.CHAINE_VIDE;
@@ -491,6 +515,7 @@ public class OePTGPrimeDpm extends BasicProcess {
 
 		addZone(getNOM_ST_INDICE_CHOIX_AGENT(), indiceTR.toString());
 		addZone(getNOM_ST_AGENT_MODIFICATION(), new Integer(dto.getIdAgent() - 9000000).toString());
+		addZone(getNOM_ST_ANNEE_MODIFICATION(), dto.getDpmIndemniteAnnee().getAnnee().toString());
 		
 		String choix = "";
 		if(dto.isChoixIndemnite()) {
@@ -540,7 +565,7 @@ public class OePTGPrimeDpm extends BasicProcess {
 		dto.setChoixRecuperation(getVAL_RG_CHOIX().equals(getNOM_RB_RECUPERATION()));
 		dto.setIdAgentCreation(getAgentConnecte(request).getIdAgent());
 
-		ReturnMessageDto srm = ptgService.saveIndemniteChoixAgent(getAgentConnecte(request).getIdAgent(), getDpmAnneeOuverte().getAnnee(), dto);
+		ReturnMessageDto srm = ptgService.saveIndemniteChoixAgent(getAgentConnecte(request).getIdAgent(), dto);
 
 		if (srm.getErrors().size() > 0) {
 			String err = Const.CHAINE_VIDE;
@@ -635,6 +660,8 @@ public class OePTGPrimeDpm extends BasicProcess {
 		return "NOM_PB_VALIDATION";
 	}
 
+	
+	/* Liste déroulante des années, pour recherche */
 	public String getNOM_LB_ANNEE_SELECT() {
 		return "NOM_LB_ANNEE_SELECT";
 	}
@@ -654,7 +681,40 @@ public class OePTGPrimeDpm extends BasicProcess {
 	}
 	public String[] getVAL_LB_ANNEE() {
 		return getLB_ANNEE();
-	}	
+	}
+	
+	
+	/* Liste déroulante des années, pour création et modification d'une prime agent */
+	public String getNOM_LB_ANNEE_CREATION_SELECT() {
+		return "NOM_LB_ANNEE_CREATION_SELECT";
+	}
+	public String getVAL_LB_ANNEE_CREATION_SELECT() {
+		return getZone(getNOM_LB_ANNEE_CREATION_SELECT());
+	}
+	
+	private void setLB_ANNEE_CREATION(String[] newLB_ANNEE_CREATION) {
+		LB_ANNEE_CREATION = newLB_ANNEE_CREATION;
+	}
+	
+	private String[] getLB_ANNEE_CREATION() {
+		if (LB_ANNEE_CREATION == null) {
+			LB_ANNEE_CREATION = initialiseLazyLB();
+		}
+		return LB_ANNEE_CREATION;
+	}
+	public String[] getVAL_LB_ANNEE_CREATION() {
+		return getLB_ANNEE_CREATION();
+	}
+
+	// Année lors d'une modification
+	public String getNOM_ST_ANNEE_MODIFICATION() {
+		return "NOM_ST_ANNEE_MODIFICATION";
+	}
+
+	public String getVAL_ST_ANNEE_MODIFICATION() {
+		return getZone(getNOM_ST_ANNEE_MODIFICATION());
+	}
+	
 	
 	public String getNOM_EF_SERVICE() {
 		return "NOM_EF_SERVICE";
@@ -733,6 +793,10 @@ public class OePTGPrimeDpm extends BasicProcess {
 
 	public String getVAL_ST_DATE_ETAT(int i) {
 		return getZone(getNOM_ST_DATE_ETAT(i));
+	}
+
+	public String getNOM_LB_ANNEE_CREATION() {
+		return "NOM_LB_ANNEE_CREATION";
 	}
 
 	public String getNOM_LB_ANNEE() {

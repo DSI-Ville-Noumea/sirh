@@ -164,11 +164,9 @@
                     <thead>
                         <tr>
                             <th width="20px" align="center">
-                            <% if(null != process.getDpmAnneeOuverte()) { %>
-                            	<img src="images/ajout.gif" height="16px" width="16px" title="Créer une demande de titre repas" 
-	                            	onClick="executeBouton('<%=process.getNOM_PB_AJOUTER_CHOIX_DPM()%>')" 
-	                            	class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>">
-	                        <% } %>
+                           	<img src="images/ajout.gif" height="16px" width="16px" title="Créer une demande de titre repas" 
+                            	onClick="executeBouton('<%=process.getNOM_PB_AJOUTER_CHOIX_DPM()%>')" 
+                            	class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>">
             				</th>
             				<th>Matr</th>
                             <th>Agent</th>
@@ -185,19 +183,16 @@
                         %>
                         <tr id="tr<%=TR.getIdDpmIndemChoixAgent() %>">
                             <td width="20px" align="center">
-                             <% if(null != process.getDpmAnneeOuverte()
-                             		&& process.getDpmAnneeOuverte().getAnnee().equals(TR.getDpmIndemniteAnnee().getAnnee())){ %>
-                            	<img onkeydown="" onkeypress="" onkeyup="" src="images/modifier.gif" height="15px" width="15px" title="Editer le pointage" 
-                            		onClick="executeBouton('<%=process.getNOM_PB_SAISIE_CHOIX(indiceTR) %>')" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>">
-                            	<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_SAISIE_CHOIX(indiceTR)%>" value="">
-                            	
-                            	<% if(!"".equals(process.getVAL_ST_CHOIX(indiceTR))) { %>
-                            	<img onkeydown="" onkeypress="" onkeyup="" title="annuler" type="image" src="images/suppression.gif"  
-                            		height="15px" width="15px" class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" 
-                            		name="<%=process.getNOM_PB_SUPPRIMER(indiceTR)%>" onclick="confirm('Etes-vous sûr de vouloir supprimer?');executeBouton('<%=process.getNOM_PB_SUPPRIMER(indiceTR)%>')">
-								<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_SUPPRIMER(indiceTR)%>" value="">
-								<% } %>
-                            <% } %>
+                           	<img onkeydown="" onkeypress="" onkeyup="" src="images/modifier.gif" height="15px" width="15px" title="Editer le pointage" 
+                           		onClick="executeBouton('<%=process.getNOM_PB_SAISIE_CHOIX(indiceTR) %>')" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>">
+                           	<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_SAISIE_CHOIX(indiceTR)%>" value="">
+                           	
+                           	<% if(!"".equals(process.getVAL_ST_CHOIX(indiceTR)) && null != process.getDpmAnneeOuverte() && process.getDpmAnneeOuverte().getAnnee().toString().equals(process.getVAL_ST_ANNEE(indiceTR))) { %>
+                           	<img onkeydown="" onkeypress="" onkeyup="" title="annuler" type="image" src="images/suppression.gif"  
+                           		height="15px" width="15px" class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" 
+                           		name="<%=process.getNOM_PB_SUPPRIMER(indiceTR)%>" onclick="confirm('Etes-vous sûr de vouloir supprimer?');executeBouton('<%=process.getNOM_PB_SUPPRIMER(indiceTR)%>')">
+							<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_SUPPRIMER(indiceTR)%>" value="">
+							<% } %>
                             </td>
                             <td width="30px"><%=process.getVAL_ST_MATRICULE(indiceTR)%></td>
                             <td width="150px"><%=process.getVAL_ST_AGENT(indiceTR)%></td>
@@ -229,9 +224,14 @@
 	                
 	                    <INPUT type="radio" <%= process.forRadioHTML(process.getNOM_RG_CHOIX(), process.getNOM_RB_INDEMNITE()) %> ><span class="sigp2Mandatory">Indemnité</span>
 						<INPUT type="radio" <%= process.forRadioHTML(process.getNOM_RG_CHOIX(), process.getNOM_RB_RECUPERATION()) %> ><span class="sigp2Mandatory">Récupération</span>
+						
+	                    <span class="sigp2Mandatory" style="width:50px;margin-left: 20px;">Année :</span>
+		                <SELECT class="sigp2-saisie" name="<%=process.getNOM_LB_ANNEE_CREATION()%>" style="width:70px;"> 
+		                    <%=process.forComboHTML(process.getVAL_LB_ANNEE_CREATION(), process.getVAL_LB_ANNEE_CREATION_SELECT())%>
+		                </SELECT>
 	                    <BR/>
 	                    <div align="center">
-		                    <INPUT onkeydown="" onkeypress="" onkeyup="" type="submit" class="sigp2-Bouton-100" value="Creer" name="<%=process.getNOM_PB_CREATION()%>">
+		                    <INPUT onkeydown="" onkeypress="" onkeyup="" type="submit" class="sigp2-Bouton-100" value="Créer" name="<%=process.getNOM_PB_CREATION()%>">
 		                    <INPUT onkeydown="" onkeypress="" onkeyup="" type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
 	                    </div>
 	            </FIELDSET>
@@ -248,6 +248,9 @@
 	                    
 	                    <INPUT type="radio" <%= process.forRadioHTML(process.getNOM_RG_CHOIX(), process.getNOM_RB_INDEMNITE()) %> ><span class="sigp2Mandatory">Indemnité</span>
 						<INPUT type="radio" <%= process.forRadioHTML(process.getNOM_RG_CHOIX(), process.getNOM_RB_RECUPERATION()) %> ><span class="sigp2Mandatory">Récupération</span>
+						
+	                    <span class="sigp2Mandatory" style="width:50px;margin-left: 20px;">Année :</span>
+		                <INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_ANNEE_MODIFICATION()%>" size="10" type="text" value="<%= process.getVAL_ST_ANNEE_MODIFICATION()%>" style="margin-right:10px;" readonly="readonly">
 	                    <BR/>
 	                    <div align="center">
 		                    <INPUT onkeydown="" onkeypress="" onkeyup="" type="submit" class="sigp2-Bouton-100" value="Modifier" name="<%=process.getNOM_PB_MODIFICATION()%>">

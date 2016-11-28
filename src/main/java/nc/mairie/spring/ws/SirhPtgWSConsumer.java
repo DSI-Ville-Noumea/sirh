@@ -832,13 +832,12 @@ public class SirhPtgWSConsumer extends BaseWsConsumer implements ISirhPtgWSConsu
 	}
 
 	@Override
-	public ReturnMessageDto saveIndemniteChoixAgent(Integer idAgentConnecte, Integer annee, DpmIndemniteChoixAgentDto listDto) {
+	public ReturnMessageDto saveIndemniteChoixAgent(Integer idAgentConnecte, DpmIndemniteChoixAgentDto listDto) {
 		
 		String url = String.format(ptgWsBaseUrl + ptgSaveListIndemniteChoixAgentUrl);
 		
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgentConnecte", idAgentConnecte.toString());
-		params.put("annee", annee.toString());
 
 		String json = new JSONSerializer()
 				.exclude("*.class").exclude("*.choix")

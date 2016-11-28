@@ -150,7 +150,7 @@ public interface ISirhPtgWSConsumer {
 	List<DpmIndemniteChoixAgentDto> getListDpmIndemniteChoixAgent(Integer idAgent, Integer annee, Boolean isChoixIndemnite,
 			Boolean isChoixRecuperation, List<Integer> listIdsAgent);
 
-	ReturnMessageDto saveIndemniteChoixAgent(Integer idAgentConnecte, Integer annee, DpmIndemniteChoixAgentDto listDto);
+	ReturnMessageDto saveIndemniteChoixAgent(Integer idAgentConnecte, DpmIndemniteChoixAgentDto listDto);
 
 	ReturnMessageDto deleteIndemniteChoixAgent(Integer idAgentConnecte, Integer idDpmIndemChoixAgent);
 
