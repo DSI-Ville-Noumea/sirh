@@ -10,7 +10,7 @@
 	position: absolute;
 	left: 0px;
 	top: 0px;
-	height: 25px;
+	height: 70px;
 	background-color: #BBD2E1;
 	z-index:100; 
 	width:200px;
@@ -21,15 +21,15 @@
 	width: 2640px;
 	left: 200px;
 	top: 0px;
-	height: 25px;
+	height: 70px;
 	z-index:10;
 }
 
 .first_col {
 	position: absolute;
-	top: 25px;
+	top: 70px;
 	left: 0px;
-	width: 500px;
+	width: 400px;
 	background-color: white;
 }
 
@@ -37,9 +37,9 @@
 	position: absolute;
 	overflow: scroll;
 	left: 200px;
-	top: 25px;
+	top: 70px;
 	width: 750px;
-	height: 475px;
+	height: 430px;
 	background-color: white;
 	z-index:10;
 }
@@ -50,6 +50,7 @@ td{
 
 .entete table tr td{
 	width:132px;
+	height: 70px;
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 14px;
 	font-weight: bold;
@@ -57,15 +58,23 @@ td{
 	background-color: #BBD2E1;
 }
 
+.entete table tr td div{
+	height: 45%;
+	text-align: center;
+}
+
 .first_col table tr td{
-	width:500px;
+	width:300px;
 	height:23px;
 }
 
-.the_table table tr td{
+.the_table table tr td {
 	width:132px;
 	height:23px;
 }
+ .the_table table tr td SELECT {
+ 	width: inherit;
+ }
 
 .titre table, 
 .entete table,
@@ -77,11 +86,11 @@ td{
 
 .titre table{
 	width:200px; 
-	height:25px; 
+	height:70px; 
 }
 
 .entete table{
-	height:25px;
+	height:70px;
 }
 
 .first_col table{

@@ -9,7 +9,6 @@
 <HEAD>
 <META name="GENERATOR" content="IBM WebSphere Page Designer V3.5.3 for Windows">
 <META http-equiv="Content-Style-Type" content="text/css">
-<LINK rel="stylesheet" href="theme/calendrier-mairie.css" type="text/css">
 <LINK rel="stylesheet" href="theme/tabDroits.css" type="text/css">
 <SCRIPT type="text/javascript" src="js/GestionCalendrier.js"></SCRIPT>
 <LINK href="theme/sigp2.css" rel="stylesheet" type="text/css">
@@ -21,20 +20,20 @@
 //afin de sélectionner un élément dans une liste
 function executeBouton(nom)
 {
-document.formu.elements[nom].click();
+	document.formu.elements[nom].click();
 }
 
 // afin de mettre le focus sur une zone précise
 function setfocus(nom)
 {
-if (document.formu.elements[nom] != null)
-document.formu.elements[nom].focus();
+	if (document.formu.elements[nom] != null)
+		document.formu.elements[nom].focus();
 }
 
 function doOnScroll(mondiv)
 {
-document.getElementById("first_col").style.top=(25-mondiv.scrollTop)+"px"
-document.getElementById("entete").style.left=(200-mondiv.scrollLeft)+"px"
+ 	document.getElementById("first_col").style.top=(70-mondiv.scrollTop)+"px";
+	document.getElementById("entete").style.left=(200-mondiv.scrollLeft)+"px";
 }
 </SCRIPT>
 <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -67,10 +66,13 @@ document.getElementById("entete").style.left=(200-mondiv.scrollLeft)+"px"
 											<%for (int i = 0;i<process.getListeGroupe().size();i++){
 												Groupe g = (Groupe)process.getListeGroupe().get(i); %>
 												<td>
-													<%= g.getLibGroupe() %>
-													&nbsp;
-													<INPUT type="image" src="images/modifier.gif" height="16px" width="16px" name="<%=process.getNOM_PB_MODIFIER_GROUPE(i)%>">
-													<INPUT type="image" src="images/suppression.gif" height="16px" width="16px" name="<%=process.getNOM_PB_SUPPRIMER_GROUPE(i)%>">
+													<div>
+														<%= g.getLibGroupe() %>
+													</div>
+													<div>
+														<INPUT type="image" src="images/modifier.gif" height="16px" width="16px" name="<%=process.getNOM_PB_MODIFIER_GROUPE(i)%>">
+														<INPUT type="image" src="images/suppression.gif" height="16px" width="16px" name="<%=process.getNOM_PB_SUPPRIMER_GROUPE(i)%>">
+													</div>
 												</td>
 											<%} %>
 										<%} %>
