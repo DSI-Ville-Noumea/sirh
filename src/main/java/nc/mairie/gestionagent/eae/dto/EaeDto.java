@@ -38,7 +38,6 @@ public class EaeDto {
 	@JsonSerialize(using = JsonDateSerializer.class)
 	@JsonDeserialize(using = JsonDateDeserializer.class)
 	private Date						dateControle;
-	private String						heureControle;
 
 	private String						userControle;
 	private Integer						idAgentDelegataire;
@@ -161,14 +160,6 @@ public class EaeDto {
 
 	public void setDateControle(Date dateControle) {
 		this.dateControle = dateControle;
-	}
-
-	public String getHeureControle() {
-		return heureControle;
-	}
-
-	public void setHeureControle(String heureControle) {
-		this.heureControle = heureControle;
 	}
 
 	public String getUserControle() {

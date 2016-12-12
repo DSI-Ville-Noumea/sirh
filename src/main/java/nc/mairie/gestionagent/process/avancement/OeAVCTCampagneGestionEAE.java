@@ -1617,8 +1617,6 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 		setEaeCourant(eaeCourant);
 		BirtDto evalue = eaeCourant.getEvalue();
 		UserAppli user = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
-		SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-		String heureAction = sdf.format(new Date());
 
 		if (getVAL_CK_VALID_EAE(idEae).equals(getCHECKED_ON())) {
 
@@ -1699,7 +1697,6 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 			// on met à  jour le statut de l'EAE
 			getEaeCourant().setEtat(EnumEtatEAE.CONTROLE.getCode());
 			getEaeCourant().setDateControle(new Date());
-			getEaeCourant().setHeureControle(heureAction);
 			getEaeCourant().setUserControle(user.getUserName());
 
 			ReturnMessageDto result = eaeService.setEae(getAgentConnecte(request).getIdAgent(), getEaeCourant());
@@ -1736,8 +1733,6 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 		setEaeCourant(eaeCourant);
 		BirtDto evalue = getEaeCourant().getEvalue();
 		UserAppli user = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
-		SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-		String heureAction = sdf.format(new Date());
 
 		try {
 			AvancementFonctionnaires avct = getAvancementFonctionnairesDao()
@@ -1770,7 +1765,6 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 		// on met à  jour le statut de l'EAE
 		getEaeCourant().setEtat(EnumEtatEAE.FINALISE.getCode());
 		getEaeCourant().setDateControle(new Date());
-		getEaeCourant().setHeureControle(heureAction);
 		getEaeCourant().setUserControle(user.getUserName());
 
 		ReturnMessageDto result = eaeService.setEae(getAgentConnecte(request).getIdAgent(), getEaeCourant());
