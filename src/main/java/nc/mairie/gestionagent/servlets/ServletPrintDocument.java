@@ -134,8 +134,9 @@ public class ServletPrintDocument extends javax.servlet.http.HttpServlet {
 			if (OeAVCTFonctPrepaCAP.class.getName().equals(fromPage)) {
 				String idCap = req.getParameter("idCap");
 				String idCadreEmploi = req.getParameter("idCadreEmploi");
+				String idAgent = req.getParameter("idAgent");
 
-				fileByte = sirhService.downloadTableauAvancement(Integer.valueOf(idCap), Integer.valueOf(idCadreEmploi), true, "PDF");
+				fileByte = sirhService.downloadTableauAvancement(Integer.valueOf(idCap), Integer.valueOf(idCadreEmploi), true, "PDF", Integer.valueOf(idAgent));
 			}
 
 			//// OePOSTEFichePoste ////

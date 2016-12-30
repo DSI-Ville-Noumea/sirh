@@ -105,10 +105,10 @@ public class SirhWSConsumer extends BaseWsConsumer implements ISirhWSConsumer {
 	}
 
 	@Override
-	public byte[] downloadTableauAvancement(int idCap, int idCadreEmploi, boolean avisEAE, String format) throws Exception {
+	public byte[] downloadTableauAvancement(int idCap, int idCadreEmploi, boolean avisEAE, String format,Integer idAgentConnecte) throws Exception {
 		String url = String.format(sirhWsBaseUrl + sirhDownloadTabAvctPDFUrl);
 
-		String urlWSTableauAvctCAP = url + "?idCap=" + idCap + "&idCadreEmploi=" + idCadreEmploi + "&avisEAE=" + avisEAE;
+		String urlWSTableauAvctCAP = url + "?idCap=" + idCap + "&idCadreEmploi=" + idCadreEmploi + "&avisEAE=" + avisEAE+ "&idAgent=" + idAgentConnecte;
 
 		logger.debug("downloadTableauAvancement : URL génération tableau AVCT : " + urlWSTableauAvctCAP);
 

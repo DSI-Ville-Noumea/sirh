@@ -1410,7 +1410,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 		CadreEmploi cadre = getCadreEmploiDao().chercherCadreEmploiByLib(indiceCadreEmploi);
 
 		String url = "PrintDocument?fromPage=" + this.getClass().getName() + "&nomFichier=" + nomFichier + "&idCap=" + cap.getIdCap()
-				+ "&idCadreEmploi=" + cadre.getIdCadreEmploi();
+				+ "&idCadreEmploi=" + cadre.getIdCadreEmploi()+ "&idAgent=" + getAgentConnecte(request).getIdAgent();
 		setURLFichier(getScriptOuverture(url));
 
 		return true;
@@ -1883,7 +1883,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 		CadreEmploi cadre = getCadreEmploiDao().chercherCadreEmploiByLib(indiceCadreEmploi);
 
 		String url = "PrintDocument?fromPage=" + this.getClass().getName() + "&nomFichier=" + nomFichier + "&idCap=" + cap.getIdCap()
-				+ "&idCadreEmploi=" + cadre.getIdCadreEmploi();
+				+ "&idCadreEmploi=" + cadre.getIdCadreEmploi()+ "&idAgent=" + getAgentConnecte(request).getIdAgent();
 		setURLFichier(getScriptOuverture(url));
 
 		return true;

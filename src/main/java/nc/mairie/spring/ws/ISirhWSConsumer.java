@@ -23,7 +23,7 @@ public interface ISirhWSConsumer {
 	ReturnMessageDto deleteFDP(Integer idFichePoste, Integer idAgent);
 
 	// BIRT
-	byte[] downloadTableauAvancement(int idCap, int idCadreEmploi, boolean avisEAE, String format) throws Exception;
+	byte[] downloadTableauAvancement(int idCap, int idCadreEmploi, boolean avisEAE, String format,Integer idAgentConnecte) throws Exception;
 
 	byte[] downloadArrete(String csvAgents, boolean isChangementClasse, int anneeAvct, boolean isAffecte) throws Exception;
 
