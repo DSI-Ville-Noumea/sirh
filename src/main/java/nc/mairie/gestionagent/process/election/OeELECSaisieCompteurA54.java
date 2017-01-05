@@ -178,7 +178,7 @@ public class OeELECSaisieCompteurA54 extends BasicProcess {
 			}
 
 			setLB_ANNEE_FILTRE(aFormat.getListeFormatee(false));
-			addZone(getNOM_LB_ANNEE_FILTRE_SELECT(), "1");
+			addZone(getNOM_LB_ANNEE_FILTRE_SELECT(), "" + getListeAnneeFiltre().indexOf(anneeCourante.toString()));
 		}
 		// Si liste annee vide alors affectation
 		if (getLB_ANNEE() == LBVide) {
@@ -865,15 +865,19 @@ public class OeELECSaisieCompteurA54 extends BasicProcess {
 	}
 
 	public boolean isDuplicationPossible() {
+		//35882 : on ajoute la possibilité de faire sur l'année precedente
 		// on ne peut dupliquer que si on est sur l'année en cours
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(new Date());
 		Integer anneeCourante = cal.get(Calendar.YEAR);
+		Integer anneePrec = anneeCourante-1;
 
 		// recupération année du filtre
 		int indiceAnnee = (Services.estNumerique(getVAL_LB_ANNEE_FILTRE_SELECT()) ? Integer.parseInt(getVAL_LB_ANNEE_FILTRE_SELECT()) : -1);
 		String anneeFiltre = getListeAnneeFiltre().get(indiceAnnee);
 		if (new Integer(anneeFiltre).equals(anneeCourante)) {
+			return true;
+		}if (new Integer(anneeFiltre).equals(anneePrec)) {
 			return true;
 		}
 		return false;
@@ -897,11 +901,11 @@ public class OeELECSaisieCompteurA54 extends BasicProcess {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
 			return false;
 		}
-		// on recupere la liste de tous les compteurs pour l'année en cours
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(new Date());
-		Integer anneeCourante = cal.get(Calendar.YEAR);
-		ArrayList<CompteurDto> listeCompteur = (ArrayList<CompteurDto>) absService.getListeCompteursA54(anneeCourante, null);
+		// on recupere la liste de tous les compteurs pour l'année choisie dans le filtre
+		// recupération année du filtre
+		int indiceAnnee = (Services.estNumerique(getVAL_LB_ANNEE_FILTRE_SELECT()) ? Integer.parseInt(getVAL_LB_ANNEE_FILTRE_SELECT()) : -1);
+		String anneeChoisie = getListeAnneeFiltre().get(indiceAnnee);
+		ArrayList<CompteurDto> listeCompteur = (ArrayList<CompteurDto>) absService.getListeCompteursA54(new Integer(anneeChoisie), null);
 
 		// on met le motif "reprise de données"
 		MotifCompteurDto motifReprise = null;
@@ -923,8 +927,8 @@ public class OeELECSaisieCompteurA54 extends BasicProcess {
 
 				compteurDto.setMotifCompteurDto(motifReprise);
 				compteurDto.setDureeAAjouter(10.0);
-				compteurDto.setDateDebut(new DateTime(anneeCourante + 1, 1, 1, 0, 0, 0).toDate());
-				compteurDto.setDateFin(new DateTime(anneeCourante + 1, 12, 31, 23, 59, 0).toDate());
+				compteurDto.setDateDebut(new DateTime(new Integer(anneeChoisie) + 1, 1, 1, 0, 0, 0).toDate());
+				compteurDto.setDateFin(new DateTime(new Integer(anneeChoisie) + 1, 12, 31, 23, 59, 0).toDate());
 				compteurDto.setActif(true);
 				// on ajoute le DTO
 				listeDto.add(compteurDto);
