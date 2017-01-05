@@ -108,10 +108,10 @@ public class CompteurDto {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (idAgent == null) {
+		if (idCompteur == null) {
 			return false;
 		}
-		return idAgent.toString().equals(((CompteurDto) obj).getIdAgent().toString());
+		return idCompteur.toString().equals(((CompteurDto) obj).getIdCompteur().toString());
 	}
 
 	public boolean isActif() {
