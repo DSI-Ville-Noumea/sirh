@@ -1023,9 +1023,12 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 	}
 
 	public boolean peutModifierCompteur(int i) {
-		CompteurDto dto = new CompteurDto();
-		dto.setIdCompteur(i);
-		CompteurDto compteurCourant = (CompteurDto) getListeCompteur().get(getListeCompteur().indexOf(dto));
+		//on parcours la liste des compteurs
+		CompteurDto compteurCourant  = null;
+		for(CompteurDto cpt : getListeCompteur()){
+			if(i==cpt.getIdCompteur())
+				compteurCourant = cpt;
+		}
 		if (compteurCourant.getDateFin().compareTo(new Date()) < 0) {
 			return false;
 		}
@@ -1041,11 +1044,14 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 		addZone(getNOM_ST_ACTION_COMPTEUR(), Const.CHAINE_VIDE);
 		videZonesDeSaisie(request);
 		setOrganisationCourante(null);
+		
+		//on parcours la liste des compteurs
+		CompteurDto cptCourant  = null;
+		for(CompteurDto cpt : getListeCompteur()){
+			if(indiceEltAConsulter==cpt.getIdCompteur())
+				cptCourant = cpt;
+		}
 
-		CompteurDto dto = new CompteurDto();
-		dto.setIdCompteur(indiceEltAConsulter);
-
-		CompteurDto cptCourant = (CompteurDto) getListeCompteur().get(getListeCompteur().indexOf(dto));
 		setCompteurCourant(cptCourant);
 
 		if (!initialiseCompteurCourant(request, getCompteurCourant()))
@@ -1067,11 +1073,14 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 		addZone(getNOM_ST_ACTION_COMPTEUR(), Const.CHAINE_VIDE);
 		videZonesDeSaisie(request);
 		setOrganisationCourante(null);
+		
+		//on parcours la liste des compteurs
+		CompteurDto cptCourant  = null;
+		for(CompteurDto cpt : getListeCompteur()){
+			if(indiceEltAConsulter==cpt.getIdCompteur())
+				cptCourant = cpt;
+		}
 
-		CompteurDto dto = new CompteurDto();
-		dto.setIdCompteur(indiceEltAConsulter);
-
-		CompteurDto cptCourant = (CompteurDto) getListeCompteur().get(getListeCompteur().indexOf(dto));
 		setCompteurCourant(cptCourant);
 
 		if (!initialiseCompteurCourant(request, getCompteurCourant()))
