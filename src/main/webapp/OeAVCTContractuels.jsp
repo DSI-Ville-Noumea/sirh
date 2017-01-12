@@ -241,7 +241,7 @@ document.formu.elements[nom].focus();
 					    $('#tabAvctContr').dataTable({
 							"oLanguage": {"sUrl": "media/dataTables/language/fr_FR.txt"},
 							"aoColumns": [{"bSearchable":false, "bVisible":false},null,null,null,{"bSearchable":false},{"bSortable":false,"bSearchable":false},{"bSortable":false,"bSearchable":false},{"bSortable":false,"bSearchable":false},{"bSearchable":false},{"bSearchable":false,"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false,"bSortable":false},{"bSearchable":false},{"bSearchable":false,"bSortable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false,"bSortable":false}],
-							"sDom": '<"H"fl>t<"F"iT>',
+							"sDom": '<"H"l>t<"F"iT>',
 							"sScrollY": "375px",
 							"bPaginate": false,
 							"oTableTools": {

@@ -263,7 +263,7 @@ function setfocus(nom)
 				    $('#tabAvctConvColl').dataTable({
 						"oLanguage": {"sUrl": "media/dataTables/language/fr_FR.txt"},
 						"aoColumns": [{"bSearchable":false, "bVisible":false},{"bSearchable":false},null,null,{"bSortable":false,"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSortable":false,"bSearchable":false},null,null,{"bSearchable":false,"bSortable":false},{"bSearchable":false},{"bSearchable":false,"bSortable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false,"bSortable":false}],
-						"sDom": '<"H"fl>t<"F"iT>',
+						"sDom": '<"H"l>t<"F"iT>',
 						"sScrollY": "375px",
 						"aaSorting": [[ 2, "asc" ]],
 						"bPaginate": false,

@@ -169,6 +169,21 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	}
 
 	private void afficheListeAvancement(HttpServletRequest request) throws Exception {
+
+		CampagneEaeDto campagneEAE = null;
+		List<EaeDto> listEae = new ArrayList<>();
+		try {
+			campagneEAE = eaeService.getCampagneAnneePrecedente(getAgentConnecte(request).getIdAgent(), Integer.valueOf(getAnneeSelect()));
+			if (campagneEAE != null && campagneEAE.getIdCampagneEae() != null) {
+				// on cherche l'eae correspondant ainsi que l'eae evaluation
+				FormRehercheGestionEae form = new FormRehercheGestionEae();
+				form.setIdCampagneEae(campagneEAE.getIdCampagneEae());
+				listEae = eaeService.getListeEaeDto(getAgentConnecte(request).getIdAgent(), form);
+			}
+		} catch (Exception e) {
+			// pas de campagne pour cette année
+		}
+
 		for (int j = 0; j < getListeAvct().size(); j++) {
 			AvancementFonctionnaires av = (AvancementFonctionnaires) getListeAvct().get(j);
 			Integer i = av.getIdAvct();
@@ -213,14 +228,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 			// on cherche la camapagne correspondante
 			String avisSHD = Const.CHAINE_VIDE;
 			MotifAvancement motif = null;
-			try {
-				CampagneEaeDto campagneEAE = eaeService.getCampagneAnneePrecedente(getAgentConnecte(request).getIdAgent(),
-						Integer.valueOf(getAnneeSelect()));
-
-				// on cherche l'eae correspondant ainsi que l'eae evaluation
-				FormRehercheGestionEae form = new FormRehercheGestionEae();
-				form.setIdCampagneEae(campagneEAE.getIdCampagneEae());
-				List<EaeDto> listEae = eaeService.getListeEaeDto(getAgentConnecte(request).getIdAgent(), form);
+			if (campagneEAE != null) {
 				EaeDto eaeAgent = eaeService.getEaeDtoByIdAgent(listEae, av.getIdAgent());
 
 				if (eaeAgent.getEtat().equals(EnumEtatEAE.CONTROLE.getCode()) || eaeAgent.getEtat().equals(EnumEtatEAE.FINALISE.getCode())) {
@@ -238,8 +246,6 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 						avisSHD = "MOY";
 					}
 				}
-			} catch (Exception e) {
-				// pas de campagne pour cette année
 			}
 			// motif Avct
 			if (av.getIdMotifAvct() != null) {
@@ -1410,7 +1416,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 		CadreEmploi cadre = getCadreEmploiDao().chercherCadreEmploiByLib(indiceCadreEmploi);
 
 		String url = "PrintDocument?fromPage=" + this.getClass().getName() + "&nomFichier=" + nomFichier + "&idCap=" + cap.getIdCap()
-				+ "&idCadreEmploi=" + cadre.getIdCadreEmploi()+ "&idAgent=" + getAgentConnecte(request).getIdAgent();
+				+ "&idCadreEmploi=" + cadre.getIdCadreEmploi() + "&idAgent=" + getAgentConnecte(request).getIdAgent();
 		setURLFichier(getScriptOuverture(url));
 
 		return true;
@@ -1883,7 +1889,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 		CadreEmploi cadre = getCadreEmploiDao().chercherCadreEmploiByLib(indiceCadreEmploi);
 
 		String url = "PrintDocument?fromPage=" + this.getClass().getName() + "&nomFichier=" + nomFichier + "&idCap=" + cap.getIdCap()
-				+ "&idCadreEmploi=" + cadre.getIdCadreEmploi()+ "&idAgent=" + getAgentConnecte(request).getIdAgent();
+				+ "&idCadreEmploi=" + cadre.getIdCadreEmploi() + "&idAgent=" + getAgentConnecte(request).getIdAgent();
 		setURLFichier(getScriptOuverture(url));
 
 		return true;
