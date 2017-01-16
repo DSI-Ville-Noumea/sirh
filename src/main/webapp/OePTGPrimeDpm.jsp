@@ -216,7 +216,9 @@
             <%if(process.getVAL_ST_ACTION().equals(process.ACTION_CREATION)){ %>
             
 				<FIELDSET class="sigp2Fieldset" style="text-align:left;" id="<%=process.ACTION_CREATION %>">
-					<legend class="sigp2Legend">Création d'une demande de titre repas pour le mois en cours</legend>
+					<legend class="sigp2Legend">Création du choix d'un agent pour la prime DPM</legend>
+           				<span style="color: red;">Attention, en cas de création d'un choix, merci de rejeter toutes les hsup concernées, valider le choix, et approuver à nouveau les hsup.</span>
+           				<br/>
            				<INPUT name="JSP" type="hidden" value="<%= process.getJSP()%>">
 	                    <span class="sigp2Mandatory" style="width:50px;margin-left: 20px;">Agent :</span>
 	                    <INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_AGENT_CREATION()%>" size="10" type="text" value="<%= process.getVAL_ST_AGENT_CREATION()%>" style="margin-right:10px;">
@@ -240,7 +242,9 @@
             <%if(process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION)){ %>
             
 				<FIELDSET class="sigp2Fieldset" style="text-align:left;" id="<%=process.ACTION_MODIFICATION %>">
-					<legend class="sigp2Legend">Modification d'une demande de titre repas pour le mois en cours</legend>
+					<legend class="sigp2Legend">Modification du choix d'un agent sur la prime DPM</legend>
+						<span style="color: red;">Attention, en cas de modification d'un choix, merci de rejeter toutes les hsup concernées, modifier le choix, et approuver à nouveau les hsup.</span>
+           				<br/>
            				<INPUT name="<%= process.getNOM_ST_INDICE_CHOIX_AGENT() %>" type="hidden" value="<%= process.getVAL_ST_INDICE_CHOIX_AGENT()%>">
            				<INPUT name="JSP" type="hidden" value="<%= process.getJSP()%>">
 	                    <span class="sigp2Mandatory" style="width:50px;margin-left: 20px;">Agent :</span>
