@@ -151,4 +151,14 @@ public class EaeService implements IEaeService {
 		return eaeConsumer.finalizeEae(idEae, idAgent, eaeFinalisationDto);
 	}
 
+	@Override
+	public List<EaeDto> getListeEaeDtoLight(Integer idAgentSirh, FormRehercheGestionEae form) {
+		return eaeConsumer.getListeEaeDtoLight(idAgentSirh, form);
+	}
+
+	@Override
+	public CampagneEaeDto getCampagneAnneePrecedenteLight(Integer idAgentSirh, Integer anneePrecedente) {
+		return eaeConsumer.getCampagneAnneePrecedenteLight(idAgentSirh, anneePrecedente);
+	}
+
 }

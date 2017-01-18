@@ -63,4 +63,8 @@ public interface IEaeService {
 	ReturnMessageDto saveDateEvalueFromSirh(Integer idAgentSirh, Integer idEae, BirtDto evalue);
 
 	ReturnMessageDto finalizeEae(Integer idEae, Integer idAgent, EaeFinalizationDto eaeFinalisationDto);
+
+	List<EaeDto> getListeEaeDtoLight(Integer idAgent, FormRehercheGestionEae form);
+
+	CampagneEaeDto getCampagneAnneePrecedenteLight(Integer idAgent, Integer valueOf);
 }

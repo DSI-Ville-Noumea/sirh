@@ -429,13 +429,13 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 				// on regarde si il y a une campagne pour l'année en cours de
 				// l'avancement
 				try {
-					CampagneEaeDto campagneEAE = eaeService.getCampagneAnneePrecedente(getAgentConnecte(request).getIdAgent(), avct.getAnnee());
+					CampagneEaeDto campagneEAE = eaeService.getCampagneAnneePrecedenteLight(getAgentConnecte(request).getIdAgent(), avct.getAnnee());
 					
 					// on cherche l'eae correspondant ainsi que l'eae evaluation
 					FormRehercheGestionEae form  = new FormRehercheGestionEae();
 					form.setIdCampagneEae(campagneEAE.getIdCampagneEae());
 					form.setIdAgentEvalue(avct.getIdAgent());
-					List<EaeDto> listEae = eaeService.getListeEaeDto(getAgentConnecte(request).getIdAgent(), form);
+					List<EaeDto> listEae = eaeService.getListeEaeDtoLight(getAgentConnecte(request).getIdAgent(), form);
 					EaeDto eaeAgentAnne = eaeService.getEaeDtoByIdAgent(listEae, avct.getIdAgent());
 					
 					if (!eaeAgentAnne.getEtat().equals(EnumEtatEAE.CONTROLE.getCode())) {
@@ -470,7 +470,7 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 				// on regarde si il y a une campagne pour l'année en cours de
 				// l'avancement
 				try {
-					CampagneEaeDto campagneEAE = eaeService.getCampagneAnneePrecedente(getAgentConnecte(request).getIdAgent(), avct.getAnnee());
+					CampagneEaeDto campagneEAE = eaeService.getCampagneAnneePrecedenteLight(getAgentConnecte(request).getIdAgent(), avct.getAnnee());
 					
 					// on cherche l'eae correspondant ainsi que l'eae evaluation
 					FormRehercheGestionEae form  = new FormRehercheGestionEae();

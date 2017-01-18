@@ -32,32 +32,35 @@ public class SirhEaeWSConsumer extends BaseWsConsumer implements ISirhEaeWSConsu
 	@Qualifier("eaeWsBaseUrl")
 	private String				eaeWsBaseUrl;
 
-	private static final String	sirhEaelistEaesByAgentUrl		= "sirhEaes/listEaesByAgent";
-	private static final String	sirhSaveEvaluationUrl			= "sirhEaes/eaeEvaluation";
-	private static final String	sirhSavePlanActionUrl			= "sirhEaes/eaePlanAction";
-	private static final String	sirhSaveEvolutionUrl			= "sirhEaes/eaeEvolution";
-	private static final String	sirhListeTypeDeveloppementUrl	= "sirhEaes/listeTypeDeveloppement";
-	private static final String	sirhDetailsEaeUrl				= "sirhEaes/detailsEae";
+	private static final String	sirhEaelistEaesByAgentUrl			= "sirhEaes/listEaesByAgent";
+	private static final String	sirhSaveEvaluationUrl				= "sirhEaes/eaeEvaluation";
+	private static final String	sirhSavePlanActionUrl				= "sirhEaes/eaePlanAction";
+	private static final String	sirhSaveEvolutionUrl				= "sirhEaes/eaeEvolution";
+	private static final String	sirhListeTypeDeveloppementUrl		= "sirhEaes/listeTypeDeveloppement";
+	private static final String	sirhDetailsEaeUrl					= "sirhEaes/detailsEae";
 
-	private static final String	sirhListCampagnesEaeUrl			= "sirhEaes/listCampagnesEae";
-	private static final String	sirhSetCampagneEaeUrl			= "sirhEaes/setCampagneEae";
-	private static final String	sirhCampagneAnneePrecedenteUrl	= "sirhEaes/campagneAnneePrecedente";
-	private static final String	sirhDocumentEaeUrl				= "sirhEaes/documentEae";
-	private static final String	sirhDeleteDocumentEaeUrl		= "sirhEaes/deleteDocumentEae";
-	private static final String	sirhSetEaeUrl					= "sirhEaes/eae";
-	private static final String	sirhListeEaeUrl					= "sirhEaes/listeEae";
+	private static final String	sirhListCampagnesEaeUrl				= "sirhEaes/listCampagnesEae";
+	private static final String	sirhSetCampagneEaeUrl				= "sirhEaes/setCampagneEae";
+	private static final String	sirhCampagneAnneePrecedenteUrl		= "sirhEaes/campagneAnneePrecedente";
+	private static final String	sirhCampagneAnneePrecedenteLightUrl	= "sirhEaes/campagneAnneePrecedenteLight";
 
-	private static final String	sirhEaeCampagneTaskUrl			= "sirhEaes/eaeCampagneTask";
+	private static final String	sirhDocumentEaeUrl					= "sirhEaes/documentEae";
+	private static final String	sirhDeleteDocumentEaeUrl			= "sirhEaes/deleteDocumentEae";
+	private static final String	sirhSetEaeUrl						= "sirhEaes/eae";
+	private static final String	sirhListeEaeUrl						= "sirhEaes/listeEae";
+	private static final String	sirhListeEaeLightUrl				= "sirhEaes/listeEaeLight";
 
-	private static final String	sirhUpdateEaeUrl				= "sirhEaes/updateEae";
-	private static final String	sirhLastDocumentEaeFinaliseUrl	= "sirhEaes/lastDocumentEaeFinalise";
-	private static final String	sirhUpdateCapEaeUrl				= "sirhEaes/updateCapEae";
-	private static final String	sirhTableauDeBordUrl			= "sirhEaes/tableauDeBord";
+	private static final String	sirhEaeCampagneTaskUrl				= "sirhEaes/eaeCampagneTask";
+
+	private static final String	sirhUpdateEaeUrl					= "sirhEaes/updateEae";
+	private static final String	sirhLastDocumentEaeFinaliseUrl		= "sirhEaes/lastDocumentEaeFinalise";
+	private static final String	sirhUpdateCapEaeUrl					= "sirhEaes/updateCapEae";
+	private static final String	sirhTableauDeBordUrl				= "sirhEaes/tableauDeBord";
 
 	// sur l'EAE de l'agent
-	private static final String	saveDateEvaluateurFromSirhUrl	= "sirhEaes/saveDateEvaluateurFromSirh";
-	private static final String	saveDateEvalueFromSirhUrl		= "sirhEaes/saveDateEvalueFromSirh";
-	private static final String	eaeFinalizeEaeUrl				= "sirhEaes/finalizeEaeFromSIRH";
+	private static final String	saveDateEvaluateurFromSirhUrl		= "sirhEaes/saveDateEvaluateurFromSirh";
+	private static final String	saveDateEvalueFromSirhUrl			= "sirhEaes/saveDateEvalueFromSirh";
+	private static final String	eaeFinalizeEaeUrl					= "sirhEaes/finalizeEaeFromSIRH";
 
 	@Override
 	public List<EaeDto> getListEaesByidAgent(Integer idAgentSirh, Integer idAgent) {
@@ -344,5 +347,31 @@ public class SirhEaeWSConsumer extends BaseWsConsumer implements ISirhEaeWSConsu
 
 		ClientResponse res = createAndPostRequest(params, url, json);
 		return readResponse(ReturnMessageDto.class, res, url);
+	}
+
+	@Override
+	public List<EaeDto> getListeEaeDtoLight(Integer idAgentSirh, FormRehercheGestionEae form) {
+
+		String url = eaeWsBaseUrl + sirhListeEaeLightUrl;
+
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idAgent", idAgentSirh.toString());
+
+		ClientResponse res = createAndPostRequest(params, url,
+				new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class).deepSerialize(form));
+		return readResponseAsList(EaeDto.class, res, url);
+	}
+
+	@Override
+	public CampagneEaeDto getCampagneAnneePrecedenteLight(Integer idAgentSirh, Integer anneePrecedente) {
+
+		String url = eaeWsBaseUrl + sirhCampagneAnneePrecedenteLightUrl;
+
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idAgentSirh", idAgentSirh.toString());
+		params.put("anneePrecedente", anneePrecedente.toString());
+
+		ClientResponse res = createAndFireRequest(params, url);
+		return readResponse(CampagneEaeDto.class, res, url);
 	}
 }

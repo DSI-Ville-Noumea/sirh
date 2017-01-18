@@ -62,4 +62,8 @@ public interface ISirhEaeWSConsumer {
 
 	ReturnMessageDto finalizeEae(Integer idEae, Integer idAgent, EaeFinalizationDto eaeFinalisationDto);
 
+	List<EaeDto> getListeEaeDtoLight(Integer idAgentSirh, FormRehercheGestionEae form);
+
+	CampagneEaeDto getCampagneAnneePrecedenteLight(Integer idAgentSirh, Integer anneePrecedente);
+
 }

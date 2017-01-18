@@ -173,12 +173,12 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 		CampagneEaeDto campagneEAE = null;
 		List<EaeDto> listEae = new ArrayList<>();
 		try {
-			campagneEAE = eaeService.getCampagneAnneePrecedente(getAgentConnecte(request).getIdAgent(), Integer.valueOf(getAnneeSelect()));
+			campagneEAE = eaeService.getCampagneAnneePrecedenteLight(getAgentConnecte(request).getIdAgent(), Integer.valueOf(getAnneeSelect()));
 			if (campagneEAE != null && campagneEAE.getIdCampagneEae() != null) {
 				// on cherche l'eae correspondant ainsi que l'eae evaluation
 				FormRehercheGestionEae form = new FormRehercheGestionEae();
 				form.setIdCampagneEae(campagneEAE.getIdCampagneEae());
-				listEae = eaeService.getListeEaeDto(getAgentConnecte(request).getIdAgent(), form);
+				listEae = eaeService.getListeEaeDtoLight(getAgentConnecte(request).getIdAgent(), form);
 			}
 		} catch (Exception e) {
 			// pas de campagne pour cette année
