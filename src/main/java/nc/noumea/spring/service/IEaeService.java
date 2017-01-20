@@ -54,7 +54,6 @@ public interface IEaeService {
 
 	String getLastDocumentEaeFinalise(Integer idAgentSirh, Integer idEae);
 
-	ReturnMessageDto updateCapEae(Integer idAgentSirh, Integer idEae, Boolean cap);
 
 	List<EaeDashboardItemDto> getEaesDashboard(Integer idAgentSirh, Integer annee);
 

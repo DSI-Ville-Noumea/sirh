@@ -127,11 +127,6 @@ public class EaeService implements IEaeService {
 	}
 
 	@Override
-	public ReturnMessageDto updateCapEae(Integer idAgentSirh, Integer idEae, Boolean cap) {
-		return eaeConsumer.updateCapEae(idAgentSirh, idEae, cap);
-	}
-
-	@Override
 	public List<EaeDashboardItemDto> getEaesDashboard(Integer idAgentSirh, Integer annee) {
 		return eaeConsumer.getEaesDashboard(idAgentSirh, annee);
 	}

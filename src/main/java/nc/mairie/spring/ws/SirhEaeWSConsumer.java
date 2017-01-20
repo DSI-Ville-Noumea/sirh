@@ -54,7 +54,6 @@ public class SirhEaeWSConsumer extends BaseWsConsumer implements ISirhEaeWSConsu
 
 	private static final String	sirhUpdateEaeUrl					= "sirhEaes/updateEae";
 	private static final String	sirhLastDocumentEaeFinaliseUrl		= "sirhEaes/lastDocumentEaeFinalise";
-	private static final String	sirhUpdateCapEaeUrl					= "sirhEaes/updateCapEae";
 	private static final String	sirhTableauDeBordUrl				= "sirhEaes/tableauDeBord";
 
 	// sur l'EAE de l'agent
@@ -279,20 +278,6 @@ public class SirhEaeWSConsumer extends BaseWsConsumer implements ISirhEaeWSConsu
 
 		ClientResponse res = createAndFireRequest(params, url);
 		return readResponse(String.class, res, url);
-	}
-
-	@Override
-	public ReturnMessageDto updateCapEae(Integer idAgentSirh, Integer idEae, Boolean cap) {
-
-		String url = eaeWsBaseUrl + sirhUpdateCapEaeUrl;
-
-		HashMap<String, String> params = new HashMap<>();
-		params.put("idAgentSirh", idAgentSirh.toString());
-		params.put("idEae", idEae.toString());
-		params.put("cap", cap.toString());
-
-		ClientResponse res = createAndFireRequest(params, url);
-		return readResponse(ReturnMessageDto.class, res, url);
 	}
 
 	@Override

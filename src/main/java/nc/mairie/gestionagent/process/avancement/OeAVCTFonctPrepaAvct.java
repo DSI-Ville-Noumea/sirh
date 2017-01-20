@@ -8,12 +8,9 @@ import java.util.ListIterator;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.context.ApplicationContext;
+
 import nc.mairie.enums.EnumEtatAvancement;
-import nc.mairie.enums.EnumEtatEAE;
-import nc.mairie.gestionagent.eae.dto.CampagneEaeDto;
-import nc.mairie.gestionagent.eae.dto.EaeDto;
-import nc.mairie.gestionagent.eae.dto.FormRehercheGestionEae;
-import nc.mairie.gestionagent.radi.dto.LightUserDto;
 import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.Agent;
@@ -35,12 +32,6 @@ import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
 import nc.mairie.utils.VariablesActivite;
 import nc.noumea.spring.service.IAdsService;
-import nc.noumea.spring.service.IEaeService;
-import nc.noumea.spring.service.IRadiService;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationContext;
 
 /**
  * Process OeAVCTFonctionnaires Date de création : (21/11/11 09:55:36)
@@ -52,8 +43,6 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
-	private Logger logger = LoggerFactory.getLogger(OeAVCTFonctPrepaAvct.class);
 
 	public static final int STATUT_RECHERCHER_AGENT = 1;
 
@@ -70,10 +59,6 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 	private AgentDao agentDao;
 
 	private IAdsService adsService;
-
-	private IEaeService	eaeService;
-
-	private IRadiService radiService;
 
 	private SimpleDateFormat sdfFormatDate = new SimpleDateFormat("dd/MM/yyyy");
 
@@ -173,12 +158,6 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 		}
 		if (null == adsService) {
 			adsService = (IAdsService) context.getBean("adsService");
-		}
-		if (null == eaeService) {
-			eaeService = (IEaeService) context.getBean("eaeService");
-		}
-		if (null == radiService) {
-			radiService = (IRadiService) context.getBean("radiService");
 		}
 	}
 
@@ -425,27 +404,6 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 							avct.getHeureVerifArr(), avct.getDateCap(), avct.getObservationArr(), avct.getUserVerifArrImpr(), avct.getDateVerifArrImpr(), avct.getHeureVerifArrImpr(),
 							avct.isRegularisation(), avct.isAgentVdn(), avct.getIdCap(), avct.getCodePa(), avct.isAutre());
 				}
-				// RG-EAE-25
-				// on regarde si il y a une campagne pour l'année en cours de
-				// l'avancement
-				try {
-					CampagneEaeDto campagneEAE = eaeService.getCampagneAnneePrecedenteLight(getAgentConnecte(request).getIdAgent(), avct.getAnnee());
-					
-					// on cherche l'eae correspondant ainsi que l'eae evaluation
-					FormRehercheGestionEae form  = new FormRehercheGestionEae();
-					form.setIdCampagneEae(campagneEAE.getIdCampagneEae());
-					form.setIdAgentEvalue(avct.getIdAgent());
-					List<EaeDto> listEae = eaeService.getListeEaeDtoLight(getAgentConnecte(request).getIdAgent(), form);
-					EaeDto eaeAgentAnne = eaeService.getEaeDtoByIdAgent(listEae, avct.getIdAgent());
-					
-					if (!eaeAgentAnne.getEtat().equals(EnumEtatEAE.CONTROLE.getCode())) {
-						// si oui alors on flag CAP a true;
-						eaeService.updateCapEae(getAgentConnecte(request).getIdAgent(), eaeAgentAnne.getIdEae(), true);
-					}
-				} catch (Exception e) {
-					// il n'y a pas de campagne pour l'année d'avancement
-					logger.info("Erreur dans la recherche de la campagne : " + e);
-				}
 			} else {
 				// si la ligne n'est pas cochée
 				// on regarde quel etat son etat
@@ -465,26 +423,6 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 							avct.getHeureVerifSef(), avct.getOrdreMerite(), avct.getAvisShd(), avct.getIdAvisArr(), avct.getIdAvisEmp(), avct.getUserVerifArr(), avct.getDateVerifArr(),
 							avct.getHeureVerifArr(), avct.getDateCap(), avct.getObservationArr(), avct.getUserVerifArrImpr(), avct.getDateVerifArrImpr(), avct.getHeureVerifArrImpr(),
 							avct.isRegularisation(), avct.isAgentVdn(), avct.getIdCap(), avct.getCodePa(), avct.isAutre());
-				}
-				// RG-EAE-25
-				// on regarde si il y a une campagne pour l'année en cours de
-				// l'avancement
-				try {
-					CampagneEaeDto campagneEAE = eaeService.getCampagneAnneePrecedenteLight(getAgentConnecte(request).getIdAgent(), avct.getAnnee());
-					
-					// on cherche l'eae correspondant ainsi que l'eae evaluation
-					FormRehercheGestionEae form  = new FormRehercheGestionEae();
-					form.setIdCampagneEae(campagneEAE.getIdCampagneEae());
-					form.setIdAgentEvalue(avct.getIdAgent());
-					List<EaeDto> listEae = eaeService.getListeEaeDto(getAgentConnecte(request).getIdAgent(), form);
-					EaeDto eaeAgentAnne = eaeService.getEaeDtoByIdAgent(listEae, avct.getIdAgent());
-					
-					if (!eaeAgentAnne.getEtat().equals(EnumEtatEAE.CONTROLE.getCode())) {
-						// si oui alors on flag CAP a false;
-						eaeService.updateCapEae(getAgentConnecte(request).getIdAgent(), eaeAgentAnne.getIdEae(), true);
-					}
-				} catch (Exception e) {
-					// il n'y a pas de campagne pour l'année d'avancement
 				}
 			}
 			if (getTransaction().isErreur())
@@ -1229,29 +1167,5 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 		this.agentDao = agentDao;
 	}
 
-	private Agent getAgentConnecte(HttpServletRequest request) throws Exception {
-		Agent agent = null;
-
-		UserAppli uUser = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
-		// on fait la correspondance entre le login et l'agent via RADI
-		LightUserDto user = radiService.getAgentCompteADByLogin(uUser.getUserName());
-		if (user == null) {
-			getTransaction().traiterErreur();
-			// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
-			return null;
-		} else {
-			if (user != null && user.getEmployeeNumber() != null && user.getEmployeeNumber() != 0) {
-				try {
-					agent = getAgentDao().chercherAgentParMatricule(radiService.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
-				} catch (Exception e) {
-					// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
-					return null;
-				}
-			}
-		}
-
-		return agent;
-	}
+	
 }
