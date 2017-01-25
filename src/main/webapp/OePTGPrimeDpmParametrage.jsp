@@ -173,7 +173,7 @@
             <%if(process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION)){ %>
             
 				<FIELDSET class="sigp2Fieldset" style="text-align:left;" id="<%=process.ACTION_MODIFICATION %>">
-					<legend class="sigp2Legend">Modification d'une demande de titre repas pour le mois en cours</legend>
+					<legend class="sigp2Legend">Modification d'une ouverture kiosque pour les primes DPM 7718 et 7719</legend>
            				<INPUT name="<%= process.getNOM_ST_INDICE_ANNEE() %>" type="hidden" value="<%= process.getVAL_ST_INDICE_ANNEE()%>">
            				<INPUT name="JSP" type="hidden" value="<%= process.getJSP()%>">
            				

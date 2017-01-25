@@ -10,6 +10,10 @@ import java.util.TreeMap;
 import javax.management.InvalidAttributeValueException;
 import javax.servlet.http.HttpServletRequest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
+
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
 import nc.mairie.gestionagent.pointage.dto.DpmIndemniteAnneeDto;
 import nc.mairie.gestionagent.radi.dto.LightUserDto;
@@ -28,42 +32,38 @@ import nc.noumea.spring.service.IPtgService;
 import nc.noumea.spring.service.IRadiService;
 import nc.noumea.spring.service.PtgService;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationContext;
-
 public class OePTGPrimeDpmParametrage extends BasicProcess {
 
-	private Logger logger = LoggerFactory.getLogger(OePTGPrimeDpmParametrage.class);
+	private Logger									logger								= LoggerFactory.getLogger(OePTGPrimeDpmParametrage.class);
 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4481591314447007514L;
-	
-	public final static String RECUPERATION = "Récupération";
-	public final static String INDEMNITE = "Indémnité";
+	private static final long						serialVersionUID					= 4481591314447007514L;
 
-	public static final int STATUT_RECHERCHER_AGENT_DEMANDE = 1;
-	public static final int STATUT_RECHERCHER_AGENT_CREATION = 2;
+	public final static String						RECUPERATION						= "Récupération";
+	public final static String						INDEMNITE							= "Indémnité";
 
-	public String focus = null;
+	public static final int							STATUT_RECHERCHER_AGENT_DEMANDE		= 1;
+	public static final int							STATUT_RECHERCHER_AGENT_CREATION	= 2;
 
-	private IPtgService ptgService;
+	public String									focus								= null;
 
-	private IAdsService adsService;
+	private IPtgService								ptgService;
 
-	private IRadiService radiService;
+	private IAdsService								adsService;
 
-	private AgentDao agentDao;
+	private IRadiService							radiService;
 
-	private TreeMap<Integer, DpmIndemniteAnneeDto> listeDpmAnnee;
+	private AgentDao								agentDao;
 
-	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+	private TreeMap<Integer, DpmIndemniteAnneeDto>	listeDpmAnnee;
 
-	public String ACTION_CREATION = "Creation_demande";
-	public String ACTION_MODIFICATION = "Modification_demande";
-	public String ACTION_MOTIF_REJET = "Motif_rejet_demande";
+	private SimpleDateFormat						sdf									= new SimpleDateFormat("dd/MM/yyyy");
+
+	public String									ACTION_CREATION						= "Creation_demande";
+	public String									ACTION_MODIFICATION					= "Modification_demande";
+	public String									ACTION_MOTIF_REJET					= "Motif_rejet_demande";
 
 	@Override
 	public String getJSP() {
@@ -81,14 +81,15 @@ public class OePTGPrimeDpmParametrage extends BasicProcess {
 	public void initialiseZones(HttpServletRequest request) throws Exception {
 		VariableGlobale.ajouter(request, "PROCESS_MEMORISE", this);
 		if (MairieUtils.estInterdit(request, getNomEcran())) {
-			// "ERR190","Operation impossible. Vous ne disposez pas des droits d'acces a cette option."
+			// "ERR190","Operation impossible. Vous ne disposez pas des droits
+			// d'acces a cette option."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
 
 		initialiseDao();
 		setFocus(getDefaultFocus());
-		
+
 		afficheListeAnnees(request);
 	}
 
@@ -111,13 +112,13 @@ public class OePTGPrimeDpmParametrage extends BasicProcess {
 	}
 
 	private void afficheListeAnnees(HttpServletRequest request) throws Exception {
-		
-		setListeDpmAnnee((ArrayList<DpmIndemniteAnneeDto>)ptgService.getListDpmIndemAnnee(getAgentConnecte(request).getIdAgent()));
-		
+
+		setListeDpmAnnee((ArrayList<DpmIndemniteAnneeDto>) ptgService.getListDpmIndemAnnee(getAgentConnecte(request).getIdAgent()));
+
 		for (Entry<Integer, DpmIndemniteAnneeDto> choixMap : getListeDpmAnnee().entrySet()) {
 			DpmIndemniteAnneeDto annee = choixMap.getValue();
 			Integer i = choixMap.getKey();
-			
+
 			try {
 				addZone(getNOM_ST_ANNEE(i), annee.getAnnee().toString());
 				addZone(getNOM_ST_DATE_DEBUT(i), sdf.format(annee.getDateDebut()));
@@ -137,7 +138,8 @@ public class OePTGPrimeDpmParametrage extends BasicProcess {
 		LightUserDto user = radiService.getAgentCompteADByLogin(uUser.getUserName());
 		if (user == null) {
 			getTransaction().traiterErreur();
-			// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
+			// "Votre login ne nous permet pas de trouver votre identifiant.
+			// Merci de contacter le responsable du projet."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
 			return null;
 		} else {
@@ -145,7 +147,9 @@ public class OePTGPrimeDpmParametrage extends BasicProcess {
 				try {
 					agent = agentDao.chercherAgentParMatricule(radiService.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
 				} catch (Exception e) {
-					// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
+					// "Votre login ne nous permet pas de trouver votre
+					// identifiant. Merci de contacter le responsable du
+					// projet."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
 					return null;
 				}
@@ -168,6 +172,7 @@ public class OePTGPrimeDpmParametrage extends BasicProcess {
 
 		// On vérifie si c'est le clic d'ouverture ou d'enregistrement
 		if (getZone(getNOM_ST_ACTION()) != ACTION_CREATION) {
+			videZoneSaisie();
 			// On nomme l'action
 			addZone(getNOM_ST_ACTION(), ACTION_CREATION);
 			return true;
@@ -178,19 +183,19 @@ public class OePTGPrimeDpmParametrage extends BasicProcess {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "année"));
 			return false;
 		}
-		
+
 		if (getVAL_ST_DATE_DEBUT().equals(Const.CHAINE_VIDE)) {
 			// "ERR002","La zone @ est obligatoire."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "date de début"));
 			return false;
 		}
-		
+
 		if (getVAL_ST_DATE_FIN().equals(Const.CHAINE_VIDE)) {
 			// "ERR002","La zone @ est obligatoire."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "date de fin"));
 			return false;
 		}
-		
+
 		Integer annee = new Integer(getVAL_ST_ANNEE());
 		Date dateDebut = sdf.parse(getVAL_ST_DATE_DEBUT());
 		Date dateFin = sdf.parse(getVAL_ST_DATE_FIN());
@@ -224,10 +229,17 @@ public class OePTGPrimeDpmParametrage extends BasicProcess {
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 
 		afficheListeAnnees(request);
-		
+
 		setStatut(STATUT_MEME_PROCESS);
 
 		return true;
+	}
+
+	private void videZoneSaisie() {
+		addZone(getNOM_ST_INDICE_ANNEE(), Const.CHAINE_VIDE);
+		addZone(getNOM_ST_ANNEE(), Const.CHAINE_VIDE);
+		addZone(getNOM_ST_DATE_DEBUT(), Const.CHAINE_VIDE);
+		addZone(getNOM_ST_DATE_FIN(), Const.CHAINE_VIDE);
 	}
 
 	public boolean performPB_MODIFICATION(HttpServletRequest request, Integer indiceTR) throws Exception {
@@ -247,7 +259,6 @@ public class OePTGPrimeDpmParametrage extends BasicProcess {
 
 	public boolean performPB_VALIDER_MODIFICATION(HttpServletRequest request) throws Exception {
 
-
 		Integer indiceTR = new Integer(getVAL_ST_INDICE_ANNEE());
 
 		DpmIndemniteAnneeDto dto = getListeDpmAnnee().get(indiceTR);
@@ -257,20 +268,20 @@ public class OePTGPrimeDpmParametrage extends BasicProcess {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "date de début"));
 			return false;
 		}
-		
+
 		if (getVAL_ST_DATE_FIN().equals(Const.CHAINE_VIDE)) {
 			// "ERR002","La zone @ est obligatoire."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "date de fin"));
 			return false;
 		}
-		
+
 		Date dateDebut = sdf.parse(getVAL_ST_DATE_DEBUT());
 		Date dateFin = sdf.parse(getVAL_ST_DATE_FIN());
 
 		dto.setDateDebut(dateDebut);
 		dto.setDateFin(dateFin);
 		dto.setListDpmIndemniteChoixAgentDto(null);
-		
+
 		if (!verifyDpmIndemniteAnnee(dto))
 			return false;
 
@@ -295,17 +306,18 @@ public class OePTGPrimeDpmParametrage extends BasicProcess {
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 
 		afficheListeAnnees(request);
-		
+
 		setStatut(STATUT_MEME_PROCESS);
-		
+
 		return true;
 	}
-	
+
 	/**
 	 * Vérifie que l'indémnité est correctement renseignée
+	 * 
 	 * @param dto
-	 * @throws InvalidAttributeValueException 
-	 * @throws ParseException 
+	 * @throws InvalidAttributeValueException
+	 * @throws ParseException
 	 */
 	private boolean verifyDpmIndemniteAnnee(DpmIndemniteAnneeDto dto) throws ParseException {
 		if (dto.getAnnee().toString().length() != 4) {
@@ -313,21 +325,11 @@ public class OePTGPrimeDpmParametrage extends BasicProcess {
 			return false;
 		}
 
-		if (dto.getDateDebut().after(dto.getDateFin())){
+		if (dto.getDateDebut().after(dto.getDateFin())) {
 			getTransaction().declarerErreur("La date de début doit être antérieur à la date de fin.");
 			return false;
 		}
 
-		String startYearFormat = dto.getAnnee() + "-01-01";
-		String endYearFormat = dto.getAnnee() + "-12-31";
-		Date starYear = new SimpleDateFormat("yyyy-MM-dd").parse(startYearFormat);
-		Date endYear = new SimpleDateFormat("yyyy-MM-dd").parse(endYearFormat);
-		
-		if ((dto.getDateDebut().after(endYear) || dto.getDateDebut().before(starYear)) || (dto.getDateFin().before(starYear) || dto.getDateFin().after(endYear))){
-			getTransaction().declarerErreur("Les dates doivent être comprises dans l'année voulue.");
-			return false;
-		}
-		
 		return true;
 	}
 
