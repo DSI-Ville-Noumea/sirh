@@ -29,9 +29,11 @@ public class TitreRepasEtatPayeurDto implements Serializable {
 	private Date dateEdition;
 	private String label;
 	private String fichier;
-	private AgentDto agent;
-	
+	private AgentDto agent;	
 	private String urlAlfresco;
+	
+	private String urlAlfrescoPrestataire;
+	private String labelPrestataire;
 	
 	public TitreRepasEtatPayeurDto(){
 	}
@@ -87,6 +89,22 @@ public class TitreRepasEtatPayeurDto implements Serializable {
 
 	public void setUrlAlfresco(String urlAlfresco) {
 		this.urlAlfresco = urlAlfresco;
+	}
+
+	public String getUrlAlfrescoPrestataire() {
+		return urlAlfrescoPrestataire;
+	}
+
+	public void setUrlAlfrescoPrestataire(String urlAlfrescoPrestataire) {
+		this.urlAlfrescoPrestataire = urlAlfrescoPrestataire;
+	}
+
+	public String getLabelPrestataire() {
+		return labelPrestataire;
+	}
+
+	public void setLabelPrestataire(String labelPrestataire) {
+		this.labelPrestataire = labelPrestataire;
 	}
 	
 }

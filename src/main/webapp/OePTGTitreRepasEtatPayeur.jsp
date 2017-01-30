@@ -42,15 +42,17 @@ function SelectLigne(id,tailleTableau)
 		<br />
 		
 		<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
-		    <legend class="sigp2Legend">Historique des éditions des titres repas</legend>
-		    <br/>
-		    <span style="position:relative;width:210px;text-align: center;">Imprimé le <br> A <br> PAR</span>
-		    <span style="position:relative;width:290px;text-align: center;">Libellé</span>
-		    <span style="position:relative;width:150px;text-align: center;">Consulter</span>
-			<br/>
-			
+		    <legend class="sigp2Legend">Historique des éditions des titres repas</legend>			
 			<div style="overflow: auto;height: 250px;width:1000px;margin-right: 0px;margin-left: 0px;">
 				<table class="sigp2NewTab" style="text-align:left;width:650px;">
+				<thead>
+                        <tr>
+                            <th width="210px" align="center">Imprimé le à <br> PAR</th>  
+                            <th width="290px" align="center">Mois</th>  
+                            <th width="290px" align="center">Consulter etat payeur</th>  
+                            <th width="290px" align="center">Consulter etat prestataire</th>                             
+                        </tr>
+                    </thead>
 					<%
 						for (int i = 0; i < process.getListEtatsPayeurDto().size(); i++){
 							TitreRepasEtatPayeurDto etatPayeur = process.getListEtatsPayeurDto().get(i);
@@ -61,7 +63,12 @@ function SelectLigne(id,tailleTableau)
 							<td class="sigp2NewTab-liste" style="position:relative;width:290px;text-align: center;"><%=process.getVAL_ST_LIBELLE_EDITION(i) %></td>
 							<td class="sigp2NewTab-liste" style="position:relative;width:150px;text-align: center;" align="center">
 								<a class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" href="<%=etatPayeur.getUrlAlfresco() %>" title="<%=etatPayeur.getLabel() %>" target="_blank" >
-									<img onkeydown="" onkeypress="" onkeyup="" src="images/oeil.gif" height="16px" width="16px" title="Voir le document" />
+									<img onkeydown="" onkeypress="" onkeyup="" src="images/oeil.gif" height="16px" width="16px" title="Voir l'état du payeur" />
+								</a>
+				    		</td>
+				    		<td class="sigp2NewTab-liste" style="position:relative;width:150px;text-align: center;" align="center">
+								<a class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" href="<%=etatPayeur.getUrlAlfrescoPrestataire() %>" title="<%=etatPayeur.getLabelPrestataire() %>" target="_blank" >
+									<img onkeydown="" onkeypress="" onkeyup="" src="images/oeil.gif" height="16px" width="16px" title="Voir l'etat prestataire" />
 								</a>
 				    		</td>
 						</tr>
