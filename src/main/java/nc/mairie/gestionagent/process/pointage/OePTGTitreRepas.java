@@ -520,7 +520,7 @@ public class OePTGTitreRepas extends BasicProcess {
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 		// On pose le statut
 		setStatut(STATUT_MEME_PROCESS);
-		if (getTypeFiltre().equals("GLOBAL")) {
+		if (null != getTypeFiltre() && getTypeFiltre().equals("GLOBAL")) {
 			performPB_FILTRER(request);
 		} else {
 			performPB_FILTRER_DEMANDE_A_APPROUVER(request);
@@ -657,7 +657,7 @@ public class OePTGTitreRepas extends BasicProcess {
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 
 		setStatut(STATUT_MEME_PROCESS);
-		if (getTypeFiltre().equals("GLOBAL")) {
+		if (null != getTypeFiltre() && getTypeFiltre().equals("GLOBAL")) {
 			performPB_FILTRER(request);
 		} else {
 			performPB_FILTRER_DEMANDE_A_APPROUVER(request);
@@ -735,7 +735,7 @@ public class OePTGTitreRepas extends BasicProcess {
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 
 		setStatut(STATUT_MEME_PROCESS);
-		if (getTypeFiltre().equals("GLOBAL")) {
+		if (null != getTypeFiltre() && getTypeFiltre().equals("GLOBAL")) {
 			performPB_FILTRER(request);
 		} else {
 			performPB_FILTRER_DEMANDE_A_APPROUVER(request);
