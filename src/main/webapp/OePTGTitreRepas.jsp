@@ -142,7 +142,7 @@
                             .attr("style", "margin-left: 455px;")
                             .attr("width", "750px")
                             .append($(document.createElement("thead")).append($(document.createElement("tr"))
-                            		.append($(document.createElement("td")).html("Date demande").attr("style", "width: 180px;text-align: center;"))
+                            		.append($(document.createElement("td")).html("Mois").attr("style", "width: 180px;text-align: center;"))
                             		.append($(document.createElement("td")).html("Commande").attr("style", "width: 90px;text-align: center;"))
                             		.append($(document.createElement("td")).html("Commentaire").attr("style", "width: 150px;text-align: center;"))
                             		.append($(document.createElement("td")).html("Opérateur").attr("style", "width: 150px;text-align: center;"))
@@ -278,7 +278,7 @@
                             <th align="center"> <img src="images/loupe.gif" height="16px" width="16px" title="Voir l'historique de la demande" onkeydown="" onkeypress="" onkeyup=""></th>
                             <th>Matr</th>
                             <th>Agent</th>
-                            <th>Date demande</th>
+                            <th>Mois</th>
                             <th>Commande</th>
                             <th>Commentaire</th>
                             <th>Opérateur</th>

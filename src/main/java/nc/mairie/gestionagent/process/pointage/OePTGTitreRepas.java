@@ -308,7 +308,7 @@ public class OePTGTitreRepas extends BasicProcess {
 
 				addZone(getNOM_ST_MATRICULE(i), null != ag ? ag.getNomatr().toString() : "");
 				addZone(getNOM_ST_AGENT(i), ag.getNomAgent() + " " + ag.getPrenomAgent());
-				addZone(getNOM_ST_DATE_MONTH(i), sdf.format(TR.getDateMonth()));
+				addZone(getNOM_ST_DATE_MONTH(i), sdfMMyyyy.format(TR.getDateMonth()));
 				addZone(getNOM_ST_COMMANDE(i), TR.getCommande() ? "Oui" : "Non");
 
 				String commentaire = TR.getCommentaire();
@@ -535,7 +535,7 @@ public class OePTGTitreRepas extends BasicProcess {
 		String[][] ret = new String[data.size()][numParams];
 		int index = 0;
 		for (TitreRepasDemandeDto tr : data) {
-			ret[index][0] = formatDate(tr.getDateMonth());
+			ret[index][0] = formatDateMonth(tr.getDateMonth());
 			ret[index][1] = tr.getCommande() ? "Oui" : "Non";
 			ret[index][2] = null == tr.getCommentaire() ? "" : tr.getCommentaire();
 			AgentDto opPtg = tr.getOperateur();
@@ -560,6 +560,14 @@ public class OePTGTitreRepas extends BasicProcess {
 		}
 		strret.deleteCharAt(strret.lastIndexOf("|"));
 		return strret.toString();
+	}
+
+	private String formatDateMonth(Date d) {
+		if (d != null) {
+			return sdfMMyyyy.format(d);
+		} else {
+			return Const.CHAINE_VIDE;
+		}
 	}
 
 	private String formatDate(Date d) {
