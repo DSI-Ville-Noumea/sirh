@@ -44,45 +44,45 @@ import org.springframework.context.ApplicationContext;
 
 public class OePTGTitreRepas extends BasicProcess {
 
-	private Logger logger = LoggerFactory.getLogger(OePTGTitreRepas.class);
+	private Logger											logger								= LoggerFactory.getLogger(OePTGTitreRepas.class);
 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4481591314447007514L;
+	private static final long								serialVersionUID					= 4481591314447007514L;
 
-	public static final int STATUT_RECHERCHER_AGENT_DEMANDE = 1;
-	public static final int STATUT_RECHERCHER_AGENT_CREATION = 2;
+	public static final int									STATUT_RECHERCHER_AGENT_DEMANDE		= 1;
+	public static final int									STATUT_RECHERCHER_AGENT_CREATION	= 2;
 
-	public String focus = null;
-	private String[] LB_ETAT;
-	private String[] LB_COMMANDE;
-	private String[] LB_DATE_MOIS;
+	public String											focus								= null;
+	private String[]										LB_ETAT;
+	private String[]										LB_COMMANDE;
+	private String[]										LB_DATE_MOIS;
 
-	private IPtgService ptgService;
+	private IPtgService										ptgService;
 
-	private IAdsService adsService;
+	private IAdsService										adsService;
 
-	private IRadiService radiService;
+	private IRadiService									radiService;
 
-	private AgentDao agentDao;
+	private AgentDao										agentDao;
 
-	private ArrayList<RefEtatDto> listeEtats;
-	private ArrayList<Date> listeDateMois;
+	private ArrayList<RefEtatDto>							listeEtats;
+	private ArrayList<Date>									listeDateMois;
 
-	private TreeMap<Integer, TitreRepasDemandeDto> listeDemandeTR;
-	private HashMap<Integer, List<TitreRepasDemandeDto>> history = new HashMap<>();
+	private TreeMap<Integer, TitreRepasDemandeDto>			listeDemandeTR;
+	private HashMap<Integer, List<TitreRepasDemandeDto>>	history								= new HashMap<>();
 
-	private String typeFiltre;
+	private String											typeFiltre;
 
-	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-	private SimpleDateFormat sdfyyyyMMdd = new SimpleDateFormat("yyyyMMdd");
-	private SimpleDateFormat sdfMMyyyy = new SimpleDateFormat("MM/yyyy");
-	private SimpleDateFormat sdfHrs = new SimpleDateFormat("HH:mm");
+	private SimpleDateFormat								sdf									= new SimpleDateFormat("dd/MM/yyyy");
+	private SimpleDateFormat								sdfyyyyMMdd							= new SimpleDateFormat("yyyyMMdd");
+	private SimpleDateFormat								sdfMMyyyy							= new SimpleDateFormat("MM/yyyy");
+	private SimpleDateFormat								sdfHrs								= new SimpleDateFormat("HH:mm");
 
-	public String ACTION_CREATION = "Creation_demande";
-	public String ACTION_MODIFICATION = "Modification_demande";
-	public String ACTION_MOTIF_REJET = "Motif_rejet_demande";
+	public String											ACTION_CREATION						= "Creation_demande";
+	public String											ACTION_MODIFICATION					= "Modification_demande";
+	public String											ACTION_MOTIF_REJET					= "Motif_rejet_demande";
 
 	@Override
 	public String getJSP() {
@@ -100,7 +100,8 @@ public class OePTGTitreRepas extends BasicProcess {
 	public void initialiseZones(HttpServletRequest request) throws Exception {
 		VariableGlobale.ajouter(request, "PROCESS_MEMORISE", this);
 		if (MairieUtils.estInterdit(request, getNomEcran())) {
-			// "ERR190","Operation impossible. Vous ne disposez pas des droits d'acces a cette option."
+			// "ERR190","Operation impossible. Vous ne disposez pas des droits
+			// d'acces a cette option."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
@@ -215,7 +216,8 @@ public class OePTGTitreRepas extends BasicProcess {
 		}
 
 		// date mois
-		int numDateMois = (Services.estNumerique(getZone(getNOM_LB_DATE_MOIS_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_DATE_MOIS_SELECT())) : -1);
+		int numDateMois = (Services.estNumerique(getZone(getNOM_LB_DATE_MOIS_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_DATE_MOIS_SELECT()))
+				: -1);
 		String dateMoisStr = null;
 		if (numDateMois != -1 && numDateMois != 0) {
 			Date dateMois = (Date) getListeDateMois().get(numDateMois - 1);
@@ -269,7 +271,8 @@ public class OePTGTitreRepas extends BasicProcess {
 
 		if (listIdAgentService.size() >= 1000) {
 			// "ERR501",
-			// "La sélection des filtres engendre plus de 1000 agents. Merci de reduire la sélection."
+			// "La sélection des filtres engendre plus de 1000 agents. Merci de
+			// reduire la sélection."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR501"));
 			return false;
 		}
@@ -286,8 +289,10 @@ public class OePTGTitreRepas extends BasicProcess {
 			isCommande = false;
 		}
 
-		List<TitreRepasDemandeDto> listedemandeTR = ptgService.getListTitreRepas(agentConnecte.getIdAgent(), dateMin, dateMax, etat != null ? etat.getIdRefEtat() : null, isCommande, dateMoisStr,
-				!idServiceAds.equals(Const.CHAINE_VIDE) ? new Integer(idServiceAds) : null, null != idAgentDemande ? new Integer(idAgentDemande) : null, listIdAgentService);
+		List<TitreRepasDemandeDto> listedemandeTR = ptgService.getListTitreRepas(agentConnecte.getIdAgent(), dateMin, dateMax,
+				etat != null ? etat.getIdRefEtat() : null, isCommande, dateMoisStr,
+				!idServiceAds.equals(Const.CHAINE_VIDE) ? new Integer(idServiceAds) : null,
+				null != idAgentDemande ? new Integer(idAgentDemande) : null, listIdAgentService);
 
 		setListeDemandeTR((ArrayList<TitreRepasDemandeDto>) listedemandeTR);
 
@@ -313,8 +318,8 @@ public class OePTGTitreRepas extends BasicProcess {
 
 				String commentaire = TR.getCommentaire();
 				addZone(getNOM_ST_COMMENTAIRE(i), commentaire);
-				addZone(getNOM_ST_OPERATEUR(i), null == TR.getOperateur() ? "" : TR.getOperateur().getPrenom() + " " + TR.getOperateur().getNom() + " (" + (TR.getOperateur().getIdAgent() - 9000000)
-						+ ")");
+				addZone(getNOM_ST_OPERATEUR(i), null == TR.getOperateur() ? ""
+						: TR.getOperateur().getPrenom() + " " + TR.getOperateur().getNom() + " (" + (TR.getOperateur().getIdAgent() - 9000000) + ")");
 				addZone(getNOM_ST_ETAT(i), EtatPointageEnum.getDisplayableEtatPointageEnum(TR.getIdRefEtat()));
 				addZone(getNOM_ST_DATE_ETAT(i), sdf.format(TR.getDateSaisie()));
 			} catch (Exception e) {
@@ -331,7 +336,8 @@ public class OePTGTitreRepas extends BasicProcess {
 		LightUserDto user = radiService.getAgentCompteADByLogin(uUser.getUserName());
 		if (user == null) {
 			getTransaction().traiterErreur();
-			// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
+			// "Votre login ne nous permet pas de trouver votre identifiant.
+			// Merci de contacter le responsable du projet."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
 			return null;
 		} else {
@@ -339,7 +345,9 @@ public class OePTGTitreRepas extends BasicProcess {
 				try {
 					agent = agentDao.chercherAgentParMatricule(radiService.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
 				} catch (Exception e) {
-					// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
+					// "Votre login ne nous permet pas de trouver votre
+					// identifiant. Merci de contacter le responsable du
+					// projet."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
 					return null;
 				}
@@ -409,7 +417,7 @@ public class OePTGTitreRepas extends BasicProcess {
 		addZone(getNOM_ST_ID_DEMANDE_REJET(), new Integer(idDemandeTR).toString());
 
 		addZone(getNOM_ST_ACTION(), ACTION_MOTIF_REJET);
-		
+
 		// On pose le statut
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
@@ -421,7 +429,8 @@ public class OePTGTitreRepas extends BasicProcess {
 		changeState(request, param, state, commentaire);
 	}
 
-	private void changeState(HttpServletRequest request, Collection<TitreRepasDemandeDto> dem, EtatPointageEnum state, String commentaire) throws Exception {
+	private void changeState(HttpServletRequest request, Collection<TitreRepasDemandeDto> dem, EtatPointageEnum state, String commentaire)
+			throws Exception {
 		Agent agentConnecte = getAgentConnecte(request);
 		if (agentConnecte == null) {
 			logger.debug("Agent nul dans jsp visualisation");
@@ -471,11 +480,13 @@ public class OePTGTitreRepas extends BasicProcess {
 
 		String idAgentDemande = getVAL_ST_AGENT_DEMANDE().equals(Const.CHAINE_VIDE) ? null : "900" + getVAL_ST_AGENT_DEMANDE();
 
-		String dateJour = sdfyyyyMMdd.format(new DateTime().withDayOfMonth(1).withHourOfDay(0).withMinuteOfHour(0).withSecondOfMinute(0).withMillisOfSecond(0).toDate());
+		String dateMoisSuivant = sdfyyyyMMdd.format(new DateTime().withDayOfMonth(1).withHourOfDay(0).withMinuteOfHour(0).withSecondOfMinute(0)
+				.withMillisOfSecond(0).plusMonths(1).toDate());
 
 		// ////// APPEL WS /////////////
-		List<TitreRepasDemandeDto> listedemandeTR = ptgService.getListTitreRepas(getAgentConnecte(request).getIdAgent(), dateMin, dateMax, EtatPointageEnum.SAISI.getCodeEtat(), Boolean.TRUE,
-				dateJour, null, null != idAgentDemande ? new Integer(idAgentDemande) : null, null);
+		List<TitreRepasDemandeDto> listedemandeTR = ptgService.getListTitreRepas(getAgentConnecte(request).getIdAgent(), dateMin, dateMax,
+				EtatPointageEnum.SAISI.getCodeEtat(), Boolean.TRUE, dateMoisSuivant, null, null != idAgentDemande ? new Integer(idAgentDemande) : null,
+				null);
 
 		logger.debug("Taille liste Titre Repas : " + listedemandeTR.size());
 
@@ -540,7 +551,8 @@ public class OePTGTitreRepas extends BasicProcess {
 			ret[index][2] = null == tr.getCommentaire() ? "" : tr.getCommentaire();
 			AgentDto opPtg = tr.getOperateur();
 			if (null != opPtg) {
-				ret[index][3] = opPtg.getNom() + " " + opPtg.getPrenom() + " (" + opPtg.getIdAgent().toString().substring(3, opPtg.getIdAgent().toString().length()) + ")";
+				ret[index][3] = opPtg.getNom() + " " + opPtg.getPrenom() + " ("
+						+ opPtg.getIdAgent().toString().substring(3, opPtg.getIdAgent().toString().length()) + ")";
 			} else {
 				ret[index][3] = "";
 			}
@@ -617,7 +629,8 @@ public class OePTGTitreRepas extends BasicProcess {
 				agentDao.chercherAgent(Integer.valueOf(idAgent));
 			} catch (Exception e) {
 				// "ERR503",
-				// "L'agent @ n'existe pas. Merci de saisir un matricule existant."
+				// "L'agent @ n'existe pas. Merci de saisir un matricule
+				// existant."
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR503", idAgent));
 				return false;
 			}
@@ -632,13 +645,10 @@ public class OePTGTitreRepas extends BasicProcess {
 		AgentDto agentDto = new AgentDto();
 		agentDto.setIdAgent(new Integer(idAgent));
 
-		Date dateMonth = new DateTime().withDayOfMonth(1).withHourOfDay(0).withMinuteOfHour(0).withSecondOfMinute(0).withMillisOfSecond(0).toDate();
-
 		TitreRepasDemandeDto dto = new TitreRepasDemandeDto();
 
 		dto.setAgent(agentDto);
 		dto.setCommande(getZone(getNOM_RG_COMMANDE()).equals(getNOM_RB_OUI()));
-		dto.setDateMonth(dateMonth);
 		dto.setIdRefEtat(EtatPointageEnum.SAISI.getCodeEtat());
 
 		List<TitreRepasDemandeDto> listDto = new ArrayList<TitreRepasDemandeDto>();
@@ -701,7 +711,8 @@ public class OePTGTitreRepas extends BasicProcess {
 				agentDao.chercherAgent(Integer.valueOf(idAgent));
 			} catch (Exception e) {
 				// "ERR503",
-				// "L'agent @ n'existe pas. Merci de saisir un matricule existant."
+				// "L'agent @ n'existe pas. Merci de saisir un matricule
+				// existant."
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR503", idAgent));
 				return false;
 			}
@@ -748,14 +759,14 @@ public class OePTGTitreRepas extends BasicProcess {
 		} else {
 			performPB_FILTRER_DEMANDE_A_APPROUVER(request);
 		}
-		
+
 		return true;
 	}
-	
+
 	public boolean performPB_GENERER(HttpServletRequest request) throws Exception {
-		
+
 		ReturnMessageDto srm = ptgService.genereEtatPayeurTitreRepas(getAgentConnecte(request).getIdAgent());
-		
+
 		if (srm.getErrors().size() > 0) {
 			String err = Const.CHAINE_VIDE;
 			for (String erreur : srm.getErrors()) {
@@ -1210,8 +1221,8 @@ public class OePTGTitreRepas extends BasicProcess {
 	}
 
 	/**
-     *
-     */
+	 *
+	 */
 	public String getNOM_PB_SAISIE_TR(int i) {
 		return "NOM_PB_SAISIE_TR_" + i;
 	}
