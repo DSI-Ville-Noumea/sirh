@@ -763,29 +763,6 @@ public class OePTGTitreRepas extends BasicProcess {
 		return true;
 	}
 
-	public boolean performPB_GENERER(HttpServletRequest request) throws Exception {
-
-		ReturnMessageDto srm = ptgService.genereEtatPayeurTitreRepas(getAgentConnecte(request).getIdAgent());
-
-		if (srm.getErrors().size() > 0) {
-			String err = Const.CHAINE_VIDE;
-			for (String erreur : srm.getErrors()) {
-				err += " " + erreur;
-			}
-			getTransaction().declarerErreur("ERREUR : " + err);
-			return false;
-		}
-		if (srm.getInfos().size() > 0) {
-			String info = Const.CHAINE_VIDE;
-			for (String erreur : srm.getInfos()) {
-				info += " " + erreur;
-			}
-			getTransaction().declarerErreur("Génération : " + info);
-		}
-
-		return true;
-	}
-
 	public String getDefaultFocus() {
 		return getNOM_PB_VALIDATION();
 	}
@@ -1120,10 +1097,6 @@ public class OePTGTitreRepas extends BasicProcess {
 		return "NOM_PB_FILTRER_DEMANDE_A_VALIDER";
 	}
 
-	public String getNOM_PB_GENERER() {
-		return "NOM_PB_GENERER";
-	}
-
 	public String getNOM_PB_VALIDER_ALL() {
 		return "NOM_PB_VALIDER_ALL";
 	}
@@ -1335,10 +1308,6 @@ public class OePTGTitreRepas extends BasicProcess {
 			// Si clic sur le bouton PB_RECHERCHER_AGENT_CREATION
 			if (testerParametre(request, getNOM_PB_RECHERCHER_AGENT_CREATION())) {
 				return performPB_RECHERCHER_AGENT_CREATION(request);
-			}
-			// Si clic sur le bouton PB_GENERER
-			if (testerParametre(request, getNOM_PB_GENERER())) {
-				return performPB_GENERER(request);
 			}
 			// Si clic sur le bouton PB_CREATION
 			if (testerParametre(request, getNOM_PB_CREATION())) {

@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import nc.mairie.gestionagent.absence.dto.TypeAbsenceDto;
 import nc.mairie.gestionagent.dto.AgentDto;
 import nc.mairie.gestionagent.dto.ApprobateurDto;
@@ -20,12 +23,10 @@ import nc.mairie.gestionagent.pointage.dto.RefPrimeDto;
 import nc.mairie.gestionagent.pointage.dto.RefTypePointageDto;
 import nc.mairie.gestionagent.pointage.dto.TitreRepasDemandeDto;
 import nc.mairie.gestionagent.pointage.dto.TitreRepasEtatPayeurDto;
+import nc.mairie.gestionagent.pointage.dto.TitreRepasEtatPayeurTaskDto;
 import nc.mairie.gestionagent.pointage.dto.VentilDateDto;
 import nc.mairie.gestionagent.pointage.dto.VentilErreurDto;
 import nc.mairie.spring.ws.ISirhPtgWSConsumer;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 @Service
 public class PtgService implements IPtgService {
@@ -290,8 +291,8 @@ public class PtgService implements IPtgService {
 	}
 
 	@Override
-	public ReturnMessageDto genereEtatPayeurTitreRepas(Integer idAgent) {
-		return ptgConsumer.genereEtatPayeurTitreRepas(idAgent);
+	public ReturnMessageDto startEtatPayeurTitreRepas(Integer idAgent) {
+		return ptgConsumer.startEtatPayeurTitreRepas(idAgent);
 	}
 
 	@Override
@@ -337,6 +338,16 @@ public class PtgService implements IPtgService {
 	@Override
 	public ReturnMessageDto deleteIndemniteChoixAgent(Integer idAgentConnecte, Integer id) {
 		return ptgConsumer.deleteIndemniteChoixAgent(idAgentConnecte, id);
+	}
+
+	@Override
+	public boolean isEtatPayeurTitreRepasEnCours() {
+		return ptgConsumer.isEtatPayeurTitreRepasEnCours();
+	}
+
+	@Override
+	public List<TitreRepasEtatPayeurTaskDto> getListErreurTitreRepasEtatPayeurTask() {
+		return ptgConsumer.getListErreurTitreRepasEtatPayeurTask();
 	}
 	
 }

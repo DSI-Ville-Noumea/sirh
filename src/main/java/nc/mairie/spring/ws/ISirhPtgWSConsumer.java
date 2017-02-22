@@ -20,6 +20,7 @@ import nc.mairie.gestionagent.pointage.dto.RefPrimeDto;
 import nc.mairie.gestionagent.pointage.dto.RefTypePointageDto;
 import nc.mairie.gestionagent.pointage.dto.TitreRepasDemandeDto;
 import nc.mairie.gestionagent.pointage.dto.TitreRepasEtatPayeurDto;
+import nc.mairie.gestionagent.pointage.dto.TitreRepasEtatPayeurTaskDto;
 import nc.mairie.gestionagent.pointage.dto.VentilDateDto;
 import nc.mairie.gestionagent.pointage.dto.VentilErreurDto;
 
@@ -130,7 +131,7 @@ public interface ISirhPtgWSConsumer {
 
 	List<Date> getFiltreListeMois();
 
-	ReturnMessageDto genereEtatPayeurTitreRepas(Integer idAgent);
+	ReturnMessageDto startEtatPayeurTitreRepas(Integer idAgent);
 
 	List<TitreRepasEtatPayeurDto> getListTitreRepasEtatPayeur(Integer idAgent);
 
@@ -153,5 +154,9 @@ public interface ISirhPtgWSConsumer {
 	ReturnMessageDto saveIndemniteChoixAgent(Integer idAgentConnecte, DpmIndemniteChoixAgentDto listDto);
 
 	ReturnMessageDto deleteIndemniteChoixAgent(Integer idAgentConnecte, Integer idDpmIndemChoixAgent);
+
+	boolean isEtatPayeurTitreRepasEnCours();
+
+	List<TitreRepasEtatPayeurTaskDto> getListErreurTitreRepasEtatPayeurTask();
 
 }

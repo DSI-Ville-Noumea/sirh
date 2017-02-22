@@ -9,8 +9,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 
+import nc.mairie.gestionagent.dto.ReturnMessageDto;
 import nc.mairie.gestionagent.pointage.dto.TitreRepasEtatPayeurDto;
+import nc.mairie.gestionagent.pointage.dto.TitreRepasEtatPayeurTaskDto;
 import nc.mairie.gestionagent.radi.dto.LightUserDto;
+import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.Agent;
 import nc.mairie.spring.dao.metier.agent.AgentDao;
 import nc.mairie.spring.dao.utils.SirhDao;
@@ -25,24 +28,27 @@ import nc.noumea.spring.service.IRadiService;
 import nc.noumea.spring.service.PtgService;
 
 public class OePTGTitreRepasEtatPayeur extends BasicProcess {
-	
+
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3941458429982256285L;
-	
-	private Logger logger = LoggerFactory.getLogger(OePTGTitreRepasEtatPayeur.class);
+	private static final long						serialVersionUID	= 3941458429982256285L;
 
-	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+	private Logger									logger				= LoggerFactory.getLogger(OePTGTitreRepasEtatPayeur.class);
 
-	private ArrayList<TitreRepasEtatPayeurDto> listEtatsPayeurDto;
+	private SimpleDateFormat						sdf					= new SimpleDateFormat("dd/MM/yyyy HH:mm");
+	private SimpleDateFormat						sdfMMyyyy			= new SimpleDateFormat("MM/yyyy");
 
-	private AgentDao agentDao;
+	private ArrayList<TitreRepasEtatPayeurDto>		listEtatsPayeurDto;
 
-	private IRadiService radiService;
+	private ArrayList<TitreRepasEtatPayeurTaskDto>	listErreurEtatsPayeurTaskDto;
 
-	private IPtgService ptgService;
-	
+	private AgentDao								agentDao;
+
+	private IRadiService							radiService;
+
+	private IPtgService								ptgService;
+
 	@Override
 	public String getJSP() {
 		return "OePTGTitreRepasEtatPayeur.jsp";
@@ -59,14 +65,17 @@ public class OePTGTitreRepasEtatPayeur extends BasicProcess {
 	public void initialiseZones(HttpServletRequest request) throws Exception {
 		VariableGlobale.ajouter(request, "PROCESS_MEMORISE", this);
 		if (MairieUtils.estInterdit(request, getNomEcran())) {
-			// "ERR190","Operation impossible. Vous ne disposez pas des droits d'acces a cette option."
+			// "ERR190","Operation impossible. Vous ne disposez pas des droits
+			// d'acces a cette option."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
-		
+
 		initialiseDao();
 		// liste des historiques des editions
 		initialiseHistoriqueEditions(request);
+		// liste des erreur sur les lancements d'editions
+		initialiseHistoriqueErreurEditions(request);
 	}
 
 	private void initialiseDao() {
@@ -84,6 +93,24 @@ public class OePTGTitreRepasEtatPayeur extends BasicProcess {
 		}
 	}
 
+	private void initialiseHistoriqueErreurEditions(HttpServletRequest request) throws Exception {
+
+		try {
+			setListErreurTaskEtatsPayeurDto((ArrayList<TitreRepasEtatPayeurTaskDto>) ptgService.getListErreurTitreRepasEtatPayeurTask());
+		} catch (Exception e) {
+			logger.debug("Erreur OePTGTitreRepasEtatPayeur.initialiseHistoriqueErreurEditions() " + e.getMessage());
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR703"));
+		}
+
+		for (int i = 0; i < getListErreurTaskEtatsPayeurDto().size(); i++) {
+			TitreRepasEtatPayeurTaskDto dto = getListErreurTaskEtatsPayeurDto().get(i);
+			addZone(getNOM_ST_USER_DATE_EDITION_TASK(i), sdf.format(dto.getDateExport()) + "<br />"
+					+ (null == dto.getAgent() ? "" : dto.getAgent().getPrenom() + " " + dto.getAgent().getNom()));
+			addZone(getNOM_ST_LIBELLE_EDITION_TASK(i), sdfMMyyyy.format(dto.getDateMonth()));
+			addZone(getNOM_ST_ERREUR_TASK(i), dto.getErreur());
+		}
+	}
+
 	/**
 	 * Initialisation des liste deroulantes de l'écran convocation du suivi
 	 * médical.
@@ -91,7 +118,8 @@ public class OePTGTitreRepasEtatPayeur extends BasicProcess {
 	private void initialiseHistoriqueEditions(HttpServletRequest request) throws Exception {
 
 		try {
-			setListEtatsPayeurDto((ArrayList<TitreRepasEtatPayeurDto>) ptgService.getListTitreRepasEtatPayeur(getAgentConnecte(request).getIdAgent()));
+			setListEtatsPayeurDto(
+					(ArrayList<TitreRepasEtatPayeurDto>) ptgService.getListTitreRepasEtatPayeur(getAgentConnecte(request).getIdAgent()));
 		} catch (Exception e) {
 			logger.debug("Erreur OePTGTitreRepasEtatPayeur.initialiseHistoriqueEditions() " + e.getMessage());
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR703"));
@@ -99,8 +127,8 @@ public class OePTGTitreRepasEtatPayeur extends BasicProcess {
 
 		for (int i = 0; i < getListEtatsPayeurDto().size(); i++) {
 			TitreRepasEtatPayeurDto dto = getListEtatsPayeurDto().get(i);
-			addZone(getNOM_ST_USER_DATE_EDITION(i),
-					sdf.format(dto.getDateEdition()) + "<br />" + (null == dto.getAgent() ? "" : dto.getAgent().getPrenom() + " " + dto.getAgent().getNom()));
+			addZone(getNOM_ST_USER_DATE_EDITION(i), sdf.format(dto.getDateEdition()) + "<br />"
+					+ (null == dto.getAgent() ? "" : dto.getAgent().getPrenom() + " " + dto.getAgent().getNom()));
 			addZone(getNOM_ST_LIBELLE_EDITION(i), dto.getLabel());
 		}
 	}
@@ -113,7 +141,8 @@ public class OePTGTitreRepasEtatPayeur extends BasicProcess {
 		LightUserDto user = radiService.getAgentCompteADByLogin(uUser.getUserName());
 		if (user == null) {
 			getTransaction().traiterErreur();
-			// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
+			// "Votre login ne nous permet pas de trouver votre identifiant.
+			// Merci de contacter le responsable du projet."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
 			return null;
 		} else {
@@ -121,7 +150,9 @@ public class OePTGTitreRepasEtatPayeur extends BasicProcess {
 				try {
 					agent = agentDao.chercherAgentParMatricule(radiService.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
 				} catch (Exception e) {
-					// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
+					// "Votre login ne nous permet pas de trouver votre
+					// identifiant. Merci de contacter le responsable du
+					// projet."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
 					return null;
 				}
@@ -130,16 +161,64 @@ public class OePTGTitreRepasEtatPayeur extends BasicProcess {
 
 		return agent;
 	}
-	
+
 	@Override
 	public boolean recupererStatut(HttpServletRequest request) throws Exception {
 		// Si on arrive de la JSP alors on traite le get
 		if (request.getParameter("JSP") != null && request.getParameter("JSP").equals(getJSP())) {
-			
+
+			// Si clic sur le bouton PB_GENERER
+			if (testerParametre(request, getNOM_PB_GENERER())) {
+				return performPB_GENERER(request);
+			}
+
+			// Si clic sur le bouton PB_RAFRAICHIR
+			if (testerParametre(request, getNOM_PB_RAFRAICHIR())) {
+				return performPB_RAFRAICHIR(request);
+			}
 		}
 		// Si TAG INPUT non géré par le process
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
+	}
+
+	public boolean isEtatPayeurEnCours() {
+		return ptgService.isEtatPayeurTitreRepasEnCours();
+	}
+
+	public String getNOM_PB_RAFRAICHIR() {
+		return "NOM_PB_RAFRAICHIR";
+	}
+
+	public boolean performPB_RAFRAICHIR(HttpServletRequest request) throws Exception {
+		return true;
+	}
+
+	public boolean performPB_GENERER(HttpServletRequest request) throws Exception {
+
+		ReturnMessageDto srm = ptgService.startEtatPayeurTitreRepas(getAgentConnecte(request).getIdAgent());
+
+		if (srm.getErrors().size() > 0) {
+			String err = Const.CHAINE_VIDE;
+			for (String erreur : srm.getErrors()) {
+				err += " " + erreur;
+			}
+			getTransaction().declarerErreur("ERREUR : " + err);
+			return false;
+		}
+		if (srm.getInfos().size() > 0) {
+			String info = Const.CHAINE_VIDE;
+			for (String erreur : srm.getInfos()) {
+				info += " " + erreur;
+			}
+			getTransaction().declarerErreur("Génération : " + info);
+		}
+
+		return true;
+	}
+
+	public String getNOM_PB_GENERER() {
+		return "NOM_PB_GENERER";
 	}
 
 	/**
@@ -171,6 +250,38 @@ public class OePTGTitreRepasEtatPayeur extends BasicProcess {
 
 	public String getVAL_ST_LIBELLE_EDITION(int i) {
 		return getZone(getNOM_ST_LIBELLE_EDITION(i));
+	}
+
+	public String getNOM_ST_USER_DATE_EDITION_TASK(int i) {
+		return "NOM_ST_USER_DATE_EDITION_TASK_" + i;
+	}
+
+	public String getVAL_ST_USER_DATE_EDITION_TASK(int i) {
+		return getZone(getNOM_ST_USER_DATE_EDITION_TASK(i));
+	}
+
+	public String getNOM_ST_LIBELLE_EDITION_TASK(int i) {
+		return "NOM_ST_LIBELLE_EDITION_TASK_" + i;
+	}
+
+	public String getVAL_ST_LIBELLE_EDITION_TASK(int i) {
+		return getZone(getNOM_ST_LIBELLE_EDITION_TASK(i));
+	}
+
+	public String getNOM_ST_ERREUR_TASK(int i) {
+		return "NOM_ST_ERREUR_TASK_" + i;
+	}
+
+	public String getVAL_ST_ERREUR_TASK(int i) {
+		return getZone(getNOM_ST_ERREUR_TASK(i));
+	}
+
+	public ArrayList<TitreRepasEtatPayeurTaskDto> getListErreurTaskEtatsPayeurDto() {
+		return listErreurEtatsPayeurTaskDto == null ? new ArrayList<TitreRepasEtatPayeurTaskDto>() : listErreurEtatsPayeurTaskDto;
+	}
+
+	public void setListErreurTaskEtatsPayeurDto(ArrayList<TitreRepasEtatPayeurTaskDto> listErreurEtatsPayeurTaskDto) {
+		this.listErreurEtatsPayeurTaskDto = listErreurEtatsPayeurTaskDto;
 	}
 
 }
