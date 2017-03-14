@@ -1645,13 +1645,13 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 								MotifAvancement motif = getMotifAvancementDao().chercherMotifAvancement(Integer.valueOf(typeAvct));
 								avct.setIdMotifAvct(motif.getIdMotifAvct());
 								EaeEvaluationDto eval = getEaeCourant().getEvaluation();
-								if (typeAvct.equals(motifRevalo.getIdMotifAvct())) {
+								if (typeAvct.equals(motifRevalo.getIdMotifAvct().toString())) {
 									avct.setAvisShd(eval.getAvisRevalorisation() ? "Favorable" : "Défavorable");
-								} else if (typeAvct.equals(motifAD.getIdMotifAvct())) {
+								} else if (typeAvct.equals(motifAD.getIdMotifAvct().toString())) {
 									avct.setAvisShd(eval.getPropositionAvancement().getCourant());
-								} else if (typeAvct.equals(motifTitu.getIdMotifAvct())) {
+								} else if (typeAvct.equals(motifTitu.getIdMotifAvct().toString())) {
 									avct.setAvisShd("MOY");
-								} else if (typeAvct.equals(motifPromo.getIdMotifAvct())) {
+								} else if (typeAvct.equals(motifPromo.getIdMotifAvct().toString())) {
 									avct.setAvisShd(eval.getAvisChangementClasse() ? "Favorable" : "Défavorable");
 								} else {
 									avct.setAvisShd(null);

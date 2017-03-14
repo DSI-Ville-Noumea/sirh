@@ -1066,10 +1066,10 @@ public class OeAVCTFonctDetaches extends BasicProcess {
 			AvancementDetaches avct = (AvancementDetaches) getListeAvct().get(j);
 			Integer idAvct = avct.getIdAvct();
 			if (getVAL_CK_VALID_ARR_IMPR(idAvct).equals(getCHECKED_ON())) {
-				if (avct.getIdMotifAvct() == 4) {
+				if (avct.getIdMotifAvct().toString().equals("4")) {
 					// on fait une liste des arretes changement classe
 					listeImpressionChangementClasse.add(avct.getIdAgent());
-				} else if (avct.getIdMotifAvct() == 7 || avct.getIdMotifAvct() == 6 || avct.getIdMotifAvct() == 3) {
+				} else if (avct.getIdMotifAvct().toString().equals("7") || avct.getIdMotifAvct().toString().equals("6") || avct.getIdMotifAvct().toString().equals("3")) {
 					// on fait une liste des arretes avancement diffe
 					listeImpressionAvancementDiff.add(avct.getIdAgent());
 				} else {

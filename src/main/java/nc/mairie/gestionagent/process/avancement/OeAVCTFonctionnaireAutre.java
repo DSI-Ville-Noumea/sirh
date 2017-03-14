@@ -958,7 +958,7 @@ public class OeAVCTFonctionnaireAutre extends BasicProcess {
 								continue;
 							}
 						} else {
-							if (avct.getIdMotifAvct() == 3) {
+							if (avct.getIdMotifAvct().toString().equals("3")) {
 								dateAvctFinale = avct.getDateAvctMoy();
 								idAvisEmp = "MOY";
 							} else {
@@ -1017,7 +1017,7 @@ public class OeAVCTFonctionnaireAutre extends BasicProcess {
 								continue;
 							}
 						} else {
-							if (avct.getIdMotifAvct() == 3) {
+							if (avct.getIdMotifAvct().toString().equals("3")) {
 								dateAvctFinale = avct.getDateAvctMoy();
 								idAvisEmp = "MOY";
 							} else {
@@ -1174,11 +1174,11 @@ public class OeAVCTFonctionnaireAutre extends BasicProcess {
 			Integer idAvct = avct.getIdAvct();
 			if (getVAL_CK_VALID_ARR_IMPR(idAvct).equals(getCHECKED_ON())) {
 				if (null != avct && null != avct.getIdMotifAvct() 
-						&& avct.getIdMotifAvct() == 4) {
+						&& avct.getIdMotifAvct().toString().equals("4")) {
 					// on fait une liste des arretes changement classe
 					listeImpressionChangementClasse.add(avct.getIdAgent());
 				} else if (null != avct && null != avct.getIdMotifAvct() 
-						&& (avct.getIdMotifAvct() == 7 || avct.getIdMotifAvct() == 6 || avct.getIdMotifAvct() == 3)) {
+						&& (avct.getIdMotifAvct().toString().equals("7") || avct.getIdMotifAvct().toString().equals("6") || avct.getIdMotifAvct().toString().equals("3"))) {
 					// on fait une liste des arretes avancement diffe
 					listeImpressionAvancementDiff.add(avct.getIdAgent());
 				} else {

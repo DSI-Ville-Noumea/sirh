@@ -145,15 +145,15 @@ function setfocus(nom)
 								<td><%=process.getVAL_ST_MOTIF_AVCT(indiceAvct)%></td>
 								<% if (process.getVAL_CK_VALID_SEF(indiceAvct).equals(process.getCHECKED_ON())){ %>
 								<td>								
-									<%if(avct.getAvisShd()!=null &&avct.getIdMotifAvct()!=null && avct.getIdMotifAvct()==4){%>
+									<%if(avct.getAvisShd()!=null &&avct.getIdMotifAvct()!=null && avct.getIdMotifAvct().toString().equals("4")){%>
 										<SELECT disabled="disabled"  name="<%= process.getNOM_LB_AVIS_CAP_CLASSE(indiceAvct) %>" class="sigp2-liste" >
 												<%=process.forComboHTML(process.getVAL_LB_AVIS_CAP_CLASSE(indiceAvct), process.getVAL_LB_AVIS_CAP_CLASSE_SELECT(indiceAvct)) %>
 										</SELECT>
-									<%}else if( avct.getAvisShd()!=null &&avct.getIdMotifAvct()!=null && avct.getIdMotifAvct()==7){ %>
+									<%}else if( avct.getAvisShd()!=null &&avct.getIdMotifAvct()!=null && avct.getIdMotifAvct().toString().equals("7")){ %>
 										<SELECT disabled="disabled"  name="<%= process.getNOM_LB_AVIS_CAP_AD(indiceAvct) %>" class="sigp2-liste" >
 												<%=process.forComboHTML(process.getVAL_LB_AVIS_CAP_AD(indiceAvct), process.getVAL_LB_AVIS_CAP_AD_SELECT(indiceAvct)) %>
 										</SELECT>
-									<%}else if(avct.getAvisShd()!=null &&avct.getIdMotifAvct()!=null && avct.getIdMotifAvct()==6){ %>
+									<%}else if(avct.getAvisShd()!=null &&avct.getIdMotifAvct()!=null && avct.getIdMotifAvct().toString().equals("6")){ %>
 										<SELECT disabled="disabled"  name="<%= process.getNOM_LB_AVIS_CAP_AD(indiceAvct) %>" class="sigp2-liste" >
 												<%=process.forComboHTML(process.getVAL_LB_AVIS_CAP_AD(indiceAvct), process.getVAL_LB_AVIS_CAP_AD_SELECT(indiceAvct)) %>
 										</SELECT>
@@ -162,7 +162,7 @@ function setfocus(nom)
 								</td>
 								<td>
 									<%if(avct.getAvisShd()!=null && avct.getIdMotifAvct()!=null && null != avct.getIdAvisCap()){%>
-										<%if(avct.getIdMotifAvct()==7 && avct.getIdAvisCap()==1){%>
+										<%if(avct.getIdMotifAvct().toString().equals("7") && avct.getIdAvisCap()==1){%>
 										<INPUT disabled="disabled" class="sigp2-saisie" maxlength="2" name="<%= process.getNOM_EF_ORDRE_MERITE(indiceAvct) %>" size="2" type="text" value="<%= process.getVAL_EF_ORDRE_MERITE(indiceAvct) %>">
 										<%}else{%>
 										&nbsp;
@@ -172,16 +172,16 @@ function setfocus(nom)
 									<%} %>
 								</td>								
 								<%}else{%>
-								<td>								
-									<%if( avct.getAvisShd()!=null && avct.getIdMotifAvct()!=null && avct.getIdMotifAvct()==4){%>										
+								<td>							
+									<%if( avct.getAvisShd()!=null && avct.getIdMotifAvct()!=null && avct.getIdMotifAvct().toString().equals("4")){%>										
 										<SELECT name="<%= process.getNOM_LB_AVIS_CAP_CLASSE(indiceAvct) %>" class="sigp2-liste" >
 												<%=process.forComboHTML(process.getVAL_LB_AVIS_CAP_CLASSE(indiceAvct), process.getVAL_LB_AVIS_CAP_CLASSE_SELECT(indiceAvct)) %>
 										</SELECT>
-									<%}else if(avct.getAvisShd()!=null && avct.getIdMotifAvct()!=null && avct.getIdMotifAvct()==7){ %>
+									<%}else if(avct.getAvisShd()!=null && avct.getIdMotifAvct()!=null && avct.getIdMotifAvct().toString().equals("7")){ %>
 										<SELECT onchange='activeOrdreMerite("<%=indiceAvct %>")' name="<%= process.getNOM_LB_AVIS_CAP_AD(indiceAvct) %>" class="sigp2-liste" >
 										<%=process.forComboHTML(process.getVAL_LB_AVIS_CAP_AD(indiceAvct), process.getVAL_LB_AVIS_CAP_AD_SELECT(indiceAvct)) %>
 										</SELECT>
-									<%}else if(avct.getAvisShd()!=null &&avct.getIdMotifAvct()!=null && avct.getIdMotifAvct()==6){ %>
+									<%}else if(avct.getAvisShd()!=null &&avct.getIdMotifAvct()!=null && avct.getIdMotifAvct().toString().equals("6")){ %>
 										<SELECT disabled="disabled" name="<%= process.getNOM_LB_AVIS_CAP_AD(indiceAvct) %>" class="sigp2-liste" >
 												<%=process.forComboHTML(process.getVAL_LB_AVIS_CAP_AD(indiceAvct), process.getVAL_LB_AVIS_CAP_AD_SELECT(indiceAvct)) %>
 										</SELECT>
@@ -190,7 +190,7 @@ function setfocus(nom)
 								</td>
 								<td>
 									<%if(avct.getAvisShd()!=null && avct.getIdMotifAvct()!=null && null != avct.getIdAvisCap()){%>
-										<%if(avct.getIdMotifAvct()==7 && avct.getIdAvisCap()==1){%>
+										<%if(avct.getIdMotifAvct().toString().equals("7") && avct.getIdAvisCap()==1){%>
 										<INPUT class="sigp2-saisie" maxlength="2" name="<%= process.getNOM_EF_ORDRE_MERITE(indiceAvct) %>" size="2" type="text" value="<%= process.getVAL_EF_ORDRE_MERITE(indiceAvct) %>">
 										<%}else{%>
 										<INPUT style="visibility: hidden;" class="sigp2-saisie" maxlength="2" name="<%= process.getNOM_EF_ORDRE_MERITE(indiceAvct) %>" size="2" type="text" value="<%= process.getVAL_EF_ORDRE_MERITE(indiceAvct) %>">
@@ -202,7 +202,7 @@ function setfocus(nom)
 								<%} %>
 								
 								<td>
-								<%if(avct.getIdMotifAvct()!=null && (avct.getIdMotifAvct()==7 || avct.getIdMotifAvct()==4|| avct.getIdMotifAvct()==6|| avct.getIdMotifAvct()==3)){ %>
+								<%if(avct.getIdMotifAvct()!=null && (avct.getIdMotifAvct().toString().equals("7") || avct.getIdMotifAvct().toString().equals("4")|| avct.getIdMotifAvct().toString().equals("6")|| avct.getIdMotifAvct().toString().equals("3"))){ %>
 								<INPUT type="checkbox" onClick='validSEF("<%=indiceAvct %>")'  <%= process.forCheckBoxHTML(process.getNOM_CK_VALID_SEF(indiceAvct),process.getVAL_CK_VALID_SEF(indiceAvct))%>></td>
 								<%} %>
 								<td><%=process.getVAL_ST_USER_VALID_SEF(indiceAvct)%></td>

@@ -1459,7 +1459,7 @@ public class AvancementService implements IAvancementService {
 					if (grd.getCodeTava() != null && !grd.getCodeTava().equals(Const.CHAINE_VIDE)) {
 						avct.setIdMotifAvct(Integer.valueOf(grd.getCodeTava()));
 						MotifAvancement motif = motifAvancementDao.chercherMotifAvancementByLib("AVANCEMENT DIFFERENCIE");
-						if (motif.getIdMotifAvct() != avct.getIdMotifAvct()) {
+						if (!motif.getIdMotifAvct().toString().equals(avct.getIdMotifAvct().toString())) {
 							avct.setDateAvctMaxi(null);
 							avct.setDateAvctMini(null);
 						}

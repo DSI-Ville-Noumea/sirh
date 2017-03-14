@@ -1333,7 +1333,7 @@ public class OeAVCTMasseSalarialeFonctionnaire extends BasicProcess {
 								continue;
 							}
 						} else {
-							if (avct.getIdMotifAvct() == 3) {
+							if (avct.getIdMotifAvct().toString().equals("3")) {
 								dateAvctFinale = avct.getDateAvctMoy();
 								idAvisEmp = "MOY";
 							} else {
@@ -1393,7 +1393,7 @@ public class OeAVCTMasseSalarialeFonctionnaire extends BasicProcess {
 								continue;
 							}
 						} else {
-							if (avct.getIdMotifAvct() == 3) {
+							if (avct.getIdMotifAvct().toString().equals("3")) {
 								dateAvctFinale = avct.getDateAvctMoy();
 								idAvisEmp = "MOY";
 							} else {
