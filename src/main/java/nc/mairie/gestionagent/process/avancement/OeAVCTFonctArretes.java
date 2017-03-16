@@ -585,7 +585,7 @@ public class OeAVCTFonctArretes extends BasicProcess {
 			}
 		}
 
-		setListeAvct(getAvancementFonctionnairesDao().listerAvancementAvecAnneeEtat(Integer.valueOf(annee), reqEtat, filiere == null ? null : filiere.getLibFiliere(),
+		setListeAvct(getAvancementFonctionnairesDao().listerAvancementAvecAnneeEtat(Integer.valueOf(annee), reqEtat, filiere == null ? null : filiere.getLibFiliere().trim(),
 				agent == null ? null : agent.getIdAgent(), listeSousService, categorie, idCap, "non"));
 
 		afficheListeAvancement();

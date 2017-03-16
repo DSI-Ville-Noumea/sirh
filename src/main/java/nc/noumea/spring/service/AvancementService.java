@@ -755,7 +755,7 @@ public class AvancementService implements IAvancementService {
 							FiliereGrade fil = FiliereGrade.chercherFiliereGrade(aTransaction, ggCarr.getCdfili());
 							if (aTransaction.isErreur())
 								aTransaction.traiterErreur();
-							avct.setFiliere(fil == null ? null : fil.getLibFiliere());
+							avct.setFiliere(fil == null ? null : fil.getLibFiliere().trim());
 						}
 					}
 				}
@@ -1476,7 +1476,7 @@ public class AvancementService implements IAvancementService {
 
 						if (ggCarr != null && ggCarr.getCdfili() != null) {
 							FiliereGrade fil = FiliereGrade.chercherFiliereGrade(aTransaction, ggCarr.getCdfili());
-							avct.setFiliere(fil.getLibFiliere());
+							avct.setFiliere(fil.getLibFiliere().trim());
 						}
 					}
 				}

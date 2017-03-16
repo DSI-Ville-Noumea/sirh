@@ -163,7 +163,7 @@ public class AvancementFonctionnairesDao extends SirhDao implements AvancementFo
 			String idCap, String autreF) throws Exception {
 		String reqWhere = Const.CHAINE_VIDE;
 		if (filiere != null) {
-			reqWhere += " and " + CHAMP_FILIERE + " = '" + filiere + "' ";
+			reqWhere += " and trim(" + CHAMP_FILIERE + ") = '" + filiere.trim() + "' ";
 		}
 		if (idCap != null) {
 			if (idCap.equals("null")) {

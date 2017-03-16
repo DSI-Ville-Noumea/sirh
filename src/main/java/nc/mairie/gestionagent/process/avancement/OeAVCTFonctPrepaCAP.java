@@ -661,7 +661,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 
 		String reqEtat = " and (ETAT='" + EnumEtatAvancement.SGC.getValue() + "' or ETAT='" + EnumEtatAvancement.SEF.getValue() + "')";
 		setListeAvct(getAvancementFonctionnairesDao().listerAvancementAvecAnneeEtat(Integer.valueOf(annee), reqEtat,
-				filiere == null ? null : filiere.getLibFiliere(), agent == null ? null : agent.getIdAgent(), listeSousService, null, null, "non"));
+				filiere == null ? null : filiere.getLibFiliere().trim(), agent == null ? null : agent.getIdAgent(), listeSousService, null, null, "non"));
 
 		afficheListeAvancement(request);
 		return true;

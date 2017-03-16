@@ -322,7 +322,7 @@ public class OeAVCTFonctCarrieres extends BasicProcess {
 		}
 
 		String reqEtat = " and (ETAT='" + EnumEtatAvancement.ARRETE.getValue() + "' ) and (ID_AVIS_EMP!= 5  or ID_AVIS_EMP is null ) ";
-		setListeAvct(getAvancementFonctionnairesDao().listerAvancementAvecAnneeEtat(Integer.valueOf(annee), reqEtat, filiere == null ? null : filiere.getLibFiliere(),
+		setListeAvct(getAvancementFonctionnairesDao().listerAvancementAvecAnneeEtat(Integer.valueOf(annee), reqEtat, filiere == null ? null : filiere.getLibFiliere().trim(),
 				agent == null ? null : agent.getIdAgent(), listeSousService, null, null,"non"));
 
 		afficheListeAvancement();
