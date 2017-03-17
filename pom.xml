@@ -88,7 +88,7 @@
 		<dependency>
 			<groupId>nc.noumea.mairie</groupId>
 			<artifactId>sirh_api</artifactId>
-			<version>11.13</version>
+			<version>11.14</version>
 		</dependency>
 		<!-- JSON -->
 		<dependency>
