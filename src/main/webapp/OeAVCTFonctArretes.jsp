@@ -206,30 +206,30 @@ function SelectLigne(id,tailleTableau)
 								<td><%=process.getVAL_ST_DATE_AVCT(indiceAvct)%></td>
 								<td><%=process.getVAL_ST_MOTIF_AVCT(indiceAvct)%></td>							
 								<td>								
-									<%if( avct.getIdMotifAvct()!=null &&avct.getIdMotifAvct().toString().equals("4")){%>										
+									<%if( avct.getIdMotifAvct()!=null && String.valueOf(avct.getIdMotifAvct()).equals("4")){%>										
 										<SELECT <%= process.getVAL_CK_VALID_ARR(indiceAvct).equals(process.getCHECKED_ON()) ? "disabled='disabled'" : "" %> name="<%= process.getNOM_LB_AVIS_CAP_CLASSE(indiceAvct) %>" class="sigp2-liste" >
 												<%=process.forComboHTML(process.getVAL_LB_AVIS_CAP_CLASSE(indiceAvct), process.getVAL_LB_AVIS_CAP_CLASSE_SELECT(indiceAvct)) %>
 										</SELECT>
-									<%}else if(avct.getIdMotifAvct()!=null &&avct.getIdMotifAvct().toString().equals("6")){ %>
+									<%}else if(avct.getIdMotifAvct()!=null && String.valueOf(avct.getIdMotifAvct()).equals("6")){ %>
 										<SELECT disabled='disabled'name="<%= process.getNOM_LB_AVIS_CAP_AD(indiceAvct) %>" class="sigp2-liste" >
 												<%=process.forComboHTML(process.getVAL_LB_AVIS_CAP_AD(indiceAvct), process.getVAL_LB_AVIS_CAP_AD_SELECT(indiceAvct)) %>
 										</SELECT>									
-									<%}else if(avct.getIdMotifAvct()!=null &&avct.getIdMotifAvct().toString().equals("7")){ %>
+									<%}else if(avct.getIdMotifAvct()!=null && String.valueOf(avct.getIdMotifAvct()).equals("7")){ %>
 										<SELECT <%= process.getVAL_CK_VALID_ARR(indiceAvct).equals(process.getCHECKED_ON()) ? "disabled='disabled'" : "" %> name="<%= process.getNOM_LB_AVIS_CAP_AD(indiceAvct) %>" class="sigp2-liste" >
 												<%=process.forComboHTML(process.getVAL_LB_AVIS_CAP_AD(indiceAvct), process.getVAL_LB_AVIS_CAP_AD_SELECT(indiceAvct)) %>
 										</SELECT>
 									<%}else{%>&nbsp;
 									<%} %>	
 									<br/>							
-									<%if( avct.getIdMotifAvct()!=null &&avct.getIdMotifAvct().toString().equals("4")){%>										
+									<%if( avct.getIdMotifAvct()!=null && String.valueOf(avct.getIdMotifAvct()).equals("4")){%>										
 										<SELECT <%= process.getVAL_CK_VALID_ARR(indiceAvct).equals(process.getCHECKED_ON()) ? "disabled='disabled'" : "" %> name="<%= process.getNOM_LB_AVIS_EMP_CLASSE(indiceAvct) %>" class="sigp2-liste" >
 												<%=process.forComboHTML(process.getVAL_LB_AVIS_EMP_CLASSE(indiceAvct), process.getVAL_LB_AVIS_EMP_CLASSE_SELECT(indiceAvct)) %>
 										</SELECT>
-									<%}else if(avct.getIdMotifAvct()!=null &&avct.getIdMotifAvct().toString().equals("6")){ %>
+									<%}else if(avct.getIdMotifAvct()!=null && String.valueOf(avct.getIdMotifAvct()).equals("6")){ %>
 										<SELECT disabled="disabled" name="<%= process.getNOM_LB_AVIS_EMP_AD(indiceAvct) %>" class="sigp2-liste" >
 												<%=process.forComboHTML(process.getVAL_LB_AVIS_EMP_AD(indiceAvct), process.getVAL_LB_AVIS_EMP_AD_SELECT(indiceAvct)) %>
 										</SELECT>
-									<%}else if(avct.getIdMotifAvct()!=null &&avct.getIdMotifAvct().toString().equals("7")){ %>
+									<%}else if(avct.getIdMotifAvct()!=null && String.valueOf(avct.getIdMotifAvct()).equals("7")){ %>
 										<SELECT <%= process.getVAL_CK_VALID_ARR(indiceAvct).equals(process.getCHECKED_ON()) ? "disabled='disabled'" : "" %> name="<%= process.getNOM_LB_AVIS_EMP_AD(indiceAvct) %>" class="sigp2-liste" >
 												<%=process.forComboHTML(process.getVAL_LB_AVIS_EMP_AD(indiceAvct), process.getVAL_LB_AVIS_EMP_AD_SELECT(indiceAvct)) %>
 										</SELECT>

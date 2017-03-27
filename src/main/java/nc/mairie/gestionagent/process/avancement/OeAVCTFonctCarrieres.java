@@ -367,7 +367,7 @@ public class OeAVCTFonctCarrieres extends BasicProcess {
 				}
 				addZone(getNOM_ST_DATE_AVCT(i), dateAvctFinale == null ? Const.CHAINE_VIDE : sdfFormatDate.format(dateAvctFinale));
 			} else {
-				if (av.getIdMotifAvct().toString().equals("3")) {
+				if (String.valueOf(av.getIdMotifAvct()).equals("3")) {
 					addZone(getNOM_ST_DATE_AVCT(i), sdfFormatDate.format(av.getDateAvctMoy()));
 				} else {
 					addZone(getNOM_ST_DATE_AVCT(i), "&nbsp;");
@@ -455,7 +455,7 @@ public class OeAVCTFonctCarrieres extends BasicProcess {
 								continue;
 							}
 						} else {
-							if (avct.getIdMotifAvct().toString().equals("3")) {
+							if (String.valueOf(avct.getIdMotifAvct()).equals("3")) {
 								dateAvctFinale = avct.getDateAvctMoy();
 								idAvisEmp = "MOY";
 							} else {
@@ -511,7 +511,7 @@ public class OeAVCTFonctCarrieres extends BasicProcess {
 								continue;
 							}
 						} else {
-							if (avct.getIdMotifAvct().toString().equals("3")) {
+							if (String.valueOf(avct.getIdMotifAvct()).equals("3")) {
 								dateAvctFinale = avct.getDateAvctMoy();
 								idAvisEmp = "MOY";
 							} else {
@@ -1306,7 +1306,7 @@ public class OeAVCTFonctCarrieres extends BasicProcess {
 									continue;
 								}
 							} else {
-								if (avct.getIdMotifAvct().toString().equals("3")) {
+								if (String.valueOf(avct.getIdMotifAvct()).equals("3")) {
 									dateAvctFinale = avct.getDateAvctMoy();
 									idAvisEmp = "MOY";
 								} else {

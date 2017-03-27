@@ -257,7 +257,7 @@ public class OeAVCTFonctArretes extends BasicProcess {
 
 			// date avct
 			if (av.getEtat().equals(EnumEtatAvancement.ARRETE.getValue())) {
-				if (av.getIdMotifAvct().toString().equals("7")) {
+				if (String.valueOf(av.getIdMotifAvct()).equals("7")) {
 					// on récupere l'avis Emp
 					int indiceAvisCapMinMoyMaxEmp = (Services.estNumerique(getVAL_LB_AVIS_EMP_AD_SELECT(i)) ? Integer.parseInt(getVAL_LB_AVIS_EMP_AD_SELECT(i)) : -1);
 					if (indiceAvisCapMinMoyMaxEmp != -1) {
@@ -272,7 +272,7 @@ public class OeAVCTFonctArretes extends BasicProcess {
 						}
 						addZone(getNOM_ST_DATE_AVCT_FINALE(i), dateAvctFinale == null ? Const.CHAINE_VIDE : sdfFormatDate.format(dateAvctFinale));
 					}
-				} else if (av.getIdMotifAvct().toString().equals("6")) {
+				} else if (String.valueOf(av.getIdMotifAvct()).equals("6")) {
 					addZone(getNOM_ST_DATE_AVCT_FINALE(i), sdfFormatDate.format(av.getDateAvctMoy()));
 				} else {
 					// on récupere l'avis Emp
@@ -621,10 +621,10 @@ public class OeAVCTFonctArretes extends BasicProcess {
 			AvancementFonctionnaires avct = (AvancementFonctionnaires) getListeAvct().get(j);
 			Integer idAvct = avct.getIdAvct();
 			if (getVAL_CK_VALID_ARR_IMPR(idAvct).equals(getCHECKED_ON())) {
-				if (avct.getIdMotifAvct().toString().equals("4")) {
+				if (String.valueOf(avct.getIdMotifAvct()).equals("4")) {
 					// on fait une liste des arretes changement classe
 					listeImpressionChangementClasse.add(avct.getIdAgent());
-				} else if (avct.getIdMotifAvct().toString().equals("7") || avct.getIdMotifAvct().toString().equals("6") || avct.getIdMotifAvct().toString().equals("3")) {
+				} else if (String.valueOf(avct.getIdMotifAvct()).equals("7") || String.valueOf(avct.getIdMotifAvct()).equals("6") || String.valueOf(avct.getIdMotifAvct()).equals("3")) {
 					// on fait une liste des arretes avancement diffe
 					listeImpressionAvancementDiff.add(avct.getIdAgent());
 				} else {
@@ -784,7 +784,7 @@ public class OeAVCTFonctArretes extends BasicProcess {
 				avct.setRegularisation(false);
 			}
 
-			if (avct.getIdMotifAvct().toString().equals("7")) {
+			if (String.valueOf(avct.getIdMotifAvct()).equals("7")) {
 				// on traite l'avis CAP
 				int indiceAvisCapMinMoyMaxCap = (Services.estNumerique(getVAL_LB_AVIS_CAP_AD_SELECT(idAvct)) ? Integer.parseInt(getVAL_LB_AVIS_CAP_AD_SELECT(idAvct)) : -1);
 				if (indiceAvisCapMinMoyMaxCap != -1) {
@@ -797,7 +797,7 @@ public class OeAVCTFonctArretes extends BasicProcess {
 					Integer idAvisEmp = ((AvisCap) getListeAvisCAPMinMoyMax().get(indiceAvisCapMinMoyMaxEmp)).getIdAvisCap();
 					avct.setIdAvisEmp(idAvisEmp);
 				}
-			} else if (avct.getIdMotifAvct().toString().equals("6")) {
+			} else if (String.valueOf(avct.getIdMotifAvct()).equals("6")) {
 				// on traite l'avis CAP
 				avct.setIdAvisArr(2);
 				// on traite l'avis Emp
@@ -1644,7 +1644,7 @@ public class OeAVCTFonctArretes extends BasicProcess {
 	public boolean performPB_SET_DATE_AVCT(HttpServletRequest request, AvancementFonctionnaires avct, Integer indiceElemen) throws Exception {
 		if (getVAL_CK_VALID_ARR(indiceElemen).equals(getCHECKED_ON())) {
 
-			if (avct.getIdMotifAvct().toString().equals("7")) {
+			if (String.valueOf(avct.getIdMotifAvct()).equals("7")) {
 				// on récupere l'avis Emp
 				if (avct.getIdAvisEmp() != null) {
 					String idAvisEmp = getAvisCapDao().chercherAvisCap(avct.getIdAvisEmp()).getLibCourtAvisCap().toUpperCase();
@@ -1658,7 +1658,7 @@ public class OeAVCTFonctArretes extends BasicProcess {
 					}
 					addZone(getNOM_ST_DATE_AVCT_FINALE(indiceElemen), dateAvctFinale == null ? Const.CHAINE_VIDE : sdfFormatDate.format(dateAvctFinale));
 				}
-			} else if (avct.getIdMotifAvct().toString().equals("6")) {
+			} else if (String.valueOf(avct.getIdMotifAvct()).equals("6")) {
 				addZone(getNOM_ST_DATE_AVCT_FINALE(indiceElemen), sdfFormatDate.format(avct.getDateAvctMoy()));
 			} else {
 				// on récupere l'avis Emp
@@ -1762,7 +1762,7 @@ public class OeAVCTFonctArretes extends BasicProcess {
 		try {
 			AvancementFonctionnaires avct = getAvancementFonctionnairesDao().chercherAvancement(idAvct);
 
-			if (avct.getIdMotifAvct().toString().equals("4")) {
+			if (String.valueOf(avct.getIdMotifAvct()).equals("4")) {
 				// on traite l'avis Emp
 				int indiceAvisCapFavDefavEmp = (Services.estNumerique(getVAL_LB_AVIS_EMP_CLASSE_SELECT(idAvct)) ? Integer.parseInt(getVAL_LB_AVIS_EMP_CLASSE_SELECT(idAvct)) : -1);
 				if (indiceAvisCapFavDefavEmp != -1) {

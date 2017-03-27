@@ -233,16 +233,16 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 
 				if (eaeAgent.getEtat().equals(EnumEtatEAE.CONTROLE.getCode()) || eaeAgent.getEtat().equals(EnumEtatEAE.FINALISE.getCode())) {
 					EaeEvaluationDto eaeEvaluation = eaeAgent.getEvaluation();
-					if (av.getIdMotifAvct().toString().equals("7")) {
+					if (String.valueOf(av.getIdMotifAvct()).equals("7")) {
 						avisSHD = eaeEvaluation.getPropositionAvancement() == null ? Const.CHAINE_VIDE
 								: eaeEvaluation.getPropositionAvancement().getCourant();
-					} else if (av.getIdMotifAvct().toString().equals("5")) {
+					} else if (String.valueOf(av.getIdMotifAvct()).equals("5")) {
 						avisSHD = eaeEvaluation.getAvisRevalorisation() == null ? Const.CHAINE_VIDE
 								: eaeEvaluation.getAvisRevalorisation() ? "FAV" : "DEFAV";
-					} else if (av.getIdMotifAvct().toString().equals("4")) {
+					} else if (String.valueOf(av.getIdMotifAvct()).equals("4")) {
 						avisSHD = eaeEvaluation.getAvisChangementClasse() == null ? Const.CHAINE_VIDE
 								: eaeEvaluation.getAvisChangementClasse() ? "FAV" : "DEFAV";
-					} else if (av.getIdMotifAvct().toString().equals("6")) {
+					} else if (String.valueOf(av.getIdMotifAvct()).equals("6")) {
 						avisSHD = "MOY";
 					}
 				}
@@ -836,7 +836,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 			}
 
 			if (avct.getIdMotifAvct() != null) {
-				if (avct.getIdMotifAvct().toString().equals("7")) {
+				if (String.valueOf(avct.getIdMotifAvct()).equals("7")) {
 					// on traite l'avis CAP
 					int indiceAvisCapMinMoyMax = (Services.estNumerique(getVAL_LB_AVIS_CAP_AD_SELECT(idAvct))
 							? Integer.parseInt(getVAL_LB_AVIS_CAP_AD_SELECT(idAvct)) : -1);
@@ -858,7 +858,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 							avct.setOrdreMerite(null);
 						}
 					}
-				} else if (avct.getIdMotifAvct().toString().equals("6") || avct.getIdMotifAvct().toString().equals("3")) {
+				} else if (String.valueOf(avct.getIdMotifAvct()).equals("6") || String.valueOf(avct.getIdMotifAvct()).equals("3")) {
 					avct.setIdAvisCap(2);
 					avct.setOrdreMerite(null);
 				} else {

@@ -340,7 +340,7 @@ public class OeAVCTFonctDetaches extends BasicProcess {
 			addZone(getNOM_ST_DATE_AVCT(i), sdfFormatDate.format(av.getDateAvctMoy()));
 
 			addZone(getNOM_CK_VALID_DRH(i), av.getEtat().equals(EnumEtatAvancement.TRAVAIL.getValue()) ? getCHECKED_OFF() : getCHECKED_ON());
-			addZone(getNOM_ST_MOTIF_AVCT(i), av.getIdMotifAvct() == null ? "&nbsp;" : getHashMotifAvancement().get(av.getIdMotifAvct().toString()).getLibMotifAvct());
+			addZone(getNOM_ST_MOTIF_AVCT(i), av.getIdMotifAvct() == null ? "&nbsp;" : getHashMotifAvancement().get(String.valueOf(av.getIdMotifAvct())).getLibMotifAvct());
 			addZone(getNOM_CK_PROJET_ARRETE(i), av.getEtat().equals(EnumEtatAvancement.TRAVAIL.getValue()) || av.getEtat().equals(EnumEtatAvancement.SGC.getValue()) ? getCHECKED_OFF()
 					: getCHECKED_ON());
 			addZone(getNOM_EF_NUM_ARRETE(i), av.getNumArrete());
@@ -1066,10 +1066,10 @@ public class OeAVCTFonctDetaches extends BasicProcess {
 			AvancementDetaches avct = (AvancementDetaches) getListeAvct().get(j);
 			Integer idAvct = avct.getIdAvct();
 			if (getVAL_CK_VALID_ARR_IMPR(idAvct).equals(getCHECKED_ON())) {
-				if (avct.getIdMotifAvct().toString().equals("4")) {
+				if (String.valueOf(avct.getIdMotifAvct()).equals("4")) {
 					// on fait une liste des arretes changement classe
 					listeImpressionChangementClasse.add(avct.getIdAgent());
-				} else if (avct.getIdMotifAvct().toString().equals("7") || avct.getIdMotifAvct().toString().equals("6") || avct.getIdMotifAvct().toString().equals("3")) {
+				} else if (String.valueOf(avct.getIdMotifAvct()).equals("7") || String.valueOf(avct.getIdMotifAvct()).equals("6") || String.valueOf(avct.getIdMotifAvct()).equals("3")) {
 					// on fait une liste des arretes avancement diffe
 					listeImpressionAvancementDiff.add(avct.getIdAgent());
 				} else {

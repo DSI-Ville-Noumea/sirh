@@ -1191,7 +1191,7 @@ public class AvancementService implements IAvancementService {
 			avct.setAutre(false);
 			// #19141 : on traite les territoriaux et les avancement auto
 			// uniquement
-			if (avct.getIdMotifAvct() != null && avct.getIdMotifAvct().toString().equals("3")) {
+			if (avct.getIdMotifAvct() != null && String.valueOf(avct.getIdMotifAvct()).equals("3")) {
 				avct.setAutre(true);
 			}
 
@@ -1459,7 +1459,7 @@ public class AvancementService implements IAvancementService {
 					if (grd.getCodeTava() != null && !grd.getCodeTava().equals(Const.CHAINE_VIDE)) {
 						avct.setIdMotifAvct(Integer.valueOf(grd.getCodeTava()));
 						MotifAvancement motif = motifAvancementDao.chercherMotifAvancementByLib("AVANCEMENT DIFFERENCIE");
-						if (!motif.getIdMotifAvct().toString().equals(avct.getIdMotifAvct().toString())) {
+						if (!motif.getIdMotifAvct().toString().equals(String.valueOf(avct.getIdMotifAvct()))) {
 							avct.setDateAvctMaxi(null);
 							avct.setDateAvctMini(null);
 						}
