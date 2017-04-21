@@ -547,8 +547,8 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 
 			// Si clic sur le bouton PB_CONSULTER_TABLEAU
 			for (int i = 0; i < getListeImpression().size(); i++) {
-				if (testerParametre(request, getNOM_PB_CONSULTER_TABLEAU(i, getVAL_ST_CODE_CAP(i), getVAL_ST_CADRE_EMPLOI(i)))) {
-					return performPB_CONSULTER_TABLEAU(request, getVAL_ST_CODE_CAP(i), getVAL_ST_CADRE_EMPLOI(i));
+				if (testerParametre(request, getNOM_PB_CONSULTER_TABLEAU_AVIS_VDN(i, getVAL_ST_CODE_CAP(i), getVAL_ST_CADRE_EMPLOI(i)))) {
+					return performPB_CONSULTER_TABLEAU_AVIS_VDN(request, getVAL_ST_CODE_CAP(i), getVAL_ST_CADRE_EMPLOI(i));
 				}
 			}
 
@@ -1395,7 +1395,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	 * création : (21/11/11 09:55:36)
 	 * 
 	 */
-	public String getNOM_PB_CONSULTER_TABLEAU(int i, String indiceCap, String indiceCadreEmp) {
+	public String getNOM_PB_CONSULTER_TABLEAU_AVIS_VDN(int i, String indiceCap, String indiceCadreEmp) {
 		return "NOM_PB_CONSULTER_TABLEAU_" + i;
 	}
 
@@ -1406,7 +1406,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	 * setStatut(STATUT,Message d'erreur) Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
-	public boolean performPB_CONSULTER_TABLEAU(HttpServletRequest request, String indiceCap, String indiceCadreEmploi) throws Exception {
+	public boolean performPB_CONSULTER_TABLEAU_AVIS_VDN(HttpServletRequest request, String indiceCap, String indiceCadreEmploi) throws Exception {
 
 		UserAppli user = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
 		String nomFichier = "tabAvctCap_" + user.getUserName() + ".pdf";
@@ -1416,7 +1416,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 		CadreEmploi cadre = getCadreEmploiDao().chercherCadreEmploiByLib(indiceCadreEmploi);
 
 		String url = "PrintDocument?fromPage=" + this.getClass().getName() + "&nomFichier=" + nomFichier + "&idCap=" + cap.getIdCap()
-				+ "&idCadreEmploi=" + cadre.getIdCadreEmploi() + "&idAgent=" + getAgentConnecte(request).getIdAgent();
+				+ "&idCadreEmploi=" + cadre.getIdCadreEmploi() + "&idAgent=" + getAgentConnecte(request).getIdAgent() + "&isAvisShd=false";
 		setURLFichier(getScriptOuverture(url));
 
 		return true;
@@ -1889,7 +1889,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 		CadreEmploi cadre = getCadreEmploiDao().chercherCadreEmploiByLib(indiceCadreEmploi);
 
 		String url = "PrintDocument?fromPage=" + this.getClass().getName() + "&nomFichier=" + nomFichier + "&idCap=" + cap.getIdCap()
-				+ "&idCadreEmploi=" + cadre.getIdCadreEmploi() + "&idAgent=" + getAgentConnecte(request).getIdAgent();
+				+ "&idCadreEmploi=" + cadre.getIdCadreEmploi() + "&idAgent=" + getAgentConnecte(request).getIdAgent() + "&isAvisShd=true";
 		setURLFichier(getScriptOuverture(url));
 
 		return true;

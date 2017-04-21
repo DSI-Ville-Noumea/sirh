@@ -270,7 +270,7 @@ function setfocus(nom)
 								<td><%=process.getVAL_ST_CODE_CAP(indiceImpr)%></td>
 								<td><%=process.getVAL_ST_CADRE_EMPLOI(indiceImpr)%></td>
 								<td align="center" ><INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_CONSULTER_TABLEAU_AVIS_SHD(indiceImpr,process.getVAL_ST_CODE_CAP(indiceImpr),process.getVAL_ST_CADRE_EMPLOI(indiceImpr))%>"></td>
-								<td align="center" ><INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_CONSULTER_TABLEAU(indiceImpr,process.getVAL_ST_CODE_CAP(indiceImpr),process.getVAL_ST_CADRE_EMPLOI(indiceImpr))%>"></td>
+								<td align="center" ><INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_CONSULTER_TABLEAU_AVIS_VDN(indiceImpr,process.getVAL_ST_CODE_CAP(indiceImpr),process.getVAL_ST_CADRE_EMPLOI(indiceImpr))%>"></td>
 								<td align="center" ><INPUT type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_TAB_SHD(indiceImpr),process.getVAL_CK_TAB_SHD(indiceImpr))%>></td>
 								<td align="center" ><INPUT type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_EAE_SHD(indiceImpr),process.getVAL_CK_EAE_SHD(indiceImpr))%>></td>								
 								<td align="center" ><INPUT type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_TAB_VDN(indiceImpr),process.getVAL_CK_TAB_VDN(indiceImpr))%>></td>

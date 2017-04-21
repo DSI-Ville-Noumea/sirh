@@ -135,8 +135,9 @@ public class ServletPrintDocument extends javax.servlet.http.HttpServlet {
 				String idCap = req.getParameter("idCap");
 				String idCadreEmploi = req.getParameter("idCadreEmploi");
 				String idAgent = req.getParameter("idAgent");
+				boolean isAvisShd = req.getParameter("isAvisShd").equals("true");
 
-				fileByte = sirhService.downloadTableauAvancement(Integer.valueOf(idCap), Integer.valueOf(idCadreEmploi), true, "PDF", Integer.valueOf(idAgent));
+				fileByte = sirhService.downloadTableauAvancement(Integer.valueOf(idCap), Integer.valueOf(idCadreEmploi), isAvisShd, "PDF", Integer.valueOf(idAgent));
 			}
 
 			//// OePOSTEFichePoste ////

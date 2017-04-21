@@ -51,8 +51,8 @@ public class SirhService implements ISirhService {
 	}
 
 	@Override
-	public byte[] downloadTableauAvancement(int idCap, int idCadreEmploi, boolean avisEAE, String format,Integer idAgentConnecte) throws Exception {
-		return sirhConsumer.downloadTableauAvancement(idCap, idCadreEmploi, avisEAE, format,idAgentConnecte);
+	public byte[] downloadTableauAvancement(int idCap, int idCadreEmploi, boolean isAvisShd, String format,Integer idAgentConnecte) throws Exception {
+		return sirhConsumer.downloadTableauAvancement(idCap, idCadreEmploi, isAvisShd, format,idAgentConnecte);
 	}
 
 	@Override
