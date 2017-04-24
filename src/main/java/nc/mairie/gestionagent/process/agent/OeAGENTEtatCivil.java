@@ -417,6 +417,8 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		}
 
 		getAgentCourant().setDatePremiereEmbauche(sdf.parse(getVAL_EF_DATE_PREM_EMB()));
+		// #38601 : Ajout de la date d'arrivée sur le territoire
+		getAgentCourant().setDateArriveeTerritoire(getVAL_EF_DATE_ARRIVEE_TERRITOIRE().equals(Const.CHAINE_VIDE) ? null : sdf.parse(getVAL_EF_DATE_ARRIVEE_TERRITOIRE()));
 		// RG_AG_EC_C06
 		getAgentCourant().setDateDerniereEmbauche(getVAL_EF_DATE_DERN_EMB().equals(Const.CHAINE_VIDE) ? sdf.parse(getVAL_EF_DATE_PREM_EMB()) : sdf.parse(getVAL_EF_DATE_DERN_EMB()));
 		getAgentCourant().setNumCarteSejour(getVAL_EF_NUM_CARTE_SEJOUR());
@@ -579,6 +581,36 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		if (getVAL_EF_DATE_DERN_EMB().length() != 0 && !Services.estUneDate(getVAL_EF_DATE_DERN_EMB())) {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR007", "de dernière embauche"));
 			setFocus(getNOM_EF_DATE_DERN_EMB());
+			result &= false;
+		}
+
+		// #38601 : Controle date arrivée territoire, obligatoire pour les nouveaux agents, facultatif pour les existants
+		if (getVAL_EF_DATE_ARRIVEE_TERRITOIRE().length() == 0 && getAgentCourant() == null) {
+			// "ERR002", "La zone @ est obligatoire."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "date d'arrivée sur le territoire"));
+			setFocus(getNOM_EF_DATE_ARRIVEE_TERRITOIRE());
+			result &= false;
+		}
+
+		// Controle format date arrivée territoire
+		if (getVAL_EF_DATE_ARRIVEE_TERRITOIRE().length() != 0 && !Services.estUneDate(getVAL_EF_DATE_ARRIVEE_TERRITOIRE())) {
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR007", "d'arrivée sur le territoire"));
+			setFocus(getNOM_EF_DATE_ARRIVEE_TERRITOIRE());
+			result &= false;
+		}
+
+		// Controle date arrivée territoire
+		if (getVAL_EF_DATE_ARRIVEE_TERRITOIRE().length() != 0 && Services.compareDates(getVAL_EF_DATE_NAISSANCE(), getVAL_EF_DATE_ARRIVEE_TERRITOIRE()) > 0) {
+			// "ERR204", "La date @ doit être inferieure à  la date @.");
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR204", "de naissance", "d'arrivée sur le territoire"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR0020"));
+			result &= false;
+		}
+
+		// Si la date d'arrivée a été renseignée, on ne peut plus la supprimer. La modification est cependant possible.
+		if (getVAL_EF_DATE_ARRIVEE_TERRITOIRE().length() == 0 && getAgentCourant() != null && getAgentCourant().getDateArriveeTerritoire() != null) {
+			// "ERR204", "La date @ doit être inferieure à  la date @.");
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR0020"));
 			result &= false;
 		}
 
@@ -1412,6 +1444,24 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	}
 
 	/**
+	 * Retourne le nom d'une zone de saisie pour la JSP : EF_DATE_ARRIVEE_TERRITOIRE 
+	 * Date de création : (18/04/2017)
+	 */
+	public String getNOM_EF_DATE_ARRIVEE_TERRITOIRE() {
+		return "NOM_EF_DATE_ARRIVEE_TERRITOIRE";
+	}
+
+	/**
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie : EF_DATE_ARRIVEE_TERRITOIRE 
+	 * Date de création : (18/04/2017)
+	 * 
+	 * 
+	 */
+	public String getVAL_EF_DATE_ARRIVEE_TERRITOIRE() {
+		return getZone(getNOM_EF_DATE_ARRIVEE_TERRITOIRE());
+	}
+
+	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_INTITULE_COMPTE
 	 * Date de création : (15/03/11 10:49:55)
 	 * 
@@ -2217,6 +2267,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		addZone(getNOM_EF_DATE_NAISSANCE(), Const.CHAINE_VIDE);
 		addZone(getNOM_EF_DATE_PREM_EMB(), Const.CHAINE_VIDE);
 		addZone(getNOM_EF_DATE_DERN_EMB(), Const.CHAINE_VIDE);
+		addZone(getNOM_EF_DATE_ARRIVEE_TERRITOIRE(), Const.CHAINE_VIDE);
 		addZone(getNOM_EF_NUM_CARTE_SEJOUR(), Const.CHAINE_VIDE);
 		addZone(getNOM_EF_DATE_VALIDITE_CARTE_SEJOUR(), Const.CHAINE_VIDE);
 		addZone(getNOM_EF_NUM_RUE(), Const.CHAINE_VIDE);
@@ -2418,6 +2469,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		addZone(getNOM_EF_DATE_NAISSANCE(), getAgentCourant().getDateNaissance() == null ? Const.CHAINE_VIDE : sdf.format(getAgentCourant().getDateNaissance()));
 		addZone(getNOM_EF_DATE_PREM_EMB(), getAgentCourant().getDatePremiereEmbauche() == null ? Const.CHAINE_VIDE : sdf.format(getAgentCourant().getDatePremiereEmbauche()));
 		addZone(getNOM_EF_DATE_DERN_EMB(), getAgentCourant().getDateDerniereEmbauche() == null ? Const.CHAINE_VIDE : sdf.format(getAgentCourant().getDateDerniereEmbauche()));
+		addZone(getNOM_EF_DATE_ARRIVEE_TERRITOIRE(), getAgentCourant().getDateArriveeTerritoire() == null ? Const.CHAINE_VIDE : sdf.format(getAgentCourant().getDateArriveeTerritoire()));
 		addZone(getNOM_EF_NUM_CARTE_SEJOUR(), getAgentCourant().getNumCarteSejour());
 		addZone(getNOM_EF_DATE_VALIDITE_CARTE_SEJOUR(), getAgentCourant().getDateValiditeCarteSejour() == null ? Const.CHAINE_VIDE : sdf.format(getAgentCourant().getDateValiditeCarteSejour()));
 
@@ -3518,46 +3570,6 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_ENREGISTRER Date de création
-	 * : (11/04/11 14:50:48)
-	 * 
-	 */
-	public String getNOM_PB_ENREGISTRER() {
-		return "NOM_PB_ENREGISTRER";
-	}
-
-	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * regles de gestion du process - Positionne un statut en fonction de ces
-	 * regles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (11/04/11 14:50:48)
-	 * 
-	 */
-	public boolean performPB_ENREGISTRER(HttpServletRequest request) throws Exception {
-
-		// Controle des champs
-		if (!performControlerSaisie(request, false)) {
-			return false;
-		}
-
-		// Alimentation de l'agent
-		alimenterAgent(request);
-
-		// Création/Modification de l'agent
-		ArrayList<Contact> lContact = getContactDao().listerContactAgent(getAgentCourant().getIdAgent());
-		SituationFamiliale situFam = getSituationFamilialeDao().chercherSituationFamilialeById(getAgentCourant().getIdSituationFamiliale());
-		getAgentDao().creerAgent(getTransaction(), getAgentCourant(), lContact, situFam);
-
-		if (!getTransaction().isErreur()) {
-			VariableGlobale.ajouter(request, VariableGlobale.GLOBAL_AGENT_MAIRIE, getAgentCourant());
-			commitTransaction();
-		} else {
-			return false;
-		}
-		return true;
-	}
-
-	/**
 	 * Retourne le nom du groupe de radio boutons coché pour la JSP :
 	 * RG_CONTACT_DIFF Date de création : (14/04/11 15:28:01)
 	 * 
@@ -4025,11 +4037,6 @@ public class OeAGENTEtatCivil extends BasicProcess {
 			// Si clic sur le bouton PB_INIT_DATE_DERNIERE_EMBAUCHE
 			if (testerParametre(request, getNOM_PB_INIT_DATE_DERNIERE_EMBAUCHE())) {
 				return performPB_INIT_DATE_DERNIERE_EMBAUCHE(request);
-			}
-
-			// Si clic sur le bouton PB_ENREGISTRER
-			if (testerParametre(request, getNOM_PB_ENREGISTRER())) {
-				return performPB_ENREGISTRER(request);
 			}
 
 			// Si clic sur le bouton PB_ANNULER_CONTACT

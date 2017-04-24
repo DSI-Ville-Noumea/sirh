@@ -42,6 +42,7 @@ public class AgentDao extends SirhDao implements AgentDaoInterface {
 	public static final String CHAMP_SEXE = "SEXE";
 	public static final String CHAMP_DATE_PREMIERE_EMBAUCHE = "DATE_PREMIERE_EMBAUCHE";
 	public static final String CHAMP_DATE_DERNIERE_EMBAUCHE = "DATE_DERNIERE_EMBAUCHE";
+	public static final String CHAMP_DATE_ARRIVEE_TERRITOIRE = "DATE_ARRIVEE_TERRITOIRE";
 	public static final String CHAMP_NATIONALITE = "NATIONALITE";
 	public static final String CHAMP_CODE_PAYS_NAISS_ET = "CODE_PAYS_NAISS_ET";
 	public static final String CHAMP_CODE_COMMUNE_NAISS_ET = "CODE_COMMUNE_NAISS_ET";
@@ -426,6 +427,7 @@ public class AgentDao extends SirhDao implements AgentDaoInterface {
 			a.setSexe((String) row.get(CHAMP_SEXE));
 			a.setDatePremiereEmbauche((Date) row.get(CHAMP_DATE_PREMIERE_EMBAUCHE));
 			a.setDateDerniereEmbauche((Date) row.get(CHAMP_DATE_DERNIERE_EMBAUCHE));
+			a.setDateArriveeTerritoire((Date) row.get(CHAMP_DATE_ARRIVEE_TERRITOIRE));
 			a.setNationalite((String) row.get(CHAMP_NATIONALITE));
 			BigDecimal codePayEt = (BigDecimal) row.get(CHAMP_CODE_PAYS_NAISS_ET);
 			a.setCodePaysNaissEt(codePayEt == null ? null : codePayEt.intValue());
@@ -529,8 +531,8 @@ public class AgentDao extends SirhDao implements AgentDaoInterface {
 				+ "," + CHAMP_INTITULE_COMPTE + "," + CHAMP_VCAT + "," + CHAMP_DEBUT_SERVICE + "," + CHAMP_FIN_SERVICE
 				+ "," + CHAMP_NUM_CAFAT + "," + CHAMP_NUM_RUAMM + "," + CHAMP_NUM_MUTUELLE + "," + CHAMP_NUM_CRE + ","
 				+ CHAMP_NUM_IRCAFEX + "," + CHAMP_NUM_CLR + "," + CHAMP_CODE_ELECTION + "," + CHAMP_RUE_NON_NOUMEA
-				+ ") " + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?" + ",?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,"
-				+ "?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+				+ ", " + CHAMP_DATE_ARRIVEE_TERRITOIRE + ") " + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?" + ",?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,"
+				+ "?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 		jdbcTemplate.update(
 				sql,
 				new Object[] { agent.getIdAgent(), agent.getIdVoie(), agent.getIdCollectivite(),
@@ -546,7 +548,7 @@ public class AgentDao extends SirhDao implements AgentDaoInterface {
 						agent.getNumCompte(), agent.getRib(), agent.getIntituleCompte(), agent.getVcat(),
 						agent.getDebutService(), agent.getFinService(), agent.getNumCafat(), agent.getNumRuamm(),
 						agent.getNumMutuelle(), agent.getNumCre(), agent.getNumIrcafex(), agent.getNumClr(),
-						agent.getCodeElection(), agent.getRueNonNoumea() });
+						agent.getCodeElection(), agent.getRueNonNoumea(), agent.getDateArriveeTerritoire() });
 	}
 
 	private void modifierAgentBD(Agent agent) {
@@ -566,7 +568,7 @@ public class AgentDao extends SirhDao implements AgentDaoInterface {
 				+ "=?," + CHAMP_VCAT + "=?," + CHAMP_DEBUT_SERVICE + "=?," + CHAMP_FIN_SERVICE + "=? ,"
 				+ CHAMP_NUM_CAFAT + "=? ," + CHAMP_NUM_RUAMM + "=? ," + CHAMP_NUM_MUTUELLE + "=? ," + CHAMP_NUM_CRE
 				+ "=? ," + CHAMP_NUM_IRCAFEX + "=? ," + CHAMP_NUM_CLR + "=? ," + CHAMP_CODE_ELECTION + "=? ,"
-				+ CHAMP_RUE_NON_NOUMEA + "=?, " + CHAMP_QUARTIER + "=? where " + CHAMP_ID + " =?";
+				+ CHAMP_RUE_NON_NOUMEA + "=?, " + CHAMP_QUARTIER + "=?, " + CHAMP_DATE_ARRIVEE_TERRITOIRE + "=? where " + CHAMP_ID + " =?";
 
 		jdbcTemplate.update(
 				sql,
@@ -582,7 +584,7 @@ public class AgentDao extends SirhDao implements AgentDaoInterface {
 						agent.getCdGuichet(), agent.getNumCompte(), agent.getRib(), agent.getIntituleCompte(),
 						agent.getVcat(), agent.getDebutService(), agent.getFinService(), agent.getNumCafat(),
 						agent.getNumRuamm(), agent.getNumMutuelle(), agent.getNumCre(), agent.getNumIrcafex(),
-						agent.getNumClr(), agent.getCodeElection(), agent.getRueNonNoumea(), agent.getQuartier(),
+						agent.getNumClr(), agent.getCodeElection(), agent.getRueNonNoumea(), agent.getQuartier(), agent.getDateArriveeTerritoire(), 
 						agent.getIdAgent() });
 	}
 }

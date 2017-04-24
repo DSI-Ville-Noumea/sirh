@@ -183,6 +183,18 @@ document.formu.elements[nom].focus();
 				<tr>
 					<td>&nbsp;</td>
 					<td>
+						<span class="sigp2Mandatory"> Dernière date d'arrivée sur le territoire : </span>
+					</td>
+					<td>
+						<span>
+							<input id="<%=process.getNOM_EF_DATE_ARRIVEE_TERRITOIRE()%>" class="sigp2-saisie" maxlength="10" style="width: 90px;"	name="<%= process.getNOM_EF_DATE_ARRIVEE_TERRITOIRE() %>" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> type="text" value="<%= process.getVAL_EF_DATE_ARRIVEE_TERRITOIRE()%>">
+							<img src="images/calendrier.gif" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" onclick="return showCalendar('<%=process.getNOM_EF_DATE_ARRIVEE_TERRITOIRE()%>', 'dd/mm/y');" hspace="5">
+						</span>
+					</td>
+				</tr>
+				<tr>
+					<td>&nbsp;</td>
+					<td>
 						<span class="sigp2Mandatory"> Date de première embauche : </span>
 					</td>
 					<td>
