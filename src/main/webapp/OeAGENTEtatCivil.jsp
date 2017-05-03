@@ -183,7 +183,7 @@ document.formu.elements[nom].focus();
 				<tr>
 					<td>&nbsp;</td>
 					<td>
-						<span class="sigp2Mandatory"> Dernière date d'arrivée sur le territoire : </span>
+						<span class="sigp2Mandatory">Date d'arrivée sur le territoire : </span>
 					</td>
 					<td>
 						<span>
@@ -195,7 +195,7 @@ document.formu.elements[nom].focus();
 				<tr>
 					<td>&nbsp;</td>
 					<td>
-						<span class="sigp2Mandatory"> Date de première embauche : </span>
+						<span class="sigp2Mandatory">Date de première embauche : </span>
 					</td>
 					<td>
 						<span>
