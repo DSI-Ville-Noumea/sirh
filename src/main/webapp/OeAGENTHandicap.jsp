@@ -1,8 +1,10 @@
 <%@ page contentType="text/html; charset=UTF-8" %> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <%@page import="nc.mairie.utils.MairieUtils"%>
 <%@page import="nc.mairie.enums.EnumTypeDroit"%>
+<%@page import="java.text.SimpleDateFormat"%>
+<%@page import="nc.mairie.metier.hsct.BeneficiaireObligationAmenage"%>
+
 <HTML>
-	
 	<HEAD>
 		<META name="GENERATOR" content="IBM WebSphere Page Designer V3.5.3 for Windows">
 		<META http-equiv="Content-Style-Type" content="text/css">
@@ -63,21 +65,23 @@
 								</td>
 								<td align="left">Type</td>
 								<td align="center">Début</td>
+								<td align="center">Attribution</td>
 								<td align="center">Fin</td>
 								<td align="center">% incapacité</td>
-								<td align="center">Reconnaissance maladie prof.</td>
-								<td align="center">Handicap reconnu CRDHNC</td>
-								<td align="center">N° de carte CRDHNC</td>
-								<td align="center">CRDHNC en cours renouvellement</td>
 								<td align="center">Amenagement</td>
+								<td align="center">Origine</td>
 								<td align="center">Nb docs</td>
 							</tr>
 							<%
 							int indiceHandi = 0;
-							if (process.getListeHandicap()!=null){
-								for (int i = 0;i<process.getListeHandicap().size();i++){
+							if (process.getListeBoe()!=null){
+
+								SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+								
+								for (int i=0; i<process.getListeBoe().size(); i++){
+									BeneficiaireObligationAmenage boe = process.getListeBoe().get(i); 
 							%>
-									<tr id="<%=indiceHandi%>" onmouseover="SelectLigne(<%=indiceHandi%>,<%=process.getListeHandicap().size()%>)">
+									<tr id="<%=indiceHandi%>" onmouseover="SelectLigne(<%=indiceHandi%>, <%=process.getListeBoe().size()%>)">
 										<td class="sigp2NewTab-liste" style="position:relative;width:90px;" align="center">
 											<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, "") %>" name="<%=process.getNOM_PB_CONSULTER(indiceHandi)%>">
 											<INPUT title="modifier" type="image" src="images/modifier.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_MODIFIER(indiceHandi)%>">
@@ -85,119 +89,118 @@
 											<INPUT title="supprimer" type="image" src="images/suppression.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_SUPPRIMER(indiceHandi)%>">
 											<INPUT title="documents" type="image" src="images/ajout-doc.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_DOCUMENT(indiceHandi)%>">
 										</td>
-										<td class="sigp2NewTab-liste" style="position:relative;width:100px;text-align: left;"><%=process.getVAL_ST_TYPE(indiceHandi)%></td>
-										<td class="sigp2NewTab-liste" style="position:relative;width:90px;text-align: center;"><%=process.getVAL_ST_DEBUT(indiceHandi)%></td>
-										<td class="sigp2NewTab-liste" style="position:relative;width:90px;text-align: center;"><%=process.getVAL_ST_FIN(indiceHandi)%></td>
-										<td class="sigp2NewTab-liste" style="position:relative;width:60px;text-align: center;"><%=process.getVAL_ST_INCAPACITE(indiceHandi)%></td>
-										<td class="sigp2NewTab-liste" style="position:relative;width:90px;text-align: center;"><%=process.getVAL_ST_MALADIE_PROF(indiceHandi)%></td>
-										<td class="sigp2NewTab-liste" style="position:relative;width:90px;text-align: center;"><%=process.getVAL_ST_CRDHNC(indiceHandi)%></td>
-										<td class="sigp2NewTab-liste" style="position:relative;width:90px;text-align: right;"><%=process.getVAL_ST_NUM_CARTE(indiceHandi)%></td>
-										<td class="sigp2NewTab-liste" style="position:relative;width:90px;text-align: center;"><%=process.getVAL_ST_RENOUVELLEMENT(indiceHandi)%></td>
-										<td class="sigp2NewTab-liste" style="position:relative;width:90px;text-align: center;">&nbsp;<%=process.getVAL_ST_AMENAGEMENT(indiceHandi)%></td>
+										<td class="sigp2NewTab-liste" style="position:relative;width:100px;text-align: center;"><%=boe.getType()%></td>
+										<td class="sigp2NewTab-liste" style="position:relative;width:90px;text-align: center;"><% if(null != boe.getDateDebut()) { %><%=sdf.format(boe.getDateDebut())%><% } %></td>
+										<td class="sigp2NewTab-liste" style="position:relative;width:90px;text-align: center;"><% if(null != boe.getDateAttribution()) { %><%=sdf.format(boe.getDateAttribution())%><% } %></td>
+										<td class="sigp2NewTab-liste" style="position:relative;width:60px;text-align: center;"><% if(null != boe.getDateFin()) { %><%=sdf.format(boe.getDateFin())%><% } %></td>
+										<td class="sigp2NewTab-liste" style="position:relative;width:90px;text-align: center;"><% if(null != boe.getTaux()) { %><%=boe.getTaux()%><% } %></td>
+										<td class="sigp2NewTab-liste" style="position:relative;width:90px;text-align: center;"><% if(null != boe.getIdNaturePosteAmenage()) { %><%=process.getHashNaturePosteAmenage().get(boe.getIdNaturePosteAmenage()).getLibNaturePosteAmenage()%><% } %></td>
+										<td class="sigp2NewTab-liste" style="position:relative;width:90px;text-align: center;"><% if(null != boe.getOrigineIpp()) { %><%=boe.getOrigineIpp()%><% } %></td>
 										<td class="sigp2NewTab-liste" style="position:relative;text-align: center;">&nbsp;<%=process.getVAL_ST_NB_DOC(indiceHandi)%></td>
 									</tr>
 									<%
 									indiceHandi++;
 								}
-							}%>
+							} %>
 						</table>	
 						</div>	
 				</FIELDSET>
 		<%if (! "".equals(process.getVAL_ST_ACTION()) ) {%>
 		<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
 			<legend class="sigp2Legend"><%=process.getVAL_ST_ACTION()%></legend>
-			<%if(!process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT) && !process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT_CREATION) && !process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT_SUPPRESSION) && !process.getVAL_ST_ACTION().equals(process.ACTION_SUPPRESSION) && !process.getVAL_ST_ACTION().equals(process.ACTION_CONSULTATION)){ %>
+			<%if(!process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT) 
+					&& !process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT_CREATION) 
+					&& !process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT_SUPPRESSION) 
+					&& !process.getVAL_ST_ACTION().equals(process.ACTION_SUPPRESSION) 
+					&& !process.getVAL_ST_ACTION().equals(process.ACTION_CONSULTATION)){ %>
 			<table>
 				<tr>
 					<td width="130px;">
 						<span class="sigp2Mandatory">Type :</span>
 					</td>
 					<td width="250px;">
-						<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_NOM() %>">
-							<%=process.forComboHTML(process.getVAL_LB_NOM(), process.getVAL_LB_NOM_SELECT()) %>
-						</SELECT>
-					</td>
-					<td width="180px;">			
-						<span class="sigp2Mandatory">Maladie Professionnelle :</span> 
-						<%if(process.showMaladiePro){ %>
-							<br/>
-							<span class="sigp2" style="visibility:<%= process.showMaladiePro ? "visible" : "hidden" %>;" >Nom maladie professionnelle :</span>
-						<%} %>
-					</td>
-					<td>
-						<input type="radio" onclick='executeBouton("<%=process.getNOM_PB_SELECT_MALADIE_PRO()%>")' <%= process.forRadioHTML(process.getNOM_RG_RECO_MP(), process.getNOM_RB_RECO_MP_OUI()) %> ><span class="sigp2Mandatory">Oui</span> 
-						<input type="radio" onclick='executeBouton("<%=process.getNOM_PB_SELECT_MALADIE_PRO()%>")' <%= process.forRadioHTML(process.getNOM_RG_RECO_MP(), process.getNOM_RB_RECO_MP_NON()) %> ><span class="sigp2Mandatory">Non</span> 
-						<%if(process.showMaladiePro){ %>
-							<br/>
-							<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_NOM_MP() %>" style="visibility:<%= process.showMaladiePro ? "visible" : "hidden" %>; width:445px;">
-								<%=process.forComboHTML(process.getVAL_LB_NOM_MP(), null, null, process.getVAL_LB_NOM_MP(), process.getVAL_LB_NOM_MP_SELECT()) %>
-							</SELECT>
-						<%} %>
+						<input type="radio" onclick='executeBouton("<%=process.getNOM_PB_SELECT_TYPE()%>")'" <%= process.forRadioHTML(process.getNOM_RG_TYPE(), process.TYPE_TH)%> >
+						<span class="sigp2Mandatory">TH</span> 
+						<input type="radio" onclick='executeBouton("<%=process.getNOM_PB_SELECT_TYPE()%>")'" <%= process.forRadioHTML(process.getNOM_RG_TYPE(), process.TYPE_IPP)%> >
+						<span class="sigp2Mandatory">IPP</span>
 					</td>
 				</tr>
+				<% if(process.showTH) { %>
 				<tr>
 					<td>
 						<span class="sigp2Mandatory">Date de début :</span>
 					</td>
 					<td>
-						<input id="<%=process.getNOM_EF_DATE_DEBUT()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DATE_DEBUT() %>" size="10" type="text"	value="<%= process.getVAL_EF_DATE_DEBUT() %>" />
+						<input id="<%=process.getNOM_EF_DATE_DEBUT()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DATE_DEBUT() %>" size="10" type="text" value="<%= process.getVAL_EF_DATE_DEBUT() %>" />
 						<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_EF_DATE_DEBUT()%>', 'dd/mm/y');" />
 					</td>
 					<td>&nbsp;</td>
 					<td>&nbsp;</td>
 				</tr>
+				<% } %>
+				<% if(process.showIPP) { %>
 				<tr>
 					<td>
-						<span class="sigp2">Date de fin :</span>
+						<span class="sigp2Mandatory">Date attribution :</span>
 					</td>
 					<td>
-						<input id="<%=process.getNOM_EF_DATE_FIN()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DATE_FIN() %>" size="10" type="text"	value="<%= process.getVAL_EF_DATE_FIN() %>" />
+						<input id="<%=process.getNOM_EF_DATE_ATTRIBUTION() %>" class="sigp2-saisie" maxlength="10"  
+							name="<%=process.getNOM_EF_DATE_ATTRIBUTION() %>" size="10" type="text" value="<%= process.getVAL_EF_DATE_ATTRIBUTION() %>" />
+						<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_EF_DATE_ATTRIBUTION()%>', 'dd/mm/y');" />
+					</td>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+				</tr>
+				<% } %>
+				<tr>
+					<td>
+						<span class="sigp2<% if(process.showTH) { %>Mandatory<% } %>">Date de fin :</span>
+					</td>
+					<td>
+						<input id="<%=process.getNOM_EF_DATE_FIN()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DATE_FIN() %>" size="10" type="text" value="<%= process.getVAL_EF_DATE_FIN() %>" />
 						<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_EF_DATE_FIN()%>', 'dd/mm/y');" />
 					</td>
-					<td>			
-						<span class="sigp2Mandatory">Handicap CRDHNC :</span> 
-						<%if(process.showNumCarte){ %>
-							<br/>
-							<span class="sigp2" style="visibility:<%= process.showNumCarte ? "visible" : "hidden" %>;">N° carte CRDHNC :</span>
-							<br/>
-							<span class="sigp2" style="visibility:<%= process.showNumCarte ? "visible" : "hidden" %>;">En cours de renouvellement :</span>
-						<%} %>
+				</tr>
+				<% if(process.showTH) { %>
+				<tr>
+					<td>
+						<span class="sigp2">Poste aménagé :</span> 
 					</td>
 					<td>
-						<input type="radio" onclick='executeBouton("<%=process.getNOM_PB_SELECT_CRDHNC()%>")' <%=process.forRadioHTML(process.getNOM_RG_RECO_CRDHNC(), process.getNOM_RB_RECO_CRDHNC_OUI()) %> ><span class="sigp2Mandatory">Oui</span> 
-						<input type="radio" onclick='executeBouton("<%=process.getNOM_PB_SELECT_CRDHNC()%>")' <%=process.forRadioHTML(process.getNOM_RG_RECO_CRDHNC(), process.getNOM_RB_RECO_CRDHNC_NON()) %> ><span class="sigp2Mandatory">Non</span> 
-						<%if(process.showNumCarte){ %>
-							<br />
-							<INPUT class="sigp2-saisie" maxlength="5" name="<%= process.getNOM_EF_NUM_CRDHNC() %>" style="visibility:<%= process.showNumCarte ? "visible" : "hidden" %>;"  size="5" type="text" value="<%= process.getVAL_EF_NUM_CRDHNC() %>" />
-							<br />		
-							<input type="radio" <%=process.forRadioHTML(process.getNOM_RG_RENOUV_CRDHNC(), process.getNOM_RB_RENOUV_CRDHNC_OUI()) %> ><span class="sigp2Mandatory">Oui</span> 
-							<input type="radio" <%=process.forRadioHTML(process.getNOM_RG_RENOUV_CRDHNC(), process.getNOM_RB_RENOUV_CRDHNC_NON()) %> ><span class="sigp2Mandatory">Non</span> 	
-						<%} %>
+						<input type="radio" <%= process.forRadioHTML(process.getNOM_RB_POSTE_AMENAGE(), process.MILIEU_ORDINAIRE) %> ><span class="sigp2Mandatory">Milieu ordinaire</span> 
+						<input type="radio" <%= process.forRadioHTML(process.getNOM_RB_POSTE_AMENAGE(), process.MILIEU_PROTEGE) %> ><span class="sigp2Mandatory">Milieu protégé</span> 
 					</td>
 				</tr>
 				<tr>
 					<td>
-						<span class="sigp2">% Incapacité :</span>
-					</td>
-					<td>
-						<INPUT class="sigp2-saisie" maxlength="5" name="<%= process.getNOM_EF_INCAPACITE() %>" size="5" type="text" value="<%= process.getVAL_EF_INCAPACITE() %>" />
-					</td>
-					<td>
-						<span class="sigp2Mandatory">Amenagement de poste :</span> 
-					</td>
-					<td>
-						<input type="radio" <%= process.forRadioHTML(process.getNOM_RG_AMENAGEMENT(), process.getNOM_RB_AMENAGEMENT_OUI()) %> ><span class="sigp2Mandatory">Oui</span> 
-						<input type="radio" <%= process.forRadioHTML(process.getNOM_RG_AMENAGEMENT(), process.getNOM_RB_AMENAGEMENT_NON()) %> ><span class="sigp2Mandatory">Non</span> 
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<span class="sigp2">Commentaire :</span>	
+						<span class="sigp2">Précision :</span>
 					</td>
 					<td colspan="3">
-						<textarea rows="3" maxlength="100" style="width:600px" name="<%= process.getNOM_EF_COMMENTAIRE() %>" ><%= process.getVAL_EF_COMMENTAIRE() %></textarea>
+						<textarea rows="3" style="width:600px" name="<%= process.getNOM_ST_COMMENTAIRE() %>"><%= process.getVAL_ST_COMMENTAIRE() %></textarea>
 					</td>
 				</tr>
+				<% } %>
+				<% if(process.showIPP) { %>
+				<tr>
+					<td>
+						<span class="sigp2Mandatory">% Taux :</span>
+					</td>
+					<td>
+						<INPUT class="sigp2-saisie" maxlength="5" name="<%= process.getNOM_ST_INCAPACITE() %>" size="5" type="text" value="<%=process.getVAL_ST_INCAPACITE() %>" />
+					</td>
+				</tr>
+				<tr>
+					<td width="130px;">
+						<span class="sigp2">Suite à :</span>
+					</td>
+					<td width="350px;">
+						<input type="radio" <%= process.forRadioHTML(process.getNOM_RB_ORIGINE(), process.ORIGINE_MP)%> >
+						<span class="sigp2Mandatory">Maladie professionnelle</span> 
+						<input type="radio" <%= process.forRadioHTML(process.getNOM_RB_ORIGINE(), process.ORIGINE_AT)%> >
+						<span class="sigp2Mandatory">Accident Travail</span>
+					</td>
+				</tr>
+				<% } %>
 			</table>
 			<%}else if(process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT) || process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT_CREATION) || process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT_SUPPRESSION)){ %>
 				<span style="position:relative;width:9px;"></span>
@@ -253,7 +256,7 @@
 					<BR/>
 					<span class="sigp2" style="width:130px;">Commentaire : </span>
 					<span class="sigp2-saisie"><%=process.getVAL_ST_COMMENTAIRE_DOC()%></span>
-					<BR/>		
+					<BR/>
 				</div>
 				<BR/>
 				<TABLE align="center" border="0" cellpadding="0" cellspacing="0">
@@ -273,7 +276,7 @@
 		        <BR>
 				<% }else if(process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT_CREATION)){ %>
 					<div>		
-						<span class="sigp2" style="width:130px;" >Commentaire :</span><INPUT class="sigp2-saisie" maxlength="100" name="<%= process.getNOM_EF_COMMENTAIRE_DOCUMENT() %>" size="100" type="text" value="<%= process.getVAL_EF_COMMENTAIRE() %>">
+						<span class="sigp2" style="width:130px;" >Commentaire :</span><INPUT class="sigp2-saisie" maxlength="100" name="<%=process.getNOM_EF_COMMENTAIRE_DOCUMENT() %>" size="100" type="text" value="<%= process.getVAL_ST_COMMENTAIRE() %>">
 						<BR/>
 						<BR/>
 						<span class="sigp2Mandatory" style="width:130px;">Fichier : </span> 
@@ -304,43 +307,46 @@
 		    <% } %>
 		    <span style="width:49%">
 		    	<span class="sigp2" style="width:150px">Type : </span>
-				<span class="sigp2-saisie"><%=process.getVAL_ST_NOM()%></span>
+				<span class="sigp2-saisie"><%=process.getVAL_ST_TYPE()%></span>
 				<BR/>
 				<BR/>
+				<% if(process.showTH) { %>
 				<span class="sigp2" style="width:150px">Date de début : </span>
-				<span class="sigp2-saisie"><%=process.getVAL_ST_DATE_DEBUT()%></span>
+				<span class="sigp2-saisie"><%=process.getVAL_EF_DATE_DEBUT()%></span>
 				<BR/>
 				<BR/>
+				<% } %>
+				<% if(process.showIPP) { %>
+				<span class="sigp2" style="width:150px">Date d'attribution : </span>
+				<span class="sigp2-saisie"><%=process.getVAL_EF_DATE_ATTRIBUTION()%></span>
+				<BR/>
+				<BR/>
+				<% } %>
 				<span class="sigp2" style="width:150px">Date de fin : </span>
-				<span class="sigp2-saisie"><%=process.getVAL_ST_DATE_FIN()%></span>
+				<span class="sigp2-saisie"><%=process.getVAL_EF_DATE_FIN()%></span>
 				<BR/>
 				<BR/>
-				<span class="sigp2" style="width:150px">% Incapacité : </span>
+				<% if(process.showTH) { %>
+				<span class="sigp2" style="width:150px">Poste aménagé : </span>
+				<span class="sigp2-saisie"><%=process.getVAL_RB_POSTE_AMENAGE()%></span>
+				<BR/>
+				<BR/>
+				<span class="sigp2" style="width:150px">Nature du handicap : </span>
+				<span class="sigp2-saisie"><%=process.getVAL_ST_COMMENTAIRE()%></span>
+				<BR/>
+				<BR/>
+				<% } %>
+				<% if(process.showIPP) { %>
+				<span class="sigp2" style="width:150px">% Taux : </span>
 				<span class="sigp2-saisie"><%=process.getVAL_ST_INCAPACITE()%></span>
+				<BR/>
+				<BR/>
+				<span class="sigp2" style="width:150px">Origine : </span>
+				<span class="sigp2-saisie"><%=process.getVAL_RB_ORIGINE()%></span>
+				<BR/>
+				<BR/>
+				<% } %>
 			</span>
-			<span style="width:49%">
-		    	<span class="sigp2" style="width:150px">Maladie professionnelle : </span>
-				<span class="sigp2-saisie"><%=process.getVAL_ST_RECO_MP()%></span>
-				<BR/>
-				<span class="sigp2" style="width:150px">Nom maladie professionelle : </span>
-				<span class="sigp2-saisie"><%=process.getVAL_ST_NOM_MP()%></span>
-				<BR/>
-				<BR/>
-				<span class="sigp2" style="width:150px">Handicap CRDHNC : </span>
-				<span class="sigp2-saisie"><%=process.getVAL_ST_RECO_CRDHNC()%></span>
-				<BR/>
-				<span class="sigp2" style="width:150px">N° carte CRDHNC : </span>
-				<span class="sigp2-saisie"><%=process.getVAL_ST_NUM_CRDHNC()%></span>
-				<BR/>
-				<span class="sigp2" style="width:150px">Carte en cours renouvellement : </span>
-				<span class="sigp2-saisie"><%=process.getVAL_ST_RENOUV_CRDHNC()%></span>
-				<BR/>
-				<BR/>
-				<span class="sigp2" style="width:150px">Amenagement de poste : </span>
-				<span class="sigp2-saisie"><%=process.getVAL_ST_AMENAGEMENT()%></span>
-			</span>
-			<span class="sigp2" style="width:150px">Commentaire : </span>
-			<span class="sigp2-saisie"><%=process.getVAL_ST_COMMENTAIRE()%></span>
 			</div>
 			<%} %>
 			<BR/>
@@ -363,8 +369,7 @@
 		</TABLE>
 		<%} %>
 		</FIELDSET>
-		<INPUT type="submit" style="display:none;" name="<%=process.getNOM_PB_SELECT_MALADIE_PRO()%>" value="x">
-		<INPUT type="submit" style="display:none;" name="<%=process.getNOM_PB_SELECT_CRDHNC()%>" value="x">
+		<INPUT type="submit" style="display:none;" name="<%=process.getNOM_PB_SELECT_TYPE()%>" value="">
 		</FORM>	
 		<% } %>
 	<%} %>

@@ -1986,7 +1986,6 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		VisiteMedicale vm = getVisiteCourante();
 
 		if (getZone(getNOM_ST_WARNING()).equals(Const.CHAINE_VIDE)) {
-
 			if (!creeDocument(request, vm)) {
 				return false;
 			}
@@ -1994,11 +1993,14 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		} else {
 			// on supprime le document existant dans la base de données
 			Document d = getDocumentDao().chercherDocumentByContainsNom("VM_" + vm.getIdVisite());
+
+			// on supprime le fichier physiquement sur alfresco
+			ReturnMessageDto rmd = alfrescoCMISService.removeDocument(d);
+			if (declarerErreurFromReturnMessageDto(rmd))
+				return false;
+
 			DocumentAgent l = getLienDocumentAgentDao().chercherDocumentAgent(getAgentCourant().getIdAgent(), d.getIdDocument());
-			File f = new File(d.getLienDocument());
-			if (f.exists()) {
-				f.delete();
-			}
+
 			getLienDocumentAgentDao().supprimerDocumentAgent(l.getIdAgent(), l.getIdDocument());
 			getDocumentDao().supprimerDocument(d.getIdDocument());
 
@@ -2031,8 +2033,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		// on recupere le type de document
 		String codTypeDoc = CmisUtils.CODE_TYPE_VM;
 		TypeDocument td = getTypeDocumentDao().chercherTypeDocumentByCod(codTypeDoc);
-
-		// on crée le document en base de données
+		
 		getDocumentCourant().setIdTypeDocument(td.getIdTypeDocument());
 		getDocumentCourant().setNomOriginal(fichierUpload.getName());
 		getDocumentCourant().setDateDocument(new Date());
@@ -2457,5 +2458,13 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 	public void setHistoVisiteMedicaleDao(HistoVisiteMedicaleDao histoVisiteMedicaleDao) {
 		this.histoVisiteMedicaleDao = histoVisiteMedicaleDao;
+	}
+
+	public ISirhService getSirhService() {
+		return sirhService;
+	}
+
+	public void setSirhService(ISirhService sirhService) {
+		this.sirhService = sirhService;
 	}
 }

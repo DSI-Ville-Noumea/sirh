@@ -72,6 +72,7 @@ import nc.mairie.gestionagent.process.organigramme.OeORGAGestion;
 import nc.mairie.gestionagent.process.parametre.OePARAMETRAGEAbsence;
 import nc.mairie.gestionagent.process.parametre.OePARAMETRAGEAbsenceCongesAnnuels;
 import nc.mairie.gestionagent.process.parametre.OePARAMETRAGEAbsenceCongesExceptionnels;
+import nc.mairie.gestionagent.process.parametre.OePARAMETRAGEAbsenceMaladies;
 import nc.mairie.gestionagent.process.parametre.OePARAMETRAGEAvancement;
 import nc.mairie.gestionagent.process.parametre.OePARAMETRAGECarriere;
 import nc.mairie.gestionagent.process.parametre.OePARAMETRAGEDonneesPerso;
@@ -360,6 +361,8 @@ public class RobotAgent extends Robot {
 			return new OePARAMETRAGEAbsence();
 		} else if (activite.equals("ParamAbsCongeExcep")) {
 			return new OePARAMETRAGEAbsenceCongesExceptionnels();
+		} else if (activite.equals("ParamAbsMaladies")) {
+			return new OePARAMETRAGEAbsenceMaladies();
 		} else if (activite.equals("ParamAbsCongeAnnuel")) {
 			return new OePARAMETRAGEAbsenceCongesAnnuels();
 		} // Module PARAMETRAGE - ELECTIONS

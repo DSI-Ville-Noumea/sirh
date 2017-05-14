@@ -13,6 +13,9 @@ public class RefTypeSaisiCongeAnnuelDto {
 	private Integer quotaMultiple;
 	private boolean decompteSamedi;
 	private boolean consecutif;
+	private boolean pieceJointe;
+	private boolean motif;
+	private String infosComplementaires;
 
 	public RefTypeSaisiCongeAnnuelDto() {
 	}
@@ -109,6 +112,30 @@ public class RefTypeSaisiCongeAnnuelDto {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public boolean isPieceJointe() {
+		return pieceJointe;
+	}
+
+	public void setPieceJointe(boolean pieceJointe) {
+		this.pieceJointe = pieceJointe;
+	}
+
+	public String getInfosComplementaires() {
+		return infosComplementaires;
+	}
+
+	public void setInfosComplementaires(String infosComplementaires) {
+		this.infosComplementaires = infosComplementaires;
+	}
+
+	public boolean isMotif() {
+		return motif;
+	}
+
+	public void setMotif(boolean motif) {
+		this.motif = motif;
 	}
 
 }

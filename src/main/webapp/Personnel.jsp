@@ -155,6 +155,7 @@
 		listeDroits.add("ParamJour");		
 		listeDroits.add("ParamAbsMotif");		
 		listeDroits.add("ParamAbsCongeExcep");	
+		listeDroits.add("ParamAbsMaladies");
 		listeDroits.add("ParamAbsCongeAnnuel");	
 		listeDroits.add("ParamElec");	
 		listeDroits.add("ParamKiosque");	

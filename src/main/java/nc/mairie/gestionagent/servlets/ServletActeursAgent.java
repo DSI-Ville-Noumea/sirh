@@ -144,8 +144,18 @@ public class ServletActeursAgent extends javax.servlet.http.HttpServlet {
 									% 60 + "m";
 							result.append("\r Solde : " + soldeAsaAmicaleHeure + soldeAsaAmicaleMinute);
 							break;
-						case MALADIE:
-							// TODO
+						case MALADIES_MALADIE:
+						case MALADIES_MALADIE_ENFANT:
+						case MALADIES_HOSPITALISATION:
+						case MALADIES_CONVALESCENCE:
+						case MALADIES_EVASAN:
+							if(null != solde.getSoldeMaladies()) {
+							result.append("\r\nDroits PS : " + solde.getSoldeMaladies().getDroitsPleinSalaire() + "\r\n");
+							result.append("Droits DS : " + solde.getSoldeMaladies().getDroitsDemiSalaire() + "\r\n");
+							result.append("Reste à prendre PS : " + solde.getSoldeMaladies().getRapPleinSalaire() + "\r\n");
+							result.append("Reste à prendre DS : " + solde.getSoldeMaladies().getRapDemiSalaire() + "\r\n");
+							result.append("Total pris : " + solde.getSoldeMaladies().getTotalPris() + "\r\n");
+							}
 							break;
 						default:
 							break;

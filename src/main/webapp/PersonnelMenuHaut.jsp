@@ -73,7 +73,7 @@ document.write(menuAgentDonneesPerso.afficher());
 var menuAgentHSCT = new MenuHaut("Module_agent_hsct");
 menuAgentHSCT.ajouterFils(new Lien("VisiteMedicaleGestion", "VISITES MEDICALES", "Gestion des visites médicales d'un agent", true, false,"VISITES MEDICALES"));
 menuAgentHSCT.ajouterFils(new Lien("AccidentTravailGestion", "ACCIDENTS DU TRAVAIL", "Gestions des accidents du travail d'un agent", true, false,"ACCIDENTS DE TRAVAIL"));
-menuAgentHSCT.ajouterFils(new Lien("HandicapGestion", "HANDICAPS", "Gestion des handicaps pour un agent", true, false,"HANDICAPS"));
+menuAgentHSCT.ajouterFils(new Lien("HandicapGestion", "BOE", "Bénéficiaire de l'Obligation d'Emploi", true, false,"BOE"));
 menuAgentHSCT.ajouterFils(new Lien("AgentActesHSCT", "ACTES", "Gestion des documents HSCT d'un agent",true, false,"ACTES"));
 document.write(menuAgentHSCT.afficher());
 
@@ -225,6 +225,7 @@ var menuParametrageElemAbs = new MenuHaut("Module_parametres_absence");
 menuParametrageElemAbs.ajouterFils(new Lien("ParamAbsMotif", "CARRIERE", "Gestion des paramètres des motifs pour le module absence", true, false,"MOTIFS"));
 menuParametrageElemAbs.ajouterFils(new Lien("ParamAbsCongeExcep", "JOUR", "Gestion des paramètres des type de congés exceptionnels", true, false,"CONGES EXCEPTIONNELS"));
 menuParametrageElemAbs.ajouterFils(new Lien("ParamAbsCongeAnnuel", "ANNUEL", "Gestion des paramètres des type de congés annuels", true, false,"CONGES ANNUELS"));
+menuParametrageElemAbs.ajouterFils(new Lien("ParamAbsMaladies", "JOUR", "Gestion des paramètres des type de maladies", true, false,"MALADIES"));
 document.write(menuParametrageElemAbs.afficher());
 
 var menuParametragePointage = new MenuHaut("Module_parametres_pointage");

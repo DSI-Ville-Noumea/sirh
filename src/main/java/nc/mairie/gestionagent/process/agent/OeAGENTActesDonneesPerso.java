@@ -8,6 +8,10 @@ import java.util.ListIterator;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.context.ApplicationContext;
+
+import com.oreilly.servlet.MultipartRequest;
+
 import nc.mairie.enums.EnumImpressionAffectation;
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
 import nc.mairie.gestionagent.radi.dto.LightUserDto;
@@ -44,10 +48,6 @@ import nc.mairie.utils.MessageUtils;
 import nc.noumea.spring.service.IRadiService;
 import nc.noumea.spring.service.cmis.AlfrescoCMISService;
 import nc.noumea.spring.service.cmis.IAlfrescoCMISService;
-
-import org.springframework.context.ApplicationContext;
-
-import com.oreilly.servlet.MultipartRequest;
 
 /**
  * Process OeAGENTActesDonneesPerso Date de création : (11/10/11 08:38:48)
@@ -525,7 +525,7 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 		int indiceTypeDoc = (Services.estNumerique(getVAL_LB_TYPE_DOCUMENT_SELECT()) ? Integer
 				.parseInt(getVAL_LB_TYPE_DOCUMENT_SELECT()) : -1);
 		String codTypeDoc = ((TypeDocument) getListeTypeDocument().get(indiceTypeDoc - 1)).getCodTypeDocument();
-
+		
 		// on crée le document en base de données
 		getDocumentCourant().setIdTypeDocument(
 				((TypeDocument) getListeTypeDocument().get(indiceTypeDoc - 1)).getIdTypeDocument());
@@ -741,9 +741,6 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 				indiceActe++;
 			}
 		}
-
-		// addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
-
 	}
 
 	public String getNOM_PB_TYPE_DOCUMENT() {

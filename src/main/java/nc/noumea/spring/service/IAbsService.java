@@ -5,6 +5,7 @@ import java.util.List;
 import nc.mairie.gestionagent.absence.dto.ActeursDto;
 import nc.mairie.gestionagent.absence.dto.AgentOrganisationSyndicaleDto;
 import nc.mairie.gestionagent.absence.dto.CompteurDto;
+import nc.mairie.gestionagent.absence.dto.ControleMedicalDto;
 import nc.mairie.gestionagent.absence.dto.DemandeDto;
 import nc.mairie.gestionagent.absence.dto.HistoriqueSoldeDto;
 import nc.mairie.gestionagent.absence.dto.MoisAlimAutoCongesAnnuelsDto;
@@ -13,6 +14,7 @@ import nc.mairie.gestionagent.absence.dto.MotifDto;
 import nc.mairie.gestionagent.absence.dto.OrganisationSyndicaleDto;
 import nc.mairie.gestionagent.absence.dto.RefAlimCongesAnnuelsDto;
 import nc.mairie.gestionagent.absence.dto.RefGroupeAbsenceDto;
+import nc.mairie.gestionagent.absence.dto.RefTypeDto;
 import nc.mairie.gestionagent.absence.dto.RestitutionMassiveDto;
 import nc.mairie.gestionagent.absence.dto.SoldeDto;
 import nc.mairie.gestionagent.absence.dto.TypeAbsenceDto;
@@ -157,7 +159,7 @@ public interface IAbsService {
 
 	List<UnitePeriodeQuotaDto> getUnitePeriodeQuota();
 
-	ReturnMessageDto deleteTypeAbsence(Integer idAgent, Integer idRefTypeAbsence);
+	ReturnMessageDto inactiveTypeAbsence(Integer idAgent, Integer idRefTypeAbsence);
 
 	ReturnMessageDto saveOrganisationSyndicale(String json);
 
@@ -171,9 +173,42 @@ public interface IAbsService {
 
 	ReturnMessageDto dupliqueApprobateur(Integer idAgentConnecte, Integer idAgentSource, Integer idAgentDestinataire);
 
+	List<RefTypeDto> getRefTypeAccidentTravail();
+
+	List<RefTypeDto> getRefTypeMaladiePro();
+
+	List<RefTypeDto> getRefTypeSiegeLesion();
+
+	ReturnMessageDto setRefTypeAccidentTravail(Integer idAgent,
+			RefTypeDto typeDto);
+
+	ReturnMessageDto setRefTypeSiegeLesion(Integer idAgent, RefTypeDto typeDto);
+
+	ReturnMessageDto setRefTypeMaladiePro(Integer idAgent, RefTypeDto typeDto);
+
+	ReturnMessageDto deleteRefTypeAccidentTravail(Integer idAgent,
+			RefTypeDto typeDto);
+
+	ReturnMessageDto deleteRefTypeSiegeLesion(Integer idAgent,
+			RefTypeDto typeDto);
+
+	ReturnMessageDto deleteRefTypeMaladiePro(Integer idAgent, RefTypeDto typeDto);
+
+	String getTypeDemande(DemandeDto demande);
+
+	String getTypeDocument(DemandeDto demande);
+
+	ReturnMessageDto addPieceJointeSIRH(Integer idAgentConnecte, String json);
+
 	List<DemandeDto> getListeDemandeCAWhichAddOrRemoveOnCounterAgent(Integer idAgent, Integer idAgentConcerne);
 
 	ReturnMessageDto saveRepresentantAsaA54(Integer idOrganisation, Integer idAgent);
 
 	ReturnMessageDto saveRepresentantAsaA48(Integer idOrganisation, Integer idAgent);
+
+	ReturnMessageDto updateCommentaireDRH(DemandeDto demandeCourante, String commDRH);
+
+	ReturnMessageDto persistDemandeControleMedical(ControleMedicalDto dto);
+
+	ControleMedicalDto findControleMedicalByDemandeId(Integer idDemande);
 }

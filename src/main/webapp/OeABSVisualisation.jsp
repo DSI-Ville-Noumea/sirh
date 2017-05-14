@@ -1,3 +1,4 @@
+<%@page import="nc.noumea.mairie.abs.RefTypeGroupeAbsenceEnum"%>
 <%@page import="java.text.SimpleDateFormat"%>
 <%@ page contentType="text/html; charset=UTF-8" %> 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
@@ -5,11 +6,13 @@
 <%@page import="nc.mairie.enums.EnumTypeAbsence"%>
 <%@page import="nc.mairie.enums.EnumEtatAbsence"%>
 <%@page import="nc.mairie.gestionagent.absence.dto.DemandeDto" %>
+<%@page import="nc.mairie.gestionagent.absence.dto.PieceJointeDto" %>
 <%@page import="nc.mairie.gestionagent.absence.dto.TypeAbsenceDto" %>
 <%@page import="nc.mairie.gestionagent.absence.dto.RefTypeSaisiDto" %>
 <%@page import="nc.mairie.enums.EnumTypeDroit"%>
 <%@page import="nc.mairie.utils.MairieUtils"%>
 <%@page import="java.util.Map"%>
+<%@page import="java.io.File"%>
 
 <HTML>
     <HEAD>
@@ -83,6 +86,7 @@
                            {"bSortable": true,"sWidth": "40px"},
                            {"bSortable": true,"sWidth": "120px"},
                            {"bSortable": true,"sWidth": "60px"},
+                           {"bSearchable": false,"bSortable": false,"sWidth": "20px","sClass" : "center"},
                            {"bSearchable": false,"bSortable": false,"sWidth": "20px","sClass" : "center"},
                            {"bSearchable": false,"bSortable": false,"sWidth": "20px","sClass" : "center"},
                            {"bSearchable": false,"bSortable": false,"sWidth": "20px","sClass" : "center"},
@@ -220,7 +224,7 @@
         </HEAD>
         <BODY bgcolor="#FFFFFF" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="window.parent.frames['refAgent'].location.reload();return setfocus('<%=process.getFocus()%>')">	
         <%@ include file="BanniereErreur.jsp" %>
-        <FORM onkeypress="testClickFiltrer();" name="formu" method="POST" class="sigp2-titre">
+        <FORM onkeypress="testClickFiltrer();" name="formu" method="POST" class="sigp2-titre" <% if(process.isImporting){ %> ENCTYPE="multipart/form-data" <% } %>>
             <INPUT name="JSP" type="hidden" value="<%= process.getJSP()%>">
             <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
                 <legend class="sigp2Legend">Filtres pour l'affichage</legend>
@@ -312,139 +316,49 @@
                 <INPUT type="submit" class="sigp2-Bouton-100" value="Afficher" name="<%=process.getNOM_PB_FILTRER()%>">		
                 <INPUT type="submit" class="sigp2-Bouton-200" value="Demandes à valider" name="<%=process.getNOM_PB_FILTRER_DEMANDE_A_VALIDER()%>">	
              </FIELDSET>             
+             
+              <%if(process.getVAL_ST_ACTION().equals(process.ACTION_COMMENTAIRE_DRH)){ %>
             
-            <FIELDSET class="sigp2Fieldset" style="text-align:left;">
-                <legend class="sigp2Legend">Visualisation des demandes</legend>
-                <BR/>
-                <table width="880px" cellpadding="0" cellspacing="0" border="0" class="display" id="VisualisationAbsenceList"> 
-                    <thead>
-                        <tr>
-                            <th width="20px" align="center">
-                            	<img src="images/ajout.gif" height="16px" width="16px" title="Creer une absence" onClick="executeBouton('<%=process.getNOM_PB_AJOUTER_ABSENCE()%>')" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>">
-            				</th>  
-                            <th align="center"> <img src="images/loupe.gif" height="16px" width="16px" title="Voir l'historique de l'absence" onkeydown="" onkeypress="" onkeyup=""></th>
-                            <th align="center"> <img src="images/info.jpg" height="16px" width="16px" title="Alertes." onkeydown="" onkeypress="" onkeyup=""></th>
-                            <th>Matr</th>
-                            <th>Agent</th>
-                            <th>Cat<br>Statut</th>
-                            <th>Type absence<br>Date demande</th>
-                            <th>Début</th>
-                            <th>Fin</th>
-                            <th>Durée</th>
-                            <th>Motif</th>
-                            <th>Etat</th>
-                            <th><img onkeydown="" onkeypress="" onkeyup="" title="Valider" type="image" src="images/hand-vert.png"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_VALIDER_ALL()%>" onclick="executeBouton('<%=process.getNOM_PB_VALIDER_ALL()%>');"></th>
-                            <th><img onkeydown="" onkeypress="" onkeyup="" title="Rejeter" type="image" src="images/hand-rouge.png"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_REJETER_ALL()%>" onclick="executeBouton('<%=process.getNOM_PB_REJETER_ALL()%>');"></th>
-                            <th><img onkeydown="" onkeypress="" onkeyup="" title="En attente" type="image" src="images/clock.png"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>"></th>
-                            <th>PJ</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <% for (Map.Entry<Integer, DemandeDto> absMap : process.getListeAbsence().entrySet()) {
-                			DemandeDto abs = absMap.getValue();
-                        	int indiceAbs = absMap.getKey();
-                        %>
-                        <tr id="tr<%=indiceAbs %>">
-                            <td width="20px" align="center">
-                            <%if(abs.getIdRefEtat()==EnumEtatAbsence.ANNULEE.getCode() && (abs.getGroupeAbsence().getIdRefGroupeAbsence()==EnumTypeGroupeAbsence.AS.getValue()||abs.getGroupeAbsence().getIdRefGroupeAbsence()==EnumTypeGroupeAbsence.CONGES_EXCEP.getValue()||abs.getGroupeAbsence().getIdRefGroupeAbsence()==EnumTypeGroupeAbsence.CONGES_ANNUELS.getValue())){ %>                            	
-                            	<img onkeydown="" onkeypress="" onkeyup="" title="dupliquer" type="image" src="images/dupliquer.gif"  height="15px" width="15px" class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_DUPLIQUER(indiceAbs)%>" onclick="executeBouton('<%=process.getNOM_PB_DUPLIQUER(indiceAbs)%>');">
-								<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_DUPLIQUER(indiceAbs)%>" value="">
-                            <%} %>
-                            <%if(abs.isAffichageBoutonAnnuler()){ %>
-                            	<img onkeydown="" onkeypress="" onkeyup="" title="annuler" type="image" src="images/suppression.gif"  height="15px" width="15px" class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_ANNULER_DEMANDE(indiceAbs)%>" onclick="executeBouton('<%=process.getNOM_PB_ANNULER_DEMANDE(indiceAbs)%>');">
-								<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_ANNULER_DEMANDE(indiceAbs)%>" value="">
-                            <%} %>
-							</td>  
-                            <td width="30px" align="center">
-                             <% // #15599 
-                             if(abs.isAffichageBoutonHistorique()){ %>
-                            	<img onkeydown="" onkeypress="" onkeyup="" src="images/loupe.gif" height="16px" width="16px" title="Voir l'historique de l'absence" onClick="loadAbsenceHistory('<%=indiceAbs %>', '<%=abs.getIdDemande() %>')">
-                            <% } %>
-                            </td>
-                            <td width="40px" align="center">
-                            <%if(abs.isDepassementCompteur()){ %>
-                            	<img onkeydown="" onkeypress="" onkeyup="" src="images/seuil.png" height="16px" width="16px" title="Le seuil du compteur est dépassé pour cette demande.">
-                            <%} %>
-                            <%if(abs.isDepassementMultiple()){ %>
-                            	<img onkeydown="" onkeypress="" onkeyup="" src="images/multiple.jpg" height="16px" width="16px" title="Cette demande n'est pas un multiple.">
-                            <%} %>
-                            </td>                            
-                            <td width="30px"><%=process.getVAL_ST_MATRICULE(indiceAbs)%></td> 
-                            <td width="150px"><a id="ActeursAgent<%=indiceAbs %>" style="hover:cursor:pointer;" 
-                            	onmouseover="loadActeursAgent('<%=process.getVAL_ST_MATRICULE(indiceAbs)%>','<%=indiceAbs %>', '<%=abs.getIdTypeDemande() %>', '<%=new SimpleDateFormat("dd/MM/yyyy").format(abs.getDateDebut()) %>')" >
-                            	<%=process.getVAL_ST_AGENT(indiceAbs)%></a></td> 
-                            <td width="40px"><%=process.getVAL_ST_INFO_AGENT(indiceAbs)%></td>  
-                            <td width="150px"><%=process.getVAL_ST_TYPE(indiceAbs)%></td>
-                            <td width="60px"><%=process.getVAL_ST_DATE_DEB(indiceAbs)%></td>
-                            <td width="60px"><%=process.getVAL_ST_DATE_FIN(indiceAbs)%></td>
-                            <td width="40px"><%=process.getVAL_ST_DUREE(indiceAbs)%></td>
-                            <td width="120px"><%=process.getVAL_ST_MOTIF(indiceAbs)%></td>
-                            <td width="60px"><%=process.getVAL_ST_ETAT(indiceAbs)%></td>
-                            <td width="20px" align="center">
-                            <!-- #14696 ajout de l etat A VALIDER car erreur lors de la reprise de donnees des conges exceptionnels mis  l etat A VALIDER au lieu de SAISI ou APPROUVE -->
-                            <%if((abs.getIdRefEtat()==EnumEtatAbsence.A_VALIDER.getCode() || abs.getIdRefEtat()==EnumEtatAbsence.APPROUVE.getCode() || abs.getIdRefEtat()==EnumEtatAbsence.EN_ATTENTE.getCode()) && (abs.getGroupeAbsence().getIdRefGroupeAbsence()==EnumTypeGroupeAbsence.AS.getValue()||abs.getGroupeAbsence().getIdRefGroupeAbsence()==EnumTypeGroupeAbsence.CONGES_EXCEP.getValue())){ %>
-                            	<img onkeydown="" onkeypress="" onkeyup="" title="Valider" type="image" src="images/hand-vert.png"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_VALIDER(indiceAbs)%>" onclick="executeBouton('<%=process.getNOM_PB_VALIDER(indiceAbs)%>');">
-								<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_VALIDER(indiceAbs)%>" value="">
-                            <%} %>
-                            <%if((abs.getIdRefEtat()==EnumEtatAbsence.SAISIE.getCode() || abs.getIdRefEtat()==EnumEtatAbsence.VISEE_FAV.getCode() || abs.getIdRefEtat()==EnumEtatAbsence.VISEE_DEFAV.getCode() || abs.getIdRefEtat()==EnumEtatAbsence.REFUSE.getCode() || abs.getIdRefEtat()==EnumEtatAbsence.A_VALIDER.getCode() || abs.getIdRefEtat()==EnumEtatAbsence.EN_ATTENTE.getCode()) && (abs.getGroupeAbsence().getIdRefGroupeAbsence()==EnumTypeGroupeAbsence.CONGES_ANNUELS.getValue())){ %>
-                            	<img onkeydown="" onkeypress="" onkeyup="" title="Valider" type="image" src="images/hand-vert.png"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_VALIDER(indiceAbs)%>" onclick="executeBouton('<%=process.getNOM_PB_VALIDER(indiceAbs)%>');">
-								<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_VALIDER(indiceAbs)%>" value="">
-                            <%} %>
-							</td>  
-                            <td width="20px" align="center">
-                             <!-- #14696 ajout de l etat A VALIDER car erreur lors de la reprise de donnees des conges exceptionnels mis  l etat A VALIDER au lieu de SAISI ou APPROUVE -->
-                            <%if((abs.getIdRefEtat()==EnumEtatAbsence.A_VALIDER.getCode() || abs.getIdRefEtat()==EnumEtatAbsence.APPROUVE.getCode() || abs.getIdRefEtat()==EnumEtatAbsence.EN_ATTENTE.getCode()) && (abs.getGroupeAbsence().getIdRefGroupeAbsence()==EnumTypeGroupeAbsence.AS.getValue()||abs.getGroupeAbsence().getIdRefGroupeAbsence()==EnumTypeGroupeAbsence.CONGES_EXCEP.getValue())){ %>
-                            	<img onkeydown="" onkeypress="" onkeyup="" title="Rejeter" type="image" src="images/hand-rouge.png"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_REJETER(indiceAbs)%>" onclick="executeBouton('<%=process.getNOM_PB_REJETER(indiceAbs)%>');">
-								<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_REJETER(indiceAbs)%>" value="">
-                            <%} %>                            
-                            <%if((abs.getIdRefEtat()==EnumEtatAbsence.SAISIE.getCode() || abs.getIdRefEtat()==EnumEtatAbsence.VISEE_FAV.getCode() || abs.getIdRefEtat()==EnumEtatAbsence.VISEE_DEFAV.getCode() || abs.getIdRefEtat()==EnumEtatAbsence.APPROUVE.getCode() || abs.getIdRefEtat()==EnumEtatAbsence.A_VALIDER.getCode() || abs.getIdRefEtat()==EnumEtatAbsence.EN_ATTENTE.getCode()) && (abs.getGroupeAbsence().getIdRefGroupeAbsence()==EnumTypeGroupeAbsence.CONGES_ANNUELS.getValue())){ %>
-                            	<img onkeydown="" onkeypress="" onkeyup="" title="Rejeter" type="image" src="images/hand-rouge.png"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_REJETER(indiceAbs)%>" onclick="executeBouton('<%=process.getNOM_PB_REJETER(indiceAbs)%>');">
-								<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_REJETER(indiceAbs)%>" value="">
-                            <%} %>
-							</td>  
-                            <td width="20px" align="center">
-                             <!-- #14696 ajout de l etat A VALIDER car erreur lors de la reprise de donnees des conges exceptionnels mis  l etat A VALIDER au lieu de SAISI ou APPROUVE -->
-                            <%if((abs.getIdRefEtat()==EnumEtatAbsence.A_VALIDER.getCode() || abs.getIdRefEtat()==EnumEtatAbsence.APPROUVE.getCode()) && (abs.getGroupeAbsence().getIdRefGroupeAbsence()==EnumTypeGroupeAbsence.AS.getValue()||abs.getGroupeAbsence().getIdRefGroupeAbsence()==EnumTypeGroupeAbsence.CONGES_EXCEP.getValue())){ %>
-                            	<img onkeydown="" onkeypress="" onkeyup="" title="En attente" type="image" src="images/clock.png"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_EN_ATTENTE(indiceAbs)%>" onclick="executeBouton('<%=process.getNOM_PB_EN_ATTENTE(indiceAbs)%>');">
-								<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_EN_ATTENTE(indiceAbs)%>" value="">
-                            <%} %>
-                            <%if((abs.getIdRefEtat()==EnumEtatAbsence.A_VALIDER.getCode()) && (abs.getGroupeAbsence().getIdRefGroupeAbsence()==EnumTypeGroupeAbsence.CONGES_ANNUELS.getValue())){ %>
-                            	<img onkeydown="" onkeypress="" onkeyup="" title="En attente" type="image" src="images/clock.png"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_EN_ATTENTE(indiceAbs)%>" onclick="executeBouton('<%=process.getNOM_PB_EN_ATTENTE(indiceAbs)%>');">
-								<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_EN_ATTENTE(indiceAbs)%>" value="">
-                            <%} %>
-							</td>
-                            <td width="20px" >
-<%-- 								<INPUT title="pieces jointes" type
-            
-            <div id="ActeursAgent" style="display: none;"></div>="image" src="images/ajout-doc.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_DOCUMENT(indiceAbs)%>"> --%>
-							</td>
-                        </tr>
-                        <%}%>
-                    </tbody>
-                </table>
-                <BR/>	
-            </FIELDSET>
-            
-            <INPUT type="submit" style="display:none;" name="<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_SERVICE()%>" value="SUPPRECHERCHERSERVICE">	
-			<INPUT type="submit" style="display:none;" name="<%=process.getNOM_PB_RECHERCHER_AGENT_DEMANDE()%>" value="RECHERCHERAGENTDEMANDE">
-            <INPUT type="submit" style="display:none;" name="<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_DEMANDE()%>" value="SUPPRECHERCHERAGENTDEMANDE">
-            <INPUT type="submit" style="display:none;" name="<%=process.getNOM_PB_AJOUTER_ABSENCE()%>" value="AJOUTERABSENCE">        
-            <INPUT type="submit" style="display:none;" name="<%=process.getNOM_PB_RECHERCHER_AGENT_CREATION()%>" value="RECHERCHERAGENTCREATION"> 
-            <INPUT type="submit" style="display:none;" name="<%=process.getNOM_PB_CALCUL_DUREE()%>" value="CALCULDUREE">
-        
-            <%if(process.getVAL_ST_ACTION().equals(process.ACTION_CREATION)){ %>
+				<FIELDSET class="sigp2Fieldset" style="text-align:left;" id="<%=process.ACTION_COMMENTAIRE_DRH %>">
+					<legend class="sigp2Legend">Gestion du commentaire DRH d'une absence</legend>
+           				<INPUT name="JSP" type="hidden" value="<%= process.getJSP()%>">
+           				
+           				<span class="sigp2Mandatory">Commentaire DRH :</span><br/>
+						<textarea cols="150" rows="3" name="<%=process.getNOM_ST_COMMENTAIRE_DRH()%>" title="Zone de saisie du commentaire DRH"><%=process.getVAL_ST_COMMENTAIRE_DRH().trim() %></textarea>
+									
+						<!-- Boutons cachés -->
+						<INPUT type="submit" class="sigp2-displayNone" name="<%=process.getNOM_PB_VALIDER_COMMENTAIRE_DRH()%>">	
+	                    <div align="center">
+	                    	<INPUT onkeydown="" onkeypress="" onkeyup="" type="submit" class="sigp2-Bouton-100" value="Modifier" name="<%=process.getNOM_PB_VALIDER_COMMENTAIRE_DRH()%>">	
+		                    <INPUT onkeydown="" onkeypress="" onkeyup="" type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
+	                    </div>
+	            </FIELDSET>
+            <%} %>         
+             
+              <%if(process.getVAL_ST_ACTION().equals(process.ACTION_CREATION)){ %>
             
 				<FIELDSET class="sigp2Fieldset" style="text-align:left;" id="<%=process.ACTION_CREATION %>">
 					<legend class="sigp2Legend">Création d'une absence</legend>
            				<INPUT name="JSP" type="hidden" value="<%= process.getJSP()%>">
-	                	<span class="sigp2Mandatory">Famille : </span>
-				        <SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_FAMILLE_CREATION()%>">
-				        	<%=process.forComboHTML(process.getVAL_LB_FAMILLE_CREATION(), process.getVAL_LB_FAMILLE_CREATION_SELECT())%>
-				        </SELECT>
+           				
+                		<span class="sigp2">Groupe : </span> 
+		                <SELECT class="sigp2-saisie" name="<%=process.getNOM_LB_GROUPE_CREATE()%>" onchange='executeBouton("<%=process.getNOM_PB_SELECT_GROUPE_CREATE()%>")' >
+		                    <%=process.forComboHTML(process.getVAL_LB_GROUPE_CREATE(), process.getVAL_LB_GROUPE_CREATE_SELECT())%>
+		                </SELECT>
+		                 <BR/><BR/>
+                		<span class="sigp2">Famille : </span>
+		                <SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_FAMILLE_CREATION()%>" >
+		                    <%=process.forComboHTML(process.getVAL_LB_FAMILLE_CREATION(), process.getVAL_LB_FAMILLE_CREATION_SELECT())%>
+		                </SELECT>
+           				<BR/><BR/>
+           				
 	                    <span class="sigp2Mandatory" style="width:50px;margin-left: 20px;">Agent :</span>
 	                    <INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_AGENT_CREATION()%>" size="10" type="text" value="<%= process.getVAL_ST_AGENT_CREATION()%>" style="margin-right:10px;">
 	                    <img onkeydown="" onkeypress="" onkeyup="" border="0" src="images/loupe.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_RECHERCHER_AGENT_CREATION()%>');">
 	                    <BR/><BR/>
+	                    
+						<!-- Boutons cachés -->
+						<INPUT type="submit" class="sigp2-displayNone" name="<%=process.getNOM_PB_SELECT_GROUPE_CREATE()%>">	
 	                    <div align="center">
 		                    <INPUT onkeydown="" onkeypress="" onkeyup="" type="submit" class="sigp2-Bouton-100" value="Creer" name="<%=process.getNOM_PB_CREATION()%>">
 		                    <INPUT onkeydown="" onkeypress="" onkeyup="" type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
@@ -570,23 +484,135 @@
 		            			</td>
 		            		</tr>
 		            		<% } %>
+		            		
+		            		<!-- Maladies -->
+		            		<% if(typeCreation.getTypeSaisiDto().isPrescripteur()) { %>
+		            		<tr>
+		            			<td>
+	                        		<span class="sigp2Mandatory">Prescripteur :</span>
+		            			</td>
+		            			<td colspan="2">
+							       <INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_PRESCRIPTEUR() %>" size="6" type="text" value="<%= process.getVAL_ST_PRESCRIPTEUR() %>">
+		            			</td>
+		            		</tr>
+		            		<% } %>
+	            			<% if(typeCreation.getTypeSaisiDto().isDateDeclaration()) { %>
+	            			<tr>
+		            			<td>
+	                        		<span class="sigp2Mandatory">Date de déclaration :</span>
+		            			</td>
+		            			<td>
+			                        <input id="<%=process.getNOM_ST_DATE_DECLARATION()%>" class="sigp2-saisie" maxlength="10"	
+			                        	name="<%= process.getNOM_ST_DATE_DECLARATION()%>" size="10" type="text" value="<%= process.getVAL_ST_DATE_DECLARATION()%>" >
+			                        <IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_DECLARATION()%>', 'dd/mm/y');">
+		            			</td>
+	            			</tr>
+	            			<% } %>
+	            			<% if(typeCreation.getTypeSaisiDto().isProlongation()) { %>
+	            			<tr>
+		            			<td>
+	                        		<span class="sigp2Mandatory">Prolongation :</span>
+		            			</td>
+		            			<td>
+			                        <input type="checkbox" name="<%=process.getNOM_CK_PROLONGATION() %>" <% if(process.getVAL_CK_PROLONGATION().equals(process.getCHECKED_ON())){ %> checked="checked" <% } %> />
+		            			</td>
+	            			</tr>
+	            			<% } %>
+		            		<% if(typeCreation.getTypeSaisiDto().isNomEnfant()) { %>
+		            		<tr>
+		            			<td>
+	                        		<span class="sigp2Mandatory">Nom Enfant :</span>
+		            			</td>
+		            			<td colspan="2">
+							       <INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_NOM_ENFANT() %>" size="6" type="text" value="<%= process.getVAL_ST_NOM_ENFANT() %>">
+		            			</td>
+		            		</tr>
+		            		<% } %>
+		            		<% if(typeCreation.getTypeSaisiDto().isNombreITT()) { %>
+		            		<tr>		            		
+		            			<td>
+	                        		<span class="sigp2Mandatory">Nombre ITT :</span>
+		            			</td>
+		            			<td colspan="2">
+									<INPUT class="sigp2-saisie" maxlength="6" name="<%= process.getNOM_ST_NOMBRE_ITT() %>" size="6" type="text" value="<%= process.getVAL_ST_NOMBRE_ITT() %>">
+									<span class="sigp2Mandatory"> jour(s)</span>
+		            			</td>
+		            		</tr>
+	            			<% } %>
+		            		<% if(typeCreation.getTypeSaisiDto().isSiegeLesion()) { %>
+		            		<tr>		            		
+		            			<td>
+	                        		<span class="sigp2Mandatory">Siège des lésions :</span>
+		            			</td>
+		            			<td colspan="2">
+							        <SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_SIEGE_LESION()%>" style="width:340px;">
+							        	<%=process.forComboHTML(process.getVAL_LB_SIEGE_LESION(), process.getVAL_LB_SIEGE_LESION_SELECT())%>
+							        </SELECT>
+		            			</td>
+		            		</tr>
+	            			<% } %>
+		            		<% if(typeCreation.getTypeSaisiDto().isMaladiePro()) { %>
+		            		<tr>		            		
+		            			<td>
+	                        		<span class="sigp2Mandatory">Maladie professionnelle :</span>
+		            			</td>
+		            			<td colspan="2">
+							        <SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_MALADIE_PRO()%>" style="width:340px;">
+							        	<%=process.forComboHTML(process.getVAL_LB_MALADIE_PRO(), process.getVAL_LB_MALADIE_PRO_SELECT())%>
+							        </SELECT>
+		            			</td>
+		            		</tr>
+	            			<% } %>
+		            		<% if(typeCreation.getTypeSaisiDto().isAtReference()) { %>
+		            		<tr>		            		
+		            			<td>
+	                        		<span class="sigp2Mandatory">Accident de travail de référence :</span>
+		            			</td>
+		            			<td colspan="2">
+							        <SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_AT_REFERENCE()%>" style="width:340px;">
+							        	<%=process.forComboHTML(process.getVAL_LB_AT_REFERENCE(), process.getVAL_LB_AT_REFERENCE_SELECT())%>
+							        </SELECT>
+		            			</td>
+		            		</tr>
+	            			<% } %>
+		            		
+		            		<!-- Fin Maladies -->
+		            		
 		            		<% if(typeCreation.getTypeSaisiDto().isMotif()) { %>
 		            		<tr>
 		            			<td>
-	                        		<span class="sigp2Mandatory">Motif :</span>
+	                        		<span class="sigp2Mandatory">Commentaire :</span>
 		            			</td>
 		            			<td>
 									<textarea cols="15" rows="3" name="<%=process.getNOM_ST_MOTIF_CREATION()%>" title="Zone de saisie du commentaire"><%=process.getVAL_ST_MOTIF_CREATION().trim() %></textarea>
-									<%=typeCreation.getTypeSaisiDto().getInfosComplementaires() %>
+									<%
+									String infoCompl = "";
+									if(null != typeCreation.getTypeSaisiDto().getInfosComplementaires()) {
+										infoCompl = typeCreation.getTypeSaisiDto().getInfosComplementaires();
+									} %>
+									<%=infoCompl %>
 		            			</td>
 		            		</tr>
 		            		<% } %>
 		            		<% if(typeCreation.getTypeSaisiDto().isPieceJointe()) { %>
 		            		<tr>
 		            			<td>
-<!-- 	                        		<span class="sigp2Mandatory">Pièce jointe :</span> -->
+	                        		<span class="sigp2Mandatory">Pièces jointes :</span>
 		            			</td>
-		            			<td><!-- TODO --></td>
+		            			<td>
+		            				<INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_CREER_DOC()%>">
+		            				<% if(null != process.listFichierUpload
+		            						&& !process.listFichierUpload.isEmpty()) {
+		            					for(File file : process.listFichierUpload) { %>
+		            						<div>
+			            						<%=file.getName() %>
+			            						<INPUT title="supprimer" type="image" src="images/suppression.gif"  height="15px" width="15px" 
+		            								class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" 
+		            								name="<%=process.getNOM_PB_SUPPRIMER_DOC(file.getName())%>">
+		            						</div>
+		            					<% }
+		            				} %>
+		            			</td>
 		            		</tr>
 		            		<% } %>
 		            		<% if(!typeCreation.getTypeSaisiDto().isSaisieKiosque()) { %>
@@ -667,11 +693,37 @@
 		            			<td>
 	                        		<span class="sigp2Mandatory">Commentaire :</span>
 		            			</td>
-		            			<td colspan="2">
+		            			<td>
 									<textarea cols="15" rows="3" name="<%=process.getNOM_ST_MOTIF_CREATION()%>" title="Zone de saisie du commentaire"><%=process.getVAL_ST_MOTIF_CREATION().trim() %></textarea>
-									<span class="sigp2Mandatory">Précisez si l'agent est joignable ou non durant son congé.</span>
+									<%
+									String infoCompl = "";
+									if(null != typeCreation.getTypeSaisiCongeAnnuelDto().getInfosComplementaires()) {
+										infoCompl = typeCreation.getTypeSaisiCongeAnnuelDto().getInfosComplementaires();
+									} %>
+									<%=infoCompl %>
 		            			</td>
 		            		</tr>
+		            		<% if(typeCreation.getTypeSaisiCongeAnnuelDto().isPieceJointe()) { %>
+		            		<tr>
+		            			<td>
+	                        		<span class="sigp2Mandatory">Pièces jointes :</span>
+		            			</td>
+		            			<td>
+		            				<INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_CREER_DOC()%>">
+		            				<% if(null != process.listFichierUpload
+		            						&& !process.listFichierUpload.isEmpty()) {
+		            					for(File file : process.listFichierUpload) { %>
+		            						<div>
+			            						<%=file.getName() %>
+			            						<INPUT title="supprimer" type="image" src="images/suppression.gif"  height="15px" width="15px" 
+		            								class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" 
+		            								name="<%=process.getNOM_PB_SUPPRIMER_DOC(file.getName())%>">
+		            						</div>
+		            					<% }
+		            				} %>
+		            			</td>
+		            		</tr>
+		            		<% } %>
 		            	</table>
 		            	<%} %>
 		            	<BR/>
@@ -679,12 +731,235 @@
 	                    <INPUT onkeydown="" onkeypress="" onkeyup="" type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER() %>">
 	            </FIELDSET>
 			<% } %>
+            
+            <!--  Création d'une demande de contrôle médical -->
+            <%if(process.getVAL_ST_ACTION().equals(process.ACTION_CREATION_CONTROLE_MEDICAL)){ %>
+				<FIELDSET class="sigp2Fieldset" style="text-align:left;" id="<%=process.ACTION_CREATION_CONTROLE_MEDICAL %>">
+	            <legend class="sigp2Legend">Demande de contrôle médical</legend>
+           				<INPUT name="JSP" type="hidden" value="<%= process.getJSP()%>">
+            			<%if(process.isCreationControleMedical()){ %>
+							<span class="sigp2" style="color:red;">Une fois la demande créée, vous ne pourrez plus la modifier, ni la supprimer !</span>
+           				<%}%>
+						<INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_ID_COMMENTAIRE_CM() %>" disabled="disabled" style="visibility: hidden;" type="hidden" value="<%= process.getVAL_ST_ID_COMMENTAIRE_CM() %>">
+		            	<BR/><BR/>
+						<span class="sigp2Mandatory">Commentaire :</span>
+            			<%if(process.isCreationControleMedical()){ %>
+	                    	<INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_COMMENTAIRE_CM() %>" size="150" type="text" value="<%= process.getVAL_ST_COMMENTAIRE_CM() %>">
+           				<%} else {%>
+							<INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_COMMENTAIRE_CM() %>" readonly="readonly" size="150" type="text" value="<%= process.getVAL_ST_COMMENTAIRE_CM() %>">
+           				<%}%>
+	                    <BR/><BR/>
+            			<%if(process.isCreationControleMedical()){ %>
+	                    	<INPUT onkeydown="" onkeypress="" onkeyup="" readonly="readonly" type="submit" class="sigp2-Bouton-100" value="Valider" name="<%=process.getNOM_PB_VALIDER_COMMENTAIRE_CM()%>">
+           				<%} %>
+	                    <INPUT onkeydown="" onkeypress="" onkeyup="" type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
+                </FIELDSET>
+            <%} %>
+			
+			
+            	<% if(process.getVAL_ST_ACTION_DOCUMENT().equals(process.ACTION_DOCUMENT_CREATION)
+            			|| process.getVAL_ST_ACTION_DOCUMENT().equals(process.ACTION_DOCUMENT_AJOUT)){ %> 
+            	<FIELDSET class="sigp2Fieldset" style="text-align:left;" id="<%=process.getVAL_ST_ACTION_DOCUMENT() %>">
+            		<legend class="sigp2Legend"><%=process.getVAL_ST_ACTION_DOCUMENT() %></legend>
+					<div>
+						<table>
+							<tr>
+								<td>
+									<span class="sigp2">Fichier : </span>
+								</td>
+								<td>
+									<% if(process.fichierUpload == null){ %>
+									<INPUT name="<%= process.getNOM_EF_LIENDOCUMENT() %>" class="sigp2-saisie" type="file" value="<%= process.getVAL_EF_LIENDOCUMENT() %>" >
+									<%}else{ %>
+									<INPUT name="<%= process.getNOM_EF_LIENDOCUMENT() %>" class="sigp2-saisie" disabled="disabled" type="text" value="<%= process.getVAL_EF_LIENDOCUMENT() %>" >
+									<% }%>
+								</td>
+							</tr>
+						</table>
+		            	<BR/>
+		            	<% if(process.getVAL_ST_ACTION_DOCUMENT().equals(process.ACTION_DOCUMENT_CREATION)) { %>
+	                   		<INPUT onkeydown="" onkeypress="" onkeyup="" type="submit" class="sigp2-Bouton-100" value="Valider" name="<%=process.getNOM_PB_VALIDER_DOCUMENT_CREATION() %>">
+	                    <% } %>
+		            	<% if(process.getVAL_ST_ACTION_DOCUMENT().equals(process.ACTION_DOCUMENT_AJOUT)) { %>
+	                   		<INPUT onkeydown="" onkeypress="" onkeyup="" type="submit" class="sigp2-Bouton-100" value="Valider" name="<%=process.getNOM_PB_VALIDER_DOCUMENT_AJOUT() %>">
+	                    <% } %>
+	                    <INPUT onkeydown="" onkeypress="" onkeyup="" type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER_DOCUMENT() %>">
+					</div>
+				</FIELDSET>
+			<%}%>
 			
 			<SCRIPT type="text/javascript">
             	window.location.hash = '#<%=process.getVAL_ST_ACTION() %>';
             </SCRIPT>
 			<!-- ------------------------ CREATION D UNE DEMANDE ----------------------------- -->
-			
+            	
+				
+			<% if(process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT_SUPPRESSION)){ %>
+			<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
+			<legend class="sigp2Legend"><%=process.getVAL_ST_ACTION()%></legend>
+				<div>
+				    <FONT color='red'>Veuillez valider votre choix.</FONT>
+				    <BR/><BR/>
+					<span class="sigp2" style="width:130px;">Nom du document : </span>
+					<span class="sigp2-saisie"><%=process.getVAL_ST_NOM_DOC()%></span>
+					<BR/>
+				</div>
+				<BR/>
+				<TABLE align="center" border="0" cellpadding="0" cellspacing="0">
+					<TBODY>
+						<TR>
+							<TD width="31"><INPUT type="submit"
+								class="sigp2-Bouton-100" value="Valider"
+								name="<%=process.getNOM_PB_VALIDER_DOCUMENT_SUPPRESSION()%>"></TD>
+							<TD height="18" width="15"></TD>
+							<TD class="sigp2" style="text-align : center;"
+								height="18" width="23"><INPUT type="submit"
+								class="sigp2-Bouton-100" value="Annuler"
+								name="<%=process.getNOM_PB_ANNULER()%>"></TD>
+						</TR>
+					</TBODY>
+				</TABLE>
+		        <BR>
+            </FIELDSET>
+			<% }%>
+            
+            <FIELDSET class="sigp2Fieldset" style="text-align:left;">
+                <legend class="sigp2Legend">Visualisation des demandes</legend>
+                <BR/>
+                <table width="880px" cellpadding="0" cellspacing="0" border="0" class="display" id="VisualisationAbsenceList"> 
+                    <thead>
+                        <tr>
+                            <th width="20px" align="center">
+                            	<img src="images/ajout.gif" height="16px" width="16px" title="Creer une absence" onClick="executeBouton('<%=process.getNOM_PB_AJOUTER_ABSENCE()%>')" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>">
+            				</th>  
+                            <th align="center"> <img src="images/loupe.gif" height="16px" width="16px" title="Voir l'historique de l'absence" onkeydown="" onkeypress="" onkeyup=""></th>
+                            <th align="center"> <img src="images/info.jpg" height="16px" width="16px" title="Alertes." onkeydown="" onkeypress="" onkeyup=""></th>
+                            <th>Matr</th>
+                            <th>Agent</th>
+                            <th>Cat<br>Statut</th>
+                            <th>Type absence<br>Date demande</th>
+                            <th>Début</th>
+                            <th>Fin</th>
+                            <th>Durée</th>
+                            <th>Commentaire</th>
+                            <th>Etat</th>
+                            <th><img onkeydown="" onkeypress="" onkeyup="" title="Valider" type="image" src="images/hand-vert.png"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_VALIDER_ALL()%>" onclick="executeBouton('<%=process.getNOM_PB_VALIDER_ALL()%>');"></th>
+                            <th><img onkeydown="" onkeypress="" onkeyup="" title="Rejeter" type="image" src="images/hand-rouge.png"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_REJETER_ALL()%>" onclick="executeBouton('<%=process.getNOM_PB_REJETER_ALL()%>');"></th>
+                            <th><img onkeydown="" onkeypress="" onkeyup="" title="En attente" type="image" src="images/clock.png"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>"></th>
+                            <th><img onkeydown="" onkeypress="" onkeyup="" title="Contrôle médical" type="image" src="images/firstAidKit.png"  height="18px" width="18px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>"></th>
+                            <th>PJ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% for (Map.Entry<Integer, DemandeDto> absMap : process.getListeAbsence().entrySet()) {
+                			DemandeDto abs = absMap.getValue();
+                        	int indiceAbs = absMap.getKey();
+                        %>
+                        <tr id="tr<%=indiceAbs %>">
+                            <td width="20px" align="center">
+                            <%if(abs.isAffichageBoutonDupliquer()){ %>                            	
+                            	<img onkeydown="" onkeypress="" onkeyup="" title="dupliquer" type="image" src="images/dupliquer.gif"  height="15px" width="15px" class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_DUPLIQUER(indiceAbs)%>" onclick="executeBouton('<%=process.getNOM_PB_DUPLIQUER(indiceAbs)%>');">
+								<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_DUPLIQUER(indiceAbs)%>" value="">
+                            <%} %>
+                            <%if(abs.isAffichageBoutonAnnuler()){ %>
+                            	<img onkeydown="" onkeypress="" onkeyup="" title="annuler" type="image" src="images/suppression.gif"  height="15px" width="15px" class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_ANNULER_DEMANDE(indiceAbs)%>" onclick="executeBouton('<%=process.getNOM_PB_ANNULER_DEMANDE(indiceAbs)%>');">
+								<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_ANNULER_DEMANDE(indiceAbs)%>" value="">
+                            <%} %>
+							</td>  
+                            <td width="30px" align="center">
+                             <% // #15599 
+                             if(abs.isAffichageBoutonHistorique()){ %>
+                            	<img onkeydown="" onkeypress="" onkeyup="" src="images/loupe.gif" height="16px" width="16px" title="Voir l'historique de l'absence" onClick="loadAbsenceHistory('<%=indiceAbs %>', '<%=abs.getIdDemande() %>')">
+                            <% } %>
+                            </td>
+                            <td width="40px" align="center">
+                            <%if(abs.isDepassementCompteur()){ %>
+                            	<img onkeydown="" onkeypress="" onkeyup="" src="images/seuil.png" height="16px" width="16px" title="Le seuil du compteur est dépassé pour cette demande.">
+                            <%} %>
+                            <%if(abs.isDepassementMultiple()){ %>
+                            	<img onkeydown="" onkeypress="" onkeyup="" src="images/multiple.jpg" height="16px" width="16px" title="Cette demande n'est pas un multiple.">
+                            <%} %>
+                            <%if(abs.isDepassementITT()){ %>
+                            	<img onkeydown="" onkeypress="" onkeyup="" src="images/seuil.png" height="16px" width="16px" title="Le nombre de jours d'ITT est incohérent avec la date début/fin.">
+                            <%} %>
+                            </td>                            
+                            <td width="30px"><%=process.getVAL_ST_MATRICULE(indiceAbs)%></td> 
+                            <td width="150px"><a id="ActeursAgent<%=indiceAbs %>" style="hover:cursor:pointer;" 
+                            	onmouseover="loadActeursAgent('<%=process.getVAL_ST_MATRICULE(indiceAbs)%>','<%=indiceAbs %>', '<%=abs.getIdTypeDemande() %>', '<%=new SimpleDateFormat("dd/MM/yyyy").format(abs.getDateDebut()) %>')" >
+                            	<%=process.getVAL_ST_AGENT(indiceAbs)%></a></td> 
+                            <td width="40px"><%=process.getVAL_ST_INFO_AGENT(indiceAbs)%></td>  
+                            <td width="150px"><%=process.getVAL_ST_TYPE(indiceAbs)%></td>
+                            <td width="60px"><%=process.getVAL_ST_DATE_DEB(indiceAbs)%></td>
+                            <td width="60px"><%=process.getVAL_ST_DATE_FIN(indiceAbs)%></td>
+                            <td width="40px"><%=process.getVAL_ST_DUREE(indiceAbs)%></td>
+                            <td width="120px">
+                            	<%=process.getVAL_ST_MOTIF(indiceAbs)%>
+                            	<img onkeydown="" onkeypress="" onkeyup="" src="images/loupe.gif" height="16px" width="16px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>" title="<%=process.getCommentaireDRH(abs) %>"  name="<%=process.getNOM_PB_COMMENTAIRE_DRH(indiceAbs)%>" onclick="executeBouton('<%=process.getNOM_PB_COMMENTAIRE_DRH(indiceAbs)%>');">                            	
+                            	<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_COMMENTAIRE_DRH(indiceAbs)%>" value="">
+                            </td>
+                            <td width="60px"><%=process.getVAL_ST_ETAT(indiceAbs)%></td>
+                            <td width="20px" align="center">
+                            <!-- #14696 ajout de l etat A VALIDER car erreur lors de la reprise de donnees des conges exceptionnels mis  l etat A VALIDER au lieu de SAISI ou APPROUVE -->
+                            <%if(abs.isAffichageValidation()){ %>
+                            	<img onkeydown="" onkeypress="" onkeyup="" title="Valider" type="image" src="images/hand-vert.png"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_VALIDER(indiceAbs)%>" onclick="executeBouton('<%=process.getNOM_PB_VALIDER(indiceAbs)%>');">
+								<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_VALIDER(indiceAbs)%>" value="">
+                            <%} %>
+							</td>
+                            <td width="20px" align="center">
+                             <!-- #14696 ajout de l etat A VALIDER car erreur lors de la reprise de donnees des conges exceptionnels mis  l etat A VALIDER au lieu de SAISI ou APPROUVE -->
+                            <%if(abs.isAffichageBoutonRejeter()){ %>
+                            	<img onkeydown="" onkeypress="" onkeyup="" title="Rejeter" type="image" src="images/hand-rouge.png"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_REJETER(indiceAbs)%>" onclick="executeBouton('<%=process.getNOM_PB_REJETER(indiceAbs)%>');">
+								<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_REJETER(indiceAbs)%>" value="">
+                            <%} %>
+							</td>
+                            <td width="20px" align="center">
+                             <!-- #14696 ajout de l etat A VALIDER car erreur lors de la reprise de donnees des conges exceptionnels mis  l etat A VALIDER au lieu de SAISI ou APPROUVE -->
+                            <%if(abs.isAffichageEnAttente()){ %>
+                            	<img onkeydown="" onkeypress="" onkeyup="" title="En attente" type="image" src="images/clock.png"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_EN_ATTENTE(indiceAbs)%>" onclick="executeBouton('<%=process.getNOM_PB_EN_ATTENTE(indiceAbs)%>');">
+								<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_EN_ATTENTE(indiceAbs)%>" value="">
+                            <%} %>
+							</td>
+							<td width="20px" align="center">
+	                            <%if(abs.getGroupeAbsence().getIdRefGroupeAbsence() == RefTypeGroupeAbsenceEnum.MALADIES.getValue() && (abs.getControleMedical() == null || abs.getControleMedical().getId() == null)){ %>
+	                            	<img onkeydown="" onkeypress="" onkeyup="" title="Créer une demande de contrôle médical" type="image" src="images/ajout.gif"  height="16px" width="16px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_CONTROLE_MEDICAL(indiceAbs)%>" onclick="executeBouton('<%=process.getNOM_PB_CONTROLE_MEDICAL(indiceAbs)%>');">
+	                            <%} %>
+	                            <%if(abs.getGroupeAbsence().getIdRefGroupeAbsence() == RefTypeGroupeAbsenceEnum.MALADIES.getValue() && abs.getControleMedical() != null && abs.getControleMedical().getId() != null){ %>
+	                            	<img onkeydown="" onkeypress="" onkeyup="" title="Visualiser la demande de contrôle médical" type="image" src="images/loupe.gif"  height="16px" width="16px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_CONTROLE_MEDICAL(indiceAbs)%>" onclick="executeBouton('<%=process.getNOM_PB_CONTROLE_MEDICAL(indiceAbs)%>');">
+	                            <%} %>
+								<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_CONTROLE_MEDICAL(indiceAbs)%>" value="">
+							</td>
+                            <td width="50px" >
+                            <INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" 
+                            	src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_AJOUTER_DOC(indiceAbs)%>">
+                            <% if(null !=abs.getPiecesJointes()
+                            		&& !abs.getPiecesJointes().isEmpty()) {
+            						int indicePJ = 0;
+                            		for(PieceJointeDto pj : abs.getPiecesJointes()) { %>
+                            			<div>
+	                            			Pièce jointe 
+	                            			<a href="<%=pj.getUrlFromAlfresco() %>" title="<%=pj.getTitre() %>" target="_blank" ><img onkeydown="" onkeypress="" 
+	                            				onkeyup="" src="images/loupe.gif" height="16px" width="16px" title="Voir la pièce jointe <%=pj.getTitre() %>" /></a>
+                            				<INPUT title="supprimer" type="image" src="images/suppression.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_SUPPRIMER_DOC(indiceAbs,indicePJ)%>">
+										</div>
+                            <% 		
+                            indicePJ++;
+                            }
+                            	} %>
+							</td>
+                        </tr>
+                        <%}%>
+                    </tbody>
+                </table>
+                <BR/>	
+            </FIELDSET>
+            
+            <INPUT type="submit" style="display:none;" name="<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_SERVICE()%>" value="SUPPRECHERCHERSERVICE">	
+			<INPUT type="submit" style="display:none;" name="<%=process.getNOM_PB_RECHERCHER_AGENT_DEMANDE()%>" value="RECHERCHERAGENTDEMANDE">
+            <INPUT type="submit" style="display:none;" name="<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_DEMANDE()%>" value="SUPPRECHERCHERAGENTDEMANDE">
+            <INPUT type="submit" style="display:none;" name="<%=process.getNOM_PB_AJOUTER_ABSENCE()%>" value="AJOUTERABSENCE">        
+            <INPUT type="submit" style="display:none;" name="<%=process.getNOM_PB_RECHERCHER_AGENT_CREATION()%>" value="RECHERCHERAGENTCREATION"> 
+            <INPUT type="submit" style="display:none;" name="<%=process.getNOM_PB_CALCUL_DUREE()%>" value="CALCULDUREE">        
+           
 			<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_VALIDER_ALL()%>" value="">
 			<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_REJETER_ALL()%>" value="">
         </FORM>

@@ -2,12 +2,14 @@ package nc.noumea.spring.service;
 
 import java.util.List;
 
+import nc.mairie.enums.EnumTypeAbsence;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import nc.mairie.gestionagent.absence.dto.ActeursDto;
 import nc.mairie.gestionagent.absence.dto.AgentOrganisationSyndicaleDto;
 import nc.mairie.gestionagent.absence.dto.CompteurDto;
+import nc.mairie.gestionagent.absence.dto.ControleMedicalDto;
 import nc.mairie.gestionagent.absence.dto.DemandeDto;
 import nc.mairie.gestionagent.absence.dto.HistoriqueSoldeDto;
 import nc.mairie.gestionagent.absence.dto.MoisAlimAutoCongesAnnuelsDto;
@@ -16,6 +18,7 @@ import nc.mairie.gestionagent.absence.dto.MotifDto;
 import nc.mairie.gestionagent.absence.dto.OrganisationSyndicaleDto;
 import nc.mairie.gestionagent.absence.dto.RefAlimCongesAnnuelsDto;
 import nc.mairie.gestionagent.absence.dto.RefGroupeAbsenceDto;
+import nc.mairie.gestionagent.absence.dto.RefTypeDto;
 import nc.mairie.gestionagent.absence.dto.RestitutionMassiveDto;
 import nc.mairie.gestionagent.absence.dto.SoldeDto;
 import nc.mairie.gestionagent.absence.dto.TypeAbsenceDto;
@@ -159,8 +162,23 @@ public class AbsService implements IAbsService {
 	}
 
 	@Override
-	public List<DemandeDto> getListeDemandes(String dateDebut, String dateFin, String listIdRefEtat, Integer idRefType, Integer idAgentRecherche,
-			Integer idRefGroupe, boolean aValider, List<String> idAgentsService) {
+	public List<RefTypeDto> getRefTypeAccidentTravail() {
+		return absConsumer.getRefTypeAccidentTravail();
+	}
+
+	@Override
+	public List<RefTypeDto> getRefTypeMaladiePro() {
+		return absConsumer.getRefTypeMaladiePro();
+	}
+
+	@Override
+	public List<RefTypeDto> getRefTypeSiegeLesion() {
+		return absConsumer.getRefTypeSiegeLesion();
+	}
+
+	@Override
+	public List<DemandeDto> getListeDemandes(String dateDebut, String dateFin, String listIdRefEtat, Integer idRefType, Integer idAgentRecherche, Integer idRefGroupe, boolean aValider,
+			List<String> idAgentsService) {
 		return absConsumer.getListeDemandes(dateDebut, dateFin, listIdRefEtat, idRefType, idAgentRecherche, idRefGroupe, aValider, idAgentsService);
 	}
 
@@ -351,8 +369,8 @@ public class AbsService implements IAbsService {
 	}
 
 	@Override
-	public ReturnMessageDto deleteTypeAbsence(Integer idAgentConnecte, Integer idRefTypeAbsence) {
-		return absConsumer.deleteTypeAbsence(idAgentConnecte, idRefTypeAbsence);
+	public ReturnMessageDto inactiveTypeAbsence(Integer idAgentConnecte, Integer idRefTypeAbsence) {
+		return absConsumer.inactiveTypeAbsence(idAgentConnecte, idRefTypeAbsence);
 	}
 
 	@Override
@@ -391,6 +409,71 @@ public class AbsService implements IAbsService {
 	}
 
 	@Override
+	public ReturnMessageDto setRefTypeAccidentTravail(Integer idAgent, RefTypeDto typeDto) {
+		return absConsumer.setRefTypeAccidentTravail(idAgent, typeDto);
+	}
+
+	@Override
+	public ReturnMessageDto setRefTypeSiegeLesion(Integer idAgent, RefTypeDto typeDto) {
+		return absConsumer.setRefTypeSiegeLesion(idAgent, typeDto);
+	}
+
+	@Override
+	public ReturnMessageDto setRefTypeMaladiePro(Integer idAgent, RefTypeDto typeDto) {
+		return absConsumer.setRefTypeMaladiePro(idAgent, typeDto);
+	}
+
+	@Override
+	public ReturnMessageDto deleteRefTypeAccidentTravail(Integer idAgent, RefTypeDto typeDto) {
+		return absConsumer.deleteRefTypeAccidentTravail(idAgent, typeDto);
+	}
+
+	@Override
+	public ReturnMessageDto deleteRefTypeSiegeLesion(Integer idAgent, RefTypeDto typeDto) {
+		return absConsumer.deleteRefTypeSiegeLesion(idAgent, typeDto);
+	}
+
+	@Override
+	public ReturnMessageDto deleteRefTypeMaladiePro(Integer idAgent, RefTypeDto typeDto) {
+		return absConsumer.deleteRefTypeMaladiePro(idAgent, typeDto);
+	}
+
+	@Override
+	public String getTypeDemande(DemandeDto demande) {
+
+		if(demande.getIdTypeDemande().equals(EnumTypeAbsence.MALADIES_ACCIDENT_TRAVAIL.getCode())) {
+			return "AT";
+		}
+		if(demande.getIdTypeDemande().equals(EnumTypeAbsence.MALADIES_RECHUTE.getCode())) {
+			return "RECHUTE AT";
+		}
+		if(demande.getIdTypeDemande().equals(EnumTypeAbsence.MALADIES_PROFESSIONNELLE.getCode())) {
+			return "MP";
+		}
+		return "";
+	}
+
+	@Override
+	public String getTypeDocument(DemandeDto demande) {
+
+		if(demande.getIdTypeDemande().equals(EnumTypeAbsence.MALADIES_ACCIDENT_TRAVAIL.getCode())) {
+			return "AT";
+		}
+		if(demande.getIdTypeDemande().equals(EnumTypeAbsence.MALADIES_RECHUTE.getCode())) {
+			return "AT";
+		}
+		if(demande.getIdTypeDemande().equals(EnumTypeAbsence.MALADIES_PROFESSIONNELLE.getCode())) {
+			return "MP";
+		}
+		return "";
+	}
+
+	@Override
+	public ReturnMessageDto addPieceJointeSIRH(Integer idAgentConnecte, String json) {
+		return absConsumer.addPieceJointeSIRH(idAgentConnecte, json);
+	}
+
+	@Override
 	public List<DemandeDto> getListeDemandeCAWhichAddOrRemoveOnCounterAgent(Integer idAgent, Integer idAgentConcerne) {
 		return absConsumer.getListeDemandeCAWhichAddOrRemoveOnCounterAgent(idAgent, idAgentConcerne);
 	}
@@ -408,6 +491,21 @@ public class AbsService implements IAbsService {
 	@Override
 	public ReturnMessageDto saveRepresentantAsaA48(Integer idOrganisation, Integer idAgent) {
 		return absConsumer.saveRepresentantAsaA48(idOrganisation, idAgent);
+	}
+
+	@Override
+	public ReturnMessageDto updateCommentaireDRH(DemandeDto demandeCourante, String commDRH) {
+		return absConsumer.updateCommentaireDRH(demandeCourante.getIdDemande(), commDRH);
+	}
+
+	@Override
+	public ReturnMessageDto persistDemandeControleMedical(ControleMedicalDto dto) {
+		return absConsumer.persistDemandeControleMedical(dto);
+	}
+
+	@Override
+	public ControleMedicalDto findControleMedicalByDemandeId(Integer idDemande) {
+		return absConsumer.findControleMedicalByDemandeId(idDemande);
 	}
 
 }

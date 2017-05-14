@@ -2,35 +2,40 @@ package nc.mairie.gestionagent.process;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 
+import nc.mairie.enums.EnumEtatAbsence;
 import nc.mairie.enums.EnumEtatSuiviMed;
 import nc.mairie.enums.EnumMotifVisiteMed;
+import nc.mairie.enums.EnumTypeAbsence;
+import nc.mairie.enums.EnumTypeGroupeAbsence;
+import nc.mairie.gestionagent.absence.dto.DemandeDto;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.Agent;
 import nc.mairie.metier.agent.PositionAdmAgent;
 import nc.mairie.metier.carriere.Carriere;
 import nc.mairie.metier.hsct.Medecin;
-import nc.mairie.metier.hsct.SPABSEN;
 import nc.mairie.metier.hsct.VisiteMedicale;
 import nc.mairie.metier.poste.Affectation;
 import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.suiviMedical.SuiviMedical;
 import nc.mairie.spring.dao.metier.agent.AgentDao;
 import nc.mairie.spring.dao.metier.hsct.MedecinDao;
-import nc.mairie.spring.dao.metier.hsct.SPABSENDao;
 import nc.mairie.spring.dao.metier.hsct.VisiteMedicaleDao;
 import nc.mairie.spring.dao.metier.poste.AffectationDao;
 import nc.mairie.spring.dao.metier.poste.FichePosteDao;
 import nc.mairie.spring.dao.metier.suiviMedical.SuiviMedicalDao;
-import nc.mairie.spring.dao.utils.MairieDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
@@ -39,6 +44,7 @@ import nc.mairie.technique.Services;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
+import nc.noumea.spring.service.IAbsService;
 
 public class OeSMCalcul extends BasicProcess {
 
@@ -56,15 +62,17 @@ public class OeSMCalcul extends BasicProcess {
 
 	private Logger				logger					= LoggerFactory.getLogger(OeSMCalcul.class);
 
-	private SuiviMedicalDao		suiviMedDao;
-	private SPABSENDao			spabsenDao;
-	private MedecinDao			medecinDao;
-	private VisiteMedicaleDao	visiteMedicaleDao;
-	private FichePosteDao		fichePosteDao;
-	private AffectationDao		affectationDao;
-	private AgentDao			agentDao;
+	private SuiviMedicalDao				suiviMedDao;
+	private MedecinDao					medecinDao;
+	private VisiteMedicaleDao			visiteMedicaleDao;
+	private FichePosteDao				fichePosteDao;
+	private AffectationDao				affectationDao;
+	private AgentDao					agentDao;
+	private IAbsService					absService;
 
 	public static final int		STATUT_RECHERCHER_AGENT	= 1;
+
+	private SimpleDateFormat			sdfyyyyMMdd				= new SimpleDateFormat("yyyyMMdd");
 
 	@Override
 	public void initialiseZones(HttpServletRequest request) throws Exception {
@@ -96,9 +104,6 @@ public class OeSMCalcul extends BasicProcess {
 		if (getSuiviMedDao() == null)
 			setSuiviMedDao(new SuiviMedicalDao((SirhDao) context.getBean("sirhDao")));
 
-		if (getSpabsenDao() == null)
-			setSpabsenDao(new SPABSENDao((MairieDao) context.getBean("mairieDao")));
-
 		if (getMedecinDao() == null) {
 			setMedecinDao(new MedecinDao((SirhDao) context.getBean("sirhDao")));
 		}
@@ -113,6 +118,9 @@ public class OeSMCalcul extends BasicProcess {
 		}
 		if (getAgentDao() == null) {
 			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (null == absService) {
+			absService = (IAbsService) context.getBean("absService");
 		}
 	}
 
@@ -389,17 +397,46 @@ public class OeSMCalcul extends BasicProcess {
 
 	private void performCalculCas5(Integer moisChoisi, Integer anneeChoisi) throws Exception {
 		// CAS N 5 : Longue maladie
-		// on liste toutes les absences (SPABSEN) de type MA ou LM pourle mois
-		// et
-		// l'année donnée
+		// on liste toutes les absences pour le mois et l'année donnée
 		int nbCas5 = 0;
+
+		DateTime dateDeb = new DateTime().withYear(anneeChoisi).withMonthOfYear(moisChoisi).withDayOfMonth(1).withMillisOfDay(0);
+		DateTime dateFin = new DateTime().withYear(anneeChoisi).withMonthOfYear(moisChoisi).dayOfMonth().withMaximumValue().withMillisOfDay(0);
+
+		String dateMin = sdfyyyyMMdd.format(dateDeb.toDate());
+		String dateMax = sdfyyyyMMdd.format(dateFin.toDate());
+
 		try {
-			ArrayList<Integer> listeMatriculeSMCas5 = getSpabsenDao().listerMatriculeAbsencePourSMDoubleType("MA", "LM", moisChoisi, anneeChoisi);
+			ArrayList<DemandeDto> listMaladie = (ArrayList<DemandeDto>) absService.getListeDemandes(dateMin, dateMax,
+					Arrays.asList(EnumEtatAbsence.VALIDEE.getCode(), EnumEtatAbsence.PRISE.getCode()).toString().replace("[", "").replace("]", "")
+							.replace(" ", ""),
+					EnumTypeAbsence.MALADIES_MALADIE.getCode(), null, EnumTypeGroupeAbsence.MALADIES.getValue(), false, null);
+
+			ArrayList<DemandeDto> listLongueMaladie = (ArrayList<DemandeDto>) absService.getListeDemandes(dateMin, dateMax,
+					Arrays.asList(EnumEtatAbsence.VALIDEE.getCode(), EnumEtatAbsence.PRISE.getCode()).toString().replace("[", "").replace("]", "")
+							.replace(" ", ""),
+					EnumTypeAbsence.MALADIES_LONGUE_MALADIE.getCode(), null, EnumTypeGroupeAbsence.MALADIES.getValue(), false, null);
+
+			List<DemandeDto> listeToutesMaladies = new ArrayList<DemandeDto>();
+			listeToutesMaladies.addAll(listMaladie);
+			listeToutesMaladies.addAll(listLongueMaladie);
+
+			// on liste les matricules
+			List<Integer> listIdAgent = new ArrayList<Integer>();
+			if (null != listMaladie) {
+				for (DemandeDto maladie : listeToutesMaladies) {
+					if (!listIdAgent.contains(maladie.getAgentWithServiceDto().getIdAgent())) {
+						listIdAgent.add(maladie.getAgentWithServiceDto().getIdAgent());
+					}
+				}
+			}
+
 			// pour chaque matricule trouvé on va cherche la liste de ses
-			// SPABSEN et
+			// absences
 			// on regarde si il se suivent, que le nombre de jours est > 90
-			for (int i = 0; i < listeMatriculeSMCas5.size(); i++) {
-				Integer nomatrAgent = listeMatriculeSMCas5.get(i);
+			for (int i = 0; i < listIdAgent.size(); i++) {
+				Integer idAgent = listIdAgent.get(i);
+				Integer nomatrAgent = getNoMatr(idAgent);
 				// on regarde que la PA est active
 				PositionAdmAgent pa = PositionAdmAgent.chercherPositionAdmAgentActive(getTransaction(), nomatrAgent);
 				if (getTransaction().isErreur()) {
@@ -410,31 +447,30 @@ public class OeSMCalcul extends BasicProcess {
 						continue;
 					}
 				}
-				ArrayList<SPABSEN> listeSPABSENAgent = getSpabsenDao().listerAbsencePourAgentTypeEtMoisAnneeDoubleType(nomatrAgent, "MA", "LM",
-						moisChoisi, anneeChoisi);
-				Integer compteurJoursMA = 0;
-				SPABSEN dernierAM = null;
+
+				List<DemandeDto> listeMaladieAgent = getListDemandeDtoByAgent(idAgent, listeToutesMaladies);
+				Double compteurJoursMA = 0.0;
+				DemandeDto dernierAM = null;
 				boolean dejaComptabilise = false;
-				for (int j = 0; j < listeSPABSENAgent.size(); j++) {
-					SPABSEN lignePrecedente = listeSPABSENAgent.get(j);
+				for (int j = 0; j < listeMaladieAgent.size(); j++) {
+					DemandeDto lignePrecedente = listeMaladieAgent.get(j);
 					if (!dejaComptabilise) {
-						compteurJoursMA = compteurJoursMA + lignePrecedente.getNbJour();
+						compteurJoursMA += lignePrecedente.getDuree();
 					}
 					dernierAM = lignePrecedente;
 					// on regarde si la ligne suivante existe
-					if (listeSPABSENAgent.size() > j + 1) {
+					if (listeMaladieAgent.size() > j + 1) {
 						// si elle existe on regarde que la date de debut de la
 						// ligne suivante est egale a datFin de la precdente + 1
-						SPABSEN ligneSuivante = listeSPABSENAgent.get(j + 1);
+						DemandeDto ligneSuivante = listeMaladieAgent.get(j + 1);
 						dernierAM = ligneSuivante;
-						String dateDebLigneSuiv = Services
-								.enleveJours(Services.convertitDate(ligneSuivante.getDatDeb().toString(), "yyyyMMdd", "dd/MM/yyyy"), 1);
-						String dateFinLignePrec = Services.convertitDate(lignePrecedente.getDatFin().toString(), "yyyyMMdd", "dd/MM/yyyy");
+						DateTime dateDebLigneSuiv = new DateTime(ligneSuivante.getDateDebut()).withMillisOfDay(0).minusDays(1);
+						DateTime dateFinLignePrec = new DateTime(lignePrecedente.getDateFin()).withMillisOfDay(0);
 						if (dateFinLignePrec.equals(dateDebLigneSuiv)) {
-							compteurJoursMA = compteurJoursMA + ligneSuivante.getNbJour();
+							compteurJoursMA += ligneSuivante.getDuree();
 							dejaComptabilise = true;
 						} else {
-							compteurJoursMA = 0;
+							compteurJoursMA = 0.0;
 							dejaComptabilise = false;
 						}
 					}
@@ -475,9 +511,8 @@ public class OeSMCalcul extends BasicProcess {
 					sm.setDateDerniereVisite(derniereVisite == null ? null : derniereVisite.getDateDerniereVisite());
 					sm.setIdRecommandationDerniereVisite(derniereVisite == null ? null : derniereVisite.getIdRecommandation());
 					sm.setCommentaireDerniereViste(derniereVisite == null ? null : derniereVisite.getCommentaire());
-					String datePrev = Services.ajouteJours(Services.convertitDate(dernierAM.getDatFin().toString(), "yyyyMMdd", "dd/MM/yyyy"), 2);
-					Date d = new SimpleDateFormat("dd/MM/yyyy").parse(datePrev);
-					sm.setDatePrevisionVisite(d);
+					Date datePrev = new DateTime(dernierAM.getDateFin()).withMillisOfDay(0).plusDays(2).toDate();
+					sm.setDatePrevisionVisite(datePrev);
 					sm.setIdMotifVm(EnumMotifVisiteMed.VM_CONGE_LONGUE_MALADIE.getCode());
 					sm.setNbVisitesRatees(0);
 					sm.setIdMedecin(null);
@@ -533,16 +568,36 @@ public class OeSMCalcul extends BasicProcess {
 
 	private void performCalculCas4(Integer moisChoisi, Integer anneeChoisi) throws Exception {
 		// CAS N 4 : Maladie > 1 mois
-		// on liste toutes les absences (SPABSEN) de type MA pourle mois et
-		// l'année donnée
+		// on liste toutes les absences pour le mois et l'année donnée
 		int nbCas4 = 0;
 		try {
-			ArrayList<Integer> listeMatriculeSMCas4 = getSpabsenDao().listerMatriculeAbsencePourSM("MA", moisChoisi, anneeChoisi);
+			DateTime dateDeb = new DateTime().withYear(anneeChoisi).withMonthOfYear(moisChoisi).withDayOfMonth(1).withMillisOfDay(0);
+			DateTime dateFin = new DateTime().withYear(anneeChoisi).withMonthOfYear(moisChoisi).dayOfMonth().withMaximumValue().withMillisOfDay(0);
+
+			String dateMin = sdfyyyyMMdd.format(dateDeb);
+			String dateMax = sdfyyyyMMdd.format(dateFin);
+
+			ArrayList<DemandeDto> listMaladie = (ArrayList<DemandeDto>) absService.getListeDemandes(dateMin, dateMax,
+					Arrays.asList(EnumEtatAbsence.VALIDEE.getCode(), EnumEtatAbsence.PRISE.getCode()).toString().replace("[", "").replace("]", "")
+							.replace(" ", ""),
+					EnumTypeAbsence.MALADIES_MALADIE.getCode(), null, EnumTypeGroupeAbsence.MALADIES.getValue(), false, null);
+
+			// on liste les matricules
+			List<Integer> listIdAgent = new ArrayList<Integer>();
+			if (null != listMaladie) {
+				for (DemandeDto maladie : listMaladie) {
+					if (!listIdAgent.contains(maladie.getAgentWithServiceDto().getIdAgent())) {
+						listIdAgent.add(maladie.getAgentWithServiceDto().getIdAgent());
+					}
+				}
+			}
+
 			// pour chaque matricule trouvé on va cherche la liste de ses
-			// SPABSEN et
+			// absences
 			// on regarde si il se suivent, que le nombre de jours est > 30
-			for (int i = 0; i < listeMatriculeSMCas4.size(); i++) {
-				Integer nomatrAgent = listeMatriculeSMCas4.get(i);
+			for (int i = 0; i < listIdAgent.size(); i++) {
+				Integer idAgent = listIdAgent.get(i);
+				Integer nomatrAgent = getNoMatr(idAgent);
 				// on regarde que la PA est active
 				PositionAdmAgent pa = PositionAdmAgent.chercherPositionAdmAgentActive(getTransaction(), nomatrAgent);
 				if (getTransaction().isErreur()) {
@@ -553,31 +608,31 @@ public class OeSMCalcul extends BasicProcess {
 						continue;
 					}
 				}
-				ArrayList<SPABSEN> listeSPABSENAgent = getSpabsenDao().listerAbsencePourAgentTypeEtMoisAnnee(nomatrAgent, "MA", moisChoisi,
-						anneeChoisi);
-				Integer compteurJoursMA = 0;
-				SPABSEN dernierAM = null;
+
+				List<DemandeDto> listeMaladieAgent = getListDemandeDtoByAgent(idAgent, listMaladie);
+
+				Double compteurJoursMA = 0.0;
+				DemandeDto dernierAM = null;
 				boolean dejaComptabilise = false;
-				for (int j = 0; j < listeSPABSENAgent.size(); j++) {
-					SPABSEN lignePrecedente = listeSPABSENAgent.get(j);
+				for (int j = 0; j < listeMaladieAgent.size(); j++) {
+					DemandeDto lignePrecedente = listeMaladieAgent.get(j);
 					if (!dejaComptabilise) {
-						compteurJoursMA = compteurJoursMA + lignePrecedente.getNbJour();
+						compteurJoursMA = compteurJoursMA + lignePrecedente.getDuree();
 					}
 					dernierAM = lignePrecedente;
 					// on regarde si la ligne suivante existe
-					if (listeSPABSENAgent.size() > j + 1) {
+					if (listeMaladieAgent.size() > j + 1) {
 						// si elle existe on regarde que la date de debut de la
 						// ligne suivante est egale a datFin de la precdente + 1
-						SPABSEN ligneSuivante = listeSPABSENAgent.get(j + 1);
+						DemandeDto ligneSuivante = listeMaladieAgent.get(j + 1);
 						dernierAM = ligneSuivante;
-						String dateDebLigneSuiv = Services
-								.enleveJours(Services.convertitDate(ligneSuivante.getDatDeb().toString(), "yyyyMMdd", "dd/MM/yyyy"), 1);
-						String dateFinLignePrec = Services.convertitDate(lignePrecedente.getDatFin().toString(), "yyyyMMdd", "dd/MM/yyyy");
+						DateTime dateDebLigneSuiv = new DateTime(ligneSuivante.getDateDebut()).withMillisOfDay(0).minusDays(1);
+						DateTime dateFinLignePrec = new DateTime(lignePrecedente.getDateFin()).withMillisOfDay(0);
 						if (dateFinLignePrec.equals(dateDebLigneSuiv)) {
-							compteurJoursMA = compteurJoursMA + ligneSuivante.getNbJour();
+							compteurJoursMA += ligneSuivante.getDuree();
 							dejaComptabilise = true;
 						} else {
-							compteurJoursMA = 0;
+							compteurJoursMA = 0.0;
 							dejaComptabilise = false;
 						}
 					}
@@ -618,9 +673,8 @@ public class OeSMCalcul extends BasicProcess {
 					sm.setDateDerniereVisite(derniereVisite == null ? null : derniereVisite.getDateDerniereVisite());
 					sm.setIdRecommandationDerniereVisite(derniereVisite == null ? null : derniereVisite.getIdRecommandation());
 					sm.setCommentaireDerniereViste(derniereVisite == null ? null : derniereVisite.getCommentaire());
-					String datePrev = Services.ajouteJours(Services.convertitDate(dernierAM.getDatFin().toString(), "yyyyMMdd", "dd/MM/yyyy"), 2);
-					Date d = new SimpleDateFormat("dd/MM/yyyy").parse(datePrev);
-					sm.setDatePrevisionVisite(d);
+					Date datePrev = new DateTime(dernierAM.getDateFin()).withMillisOfDay(0).plusDays(2).toDate();
+					sm.setDatePrevisionVisite(datePrev);
 					sm.setIdMotifVm(EnumMotifVisiteMed.VM_MA_1MOIS.getCode());
 					sm.setNbVisitesRatees(0);
 					sm.setIdMedecin(null);
@@ -675,16 +729,36 @@ public class OeSMCalcul extends BasicProcess {
 
 	private void performCalculCas3(Integer moisChoisi, Integer anneeChoisi) throws Exception {
 		// CAS N 3 : AT avec ITT>15jours
-		// on liste toutes les absences (SPABSEN) de type AT pourle mois et
-		// l'année donnée
+		// on liste toutes les absences pour le mois et l'année donnée
 		int nbCas3 = 0;
 		try {
-			ArrayList<Integer> listeMatriculeSMCas3 = getSpabsenDao().listerMatriculeAbsencePourSM("AT", moisChoisi, anneeChoisi);
+			DateTime dateDeb = new DateTime().withYear(anneeChoisi).withMonthOfYear(moisChoisi).withDayOfMonth(1).withMillisOfDay(0);
+			DateTime dateFin = new DateTime().withYear(anneeChoisi).withMonthOfYear(moisChoisi).dayOfMonth().withMaximumValue().withMillisOfDay(0);
+
+			String dateMin = sdfyyyyMMdd.format(dateDeb);
+			String dateMax = sdfyyyyMMdd.format(dateFin);
+
+			ArrayList<DemandeDto> listMaladie = (ArrayList<DemandeDto>) absService.getListeDemandes(dateMin, dateMax,
+					Arrays.asList(EnumEtatAbsence.VALIDEE.getCode(), EnumEtatAbsence.PRISE.getCode()).toString().replace("[", "").replace("]", "")
+							.replace(" ", ""),
+					EnumTypeAbsence.MALADIES_ACCIDENT_TRAVAIL.getCode(), null, EnumTypeGroupeAbsence.MALADIES.getValue(), false, null);
+
+			// on liste les matricules
+			List<Integer> listIdAgent = new ArrayList<Integer>();
+			if (null != listMaladie) {
+				for (DemandeDto maladie : listMaladie) {
+					if (!listIdAgent.contains(maladie.getAgentWithServiceDto().getIdAgent())) {
+						listIdAgent.add(maladie.getAgentWithServiceDto().getIdAgent());
+					}
+				}
+			}
+
 			// pour chaque matricule trouvé on va cherche la liste de ses
-			// SPABSEN et
+			// absences
 			// on regarde si il se suivent, que le nombre de jours est > 15
-			for (int i = 0; i < listeMatriculeSMCas3.size(); i++) {
-				Integer nomatrAgent = listeMatriculeSMCas3.get(i);
+			for (int i = 0; i < listIdAgent.size(); i++) {
+				Integer idAgent = listIdAgent.get(i);
+				Integer nomatrAgent = getNoMatr(idAgent);
 				// on regarde que la PA est active
 				PositionAdmAgent pa = PositionAdmAgent.chercherPositionAdmAgentActive(getTransaction(), nomatrAgent);
 				if (getTransaction().isErreur()) {
@@ -695,31 +769,31 @@ public class OeSMCalcul extends BasicProcess {
 						continue;
 					}
 				}
-				ArrayList<SPABSEN> listeSPABSENAgent = getSpabsenDao().listerAbsencePourAgentTypeEtMoisAnnee(nomatrAgent, "AT", moisChoisi,
-						anneeChoisi);
-				Integer compteurJoursITT = 0;
-				SPABSEN dernierAT = null;
+
+				List<DemandeDto> listeATAgent = getListDemandeDtoByAgent(idAgent, listMaladie);
+				Double compteurJoursITT = 0.0;
+				DemandeDto dernierAT = null;
 				boolean dejaComptabilise = false;
-				for (int j = 0; j < listeSPABSENAgent.size(); j++) {
-					SPABSEN lignePrecedente = listeSPABSENAgent.get(j);
+				for (int j = 0; j < listeATAgent.size(); j++) {
+					DemandeDto lignePrecedente = listeATAgent.get(j);
 					if (!dejaComptabilise) {
-						compteurJoursITT = compteurJoursITT + lignePrecedente.getNbJour();
+						compteurJoursITT = compteurJoursITT + lignePrecedente.getDuree();
 					}
 					dernierAT = lignePrecedente;
 					// on regarde si la ligne suivante existe
-					if (listeSPABSENAgent.size() > j + 1) {
+					if (listeATAgent.size() > j + 1) {
 						// si elle existe on regarde que la date de debut de la
 						// ligne suivante est egale a datFin de la precdente + 1
-						SPABSEN ligneSuivante = listeSPABSENAgent.get(j + 1);
+						DemandeDto ligneSuivante = listeATAgent.get(j + 1);
 						dernierAT = ligneSuivante;
-						String dateDebLigneSuiv = Services
-								.enleveJours(Services.convertitDate(ligneSuivante.getDatDeb().toString(), "yyyyMMdd", "dd/MM/yyyy"), 1);
-						String dateFinLignePrec = Services.convertitDate(lignePrecedente.getDatFin().toString(), "yyyyMMdd", "dd/MM/yyyy");
+
+						DateTime dateDebLigneSuiv = new DateTime(ligneSuivante.getDateDebut()).withMillisOfDay(0).minusDays(1);
+						DateTime dateFinLignePrec = new DateTime(lignePrecedente.getDateFin()).withMillisOfDay(0);
 						if (dateFinLignePrec.equals(dateDebLigneSuiv)) {
-							compteurJoursITT = compteurJoursITT + ligneSuivante.getNbJour();
+							compteurJoursITT = compteurJoursITT + ligneSuivante.getDuree();
 							dejaComptabilise = true;
 						} else {
-							compteurJoursITT = 0;
+							compteurJoursITT = 0.0;
 							dejaComptabilise = false;
 						}
 					}
@@ -760,9 +834,8 @@ public class OeSMCalcul extends BasicProcess {
 					sm.setDateDerniereVisite(derniereVisite == null ? null : derniereVisite.getDateDerniereVisite());
 					sm.setIdRecommandationDerniereVisite(derniereVisite == null ? null : derniereVisite.getIdRecommandation());
 					sm.setCommentaireDerniereViste(derniereVisite == null ? null : derniereVisite.getCommentaire());
-					String datePrev = Services.ajouteJours(Services.convertitDate(dernierAT.getDatFin().toString(), "yyyyMMdd", "dd/MM/yyyy"), 1);
-					Date d = new SimpleDateFormat("dd/MM/yyyy").parse(datePrev);
-					sm.setDatePrevisionVisite(d);
+					Date datePrev = new DateTime(dernierAT.getDateFin()).plusDays(1).toDate();
+					sm.setDatePrevisionVisite(datePrev);
 					sm.setIdMotifVm(EnumMotifVisiteMed.VM_AT_ITT_15JOURS.getCode());
 					sm.setNbVisitesRatees(0);
 					sm.setIdMedecin(null);
@@ -1421,14 +1494,6 @@ public class OeSMCalcul extends BasicProcess {
 		this.suiviMedDao = suiviMedDao;
 	}
 
-	public SPABSENDao getSpabsenDao() {
-		return spabsenDao;
-	}
-
-	public void setSpabsenDao(SPABSENDao spabsenDao) {
-		this.spabsenDao = spabsenDao;
-	}
-
 	@Override
 	public String getJSP() {
 		return "OeSMCalcul.jsp";
@@ -1472,6 +1537,35 @@ public class OeSMCalcul extends BasicProcess {
 
 	public void setAgentDao(AgentDao agentDao) {
 		this.agentDao = agentDao;
+	}
+
+	private Integer getNoMatr(Integer idAgent) {
+		if (null != idAgent) {
+			return idAgent - 9000000;
+		}
+		return idAgent;
+	}
+
+	private List<DemandeDto> getListDemandeDtoByAgent(Integer idAgent, List<DemandeDto> listMaladies) {
+
+		List<DemandeDto> result = new ArrayList<DemandeDto>();
+
+		if (null != listMaladies) {
+			for (DemandeDto demande : listMaladies) {
+				if (demande.getAgentWithServiceDto().getIdAgent().equals(idAgent)) {
+					result.add(demande);
+				}
+			}
+		}
+
+		Collections.sort(result, new Comparator<DemandeDto>() {
+			@Override
+			public int compare(DemandeDto obj1, DemandeDto obj2) {
+				return obj1.getDateDebut().compareTo(obj2.getDateDebut());
+			}
+		});
+
+		return result;
 	}
 
 	private String[] getLB_ANNEE() {

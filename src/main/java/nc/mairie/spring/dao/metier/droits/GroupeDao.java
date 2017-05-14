@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+
 import nc.mairie.metier.droits.Groupe;
 import nc.mairie.spring.dao.utils.SirhDao;
 
@@ -37,8 +39,7 @@ public class GroupeDao extends SirhDao implements GroupeDaoInterface {
 
 	@Override
 	public ArrayList<Groupe> listerGroupeAvecUtilisateur(Integer idUtilisateur) throws Exception {
-		String sql = "select prof.* from " + NOM_TABLE
-				+ " prof, GROUPE_UTILISATEUR pu where pu.ID_UTILISATEUR =? and prof." + CHAMP_ID
+		String sql = "select prof.* from " + NOM_TABLE + " prof, GROUPE_UTILISATEUR pu where pu.ID_UTILISATEUR =? and prof." + CHAMP_ID
 				+ " = pu.ID_GROUPE order by prof." + CHAMP_LIB_GROUPE;
 
 		ArrayList<Groupe> liste = new ArrayList<Groupe>();
@@ -67,10 +68,16 @@ public class GroupeDao extends SirhDao implements GroupeDaoInterface {
 
 	@Override
 	public Integer creerGroupe(String libGroupe) throws Exception {
-		String sql = "select " + CHAMP_ID + " from NEW TABLE (INSERT INTO " + NOM_TABLE + " (" + CHAMP_LIB_GROUPE
-				+ ") " + "VALUES (?)) ";
+		String sql = "select " + CHAMP_ID + " from NEW TABLE (INSERT INTO " + NOM_TABLE + " (" + CHAMP_LIB_GROUPE + ") " + "VALUES (?)) ";
 
 		Integer id = jdbcTemplate.queryForObject(sql, new Object[] { libGroupe }, Integer.class);
 		return id;
+	}
+
+	@Override
+	public Groupe chercherGroupeById(Integer idGroupe) throws Exception {
+		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID + " = ? ";
+		Groupe cadre = (Groupe) jdbcTemplate.queryForObject(sql, new Object[] { idGroupe }, new BeanPropertyRowMapper<Groupe>(Groupe.class));
+		return cadre;
 	}
 }

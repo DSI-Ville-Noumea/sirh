@@ -5,7 +5,7 @@
 	<groupId>nc.noumea.mairie</groupId>
 	<artifactId>SIRH_war</artifactId>
 	<!-- ATTENTION , penser à mettre a jour la version de sirh_api-->
-	<version>7.16</version>
+	<version>8.00</version>
 	<packaging>war</packaging>
 	<organization>
 		<name>Mairie de Nouméa</name>
@@ -88,7 +88,7 @@
 		<dependency>
 			<groupId>nc.noumea.mairie</groupId>
 			<artifactId>sirh_api</artifactId>
-			<version>11.16</version>
+			<version>12.0</version>
 		</dependency>
 		<!-- JSON -->
 		<dependency>
@@ -151,7 +151,21 @@
 			<artifactId>commons-httpclient</artifactId>
 			<version>3.1</version>
 		</dependency>
+		
+		<!-- http://mvnrepository.com/artifact/commons-fileupload/commons-fileupload -->
+<!-- 		<dependency> -->
+<!-- 		    <groupId>commons-fileupload</groupId> -->
+<!-- 		    <artifactId>commons-fileupload</artifactId> -->
+<!-- 		    <version>1.3.1</version> -->
+<!-- 		</dependency> -->
+		
 		<!--END -->
+<!-- 		<dependency> -->
+<!-- 			<groupId>commons-io</groupId> -->
+<!-- 			<artifactId>commons-io</artifactId> -->
+<!-- 			<version>2.4</version> -->
+<!-- 		</dependency> -->
+
 		<dependency>
 			<groupId>org.codehaus.plexus</groupId>
 			<artifactId>plexus-utils</artifactId>
@@ -162,7 +176,7 @@
 		<dependency>
 			<groupId>com.github.DSI-Ville-Noumea</groupId>
 			<artifactId>sirh-alfresco-cmis-common</artifactId>
-			<version>1.2.3</version>
+			<version>1.2.5</version>
 		</dependency>
 	</dependencies>
 

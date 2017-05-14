@@ -6,6 +6,7 @@
 <%@page import="nc.mairie.gestionagent.dto.AgentDto"%>
 <%@page import="nc.mairie.gestionagent.dto.AgentWithServiceDto"%>
 <%@page import="nc.mairie.gestionagent.dto.ApprobateurDto"%>
+<%@page import="nc.mairie.gestionagent.absence.dto.HistoriqueSoldeDto"%>
 <%@page import="nc.mairie.gestionagent.absence.dto.DemandeDto"%>
 <%@page import="nc.mairie.enums.EnumEtatAbsence"%>
 <%@page import="java.text.SimpleDateFormat"%>
@@ -130,7 +131,36 @@
 							<% } %>
 						</table>
 				    </FIELDSET>
+				    
 				    <BR/>
+				    
+				     <FIELDSET class="sigp2Fieldset" style="text-align:left;width:950px;">
+				    	<legend class="sigp2Legend">Maladies</legend>
+						<table class="sigp2NewTab" style="text-align:left;width:900px;">
+							<tr bgcolor="#EFEFEF">
+								<td width="150px;" align="center">Droits PS</td>
+								<td width="150px;" align="center">Droits DS</td>
+								<td width="150px;" align="center">Reste à prendre PS</td>
+								<td width="150px;" align="center">Reste à prendre DS</td>
+								<td width="150px;" align="center">Total pris</td>
+								<td width="150px;" align="center">Historique</td>
+							</tr>
+							<% if(null != process.getSoldeGlobal().getSoldeMaladies()){ %>
+							<tr>
+								<td width="150px;" align="center"><%=process.getSoldeGlobal().getSoldeMaladies().getDroitsPleinSalaire()%></td>
+								<td width="150px;" align="center"><%=process.getSoldeGlobal().getSoldeMaladies().getDroitsDemiSalaire()%></td>
+								<td width="150px;" align="center"><%=process.getSoldeGlobal().getSoldeMaladies().getRapPleinSalaire()%></td>
+								<td width="150px;" align="center"><%=process.getSoldeGlobal().getSoldeMaladies().getRapDemiSalaire()%></td>
+								<td width="150px;" align="center"><%=process.getSoldeGlobal().getSoldeMaladies().getTotalPris()%></td>
+								<td style="text-align: center">
+									<INPUT title="historique" type="image" src="images/oeil.gif" height="15px" width="15px" 
+										name="<%=process.getNOM_PB_HISTORIQUE(EnumTypeAbsence.MALADIES_MALADIE.getCode())%>">
+								</td>
+							</tr>
+							<% } %>
+						</table>
+				    </FIELDSET>
+				    
 				</FIELDSET>
 				<BR/>
 				
@@ -138,6 +168,9 @@
 				<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
 					<legend class="sigp2Legend"><%=process.getVAL_ST_ACTION()%></legend>
 					<div style="overflow: auto;height: 250px;width:1000px;margin-right: 0px;margin-left: 0px;">
+						<%
+						if(!process.isAfficheHistoriqueMaladies()) {
+							 %>
 						<table class="sigp2NewTab" style="text-align:left;width:980px;">
 							<tr bgcolor="#EFEFEF">
 								<td align="center" width="90px;">Le <br/> à</td>
@@ -155,7 +188,39 @@
 									<td class="sigp2NewTab-liste"><%=process.getVAL_ST_OPERATION(i)%></td>
 								</tr>
 							<%}%>
-						</table>	
+						</table>
+						<% }else{ %>
+							<table class="sigp2NewTab" style="text-align:left;width:980px;">
+								<tr bgcolor="#EFEFEF">
+									<td align="center" width="90px;">Type</td>
+									<td align="center" width="150px;">Date de début</td>
+									<td align="center" width="150px;">Date de fin</td>
+									<td align="center" width="150px;">Nombre de jours</td>
+									<td align="center">Total Pris</td>
+									<td align="center">Nombre jours coupés DS</td>
+									<td align="center">Nombre jours coupés PS</td>
+									<td align="center">Nombre jours RAP DS</td>
+									<td align="center">Nombre jours RAP PS</td>
+								</tr>
+								<%
+								SimpleDateFormat sdfDate = new SimpleDateFormat("dd/MM/yyyy");
+								for (int i = 0;i<process.getListeHistorique().size();i++){
+									HistoriqueSoldeDto histo = process.getListeHistorique().get(i);
+								%>
+									<tr id="<%=i%>" onmouseover="SelectLigne(<%=i%>,<%=process.getListeHistorique().size()%>)">
+										<td class="sigp2NewTab-liste" style="text-align: center;"><%=histo.getTypeAbsence()%></td>
+										<td class="sigp2NewTab-liste" style="text-align: center;"><%=sdfDate.format(histo.getDateDebut())%></td>
+										<td class="sigp2NewTab-liste" style="text-align: center;"><%=sdfDate.format(histo.getDateFin())%></td>
+										<td class="sigp2NewTab-liste" style="text-align: center;"><%=histo.getDuree()%></td>
+										<td class="sigp2NewTab-liste" style="text-align: center;"><%=histo.getTotalPris()%></td>
+										<td class="sigp2NewTab-liste" style="text-align: center;"><%=histo.getNombreJoursCoupeDemiSalaire()%></td>
+										<td class="sigp2NewTab-liste" style="text-align: center;"><%=histo.getNombreJoursCoupePleinSalaire()%></td>
+										<td class="sigp2NewTab-liste" style="text-align: center;"><%=histo.getNombreJoursResteAPrendreDemiSalaire()%></td>
+										<td class="sigp2NewTab-liste" style="text-align: center;"><%=histo.getNombreJoursResteAPrendrePleinSalaire()%></td>
+									</tr>
+								<%}%>
+							</table>
+						<% } %>
 						</div>
 						<BR/><BR/>
 						

@@ -250,6 +250,15 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 				// #15586 affichage des restitutions massives des CA
 			} else if (0 == dto.getIdTypeDemande()) {
 				addZone(getNOM_ST_DUREE_TT(i), dto.getDuree() + "j");
+			} else if (dto.getGroupeAbsence() != null
+					&& dto.getGroupeAbsence().getIdRefGroupeAbsence() == EnumTypeGroupeAbsence.MALADIES.getValue()) {
+				if (dto.getTypeSaisi() != null && dto.getTypeSaisi().isNombreITT()) {
+					// #32282 : pour AT, on affiche le nombre jours ITT dans
+					// la durée
+					addZone(getNOM_ST_DUREE_TT(i), dto.getNombreITT() + "j");
+				} else {
+					addZone(getNOM_ST_DUREE_TT(i), dto.getDuree() + "j");
+				}
 			} else {
 				addZone(getNOM_ST_DUREE_TT(i), "&nbsp;");
 			}
@@ -321,6 +330,15 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 				}
 				if ("minutes".equals(dto.getTypeSaisi().getUniteDecompte())) {
 					addZone(getNOM_ST_DUREE_EC(i), dto.getDuree() == null ? "&nbsp;" : getHeureMinute(dto.getDuree().intValue()));
+				}
+			} else if (dto.getGroupeAbsence() != null
+					&& dto.getGroupeAbsence().getIdRefGroupeAbsence() == EnumTypeGroupeAbsence.MALADIES.getValue()) {
+				if (dto.getTypeSaisi() != null && dto.getTypeSaisi().isNombreITT()) {
+					// #32282 : pour AT, on affiche le nombre jours ITT dans
+					// la durée
+					addZone(getNOM_ST_DUREE_EC(i), dto.getNombreITT() + "j");
+				} else {
+					addZone(getNOM_ST_DUREE_EC(i), dto.getDuree() + "j");
 				}
 			} else {
 				addZone(getNOM_ST_DUREE_EC(i), "&nbsp;");
@@ -394,6 +412,15 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 				}
 				if ("minutes".equals(dto.getTypeSaisi().getUniteDecompte())) {
 					addZone(getNOM_ST_DUREE_NP(i), dto.getDuree() == null ? "&nbsp;" : getHeureMinute(dto.getDuree().intValue()));
+				}
+			} else if (dto.getGroupeAbsence() != null
+					&& dto.getGroupeAbsence().getIdRefGroupeAbsence() == EnumTypeGroupeAbsence.MALADIES.getValue()) {
+				if (dto.getTypeSaisi() != null && dto.getTypeSaisi().isNombreITT()) {
+					// #32282 : pour AT, on affiche le nombre jours ITT dans
+					// la durée
+					addZone(getNOM_ST_DUREE_NP(i), dto.getNombreITT() + "j");
+				} else {
+					addZone(getNOM_ST_DUREE_NP(i), dto.getDuree() + "j");
 				}
 			} else {
 				addZone(getNOM_ST_DUREE_NP(i), "&nbsp;");

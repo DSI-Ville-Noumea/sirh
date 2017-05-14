@@ -55,7 +55,7 @@ public class OePARAMETRAGEAbsenceCongesExceptionnels extends BasicProcess {
 	public String ACTION_CREATION = "Création d'un congé exceptionnel.";
 	public String ACTION_MODIFICATION = "Modification d'un congé exceptionnel :";
 	public String ACTION_VISUALISATION = "Visualisation d'un congé exceptionnel :";
-	public String ACTION_SUPPRESSION = "Suppression d'un congé exceptionnel :";
+	public String ACTION_INACTIVE = "Désactivation d'un congé exceptionnel :";
 
 	private AgentDao agentDao;
 
@@ -224,9 +224,9 @@ public class OePARAMETRAGEAbsenceCongesExceptionnels extends BasicProcess {
 				if (testerParametre(request, getNOM_PB_VISUALISATION(indiceAbs))) {
 					return performPB_VISUALISATION(request, indiceAbs);
 				}
-				// Si clic sur le bouton PB_SUPPRIMER
-				if (testerParametre(request, getNOM_PB_SUPPRIMER(indiceAbs))) {
-					return performPB_SUPPRIMER(request, indiceAbs);
+				// Si clic sur le bouton PB_INACTIVER
+				if (testerParametre(request, getNOM_PB_INACTIVER(indiceAbs))) {
+					return performPB_INACTIVER(request, indiceAbs);
 				}
 			}
 		}
@@ -838,9 +838,9 @@ public class OePARAMETRAGEAbsenceCongesExceptionnels extends BasicProcess {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
 			return false;
 		}
-		if (getVAL_ST_ACTION().equals(ACTION_SUPPRESSION)) {
+		if (getVAL_ST_ACTION().equals(ACTION_INACTIVE)) {
 
-			ReturnMessageDto srm = absService.deleteTypeAbsence(agentConnecte.getIdAgent(), getTypeCreation()
+			ReturnMessageDto srm = absService.inactiveTypeAbsence(agentConnecte.getIdAgent(), getTypeCreation()
 					.getIdRefTypeAbsence());
 
 			if (srm.getErrors().size() > 0) {
@@ -1161,11 +1161,11 @@ public class OePARAMETRAGEAbsenceCongesExceptionnels extends BasicProcess {
 		return getZone(getNOM_ST_LIBELLE());
 	}
 
-	public String getNOM_PB_SUPPRIMER(int i) {
-		return "NOM_PB_SUPPRIMER" + i;
+	public String getNOM_PB_INACTIVER(int i) {
+		return "NOM_PB_INACTIVER" + i;
 	}
 
-	public boolean performPB_SUPPRIMER(HttpServletRequest request, int indiceEltASupprimer) throws Exception {
+	public boolean performPB_INACTIVER(HttpServletRequest request, int indiceEltASupprimer) throws Exception {
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 		viderZoneSaisie(request);
@@ -1177,7 +1177,7 @@ public class OePARAMETRAGEAbsenceCongesExceptionnels extends BasicProcess {
 		setTypeCreation(type);
 
 		// On nomme l'action
-		addZone(getNOM_ST_ACTION(), ACTION_SUPPRESSION);
+		addZone(getNOM_ST_ACTION(), ACTION_INACTIVE);
 		// On pose le statut
 		setStatut(STATUT_MEME_PROCESS);
 		return true;

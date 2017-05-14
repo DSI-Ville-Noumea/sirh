@@ -3,11 +3,24 @@ package nc.mairie.gestionagent.process.agent;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.ListIterator;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.context.ApplicationContext;
+
+import com.oreilly.servlet.MultipartRequest;
+
+import nc.mairie.enums.EnumEtatAbsence;
+import nc.mairie.enums.EnumTypeAbsence;
+import nc.mairie.enums.EnumTypeGroupeAbsence;
+import nc.mairie.gestionagent.absence.dto.DemandeDto;
+import nc.mairie.gestionagent.absence.dto.RefTypeDto;
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
 import nc.mairie.gestionagent.radi.dto.LightUserDto;
 import nc.mairie.gestionagent.robot.MaClasse;
@@ -16,23 +29,18 @@ import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.Agent;
 import nc.mairie.metier.agent.Document;
 import nc.mairie.metier.agent.DocumentAgent;
-import nc.mairie.metier.hsct.AccidentTravail;
-import nc.mairie.metier.hsct.Handicap;
+import nc.mairie.metier.hsct.BeneficiaireObligationAmenage;
 import nc.mairie.metier.hsct.Medecin;
-import nc.mairie.metier.hsct.NomHandicap;
 import nc.mairie.metier.hsct.Recommandation;
-import nc.mairie.metier.hsct.TypeAT;
 import nc.mairie.metier.hsct.VisiteMedicale;
 import nc.mairie.metier.parametrage.TypeDocument;
 import nc.mairie.spring.dao.metier.agent.AgentDao;
 import nc.mairie.spring.dao.metier.agent.DocumentAgentDao;
 import nc.mairie.spring.dao.metier.agent.DocumentDao;
-import nc.mairie.spring.dao.metier.hsct.AccidentTravailDao;
-import nc.mairie.spring.dao.metier.hsct.HandicapDao;
+import nc.mairie.spring.dao.metier.hsct.BeneficiaireObligationAmenageDao;
 import nc.mairie.spring.dao.metier.hsct.MedecinDao;
 import nc.mairie.spring.dao.metier.hsct.NomHandicapDao;
 import nc.mairie.spring.dao.metier.hsct.RecommandationDao;
-import nc.mairie.spring.dao.metier.hsct.TypeATDao;
 import nc.mairie.spring.dao.metier.hsct.VisiteMedicaleDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeDocumentDao;
 import nc.mairie.spring.dao.utils.SirhDao;
@@ -45,13 +53,10 @@ import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
 import nc.noumea.mairie.alfresco.cmis.CmisUtils;
+import nc.noumea.spring.service.IAbsService;
 import nc.noumea.spring.service.IRadiService;
 import nc.noumea.spring.service.cmis.AlfrescoCMISService;
 import nc.noumea.spring.service.cmis.IAlfrescoCMISService;
-
-import org.springframework.context.ApplicationContext;
-
-import com.oreilly.servlet.MultipartRequest;
 
 /**
  * Process OeAGENTActesDonneesPerso Date de création : (11/10/11 08:38:48)
@@ -61,46 +66,51 @@ public class OeAGENTActesHSCT extends BasicProcess {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long							serialVersionUID		= 1L;
 
-	public static final int STATUT_RECHERCHER_AGENT = 1;
+	public static final int								STATUT_RECHERCHER_AGENT	= 1;
 
-	public String focus = null;
-	private Agent agentCourant;
-	private Document documentCourant;
-	private DocumentAgent lienDocumentAgentCourant;
+	public String										focus					= null;
+	private Agent										agentCourant;
+	private Document									documentCourant;
+	private DocumentAgent								lienDocumentAgentCourant;
 
-	private ArrayList<Document> listeDocuments;
-	private String[] LB_TYPE_DOCUMENT;
-	private ArrayList<TypeDocument> listeTypeDocument;
-	private String[] LB_AT;
-	private ArrayList<AccidentTravail> listeAT;
-	private String[] LB_VM;
-	private ArrayList<VisiteMedicale> listeVM;
-	private String[] LB_HANDI;
-	private ArrayList<Handicap> listeHANDI;
+	private ArrayList<Document>							listeDocuments;
+	private String[]									LB_TYPE_DOCUMENT;
+	private ArrayList<TypeDocument>						listeTypeDocument;
+	private String[]									LB_AT;
+	private ArrayList<DemandeDto>						listeAT;
+	private HashMap<Integer, DemandeDto>				hashMapAT;
+	private String[]									LB_MP;
+	private ArrayList<DemandeDto>						listeMP;
+	private HashMap<Integer, DemandeDto>				hashMapMP;
+	private String[]									LB_VM;
+	private ArrayList<VisiteMedicale>					listeVM;
+	private String[]									LB_HANDI;
+	private ArrayList<BeneficiaireObligationAmenage>	listeHANDI;
 
-	public String ACTION_SUPPRESSION = "Suppression d'un document";
-	public String ACTION_CREATION = "Choix du fichier a ajouter";
+	public String										ACTION_SUPPRESSION		= "Suppression d'un document";
+	public String										ACTION_CREATION			= "Choix du fichier a ajouter";
 
-	public boolean isImporting = false;
-	public MultipartRequest multi = null;
-	public File fichierUpload = null;
+	public boolean										isImporting				= false;
+	public MultipartRequest								multi					= null;
+	public File											fichierUpload			= null;
 
-	private TypeDocumentDao typeDocumentDao;
-	private AccidentTravailDao accidentTravailDao;
-	private HandicapDao handicapDao;
-	private MedecinDao medecinDao;
-	private NomHandicapDao nomHandicapDao;
-	private RecommandationDao recommandationDao;
-	private TypeATDao typeATDao;
-	private VisiteMedicaleDao visiteMedicaleDao;
-	private DocumentAgentDao lienDocumentAgentDao;
-	private DocumentDao documentDao;
-	private AgentDao agentDao;
+	private TypeDocumentDao								typeDocumentDao;
+	private BeneficiaireObligationAmenageDao			boeDao;
+	private MedecinDao									medecinDao;
+	private NomHandicapDao								nomHandicapDao;
+	private RecommandationDao							recommandationDao;
+	private VisiteMedicaleDao							visiteMedicaleDao;
+	private DocumentAgentDao							lienDocumentAgentDao;
+	private DocumentDao									documentDao;
+	private AgentDao									agentDao;
 
-	private IRadiService radiService;
-	private IAlfrescoCMISService alfrescoCMISService;
+	private IAbsService									absService;
+	private IRadiService								radiService;
+	private IAlfrescoCMISService						alfrescoCMISService;
+
+	public static final String							MALADIE_PROFESSIONNELLE	= "MALADIE PROFESSIONNELLE";
 
 	/**
 	 * Initialisation des zones à  afficher dans la JSP Alimentation des listes,
@@ -157,11 +167,8 @@ public class OeAGENTActesHSCT extends BasicProcess {
 		if (getTypeDocumentDao() == null) {
 			setTypeDocumentDao(new TypeDocumentDao((SirhDao) context.getBean("sirhDao")));
 		}
-		if (getAccidentTravailDao() == null) {
-			setAccidentTravailDao(new AccidentTravailDao((SirhDao) context.getBean("sirhDao")));
-		}
-		if (getHandicapDao() == null) {
-			setHandicapDao(new HandicapDao((SirhDao) context.getBean("sirhDao")));
+		if (getBoeDao() == null) {
+			setBoeDao(new BeneficiaireObligationAmenageDao((SirhDao) context.getBean("sirhDao")));
 		}
 		if (getMedecinDao() == null) {
 			setMedecinDao(new MedecinDao((SirhDao) context.getBean("sirhDao")));
@@ -172,9 +179,6 @@ public class OeAGENTActesHSCT extends BasicProcess {
 		if (getRecommandationDao() == null) {
 			setRecommandationDao(new RecommandationDao((SirhDao) context.getBean("sirhDao")));
 		}
-		if (getTypeATDao() == null) {
-			setTypeATDao(new TypeATDao((SirhDao) context.getBean("sirhDao")));
-		}
 		if (getVisiteMedicaleDao() == null) {
 			setVisiteMedicaleDao(new VisiteMedicaleDao((SirhDao) context.getBean("sirhDao")));
 		}
@@ -183,6 +187,9 @@ public class OeAGENTActesHSCT extends BasicProcess {
 		}
 		if (getDocumentDao() == null) {
 			setDocumentDao(new DocumentDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (absService == null) {
+			absService = (IAbsService) context.getBean("absService");
 		}
 		if (getAgentDao() == null) {
 			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
@@ -241,15 +248,16 @@ public class OeAGENTActesHSCT extends BasicProcess {
 		}
 		if (getLB_HANDI() == LBVide) {
 			if (null != getAgentCourant()) {
-				ArrayList<Handicap> c = getHandicapDao().listerHandicapAgent(
-						getAgentCourant().getIdAgent());
+				ArrayList<BeneficiaireObligationAmenage> c = getBoeDao().listerBeneficiaireObligationAmenageByAgent(getAgentCourant().getIdAgent());
 				if (c.size() > 0) {
 					int[] tailles = { 14, 60 };
 					FormateListe aFormat = new FormateListe(tailles);
-					for (ListIterator<Handicap> list = c.listIterator(); list.hasNext();) {
-						Handicap handi = (Handicap) list.next();
-						NomHandicap nomHandi = getNomHandicapDao().chercherNomHandicap(handi.getIdTypeHandicap());
-						String ligne[] = { sdf.format(handi.getDateDebutHandicap()), nomHandi.getNomTypeHandicap() };
+					for (ListIterator<BeneficiaireObligationAmenage> list = c.listIterator(); list.hasNext();) {
+						BeneficiaireObligationAmenage handi = (BeneficiaireObligationAmenage) list.next();
+
+						Date date = null != handi.getDateDebut() ? handi.getDateDebut() : handi.getDateAttribution();
+
+						String ligne[] = { sdf.format(date), handi.getType() };
 						aFormat.ajouteLigne(ligne);
 					}
 					setLB_HANDI(aFormat.getListeFormatee(true));
@@ -261,22 +269,96 @@ public class OeAGENTActesHSCT extends BasicProcess {
 		}
 		if (getLB_AT() == LBVide) {
 			if (null != getAgentCourant()) {
-				ArrayList<AccidentTravail> c = getAccidentTravailDao().listerAccidentTravailAgent(
-						getAgentCourant().getIdAgent());
-				if (c.size() > 0) {
+
+				// Recherche des accidents du travail de l'agent
+				ArrayList<DemandeDto> listeAT = (ArrayList<DemandeDto>) absService.getListeDemandesAgent(getAgentCourant().getIdAgent(), "TOUTES",
+						null, null,
+						null, Arrays.asList(EnumEtatAbsence.VALIDEE.getCode(), EnumEtatAbsence.PRISE.getCode()).toString().replace("[", "")
+								.replace("]", "").replace(" ", ""),
+						EnumTypeAbsence.MALADIES_ACCIDENT_TRAVAIL.getCode(), EnumTypeGroupeAbsence.MALADIES.getValue());
+
+				ArrayList<DemandeDto> listeRechute = (ArrayList<DemandeDto>) absService.getListeDemandesAgent(getAgentCourant().getIdAgent(),
+						"TOUTES", null, null,
+						null, Arrays.asList(EnumEtatAbsence.VALIDEE.getCode(), EnumEtatAbsence.PRISE.getCode()).toString().replace("[", "")
+								.replace("]", "").replace(" ", ""),
+						EnumTypeAbsence.MALADIES_RECHUTE.getCode(), EnumTypeGroupeAbsence.MALADIES.getValue());
+
+				ArrayList<DemandeDto> listeAT_MP = new ArrayList<DemandeDto>();
+				listeAT_MP.addAll(listeAT);
+				listeAT_MP.addAll(listeRechute);
+
+				Collections.sort(listeAT_MP, new Comparator<DemandeDto>() {
+					@Override
+					public int compare(DemandeDto o1, DemandeDto o2) {
+						if (null == o1.getDateDeclaration() || null == o2.getDateDeclaration())
+							return -1;
+						// tri par date
+						// ajout du "0 -" pour trier en ordre decroissant
+						return 0 - o1.getDateDeclaration().compareTo(o2.getDateDeclaration());
+					}
+				});
+
+				if (listeAT_MP.size() > 0) {
 					int[] tailles = { 14, 60 };
 					FormateListe aFormat = new FormateListe(tailles);
-					for (ListIterator<AccidentTravail> list = c.listIterator(); list.hasNext();) {
-						AccidentTravail acci = (AccidentTravail) list.next();
-						TypeAT tAt = getTypeATDao().chercherTypeAT(acci.getIdTypeAt());
-						String ligne[] = { sdf.format(acci.getDateAt()), tAt.getDescTypeAt() };
-						aFormat.ajouteLigne(ligne);
+					for (ListIterator<DemandeDto> list = listeAT_MP.listIterator(); list.hasNext();) {
+						DemandeDto demande = (DemandeDto) list.next();
+						RefTypeDto tAt = demande.getTypeAccidentTravail();
+						if (null != tAt) {
+							String dateDeclaration = null != demande.getDateDeclaration() ? "AT - " + sdf.format(demande.getDateDeclaration())
+									: "AT Rechute ";
+							String ligne[] = { dateDeclaration, tAt.getLibelle() };
+							aFormat.ajouteLigne(ligne);
+
+							getHashMapAT().put(demande.getIdDemande(), demande);
+						}
 					}
 					setLB_AT(aFormat.getListeFormatee(true));
 				} else {
 					setLB_AT(null);
 				}
-				setListeAT(c);
+				setListeAT(listeAT_MP);
+			}
+		}
+		if (getLB_MP() == LBVide) {
+			if (null != getAgentCourant()) {
+
+				ArrayList<DemandeDto> listeMP = (ArrayList<DemandeDto>) absService.getListeDemandesAgent(getAgentCourant().getIdAgent(), "TOUTES",
+						null, null,
+						null, Arrays.asList(EnumEtatAbsence.VALIDEE.getCode(), EnumEtatAbsence.PRISE.getCode()).toString().replace("[", "")
+								.replace("]", "").replace(" ", ""),
+						EnumTypeAbsence.MALADIES_PROFESSIONNELLE.getCode(), EnumTypeGroupeAbsence.MALADIES.getValue());
+
+				Collections.sort(listeMP, new Comparator<DemandeDto>() {
+					@Override
+					public int compare(DemandeDto o1, DemandeDto o2) {
+						if (null == o1.getDateDeclaration() || null == o2.getDateDeclaration())
+							return -1;
+						// tri par date
+						// ajout du "0 -" pour trier en ordre decroissant
+						return 0 - o1.getDateDeclaration().compareTo(o2.getDateDeclaration());
+					}
+				});
+
+				if (listeMP.size() > 0) {
+					int[] tailles = { 14, 60 };
+					FormateListe aFormat = new FormateListe(tailles);
+					for (ListIterator<DemandeDto> list = listeMP.listIterator(); list.hasNext();) {
+						DemandeDto demande = (DemandeDto) list.next();
+						RefTypeDto tAt = demande.getTypeMaladiePro();
+						if (null != tAt) {
+							String dateDebut = null != demande.getDateDebut() ? sdf.format(demande.getDateDebut()) : "";
+							String ligne[] = { dateDebut, tAt.getLibelle() };
+							aFormat.ajouteLigne(ligne);
+
+							getHashMapMP().put(demande.getIdDemande(), demande);
+						}
+					}
+					setLB_MP(aFormat.getListeFormatee(true));
+				} else {
+					setLB_MP(null);
+				}
+				setListeMP(listeMP);
 			}
 		}
 	}
@@ -331,6 +413,12 @@ public class OeAGENTActesHSCT extends BasicProcess {
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "accident travail"));
 				result &= false;
 			}
+		} else if (nomType.toUpperCase().equals(MALADIE_PROFESSIONNELLE)) {
+			if (multi.getParameter(getNOM_LB_MP()).equals("0")) {
+				// ERR002:La zone maladie professionnelle est obligatoire.
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "maladie professionnelle"));
+				result &= false;
+			}
 		} else if (nomType.toUpperCase().equals("VISITE MEDICALE")) {
 			if (multi.getParameter(getNOM_LB_VM()).equals("0")) {
 				// ERR002:La zone @ est obligatoire.
@@ -367,17 +455,27 @@ public class OeAGENTActesHSCT extends BasicProcess {
 				.parseInt(getVAL_LB_TYPE_DOCUMENT_SELECT()) : -1);
 		String nomType = ((TypeDocument) getListeTypeDocument().get(indice - 1)).getLibTypeDocument();
 		boolean ajoutAT = false;
+		boolean ajoutMP = false;
 		boolean ajoutVM = false;
 		boolean ajoutHandi = false;
-		AccidentTravail at = new AccidentTravail();
+		DemandeDto at = new DemandeDto();
+		DemandeDto mp = new DemandeDto();
 		VisiteMedicale vm = new VisiteMedicale();
-		Handicap handi = new Handicap();
+		BeneficiaireObligationAmenage handi = new BeneficiaireObligationAmenage();
 		if (nomType.toUpperCase().equals("ACCIDENT TRAVAIL")) {
 			if (!multi.getParameter(getNOM_LB_AT()).equals("0")) {
-				int indiceAT = (Services.estNumerique(multi.getParameter(getNOM_LB_AT())) ? Integer.parseInt(multi
-						.getParameter(getNOM_LB_AT())) : -1);
-				at = ((AccidentTravail) getListeAT().get(indiceAT - 1));
+				int indiceAT = (Services.estNumerique(multi.getParameter(getNOM_LB_AT())) ? Integer.parseInt(multi.getParameter(getNOM_LB_AT()))
+						: -1);
+				at = ((DemandeDto) getListeAT().get(indiceAT - 1));
 				ajoutAT = true;
+			}
+		}
+		if (nomType.toUpperCase().equals(MALADIE_PROFESSIONNELLE)) {
+			if (!multi.getParameter(getNOM_LB_MP()).equals("0")) {
+				int indiceMP = (Services.estNumerique(multi.getParameter(getNOM_LB_MP())) ? Integer.parseInt(multi.getParameter(getNOM_LB_MP()))
+						: -1);
+				mp = ((DemandeDto) getListeMP().get(indiceMP - 1));
+				ajoutMP = true;
 			}
 		}
 		if (nomType.toUpperCase().equals("VISITE MEDICALE")) {
@@ -390,16 +488,14 @@ public class OeAGENTActesHSCT extends BasicProcess {
 		}
 		if (nomType.toUpperCase().equals("HANDICAP")) {
 			if (!multi.getParameter(getNOM_LB_HANDI()).equals("0")) {
-				int indiceHandi = (Services.estNumerique(multi.getParameter(getNOM_LB_HANDI())) ? Integer
-						.parseInt(multi.getParameter(getNOM_LB_HANDI())) : -1);
-				handi = ((Handicap) getListeHANDI().get(indiceHandi - 1));
+				int indiceHandi = (Services.estNumerique(multi.getParameter(getNOM_LB_HANDI()))
+						? Integer.parseInt(multi.getParameter(getNOM_LB_HANDI())) : -1);
+				handi = ((BeneficiaireObligationAmenage) getListeHANDI().get(indiceHandi - 1));
 				ajoutHandi = true;
 			}
 		}
-		if (getZone(getNOM_ST_WARNING()).equals(Const.CHAINE_VIDE)) {
-
-			// on controle si il y a deja un fichier pour ce contrat
-			if (!creeDocument(request, ajoutAT, at, ajoutVM, vm, ajoutHandi, handi)) {
+		if (getZone(getNOM_ST_WARNING()).equals(Const.CHAINE_VIDE)) {			
+			if (!creeDocument(request, ajoutAT, ajoutMP, at, mp, ajoutVM, vm, ajoutHandi, handi)) {
 				addZone(getNOM_ST_WARNING(), Const.CHAINE_VIDE);
 				addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 				// "ERR092", "Vous ne pouvez ajouter de document pour ce type."
@@ -410,14 +506,24 @@ public class OeAGENTActesHSCT extends BasicProcess {
 		} else {
 			if (ajoutAT) {
 				// on supprime le document existant dans la base de données
-				Document d = getDocumentDao().chercherDocumentByContainsNom("AT_" + at.getIdAt());
-				DocumentAgent l = getLienDocumentAgentDao().chercherDocumentAgent(
-						getAgentCourant().getIdAgent(), d.getIdDocument());
+				Document d = getDocumentDao().chercherDocumentByContainsNom("AT_" + at.getIdDemande());
+				DocumentAgent l = getLienDocumentAgentDao().chercherDocumentAgent(getAgentCourant().getIdAgent(), d.getIdDocument());
 
 				ReturnMessageDto rmd = alfrescoCMISService.removeDocument(d);
 				if (declarerErreurFromReturnMessageDto(rmd))
 					return false;
-				
+
+				getLienDocumentAgentDao().supprimerDocumentAgent(l.getIdAgent(), l.getIdDocument());
+				getDocumentDao().supprimerDocument(d.getIdDocument());
+			} else if (ajoutMP) {
+				// on supprime le document existant dans la base de données
+				Document d = getDocumentDao().chercherDocumentByContainsNom("MP_" + at.getIdDemande());
+				DocumentAgent l = getLienDocumentAgentDao().chercherDocumentAgent(getAgentCourant().getIdAgent(), d.getIdDocument());
+
+				ReturnMessageDto rmd = alfrescoCMISService.removeDocument(d);
+				if (declarerErreurFromReturnMessageDto(rmd))
+					return false;
+
 				getLienDocumentAgentDao().supprimerDocumentAgent(l.getIdAgent(), l.getIdDocument());
 				getDocumentDao().supprimerDocument(d.getIdDocument());
 			} else if (ajoutVM) {
@@ -434,18 +540,17 @@ public class OeAGENTActesHSCT extends BasicProcess {
 				getDocumentDao().supprimerDocument(d.getIdDocument());
 			} else if (ajoutHandi) {
 				// on supprime le document existant dans la base de données
-				Document d = getDocumentDao().chercherDocumentByContainsNom("HANDI_" + handi.getIdHandicap());
-				DocumentAgent l = getLienDocumentAgentDao().chercherDocumentAgent(
-						getAgentCourant().getIdAgent(), d.getIdDocument());
+				Document d = getDocumentDao().chercherDocumentByContainsNom("HANDI_" + handi.getIdBoe());
+				DocumentAgent l = getLienDocumentAgentDao().chercherDocumentAgent(getAgentCourant().getIdAgent(), d.getIdDocument());
 
 				ReturnMessageDto rmd = alfrescoCMISService.removeDocument(d);
 				if (declarerErreurFromReturnMessageDto(rmd))
 					return false;
-				
+
 				getLienDocumentAgentDao().supprimerDocumentAgent(l.getIdAgent(), l.getIdDocument());
 				getDocumentDao().supprimerDocument(d.getIdDocument());
 			}
-			if (!creeDocument(request, ajoutAT, at, ajoutVM, vm, ajoutHandi, handi)) {
+			if (!creeDocument(request, ajoutAT, ajoutMP, at, mp, ajoutVM, vm, ajoutHandi, handi)) {
 				addZone(getNOM_ST_WARNING(), Const.CHAINE_VIDE);
 				addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 				// "ERR092", "Vous ne pouvez ajouter de document pour ce type."
@@ -460,11 +565,11 @@ public class OeAGENTActesHSCT extends BasicProcess {
 
 	}
 
-	private boolean creeDocument(HttpServletRequest request, boolean ajoutAT, AccidentTravail at, boolean ajoutVM,
-			VisiteMedicale vm, boolean ajoutHandi, Handicap handi) throws Exception {
+	private boolean creeDocument(HttpServletRequest request, boolean ajoutAT, boolean ajoutMP, DemandeDto at, DemandeDto mp, boolean ajoutVM,
+			VisiteMedicale vm, boolean ajoutHandi, BeneficiaireObligationAmenage handi) throws Exception {
 		// on crée l'entrée dans la table
 		setDocumentCourant(new Document());
-		// on recupere le fichier mis dans le repertoire temporaire
+		// on recupere le fichier
 		if (fichierUpload == null) {
 			getTransaction().declarerErreur("Err : le nom de fichier est incorrect");
 			return false;
@@ -474,24 +579,23 @@ public class OeAGENTActesHSCT extends BasicProcess {
 		int indiceTypeDoc = (Services.estNumerique(getVAL_LB_TYPE_DOCUMENT_SELECT()) ? Integer
 				.parseInt(getVAL_LB_TYPE_DOCUMENT_SELECT()) : -1);
 		String codTypeDoc = ((TypeDocument) getListeTypeDocument().get(indiceTypeDoc - 1)).getCodTypeDocument();
+	
 
-		// on crée le document en base de données
-		getDocumentCourant().setIdTypeDocument(
-				((TypeDocument) getListeTypeDocument().get(indiceTypeDoc - 1)).getIdTypeDocument());
-		getDocumentCourant().setNomOriginal(fichierUpload.getName());
-		getDocumentCourant().setDateDocument(new Date());
-		getDocumentCourant().setCommentaire(getZone(getNOM_EF_COMMENTAIRE()));
-		
 		Integer reference = null;
-		if(null != at && null != at.getIdAt()) {
-			reference = at.getIdAt();
-		} else if(null != vm && null != vm.getIdVisite()) {
+		if (null != at && null != at.getIdDemande()) {
+			reference = at.getIdDemande();
+		} else if (null != vm && null != vm.getIdVisite()) {
 			reference = vm.getIdVisite();
-		} else if(null != handi && null != handi.getIdHandicap()) {
-			reference = handi.getIdHandicap();
+		} else if (null != handi && null != handi.getIdBoe()) {
+			reference = handi.getIdBoe();
 		}
 
 		getDocumentCourant().setReference(reference);
+
+		getDocumentCourant().setIdTypeDocument(((TypeDocument) getListeTypeDocument().get(indiceTypeDoc - 1)).getIdTypeDocument());
+		getDocumentCourant().setNomOriginal(fichierUpload.getName());
+		getDocumentCourant().setDateDocument(new Date());
+		getDocumentCourant().setCommentaire(getZone(getNOM_EF_COMMENTAIRE()));
 
 		// on upload le fichier
 		ReturnMessageDto rmd = alfrescoCMISService.uploadDocument(getAgentConnecte(request).getIdAgent(), getAgentCourant(), getDocumentCourant(), 
@@ -688,28 +792,49 @@ public class OeAGENTActesHSCT extends BasicProcess {
 				TypeDocument td = (TypeDocument) getTypeDocumentDao().chercherTypeDocument(doc.getIdTypeDocument());
 				String info = "&nbsp;";
 				if (td.getCodTypeDocument().equals(CmisUtils.CODE_TYPE_VM)) {
+					String nomDoc = doc.getNomDocument();
+					// on recupere l'id du document
+					nomDoc = nomDoc.substring(nomDoc.indexOf("_") + 1, nomDoc.length());
+					String id = nomDoc.substring(0, nomDoc.indexOf("_"));
 					VisiteMedicale vm = null;
 					try {
-						vm = getVisiteMedicaleDao().chercherVisiteMedicale(doc.getReference());
-					} catch(org.springframework.dao.EmptyResultDataAccessException e) {
+						vm = getVisiteMedicaleDao().chercherVisiteMedicale(Integer.valueOf(id));
+					} catch (org.springframework.dao.EmptyResultDataAccessException e) {
+
 					}
 					if (vm != null && vm.getDateDerniereVisite() != null) {
 						info = "VM du : " + sdf.format(vm.getDateDerniereVisite());
 					}
 				} else if (td.getCodTypeDocument().equals(CmisUtils.CODE_TYPE_AT)) {
-					try {
-					AccidentTravail at = getAccidentTravailDao().chercherAccidentTravail(doc.getReference());
-					if (at != null && at.getDateAt() != null) {
-						info = "AT du : " + sdf.format(at.getDateAt());
+					String nomDoc = doc.getNomDocument();
+					// on recupere l'id du document
+					nomDoc = nomDoc.substring(nomDoc.indexOf("_") + 1, nomDoc.length());
+					String id = nomDoc.substring(0, nomDoc.indexOf("_"));
+					DemandeDto at = getHashMapAT().get(id);
+					if (at != null && at.getDateDeclaration() != null) {
+						info = "AT du : " + sdf.format(at.getDateDeclaration());
 					}
-					} catch (Exception e) {
-						info = "Accident Travail manquant";
+				} else if (td.getCodTypeDocument().equals(CmisUtils.CODE_TYPE_MP)) {
+					String nomDoc = doc.getNomDocument();
+					// on recupere l'id du document
+					nomDoc = nomDoc.substring(nomDoc.indexOf("_") + 1, nomDoc.length());
+					String id = nomDoc.substring(0, nomDoc.indexOf("_"));
+					DemandeDto mp = getHashMapMP().get(id);
+					if (mp != null && mp.getDateDebut() != null) {
+						info = "MP du : " + sdf.format(mp.getDateDebut());
 					}
 				} else if (td.getCodTypeDocument().equals(CmisUtils.CODE_TYPE_HANDI)) {
+					String nomDoc = doc.getNomDocument();
+					// on recupere l'id du document
+					nomDoc = nomDoc.substring(nomDoc.indexOf("_") + 1, nomDoc.length());
+					String id = nomDoc.substring(0, nomDoc.indexOf("_"));
 					try {
-						Handicap handi = getHandicapDao().chercherHandicap(doc.getReference());
-						if (handi != null && handi.getDateDebutHandicap() != null) {
-							info = "Handicap du : " + sdf.format(handi.getDateDebutHandicap());
+						BeneficiaireObligationAmenage handi = getBoeDao().chercherBeneficiaireObligationAmenage(Integer.valueOf(id));
+						if (handi != null && handi.getDateDebut() != null) {
+							info = "Handicap du : " + sdf.format(handi.getDateDebut());
+						}
+						if (handi != null && handi.getDateAttribution() != null) {
+							info = "Handicap du : " + sdf.format(handi.getDateAttribution());
 						}
 					} catch (Exception e) {
 						info = "Handicap manquant";
@@ -878,6 +1003,7 @@ public class OeAGENTActesHSCT extends BasicProcess {
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 		addZone(getNOM_ST_WARNING(), Const.CHAINE_VIDE);
 		fichierUpload = null;
+		isImporting = false;
 
 		return true;
 	}
@@ -1038,6 +1164,9 @@ public class OeAGENTActesHSCT extends BasicProcess {
 			if (nomType.toUpperCase().equals("ACCIDENT TRAVAIL")) {
 				// on affiche une liste deroulante des differents AT disponibles
 				addZone(getNOM_ST_CHOIX_TYPE_DOC(), "ACCIDENT TRAVAIL");
+			} else if (nomType.toUpperCase().equals(MALADIE_PROFESSIONNELLE)) {
+				// on affiche une liste deroulante des differents AT disponibles
+				addZone(getNOM_ST_CHOIX_TYPE_DOC(), MALADIE_PROFESSIONNELLE);
 			} else if (nomType.toUpperCase().equals("VISITE MEDICALE")) {
 				// on affiche une liste deroulante des differents VM disponibles
 				addZone(getNOM_ST_CHOIX_TYPE_DOC(), "VISITE MEDICALE");
@@ -1261,15 +1390,52 @@ public class OeAGENTActesHSCT extends BasicProcess {
 		return "NOM_LB_AT_SELECT";
 	}
 
-	private ArrayList<AccidentTravail> getListeAT() {
+	private ArrayList<DemandeDto> getListeAT() {
 		if (listeAT == null) {
-			listeAT = new ArrayList<AccidentTravail>();
+			listeAT = new ArrayList<DemandeDto>();
 		}
 		return listeAT;
 	}
 
-	private void setListeAT(ArrayList<AccidentTravail> newListeAT) {
+	private void setListeAT(ArrayList<DemandeDto> newListeAT) {
 		listeAT = newListeAT;
+	}
+
+	public String getNOM_LB_MP() {
+		return "NOM_LB_MP";
+	}
+
+	public String[] getVAL_LB_MP() {
+		return getLB_MP();
+	}
+
+	private String[] getLB_MP() {
+		if (LB_MP == null)
+			LB_MP = initialiseLazyLB();
+		return LB_MP;
+	}
+
+	private void setLB_MP(String[] newLB_MP) {
+		LB_MP = newLB_MP;
+	}
+
+	public String getVAL_LB_MP_SELECT() {
+		return getZone(getNOM_LB_MP_SELECT());
+	}
+
+	public String getNOM_LB_MP_SELECT() {
+		return "NOM_LB_MP_SELECT";
+	}
+
+	private ArrayList<DemandeDto> getListeMP() {
+		if (listeMP == null) {
+			listeMP = new ArrayList<DemandeDto>();
+		}
+		return listeMP;
+	}
+
+	private void setListeMP(ArrayList<DemandeDto> newListeMP) {
+		listeMP = newListeMP;
 	}
 
 	public String getNOM_LB_VM() {
@@ -1335,14 +1501,14 @@ public class OeAGENTActesHSCT extends BasicProcess {
 		return "NOM_LB_HANDI_SELECT";
 	}
 
-	private ArrayList<Handicap> getListeHANDI() {
+	private ArrayList<BeneficiaireObligationAmenage> getListeHANDI() {
 		if (listeHANDI == null) {
-			listeHANDI = new ArrayList<Handicap>();
+			listeHANDI = new ArrayList<BeneficiaireObligationAmenage>();
 		}
 		return listeHANDI;
 	}
 
-	private void setListeHANDI(ArrayList<Handicap> newListeHANDI) {
+	private void setListeHANDI(ArrayList<BeneficiaireObligationAmenage> newListeHANDI) {
 		listeHANDI = newListeHANDI;
 	}
 
@@ -1370,20 +1536,12 @@ public class OeAGENTActesHSCT extends BasicProcess {
 		this.typeDocumentDao = typeDocumentDao;
 	}
 
-	public AccidentTravailDao getAccidentTravailDao() {
-		return accidentTravailDao;
+	public BeneficiaireObligationAmenageDao getBoeDao() {
+		return boeDao;
 	}
 
-	public void setAccidentTravailDao(AccidentTravailDao accidentTravailDao) {
-		this.accidentTravailDao = accidentTravailDao;
-	}
-
-	public HandicapDao getHandicapDao() {
-		return handicapDao;
-	}
-
-	public void setHandicapDao(HandicapDao handicapDao) {
-		this.handicapDao = handicapDao;
+	public void setBoeDao(BeneficiaireObligationAmenageDao boeDao) {
+		this.boeDao = boeDao;
 	}
 
 	public MedecinDao getMedecinDao() {
@@ -1410,14 +1568,6 @@ public class OeAGENTActesHSCT extends BasicProcess {
 		this.recommandationDao = recommandationDao;
 	}
 
-	public TypeATDao getTypeATDao() {
-		return typeATDao;
-	}
-
-	public void setTypeATDao(TypeATDao typeATDao) {
-		this.typeATDao = typeATDao;
-	}
-
 	public VisiteMedicaleDao getVisiteMedicaleDao() {
 		return visiteMedicaleDao;
 	}
@@ -1440,6 +1590,38 @@ public class OeAGENTActesHSCT extends BasicProcess {
 
 	public void setDocumentDao(DocumentDao documentDao) {
 		this.documentDao = documentDao;
+	}
+
+	public IAbsService getAbsService() {
+		return absService;
+	}
+
+	public void setAbsService(IAbsService absService) {
+		this.absService = absService;
+	}
+
+	public HashMap<Integer, DemandeDto> getHashMapAT() {
+
+		if (null == hashMapAT)
+			return new HashMap<Integer, DemandeDto>();
+
+		return hashMapAT;
+	}
+
+	public void setHashMapAT(HashMap<Integer, DemandeDto> hashMapAT) {
+		this.hashMapAT = hashMapAT;
+	}
+
+	public HashMap<Integer, DemandeDto> getHashMapMP() {
+
+		if (null == hashMapMP)
+			return new HashMap<Integer, DemandeDto>();
+
+		return hashMapMP;
+	}
+
+	public void setHashMapMP(HashMap<Integer, DemandeDto> hashMapMP) {
+		this.hashMapMP = hashMapMP;
 	}
 
 	public AgentDao getAgentDao() {

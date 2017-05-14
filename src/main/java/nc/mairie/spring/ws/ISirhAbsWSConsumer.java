@@ -5,6 +5,7 @@ import java.util.List;
 import nc.mairie.gestionagent.absence.dto.ActeursDto;
 import nc.mairie.gestionagent.absence.dto.AgentOrganisationSyndicaleDto;
 import nc.mairie.gestionagent.absence.dto.CompteurDto;
+import nc.mairie.gestionagent.absence.dto.ControleMedicalDto;
 import nc.mairie.gestionagent.absence.dto.DemandeDto;
 import nc.mairie.gestionagent.absence.dto.HistoriqueSoldeDto;
 import nc.mairie.gestionagent.absence.dto.MoisAlimAutoCongesAnnuelsDto;
@@ -13,6 +14,7 @@ import nc.mairie.gestionagent.absence.dto.MotifDto;
 import nc.mairie.gestionagent.absence.dto.OrganisationSyndicaleDto;
 import nc.mairie.gestionagent.absence.dto.RefAlimCongesAnnuelsDto;
 import nc.mairie.gestionagent.absence.dto.RefGroupeAbsenceDto;
+import nc.mairie.gestionagent.absence.dto.RefTypeDto;
 import nc.mairie.gestionagent.absence.dto.RestitutionMassiveDto;
 import nc.mairie.gestionagent.absence.dto.SoldeDto;
 import nc.mairie.gestionagent.absence.dto.TypeAbsenceDto;
@@ -85,7 +87,7 @@ public interface ISirhAbsWSConsumer {
 
 	ReturnMessageDto saveTypeAbsence(Integer idAgentConnecte, String json);
 
-	ReturnMessageDto deleteTypeAbsence(Integer idAgentConnecte, Integer idRefTypeAbsence);
+	ReturnMessageDto inactiveTypeAbsence(Integer idAgentConnecte, Integer idRefTypeAbsence);
 
 	TypeAbsenceDto getTypeAbsence(Integer idBaseHoraireAbsence);
 
@@ -186,6 +188,35 @@ public interface ISirhAbsWSConsumer {
 
 	List<RestitutionMassiveDto> getHistoRestitutionMassiveByIdAgent(Integer idAgent);
 
+	List<RefTypeDto> getRefTypeAccidentTravail();
+
+	List<RefTypeDto> getRefTypeMaladiePro();
+
+	List<RefTypeDto> getRefTypeSiegeLesion();
+
+	ReturnMessageDto setRefTypeSiegeLesion(Integer idAgent, RefTypeDto typeDto);
+
+	ReturnMessageDto setRefTypeAccidentTravail(Integer idAgent,
+			RefTypeDto typeDto);
+
+	ReturnMessageDto setRefTypeMaladiePro(Integer idAgent, RefTypeDto typeDto);
+
+	ReturnMessageDto deleteRefTypeMaladiePro(Integer idAgent, RefTypeDto typeDto);
+
+	ReturnMessageDto deleteRefTypeAccidentTravail(Integer idAgent,
+			RefTypeDto typeDto);
+
+	ReturnMessageDto deleteRefTypeSiegeLesion(Integer idAgent,
+			RefTypeDto typeDto);
+
+	ReturnMessageDto addPieceJointeSIRH(Integer idAgentConnecte, String json);
+
 	List<DemandeDto> getListeDemandeCAWhichAddOrRemoveOnCounterAgent(Integer idAgentConnecte, Integer idAgentConcerne);
+
+	ReturnMessageDto updateCommentaireDRH(Integer idDemande, String commDRH);
+
+	ReturnMessageDto persistDemandeControleMedical(ControleMedicalDto dto);
+
+	ControleMedicalDto findControleMedicalByDemandeId(Integer idDemande);
 
 }

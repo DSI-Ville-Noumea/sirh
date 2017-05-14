@@ -8,6 +8,7 @@ import java.util.Map;
 import nc.mairie.gestionagent.absence.dto.ActeursDto;
 import nc.mairie.gestionagent.absence.dto.AgentOrganisationSyndicaleDto;
 import nc.mairie.gestionagent.absence.dto.CompteurDto;
+import nc.mairie.gestionagent.absence.dto.ControleMedicalDto;
 import nc.mairie.gestionagent.absence.dto.DemandeDto;
 import nc.mairie.gestionagent.absence.dto.HistoriqueSoldeDto;
 import nc.mairie.gestionagent.absence.dto.MoisAlimAutoCongesAnnuelsDto;
@@ -16,6 +17,7 @@ import nc.mairie.gestionagent.absence.dto.MotifDto;
 import nc.mairie.gestionagent.absence.dto.OrganisationSyndicaleDto;
 import nc.mairie.gestionagent.absence.dto.RefAlimCongesAnnuelsDto;
 import nc.mairie.gestionagent.absence.dto.RefGroupeAbsenceDto;
+import nc.mairie.gestionagent.absence.dto.RefTypeDto;
 import nc.mairie.gestionagent.absence.dto.RestitutionMassiveDto;
 import nc.mairie.gestionagent.absence.dto.SoldeDto;
 import nc.mairie.gestionagent.absence.dto.TypeAbsenceDto;
@@ -78,6 +80,10 @@ public class SirhAbsWSConsumer extends BaseWsConsumer implements ISirhAbsWSConsu
 	private static final String	sirhAbsDemandeSauvegarde							= "demandes/demandeSIRH";
 	private static final String	sirhAbsStateSave									= "demandes/changerEtatsSIRH";
 	private static final String	sirhDureeCongeAnnuelUrl								= "demandes/dureeDemandeCongeAnnuel";
+	private static final String	sirhAddPieceJointeSIRHUrl							= "demandes/addPieceJointeSIRH";
+	private static final String	sirhAbsSaveCommentaireDRH							= "demandes/saveCommentaireDRH";
+	private static final String	sirhPersistDemandeControleMedicalUrl				= "demandes/persistDemandeControleMedical";
+	private static final String	sirhGetDemandeControleMedicalUrl					= "demandes/getDemandeControleMedical";
 
 	private static final String	sirhAbsMotif										= "motif/getListeMotif";
 	private static final String	sirhAbsMotifSauvegarde								= "motif/setMotif";
@@ -112,11 +118,20 @@ public class SirhAbsWSConsumer extends BaseWsConsumer implements ISirhAbsWSConsu
 
 	private static final String	sirhAbsListeRefTypeAbs								= "typeAbsence/getListeTypeAbsence";
 	private static final String	sirhAbsAddCongeExcep								= "typeAbsence/setTypeAbsence";
-	private static final String	sirhAbsDeleteCongeExcep								= "typeAbsence/deleteTypeAbsence";
+	private static final String	sirhAbsInactiveCongeExcep								= "typeAbsence/inactiveTypeAbsence";
 	private static final String	sirhAbsRefTypeAbs									= "typeAbsence/getTypeAbsence";
 
 	private static final String	sirhAbsListeUnitePeriodeQuota						= "filtres/getUnitePeriodeQuota";
 	private static final String	sirhAbsGroupeAbsenceUrl								= "filtres/getGroupesAbsence";
+	private static final String	sirhAbsAllTypeAccidentTravailUrl					= "filtres/getAllTypeAccidentTravail";
+	private static final String	sirhAbsAllTypeSiegeLesionUrl						= "filtres/getAllTypeSiegeLesion";
+	private static final String	sirhAbsAllTypeMaladieProUrl							= "filtres/getAllTypeMaladiePro";
+	private static final String	sirhAbsTypeAccidentTravailUrl						= "filtres/setTypeAccidentTravail";
+	private static final String	sirhAbsTypeSiegeLesionUrl							= "filtres/setTypeSiegeLesion";
+	private static final String	sirhAbsTypeMaladieProUrl							= "filtres/setTypeMaladiePro";
+	private static final String	sirhAbsdeleteTypeAccidentTravailUrl					= "filtres/deleteTypeAccidentTravail";
+	private static final String	sirhAbsdeleteTypeSiegeLesionUrl						= "filtres/deleteTypeSiegeLesion";
+	private static final String	sirhAbsdeleteTypeMaladieProUrl						= "filtres/deleteTypeMaladiePro";
 
 	private static final String	sirhAbsMoisAlimAutoUrl								= "congeannuel/getListeMoisAlimAutoCongeAnnuel";
 	private static final String	sirhAbsAlimAutoUrl									= "congeannuel/getListeAlimAutoCongeAnnuel";
@@ -487,8 +502,8 @@ public class SirhAbsWSConsumer extends BaseWsConsumer implements ISirhAbsWSConsu
 	}
 
 	@Override
-	public ReturnMessageDto deleteTypeAbsence(Integer idAgentConnecte, Integer idRefTypeAbsence) {
-		String url = String.format(absWsBaseUrl + sirhAbsDeleteCongeExcep);
+	public ReturnMessageDto inactiveTypeAbsence(Integer idAgentConnecte, Integer idRefTypeAbsence) {
+		String url = String.format(absWsBaseUrl + sirhAbsInactiveCongeExcep);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgentConnecte.toString());
 		params.put("idRefTypeAbsence", idRefTypeAbsence.toString());
@@ -502,7 +517,102 @@ public class SirhAbsWSConsumer extends BaseWsConsumer implements ISirhAbsWSConsu
 		HashMap<String, String> params = new HashMap<>();
 		ClientResponse res = createAndFireRequest(params, url);
 		return readResponseAsList(RefGroupeAbsenceDto.class, res, url);
+	}
 
+	@Override
+	public List<RefTypeDto> getRefTypeAccidentTravail() {
+		String url = String.format(absWsBaseUrl + sirhAbsAllTypeAccidentTravailUrl);
+		HashMap<String, String> params = new HashMap<>();
+		ClientResponse res = createAndFireRequest(params, url);
+		return readResponseAsList(RefTypeDto.class, res, url);
+	}
+
+	@Override
+	public List<RefTypeDto> getRefTypeMaladiePro() {
+		String url = String.format(absWsBaseUrl + sirhAbsAllTypeMaladieProUrl);
+		HashMap<String, String> params = new HashMap<>();
+		ClientResponse res = createAndFireRequest(params, url);
+		return readResponseAsList(RefTypeDto.class, res, url);
+	}
+
+	@Override
+	public List<RefTypeDto> getRefTypeSiegeLesion() {
+		String url = String.format(absWsBaseUrl + sirhAbsAllTypeSiegeLesionUrl);
+		HashMap<String, String> params = new HashMap<>();
+		ClientResponse res = createAndFireRequest(params, url);
+		return readResponseAsList(RefTypeDto.class, res, url);
+	}
+
+	@Override
+	public ReturnMessageDto setRefTypeSiegeLesion(Integer idAgent, RefTypeDto typeDto) {
+		String url = String.format(absWsBaseUrl + sirhAbsTypeSiegeLesionUrl);
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idAgent", idAgent.toString());
+
+		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class).deepSerialize(typeDto);
+
+		ClientResponse res = createAndPostRequest(params, url, json);
+		return readResponse(ReturnMessageDto.class, res, url);
+	}
+
+	@Override
+	public ReturnMessageDto setRefTypeAccidentTravail(Integer idAgent, RefTypeDto typeDto) {
+		String url = String.format(absWsBaseUrl + sirhAbsTypeAccidentTravailUrl);
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idAgent", idAgent.toString());
+
+		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class).deepSerialize(typeDto);
+
+		ClientResponse res = createAndPostRequest(params, url, json);
+		return readResponse(ReturnMessageDto.class, res, url);
+	}
+
+	@Override
+	public ReturnMessageDto setRefTypeMaladiePro(Integer idAgent, RefTypeDto typeDto) {
+		String url = String.format(absWsBaseUrl + sirhAbsTypeMaladieProUrl);
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idAgent", idAgent.toString());
+
+		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class).deepSerialize(typeDto);
+
+		ClientResponse res = createAndPostRequest(params, url, json);
+		return readResponse(ReturnMessageDto.class, res, url);
+	}
+
+	@Override
+	public ReturnMessageDto deleteRefTypeSiegeLesion(Integer idAgent, RefTypeDto typeDto) {
+		String url = String.format(absWsBaseUrl + sirhAbsdeleteTypeSiegeLesionUrl);
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idAgent", idAgent.toString());
+
+		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class).deepSerialize(typeDto);
+
+		ClientResponse res = createAndPostRequest(params, url, json);
+		return readResponse(ReturnMessageDto.class, res, url);
+	}
+
+	@Override
+	public ReturnMessageDto deleteRefTypeAccidentTravail(Integer idAgent, RefTypeDto typeDto) {
+		String url = String.format(absWsBaseUrl + sirhAbsdeleteTypeAccidentTravailUrl);
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idAgent", idAgent.toString());
+
+		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class).deepSerialize(typeDto);
+
+		ClientResponse res = createAndPostRequest(params, url, json);
+		return readResponse(ReturnMessageDto.class, res, url);
+	}
+
+	@Override
+	public ReturnMessageDto deleteRefTypeMaladiePro(Integer idAgent, RefTypeDto typeDto) {
+		String url = String.format(absWsBaseUrl + sirhAbsdeleteTypeMaladieProUrl);
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idAgent", idAgent.toString());
+
+		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class).deepSerialize(typeDto);
+
+		ClientResponse res = createAndPostRequest(params, url, json);
+		return readResponse(ReturnMessageDto.class, res, url);
 	}
 
 	@Override
@@ -893,6 +1003,15 @@ public class SirhAbsWSConsumer extends BaseWsConsumer implements ISirhAbsWSConsu
 	}
 
 	@Override
+	public ReturnMessageDto addPieceJointeSIRH(Integer idAgentConnecte, String json) {
+		String url = String.format(absWsBaseUrl + sirhAddPieceJointeSIRHUrl);
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idAgent", idAgentConnecte.toString());
+		ClientResponse res = createAndPostRequest(params, url, json);
+		return readResponseWithReturnMessageDto(ReturnMessageDto.class, res, url);
+	}
+
+	@Override
 	public List<DemandeDto> getListeDemandeCAWhichAddOrRemoveOnCounterAgent(Integer idAgentConnecte, Integer idAgentConcerne) {
 
 		String url = String.format(absWsBaseUrl + sirhListeDemandeCAWhichAddOrRemoveOnCounterAgent);
@@ -932,5 +1051,32 @@ public class SirhAbsWSConsumer extends BaseWsConsumer implements ISirhAbsWSConsu
 		params.put("idAgent", idAgent.toString());
 		ClientResponse res = createAndFireRequest(params, url);
 		return readResponseWithReturnMessageDto(ReturnMessageDto.class, res, url);
+	}
+
+	@Override
+	public ReturnMessageDto updateCommentaireDRH(Integer idDemande, String commDRH) {
+		String url = String.format(absWsBaseUrl + sirhAbsSaveCommentaireDRH);
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idDemande", idDemande.toString());
+		ClientResponse res = createAndPostRequest(params, url, commDRH);
+		return readResponseWithReturnMessageDto(ReturnMessageDto.class, res, url);
+	}
+
+	@Override
+	public ReturnMessageDto persistDemandeControleMedical(ControleMedicalDto dto) {
+		String url = String.format(absWsBaseUrl + sirhPersistDemandeControleMedicalUrl);
+		HashMap<String, String> params = new HashMap<>();
+		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class).deepSerialize(dto);
+		ClientResponse res = createAndPostRequest(params, url, json);
+		return readResponseWithReturnMessageDto(ReturnMessageDto.class, res, url);
+	}
+
+	@Override
+	public ControleMedicalDto findControleMedicalByDemandeId(Integer idDemande) {
+		String url = String.format(absWsBaseUrl + sirhGetDemandeControleMedicalUrl);
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idDemandeMaladie", idDemande.toString());
+		ClientResponse res = createAndFireRequest(params, url);
+		return readResponse(ControleMedicalDto.class, res, url);
 	}
 }

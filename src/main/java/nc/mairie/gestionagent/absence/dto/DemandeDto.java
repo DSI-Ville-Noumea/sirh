@@ -1,6 +1,8 @@
 package nc.mairie.gestionagent.absence.dto;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -54,6 +56,7 @@ public class DemandeDto implements IJSONDeserialize<DemandeDto> {
 	private boolean isAffichageBoutonImprimer;
 	private boolean isAffichageBoutonAnnuler;
 	private boolean isAffichageValidation;
+	private boolean isAffichageBoutonRejeter;
 	private boolean isAffichageEnAttente;
 	private boolean isAffichageBoutonDupliquer;
 	// permet de viser ou approuver
@@ -65,10 +68,12 @@ public class DemandeDto implements IJSONDeserialize<DemandeDto> {
 	// depasement de droits
 	private boolean isDepassementCompteur;
 	private boolean isDepassementMultiple;
+	private boolean isDepassementITT;
 
 	private OrganisationSyndicaleDto organisationSyndicale;
 
 	private String commentaire;
+	private String commentaireDRH;
 
 	private RefTypeSaisiDto typeSaisi;
 	private RefTypeSaisiCongeAnnuelDto typeSaisiCongeAnnuel;
@@ -85,6 +90,31 @@ public class DemandeDto implements IJSONDeserialize<DemandeDto> {
 	
 	// #15586 restitution massive
 	private boolean affichageBoutonHistorique;
+	
+	// Maladies
+	private Double nombreITT;
+	private String prescripteur;
+	private String nomEnfant;
+	private Date dateDeclaration;
+	private boolean prolongation;
+	private RefTypeDto typeAccidentTravail;
+	private RefTypeDto typeSiegeLesion;
+	private RefTypeDto typeMaladiePro;
+	private DemandeDto accidentTravailReference;
+	
+	// #32238 : Controle médical
+	private ControleMedicalDto controleMedical;
+	
+	private Date dateTransmissionCafat;
+	private Date dateDecisionCafat;
+	private Date dateCommissionAptitude;
+	private Double tauxCafat;
+	private Boolean avisCommissionAptitude;
+	
+	private List<PieceJointeDto> piecesJointes = new ArrayList<PieceJointeDto>();
+	
+	// provient ou non de HSCT : les PJ doivent etre traitees differemment
+	private boolean isFromHSCT;
 
 	public DemandeDto() {
 	}
@@ -366,30 +396,6 @@ public class DemandeDto implements IJSONDeserialize<DemandeDto> {
 		this.etatDto = etatDto;
 	}
 
-	public boolean isAffichageBoutonDupliquer() {
-		return isAffichageBoutonDupliquer;
-	}
-
-	public void setAffichageBoutonDupliquer(boolean isAffichageBoutonDupliquer) {
-		this.isAffichageBoutonDupliquer = isAffichageBoutonDupliquer;
-	}
-
-	public boolean isAffichageValidation() {
-		return isAffichageValidation;
-	}
-
-	public void setAffichageValidation(boolean isAffichageValidation) {
-		this.isAffichageValidation = isAffichageValidation;
-	}
-
-	public boolean isAffichageEnAttente() {
-		return isAffichageEnAttente;
-	}
-
-	public void setAffichageEnAttente(boolean isAffichageEnAttente) {
-		this.isAffichageEnAttente = isAffichageEnAttente;
-	}
-
 	public AgentWithServiceDto getAgentEtat() {
 		return agentEtat;
 	}
@@ -470,4 +476,197 @@ public class DemandeDto implements IJSONDeserialize<DemandeDto> {
 		this.forceSaisieManuelleDuree = forceSaisieManuelleDuree;
 	}
 	
+	public boolean isAffichageValidation() {
+		return isAffichageValidation;
+	}
+
+	public void setAffichageValidation(boolean isAffichageValidation) {
+		this.isAffichageValidation = isAffichageValidation;
+	}
+
+	public boolean isAffichageBoutonRejeter() {
+		return isAffichageBoutonRejeter;
+	}
+
+	public void setAffichageBoutonRejeter(boolean isAffichageBoutonRejeter) {
+		this.isAffichageBoutonRejeter = isAffichageBoutonRejeter;
+	}
+
+	public boolean isAffichageEnAttente() {
+		return isAffichageEnAttente;
+	}
+
+	public void setAffichageEnAttente(boolean isAffichageEnAttente) {
+		this.isAffichageEnAttente = isAffichageEnAttente;
+	}
+
+	public boolean isAffichageBoutonDupliquer() {
+		return isAffichageBoutonDupliquer;
+	}
+
+	public void setAffichageBoutonDupliquer(boolean isAffichageBoutonDupliquer) {
+		this.isAffichageBoutonDupliquer = isAffichageBoutonDupliquer;
+	}
+
+	public Double getNombreITT() {
+		return nombreITT;
+	}
+
+	public void setNombreITT(Double nombreITT) {
+		this.nombreITT = nombreITT;
+	}
+
+	public String getPrescripteur() {
+		return prescripteur;
+	}
+
+	public void setPrescripteur(String prescripteur) {
+		this.prescripteur = prescripteur;
+	}
+
+	public String getNomEnfant() {
+		return nomEnfant;
+	}
+
+	public void setNomEnfant(String nomEnfant) {
+		this.nomEnfant = nomEnfant;
+	}
+
+	public Date getDateDeclaration() {
+		return dateDeclaration;
+	}
+
+	public void setDateDeclaration(Date dateDeclaration) {
+		this.dateDeclaration = dateDeclaration;
+	}
+
+	public boolean isProlongation() {
+		return prolongation;
+	}
+
+	public void setProlongation(boolean prolongation) {
+		this.prolongation = prolongation;
+	}
+
+	public RefTypeDto getTypeAccidentTravail() {
+		return typeAccidentTravail;
+	}
+
+	public void setTypeAccidentTravail(RefTypeDto typeAccidentTravail) {
+		this.typeAccidentTravail = typeAccidentTravail;
+	}
+
+	public RefTypeDto getTypeSiegeLesion() {
+		return typeSiegeLesion;
+	}
+
+	public void setTypeSiegeLesion(RefTypeDto typeSiegeLesion) {
+		this.typeSiegeLesion = typeSiegeLesion;
+	}
+
+	public RefTypeDto getTypeMaladiePro() {
+		return typeMaladiePro;
+	}
+
+	public void setTypeMaladiePro(RefTypeDto typeMaladiePro) {
+		this.typeMaladiePro = typeMaladiePro;
+	}
+
+	public DemandeDto getAccidentTravailReference() {
+		return accidentTravailReference;
+	}
+
+	public void setAccidentTravailReference(DemandeDto accidentTravailReference) {
+		this.accidentTravailReference = accidentTravailReference;
+	}
+
+	public Date getDateTransmissionCafat() {
+		return dateTransmissionCafat;
+	}
+
+	public void setDateTransmissionCafat(Date dateTransmissionCafat) {
+		this.dateTransmissionCafat = dateTransmissionCafat;
+	}
+
+	public Date getDateDecisionCafat() {
+		return dateDecisionCafat;
+	}
+
+	public void setDateDecisionCafat(Date dateDecisionCafat) {
+		this.dateDecisionCafat = dateDecisionCafat;
+	}
+
+	public Date getDateCommissionAptitude() {
+		return dateCommissionAptitude;
+	}
+
+	public void setDateCommissionAptitude(Date dateCommissionAptitude) {
+		this.dateCommissionAptitude = dateCommissionAptitude;
+	}
+
+	public Double getTauxCafat() {
+		return tauxCafat;
+	}
+
+	public void setTauxCafat(Double tauxCafat) {
+		this.tauxCafat = tauxCafat;
+	}
+
+	public Boolean getAvisCommissionAptitude() {
+		return avisCommissionAptitude;
+	}
+
+	public void setAvisCommissionAptitude(Boolean avisCommissionAptitude) {
+		this.avisCommissionAptitude = avisCommissionAptitude;
+	}
+	
+	@Override 
+	public boolean equals(Object o) {
+		if(null == o
+				|| null == this.idDemande)
+			return false;
+		
+		return this.idDemande.equals(((DemandeDto)o).getIdDemande());
+	}
+
+	public List<PieceJointeDto> getPiecesJointes() {
+		return piecesJointes;
+	}
+
+	public void setPiecesJointes(List<PieceJointeDto> piecesJointes) {
+		this.piecesJointes = piecesJointes;
+	}
+
+	public boolean isFromHSCT() {
+		return isFromHSCT;
+	}
+
+	public void setFromHSCT(boolean isFromHSCT) {
+		this.isFromHSCT = isFromHSCT;
+	}
+
+	public boolean isDepassementITT() {
+		return isDepassementITT;
+	}
+
+	public void setDepassementITT(boolean isDepassementITT) {
+		this.isDepassementITT = isDepassementITT;
+	}
+
+	public String getCommentaireDRH() {
+		return commentaireDRH;
+	}
+
+	public void setCommentaireDRH(String commentaireDRH) {
+		this.commentaireDRH = commentaireDRH;
+	}
+
+	public ControleMedicalDto getControleMedical() {
+		return controleMedical;
+	}
+
+	public void setControleMedical(ControleMedicalDto controleMedical) {
+		this.controleMedical = controleMedical;
+	}
+
 }

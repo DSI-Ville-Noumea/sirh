@@ -36,7 +36,7 @@
 		
 				<script type="text/javascript">
 					$(document).ready(function() {
-					    $('#CongesExcep').dataTable({
+					    $('#maladies').dataTable({
 							"oLanguage": {"sUrl": "media/dataTables/language/fr_FR.txt"},
 							"aoColumns": [{"bSortable":false,"bSearchable":false},null,null,null],
 							"sDom": '<"H"fl>t<"F"i>',
@@ -49,18 +49,18 @@
 		
 		<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	</HEAD>
-	<jsp:useBean class="nc.mairie.gestionagent.process.parametre.OePARAMETRAGEAbsenceCongesExceptionnels" id="process" scope="session"></jsp:useBean>
+	<jsp:useBean class="nc.mairie.gestionagent.process.parametre.OePARAMETRAGEAbsenceMaladies" id="process" scope="session"></jsp:useBean>
 	<BODY bgcolor="#FFFFFF" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" class="sigp2-BODY" onload="window.parent.frames['refAgent'].location.reload();return setfocus('<%= process.getFocus() %>')" >
 	<%@ include file="BanniereErreur.jsp" %>
 		<FORM name="formu" method="POST" class="sigp2-titre">
 			<INPUT name="JSP" type="hidden" value="<%= process.getJSP() %>">
 						<FIELDSET class="sigp2Fieldset" style="text-align: left;">
-					    	<legend class="sigp2Legend">Gestion des congés exceptionnels</legend>
-							<table cellpadding="0" cellspacing="0" border="0" class="display" id="CongesExcep"> 
+					    	<legend class="sigp2Legend">Gestion des maladies</legend>
+							<table cellpadding="0" cellspacing="0" border="0" class="display" id="maladies"> 
 			                    <thead>
 			                        <tr>
 			                            <th width="100px">
-			                            	<img src="images/ajout.gif" height="16px" width="16px" title="Creer une absence" onClick="executeBouton('<%=process.getNOM_PB_AJOUTER_CONGES()%>')" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>">
+			                            	<img src="images/ajout.gif" height="16px" width="16px" title="Creer une absence" onClick="executeBouton('<%=process.getNOM_PB_AJOUTER_MALADIES()%>')" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>">
 			            				</th>  
 			                            <th>Type</th>
 			                            <th width="80px">Unite de décompte</th>	
@@ -70,7 +70,7 @@
 			                    <tbody>
 			                        <%for (TypeAbsenceDto abs : process.getListeTypeAbsence()) {
 			                			if (abs.getGroupeAbsence() == null
-			                					|| abs.getGroupeAbsence().getIdRefGroupeAbsence() != EnumTypeGroupeAbsence.CONGES_EXCEP.getValue()) {
+			                					|| abs.getGroupeAbsence().getIdRefGroupeAbsence() != EnumTypeGroupeAbsence.MALADIES.getValue()) {
 			                				continue;
 			                			}
 			                        	int indiceAbs = abs.getIdRefTypeAbsence();
@@ -79,10 +79,10 @@
 			                            <td align="center">
 			                            	<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, "") %>" name="<%=process.getNOM_PB_VISUALISATION(indiceAbs)%>">
 											<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_VISUALISATION(indiceAbs)%>">
-											<INPUT title="modifier" type="image" src="images/modifier.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_MODIFIER_CONGES(indiceAbs)%>">
-                           					<INPUT title="inactiver" type="image" src="images/suppression.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_INACTIVER(indiceAbs)%>">
+											<INPUT title="modifier" type="image" src="images/modifier.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_MODIFIER_MALADIES(indiceAbs)%>">
+                           					<INPUT title="désactiver" type="image" src="images/suppression.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_INACTIVER(indiceAbs)%>">
 				    					</td>                            
-			                            <td><%=process.getVAL_ST_TYPE_CONGE(indiceAbs)%></td> 
+			                            <td><%=process.getVAL_ST_TYPE_MALADIE(indiceAbs)%></td> 
 			                            <td align="center"><%=process.getVAL_ST_UNITE(indiceAbs)%></td>  
 			                            <td><%=process.getVAL_ST_INFO(indiceAbs)%></td>  
 			                        </tr>
@@ -105,22 +105,6 @@
 		            	</tr>
 		            	<tr>
 		            		<td>
-	                			<span class="sigp2Mandatory">Heure debut : </span><span class="sigp2-saisie"><%=process.getVAL_ST_HEURE_DEBUT()%></span>
-		            		</td>
-		            		<td>
-	                			<span class="sigp2Mandatory">Heure fin : </span><span class="sigp2-saisie"><%=process.getVAL_ST_HEURE_FIN()%></span>
-		            		</td>
-		            	</tr>
-		            	<tr>
-		            		<td>
-	                			<span class="sigp2Mandatory">Demi journée debut : </span><span class="sigp2-saisie"><%=process.getVAL_ST_DEBUT_MAM()%></span>
-		            		</td>
-		            		<td>
-	                			<span class="sigp2Mandatory">Demi journée fin : </span><span class="sigp2-saisie"><%=process.getVAL_ST_FIN_MAM()%></span>
-		            		</td>
-		            	</tr>
-		            	<tr>
-		            		<td>
 	                			<span class="sigp2Mandatory">Pièce jointe : </span><span class="sigp2-saisie"><%=process.getVAL_ST_PIECE_JOINTE()%></span>
 		            		</td>
 		            		<td>
@@ -137,16 +121,42 @@
 		            	</tr>
 		            	<tr>
 		            		<td>
-	                			<span class="sigp2Mandatory">Quota : </span><span class="sigp2-saisie"><%=process.getVAL_ST_QUOTA()%></span>
-		            		</td>
-		            		<td> </td>
-		            	</tr>
-		            	<tr>
-		            		<td>
 	                			<span class="sigp2Mandatory">Motif : </span><span class="sigp2-saisie"><%=process.getVAL_ST_MOTIF()%></span>
 		            		</td>
 		            		<td>
 	                			<span class="sigp2Mandatory">Desc motif : </span><span class="sigp2-saisie"><%=process.getVAL_ST_INFO_COMPL()%></span>
+		            		</td>
+		            	</tr>
+		            	<tr>
+		            		<td>
+	                			<span class="sigp2Mandatory">Prescripteur : </span><span class="sigp2-saisie"><%=process.getVAL_ST_PRESCRIPTEUR()%></span>
+		            		</td>
+		            		<td>
+	                			<span class="sigp2Mandatory">Date de déclaration : </span><span class="sigp2-saisie"><%=process.getVAL_ST_DATE_DECLARATION()%></span>
+		            		</td>
+		            	</tr>
+		            	<tr>
+		            		<td>
+	                			<span class="sigp2Mandatory">Prolongation : </span><span class="sigp2-saisie"><%=process.getVAL_ST_PROLONGATION()%></span>
+		            		</td>
+		            		<td>
+	                			<span class="sigp2Mandatory">Nom enfant : </span><span class="sigp2-saisie"><%=process.getVAL_ST_NOM_ENFANT()%></span>
+		            		</td>
+		            	</tr>
+		            	<tr>
+		            		<td>
+	                			<span class="sigp2Mandatory">Nombre ITT : </span><span class="sigp2-saisie"><%=process.getVAL_ST_NOMBRE_ITT()%></span>
+		            		</td>
+		            		<td>
+	                			<span class="sigp2Mandatory">Siège Lésion : </span><span class="sigp2-saisie"><%=process.getVAL_ST_SIEGE_LESION()%></span>
+		            		</td>
+		            	</tr>
+		            	<tr>
+		            		<td>
+	                			<span class="sigp2Mandatory">AT de référence : </span><span class="sigp2-saisie"><%=process.getVAL_ST_AT_REFERENCE()%></span>
+		            		</td>
+		            		<td>
+	                			<span class="sigp2Mandatory">Maladie professionnelle : </span><span class="sigp2-saisie"><%=process.getVAL_ST_MALADIE_PRO()%></span>
 		            		</td>
 		            	</tr>
 		            	<tr>
@@ -178,17 +188,6 @@
 				<%} %>
 		            <table>
 		            	<tr>
-		            		<td width="500px">
-	                			<span class="sigp2Mandatory">Unité de décompte : </span>
-								<span class="sigp2-saisie">
-									<SELECT style="width: 90px;" onchange='executeBouton("<%=process.getNOM_PB_UNITE_DECOMPTE() %>")'  <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> class="sigp2-saisie" name="<%= process.getNOM_LB_UNITE_DECOMPTE() %>">
-										<%=process.forComboHTML(process.getVAL_LB_UNITE_DECOMPTE(), process.getVAL_LB_UNITE_DECOMPTE_SELECT())%>
-									</SELECT>
-								</span>
-		            		</td>
-		            		<td>&nbsp;</td>
-		            	</tr>
-		            	<tr>
 		            		<td>
 	                			<span class="sigp2Mandatory">Date debut : </span>
  								<INPUT type="radio" checked="checked" disabled="disabled"><span class="sigp2-saisie">Oui</span>			
@@ -199,37 +198,6 @@
 		            			<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_DATE_FIN(),process.getNOM_RB_DATE_FIN_NON())%>><span class="sigp2-saisie">Non</span>
 							</td>
 		            	</tr>
-		            	<tr>
-		            		<td>
-	                			<span class="sigp2Mandatory">Heure debut : </span>
- 								<INPUT type="radio" disabled="disabled" <%= process.forRadioHTML(process.getNOM_RG_HEURE_DEBUT(),process.getNOM_RB_HEURE_DEBUT_OUI())%>><span class="sigp2-saisie">Oui</span>
-		            			<INPUT type="radio" disabled="disabled" <%= process.forRadioHTML(process.getNOM_RG_HEURE_DEBUT(),process.getNOM_RB_HEURE_DEBUT_NON())%>><span class="sigp2-saisie">Non</span>
- 							</td>
-		            		<td>
-								<span class="sigp2Mandatory">Heure fin : </span>
-	                			<%if(process.getTypeCreation().getTypeSaisiDto().getUniteDecompte().equals("jours")){ %>
-		                			<INPUT type="radio" disabled="disabled" <%= process.forRadioHTML(process.getNOM_RG_HEURE_FIN(),process.getNOM_RB_HEURE_FIN_OUI())%>><span class="sigp2-saisie">Oui</span>
-			            			<INPUT type="radio" disabled="disabled" <%= process.forRadioHTML(process.getNOM_RG_HEURE_FIN(),process.getNOM_RB_HEURE_FIN_NON())%>><span class="sigp2-saisie">Non</span>
-								<%}else { %>
-	 								<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_HEURE_FIN(),process.getNOM_RB_HEURE_FIN_OUI())%>><span class="sigp2-saisie">Oui</span>
-			            			<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_HEURE_FIN(),process.getNOM_RB_HEURE_FIN_NON())%>><span class="sigp2-saisie">Non</span>
-								<%} %>
-		            		</td>
-		            	</tr>
-	                	<%if(process.getTypeCreation().getTypeSaisiDto().getUniteDecompte().equals("jours")){ %>
-		            	<tr>
-		            		<td>
-	                			<span class="sigp2Mandatory">Demi-journée debut : </span>
-	 							<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_AM_PM_DEBUT(),process.getNOM_RB_AM_PM_DEBUT_OUI())%>><span class="sigp2-saisie">Oui</span>
-			            		<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_AM_PM_DEBUT(),process.getNOM_RB_AM_PM_DEBUT_NON())%>><span class="sigp2-saisie">Non</span>
-			            	</td>
-		            		<td>
-								<span class="sigp2Mandatory">Demi-journée fin : </span>
-		                		<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_AM_PM_FIN(),process.getNOM_RB_AM_PM_FIN_OUI())%>><span class="sigp2-saisie">Oui</span>
-			            		<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_AM_PM_FIN(),process.getNOM_RB_AM_PM_FIN_NON())%>><span class="sigp2-saisie">Non</span>
-							</td>
-		            	</tr>
-		            	<%} %>
 		            	<tr>
 		            		<td colspan="2">
 								<span class="sigp2Mandatory">Statuts : </span>
@@ -272,18 +240,6 @@
 		            	</tr>
 		            	<tr>
 		            		<td>
-								<span class="sigp2Mandatory">Quota pour calcul dépassement : </span>
-								<INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_QUOTA() %>" type="text"  value="<%= process.getVAL_ST_QUOTA() %>">
-		            		</td>
-		            		<td>
-								<span class="sigp2Mandatory">Type de quota : </span>
-								<SELECT style="width: 150px;" class="sigp2-saisie" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> name="<%= process.getNOM_LB_TYPE_QUOTA() %>" >
-									<%=process.forComboHTML(process.getVAL_LB_TYPE_QUOTA(), process.getVAL_LB_TYPE_QUOTA_SELECT()) %>
-								</SELECT>
-			            	</td>
-		            	</tr>
-		            	<tr>
-		            		<td>
 								<span class="sigp2Mandatory">Alerte depassement lors saisie : </span>
 		            			<INPUT type="radio" onclick='executeBouton("<%=process.getNOM_PB_ALERTE() %>")' <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_ALERTE(),process.getNOM_RB_ALERTE_OUI())%>><span class="sigp2-saisie">Oui</span>
 			            		<INPUT type="radio" onclick='executeBouton("<%=process.getNOM_PB_ALERTE() %>")'<%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_ALERTE(),process.getNOM_RB_ALERTE_NON())%>><span class="sigp2-saisie">Non</span>
@@ -295,10 +251,58 @@
 			            		<%} %>
 		            		</td>
 		            	</tr>
+		            	<tr>
+		            		<td>
+	                			<span class="sigp2Mandatory">Prescripteur : </span>
+	 							<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_PRESCRIPTEUR(), process.getNOM_RB_OUI())%>><span class="sigp2-saisie">Oui</span>
+			            		<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_PRESCRIPTEUR(), process.getNOM_RB_NON())%>><span class="sigp2-saisie">Non</span>
+			            	</td>
+		            		<td>
+								<span class="sigp2Mandatory">Date de déclaration : </span>
+		                		<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_DATE_DECLARATION(), process.getNOM_RB_OUI())%>><span class="sigp2-saisie">Oui</span>
+			            		<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_DATE_DECLARATION(), process.getNOM_RB_NON())%>><span class="sigp2-saisie">Non</span>
+							</td>
+		            	</tr>
+		            	<tr>
+		            		<td>
+	                			<span class="sigp2Mandatory">Prolongation : </span>
+	 							<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_PROLONGATION(), process.getNOM_RB_OUI())%>><span class="sigp2-saisie">Oui</span>
+			            		<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_PROLONGATION(), process.getNOM_RB_NON())%>><span class="sigp2-saisie">Non</span>
+			            	</td>
+		            		<td>
+								<span class="sigp2Mandatory">Nom enfant : </span>
+		                		<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_NOM_ENFANT(), process.getNOM_RB_OUI()) %>><span class="sigp2-saisie">Oui</span>
+			            		<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_NOM_ENFANT(), process.getNOM_RB_NON()) %>><span class="sigp2-saisie">Non</span>
+							</td>
+		            	</tr>
+		            	<tr>
+		            		<td>
+	                			<span class="sigp2Mandatory">Nombre ITT : </span>
+	 							<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_NOMBRE_ITT(), process.getNOM_RB_OUI())%>><span class="sigp2-saisie">Oui</span>
+			            		<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_NOMBRE_ITT(), process.getNOM_RB_NON())%>><span class="sigp2-saisie">Non</span>
+			            	</td>
+		            		<td>
+								<span class="sigp2Mandatory">Siège Lésion : </span>
+		                		<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_SIEGE_LESION(), process.getNOM_RB_OUI())%>><span class="sigp2-saisie">Oui</span>
+			            		<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_SIEGE_LESION(), process.getNOM_RB_NON())%>><span class="sigp2-saisie">Non</span>
+							</td>
+		            	</tr>
+		            	<tr>
+		            		<td>
+	                			<span class="sigp2Mandatory">AT de référence : </span>
+	 							<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_AT_REFERENCE(), process.getNOM_RB_OUI())%>><span class="sigp2-saisie">Oui</span>
+			            		<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_AT_REFERENCE(), process.getNOM_RB_NON())%>><span class="sigp2-saisie">Non</span>
+			            	</td>
+		            		<td>
+								<span class="sigp2Mandatory">Maladies pro : </span>
+		                		<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_MALADIES_PRO(), process.getNOM_RB_OUI())%>><span class="sigp2-saisie">Oui</span>
+			            		<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_MALADIES_PRO(), process.getNOM_RB_NON())%>><span class="sigp2-saisie">Non</span>
+							</td>
+		            	</tr>
 		            </table>  
 			        <BR/><BR/>
                     <div align="center">	 
-	                    <INPUT type="submit" class="sigp2-Bouton-100" value="Valider" name="<%=process.getNOM_PB_VALIDER_CONGES()%>" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>">
+	                    <INPUT type="submit" class="sigp2-Bouton-100" value="Valider" name="<%=process.getNOM_PB_VALIDER_MALADIES()%>" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>">
 	                    <INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
                     </div>          
             	</FIELDSET>  
@@ -306,14 +310,66 @@
             	<div>
 					<FONT color='red'>Etes-vous sûr de vouloir désactiver : <%=process.getTypeCreation().getLibelle() %></FONT>
 			        <BR/><BR/>
-	                <INPUT type="submit" class="sigp2-Bouton-100" value="Désactiver" name="<%=process.getNOM_PB_VALIDER_CONGES()%>" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>">
+	                <INPUT type="submit" class="sigp2-Bouton-100" value="Désactiver" name="<%=process.getNOM_PB_VALIDER_MALADIES()%>" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>">
 	                <INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
 		    	</div>
             <%} %>
-            <INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_AJOUTER_CONGES()%>" value="AJOUTERCONGES">
+            <INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_AJOUTER_MALADIES()%>" value="AJOUTERMALADIES">
 			<INPUT type="submit" style="visibility:hidden;" name="<%=process.getNOM_PB_UNITE_DECOMPTE()%>" value="UNITEDECOMPTE">     
 			<INPUT type="submit" style="visibility:hidden;" name="<%=process.getNOM_PB_MOTIF()%>" value="MOTIF">   
-			<INPUT type="submit" style="visibility:hidden;" name="<%=process.getNOM_PB_ALERTE()%>" value="ALERTE">   
+			<INPUT type="submit" style="visibility:hidden;" name="<%=process.getNOM_PB_ALERTE()%>" value="ALERTE">  
+			
+			
+			
+			<!-- Pour la gestion des emails sur les alertes AT -->
+			<FIELDSET class="sigp2Fieldset" style="text-align:left;">
+				    <legend class="sigp2Legend">Groupes destinataires des alertes mail liées aux maladies</legend>
+						<table class="sigp2NewTab" style="text-align:left;">
+							<tr bgcolor="#EFEFEF">
+								<td>											
+								    <INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_AJOUTER_DESTINATAIRE_MAIL()%>">
+								</td>
+								<td align="left">Groupe</td>
+							</tr>
+							<%
+							if (process.getListeDestinataireMailMaladie()!=null){
+								for (int i = 0;i<process.getListeDestinataireMailMaladie().size();i++){
+									Integer indiceGroupeMail = process.getListeDestinataireMailMaladie().get(i).getIdDestinataireMailMaladie();
+							%>
+									<tr id="<%=indiceGroupeMail%>" onmouseover="SelectLigne(<%=indiceGroupeMail%>,<%=process.getListeDestinataireMailMaladie().size()%>)">
+										<td class="sigp2NewTab-liste" style="position:relative;width:50px;" align="center">
+											<INPUT title="supprimer" type="image" src="images/suppression.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_SUPPRIMER_DESTINATAIRE_MAIL(indiceGroupeMail)%>">
+										</td>
+										<td class="sigp2NewTab-liste" style="position:relative;width:100%;text-align: left;"><%=process.getVAL_ST_GROUPE_DESTINATAIRE_MAIL(indiceGroupeMail)%></td>
+									</tr>
+									<%
+								}
+							}%>
+						</table>	
+				</FIELDSET>
+			<% if(process.getVAL_ST_ACTION().equals(process.ACTION_SUPPRESSION_MAIL_DESTINATAIRE)){%>
+            	<div>
+					<FONT color='red'>Etes-vous sûr de vouloir supprimer le groupe : <%=process.getGroupeCourant().getLibGroupe() %></FONT>
+			        <BR/><BR/>
+	                <INPUT type="submit" class="sigp2-Bouton-100" value="SUpprimer" name="<%=process.getNOM_PB_VALIDER_DESTINATAIRE_MAIL_MALADIE()%>" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>">
+	                <INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
+		    	</div>
+            <%}else if(process.getVAL_ST_ACTION().equals(process.ACTION_CREATION_DESTINATAIRE_MAIL)){ %>
+           		<FIELDSET class="sigp2Fieldset" style="text-align:left;">				
+	            	<legend class="sigp2Legend"><%=process.ACTION_CREATION_DESTINATAIRE_MAIL %> </legend>					
+					<span class="sigp2Mandatory" style="margin-left: 20px; position: relative; width: 120px;">Groupes :</span> 
+					<SELECT class="sigp2-saisie" name="<%=process.getNOM_LB_GROUPE()%>" style="width: 140px;">
+						<%=process.forComboHTML(process.getVAL_LB_GROUPE(), process.getVAL_LB_GROUPE_SELECT())%>
+					</SELECT>
+				<BR/>
+                    <div align="center">	 
+	                    <INPUT type="submit" class="sigp2-Bouton-100" value="Valider" name="<%=process.getNOM_PB_VALIDER_DESTINATAIRE_MAIL_MALADIE()%>" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>">
+	                    <INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
+                    </div>          
+            	</FIELDSET>  
+            <%} %>
+			
+			 
 		</FORM>
 	</BODY>
 </HTML>

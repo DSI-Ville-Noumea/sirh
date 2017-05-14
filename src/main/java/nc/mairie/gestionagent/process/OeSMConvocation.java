@@ -30,13 +30,11 @@ import nc.mairie.metier.suiviMedical.SuiviMedical;
 import nc.mairie.spring.dao.metier.agent.AgentDao;
 import nc.mairie.spring.dao.metier.hsct.MedecinDao;
 import nc.mairie.spring.dao.metier.hsct.RecommandationDao;
-import nc.mairie.spring.dao.metier.hsct.SPABSENDao;
 import nc.mairie.spring.dao.metier.hsct.VisiteMedicaleDao;
 import nc.mairie.spring.dao.metier.poste.AffectationDao;
 import nc.mairie.spring.dao.metier.poste.FichePosteDao;
 import nc.mairie.spring.dao.metier.suiviMedical.MotifVisiteMedDao;
 import nc.mairie.spring.dao.metier.suiviMedical.SuiviMedicalDao;
-import nc.mairie.spring.dao.utils.MairieDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
@@ -82,7 +80,6 @@ public class OeSMConvocation extends BasicProcess {
 
 	private SuiviMedicalDao				suiviMedDao;
 	private MotifVisiteMedDao			motifVisiteMedDao;
-	private SPABSENDao					spabsenDao;
 	private MedecinDao					medecinDao;
 	private FichePosteDao				fichePosteDao;
 	private AffectationDao				affectationDao;
@@ -146,9 +143,6 @@ public class OeSMConvocation extends BasicProcess {
 
 		if (getMotifVisiteMedDao() == null)
 			setMotifVisiteMedDao(new MotifVisiteMedDao((SirhDao) context.getBean("sirhDao")));
-
-		if (getSpabsenDao() == null)
-			setSpabsenDao(new SPABSENDao((MairieDao) context.getBean("mairieDao")));
 
 		if (getMedecinDao() == null) {
 			setMedecinDao(new MedecinDao((SirhDao) context.getBean("sirhDao")));
@@ -1326,14 +1320,6 @@ public class OeSMConvocation extends BasicProcess {
 
 	public void setMotifVisiteMedDao(MotifVisiteMedDao motifVisiteMedDao) {
 		this.motifVisiteMedDao = motifVisiteMedDao;
-	}
-
-	public SPABSENDao getSpabsenDao() {
-		return spabsenDao;
-	}
-
-	public void setSpabsenDao(SPABSENDao spabsenDao) {
-		this.spabsenDao = spabsenDao;
 	}
 
 	@Override

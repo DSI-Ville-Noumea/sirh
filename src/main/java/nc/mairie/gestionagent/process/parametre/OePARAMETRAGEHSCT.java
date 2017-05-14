@@ -5,24 +5,21 @@ import java.util.ListIterator;
 
 import javax.servlet.http.HttpServletRequest;
 
+import nc.mairie.gestionagent.absence.dto.RefTypeDto;
+import nc.mairie.gestionagent.dto.ReturnMessageDto;
+import nc.mairie.gestionagent.radi.dto.LightUserDto;
 import org.springframework.context.ApplicationContext;
 
 import nc.mairie.metier.Const;
-import nc.mairie.metier.hsct.MaladiePro;
+import nc.mairie.metier.agent.Agent;
 import nc.mairie.metier.hsct.Medecin;
 import nc.mairie.metier.hsct.Recommandation;
-import nc.mairie.metier.hsct.SiegeLesion;
-import nc.mairie.metier.hsct.TypeAT;
 import nc.mairie.metier.hsct.TypeInaptitude;
-import nc.mairie.spring.dao.metier.agent.DocumentDao;
-import nc.mairie.spring.dao.metier.hsct.AccidentTravailDao;
+import nc.mairie.spring.dao.metier.agent.AgentDao;
 import nc.mairie.spring.dao.metier.hsct.HandicapDao;
 import nc.mairie.spring.dao.metier.hsct.InaptitudeDao;
-import nc.mairie.spring.dao.metier.hsct.MaladieProDao;
 import nc.mairie.spring.dao.metier.hsct.MedecinDao;
 import nc.mairie.spring.dao.metier.hsct.RecommandationDao;
-import nc.mairie.spring.dao.metier.hsct.SiegeLesionDao;
-import nc.mairie.spring.dao.metier.hsct.TypeATDao;
 import nc.mairie.spring.dao.metier.hsct.TypeInaptitudeDao;
 import nc.mairie.spring.dao.metier.hsct.VisiteMedicaleDao;
 import nc.mairie.spring.dao.utils.SirhDao;
@@ -30,9 +27,13 @@ import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
+import nc.mairie.technique.UserAppli;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
+import nc.noumea.spring.service.AbsService;
+import nc.noumea.spring.service.IAbsService;
+import nc.noumea.spring.service.IRadiService;
 
 /**
  * Process OePARAMETRAGEHSCT Date de création : (15/09/11 08:57:49)
@@ -59,29 +60,30 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	private ArrayList<TypeInaptitude> listeInaptitude;
 	private TypeInaptitude inaptitudeCourante;
 
-	private ArrayList<TypeAT> listeAT;
-	private TypeAT atCourant;
+	private ArrayList<RefTypeDto> listeAT;
+	private RefTypeDto atCourant;
 
-	private ArrayList<SiegeLesion> listeLesion;
-	private SiegeLesion lesionCourant;
+	private ArrayList<RefTypeDto> listeLesion;
+	private RefTypeDto lesionCourant;
 
-	private ArrayList<MaladiePro> listeMaladie;
-	private MaladiePro maladieCourante;
+	private ArrayList<RefTypeDto> listeMaladie;
+	private RefTypeDto maladieCourante;
 
 	public String ACTION_SUPPRESSION = "0";
 	public String ACTION_CREATION = "1";
 
-	private AccidentTravailDao accidentTravailDao;
 	private HandicapDao handicapDao;
-	private MaladieProDao maladieProDao;
 	private MedecinDao medecinDao;
 	private RecommandationDao recommandationDao;
-	private SiegeLesionDao siegeLesionDao;
-	private TypeATDao typeATDao;
 	private TypeInaptitudeDao typeInaptitudeDao;
 	private VisiteMedicaleDao visiteMedicaleDao;
-	private DocumentDao documentDao;
 	private InaptitudeDao inaptitudeDao;
+
+	private IAbsService absService;
+
+	private AgentDao agentDao;
+
+	private IRadiService radiService;
 
 	/**
 	 * Initialisation des zones à  afficher dans la JSP Alimentation des listes,
@@ -132,21 +134,21 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 
 		if (getListeAT() == null) {
 			// Recherche des types d'AT
-			ArrayList<TypeAT> listeAT = getTypeATDao().listerTypeAT();
+			ArrayList<RefTypeDto> listeAT = (ArrayList<RefTypeDto>) getAbsService().getRefTypeAccidentTravail();
 			setListeAT(listeAT);
 			initialiseListeAT(request);
 		}
 
 		if (getListeLesion() == null) {
 			// Recherche des des sieges de lésions
-			ArrayList<SiegeLesion> listeLesion = getSiegeLesionDao().listerSiegeLesion();
+			ArrayList<RefTypeDto> listeLesion = (ArrayList<RefTypeDto>) getAbsService().getRefTypeSiegeLesion();
 			setListeLesion(listeLesion);
 			initialiseListeLesion(request);
 		}
 
 		if (getListeMaladie() == null) {
 			// Recherche des des maladies professionnelles
-			ArrayList<MaladiePro> listeMaladie = getMaladieProDao().listerMaladiePro();
+			ArrayList<RefTypeDto> listeMaladie = (ArrayList<RefTypeDto>) getAbsService().getRefTypeMaladiePro();
 			setListeMaladie(listeMaladie);
 			initialiseListeMaladie(request);
 		}
@@ -155,14 +157,11 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	private void initialiseDao() {
 		// on initialise le dao
 		ApplicationContext context = ApplicationContextProvider.getContext();
-		if (getAccidentTravailDao() == null) {
-			setAccidentTravailDao(new AccidentTravailDao((SirhDao) context.getBean("sirhDao")));
+		if (null == getAbsService()) {
+			setAbsService((AbsService) context.getBean("absService"));
 		}
 		if (getHandicapDao() == null) {
 			setHandicapDao(new HandicapDao((SirhDao) context.getBean("sirhDao")));
-		}
-		if (getMaladieProDao() == null) {
-			setMaladieProDao(new MaladieProDao((SirhDao) context.getBean("sirhDao")));
 		}
 		if (getMedecinDao() == null) {
 			setMedecinDao(new MedecinDao((SirhDao) context.getBean("sirhDao")));
@@ -170,23 +169,20 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 		if (getRecommandationDao() == null) {
 			setRecommandationDao(new RecommandationDao((SirhDao) context.getBean("sirhDao")));
 		}
-		if (getSiegeLesionDao() == null) {
-			setSiegeLesionDao(new SiegeLesionDao((SirhDao) context.getBean("sirhDao")));
-		}
-		if (getTypeATDao() == null) {
-			setTypeATDao(new TypeATDao((SirhDao) context.getBean("sirhDao")));
-		}
 		if (getTypeInaptitudeDao() == null) {
 			setTypeInaptitudeDao(new TypeInaptitudeDao((SirhDao) context.getBean("sirhDao")));
 		}
 		if (getVisiteMedicaleDao() == null) {
 			setVisiteMedicaleDao(new VisiteMedicaleDao((SirhDao) context.getBean("sirhDao")));
 		}
-		if (getDocumentDao() == null) {
-			setDocumentDao(new DocumentDao((SirhDao) context.getBean("sirhDao")));
-		}
 		if (getInaptitudeDao() == null) {
 			setInaptitudeDao(new InaptitudeDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getAgentDao() == null) {
+			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (null == getRadiService()) {
+			setRadiService((IRadiService) context.getBean("radiService"));
 		}
 	}
 
@@ -262,14 +258,14 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	 * 
 	 */
 	private void initialiseListeAT(HttpServletRequest request) throws Exception {
-		setListeAT(getTypeATDao().listerTypeAT());
+		setListeAT((ArrayList<RefTypeDto>)getAbsService().getRefTypeAccidentTravail());
 		if (getListeAT().size() != 0) {
 			int tailles[] = { 70 };
 			String padding[] = { "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
-			for (ListIterator<TypeAT> list = getListeAT().listIterator(); list.hasNext();) {
-				TypeAT td = (TypeAT) list.next();
-				String ligne[] = { td.getDescTypeAt() };
+			for (ListIterator<RefTypeDto> list = getListeAT().listIterator(); list.hasNext();) {
+				RefTypeDto td = (RefTypeDto) list.next();
+				String ligne[] = { td.getLibelle() };
 
 				aFormat.ajouteLigne(ligne);
 			}
@@ -285,14 +281,14 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	 * 
 	 */
 	private void initialiseListeLesion(HttpServletRequest request) throws Exception {
-		setListeLesion(getSiegeLesionDao().listerSiegeLesion());
+		setListeLesion((ArrayList<RefTypeDto>)getAbsService().getRefTypeSiegeLesion());
 		if (getListeLesion().size() != 0) {
 			int tailles[] = { 70 };
 			String padding[] = { "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
-			for (ListIterator<SiegeLesion> list = getListeLesion().listIterator(); list.hasNext();) {
-				SiegeLesion sl = (SiegeLesion) list.next();
-				String ligne[] = { sl.getDescSiege() };
+			for (ListIterator<RefTypeDto> list = getListeLesion().listIterator(); list.hasNext();) {
+				RefTypeDto sl = (RefTypeDto) list.next();
+				String ligne[] = { sl.getLibelle() };
 
 				aFormat.ajouteLigne(ligne);
 			}
@@ -308,14 +304,14 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	 * 
 	 */
 	private void initialiseListeMaladie(HttpServletRequest request) throws Exception {
-		setListeMaladie(getMaladieProDao().listerMaladiePro());
+		setListeMaladie((ArrayList<RefTypeDto>)getAbsService().getRefTypeMaladiePro());
 		if (getListeMaladie().size() != 0) {
 			int tailles[] = { 20, 50 };
 			String padding[] = { "G", "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
-			for (ListIterator<MaladiePro> list = getListeMaladie().listIterator(); list.hasNext();) {
-				MaladiePro mp = (MaladiePro) list.next();
-				String ligne[] = { mp.getCodeMaladiePro(), mp.getLibMaladiePro() };
+			for (ListIterator<RefTypeDto> list = getListeMaladie().listIterator(); list.hasNext();) {
+				RefTypeDto mp = (RefTypeDto) list.next();
+				String ligne[] = { mp.getCode(), mp.getLibelle() };
 
 				aFormat.ajouteLigne(ligne);
 			}
@@ -790,9 +786,9 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 		int indice = (Services.estNumerique(getVAL_LB_AT_SELECT()) ? Integer.parseInt(getVAL_LB_AT_SELECT()) : -1);
 
 		if (indice != -1 && indice < getListeAT().size()) {
-			TypeAT at = getListeAT().get(indice);
+			RefTypeDto at = getListeAT().get(indice);
 			setAtCourant(at);
-			addZone(getNOM_EF_DESC_AT(), at.getDescTypeAt());
+			addZone(getNOM_EF_DESC_AT(), at.getLibelle());
 			addZone(getNOM_ST_ACTION_AT(), ACTION_SUPPRESSION);
 		} else {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "types d'AT"));
@@ -854,9 +850,9 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 				: -1);
 
 		if (indice != -1 && indice < getListeLesion().size()) {
-			SiegeLesion sl = getListeLesion().get(indice);
+			RefTypeDto sl = getListeLesion().get(indice);
 			setLesionCourant(sl);
-			addZone(getNOM_EF_DESC_LESION(), sl.getDescSiege());
+			addZone(getNOM_EF_DESC_LESION(), sl.getLibelle());
 			addZone(getNOM_ST_ACTION_LESION(), ACTION_SUPPRESSION);
 		} else {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "sièges de lésion"));
@@ -886,10 +882,10 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 				: -1);
 
 		if (indice != -1 && indice < getListeMaladie().size()) {
-			MaladiePro mp = getListeMaladie().get(indice);
+			RefTypeDto mp = getListeMaladie().get(indice);
 			setMaladieCourante(mp);
-			addZone(getNOM_EF_CODE_MALADIE(), mp.getCodeMaladiePro());
-			addZone(getNOM_EF_LIBELLE_MALADIE(), mp.getLibMaladiePro());
+			addZone(getNOM_EF_CODE_MALADIE(), mp.getCode());
+			addZone(getNOM_EF_LIBELLE_MALADIE(), mp.getLibelle());
 			addZone(getNOM_ST_ACTION_MALADIE(), ACTION_SUPPRESSION);
 		} else {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "maladie professionelles"));
@@ -984,31 +980,55 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 		if (!performControlerSaisieAT(request))
 			return false;
 
-		if (!performControlerRegleGestionAT(request))
-			return false;
-
 		if (getVAL_ST_ACTION_AT() != null && getVAL_ST_ACTION_AT() != Const.CHAINE_VIDE) {
 			if (getVAL_ST_ACTION_AT().equals(ACTION_CREATION)) {
-				setAtCourant(new TypeAT());
-				getAtCourant().setDescTypeAt(getVAL_EF_DESC_AT());
-				getTypeATDao().creerTypeAT(getAtCourant().getDescTypeAt());
-				if (!getTransaction().isErreur())
+				setAtCourant(new RefTypeDto());
+				getAtCourant().setLibelle(getVAL_EF_DESC_AT().toUpperCase());
+				
+				ReturnMessageDto result = getAbsService().setRefTypeAccidentTravail(getAgentConnecte(request).getIdAgent(), getAtCourant());
+				
+				if (result.getErrors().isEmpty())
 					getListeAT().add(getAtCourant());
+
+				if (!declarerErreurFromReturnMessageDto(result))
+					return false;
+				
 			} else if (getVAL_ST_ACTION_AT().equals(ACTION_SUPPRESSION)) {
-				getTypeATDao().supprimerTypeAT(getAtCourant().getIdTypeAt());
-				if (!getTransaction().isErreur())
+				
+				ReturnMessageDto result = getAbsService().deleteRefTypeAccidentTravail(getAgentConnecte(request).getIdAgent(), getAtCourant());
+				
+				if (result.getErrors().isEmpty())
 					getListeAT().remove(getAtCourant());
+
+				if (!declarerErreurFromReturnMessageDto(result))
+					return false;
+				
 				setAtCourant(null);
 			}
-
-			if (getTransaction().isErreur())
-				return false;
-
-			commitTransaction();
+			
 			initialiseListeAT(request);
 			addZone(getNOM_ST_ACTION_AT(), Const.CHAINE_VIDE);
 		}
 
+		return true;
+	}
+	
+	private boolean declarerErreurFromReturnMessageDto(ReturnMessageDto result) {
+		if (result.getErrors().size() > 0) {
+			String err = Const.CHAINE_VIDE;
+			for (String erreur : result.getErrors()) {
+				err += " " + erreur;
+			}
+			getTransaction().declarerErreur("ERREUR : " + err);
+			return false;
+		}
+		if (result.getInfos().size() > 0) {
+			String inf = Const.CHAINE_VIDE;
+			for (String info : result.getInfos()) {
+				inf += " " + info;
+			}
+			getTransaction().declarerErreur(inf);
+		}
 		return true;
 	}
 
@@ -1022,41 +1042,6 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 			// "ERR002","La zone @ est obligatoire."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "description"));
 			return false;
-		}
-
-		return true;
-	}
-
-	/**
-	 * Controle les regles de gestion d'un type d'AT Date de création :
-	 * (15/09/11)
-	 */
-	private boolean performControlerRegleGestionAT(HttpServletRequest request) throws Exception {
-
-		// Verification si suppression d'un type d'AT utilise sur un accident du
-		// travail
-		if (getVAL_ST_ACTION_AT().equals(ACTION_SUPPRESSION)
-				&& getAccidentTravailDao().listerAccidentTravailAvecTypeAT(getAtCourant().getIdTypeAt()).size() > 0) {
-
-			// "ERR989",
-			// "Suppression impossible. Il existe au moins @ rattaché a @."
-			getTransaction()
-					.declarerErreur(MessageUtils.getMessage("ERR989", "un accident du travail", "ce type d'AT"));
-			return false;
-		}
-
-		// Vérification des contraintes d'unicité du type d'AT
-		if (getVAL_ST_ACTION_AT().equals(ACTION_CREATION)) {
-
-			for (TypeAT at : getListeAT()) {
-				if (at.getDescTypeAt().equals(getVAL_EF_DESC_AT().toUpperCase())) {
-					// "ERR974",
-					// "Attention, il existe déjà  @ avec @. Veuillez contrôler."
-					getTransaction().declarerErreur(
-							MessageUtils.getMessage("ERR974", "un type d'AT", "cette description"));
-					return false;
-				}
-			}
 		}
 
 		return true;
@@ -1181,27 +1166,32 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 		if (!performControlerSaisieLesion(request))
 			return false;
 
-		if (!performControlerRegleGestionLesion(request))
-			return false;
-
 		if (getVAL_ST_ACTION_LESION() != null && getVAL_ST_ACTION_LESION() != Const.CHAINE_VIDE) {
 			if (getVAL_ST_ACTION_LESION().equals(ACTION_CREATION)) {
-				setLesionCourant(new SiegeLesion());
-				getLesionCourant().setDescSiege(getVAL_EF_DESC_LESION());
-				getSiegeLesionDao().creerSiegeLesion(getLesionCourant().getDescSiege());
-				if (!getTransaction().isErreur())
+				setLesionCourant(new RefTypeDto());
+				getLesionCourant().setLibelle(getVAL_EF_DESC_LESION().toUpperCase());
+				
+				ReturnMessageDto result = getAbsService().setRefTypeSiegeLesion(getAgentConnecte(request).getIdAgent(), getLesionCourant());
+				
+				if (result.getErrors().isEmpty())
 					getListeLesion().add(getLesionCourant());
+				
+				if(!declarerErreurFromReturnMessageDto(result))
+					return false;
+				
 			} else if (getVAL_ST_ACTION_LESION().equals(ACTION_SUPPRESSION)) {
-				getSiegeLesionDao().supprimerSiegeLesion(getLesionCourant().getIdSiege());
-				if (!getTransaction().isErreur())
+				
+				ReturnMessageDto result = getAbsService().deleteRefTypeSiegeLesion(getAgentConnecte(request).getIdAgent(), getLesionCourant());
+				
+				if (result.getErrors().isEmpty())
 					getListeLesion().remove(getLesionCourant());
+				
+				if(!declarerErreurFromReturnMessageDto(result))
+					return false;
+				
 				setLesionCourant(null);
 			}
 
-			if (getTransaction().isErreur())
-				return false;
-
-			commitTransaction();
 			initialiseListeLesion(request);
 			addZone(getNOM_ST_ACTION_LESION(), Const.CHAINE_VIDE);
 		}
@@ -1220,41 +1210,6 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 			// "ERR002","La zone @ est obligatoire."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "description"));
 			return false;
-		}
-
-		return true;
-	}
-
-	/**
-	 * Controle les regles de gestion d'un siege de lésion Date de création :
-	 * (15/09/11)
-	 */
-	private boolean performControlerRegleGestionLesion(HttpServletRequest request) throws Exception {
-
-		// Verification si suppression d'un siege de lésion utilise sur un
-		// accident du travail
-		if (getVAL_ST_ACTION_LESION().equals(ACTION_SUPPRESSION)
-				&& getAccidentTravailDao().listerAccidentTravailAvecSiegeLesion(getLesionCourant().getIdSiege()).size() > 0) {
-
-			// "ERR989",
-			// "Suppression impossible. Il existe au moins @ rattaché a @."
-			getTransaction().declarerErreur(
-					MessageUtils.getMessage("ERR989", "accident du travail", "ce siège de lésion"));
-			return false;
-		}
-
-		// Vérification des contraintes d'unicité du siege de lésion
-		if (getVAL_ST_ACTION_LESION().equals(ACTION_CREATION)) {
-
-			for (SiegeLesion siege : getListeLesion()) {
-				if (siege.getDescSiege().equals(getVAL_EF_DESC_LESION().toUpperCase())) {
-					// "ERR974",
-					// "Attention, il existe déjà  @ avec @. Veuillez contrôler."
-					getTransaction().declarerErreur(
-							MessageUtils.getMessage("ERR974", "un siège de lésion", "cette description"));
-					return false;
-				}
-			}
 		}
 
 		return true;
@@ -1280,29 +1235,34 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 		if (!performControlerSaisieMaladie(request))
 			return false;
 
-		if (!performControlerRegleGestionMaladie(request))
-			return false;
-
 		if (getVAL_ST_ACTION_MALADIE() != null && getVAL_ST_ACTION_MALADIE() != Const.CHAINE_VIDE) {
 			if (getVAL_ST_ACTION_MALADIE().equals(ACTION_CREATION)) {
-				setMaladieCourante(new MaladiePro());
-				getMaladieCourante().setCodeMaladiePro(getVAL_EF_CODE_MALADIE());
-				getMaladieCourante().setLibMaladiePro(getVAL_EF_LIBELLE_MALADIE());
-				getMaladieProDao().creerMaladiePro(getMaladieCourante().getCodeMaladiePro(),
-						getMaladieCourante().getLibMaladiePro());
-				if (!getTransaction().isErreur())
+				
+				setMaladieCourante(new RefTypeDto());
+				getMaladieCourante().setLibelle(getVAL_EF_LIBELLE_MALADIE().toUpperCase());
+				getMaladieCourante().setCode(null != getVAL_EF_CODE_MALADIE() ? getVAL_EF_CODE_MALADIE().toUpperCase() : Const.CHAINE_VIDE);
+				
+				ReturnMessageDto result = getAbsService().setRefTypeMaladiePro(getAgentConnecte(request).getIdAgent(), getMaladieCourante());
+				
+				if (result.getErrors().isEmpty())
 					getListeMaladie().add(getMaladieCourante());
+				
+				if(!declarerErreurFromReturnMessageDto(result)) 
+					return false;
+				
 			} else if (getVAL_ST_ACTION_MALADIE().equals(ACTION_SUPPRESSION)) {
-				getMaladieProDao().supprimerMaladiePro(getMaladieCourante().getIdMaladiePro());
-				if (!getTransaction().isErreur())
+				
+				ReturnMessageDto result = getAbsService().deleteRefTypeMaladiePro(getAgentConnecte(request).getIdAgent(), getMaladieCourante());
+				
+				if (result.getErrors().isEmpty())
 					getListeMaladie().remove(getMaladieCourante());
+				
+				if(!declarerErreurFromReturnMessageDto(result)) 
+					return false;
+				
 				setMaladieCourante(null);
 			}
-
-			if (getTransaction().isErreur())
-				return false;
-
-			commitTransaction();
+			
 			initialiseListeMaladie(request);
 			addZone(getNOM_ST_ACTION_MALADIE(), Const.CHAINE_VIDE);
 		}
@@ -1323,59 +1283,9 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 			return false;
 		}
 
-		// Verification code maladie not null
-		if (getZone(getNOM_EF_CODE_MALADIE()).length() == 0) {
-			// "ERR002","La zone @ est obligatoire."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "code"));
-			return false;
-		}
-
 		return true;
 	}
-
-	/**
-	 * Controle les regles de gestion d'une maladie professionnelle Date de
-	 * création : (15/09/11)
-	 */
-	private boolean performControlerRegleGestionMaladie(HttpServletRequest request) throws Exception {
-
-		// Verification si suppression d'une maladie professionnelle utilise sur
-		// un handicap
-		if (getVAL_ST_ACTION_MALADIE().equals(ACTION_SUPPRESSION)
-				&& getHandicapDao().listerHandicapAvecMaladiePro(getMaladieCourante().getIdMaladiePro()).size() > 0) {
-
-			// "ERR989",
-			// "Suppression impossible. Il existe au moins @ rattaché a @."
-			getTransaction().declarerErreur(
-					MessageUtils.getMessage("ERR989", "handicap", "cette maladie professionnelle"));
-			return false;
-		}
-
-		// Vérification des contraintes d'unicité de la maladie professionnelle
-		if (getVAL_ST_ACTION_MALADIE().equals(ACTION_CREATION)) {
-
-			for (MaladiePro maladie : getListeMaladie()) {
-				if (maladie.getCodeMaladiePro().equals(getVAL_EF_CODE_MALADIE().toUpperCase())) {
-					// "ERR974",
-					// "Attention, il existe déjà  @ avec @. Veuillez contrôler."
-					getTransaction().declarerErreur(
-							MessageUtils.getMessage("ERR974", "une maladie professionnelle", "ce code"));
-					return false;
-				}
-
-				if (maladie.getLibMaladiePro().equals(getVAL_EF_LIBELLE_MALADIE().toUpperCase())) {
-					// "ERR974",
-					// "Attention, il existe déjà  @ avec @. Veuillez contrôler."
-					getTransaction().declarerErreur(
-							MessageUtils.getMessage("ERR974", "une maladie professionnelle", "ce libellé"));
-					return false;
-				}
-			}
-		}
-
-		return true;
-	}
-
+	
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER_MEDECIN Date de
 	 * création : (15/09/11 08:57:49)
@@ -1593,6 +1503,32 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 		return true;
 	}
 
+	private Agent getAgentConnecte(HttpServletRequest request) throws Exception {
+		Agent agent = null;
+
+		UserAppli uUser = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
+		// on fait la correspondance entre le login et l'agent via RADI
+		LightUserDto user = radiService.getAgentCompteADByLogin(uUser.getUserName());
+		if (user == null) {
+			getTransaction().traiterErreur();
+			// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
+			return null;
+		} else {
+			if (user != null && user.getEmployeeNumber() != null && user.getEmployeeNumber() != 0) {
+				try {
+					agent = getAgentDao().chercherAgentParMatricule(radiService.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
+				} catch (Exception e) {
+					// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
+					return null;
+				}
+			}
+		}
+
+		return agent;
+	}
+
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_ACTION_AT Date de
 	 * création : (15/09/11 08:57:49)
@@ -1702,24 +1638,6 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'une zone de saisie pour la JSP : EF_CODE_MALADIE Date
-	 * de création : (15/09/11 08:57:49)
-	 * 
-	 */
-	public String getNOM_EF_CODE_MALADIE() {
-		return "NOM_EF_CODE_MALADIE";
-	}
-
-	/**
-	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
-	 * EF_CODE_MALADIE Date de création : (15/09/11 08:57:49)
-	 * 
-	 */
-	public String getVAL_EF_CODE_MALADIE() {
-		return getZone(getNOM_EF_CODE_MALADIE());
-	}
-
-	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_DESC_AT Date de
 	 * création : (15/09/11 08:57:49)
 	 * 
@@ -1807,6 +1725,13 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	 */
 	public String getVAL_EF_LIBELLE_MALADIE() {
 		return getZone(getNOM_EF_LIBELLE_MALADIE());
+	}
+	
+	public String getNOM_EF_CODE_MALADIE() {
+		return "NOM_EF_CODE_MALADIE";
+	}
+	public String getVAL_EF_CODE_MALADIE() {
+		return getZone(getNOM_EF_CODE_MALADIE());
 	}
 
 	/**
@@ -2194,14 +2119,6 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 		return getZone(getNOM_LB_RECOMMANDATION_SELECT());
 	}
 
-	private TypeAT getAtCourant() {
-		return atCourant;
-	}
-
-	private void setAtCourant(TypeAT atCourant) {
-		this.atCourant = atCourant;
-	}
-
 	private TypeInaptitude getInaptitudeCourante() {
 		return inaptitudeCourante;
 	}
@@ -2210,44 +2127,12 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 		this.inaptitudeCourante = inaptitudeCourante;
 	}
 
-	private SiegeLesion getLesionCourant() {
-		return lesionCourant;
-	}
-
-	private void setLesionCourant(SiegeLesion lesionCourant) {
-		this.lesionCourant = lesionCourant;
-	}
-
-	private ArrayList<TypeAT> getListeAT() {
-		return listeAT;
-	}
-
-	private void setListeAT(ArrayList<TypeAT> listeAT) {
-		this.listeAT = listeAT;
-	}
-
 	private ArrayList<TypeInaptitude> getListeInaptitude() {
 		return listeInaptitude;
 	}
 
 	private void setListeInaptitude(ArrayList<TypeInaptitude> listeInaptitude) {
 		this.listeInaptitude = listeInaptitude;
-	}
-
-	private ArrayList<SiegeLesion> getListeLesion() {
-		return listeLesion;
-	}
-
-	private void setListeLesion(ArrayList<SiegeLesion> listeLesion) {
-		this.listeLesion = listeLesion;
-	}
-
-	private ArrayList<MaladiePro> getListeMaladie() {
-		return listeMaladie;
-	}
-
-	private void setListeMaladie(ArrayList<MaladiePro> listeMaladie) {
-		this.listeMaladie = listeMaladie;
 	}
 
 	private ArrayList<Medecin> getListeMedecin() {
@@ -2266,14 +2151,6 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 		this.listeRecommandation = listeRecommandation;
 	}
 
-	private MaladiePro getMaladieCourante() {
-		return maladieCourante;
-	}
-
-	private void setMaladieCourante(MaladiePro maladieCourante) {
-		this.maladieCourante = maladieCourante;
-	}
-
 	private Medecin getMedecinCourant() {
 		return medecinCourant;
 	}
@@ -2290,28 +2167,12 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 		this.recommandationCourante = recommandationCourante;
 	}
 
-	public AccidentTravailDao getAccidentTravailDao() {
-		return accidentTravailDao;
-	}
-
-	public void setAccidentTravailDao(AccidentTravailDao accidentTravailDao) {
-		this.accidentTravailDao = accidentTravailDao;
-	}
-
 	public HandicapDao getHandicapDao() {
 		return handicapDao;
 	}
 
 	public void setHandicapDao(HandicapDao handicapDao) {
 		this.handicapDao = handicapDao;
-	}
-
-	public MaladieProDao getMaladieProDao() {
-		return maladieProDao;
-	}
-
-	public void setMaladieProDao(MaladieProDao maladieProDao) {
-		this.maladieProDao = maladieProDao;
 	}
 
 	public MedecinDao getMedecinDao() {
@@ -2330,22 +2191,6 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 		this.recommandationDao = recommandationDao;
 	}
 
-	public SiegeLesionDao getSiegeLesionDao() {
-		return siegeLesionDao;
-	}
-
-	public void setSiegeLesionDao(SiegeLesionDao siegeLesionDao) {
-		this.siegeLesionDao = siegeLesionDao;
-	}
-
-	public TypeATDao getTypeATDao() {
-		return typeATDao;
-	}
-
-	public void setTypeATDao(TypeATDao typeATDao) {
-		this.typeATDao = typeATDao;
-	}
-
 	public TypeInaptitudeDao getTypeInaptitudeDao() {
 		return typeInaptitudeDao;
 	}
@@ -2362,14 +2207,6 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 		this.visiteMedicaleDao = visiteMedicaleDao;
 	}
 
-	public DocumentDao getDocumentDao() {
-		return documentDao;
-	}
-
-	public void setDocumentDao(DocumentDao documentDao) {
-		this.documentDao = documentDao;
-	}
-
 	public InaptitudeDao getInaptitudeDao() {
 		return inaptitudeDao;
 	}
@@ -2377,4 +2214,77 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	public void setInaptitudeDao(InaptitudeDao inaptitudeDao) {
 		this.inaptitudeDao = inaptitudeDao;
 	}
+
+	public IAbsService getAbsService() {
+		return absService;
+	}
+
+	public void setAbsService(IAbsService absService) {
+		this.absService = absService;
+	}
+
+	public ArrayList<RefTypeDto> getListeAT() {
+		return listeAT;
+	}
+
+	public void setListeAT(ArrayList<RefTypeDto> listeAT) {
+		this.listeAT = listeAT;
+	}
+
+	public RefTypeDto getAtCourant() {
+		return atCourant;
+	}
+
+	public void setAtCourant(RefTypeDto atCourant) {
+		this.atCourant = atCourant;
+	}
+
+	public ArrayList<RefTypeDto> getListeLesion() {
+		return listeLesion;
+	}
+
+	public void setListeLesion(ArrayList<RefTypeDto> listeLesion) {
+		this.listeLesion = listeLesion;
+	}
+
+	public RefTypeDto getLesionCourant() {
+		return lesionCourant;
+	}
+
+	public void setLesionCourant(RefTypeDto lesionCourant) {
+		this.lesionCourant = lesionCourant;
+	}
+
+	public ArrayList<RefTypeDto> getListeMaladie() {
+		return listeMaladie;
+	}
+
+	public void setListeMaladie(ArrayList<RefTypeDto> listeMaladie) {
+		this.listeMaladie = listeMaladie;
+	}
+
+	public RefTypeDto getMaladieCourante() {
+		return maladieCourante;
+	}
+
+	public void setMaladieCourante(RefTypeDto maladieCourante) {
+		this.maladieCourante = maladieCourante;
+	}
+
+	public AgentDao getAgentDao() {
+		return agentDao;
+	}
+
+	public void setAgentDao(AgentDao agentDao) {
+		this.agentDao = agentDao;
+	}
+
+	public IRadiService getRadiService() {
+		return radiService;
+	}
+
+	public void setRadiService(IRadiService radiService) {
+		this.radiService = radiService;
+	}
+	
 }

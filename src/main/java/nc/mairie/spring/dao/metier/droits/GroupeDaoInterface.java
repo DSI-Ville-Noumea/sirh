@@ -7,6 +7,8 @@ import nc.mairie.metier.droits.Groupe;
 public interface GroupeDaoInterface {
 
 	public ArrayList<Groupe> listerGroupe() throws Exception;
+	
+	public Groupe chercherGroupeById(Integer idGroupe) throws Exception;
 
 	public ArrayList<Groupe> listerGroupeAvecUtilisateur(Integer idUtilisateur) throws Exception;
 

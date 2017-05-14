@@ -147,6 +147,13 @@
 					</SELECT>
 					<BR/>
 					<BR/>
+				<%}else if(process.getVAL_ST_CHOIX_TYPE_DOC().equals(process.MALADIE_PROFESSIONNELLE)){ %>
+					<span style="width:130px;" class="sigp2Mandatory" > Choix de la maladie professionnelle : </span>
+					<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_MP() %>"> 
+						<%=process.forComboHTML(process.getVAL_LB_MP(), process.getVAL_LB_MP_SELECT())%>
+					</SELECT>
+					<BR/>
+					<BR/>
 				<%}else if(process.getVAL_ST_CHOIX_TYPE_DOC().equals("VISITE MEDICALE")){ %>
 					<span style="width:130px;" class="sigp2Mandatory" > Choix de visite médicale : </span>
 					<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_VM() %>"> 

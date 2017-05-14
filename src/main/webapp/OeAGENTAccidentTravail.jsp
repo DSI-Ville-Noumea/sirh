@@ -1,6 +1,9 @@
 <%@ page contentType="text/html; charset=UTF-8" %> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <%@page import="nc.mairie.utils.MairieUtils"%>
 <%@page import="nc.mairie.enums.EnumTypeDroit"%>
+<%@page import="nc.mairie.enums.EnumTypeAbsence"%>
+<%@page import="nc.mairie.gestionagent.absence.dto.PieceJointeDto"%>
+
 <HTML>
 	
 	<HEAD>
@@ -53,15 +56,16 @@
 		<INPUT name="JSP" type="hidden" value="<%= process.getJSP() %>">
 				
 				<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
-				    <legend class="sigp2Legend">Liste des accidents du travail de l'agent</legend>
+				    <legend class="sigp2Legend">Liste des AT et MP de l'agent</legend>
 				<div style="overflow: auto;height: 250px;width:1000px;margin-right: 0px;margin-left: 0px;">
 						<table class="sigp2NewTab" style="text-align:left;width:980px;">
 							<tr bgcolor="#EFEFEF"  valign="bottom">
-								<td align="left">
-									<INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_CREER()%>">
-								</td>
-								<td align="center">Date</td>
-								<td align="center">Date de rechute</td>
+								<td align="left"> </td>
+								<td align="center">AT / MP</td>
+								<td align="center">Date déclaration</td>
+								<td align="center">Date début</td>
+								<td align="center">Date fin</td>
+								<td align="center">Rechute</td>
 								<td align="center">Nbr jour(s) IIT</td>
 								<td align="left">Type</td>
 								<td align="left">Siège des lésions</td>
@@ -69,21 +73,24 @@
 							</tr>
 							<%
 							int indiceAcc = 0;
-							if (process.getListeAT()!=null){
-								for (int i = 0;i<process.getListeAT().size();i++){
+							if (process.getListeAT_MP()!=null){
+								for (int i = 0;i<process.getListeAT_MP().size();i++){
 							%>
-									<tr id="<%=indiceAcc%>" onmouseover="SelectLigne(<%=indiceAcc%>,<%=process.getListeAT().size()%>)">
+									<tr id="<%=indiceAcc%>" onmouseover="SelectLigne(<%=indiceAcc%>,<%=process.getListeAT_MP().size() %>)">
 										<td class="sigp2NewTab-liste" style="position:relative;width:70px;" align="center">
 											<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, "") %>" name="<%=process.getNOM_PB_CONSULTER(indiceAcc)%>">
 											<INPUT title="modifier" type="image" src="images/modifier.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_MODIFIER(indiceAcc)%>">
 											<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_CONSULTER(indiceAcc)%>">
 											<INPUT title="documents" type="image" src="images/ajout-doc.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_DOCUMENT(indiceAcc)%>">
 										</td>
+										<td class="sigp2NewTab-liste" style="position:relative;width:90px;text-align: center;"><%=process.getVAL_ST_AT_MP(indiceAcc)%></td>
 										<td class="sigp2NewTab-liste" style="position:relative;width:90px;text-align: center;"><%=process.getVAL_ST_DATE(indiceAcc)%></td>
-										<td class="sigp2NewTab-liste" style="position:relative;width:90px;text-align: center;"><%=process.getVAL_ST_DATE_RECHUTE(indiceAcc)%></td>
+										<td class="sigp2NewTab-liste" style="position:relative;width:90px;text-align: center;"><%=process.getVAL_ST_DATE_DEBUT(indiceAcc)%></td>
+										<td class="sigp2NewTab-liste" style="position:relative;width:90px;text-align: center;"><%=process.getVAL_ST_DATE_FIN(indiceAcc)%></td>
+										<td class="sigp2NewTab-liste" style="position:relative;width:90px;text-align: center;"><%=process.getVAL_ST_RECHUTE(indiceAcc)%></td>
 										<td class="sigp2NewTab-liste" style="position:relative;width:40px;text-align: right;"><%=process.getVAL_ST_NB_JOURS(indiceAcc)%></td>
 										<td class="sigp2NewTab-liste" style="position:relative;width:300px;text-align: left;"><%=process.getVAL_ST_TYPE(indiceAcc)%></td>
-										<td class="sigp2NewTab-liste" style="position:relative;width:320px;text-align: left;"><%=process.getVAL_ST_SIEGE(indiceAcc)%></td>
+										<td class="sigp2NewTab-liste" style="position:relative;width:200px;text-align: left;"><%=process.getVAL_ST_SIEGE(indiceAcc)%></td>
 										<td class="sigp2NewTab-liste" style="position:relative;text-align: center;"><%=process.getVAL_ST_NB_DOC(indiceAcc)%></td>
 									</tr>
 									<%
@@ -96,56 +103,148 @@
 		<%if (! "".equals(process.getVAL_ST_ACTION()) ) {%>
 		<INPUT name="JSP" type="hidden" value="<%= process.getJSP() %>">
 		<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
-			<legend class="sigp2Legend"><%=process.getVAL_ST_ACTION()%></legend>
-			<%if(!process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT) && !process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT_CREATION) && !process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT_SUPPRESSION) && !process.getVAL_ST_ACTION().equals(process.ACTION_SUPPRESSION) && !process.getVAL_ST_ACTION().equals(process.ACTION_CONSULTATION) ){ %>
+			<legend class="sigp2Legend"><%=process.getVAL_ST_ACTION()%> <%=process.getVAL_ST_TYPE_DEMANDE()%></legend>
+			<%if(!process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT) 
+					&& !process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT_CREATION)
+					&& !process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT_SUPPRESSION) 
+					&& !process.getVAL_ST_ACTION().equals(process.ACTION_CONSULTATION) ){ %>
 			<table>
+				<% if(process.getDemandeCourant().getTypeSaisi().isDateDeclaration()) { %>
 				<tr>
 					<td width="150px;">
-						<span class="sigp2Mandatory">Date d'AT :</span>
+						<span class="sigp2Mandatory">Date de déclaration :</span>
 					</td>
-					<td>
-						<input id="<%=process.getNOM_EF_DATE()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DATE() %>" size="10" type="text"	value="<%= process.getVAL_EF_DATE() %>">
-						<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_EF_DATE()%>', 'dd/mm/y');">
+					<td width="320px;">
+						<input id="<%=process.getNOM_EF_DATE()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DATE() %>" size="10" type="text" value="<%= process.getVAL_EF_DATE() %>" readonly="readonly">
 					</td>
 				</tr>
+				<% } %>
+				<% if(process.getDemandeCourant().getTypeSaisi().isCalendarDateDebut()) { %>
 				<tr>
 					<td>
-						<span class="sigp2">Date de rechute :</span>
+						<span class="sigp2">Date de début :</span>
 					</td>
 					<td>
-						<input id="<%=process.getNOM_EF_DATE_INITIALE()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DATE_INITIALE() %>" size="10" type="text"	value="<%= process.getVAL_EF_DATE_INITIALE() %>">
-						<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_EF_DATE_INITIALE()%>', 'dd/mm/y');">
+						<input id="<%=process.getNOM_EF_DATE_DEBUT()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DATE_DEBUT() %>" size="10" type="text" value="<%= process.getVAL_EF_DATE_DEBUT() %>" readonly="readonly">
 					</td>
 				</tr>
+				<% } %>
+				<% if(process.getDemandeCourant().getTypeSaisi().isCalendarDateFin()) { %>
+				<tr>
+					<td>
+						<span class="sigp2">Date de fin :</span>
+					</td>
+					<td>
+						<input id="<%=process.getNOM_EF_DATE_FIN()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DATE_FIN() %>" size="10" type="text" value="<%= process.getVAL_EF_DATE_FIN() %>" readonly="readonly">
+					</td>
+				</tr>
+				<% } %>
+				<% if(process.getDemandeCourant().getTypeSaisi().isNombreITT()) { %>
 				<tr>
 					<td>
 						<span class="sigp2">Durée ITT (jours) :</span>
 					</td>
-					<td>
-						<INPUT class="sigp2-saisie" maxlength="5" name="<%= process.getNOM_EF_NB_JOUR_IIT() %>" size="5" type="text" value="<%= process.getVAL_EF_NB_JOUR_IIT() %>">
-					</td>
+					<td><span class="sigp2-saisie"><%= process.getVAL_EF_NB_JOUR_ITT() %></span></td>
 				</tr>
+				<% } %>
+				<% if(process.getDemandeCourant().getTypeSaisi().isPrescripteur()) { %>
+				<tr>
+					<td>
+						<span class="sigp2">Prescripteur :</span>
+					</td>
+					<td><span class="sigp2-saisie"><%= process.getVAL_EF_PRESCRIPTEUR() %></span></td>
+				</tr>
+				<% } %>
 				<tr>
 					<td>
 						<span class="sigp2Mandatory">Type :</span>
 					</td>
 					<td>
+						<% if(process.getDemandeCourant().getIdTypeDemande().equals(EnumTypeAbsence.MALADIES_ACCIDENT_TRAVAIL.getCode())
+								|| process.getDemandeCourant().getIdTypeDemande().equals(EnumTypeAbsence.MALADIES_RECHUTE.getCode())) { %>
 						<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_TYPE() %>">
-							<%=process.forComboHTML(process.getVAL_LB_TYPE(), process.getVAL_LB_TYPE_SELECT()) %>
+							<%=process.forComboHTML(process.getVAL_LB_TYPE_AT(), process.getVAL_LB_TYPE_SELECT()) %>
 						</SELECT>
+						<% } %>
+						<% if(process.getDemandeCourant().getTypeSaisi().isMaladiePro()) { %>
+						<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_TYPE() %>" disabled="disabled">
+							<%=process.forComboHTML(process.getVAL_LB_TYPE_MP(), process.getVAL_LB_TYPE_SELECT()) %>
+						</SELECT>
+						<% } %>
 					</td>
 				</tr>
+				<% if(process.getDemandeCourant().getTypeSaisi().isSiegeLesion()) { %>
 				<tr>
 					<td>
 						<span class="sigp2Mandatory">Siège des lésions :</span> 
 					</td>
 					<td>
-						<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_SIEGE_LESION() %>">
+						<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_SIEGE_LESION() %>" disabled="disabled">
 							<%=process.forComboHTML(process.getVAL_LB_SIEGE_LESION(), process.getVAL_LB_SIEGE_LESION_SELECT()) %>
 						</SELECT>
 					</td>
 				</tr>
+				<% } %>
+				<% if(process.getDemandeCourant().getTypeSaisi().isMotif()) { %>
+				<tr>
+					<td>
+						<span class="sigp2Mandatory">Commentaire :</span> 
+					</td>
+					<td>
+						<textarea cols="100" rows="3" name="<%=process.getNOM_EF_MOTIF()%>" title="Zone de saisie du commentaire"><%=process.getVAL_EF_MOTIF().trim() %></textarea>
+					</td>
+				</tr>
+				<% } %>
+				<tr>
+					<td>
+						<span class="sigp2">Avis commission :</span> 
+					</td>
+					<td>
+						<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_AVIS_COMMISSION() %>">
+							<%=process.forComboHTML(process.getLB_AVIS_COMMISSION(), process.getVAL_LB_AVIS_COMMISSION_SELECT()) %>
+						</SELECT>
+					</td>
+				</tr>
+				<!-- suivi CAFAT pour les maladies pro -->
+				<% if(process.getDemandeCourant().getIdTypeDemande().equals(EnumTypeAbsence.MALADIES_PROFESSIONNELLE.getCode())) { %>
+				<tr>
+					<td>
+						<span class="sigp2">Date de transmission CAFAT :</span>
+					</td>
+					<td>
+						<input id="<%=process.getNOM_EF_DATE_TRANSMISSION_CAFAT() %>" class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_DATE_TRANSMISSION_CAFAT() %>" size="10" type="text" value="<%= process.getVAL_EF_DATE_TRANSMISSION_CAFAT() %>">
+						<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_EF_DATE_TRANSMISSION_CAFAT()%>', 'dd/mm/y');" />
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span class="sigp2">Date de décision CAFAT :</span> 
+					</td>
+					<td>
+						<input id="<%=process.getNOM_EF_DATE_DECISION_CAFAT() %>" class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_DATE_DECISION_CAFAT() %>" size="10" type="text" value="<%= process.getVAL_EF_DATE_DECISION_CAFAT() %>">
+						<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_EF_DATE_DECISION_CAFAT()%>', 'dd/mm/y');" />
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span class="sigp2">Taux de prise en charge par la CAFAT :</span> 
+					</td>
+					<td>
+						<INPUT class="sigp2-saisie" maxlength="5" name="<%=process.getNOM_EF_TAUX_CAFAT() %>" size="5" type="text" value="<%= process.getVAL_EF_TAUX_CAFAT() %>">
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span class="sigp2">Date de transmission de la commission d'aptitude :</span> 
+					</td>
+					<td>
+						<input id="<%=process.getNOM_EF_DATE_COMMISSION_APTITUDE() %>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DATE_COMMISSION_APTITUDE() %>" size="10" type="text" value="<%= process.getVAL_EF_DATE_COMMISSION_APTITUDE() %>">
+						<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_EF_DATE_COMMISSION_APTITUDE()%>', 'dd/mm/y');" />
+					</td>
+				</tr>
+				<% } %>
 			</table>
+            
 			<%}else if(process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT) || process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT_CREATION) || process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT_SUPPRESSION)){ %>			
 				<div style="overflow: auto;height: 250px;width:1000px;margin-right: 0px;margin-left: 0px;">
 					<table class="sigp2NewTab" style="text-align:left;width:980px;">
@@ -153,28 +252,25 @@
 							<td>
 								<INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_CREER_DOC()%>">
 							</td>
-							<td width="230px;">Nom du document</td>
-							<td width="230px;">Nom original</td>
-							<td width="90px;" align="center">Type</td>
+							<td width="300px;">Nom du document</td>
 							<td width="120px;" align="center">Date</td>
 							<td>Commentaire</td>
 						</tr>
 					<%
 					int indiceActes = 0;
-					if (process.getListeDocuments()!=null){
-						for (int i = 0;i<process.getListeDocuments().size();i++){
+					if (process.getDemandeCourant().getPiecesJointes() !=null){
+						for (int i = 0;i<process.getDemandeCourant().getPiecesJointes().size();i++){ 
+							PieceJointeDto pj = process.getDemandeCourant().getPiecesJointes().get(i);
 						%>
-						<tr id="doc<%=indiceActes%>" onmouseover="SelectLigneTabDoc(<%=indiceActes%>,<%=process.getListeDocuments().size()%>)">
+						<tr id="doc<%=indiceActes%>" onmouseover="SelectLigneTabDoc(<%=indiceActes%>, <%=process.getDemandeCourant().getPiecesJointes().size()%>)">
 							<td class="sigp2NewTab-liste" style="position:relative;width:60px;" align="center">
-								<a href="<%=process.getVAL_ST_URL_DOC(indiceActes)%>" title="Consulter le document" target="_blank" >
-									<img onkeydown="" onkeypress="" onkeyup="" src="images/oeil.gif" height="16px" width="16px" title="Voir le document" />
-								</a>
+								
+								<a href="<%=pj.getUrlFromAlfresco() %>" title="<%=pj.getTitre() %>" target="_blank" ><img onkeydown="" onkeypress="" 
+									onkeyup="" src="images/oeil.gif" height="16px" width="16px" title="Voir le document <%=pj.getTitre() %>" /></a>
 								<INPUT title="supprimer" type="image" src="images/suppression.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_SUPPRIMER_DOC(indiceActes)%>">
 							</td>
 							<td class="sigp2NewTab-liste" style="position:relative;width:230px;text-align: left;"><%=process.getVAL_ST_NOM_DOC(indiceActes)%></td>
-							<td class="sigp2NewTab-liste" style="position:relative;width:230px;text-align: left;"><%=process.getVAL_ST_NOM_ORI_DOC(indiceActes)%></td>
-							<td align="center" class="sigp2NewTab-liste" style="position:relative;width:120px;"><%=process.getVAL_ST_TYPE_DOC(indiceActes)%></td>
-							<td align="center" class="sigp2NewTab-liste" style="position:relative;width:90px;"><%=process.getVAL_ST_DATE_DOC(indiceActes)%></td>
+							<td class="sigp2NewTab-liste" style="position:relative;text-align: center;width:90px;"><%=process.getVAL_ST_DATE_DOC(indiceActes)%></td>
 							<td class="sigp2NewTab-liste" style="position:relative;text-align: left;">&nbsp;<%=process.getVAL_ST_COMMENTAIRE(indiceActes)%></td>
 						</tr>
 					<%
@@ -192,15 +288,6 @@
 					<span class="sigp2" style="width:130px;">Nom du document : </span>
 					<span class="sigp2-saisie"><%=process.getVAL_ST_NOM_DOC()%></span>
 					<BR/>
-					<span class="sigp2" style="width:130px;">Nom original : </span>
-					<span class="sigp2-saisie"><%=process.getVAL_ST_NOM_ORI_DOC()%></span>
-					<BR/>
-					<span class="sigp2" style="width:130px;">Date : </span>
-					<span class="sigp2-saisie"><%=process.getVAL_ST_DATE_DOC()%></span>
-					<BR/>
-					<span class="sigp2" style="width:130px;">Commentaire : </span>
-					<span class="sigp2-saisie"><%=process.getVAL_ST_COMMENTAIRE_DOC()%></span>
-					<BR/>		
 				</div>
 				<BR/>
 				<TABLE align="center" border="0" cellpadding="0" cellspacing="0">
@@ -218,7 +305,7 @@
 					</TBODY>
 				</TABLE>
 		        <BR>
-				<% }else if(process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT_CREATION)){ %>
+			<% }else if(process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT_CREATION)){ %>
 					<div>		
 						<span class="sigp2" style="width:130px;" >Commentaire :</span><INPUT class="sigp2-saisie" maxlength="100" name="<%= process.getNOM_EF_COMMENTAIRE() %>" size="100" type="text" value="<%= process.getVAL_EF_COMMENTAIRE() %>">
 						<BR/>
@@ -249,20 +336,143 @@
 		    	<FONT color='red'>Veuillez valider votre choix.</FONT>
 		    	<BR/><BR/>
 		    <% } %>
-		    <span class="sigp2" style="width:150px">Date : </span>
-			<span class="sigp2-saisie"><%=process.getVAL_EF_DATE()%></span>
-			<BR/>
-		    <span class="sigp2" style="width:150px">Date de rechute : </span>
-			<span class="sigp2-saisie"><%=process.getVAL_EF_DATE_INITIALE()%></span>
-			<BR/>
-			<span class="sigp2" style="width:150px">Durée ITT(jours) : </span>
-			<span class="sigp2-saisie"><%=process.getVAL_EF_NB_JOUR_IIT()%></span>
-			<BR/>
-			<span class="sigp2" style="width:150px">Type : </span>
-			<span class="sigp2-saisie"><%=process.getVAL_ST_TYPE()%></span>
-			<BR/>
-			<span class="sigp2" style="width:150px">Siège des lésions : </span>
-			<span class="sigp2-saisie"><%=process.getVAL_ST_SIEGE_LESION()%></span>
+		    <table>
+				<tr>
+					<td width="150px;">&nbsp;</td>
+					<td width="320px;">&nbsp;</td>
+				</tr>
+				<% if(process.getDemandeCourant().getTypeSaisi().isDateDeclaration()) { %>
+				<tr>
+					<td>
+						<span class="sigp2">Date de déclaration :</span>
+					</td>
+					<td>
+						<span class="sigp2-saisie"><%=process.getVAL_EF_DATE()%></span>
+					</td>
+				</tr>
+				<% } %>
+			<% if(process.getDemandeCourant().getTypeSaisi().isCalendarDateDebut()) { %>
+				<tr>
+					<td>
+						<span class="sigp2">Date de début :</span>
+					</td>
+					<td>
+						<span class="sigp2-saisie"><%=process.getVAL_EF_DATE_DEBUT()%></span>
+					</td>
+				</tr>
+			<% } %>
+			<% if(process.getDemandeCourant().getTypeSaisi().isCalendarDateFin()) { %>
+				<tr>
+					<td>
+						<span class="sigp2">Date de fin :</span>
+					</td>
+					<td>
+						<span class="sigp2-saisie"><%=process.getVAL_EF_DATE_FIN()%></span>
+					</td>
+				</tr>
+			<% } %>
+			<% if(process.getDemandeCourant().getTypeSaisi().isAtReference()) { %>
+				<tr>
+					<td>
+						<span class="sigp2">AT de référence :</span>
+					</td>
+					<td>
+						<span class="sigp2-saisie"><%=process.getVAL_LB_AT_REFERENCE()%></span>
+					</td>
+				</tr>
+			<% } %>
+			<% if(process.getDemandeCourant().getTypeSaisi().isPrescripteur()) { %>
+				<tr>
+					<td>
+						<span class="sigp2">Prescripteur :</span>
+					</td>
+					<td>
+						<span class="sigp2-saisie"><%=process.getVAL_EF_PRESCRIPTEUR()%></span>
+					</td>
+				</tr>
+			<% } %>
+			<% if(process.getDemandeCourant().getTypeSaisi().isNombreITT()) { %>
+				<tr>
+					<td>
+						<span class="sigp2">Durée ITT(jours) : </span>
+					</td>
+					<td>
+						<span class="sigp2-saisie"><%=process.getVAL_EF_NB_JOUR_ITT()%></span>
+					</td>
+				</tr>
+			<% } %>
+				<tr>
+					<td>
+						<span class="sigp2">Type : </span>
+					</td>
+					<td>
+						<span class="sigp2-saisie"><%=process.getVAL_ST_TYPE()%></span>
+					</td>
+				</tr>
+			<% if(process.getDemandeCourant().getTypeSaisi().isSiegeLesion()) { %>
+				<tr>
+					<td>
+						<span class="sigp2">Siège des lésions : </span>
+					</td>
+					<td>
+						<span class="sigp2-saisie"><%=process.getVAL_ST_SIEGE_LESION()%></span>
+					</td>
+				</tr>
+			<% } %>
+			<% if(process.getDemandeCourant().getTypeSaisi().isMotif()) { %>
+		            		<tr>
+		            			<td>
+	                        		<span class="sigp2">Commentaire :</span>
+		            			</td>
+		            			<td>
+									<textarea cols="100" rows="3" name="<%=process.getNOM_EF_MOTIF()%>" title="Zone de saisie du commentaire"  readonly="readonly"><%=process.getVAL_EF_MOTIF().trim() %></textarea>
+		            			</td>
+		            		</tr>
+			<% } %>
+				<tr>
+					<td>
+						<span class="sigp2">Avis commission : </span>
+					</td>
+					<td>
+						<span class="sigp2-saisie"><%=process.getVAL_LB_AVIS_COMMISSION()%></span>
+					</td>
+				</tr>
+			<!-- suivi CAFAT pour les maladies pro -->
+			<% if(process.getDemandeCourant().getIdTypeDemande().equals(EnumTypeAbsence.MALADIES_PROFESSIONNELLE.getCode())) { %>
+				<tr>
+					<td>
+						<span class="sigp2">Date de transmission CAFAT : </span>
+					</td>
+					<td>
+						<span class="sigp2-saisie"><%=process.getVAL_EF_DATE_TRANSMISSION_CAFAT()%></span>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span class="sigp2">Date de décision CAFAT : </span>
+					</td>
+					<td>
+						<span class="sigp2-saisie"><%=process.getVAL_EF_DATE_DECISION_CAFAT()%></span>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span class="sigp2">Taux de prise en charge par la CAFAT : </span>
+					</td>
+					<td>
+						<span class="sigp2-saisie"><%=process.getVAL_EF_TAUX_CAFAT()%></span>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span class="sigp2">Date de transmission de la commission d'aptitude : </span>
+					</td>
+					<td>
+						<span class="sigp2-saisie"><%=process.getVAL_EF_DATE_COMMISSION_APTITUDE()%></span>
+					</td>
+				</tr>
+			<% } %>
+			</table>
 		</div>
 		<%} %>
 			<BR/>
