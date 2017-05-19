@@ -84,6 +84,8 @@ public interface ISirhAbsWSConsumer {
 	List<RefGroupeAbsenceDto> getRefGroupeAbsence();
 
 	List<TypeAbsenceDto> getListeRefTypeAbsenceDto(Integer idRefGroupe);
+	
+	List<TypeAbsenceDto> getListeRefAllTypeAbsenceDto();
 
 	ReturnMessageDto saveTypeAbsence(Integer idAgentConnecte, String json);
 

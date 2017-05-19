@@ -49,6 +49,9 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 	private String[] LB_TYPE_ABSENCE_TT;
 	private ArrayList<RefGroupeAbsenceDto> listeGroupeAbsence;
 	private ArrayList<TypeAbsenceDto> listeTypeAbsence;
+	/* #39247 : Liste toutes les absences, même celles inactives, 
+	pour ne pas avoir un "ArrayIndexOutOfBoundsExc." lors de l'affichage des anciennes demandes*/
+	private ArrayList<TypeAbsenceDto> listeAllTypeAbsence;
 	private String[] LB_ETAT_ABSENCE_NP;
 	private String[] LB_ETAT_ABSENCE_EC;
 	private String[] LB_ETAT_ABSENCE_TT;
@@ -116,6 +119,10 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 
 		if (getListeTypeAbsence() == null || getListeTypeAbsence().size() == 0) {
 			setListeTypeAbsence((ArrayList<TypeAbsenceDto>) absService.getListeRefTypeAbsenceDto(null));
+		}
+
+		if (getListeAllTypeAbsence() == null || getListeAllTypeAbsence().size() == 0) {
+			setListeAllTypeAbsence((ArrayList<TypeAbsenceDto>) absService.getListeRefAllTypeAbsenceDto());
 		}
 
 		// Si liste Type absence vide alors affectation
@@ -208,9 +215,9 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 			DemandeDto dto = getListeToutesDemandes().get(i);
 
 			TypeAbsenceDto t = new TypeAbsenceDto();
-			t.setIdRefTypeAbsence(dto.getIdTypeDemande());
+			t.setIdRefTypeAbsence(dto.getIdTypeDemande() != 66 ? dto.getIdTypeDemande() : 80);
 			// #15586 affichage des restitutions massives des CA
-			addZone(getNOM_ST_TYPE_DEMANDE_TT(i), 0 == t.getIdRefTypeAbsence() ? dto.getLibelleTypeDemande() : getListeTypeAbsence().get(getListeTypeAbsence().indexOf(t)).getLibelle());
+			addZone(getNOM_ST_TYPE_DEMANDE_TT(i), 0 == t.getIdRefTypeAbsence() ? dto.getLibelleTypeDemande() : getListeAllTypeAbsence().get(getListeAllTypeAbsence().indexOf(t)).getLibelle());
 
 			String dateDebAff = dto.getDateDebut() == null ? "&nbsp;" : sdfDate.format(dto.getDateDebut());
 			String dateFinAff = dto.getDateFin() == null ? "&nbsp;" : sdfDate.format(dto.getDateFin());
@@ -294,7 +301,7 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 
 			TypeAbsenceDto t = new TypeAbsenceDto();
 			t.setIdRefTypeAbsence(dto.getIdTypeDemande());
-			addZone(getNOM_ST_TYPE_DEMANDE_EC(i), 0 == t.getIdRefTypeAbsence() ? dto.getLibelleTypeDemande() : getListeTypeAbsence().get(getListeTypeAbsence().indexOf(t)).getLibelle());
+			addZone(getNOM_ST_TYPE_DEMANDE_EC(i), 0 == t.getIdRefTypeAbsence() ? dto.getLibelleTypeDemande() : getListeAllTypeAbsence().get(getListeAllTypeAbsence().indexOf(t)).getLibelle());
 
 			String dateDebAff = dto.getDateDebut() == null ? "&nbsp;" : sdfDate.format(dto.getDateDebut());
 			String dateFinAff = dto.getDateFin() == null ? "&nbsp;" : sdfDate.format(dto.getDateFin());
@@ -376,7 +383,7 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 
 			TypeAbsenceDto t = new TypeAbsenceDto();
 			t.setIdRefTypeAbsence(dto.getIdTypeDemande());
-			addZone(getNOM_ST_TYPE_DEMANDE_NP(i), getListeTypeAbsence().get(getListeTypeAbsence().indexOf(t)).getLibelle());
+			addZone(getNOM_ST_TYPE_DEMANDE_NP(i), getListeAllTypeAbsence().get(getListeAllTypeAbsence().indexOf(t)).getLibelle());
 
 			String dateDebAff = dto.getDateDebut() == null ? "&nbsp;" : sdfDate.format(dto.getDateDebut());
 			String dateFinAff = dto.getDateFin() == null ? "&nbsp;" : sdfDate.format(dto.getDateFin());
@@ -1130,6 +1137,14 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 
 	public void setListeTypeAbsence(ArrayList<TypeAbsenceDto> listeTypeAbsence) {
 		this.listeTypeAbsence = listeTypeAbsence;
+	}
+
+	public ArrayList<TypeAbsenceDto> getListeAllTypeAbsence() {
+		return listeAllTypeAbsence;
+	}
+
+	public void setListeAllTypeAbsence(ArrayList<TypeAbsenceDto> listeAllTypeAbsence) {
+		this.listeAllTypeAbsence = listeAllTypeAbsence;
 	}
 
 }

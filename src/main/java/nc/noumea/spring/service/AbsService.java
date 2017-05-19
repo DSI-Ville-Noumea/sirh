@@ -157,6 +157,11 @@ public class AbsService implements IAbsService {
 	}
 
 	@Override
+	public List<TypeAbsenceDto> getListeRefAllTypeAbsenceDto() {
+		return absConsumer.getListeRefAllTypeAbsenceDto();
+	}
+
+	@Override
 	public List<RefGroupeAbsenceDto> getRefGroupeAbsence() {
 		return absConsumer.getRefGroupeAbsence();
 	}

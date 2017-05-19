@@ -72,6 +72,8 @@ public interface IAbsService {
 	List<OrganisationSyndicaleDto> getListeOrganisationSyndicale();
 
 	List<TypeAbsenceDto> getListeRefTypeAbsenceDto(Integer idRefGroupe);
+	
+	List<TypeAbsenceDto> getListeRefAllTypeAbsenceDto();
 
 	List<RefGroupeAbsenceDto> getRefGroupeAbsence();
 

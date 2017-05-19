@@ -117,8 +117,9 @@ public class SirhAbsWSConsumer extends BaseWsConsumer implements ISirhAbsWSConsu
 	private static final String	sirhAbsAddCompteurAsaAmicale						= "asaAmicale/addManual";
 
 	private static final String	sirhAbsListeRefTypeAbs								= "typeAbsence/getListeTypeAbsence";
+	private static final String	sirhAbsListeRefAllTypeAbs							= "typeAbsence/getListeAllTypeAbsence";
 	private static final String	sirhAbsAddCongeExcep								= "typeAbsence/setTypeAbsence";
-	private static final String	sirhAbsInactiveCongeExcep								= "typeAbsence/inactiveTypeAbsence";
+	private static final String	sirhAbsInactiveCongeExcep							= "typeAbsence/inactiveTypeAbsence";
 	private static final String	sirhAbsRefTypeAbs									= "typeAbsence/getTypeAbsence";
 
 	private static final String	sirhAbsListeUnitePeriodeQuota						= "filtres/getUnitePeriodeQuota";
@@ -480,6 +481,14 @@ public class SirhAbsWSConsumer extends BaseWsConsumer implements ISirhAbsWSConsu
 		HashMap<String, String> params = new HashMap<>();
 		if (idRefGroupe != null)
 			params.put("idRefGroupeAbsence", idRefGroupe.toString());
+		ClientResponse res = createAndFireRequest(params, url);
+		return readResponseAsList(TypeAbsenceDto.class, res, url);
+	}
+
+	@Override
+	public List<TypeAbsenceDto> getListeRefAllTypeAbsenceDto() {
+		String url = String.format(absWsBaseUrl + sirhAbsListeRefAllTypeAbs);
+		HashMap<String, String> params = new HashMap<>();
 		ClientResponse res = createAndFireRequest(params, url);
 		return readResponseAsList(TypeAbsenceDto.class, res, url);
 	}

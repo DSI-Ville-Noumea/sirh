@@ -143,8 +143,6 @@ var Module_parametres = new Dossier("Module_parametres", "Paramètres","PARAMETR
 	Module_parametres.ajouterFils(new Lien("pointage", "ParamPointage", "Pointage", "Gestion des paramètres des pointages", true));
 	Module_parametres.ajouterFils(new Lien("typeDocument", "ParamTypeDocument", "Types de document", "Gestion des types de document", true));
 
-Module_parametres.ajouterFils(new Lien("typeDocument", "ParamTypeDocument", "Types de document", "Gestion des types de document", true));
-
 //***************************************************************
 //*               Le module Gestion des droits
 //***************************************************************
