@@ -102,6 +102,7 @@ public class OeABSVisualisation extends BasicProcess {
 
 	private ArrayList<EnumEtatAbsence>			listeEtats;
 	private ArrayList<TypeAbsenceDto>			listeFamilleAbsence;
+	private ArrayList<TypeAbsenceDto>			listeFamilleAbsenceVisualisation;
 	private ArrayList<TypeAbsenceDto>			listeFamilleAbsenceCreation;
 	private ArrayList<RefGroupeAbsenceDto>		listeGroupeAbsence;
 	private ArrayList<OrganisationSyndicaleDto>	listeOrganisationSyndicale;
@@ -295,6 +296,20 @@ public class OeABSVisualisation extends BasicProcess {
 			}
 			setLB_FAMILLE_CREATION(aFormat.getListeFormatee(false));
 			addZone(getNOM_LB_FAMILLE_CREATION_SELECT(), Const.ZERO);
+		}
+
+		// Si liste famille absence vide alors affectation
+		if (getListeFamilleAbsenceVisualisation() == null || getListeFamilleAbsenceVisualisation().isEmpty()) {
+			List<TypeAbsenceDto> listeFamilleVisualisation = (ArrayList<TypeAbsenceDto>) absService.getListeRefAllTypeAbsenceDto();
+			// #31807 : on tri la liste
+			Collections.sort(listeFamilleVisualisation, new Comparator<TypeAbsenceDto>() {
+				@Override
+				public int compare(TypeAbsenceDto o1, TypeAbsenceDto o2) {
+					return o1.getLibelle().compareTo(o2.getLibelle());
+				}
+
+			});
+			setListeFamilleAbsenceVisualisation((ArrayList<TypeAbsenceDto>) listeFamilleVisualisation);
 		}
 
 		// Si liste organisation syndicale vide alors affectation
@@ -890,7 +905,7 @@ public class OeABSVisualisation extends BasicProcess {
 				t.setIdRefTypeAbsence(abs.getIdTypeDemande());
 
 				// #15586 affichage des restitutions massives des CA
-				TypeAbsenceDto type = 0 == abs.getIdTypeDemande() ? new TypeAbsenceDto() : getListeFamilleAbsenceCreation().get(getListeFamilleAbsenceCreation().indexOf(t));
+				TypeAbsenceDto type = 0 == abs.getIdTypeDemande() ? new TypeAbsenceDto() : getListeFamilleAbsenceVisualisation().get(getListeFamilleAbsenceVisualisation().indexOf(t));
 
 				addZone(getNOM_ST_MATRICULE(i), null != ag ? ag.getNomatr().toString() : "");
 				addZone(getNOM_ST_AGENT(i), ag.getNomAgent() + " " + ag.getPrenomAgent() + " (" + abs.getAgentWithServiceDto().getSigleService() + ")");
@@ -2942,6 +2957,14 @@ public class OeABSVisualisation extends BasicProcess {
 		setLB_FAMILLE_CREATION(aFormat.getListeFormatee(true));
 		addZone(getNOM_LB_FAMILLE_CREATION_SELECT(), Const.ZERO);
 		return true;
+	}
+
+	public ArrayList<TypeAbsenceDto> getListeFamilleAbsenceVisualisation() {
+		return listeFamilleAbsenceVisualisation;
+	}
+
+	public void setListeFamilleAbsenceVisualisation(ArrayList<TypeAbsenceDto> listeFamilleAbsenceVisualisation) {
+		this.listeFamilleAbsenceVisualisation = listeFamilleAbsenceVisualisation;
 	}
 
 	public ArrayList<TypeAbsenceDto> getListeFamilleAbsenceCreation() {
