@@ -59,9 +59,7 @@
 							<table cellpadding="0" cellspacing="0" border="0" class="display" id="maladies"> 
 			                    <thead>
 			                        <tr>
-			                            <th width="100px">
-			                            	<img src="images/ajout.gif" height="16px" width="16px" title="Creer une absence" onClick="executeBouton('<%=process.getNOM_PB_AJOUTER_MALADIES()%>')" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>">
-			            				</th>  
+			                            <th width="100px"></th>
 			                            <th>Type</th>
 			                            <th width="80px">Unite de décompte</th>	
 			                            <th>Info</th>	                            
