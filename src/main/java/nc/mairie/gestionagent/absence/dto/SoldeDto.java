@@ -42,6 +42,10 @@ public class SoldeDto {
 	// maladies
 	private boolean afficheSoldeMaladies;
 	private SoldeMaladiesDto soldeMaladies;
+	
+	// maladies
+	private boolean afficheSoldeEnfantMalade;
+	private SoldeEnfantMaladeDto soldeEnfantMalade;
 
 	public Double getSoldeCongeAnnee() {
 		return soldeCongeAnnee;
@@ -313,6 +317,22 @@ public class SoldeDto {
 
 	public void setAfficheSoldeMaladies(boolean afficheSoldeMaladies) {
 		this.afficheSoldeMaladies = afficheSoldeMaladies;
+	}
+
+	public boolean isAfficheSoldeEnfantMalade() {
+		return afficheSoldeEnfantMalade;
+	}
+
+	public void setAfficheSoldeEnfantMalade(boolean afficheSoldeEnfantMalade) {
+		this.afficheSoldeEnfantMalade = afficheSoldeEnfantMalade;
+	}
+
+	public SoldeEnfantMaladeDto getSoldeEnfantMalade() {
+		return soldeEnfantMalade;
+	}
+
+	public void setSoldeEnfantMalade(SoldeEnfantMaladeDto soldeEnfantMalade) {
+		this.soldeEnfantMalade = soldeEnfantMalade;
 	}
 
 }
