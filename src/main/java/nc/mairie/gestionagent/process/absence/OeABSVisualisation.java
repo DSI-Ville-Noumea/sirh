@@ -1274,6 +1274,7 @@ public class OeABSVisualisation extends BasicProcess {
 		addZone(getNOM_LB_GROUPE_CREATE_SELECT(), Const.ZERO);
 		addZone(getNOM_LB_FAMILLE_CREATION_SELECT(), Const.ZERO);
 		setListeFamilleAbsenceCreation(null);
+		setListeFamilleAbsenceVisualisation(null);
 		setLB_FAMILLE_CREATION(null);
 		addZone(getNOM_ST_INFO_MOTIF_ANNULATION(), Const.CHAINE_VIDE);
 		addZone(getNOM_ST_MOTIF_ANNULATION(), Const.CHAINE_VIDE);

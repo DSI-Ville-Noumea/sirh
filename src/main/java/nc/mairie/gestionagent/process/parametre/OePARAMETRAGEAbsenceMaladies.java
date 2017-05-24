@@ -401,7 +401,7 @@ public class OePARAMETRAGEAbsenceMaladies extends BasicProcess {
 		addZone(getNOM_ST_LIBELLE(), Const.CHAINE_VIDE);
 
 		addZone(getNOM_RG_DATE_FIN(), getNOM_RB_DATE_FIN_NON());
-		addZone(getNOM_RG_HEURE_DEBUT(), getNOM_RB_HEURE_DEBUT_OUI());
+		addZone(getNOM_RG_HEURE_DEBUT(), getNOM_RB_HEURE_DEBUT_NON());
 		addZone(getNOM_RG_HEURE_FIN(), getNOM_RB_HEURE_FIN_NON());
 		addZone(getNOM_RG_AM_PM_DEBUT(), getNOM_RB_AM_PM_DEBUT_NON());
 		addZone(getNOM_RG_AM_PM_FIN(), getNOM_RB_AM_PM_FIN_NON());
