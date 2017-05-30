@@ -115,7 +115,7 @@
 						<span class="sigp2Mandatory">Date de déclaration :</span>
 					</td>
 					<td width="320px;">
-						<input id="<%=process.getNOM_EF_DATE()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DATE() %>" size="10" type="text" value="<%= process.getVAL_EF_DATE() %>" readonly="readonly">
+						<input id="<%=process.getNOM_EF_DATE()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DATE() %>" size="10" type="text" value="<%= process.getVAL_EF_DATE() %>">
 					</td>
 				</tr>
 				<% } %>

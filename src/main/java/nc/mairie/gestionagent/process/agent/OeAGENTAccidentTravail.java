@@ -15,6 +15,7 @@ import java.util.ListIterator;
 import javax.activation.MimetypesFileTypeMap;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.codec.language.RefinedSoundex;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -406,6 +407,7 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 				addZone(getNOM_ST_TYPE(), typeAT.getLibelle());
 			} else {
 				addZone(getNOM_LB_TYPE_SELECT(), String.valueOf(0));
+				addZone(getNOM_ST_TYPE(), "");
 			}
 		}
 
@@ -414,6 +416,9 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 			int ligneSiege = getListeSiegeLesion().indexOf(siegeLesion);
 			addZone(getNOM_LB_SIEGE_LESION_SELECT(), String.valueOf(ligneSiege + 1));
 			addZone(getNOM_ST_SIEGE_LESION(), siegeLesion.getLibelle());
+		} else {
+			addZone(getNOM_LB_SIEGE_LESION_SELECT(), String.valueOf(0));
+			addZone(getNOM_ST_SIEGE_LESION(), "");
 		}
 
 		if (getDemandeCourant().getTypeSaisi().isAtReference() && null != getDemandeCourant().getAccidentTravailReference()
@@ -512,13 +517,28 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 				|| getDemandeCourant().getIdTypeDemande().equals(EnumTypeAbsence.MALADIES_RECHUTE.getCode())) {
 
 			int numLigneType = (Services.estNumerique(getZone(getNOM_LB_TYPE_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_TYPE_SELECT())) : -1);
+			int numLigneSiege = (Services.estNumerique(getZone(getNOM_LB_SIEGE_LESION_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_SIEGE_LESION_SELECT())) : -1);
 
 			if (numLigneType == -1 || numLigneType == 0 || getListeTypeAT().size() == 0 || numLigneType > getListeTypeAT().size()) {
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "types"));
 				return false;
 			}
+
+			if (numLigneSiege == -1 || numLigneSiege == 0 || getListeSiegeLesion().size() == 0 || numLigneSiege > getListeSiegeLesion().size()) {
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "siege des lésions"));
+				return false;
+			}
 			RefTypeDto typeAt = (RefTypeDto) getListeTypeAT().get(numLigneType - 1);
+			RefTypeDto typeSiege = (RefTypeDto) getListeSiegeLesion().get(numLigneSiege - 1);
+			
 			getDemandeCourant().setTypeAccidentTravail(typeAt);
+			getDemandeCourant().setTypeSiegeLesion(typeSiege);
+			
+			if (!Services.estUneDate(getZone(getNOM_EF_DATE()))) {
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR007", "de déclaration"));
+				return false;
+			}
+			getDemandeCourant().setDateDeclaration(sdf.parse(getZone(getNOM_EF_DATE())));
 		}
 
 		if (getDemandeCourant().getIdTypeDemande().equals(EnumTypeAbsence.MALADIES_PROFESSIONNELLE.getCode())) {
