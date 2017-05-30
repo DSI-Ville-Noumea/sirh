@@ -167,7 +167,7 @@
 						</SELECT>
 						<% } %>
 						<% if(process.getDemandeCourant().getTypeSaisi().isMaladiePro()) { %>
-						<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_TYPE() %>" disabled="disabled">
+						<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_TYPE() %>">
 							<%=process.forComboHTML(process.getVAL_LB_TYPE_MP(), process.getVAL_LB_TYPE_SELECT()) %>
 						</SELECT>
 						<% } %>
@@ -179,7 +179,7 @@
 						<span class="sigp2Mandatory">Siège des lésions :</span> 
 					</td>
 					<td>
-						<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_SIEGE_LESION() %>" disabled="disabled">
+						<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_SIEGE_LESION() %>">
 							<%=process.forComboHTML(process.getVAL_LB_SIEGE_LESION(), process.getVAL_LB_SIEGE_LESION_SELECT()) %>
 						</SELECT>
 					</td>
