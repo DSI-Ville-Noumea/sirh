@@ -539,6 +539,18 @@
 		            			</td>
 		            		</tr>
 	            			<% } %>
+		            		<% if(process.isTypeATOrRechuteAT(typeCreation)) { %>
+		            		<tr>		            		
+		            			<td>
+	                        		<span class="sigp2Mandatory">Type :</span>
+		            			</td>
+		            			<td colspan="2">
+									<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_TYPE_AT() %>" style="width:340px;">
+										<%=process.forComboHTML(process.getVAL_LB_TYPE_AT(), process.getVAL_LB_TYPE_AT_SELECT()) %>
+									</SELECT>
+		            			</td>
+		            		</tr>
+	            			<% } %>
 		            		<% if(typeCreation.getTypeSaisiDto().isSiegeLesion()) { %>
 		            		<tr>		            		
 		            			<td>

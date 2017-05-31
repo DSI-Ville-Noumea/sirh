@@ -97,6 +97,7 @@ public class OeABSVisualisation extends BasicProcess {
 	private String[]							LB_OS;
 	private String[]							LB_GESTIONNAIRE;
 	private String[]							LB_SIEGE_LESION;
+	private String[]							LB_TYPE_AT;
 	private String[]							LB_MALADIE_PRO;
 	private String[]							LB_AT_REFERENCE;
 
@@ -110,6 +111,7 @@ public class OeABSVisualisation extends BasicProcess {
 	private ArrayList<ReferentRh>				listeGestionnaire;
 	private ArrayList<RefTypeDto>				listeMaladiesPro;
 	private ArrayList<RefTypeDto>				listeSiegeLesion;
+	private ArrayList<RefTypeDto>				listeTypeAT;
 	private ArrayList<DemandeDto>				listeATReference;
 
 	private TreeMap<Integer, DemandeDto>		listeAbsence;
@@ -1174,6 +1176,9 @@ public class OeABSVisualisation extends BasicProcess {
 			}
 
 			if (type.getGroupeAbsence().getIdRefGroupeAbsence() == EnumTypeGroupeAbsence.MALADIES.getValue()) {
+				if (isTypeATOrRechuteAT(type)) {
+					formatterListeTypeAT(getListeTypeAT());
+				}
 				if (type.getTypeSaisiDto().isSiegeLesion()) {
 					formatterListeSiegeLesion(getListeSiegeLesion());
 				}
@@ -1233,6 +1238,17 @@ public class OeABSVisualisation extends BasicProcess {
 		setLB_SIEGE_LESION(aFormat.getListeFormatee(false));
 	}
 
+	private void formatterListeTypeAT(ArrayList<RefTypeDto> listeTypeAT) {
+
+		int[] tailles = { 50 };
+		FormateListe aFormat = new FormateListe(tailles);
+		for (RefTypeDto sl : listeTypeAT) {
+			String ligne[] = { sl.getLibelle() };
+			aFormat.ajouteLigne(ligne);
+		}
+		setLB_TYPE_AT(aFormat.getListeFormatee(false));
+	}
+
 	private void formatterListeATReference(ArrayList<DemandeDto> listeAT) {
 
 		int[] tailles = { 50 };
@@ -1242,6 +1258,11 @@ public class OeABSVisualisation extends BasicProcess {
 			aFormat.ajouteLigne(ligne);
 		}
 		setLB_AT_REFERENCE(aFormat.getListeFormatee(false));
+	}
+	
+	public boolean isTypeATOrRechuteAT(TypeAbsenceDto type) {
+		return type.getTypeSaisiDto().getIdRefTypeDemande().equals(EnumTypeAbsence.MALADIES_ACCIDENT_TRAVAIL.getCode()) ||
+				type.getTypeSaisiDto().getIdRefTypeDemande().equals(EnumTypeAbsence.MALADIES_RECHUTE.getCode());
 	}
 
 	public String getNOM_PB_ANNULER() {
@@ -1297,6 +1318,7 @@ public class OeABSVisualisation extends BasicProcess {
 		addZone(getNOM_ST_DATE_DECLARATION(), Const.CHAINE_VIDE);
 		addZone(getNOM_CK_PROLONGATION(), Const.CHAINE_VIDE);
 		addZone(getNOM_LB_SIEGE_LESION_SELECT(), Const.ZERO);
+		addZone(getNOM_LB_TYPE_AT_SELECT(), Const.ZERO);
 		addZone(getNOM_LB_MALADIE_PRO_SELECT(), Const.ZERO);
 		addZone(getNOM_LB_AT_REFERENCE_SELECT(), Const.ZERO);
 		addZone(getNOM_ST_ID_COMMENTAIRE_CM(), Const.CHAINE_VIDE);
@@ -1730,6 +1752,14 @@ public class OeABSVisualisation extends BasicProcess {
 			}
 			if (type.getTypeSaisiDto().isNombreITT()) {
 				addZone(getNOM_ST_NOMBRE_ITT(), dem.getNombreITT() == null ? Const.CHAINE_VIDE : dem.getNombreITT().toString());
+			}
+			if (isTypeATOrRechuteAT(type)) {
+				RefTypeDto typeAT = null;
+				if (null != dem.getTypeAccidentTravail()) {
+					typeAT = dem.getTypeAccidentTravail();
+				}
+				addZone(getNOM_LB_SIEGE_LESION_SELECT(),
+						typeAT == null ? Const.ZERO : String.valueOf(getListeTypeAT().indexOf(typeAT)));
 			}
 			if (type.getTypeSaisiDto().isSiegeLesion()) {
 				RefTypeDto siegeLesion = null;
@@ -2537,6 +2567,19 @@ public class OeABSVisualisation extends BasicProcess {
 				}
 				dto.setNombreITT(new Double(getVAL_ST_NOMBRE_ITT()));
 			}
+			if (isTypeATOrRechuteAT(type)) {
+				int numType = (Services.estNumerique(getZone(getNOM_LB_TYPE_AT_SELECT()))
+						? Integer.parseInt(getZone(getNOM_LB_TYPE_AT_SELECT())) : -1);
+				RefTypeDto typeAT = null;
+				if (numType != -1) {
+					typeAT = (RefTypeDto) getListeTypeAT().get(numType);
+					dto.setTypeAccidentTravail(typeAT);
+				} else {
+					// "ERR002", "La zone @ est obligatoire."
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "type"));
+					return false;
+				}
+			}
 			if (type.getTypeSaisiDto().isSiegeLesion()) {
 				int numTypeSiegeLesion = (Services.estNumerique(getZone(getNOM_LB_SIEGE_LESION_SELECT()))
 						? Integer.parseInt(getZone(getNOM_LB_SIEGE_LESION_SELECT())) : -1);
@@ -2747,6 +2790,7 @@ public class OeABSVisualisation extends BasicProcess {
 		LB_SIEGE_LESION = newLB_SIEGE_LESION;
 	}
 
+
 	public String getNOM_LB_SIEGE_LESION() {
 		return "NOM_LB_SIEGE_LESION";
 	}
@@ -2899,6 +2943,32 @@ public class OeABSVisualisation extends BasicProcess {
 
 	public String getNOM_PB_SELECT_GROUPE_CREATE() {
 		return "NOM_PB_SELECT_GROUPE_CREATE";
+	}
+
+	public String getNOM_LB_TYPE_AT() {
+		return "NOM_LB_TYPE_AT";
+	}
+
+	public String getNOM_LB_TYPE_AT_SELECT() {
+		return "NOM_LB_TYPE_AT_SELECT";
+	}
+
+	public String[] getVAL_LB_TYPE_AT() {
+		return getLB_TYPE_AT();
+	}
+
+	private String[] getLB_TYPE_AT() {
+		if (LB_TYPE_AT == null)
+			LB_TYPE_AT = initialiseLazyLB();
+		return LB_TYPE_AT;
+	}
+
+	private void setLB_TYPE_AT(String[] newLB_TYPE_AT) {
+		LB_TYPE_AT = newLB_TYPE_AT;
+	}
+
+	public String getVAL_LB_TYPE_AT_SELECT() {
+		return getZone(getNOM_LB_TYPE_AT_SELECT());
 	}
 
 	public boolean performPB_SELECT_GROUPE(HttpServletRequest request) throws Exception {
@@ -3219,6 +3289,19 @@ public class OeABSVisualisation extends BasicProcess {
 
 	public void setListeSiegeLesion(ArrayList<RefTypeDto> listeSiegeLesion) {
 		this.listeSiegeLesion = listeSiegeLesion;
+	}
+
+	public ArrayList<RefTypeDto> getListeTypeAT() {
+
+		if (null == listeTypeAT || listeTypeAT.isEmpty()) {
+			setListeTypeAT((ArrayList<RefTypeDto>) absService.getRefTypeAccidentTravail());
+		}
+
+		return listeTypeAT;
+	}
+
+	public void setListeTypeAT(ArrayList<RefTypeDto> listeTypeAT) {
+		this.listeTypeAT = listeTypeAT;
 	}
 
 	public ArrayList<DemandeDto> getListeATReference(Integer idAgent) {
