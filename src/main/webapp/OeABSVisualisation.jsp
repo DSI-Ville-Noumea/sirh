@@ -492,7 +492,7 @@
 	                        		<span class="sigp2Mandatory">Prescripteur :</span>
 		            			</td>
 		            			<td colspan="2">
-							       <INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_PRESCRIPTEUR() %>" size="6" type="text" value="<%= process.getVAL_ST_PRESCRIPTEUR() %>">
+							       <INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_PRESCRIPTEUR() %>" size="18" type="text" value="<%= process.getVAL_ST_PRESCRIPTEUR() %>">
 		            			</td>
 		            		</tr>
 		            		<% } %>
@@ -524,7 +524,7 @@
 	                        		<span class="sigp2Mandatory">Nom Enfant :</span>
 		            			</td>
 		            			<td colspan="2">
-							       <INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_NOM_ENFANT() %>" size="6" type="text" value="<%= process.getVAL_ST_NOM_ENFANT() %>">
+							       <INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_NOM_ENFANT() %>" size="18" type="text" value="<%= process.getVAL_ST_NOM_ENFANT() %>">
 		            			</td>
 		            		</tr>
 		            		<% } %>

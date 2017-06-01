@@ -276,31 +276,6 @@ public class OeABSVisualisation extends BasicProcess {
 		}
 
 		// Si liste famille absence vide alors affectation
-		if (getLB_FAMILLE_CREATION() == LBVide) {
-			List<TypeAbsenceDto> listeFamilleCreation = (ArrayList<TypeAbsenceDto>) absService.getListeRefTypeAbsenceDto(null);
-			// #31807 : on tri la liste
-			Collections.sort(listeFamilleCreation, new Comparator<TypeAbsenceDto>() {
-				@Override
-				public int compare(TypeAbsenceDto o1, TypeAbsenceDto o2) {
-					return o1.getLibelle().compareTo(o2.getLibelle());
-				}
-
-			});
-			setListeFamilleAbsenceCreation((ArrayList<TypeAbsenceDto>) listeFamilleCreation);
-
-			int[] tailles = { 100 };
-			FormateListe aFormat = new FormateListe(tailles);
-			for (ListIterator<TypeAbsenceDto> list = getListeFamilleAbsenceCreation().listIterator(); list.hasNext();) {
-				TypeAbsenceDto type = (TypeAbsenceDto) list.next();
-				String ligne[] = { type.getLibelle() };
-
-				aFormat.ajouteLigne(ligne);
-			}
-			setLB_FAMILLE_CREATION(aFormat.getListeFormatee(false));
-			addZone(getNOM_LB_FAMILLE_CREATION_SELECT(), Const.ZERO);
-		}
-
-		// Si liste famille absence vide alors affectation
 		if (getListeFamilleAbsenceVisualisation() == null || getListeFamilleAbsenceVisualisation().isEmpty()) {
 			List<TypeAbsenceDto> listeFamilleVisualisation = (ArrayList<TypeAbsenceDto>) absService.getListeRefAllTypeAbsenceDto();
 			// #31807 : on tri la liste
@@ -3019,11 +2994,13 @@ public class OeABSVisualisation extends BasicProcess {
 
 		int[] tailles = { 100 };
 		FormateListe aFormat = new FormateListe(tailles);
-		for (ListIterator<TypeAbsenceDto> list = getListeFamilleAbsenceCreation().listIterator(); list.hasNext();) {
-			TypeAbsenceDto type = (TypeAbsenceDto) list.next();
-			String ligne[] = { type.getLibelle() };
-
-			aFormat.ajouteLigne(ligne);
+		if (getListeFamilleAbsenceCreation() != null) {
+			for (ListIterator<TypeAbsenceDto> list = getListeFamilleAbsenceCreation().listIterator(); list.hasNext();) {
+				TypeAbsenceDto type = (TypeAbsenceDto) list.next();
+				String ligne[] = { type.getLibelle() };
+	
+				aFormat.ajouteLigne(ligne);
+			}
 		}
 		setLB_FAMILLE_CREATION(aFormat.getListeFormatee(true));
 		addZone(getNOM_LB_FAMILLE_CREATION_SELECT(), Const.ZERO);
