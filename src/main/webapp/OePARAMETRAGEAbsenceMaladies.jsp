@@ -349,7 +349,7 @@
             	<div>
 					<FONT color='red'>Etes-vous sûr de vouloir supprimer le groupe : <%=process.getGroupeCourant().getLibGroupe() %></FONT>
 			        <BR/><BR/>
-	                <INPUT type="submit" class="sigp2-Bouton-100" value="SUpprimer" name="<%=process.getNOM_PB_VALIDER_DESTINATAIRE_MAIL_MALADIE()%>" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>">
+	                <INPUT type="submit" class="sigp2-Bouton-100" value="Supprimer" name="<%=process.getNOM_PB_VALIDER_DESTINATAIRE_MAIL_MALADIE()%>" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>">
 	                <INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
 		    	</div>
             <%}else if(process.getVAL_ST_ACTION().equals(process.ACTION_CREATION_DESTINATAIRE_MAIL)){ %>

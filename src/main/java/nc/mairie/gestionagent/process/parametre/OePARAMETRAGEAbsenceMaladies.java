@@ -447,8 +447,6 @@ public class OePARAMETRAGEAbsenceMaladies extends BasicProcess {
 		addZone(getNOM_ST_DATE_FIN(), type.getTypeSaisiDto().isCalendarDateFin() ? "oui" : "non");
 		addZone(getNOM_ST_HEURE_DEBUT(), type.getTypeSaisiDto().isCalendarHeureDebut() ? "oui" : "non");
 		addZone(getNOM_ST_HEURE_FIN(), type.getTypeSaisiDto().isCalendarHeureFin() ? "oui" : "non");
-		addZone(getNOM_ST_DEBUT_MAM(), type.getTypeSaisiDto().isChkDateDebut() ? "oui" : "non");
-		addZone(getNOM_ST_FIN_MAM(), type.getTypeSaisiDto().isChkDateFin() ? "oui" : "non");
 		addZone(getNOM_ST_PIECE_JOINTE(), type.getTypeSaisiDto().isPieceJointe() ? "oui" : "non");
 		addZone(getNOM_ST_SAISIE_KIOSQUE(), type.getTypeSaisiDto().isSaisieKiosque() ? "oui" : "non");
 		addZone(getNOM_ST_STATUT(), getStatut(type));
@@ -584,8 +582,6 @@ public class OePARAMETRAGEAbsenceMaladies extends BasicProcess {
 			getTypeCreation().getTypeSaisiDto().setCalendarDateFin(getVAL_RG_DATE_FIN().equals(getNOM_RB_DATE_FIN_OUI()) ? true : false);
 			getTypeCreation().getTypeSaisiDto().setCalendarHeureDebut(getVAL_RG_HEURE_DEBUT().equals(getNOM_RB_HEURE_DEBUT_OUI()) ? true : false);
 			getTypeCreation().getTypeSaisiDto().setCalendarHeureFin(getVAL_RG_HEURE_FIN().equals(getNOM_RB_HEURE_FIN_OUI()) ? true : false);
-			getTypeCreation().getTypeSaisiDto().setChkDateDebut(getVAL_RG_AM_PM_DEBUT().equals(getNOM_RB_AM_PM_DEBUT_OUI()) ? true : false);
-			getTypeCreation().getTypeSaisiDto().setChkDateFin(getVAL_RG_AM_PM_FIN().equals(getNOM_RB_AM_PM_FIN_OUI()) ? true : false);
 			getTypeCreation().getTypeSaisiDto().setPieceJointe(getVAL_RG_PIECE_JOINTE().equals(getNOM_RB_PIECE_JOINTE_OUI()) ? true : false);
 			getTypeCreation().getTypeSaisiDto().setFonctionnaire(getVAL_CK_STATUT_F().equals(getCHECKED_ON()) ? true : false);
 			getTypeCreation().getTypeSaisiDto().setContractuel(getVAL_CK_STATUT_C().equals(getCHECKED_ON()) ? true : false);
