@@ -2129,7 +2129,7 @@ public class OeABSVisualisation extends BasicProcess {
 		getTransaction().declarerErreur(MessageUtils.getMessage("ERR803", "annuler"));
 		TypeAbsenceDto t = new TypeAbsenceDto();
 		t.setIdRefTypeAbsence(dem.getIdTypeDemande());
-		String info = "Demande " + getListeFamilleAbsenceCreation().get(getListeFamilleAbsenceCreation().indexOf(t)).getLibelle() + " de l'agent " + ag.getNomatr() + " du "
+		String info = "Demande " + getListeFamilleAbsenceVisualisation().get(getListeFamilleAbsenceVisualisation().indexOf(t)).getLibelle() + " de l'agent " + ag.getNomatr() + " du "
 				+ sdf.format(dem.getDateDebut()) + ".";
 		addZone(getNOM_ST_INFO_MOTIF_ANNULATION(), info);
 		addZone(getNOM_ST_MOTIF_ANNULATION(), Const.CHAINE_VIDE);
