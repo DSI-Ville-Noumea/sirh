@@ -1641,6 +1641,16 @@ public class OeABSVisualisation extends BasicProcess {
 		DemandeDto dem = getListeAbsence().get(idDemande);
 		TypeAbsenceDto t = new TypeAbsenceDto();
 		t.setIdRefTypeAbsence(dem.getIdTypeDemande());
+		
+		// #39329 : Les listes n'étaient pas initialisées pour une première duplication
+		if (dem.getGroupeAbsence() != null) {
+			RefGroupeAbsenceDto refGroupeAbs = new RefGroupeAbsenceDto();
+			refGroupeAbs.setIdRefGroupeAbsence(dem.getGroupeAbsence().getIdRefGroupeAbsence());
+			
+			addZone(getNOM_LB_GROUPE_CREATE_SELECT(), String.valueOf(getListeGroupeAbsence().indexOf(refGroupeAbs) + 1));
+			performPB_SELECT_GROUPE_CREATE(null);
+		}
+		
 		TypeAbsenceDto type = getListeFamilleAbsenceCreation().get(getListeFamilleAbsenceCreation().indexOf(t));
 
 		if (type.getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.CONGE.getCode().toString())) {
@@ -1656,7 +1666,7 @@ public class OeABSVisualisation extends BasicProcess {
 		}
 		setTypeCreation(type);
 
-		addZone(getNOM_LB_FAMILLE_CREATION_SELECT(), String.valueOf(getListeFamilleAbsenceCreation().indexOf(type)));
+		addZone(getNOM_LB_FAMILLE_CREATION_SELECT(), String.valueOf(getListeFamilleAbsenceCreation().indexOf(type) + 1));
 
 		Agent agt = getAgentDao().chercherAgent(dem.getAgentWithServiceDto().getIdAgent());
 		addZone(getNOM_ST_AGENT_CREATION(), agt.getNomatr().toString());
@@ -1854,6 +1864,12 @@ public class OeABSVisualisation extends BasicProcess {
 		Agent ag = getAgentDao().chercherAgent(dem.getAgentWithServiceDto().getIdAgent());
 		// Si ASA ou CONGES_EXCEP et etat=validé ou prise,
 		// alors un motif est obligatoire
+		
+		// #39811 : La liste des familles d'absence n'est pas initialisée
+		if ((getListeFamilleAbsenceCreation() == null || getListeFamilleAbsenceCreation().size() == 0) && dem.getGroupeAbsence().getIdRefGroupeAbsence() != null) {
+			setListeFamilleAbsenceCreation((ArrayList<TypeAbsenceDto>) absService.getListeRefTypeAbsenceDto(dem.getGroupeAbsence().getIdRefGroupeAbsence()));
+		}
+		
 		if (((dem.getGroupeAbsence().getIdRefGroupeAbsence() == EnumTypeGroupeAbsence.AS.getValue() || dem.getGroupeAbsence().getIdRefGroupeAbsence() == EnumTypeGroupeAbsence.CONGES_EXCEP.getValue()) && (dem
 				.getIdRefEtat() == EnumEtatAbsence.APPROUVE.getCode()
 		// #14696 ajout de l etat A VALIDER car erreur lors de la reprise de
