@@ -292,6 +292,10 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 	 */
 	private void initialiseListeAT_MP(HttpServletRequest request) throws Exception {
 		// Recherche des accidents du travail de l'agent
+		ArrayList<DemandeDto> listeATAnnulee = (ArrayList<DemandeDto>) absService.getListeDemandes(null, null,
+				EnumEtatAbsence.ANNULEE.getCode().toString(), EnumTypeAbsence.MALADIES_ACCIDENT_TRAVAIL.getCode(), getAgentCourant().getIdAgent(),
+				EnumTypeGroupeAbsence.MALADIES.getValue(), false, null);
+		
 		ArrayList<DemandeDto> listeATValidee = (ArrayList<DemandeDto>) absService.getListeDemandes(null, null,
 				EnumEtatAbsence.VALIDEE.getCode().toString(), EnumTypeAbsence.MALADIES_ACCIDENT_TRAVAIL.getCode(), getAgentCourant().getIdAgent(),
 				EnumTypeGroupeAbsence.MALADIES.getValue(), false, null);
@@ -318,6 +322,7 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 
 		ArrayList<DemandeDto> listeAT_MP = new ArrayList<DemandeDto>();
 		listeAT_MP.addAll(listeATValidee);
+		listeAT_MP.addAll(listeATAnnulee);
 		listeAT_MP.addAll(listeATPrise);
 		listeAT_MP.addAll(listeRechuteValidee);
 		listeAT_MP.addAll(listeRechutePrise);
@@ -359,7 +364,12 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 					addZone(getNOM_ST_TYPE(indiceAcc), t.getLibelle().equals(Const.CHAINE_VIDE) ? "&nbsp;" : t.getLibelle());
 				}
 
-				addZone(getNOM_ST_AT_MP(indiceAcc), absService.getTypeDemande(demande));
+				// #39863 : Affichage des AT Annulés
+				String typeDemande = absService.getTypeDemande(demande);
+				if (demande.getIdRefEtat().equals(EnumEtatAbsence.ANNULEE.getCode()))
+					typeDemande += " (Refusé)";
+				
+				addZone(getNOM_ST_AT_MP(indiceAcc), typeDemande);
 				addZone(getNOM_ST_DATE(indiceAcc), null == demande.getDateDeclaration() ? "" : sdf.format(demande.getDateDeclaration()));
 				addZone(getNOM_ST_DATE_DEBUT(indiceAcc), null == demande.getDateDebut() ? "" : sdf.format(demande.getDateDebut()));
 				addZone(getNOM_ST_DATE_FIN(indiceAcc), null == demande.getDateFin() ? "" : sdf.format(demande.getDateFin()));
