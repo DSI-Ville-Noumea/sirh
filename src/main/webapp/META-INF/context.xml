@@ -117,18 +117,21 @@
 	<!-- -->
 	<!-- Parametres extrait du web.xml -->
 	<!-- -->
-	<Environment description="Bibliotheque de la DTAARA_CALC"
-		name="DTAARA_SCHEMA" override="false" value="PERSONNEL" type="java.lang.String" />
-	<Environment description="Nom de la DTAARA_CALC" name="DTAARA_NAME"
-		override="false" value="CALCUL" type="java.lang.String" />
-	<Environment description="parametre pour accès à la DTAARA_CALC"
-		name="HOST_SGBD_PAYE" override="false" value="robinnw" type="java.lang.String" />
-	<Environment description="Pws pour accès à la DTAARA_CALC"
-		name="HOST_SGBD_PWD" override="false" value="***REMOVED***" type="java.lang.String" />
 	<Parameter description="parametre utile au framework" name="HOST_SGBD"
 		override="false" value="SIRH_DS2" />
 	<Parameter description="Login pour accès à la DTAARA_CALC"
 		name="HOST_SGBD_ADMIN" override="false" value="opensirh" />
+		
+	<Parameter description="Bibliotheque de la DTAARA_CALC"
+		name="DTAARA_SCHEMA" override="false" value="PERSONNEL" type="java.lang.String" />
+	<Parameter description="Nom de la DTAARA_CALC" name="DTAARA_NAME"
+		override="false" value="CALCUL" type="java.lang.String" />
+	<Parameter description="parametre pour accès à la DTAARA_CALC"
+		name="HOST_SGBD_PAYE" override="false" value="robinnw" type="java.lang.String" />
+	<Parameter description="Pws pour accès à la DTAARA_CALC"
+		name="HOST_SGBD_PWD" override="false" value="***REMOVED***" type="java.lang.String" />
+		
+		
 
 	<!-- -->
 	<!-- Authentification LDAP -->
