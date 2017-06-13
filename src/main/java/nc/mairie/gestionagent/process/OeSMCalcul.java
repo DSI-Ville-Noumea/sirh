@@ -15,6 +15,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 
+import nc.mairie.comparator.DemandeDtoDateDebutComparator;
+import nc.mairie.comparator.DemandeDtoDateDeclarationComparator;
 import nc.mairie.enums.EnumEtatAbsence;
 import nc.mairie.enums.EnumEtatSuiviMed;
 import nc.mairie.enums.EnumMotifVisiteMed;
@@ -1558,12 +1560,7 @@ public class OeSMCalcul extends BasicProcess {
 			}
 		}
 
-		Collections.sort(result, new Comparator<DemandeDto>() {
-			@Override
-			public int compare(DemandeDto obj1, DemandeDto obj2) {
-				return obj1.getDateDebut().compareTo(obj2.getDateDebut());
-			}
-		});
+		Collections.sort(result, new DemandeDtoDateDebutComparator());
 
 		return result;
 	}

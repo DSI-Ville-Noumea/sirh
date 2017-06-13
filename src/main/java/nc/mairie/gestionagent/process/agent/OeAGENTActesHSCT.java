@@ -16,6 +16,7 @@ import org.springframework.context.ApplicationContext;
 
 import com.oreilly.servlet.MultipartRequest;
 
+import nc.mairie.comparator.DemandeDtoDateDeclarationComparator;
 import nc.mairie.enums.EnumEtatAbsence;
 import nc.mairie.enums.EnumTypeAbsence;
 import nc.mairie.enums.EnumTypeGroupeAbsence;
@@ -287,16 +288,7 @@ public class OeAGENTActesHSCT extends BasicProcess {
 				listeAT_MP.addAll(listeAT);
 				listeAT_MP.addAll(listeRechute);
 
-				Collections.sort(listeAT_MP, new Comparator<DemandeDto>() {
-					@Override
-					public int compare(DemandeDto o1, DemandeDto o2) {
-						if (null == o1.getDateDeclaration() || null == o2.getDateDeclaration())
-							return -1;
-						// tri par date
-						// ajout du "0 -" pour trier en ordre decroissant
-						return 0 - o1.getDateDeclaration().compareTo(o2.getDateDeclaration());
-					}
-				});
+				Collections.sort(listeAT_MP, new DemandeDtoDateDeclarationComparator());
 
 				if (listeAT_MP.size() > 0) {
 					int[] tailles = { 14, 60 };
@@ -329,16 +321,7 @@ public class OeAGENTActesHSCT extends BasicProcess {
 								.replace("]", "").replace(" ", ""),
 						EnumTypeAbsence.MALADIES_PROFESSIONNELLE.getCode(), EnumTypeGroupeAbsence.MALADIES.getValue());
 
-				Collections.sort(listeMP, new Comparator<DemandeDto>() {
-					@Override
-					public int compare(DemandeDto o1, DemandeDto o2) {
-						if (null == o1.getDateDeclaration() || null == o2.getDateDeclaration())
-							return -1;
-						// tri par date
-						// ajout du "0 -" pour trier en ordre decroissant
-						return 0 - o1.getDateDeclaration().compareTo(o2.getDateDeclaration());
-					}
-				});
+				Collections.sort(listeMP, new DemandeDtoDateDeclarationComparator());
 
 				if (listeMP.size() > 0) {
 					int[] tailles = { 14, 60 };

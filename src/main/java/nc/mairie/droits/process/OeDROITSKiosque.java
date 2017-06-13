@@ -10,6 +10,9 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import nc.mairie.comparator.AgentDtoComparator;
+import nc.mairie.comparator.ApprobateurDtoNameComparator;
+import nc.mairie.comparator.ApprobateurDtoServiceComparator;
 import nc.mairie.gestionagent.dto.AgentDto;
 import nc.mairie.gestionagent.dto.AgentWithServiceDto;
 import nc.mairie.gestionagent.dto.ApprobateurDto;
@@ -590,13 +593,7 @@ public class OeDROITSKiosque extends BasicProcess {
 		}
 
 		// on tri la liste
-		Collections.sort(listeComplete, new Comparator<ApprobateurDto>() {
-			@Override
-			public int compare(ApprobateurDto o1, ApprobateurDto o2) {
-				return o1.getApprobateur().getNom().compareTo(o2.getApprobateur().getNom());
-			}
-
-		});
+		Collections.sort(listeComplete, new ApprobateurDtoNameComparator());
 		setListeApprobateurs(listeComplete);
 	}
 
@@ -1281,22 +1278,10 @@ public class OeDROITSKiosque extends BasicProcess {
 		setApprobateurCourant(null);
 		if (getVAL_RG_TRI().equals(getNOM_RB_TRI_AGENT())) {
 			// on tri la liste
-			Collections.sort(getListeApprobateurs(), new Comparator<ApprobateurDto>() {
-				@Override
-				public int compare(ApprobateurDto o1, ApprobateurDto o2) {
-					return o1.getApprobateur().getNom().compareTo(o2.getApprobateur().getNom());
-				}
-
-			});
+			Collections.sort(getListeApprobateurs(), new ApprobateurDtoNameComparator());
 		} else if (getVAL_RG_TRI().equals(getNOM_RB_TRI_SERVICE())) {
 			// on tri la liste
-			Collections.sort(getListeApprobateurs(), new Comparator<ApprobateurDto>() {
-				@Override
-				public int compare(ApprobateurDto o1, ApprobateurDto o2) {
-					return o1.getApprobateur().getService().compareTo(o2.getApprobateur().getService());
-				}
-
-			});
+			Collections.sort(getListeApprobateurs(), new ApprobateurDtoServiceComparator());
 		}
 		return true;
 	}
@@ -1761,13 +1746,7 @@ public class OeDROITSKiosque extends BasicProcess {
 				.getAgentsApprobateur(getApprobateurCourant().getIdAgent());
 		setListeAgentsApprobateurAbs(resultAgeAppro);
 		// on tri la liste
-		Collections.sort(getListeAgentsApprobateurAbs(), new Comparator<AgentDto>() {
-			@Override
-			public int compare(AgentDto o1, AgentDto o2) {
-				return o1.getNom().compareTo(o2.getNom());
-			}
-
-		});
+		Collections.sort(getListeAgentsApprobateurAbs(), new AgentDtoComparator());
 		afficherListeAgentsApprobateurAbs();
 
 		// on recupere les opérateurs de l'approbateur
@@ -1775,26 +1754,14 @@ public class OeDROITSKiosque extends BasicProcess {
 				.getIdAgent());
 		setListeAgentsOperateurAbs((ArrayList<AgentDto>) resultOperateurs.getOperateurs());
 		// on tri la liste
-		Collections.sort(getListeAgentsOperateurAbs(), new Comparator<AgentDto>() {
-			@Override
-			public int compare(AgentDto o1, AgentDto o2) {
-				return o1.getNom().compareTo(o2.getNom());
-			}
-
-		});
+		Collections.sort(getListeAgentsOperateurAbs(), new AgentDtoComparator());
 		afficherListeAgentsOperateurAbs();
 
 		// on recupere les viseurs de l'approbateur
 		ViseursDto resultViseurs = absService.getViseursApprobateur(getApprobateurCourant().getIdAgent());
 		setListeAgentsViseurAbs((ArrayList<AgentDto>) resultViseurs.getViseurs());
 		// on tri la liste
-		Collections.sort(getListeAgentsViseurAbs(), new Comparator<AgentDto>() {
-			@Override
-			public int compare(AgentDto o1, AgentDto o2) {
-				return o1.getNom().compareTo(o2.getNom());
-			}
-
-		});
+		Collections.sort(getListeAgentsViseurAbs(), new AgentDtoComparator());
 		afficherListeAgentsViseurAbs();
 
 		// On nomme l'action
@@ -1831,13 +1798,7 @@ public class OeDROITSKiosque extends BasicProcess {
 				.getIdAgent());
 		setListeAgentsApprobateurPtg(resultAgeAppro);
 		// on tri la liste
-		Collections.sort(getListeAgentsApprobateurPtg(), new Comparator<AgentDto>() {
-			@Override
-			public int compare(AgentDto o1, AgentDto o2) {
-				return o1.getNom().compareTo(o2.getNom());
-			}
-
-		});
+		Collections.sort(getListeAgentsApprobateurPtg(), new AgentDtoComparator());
 		afficherListeAgentsApprobateurPtg();
 
 		// on recupere les opérateurs de l'approbateur
@@ -1845,13 +1806,7 @@ public class OeDROITSKiosque extends BasicProcess {
 				.getIdAgent());
 		setListeAgentsOperateurPtg((ArrayList<AgentDto>) resultOperateurs.getSaisisseurs());
 		// on tri la liste
-		Collections.sort(getListeAgentsOperateurPtg(), new Comparator<AgentDto>() {
-			@Override
-			public int compare(AgentDto o1, AgentDto o2) {
-				return o1.getNom().compareTo(o2.getNom());
-			}
-
-		});
+		Collections.sort(getListeAgentsOperateurPtg(), new AgentDtoComparator());
 		afficherListeAgentsOperateurPtg();
 
 		// On nomme l'action

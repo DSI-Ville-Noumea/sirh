@@ -27,6 +27,8 @@ import org.springframework.context.ApplicationContext;
 import com.oreilly.servlet.MultipartRequest;
 
 import flexjson.JSONSerializer;
+import nc.mairie.comparator.DemandeDtoDateDebutComparator;
+import nc.mairie.comparator.DemandeDtoDateDeclarationComparator;
 import nc.mairie.enums.EnumEtatAbsence;
 import nc.mairie.enums.EnumTypeAbsence;
 import nc.mairie.enums.EnumTypeGroupeAbsence;
@@ -1458,15 +1460,7 @@ public class OeABSVisualisation extends BasicProcess {
 
 	public void setListeAbsence(ArrayList<DemandeDto> listeAbsenceAjout) {
 		// on tri la liste
-		Collections.sort(listeAbsenceAjout, new Comparator<DemandeDto>() {
-			@Override
-			public int compare(DemandeDto o1, DemandeDto o2) {
-				// tri par date
-				// ajout du "0 -" pour trier en ordre decroissant
-				return 0 - o1.getDateDebut().compareTo(o2.getDateDebut());
-			}
-
-		});
+		Collections.sort(listeAbsenceAjout, new DemandeDtoDateDebutComparator());
 
 		listeAbsence = new TreeMap<>();
 		int i = 0;
@@ -3131,7 +3125,7 @@ public class OeABSVisualisation extends BasicProcess {
 
 		// redmine #13453
 		// loadHistory();
-
+		
 		afficheListeAbsence();
 
 		setTypeFiltre("VALIDER");
@@ -3310,16 +3304,7 @@ public class OeABSVisualisation extends BasicProcess {
 							.replace("]", "").replace(" ", ""),
 					EnumTypeAbsence.MALADIES_ACCIDENT_TRAVAIL.getCode(), EnumTypeGroupeAbsence.MALADIES.getValue());
 
-			Collections.sort(listeATReference, new Comparator<DemandeDto>() {
-				@Override
-				public int compare(DemandeDto o1, DemandeDto o2) {
-					if (null == o1.getDateDeclaration() || null == o2.getDateDeclaration())
-						return -1;
-					// tri par date
-					// ajout du "0 -" pour trier en ordre decroissant
-					return 0 - o1.getDateDeclaration().compareTo(o2.getDateDeclaration());
-				}
-			});
+			Collections.sort(listeATReference, new DemandeDtoDateDeclarationComparator());
 			setListeATReference((ArrayList<DemandeDto>) listeATReference);
 		}
 

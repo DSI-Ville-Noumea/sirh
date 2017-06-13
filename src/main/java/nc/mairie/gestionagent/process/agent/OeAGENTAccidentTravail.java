@@ -23,6 +23,7 @@ import org.springframework.context.ApplicationContext;
 import com.oreilly.servlet.MultipartRequest;
 
 import flexjson.JSONSerializer;
+import nc.mairie.comparator.DemandeDtoDateDeclarationComparator;
 import nc.mairie.enums.EnumEtatAbsence;
 import nc.mairie.enums.EnumTypeAbsence;
 import nc.mairie.enums.EnumTypeGroupeAbsence;
@@ -329,16 +330,7 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 		listeAT_MP.addAll(listeMPValidee);
 		listeAT_MP.addAll(listeMPPrise);
 
-		Collections.sort(listeAT_MP, new Comparator<DemandeDto>() {
-			@Override
-			public int compare(DemandeDto o1, DemandeDto o2) {
-				if (null == o1.getDateDeclaration() || null == o2.getDateDeclaration())
-					return -1;
-				// tri par date
-				// ajout du "0 -" pour trier en ordre decroissant
-				return 0 - o1.getDateDeclaration().compareTo(o2.getDateDeclaration());
-			}
-		});
+		Collections.sort(listeAT_MP, new DemandeDtoDateDeclarationComparator());
 		setListeAT_MP(listeAT_MP);
 
 		int indiceAcc = 0;
