@@ -30,7 +30,6 @@
 			<SCRIPT type="text/javascript" src="js/GestionCalendrier.js"></SCRIPT> 
             <script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
             <script type="text/javascript" src="js/jquery.dataTables.min.js"></script>
-			<script type="text/javascript" src="js/dataTables.numericComma.js"></script>
             <script type="text/javascript" src="TableTools-2.0.1/media/js/TableTools.min.js"></script>
 
             <SCRIPT type="text/javascript">
@@ -53,9 +52,14 @@
                 $.fn.dataTableExt.oSort['date-francais-asc']  = function(a,b) {
                     var ukDatea = a.split('/');
                     var ukDateb = b.split('/');
-                     
-                    var x = parseInt(ukDatea[2] + ukDatea[1] + ukDatea[0]);
-                    var y = parseInt(ukDateb[2] + ukDateb[1] + ukDateb[0]);
+                    
+                    // date is format "18/05/2017<br />00:00"
+                    // so ukDatea[2] is format "2017<br />00:00", we need to keep only "2017"
+                    var yearA = ukDatea[2].substring(0,4);
+                    var yearB = ukDateb[2].substring(0,4);
+                	
+                    var x = parseInt(yearA + ukDatea[1] + ukDatea[0]);
+                    var y = parseInt(yearB + ukDateb[1] + ukDateb[0]);
                      
                     return ((x < y) ? -1 : ((x > y) ?  1 : 0));
                 };
@@ -63,9 +67,14 @@
                 $.fn.dataTableExt.oSort['date-francais-desc'] = function(a,b) {
                     var ukDatea = a.split('/');
                     var ukDateb = b.split('/');
-                     
-                    var x = parseInt(ukDatea[2] + ukDatea[1] + ukDatea[0]);
-                    var y = parseInt(ukDateb[2] + ukDateb[1] + ukDateb[0]);
+                    
+                    // date is format "18/05/2017<br />00:00"
+                    // so ukDatea[2] is format "2017<br />00:00", we need to keep only "2017"
+                    var yearA = ukDatea[2].substring(0,4);
+                    var yearB = ukDateb[2].substring(0,4);
+
+                    var x = parseInt(yearA + ukDatea[1] + ukDatea[0]);
+                    var y = parseInt(yearB + ukDateb[1] + ukDateb[0]);
                      
                     return ((x < y) ? 1 : ((x > y) ?  -1 : 0));
                 };
