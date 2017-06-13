@@ -599,7 +599,6 @@
 		            		
 		            		<!-- Fin Maladies -->
 		            		
-		            		<% if(typeCreation.getTypeSaisiDto().isMotif()) { %>
 		            		<tr>
 		            			<td>
 	                        		<span class="sigp2Mandatory">Commentaire :</span>
@@ -614,7 +613,7 @@
 									<%=infoCompl %>
 		            			</td>
 		            		</tr>
-		            		<% } %>
+
 		            		<% if(typeCreation.getTypeSaisiDto().isPieceJointe()) { %>
 		            		<tr>
 		            			<td>
