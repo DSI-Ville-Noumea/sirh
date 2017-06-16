@@ -12,6 +12,7 @@ import nc.mairie.gestionagent.process.OeSMConvocation;
 import nc.mairie.gestionagent.process.OeSMHistorique;
 import nc.mairie.gestionagent.process.OeVOIESelection;
 import nc.mairie.gestionagent.process.absence.OeABSAlimentationMensuelle;
+import nc.mairie.gestionagent.process.absence.OeABSGestionPJ;
 import nc.mairie.gestionagent.process.absence.OeABSRestitution;
 import nc.mairie.gestionagent.process.absence.OeABSVisualisation;
 import nc.mairie.gestionagent.process.agent.OeAGENTADMINISTRATIONGestion;
@@ -551,6 +552,9 @@ public class RobotAgent extends Robot {
 		// Classe OeABSVisualisation
 		navigation.put(OeABSVisualisation.class.getName() + OeABSVisualisation.STATUT_RECHERCHER_AGENT_DEMANDE, OeAGENTRecherche.class.getName());
 		navigation.put(OeABSVisualisation.class.getName() + OeABSVisualisation.STATUT_RECHERCHER_AGENT_CREATION, OeAGENTRecherche.class.getName());
+
+		// Classe OeABSGestionPJ
+		navigation.put(OeABSVisualisation.class.getName() + OeABSVisualisation.STATUT_GERER_PIECE_JOINTE, OeABSGestionPJ.class.getName());
 
 		// ///////////////////
 		// ELECTION //

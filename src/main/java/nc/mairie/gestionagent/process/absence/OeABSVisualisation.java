@@ -89,6 +89,7 @@ public class OeABSVisualisation extends BasicProcess {
 
 	public static final int						STATUT_RECHERCHER_AGENT_DEMANDE		= 1;
 	public static final int						STATUT_RECHERCHER_AGENT_CREATION	= 3;
+	public static final int						STATUT_GERER_PIECE_JOINTE			= 4;
 
 	private String[]							LB_ETAT;
 	private String[]							LB_GROUPE;
@@ -124,7 +125,6 @@ public class OeABSVisualisation extends BasicProcess {
 	public String								ACTION_MOTIF_ANNULATION				= "Motif_annulation_demande";
 	public String								ACTION_MOTIF_EN_ATTENTE				= "Motif_mise_en_attente_demande";
 	public String								ACTION_DOCUMENT_AJOUT				= "Ajout d'un document";
-	public String								ACTION_DOCUMENT_CREATION			= "Création d'un document";
 	public String								ACTION_DOCUMENT_SUPPRESSION			= "Suppression d'un document";
 	public String								ACTION_COMMENTAIRE_DRH			    = "Commentaire DRH sur la demande";	
 	public String 								ACTION_CREATION_CONTROLE_MEDICAL 	= "Creation_controle_medical";
@@ -216,6 +216,10 @@ public class OeABSVisualisation extends BasicProcess {
 			if (agt != null) {
 				addZone(getNOM_ST_AGENT_CREATION(), agt.getNomatr().toString());
 			}
+		}
+		if (etatStatut() == STATUT_GERER_PIECE_JOINTE) {
+			listFichierUpload.addAll((Collection<? extends File>) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_DEMANDE_PIECE_JOINTE));
+			VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_DEMANDE_PIECE_JOINTE);
 		}
 	}
 
@@ -449,6 +453,10 @@ public class OeABSVisualisation extends BasicProcess {
 			if (testerParametre(request, getNOM_PB_RECHERCHER_AGENT_DEMANDE())) {
 				return performPB_RECHERCHER_AGENT_DEMANDE(request);
 			}
+			// Si clic sur le bouton PB_GERER_PIECE_JOINTE
+			if (testerParametre(request, getNOM_PB_GERER_PIECE_JOINTE())) {
+				return performPB_GERER_PIECE_JOINTE(request);
+			}
 			// Si clic sur le bouton PB_SUPPRIMER_RECHERCHER_AGENT_DEMANDE
 			if (testerParametre(request, getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_DEMANDE())) {
 				return performPB_SUPPRIMER_RECHERCHER_AGENT_DEMANDE(request);
@@ -486,17 +494,6 @@ public class OeABSVisualisation extends BasicProcess {
 			if (testerParametre(request, getNOM_PB_VALIDER_CREATION_DEMANDE())) {
 				// isImporting = true;
 				return performPB_VALIDER_CREATION_DEMANDE(request);
-			}
-
-			// Si clic sur le bouton PB_CREER_DOC
-			if (testerParametre(request, getNOM_PB_CREER_DOC())) {
-				// isImporting = true;
-				return performPB_CREER_DOC(request);
-			}
-
-			// Si clic sur le bouton PB_CREER_DOC
-			if (testerParametre(request, getNOM_PB_VALIDER_DOCUMENT_CREATION())) {
-				return performPB_VALIDER_DOCUMENT_CREATION(request);
 			}
 
 			// Si clic sur le bouton PB_VALIDER_AJOUT_PJ
@@ -612,10 +609,21 @@ public class OeABSVisualisation extends BasicProcess {
 		return "NOM_PB_RECHERCHER_AGENT_DEMANDE";
 	}
 
+	public String getNOM_PB_GERER_PIECE_JOINTE() {
+		return "NOM_PB_GERER_PIECE_JOINTE";
+	}
+
 	public boolean performPB_RECHERCHER_AGENT_DEMANDE(HttpServletRequest request) throws Exception {
 		// On met l'agent courant en var d'activité
 		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new Agent());
 		setStatut(STATUT_RECHERCHER_AGENT_DEMANDE, true);
+		return true;
+	}
+
+	public boolean performPB_GERER_PIECE_JOINTE(HttpServletRequest request) throws Exception {
+		// On met la demande courante en var d'activité
+		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_DEMANDE_PIECE_JOINTE, new ArrayList<File>());
+		setStatut(STATUT_GERER_PIECE_JOINTE, true);
 		return true;
 	}
 
@@ -3339,37 +3347,6 @@ public class OeABSVisualisation extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * regles de gestion du process - Positionne un statut en fonction de ces
-	 * regles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (11/10/11 08:38:48)
-	 * 
-	 */
-	public boolean performPB_VALIDER_DOCUMENT_CREATION(HttpServletRequest request) throws Exception {
-		// on sauvegarde le nom du fichier parcourir
-		if (multi != null) {
-			if (multi.getFile(getNOM_EF_LIENDOCUMENT()) != null) {
-				File file = multi.getFile(getNOM_EF_LIENDOCUMENT());
-				if (null != listFichierUpload) {
-					boolean isAjout = true;
-					for (File fileTmp : listFichierUpload) {
-						if (fileTmp.getName().equals(file.getName())) {
-							isAjout = false;
-							break;
-						}
-					}
-					if (isAjout)
-						listFichierUpload.add(file);
-				}
-			}
-
-			addZone(getNOM_ST_ACTION_DOCUMENT(), Const.CHAINE_VIDE);
-		}
-
-		return true;
-	}
-
-	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_ACTION_DOCUMENT
 	 */
 	public String getNOM_ST_ACTION_DOCUMENT() {
@@ -3387,21 +3364,6 @@ public class OeABSVisualisation extends BasicProcess {
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_ACTION_DOCUMENT
 	 */
-	public String getNOM_PB_VALIDER_DOCUMENT_CREATION() {
-		return "NOM_PB_VALIDER_DOCUMENT_CREATION";
-	}
-
-	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
-	 * ST_ACTION_DOCUMENT
-	 */
-	public String getVAL_PB_VALIDER_DOCUMENT_CREATION() {
-		return getZone(getNOM_PB_VALIDER_DOCUMENT_CREATION());
-	}
-
-	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_ACTION_DOCUMENT
-	 */
 	public String getNOM_PB_VALIDER_DOCUMENT_AJOUT() {
 		return "PB_VALIDER_DOCUMENT_AJOUT";
 	}
@@ -3412,32 +3374,6 @@ public class OeABSVisualisation extends BasicProcess {
 	 */
 	public String getVAL_PB_VALIDER_DOCUMENT_AJOUT() {
 		return getZone(getNOM_PB_VALIDER_DOCUMENT_AJOUT());
-	}
-
-	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * regles de gestion du process - Positionne un statut en fonction de ces
-	 * regles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (17/10/11 13:46:25)
-	 * 
-	 */
-	public boolean performPB_CREER_DOC(HttpServletRequest request) throws Exception {
-
-		isImporting = true;
-
-		// On nomme l'action
-		addZone(getNOM_ST_ACTION_DOCUMENT(), ACTION_DOCUMENT_CREATION);
-
-		// On pose le statut
-		setStatut(STATUT_MEME_PROCESS);
-		return true;
-	}
-
-	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_CREER_DOC
-	 */
-	public String getNOM_PB_CREER_DOC() {
-		return "NOM_PB_CREER_DOC";
 	}
 
 	/**

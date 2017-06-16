@@ -620,7 +620,7 @@
 	                        		<span class="sigp2Mandatory">Pièces jointes :</span>
 		            			</td>
 		            			<td>
-		            				<INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_CREER_DOC()%>">
+			                		<img onkeydown="" onkeypress="" onkeyup="" border="0" src="images/ajout.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_GERER_PIECE_JOINTE()%>');">
 		            				<% if(null != process.listFichierUpload
 		            						&& !process.listFichierUpload.isEmpty()) {
 		            					for(File file : process.listFichierUpload) { %>
@@ -729,7 +729,7 @@
 	                        		<span class="sigp2Mandatory">Pièces jointes :</span>
 		            			</td>
 		            			<td>
-		            				<INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_CREER_DOC()%>">
+			                		<img onkeydown="" onkeypress="" onkeyup="" border="0" src="images/ajout.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_GERER_PIECE_JOINTE()%>');">
 		            				<% if(null != process.listFichierUpload
 		            						&& !process.listFichierUpload.isEmpty()) {
 		            					for(File file : process.listFichierUpload) { %>
@@ -771,14 +771,15 @@
 	                    <BR/><BR/>
             			<%if(process.isCreationControleMedical()){ %>
 	                    	<INPUT onkeydown="" onkeypress="" onkeyup="" readonly="readonly" type="submit" class="sigp2-Bouton-100" value="Valider" name="<%=process.getNOM_PB_VALIDER_COMMENTAIRE_CM()%>">
-           				<%} %>
-	                    <INPUT onkeydown="" onkeypress="" onkeyup="" type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
+	                    	<INPUT onkeydown="" onkeypress="" onkeyup="" type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
+           				<%} else { %>
+	                    	<INPUT onkeydown="" onkeypress="" onkeyup="" type="submit" class="sigp2-Bouton-100" value="Retour" name="<%=process.getNOM_PB_ANNULER()%>">
+	                    <%}%>
                 </FIELDSET>
             <%} %>
 			
 			
-            	<% if(process.getVAL_ST_ACTION_DOCUMENT().equals(process.ACTION_DOCUMENT_CREATION)
-            			|| process.getVAL_ST_ACTION_DOCUMENT().equals(process.ACTION_DOCUMENT_AJOUT)){ %> 
+            	<% if(process.getVAL_ST_ACTION_DOCUMENT().equals(process.ACTION_DOCUMENT_AJOUT)){ %> 
             	<FIELDSET class="sigp2Fieldset" style="text-align:left;" id="<%=process.getVAL_ST_ACTION_DOCUMENT() %>">
             		<legend class="sigp2Legend"><%=process.getVAL_ST_ACTION_DOCUMENT() %></legend>
 					<div>
@@ -797,12 +798,7 @@
 							</tr>
 						</table>
 		            	<BR/>
-		            	<% if(process.getVAL_ST_ACTION_DOCUMENT().equals(process.ACTION_DOCUMENT_CREATION)) { %>
-	                   		<INPUT onkeydown="" onkeypress="" onkeyup="" type="submit" class="sigp2-Bouton-100" value="Valider" name="<%=process.getNOM_PB_VALIDER_DOCUMENT_CREATION() %>">
-	                    <% } %>
-		            	<% if(process.getVAL_ST_ACTION_DOCUMENT().equals(process.ACTION_DOCUMENT_AJOUT)) { %>
-	                   		<INPUT onkeydown="" onkeypress="" onkeyup="" type="submit" class="sigp2-Bouton-100" value="Valider" name="<%=process.getNOM_PB_VALIDER_DOCUMENT_AJOUT() %>">
-	                    <% } %>
+	                   	<INPUT onkeydown="" onkeypress="" onkeyup="" type="submit" class="sigp2-Bouton-100" value="Valider" name="<%=process.getNOM_PB_VALIDER_DOCUMENT_AJOUT() %>">
 	                    <INPUT onkeydown="" onkeypress="" onkeyup="" type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER_DOCUMENT() %>">
 					</div>
 				</FIELDSET>
@@ -946,7 +942,7 @@
 	                            <%if(abs.getGroupeAbsence().getIdRefGroupeAbsence() == RefTypeGroupeAbsenceEnum.MALADIES.getValue() && abs.getControleMedical() != null && abs.getControleMedical().getId() != null){ %>
 	                            	<img onkeydown="" onkeypress="" onkeyup="" title="Visualiser la demande de contrôle médical" type="image" src="images/loupe.gif"  height="16px" width="16px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_CONTROLE_MEDICAL(indiceAbs)%>" onclick="executeBouton('<%=process.getNOM_PB_CONTROLE_MEDICAL(indiceAbs)%>');">
 	                            <%} %>
-								<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_CONTROLE_MEDICAL(indiceAbs)%>" value="">
+								<INPUT type="submit" style="display : none;" name="<%=process.getNOM_PB_CONTROLE_MEDICAL(indiceAbs)%>" value="">
 							</td>
                             <td width="50px" >
                             <INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" 
@@ -975,6 +971,7 @@
             
             <INPUT type="submit" style="display:none;" name="<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_SERVICE()%>" value="SUPPRECHERCHERSERVICE">	
 			<INPUT type="submit" style="display:none;" name="<%=process.getNOM_PB_RECHERCHER_AGENT_DEMANDE()%>" value="RECHERCHERAGENTDEMANDE">
+			<INPUT type="submit" style="display:none;" name="<%=process.getNOM_PB_GERER_PIECE_JOINTE()%>" value="GERERPIECEJOINTE">
             <INPUT type="submit" style="display:none;" name="<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_DEMANDE()%>" value="SUPPRECHERCHERAGENTDEMANDE">
             <INPUT type="submit" style="display:none;" name="<%=process.getNOM_PB_AJOUTER_ABSENCE()%>" value="AJOUTERABSENCE">        
             <INPUT type="submit" style="display:none;" name="<%=process.getNOM_PB_RECHERCHER_AGENT_CREATION()%>" value="RECHERCHERAGENTCREATION"> 
