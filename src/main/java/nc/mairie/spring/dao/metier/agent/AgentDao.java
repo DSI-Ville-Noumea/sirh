@@ -70,6 +70,7 @@ public class AgentDao extends SirhDao implements AgentDaoInterface {
 	public static final String CHAMP_CODE_ELECTION = "CODE_ELECTION";
 	public static final String CHAMP_RUE_NON_NOUMEA = "RUE_NON_NOUMEA";
 	public static final String CHAMP_QUARTIER = "QUARTIER";
+	public static final String CHAMP_ID_TITRE_REPAS = "ID_TITRE_REPAS";
 
 	public AgentDao(SirhDao sirhDao) {
 		super.dataSource = sirhDao.getDataSource();
@@ -461,6 +462,7 @@ public class AgentDao extends SirhDao implements AgentDaoInterface {
 			a.setCodeElection((String) row.get(CHAMP_CODE_ELECTION));
 			a.setRueNonNoumea((String) row.get(CHAMP_RUE_NON_NOUMEA));
 			a.setQuartier((String) row.get(CHAMP_QUARTIER));
+			a.setIdTitreRepas((Integer) row.get(CHAMP_ID_TITRE_REPAS));
 			liste.add(a);
 		}
 		return liste;
@@ -531,8 +533,8 @@ public class AgentDao extends SirhDao implements AgentDaoInterface {
 				+ "," + CHAMP_INTITULE_COMPTE + "," + CHAMP_VCAT + "," + CHAMP_DEBUT_SERVICE + "," + CHAMP_FIN_SERVICE
 				+ "," + CHAMP_NUM_CAFAT + "," + CHAMP_NUM_RUAMM + "," + CHAMP_NUM_MUTUELLE + "," + CHAMP_NUM_CRE + ","
 				+ CHAMP_NUM_IRCAFEX + "," + CHAMP_NUM_CLR + "," + CHAMP_CODE_ELECTION + "," + CHAMP_RUE_NON_NOUMEA
-				+ ", " + CHAMP_DATE_ARRIVEE_TERRITOIRE + ") " + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?" + ",?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,"
-				+ "?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+				+ ", " + CHAMP_DATE_ARRIVEE_TERRITOIRE + ", "+ CHAMP_ID_TITRE_REPAS+") " + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?" + ",?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,"
+				+ "?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 		jdbcTemplate.update(
 				sql,
 				new Object[] { agent.getIdAgent(), agent.getIdVoie(), agent.getIdCollectivite(),
@@ -548,7 +550,7 @@ public class AgentDao extends SirhDao implements AgentDaoInterface {
 						agent.getNumCompte(), agent.getRib(), agent.getIntituleCompte(), agent.getVcat(),
 						agent.getDebutService(), agent.getFinService(), agent.getNumCafat(), agent.getNumRuamm(),
 						agent.getNumMutuelle(), agent.getNumCre(), agent.getNumIrcafex(), agent.getNumClr(),
-						agent.getCodeElection(), agent.getRueNonNoumea(), agent.getDateArriveeTerritoire() });
+						agent.getCodeElection(), agent.getRueNonNoumea(), agent.getDateArriveeTerritoire(),agent.getIdTitreRepas() });
 	}
 
 	private void modifierAgentBD(Agent agent) {
@@ -568,7 +570,7 @@ public class AgentDao extends SirhDao implements AgentDaoInterface {
 				+ "=?," + CHAMP_VCAT + "=?," + CHAMP_DEBUT_SERVICE + "=?," + CHAMP_FIN_SERVICE + "=? ,"
 				+ CHAMP_NUM_CAFAT + "=? ," + CHAMP_NUM_RUAMM + "=? ," + CHAMP_NUM_MUTUELLE + "=? ," + CHAMP_NUM_CRE
 				+ "=? ," + CHAMP_NUM_IRCAFEX + "=? ," + CHAMP_NUM_CLR + "=? ," + CHAMP_CODE_ELECTION + "=? ,"
-				+ CHAMP_RUE_NON_NOUMEA + "=?, " + CHAMP_QUARTIER + "=?, " + CHAMP_DATE_ARRIVEE_TERRITOIRE + "=? where " + CHAMP_ID + " =?";
+				+ CHAMP_RUE_NON_NOUMEA + "=?, " + CHAMP_QUARTIER + "=?, " + CHAMP_DATE_ARRIVEE_TERRITOIRE + "=?, " + CHAMP_ID_TITRE_REPAS + "=? where " + CHAMP_ID + " =?";
 
 		jdbcTemplate.update(
 				sql,
@@ -584,7 +586,19 @@ public class AgentDao extends SirhDao implements AgentDaoInterface {
 						agent.getCdGuichet(), agent.getNumCompte(), agent.getRib(), agent.getIntituleCompte(),
 						agent.getVcat(), agent.getDebutService(), agent.getFinService(), agent.getNumCafat(),
 						agent.getNumRuamm(), agent.getNumMutuelle(), agent.getNumCre(), agent.getNumIrcafex(),
-						agent.getNumClr(), agent.getCodeElection(), agent.getRueNonNoumea(), agent.getQuartier(), agent.getDateArriveeTerritoire(), 
+						agent.getNumClr(), agent.getCodeElection(), agent.getRueNonNoumea(), agent.getQuartier(), agent.getDateArriveeTerritoire(),agent.getIdTitreRepas(), 
 						agent.getIdAgent() });
+	}
+
+
+	@Override
+	public Agent chercherIdTitreRepas(String idTitreRepas, Integer idAgent) {
+		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID_TITRE_REPAS + " = ? ";
+		if (idAgent != null) {
+			sql += " and ID_AGENT<>" + idAgent;
+		}
+		Agent doc = (Agent) jdbcTemplate.queryForObject(sql, new Object[] { idTitreRepas },
+				new BeanPropertyRowMapper<Agent>(Agent.class));
+		return doc;
 	}
 }

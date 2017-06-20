@@ -71,4 +71,6 @@ public interface AgentDaoInterface {
 			List<Integer> listIdsService, Integer idAgentMin, Integer idAgentMax)
 			throws Exception;
 
+	public Agent chercherIdTitreRepas(String idTitreRepas, Integer idAgent) throws Exception;
+
 }

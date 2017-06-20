@@ -518,6 +518,21 @@ document.formu.elements[nom].focus();
 
 					
 		
+		<FIELDSET class="sigp2Fieldset" style="text-align:left;margin:10px;width:1030px;">
+			<legend class="sigp2Legend">Titre repas</legend>
+			<TABLE border="0" cellpadding="0" cellspacing="0">
+				<TBODY>
+					<TR>
+						<TD class="sigp2" style="text-align : center;" width="150">ID Titre repas</TD>
+					</TR>
+					<TR>
+						<TD class="sigp2-saisie" style="text-align : center;" width="150">
+							<INPUT class="sigp2-saisie" maxlength="15" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> name="<%= process.getNOM_EF_ID_TITRE_REPAS() %>" size="15" type="text" value="<%= process.getVAL_EF_ID_TITRE_REPAS() %>">
+						</TD>
+					</TR>
+				</TBODY>
+			</TABLE>
+		</FIELDSET>	
 		
 		<br/><br/>
 		<FIELDSET style="text-align:center;margin:10px;width:1030px;"  class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "sigp2Fieldset") %>">
