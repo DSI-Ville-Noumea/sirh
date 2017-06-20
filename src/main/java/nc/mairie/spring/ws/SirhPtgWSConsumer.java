@@ -1,5 +1,6 @@
 package nc.mairie.spring.ws;
 
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,6 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.ws.rs.core.MediaType;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +18,12 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientHandlerException;
 import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.multipart.FormDataBodyPart;
+import com.sun.jersey.multipart.FormDataMultiPart;
 
 import flexjson.JSONSerializer;
 import nc.mairie.gestionagent.absence.dto.TypeAbsenceDto;
@@ -285,13 +293,13 @@ public class SirhPtgWSConsumer extends BaseWsConsumer implements ISirhPtgWSConsu
 	}
 
 	@Override
-	public ReturnMessageDto startEtatPayeurTitreRepas(Integer idAgent) {
+	public ReturnMessageDto startEtatPayeurTitreRepas(Integer idAgent,InputStream fileInputStream) {
 
 		String url = String.format(ptgWsBaseUrl + sirhPtgStartEtatPayeurTitreRepas);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgentConnecte", idAgent.toString());
 
-		ClientResponse res = createAndFireRequest(params, url);
+		ClientResponse res = createAndFirePostRequestWithInputStream(params, url, fileInputStream);
 		return readResponseWithReturnMessageDto(ReturnMessageDto.class, res, url);
 	}
 
@@ -962,6 +970,34 @@ public class SirhPtgWSConsumer extends BaseWsConsumer implements ISirhPtgWSConsu
 		ClientResponse res = createAndFireRequest(params, url);
 
 		return readResponseAsList(TitreRepasEtatPayeurTaskDto.class, res, url);
+	}
+
+	public ClientResponse createAndFirePostRequestWithInputStream(Map<String, String> parameters, String url, InputStream fileInputStream) {
+
+		Client client = Client.create();
+		WebResource webResource = client.resource(url);
+
+		for (String key : parameters.keySet()) {
+			webResource = webResource.queryParam(key, parameters.get(key));
+		}
+
+		ClientResponse response = null;
+
+		try {
+
+			// on ajoute le inputStream
+			logger.debug("finaliseEae : createAndFirePostRequestWithInputStream avant creation Multipart ");
+			FormDataMultiPart form = new FormDataMultiPart();
+			FormDataBodyPart fdp = new FormDataBodyPart("fileInputStream", fileInputStream, MediaType.APPLICATION_OCTET_STREAM_TYPE);
+			form.bodyPart(fdp);
+			logger.debug("CreateAndFirePostRequestWithInputStream avant POST ");
+			response = webResource.type(MediaType.MULTIPART_FORM_DATA).post(ClientResponse.class, form);
+
+		} catch (ClientHandlerException ex) {
+			throw new SirhWSConsumerException(String.format("An error occured when querying '%s'.", url), ex);
+		}
+
+		return response;
 	}
 
 }

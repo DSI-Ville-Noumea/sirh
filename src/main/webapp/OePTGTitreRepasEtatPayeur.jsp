@@ -55,7 +55,7 @@ function ConfirmMessage(nom) {
 	</HEAD>
 	<BODY bgcolor="#FFFFFF" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="window.parent.frames['refAgent'].location.reload();startCompteurDeversement('300');" >
 	<%@ include file="BanniereErreur.jsp" %>
-	<FORM name="formu" method="POST" class="sigp2-titre">
+	<FORM name="formu" <%=process.isImporting ? "ENCTYPE=\"multipart/form-data\"" : ""%> method="POST" class="sigp2-titre">
 		
 		<br />
 		
@@ -69,6 +69,13 @@ function ConfirmMessage(nom) {
 					<INPUT type="button" class="sigp2-Bouton-100" value="Générer" disabled="disabled">
                 	<INPUT type="submit" class="sigp2-Bouton-200" value="En cours, rafraichîr" name="<%=process.getNOM_PB_RAFRAICHIR()%>">
 		        <%}else{ %>
+					<span class="sigp2Mandatory">Fichier issu de tickets restaurants : </span> 
+					<% if(process.fichierUpload == null){ %>
+					<INPUT name="<%= process.getNOM_EF_LIENDOCUMENT() %>" class="sigp2-saisie" type="file" value="<%= process.getVAL_EF_LIENDOCUMENT() %>" >
+					<%}else{ %>
+					<INPUT name="<%= process.getNOM_EF_LIENDOCUMENT() %>" class="sigp2-saisie" disabled="disabled" type="text" value="<%= process.getVAL_EF_LIENDOCUMENT() %>" >
+					<% }%>
+					</td>
 					<span class="sigp2Mandatory">Générer l'état du payeur et le fichier prestataire pour le mois en cours</span>
                 	<INPUT type="button" class="sigp2-Bouton-100" value="Générer" onclick="ConfirmMessage('<%=process.getNOM_PB_GENERER()%>');">                	
 				<%} %>

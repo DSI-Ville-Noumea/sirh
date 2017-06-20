@@ -1,5 +1,6 @@
 package nc.noumea.spring.service;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -122,7 +123,7 @@ public interface IPtgService {
 
 	List<Date> getFiltreListeMois();
 
-	ReturnMessageDto startEtatPayeurTitreRepas(Integer idAgent);
+	ReturnMessageDto startEtatPayeurTitreRepas(Integer idAgent,InputStream fileInputStream);
 
 	List<TitreRepasEtatPayeurDto> getListTitreRepasEtatPayeur(Integer idAgent);
 

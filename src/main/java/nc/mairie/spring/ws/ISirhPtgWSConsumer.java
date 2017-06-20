@@ -1,5 +1,6 @@
 package nc.mairie.spring.ws;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -131,7 +132,7 @@ public interface ISirhPtgWSConsumer {
 
 	List<Date> getFiltreListeMois();
 
-	ReturnMessageDto startEtatPayeurTitreRepas(Integer idAgent);
+	ReturnMessageDto startEtatPayeurTitreRepas(Integer idAgent,InputStream fileInputStream);
 
 	List<TitreRepasEtatPayeurDto> getListTitreRepasEtatPayeur(Integer idAgent);
 

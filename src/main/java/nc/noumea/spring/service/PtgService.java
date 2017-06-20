@@ -1,5 +1,6 @@
 package nc.noumea.spring.service;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -291,8 +292,8 @@ public class PtgService implements IPtgService {
 	}
 
 	@Override
-	public ReturnMessageDto startEtatPayeurTitreRepas(Integer idAgent) {
-		return ptgConsumer.startEtatPayeurTitreRepas(idAgent);
+	public ReturnMessageDto startEtatPayeurTitreRepas(Integer idAgent,InputStream fileInputStream) {
+		return ptgConsumer.startEtatPayeurTitreRepas(idAgent,fileInputStream);
 	}
 
 	@Override
