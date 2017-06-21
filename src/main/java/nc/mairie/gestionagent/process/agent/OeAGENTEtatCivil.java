@@ -505,7 +505,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		// ////////////////////// TITRE REPAS
 		// /////////////////////////
 		// /////////////////////////////////////////////////////////////////////////
-		getAgentCourant().setIdTitreRepas(Integer.valueOf(getVAL_EF_ID_TITRE_REPAS()));
+		getAgentCourant().setIdTitreRepas(getVAL_EF_ID_TITRE_REPAS().equals(Const.CHAINE_VIDE) ? null :Integer.valueOf(getVAL_EF_ID_TITRE_REPAS()));
 
 		return true;
 	}
