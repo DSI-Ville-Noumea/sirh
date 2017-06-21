@@ -84,11 +84,11 @@
 	</repositories>
 
 	<dependencies>
-		<!-- sirh_api -->
+		<!-- Framework -->
 		<dependency>
-			<groupId>nc.noumea.mairie</groupId>
-			<artifactId>sirh_api</artifactId>
-			<version>12.04</version>
+			<groupId>com.github.DSI-Ville-Noumea</groupId>
+			<artifactId>framework</artifactId>
+			<version>framework-2.6</version>
 		</dependency>
 		<!-- JSON -->
 		<dependency>
@@ -122,6 +122,20 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-jdbc</artifactId>
 			<version>${spring.version}</version>
+		</dependency>
+
+		<!-- Drivers BD -->
+		<dependency>
+			<groupId>net.sf.jt400</groupId>
+			<artifactId>jt400</artifactId>
+			<version>9.1</version>
+			<!-- Ne pas passer cette dependance en provided car SIRH_WAR a besoin 
+				de certaines classes AS400 -->
+		</dependency>
+		<dependency>
+			<groupId>org.apache.tomcat</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>6.0.45</version>
 		</dependency>
 		<!-- pour les logs -->
 		<dependency>
