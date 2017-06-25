@@ -164,10 +164,10 @@
 		value="http://svi-alfresco.site-mairie.noumea.nc:8080/" override="false" />
 		
 	<Environment name="ALFRESCO_LOGIN" type="java.lang.String" description="Login to Alfresco" 
-		value=***REMOVED*** override="false" />
+		value="***REMOVED***" override="false" />
 		
 	<Environment name="ALFRESCO_PASSWORD" type="java.lang.String" description="Password to Alfresco" 
-		value=***REMOVED*** override="false" />
+		value="***REMOVED***" override="false" />
 		
 	<Environment name="ADMIN_ALFRESCO_LOGIN" type="java.lang.String" description="Login to Alfresco" 
 		value="admin" override="false" />
