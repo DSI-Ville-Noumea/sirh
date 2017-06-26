@@ -3307,13 +3307,10 @@ public class OeABSVisualisation extends BasicProcess {
 
 		if (null == listeATReference || listeATReference.isEmpty()
 				|| !listeATReference.get(0).getAgentWithServiceDto().getIdAgent().equals(idAgent)) {
-			List<DemandeDto> listeATReference = absService.getListeDemandesAgent(new Integer(idAgent), "TOUTES", null, null,
-					null, Arrays.asList(EnumEtatAbsence.VALIDEE.getCode(), EnumEtatAbsence.PRISE.getCode()).toString().replace("[", "")
-							.replace("]", "").replace(" ", ""),
-					EnumTypeAbsence.MALADIES_ACCIDENT_TRAVAIL.getCode(), EnumTypeGroupeAbsence.MALADIES.getValue());
+			List<DemandeDto> listeATRef = absService.getListeATReferenceForAgent(new Integer(idAgent));
 
-			Collections.sort(listeATReference, new DemandeDtoDateDeclarationComparator());
-			setListeATReference((ArrayList<DemandeDto>) listeATReference);
+			Collections.sort(listeATRef, new DemandeDtoDateDeclarationComparator());
+			setListeATReference((ArrayList<DemandeDto>) listeATRef);
 		}
 
 		return listeATReference;
