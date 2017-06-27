@@ -182,6 +182,11 @@ public class AbsService implements IAbsService {
 	}
 
 	@Override
+	public List<DemandeDto> getListeATReferenceForAgent(Integer idAgent) {
+		return absConsumer.getListeATReferenceForAgent(idAgent);
+	}
+
+	@Override
 	public List<DemandeDto> getListeDemandes(String dateDebut, String dateFin, String listIdRefEtat, Integer idRefType, Integer idAgentRecherche, Integer idRefGroupe, boolean aValider,
 			List<String> idAgentsService) {
 		return absConsumer.getListeDemandes(dateDebut, dateFin, listIdRefEtat, idRefType, idAgentRecherche, idRefGroupe, aValider, idAgentsService);

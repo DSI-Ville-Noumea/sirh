@@ -76,6 +76,8 @@ public interface IAbsService {
 	List<TypeAbsenceDto> getListeRefAllTypeAbsenceDto();
 
 	List<RefGroupeAbsenceDto> getRefGroupeAbsence();
+	
+	List<DemandeDto> getListeATReferenceForAgent(Integer idAgent);
 
 	List<DemandeDto> getListeDemandes(String dateDebut, String dateFin, String listIdRefEtat, Integer idRefType, Integer idAgentRecherche,
 			Integer idRefGroupe, boolean aValider, List<String> idAgentsService);

@@ -75,6 +75,7 @@ public class SirhAbsWSConsumer extends BaseWsConsumer implements ISirhAbsWSConsu
 	private static final String	sirhAbsHistoCompteurAgent							= "solde/historiqueSolde";
 
 	private static final String	sirhAbsDemandesAgent								= "demandes/listeDemandesAgent";
+	private static final String	sirhAbsDemandesATForAgent							= "demandes/listeATReferenceForAgent";
 	private static final String	sirhAbsDemandes										= "demandes/listeDemandesSIRH";
 	private static final String	sirhAbsDemandesHistorique							= "demandes/historiqueSIRH";
 	private static final String	sirhAbsDemandeSauvegarde							= "demandes/demandeSIRH";
@@ -550,6 +551,15 @@ public class SirhAbsWSConsumer extends BaseWsConsumer implements ISirhAbsWSConsu
 		HashMap<String, String> params = new HashMap<>();
 		ClientResponse res = createAndFireRequest(params, url);
 		return readResponseAsList(RefTypeDto.class, res, url);
+	}
+
+	@Override
+	public List<DemandeDto> getListeATReferenceForAgent(Integer idAgent) {
+		String url = String.format(absWsBaseUrl + sirhAbsDemandesATForAgent);
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idAgent", idAgent.toString());
+		ClientResponse res = createAndFireRequest(params, url);
+		return readResponseAsList(DemandeDto.class, res, url);
 	}
 
 	@Override
