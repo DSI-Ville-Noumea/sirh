@@ -154,7 +154,7 @@
 	<!-- URL application Organigramme -->
 	<!-- -->
 	<Parameter description="Url de l'application organigramme"
-		name="URL_APPLI_ORGANIGRAMME" override="false" value="http://svi-tomcat0:8087/" />
+		name="URL_APPLI_ORGANIGRAMME" override="false" value="http://svi-tomcat0:8200/" />
 		
 	<!--  -->
 	<!-- ALFRESCO -->
