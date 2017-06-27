@@ -46,38 +46,38 @@
 	<!-- -->
 	<Environment description="SIRH PTG WS url" name="SIRH_PTG_WS_URL"
 		type="java.lang.String" override="false"
-		value="http://svi-tomcat0:8085/sirh-ptg-ws/" />
+		value="http://svi-tomcat0:8210/sirh-ptg-ws/" />
 
 	<!-- -->
 	<!-- WS DES ABSENCES -->
 	<!-- -->
 	<Environment description="SIRH ABS WS url" name="SIRH_ABS_WS_URL"
 		type="java.lang.String" override="false"
-		value="http://svi-tomcat0:8085/sirh-abs-ws/" />
+		value="http://svi-tomcat0:8210/sirh-abs-ws/" />
 		
 	<!-- -->
 	<!-- WS DES EAEs -->
 	<!-- -->
 	<Environment description="SIRH EAE WS url" name="SIRH_EAE_WS_URL"
-		type="java.lang.String" override="false" value="http://svi-tomcat0:8085/sirh-eae-ws/" />
+		type="java.lang.String" override="false" value="http://svi-tomcat0:8210/sirh-eae-ws/" />
 
 	<!-- -->
 	<!-- WS RADI pour interroger AD -->
 	<!-- -->
 	<Environment description="RADI WS url" name="RADI_WS_URL"
-		type="java.lang.String" override="false" value="http://svi-tomcat0:8085/radi/" />
+		type="java.lang.String" override="false" value="http://svi-tomcat0:8210/radi/" />
 
 	<!-- -->
 	<!-- WS SIRH -->
 	<!-- -->
 	<Environment description="SIRH WS url" name="SIRH_WS_URL"
-		type="java.lang.String" override="false" value="http://svi-tomcat0:8085/sirhws/" />
+		type="java.lang.String" override="false" value="http://svi-tomcat0:8210/sirhws/" />
 
 	<!-- -->
 	<!-- WS DE ADS -->
 	<!-- -->
 	<Environment name="ADS_WS_URL" type="java.lang.String"
-		description="ADS WS endpoint url" value="http://svi-tomcat0:8077/"
+		description="ADS WS endpoint url" value="http://svi-tomcat0:8220/"
 		override="false" />
 
 	<!-- -->
