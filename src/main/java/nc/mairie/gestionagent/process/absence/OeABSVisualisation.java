@@ -1239,7 +1239,14 @@ public class OeABSVisualisation extends BasicProcess {
 		int[] tailles = { 50 };
 		FormateListe aFormat = new FormateListe(tailles);
 		for (DemandeDto at : listeAT) {
-			String ligne[] = { sdf.format(at.getDateDeclaration()) + " - " + at.getTypeSiegeLesion().getLibelle() };
+			String libelle;
+			if (at.getTypeSiegeLesion() != null)
+				libelle = at.getTypeSiegeLesion().getLibelle();
+			else
+				libelle = "Siège des lésions non renseigné";
+
+			String ligne[] = { 
+			sdf.format(at.getDateDeclaration()) + " - " + libelle };
 			aFormat.ajouteLigne(ligne);
 		}
 		setLB_AT_REFERENCE(aFormat.getListeFormatee(false));
