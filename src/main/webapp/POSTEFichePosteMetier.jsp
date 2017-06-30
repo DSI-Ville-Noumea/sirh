@@ -310,7 +310,7 @@
 </fieldset>
 
 <fieldset class="sigp2Fieldset" style="width:1020px">
-	<legend class="sigp2Legend">Mission</legend>
+	<legend class="sigp2Legend">Définition du poste</legend>
 	<br/>
 	<textarea <%= process.estFDPInactive ?  "disabled='disabled'" : "" %> <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> rows="4" cols="190" class="sigp2-saisie" style="margin-right:10px;" name="<%= process.getNOM_EF_MISSIONS()%>" ><%= process.getVAL_EF_MISSIONS() %></textarea>
 	<br/>
