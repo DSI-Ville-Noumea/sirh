@@ -9,6 +9,8 @@ import java.util.ListIterator;
 
 import javax.servlet.http.HttpServletRequest;
 
+import nc.mairie.metier.poste.*;
+import nc.mairie.spring.dao.metier.poste.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -35,23 +37,6 @@ import nc.mairie.metier.parametrage.NatureCredit;
 import nc.mairie.metier.parametrage.TypeAvantage;
 import nc.mairie.metier.parametrage.TypeDelegation;
 import nc.mairie.metier.parametrage.TypeRegIndemn;
-import nc.mairie.metier.poste.Activite;
-import nc.mairie.metier.poste.ActiviteFE;
-import nc.mairie.metier.poste.ActiviteFP;
-import nc.mairie.metier.poste.Affectation;
-import nc.mairie.metier.poste.Budget;
-import nc.mairie.metier.poste.Competence;
-import nc.mairie.metier.poste.CompetenceFE;
-import nc.mairie.metier.poste.CompetenceFP;
-import nc.mairie.metier.poste.EntiteGeo;
-import nc.mairie.metier.poste.FEFP;
-import nc.mairie.metier.poste.FicheEmploi;
-import nc.mairie.metier.poste.FichePoste;
-import nc.mairie.metier.poste.HistoFichePoste;
-import nc.mairie.metier.poste.Horaire;
-import nc.mairie.metier.poste.NiveauEtudeFP;
-import nc.mairie.metier.poste.StatutFP;
-import nc.mairie.metier.poste.TitrePoste;
 import nc.mairie.metier.referentiel.NiveauEtude;
 import nc.mairie.metier.referentiel.TypeCompetence;
 import nc.mairie.metier.referentiel.TypeContrat;
@@ -70,21 +55,6 @@ import nc.mairie.spring.dao.metier.parametrage.NatureCreditDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeAvantageDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeDelegationDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeRegIndemnDao;
-import nc.mairie.spring.dao.metier.poste.ActiviteDao;
-import nc.mairie.spring.dao.metier.poste.ActiviteFEDao;
-import nc.mairie.spring.dao.metier.poste.ActiviteFPDao;
-import nc.mairie.spring.dao.metier.poste.AffectationDao;
-import nc.mairie.spring.dao.metier.poste.BudgetDao;
-import nc.mairie.spring.dao.metier.poste.CompetenceDao;
-import nc.mairie.spring.dao.metier.poste.CompetenceFEDao;
-import nc.mairie.spring.dao.metier.poste.CompetenceFPDao;
-import nc.mairie.spring.dao.metier.poste.FEFPDao;
-import nc.mairie.spring.dao.metier.poste.FicheEmploiDao;
-import nc.mairie.spring.dao.metier.poste.FichePosteDao;
-import nc.mairie.spring.dao.metier.poste.HistoFichePosteDao;
-import nc.mairie.spring.dao.metier.poste.NiveauEtudeFPDao;
-import nc.mairie.spring.dao.metier.poste.StatutFPDao;
-import nc.mairie.spring.dao.metier.poste.TitrePosteDao;
 import nc.mairie.spring.dao.metier.referentiel.NiveauEtudeDao;
 import nc.mairie.spring.dao.metier.referentiel.TypeCompetenceDao;
 import nc.mairie.spring.dao.metier.referentiel.TypeContratDao;
@@ -222,6 +192,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 	private TypeContrat typeContratCourant;
 	private FicheEmploi emploiPrimaire;
 	private FicheEmploi emploiSecondaire;
+	private FicheMetier metierPrimaire;
+	private FicheMetier metierSecondaire;
 	private FichePoste responsable;
 	private Agent agtResponsable;
 	private TitrePoste titrePosteResponsable;
@@ -258,6 +230,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	private NiveauEtudeFPDao niveauEtudeFPDao;
 	private BudgetDao budgetDao;
 	private FEFPDao fefpDao;
+	private FMFPDao fmfpDao;
 	private CompetenceDao competenceDao;
 	private CompetenceFPDao competenceFPDao;
 	private CompetenceFEDao competenceFEDao;
@@ -265,6 +238,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	private ActiviteFEDao activiteFEDao;
 	private ActiviteFPDao activiteFPDao;
 	private FicheEmploiDao ficheEmploiDao;
+	private FicheMetierDao ficheMetierDao;
 	private FichePosteDao fichePosteDao;
 	private HistoFichePosteDao histoFichePosteDao;
 	private AffectationDao affectationDao;
@@ -559,6 +533,9 @@ public class OePOSTEFichePoste extends BasicProcess {
 		if (getFefpDao() == null) {
 			setFefpDao(new FEFPDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (getFmfpDao() == null) {
+			setFmfpDao(new FMFPDao((SirhDao) context.getBean("sirhDao")));
+		}
 		if (getCompetenceDao() == null) {
 			setCompetenceDao(new CompetenceDao((SirhDao) context.getBean("sirhDao")));
 		}
@@ -579,6 +556,9 @@ public class OePOSTEFichePoste extends BasicProcess {
 		}
 		if (getFicheEmploiDao() == null) {
 			setFicheEmploiDao(new FicheEmploiDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getFicheMetierDao() == null) {
+			setFicheMetierDao(new FicheMetierDao((SirhDao) context.getBean("sirhDao")));
 		}
 		if (getFichePosteDao() == null) {
 			setFichePosteDao(new FichePosteDao((SirhDao) context.getBean("sirhDao")));
@@ -640,8 +620,14 @@ public class OePOSTEFichePoste extends BasicProcess {
 			// FICHE EMPLOI PRIMAIRE
 			afficheFEP();
 
+			// FICHE METIER PRIMAIRE
+			afficheFEM();
+
 			// FICHE EMPLOI SECONDAIRE
 			afficheFES();
+
+			// FICHE METIER SECONDAIRE
+			afficheFMS();
 
 			// OBSERVATION
 			initialiseObservation();
@@ -787,6 +773,10 @@ public class OePOSTEFichePoste extends BasicProcess {
 		addZone(getNOM_ST_EMPLOI_SECONDAIRE(), getEmploiSecondaire() == null ? Const.CHAINE_VIDE : getEmploiSecondaire().getRefMairie());
 	}
 
+	private void afficheFMS() throws Exception {
+		addZone(getNOM_ST_METIER_SECONDAIRE(), getMetierSecondaire() == null ? Const.CHAINE_VIDE : getMetierSecondaire().getRefMairie());
+	}
+
 	/**
 	 * Affiche la FicheEmploi primaire.
 	 */
@@ -795,6 +785,14 @@ public class OePOSTEFichePoste extends BasicProcess {
 			addZone(getNOM_ST_EMPLOI_PRIMAIRE(), getEmploiPrimaire().getRefMairie());
 		} else {
 			addZone(getNOM_ST_EMPLOI_PRIMAIRE(), Const.CHAINE_VIDE);
+		}
+	}
+
+	private void afficheFEM() throws Exception {
+		if (getMetierPrimaire() != null) {
+			addZone(getNOM_ST_METIER_PRIMAIRE(), getMetierPrimaire().getRefMairie());
+		} else {
+			addZone(getNOM_ST_METIER_PRIMAIRE(), Const.CHAINE_VIDE);
 		}
 	}
 
@@ -3472,6 +3470,20 @@ public class OePOSTEFichePoste extends BasicProcess {
 			// Init fiches emploi
 			setEmploiPrimaire(getFicheEmploiDao().chercherFicheEmploiAvecFichePoste(true, liens1));
 
+			// Recherche du lien FicheMetier / FichePoste primaire
+			FMFP fmfpPrimaire = getFmfpDao().chercherFMFPAvecNumFP(getFichePosteCourante().getIdFichePoste(), true);
+			// Init fiche métier primaire
+			setMetierPrimaire(getFicheMetierDao().chercherFicheMetierAvecFichePoste(fmfpPrimaire));
+
+			// Recherche du lien FicheMetier / FichePoste secondaire
+			FMFP fmfpSecondaire = getFmfpDao().chercherFMFPAvecNumFP(getFichePosteCourante().getIdFichePoste(), false);
+
+			if (fmfpSecondaire != null) {
+				// Init fiche métier secondaire
+				setMetierSecondaire(getFicheMetierDao().chercherFicheMetierAvecFichePoste(fmfpSecondaire));
+			}
+
+
 			// Recherche de tous les liens FicheEmploi / FichePoste
 			ArrayList<FEFP> liens2 = getFefpDao().listerFEFPAvecFP(getFichePosteCourante().getIdFichePoste());
 			setEmploiSecondaire(getFicheEmploiDao().chercherFicheEmploiAvecFichePoste(false, liens2));
@@ -3867,6 +3879,23 @@ public class OePOSTEFichePoste extends BasicProcess {
 	}
 
 	/**
+	 *
+	 * @return
+	 */
+	public FicheMetier getMetierPrimaire() {
+		return metierPrimaire;
+	}
+
+	/**
+	 *
+	 * @param newFicheMetier
+	 */
+	private void setMetierPrimaire(FicheMetier newFicheMetier) {
+		this.metierPrimaire = newFicheMetier;
+		//TODOSIRH: init les zones de la fiche métier dans la fiche de poste
+	}
+
+	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_EMPLOI_PRIMAIRE Date
 	 * de création : (13/07/11 11:51:02)
 	 * 
@@ -3874,6 +3903,10 @@ public class OePOSTEFichePoste extends BasicProcess {
 	 */
 	public String getNOM_ST_EMPLOI_PRIMAIRE() {
 		return "NOM_ST_EMPLOI_PRIMAIRE";
+	}
+
+	public String getNOM_ST_METIER_PRIMAIRE() {
+		return "NOM_ST_METIER_PRIMAIRE";
 	}
 
 	/**
@@ -3886,6 +3919,10 @@ public class OePOSTEFichePoste extends BasicProcess {
 		return getZone(getNOM_ST_EMPLOI_PRIMAIRE());
 	}
 
+	public String getVAL_ST_METIER_PRIMAIRE() {
+		return getZone(getNOM_ST_METIER_PRIMAIRE());
+	}
+
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_EMPLOI_SECONDAIRE
 	 * Date de création : (13/07/11 11:51:02)
@@ -3896,6 +3933,12 @@ public class OePOSTEFichePoste extends BasicProcess {
 		return "NOM_ST_EMPLOI_SECONDAIRE";
 	}
 
+
+	public String getNOM_ST_METIER_SECONDAIRE() {
+		return "NOM_ST_METIER_SECONDAIRE";
+	}
+
+
 	/**
 	 * Retourne la valeur à  afficher par la JSP pour la zone :
 	 * ST_EMPLOI_SECONDAIRE Date de création : (13/07/11 11:51:02)
@@ -3904,6 +3947,10 @@ public class OePOSTEFichePoste extends BasicProcess {
 	 */
 	public String getVAL_ST_EMPLOI_SECONDAIRE() {
 		return getZone(getNOM_ST_EMPLOI_SECONDAIRE());
+	}
+
+	public String getVAL_ST_METIER_SECONDAIRE() {
+		return getZone(getNOM_ST_METIER_SECONDAIRE());
 	}
 
 	private FicheEmploi getEmploiSecondaire() {
@@ -3925,6 +3972,15 @@ public class OePOSTEFichePoste extends BasicProcess {
 			initialiseActivites();
 			initialiseCompetence();
 		}
+	}
+
+	public FicheMetier getMetierSecondaire() {
+		return metierSecondaire;
+	}
+
+	public void setMetierSecondaire(FicheMetier metierSecondaire) {
+		this.metierSecondaire = metierSecondaire;
+		//TODOSIRH: init les zones de la fiche métier dans la fiche de poste
 	}
 
 	/**
@@ -6557,6 +6613,14 @@ public class OePOSTEFichePoste extends BasicProcess {
 		this.fefpDao = fefpDao;
 	}
 
+	public FMFPDao getFmfpDao() {
+		return fmfpDao;
+	}
+
+	public void setFmfpDao(FMFPDao fmfpDao) {
+		this.fmfpDao = fmfpDao;
+	}
+
 	public CompetenceDao getCompetenceDao() {
 		return competenceDao;
 	}
@@ -6611,6 +6675,14 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 	public void setFicheEmploiDao(FicheEmploiDao ficheEmploiDao) {
 		this.ficheEmploiDao = ficheEmploiDao;
+	}
+
+	public FicheMetierDao getFicheMetierDao() {
+		return ficheMetierDao;
+	}
+
+	public void setFicheMetierDao(FicheMetierDao ficheMetierDao) {
+		this.ficheMetierDao = ficheMetierDao;
 	}
 
 	public FichePosteDao getFichePosteDao() {
