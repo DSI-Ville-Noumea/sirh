@@ -3473,7 +3473,9 @@ public class OePOSTEFichePoste extends BasicProcess {
 			// Recherche du lien FicheMetier / FichePoste primaire
 			FMFP fmfpPrimaire = getFmfpDao().chercherFMFPAvecNumFP(getFichePosteCourante().getIdFichePoste(), true);
 			// Init fiche métier primaire
-			setMetierPrimaire(getFicheMetierDao().chercherFicheMetierAvecFichePoste(fmfpPrimaire));
+			if (fmfpPrimaire != null) {
+				setMetierPrimaire(getFicheMetierDao().chercherFicheMetierAvecFichePoste(fmfpPrimaire));
+			}
 
 			// Recherche du lien FicheMetier / FichePoste secondaire
 			FMFP fmfpSecondaire = getFmfpDao().chercherFMFPAvecNumFP(getFichePosteCourante().getIdFichePoste(), false);
