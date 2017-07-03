@@ -419,6 +419,34 @@ public class OePOSTEFichePoste extends BasicProcess {
 			}
 		}
 
+        if (etatStatut() == STATUT_METIER_SECONDAIRE) {
+            FicheMetier fms = (FicheMetier) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_FICHE_METIER);
+            VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_FICHE_METIER);
+            if (fms == null) {
+                if (getMetierSecondaire() == null) {
+                    setMetierSecondaire(fms);
+                }
+            } else {
+                setMetierSecondaire(fms);
+            }
+            afficheFMS();
+            initialiseMissionMetier();
+            initialiseInfos();
+            // si changement de FMS, on ajoute la mission à  la mission actuelle
+            if (getMetierSecondaire() != null) {
+                if (!getMission().toUpperCase().contains(getMetierSecondaire().getDefinitionMetier().toUpperCase())) {
+                    setMission(getMission() + " " + getMetierSecondaire().getDefinitionMetier());
+                }
+            }
+
+            addZone(getNOM_EF_MISSIONS(), getMission() == null ? Const.CHAINE_VIDE : getMission());
+            return;
+        } else {
+            if (getMetierSecondaire() != null) {
+                afficheFMS();
+            }
+        }
+
 		if (etatStatut() == STATUT_EMPLOI_PRIMAIRE) {
 			FicheEmploi fep = (FicheEmploi) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_FICHE_EMPLOI);
 			VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_FICHE_EMPLOI);
@@ -3889,6 +3917,10 @@ public class OePOSTEFichePoste extends BasicProcess {
 		return "NOM_PB_RECHERCHE_EMPLOI_SECONDAIRE";
 	}
 
+    public String getNOM_PB_RECHERCHE_METIER_SECONDAIRE() {
+        return "NOM_PB_RECHERCHE_METIER_SECONDAIRE";
+    }
+
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMER_EMPLOI_SECONDAIRE
 	 * Date de création : (13/07/11 09:49:02)
@@ -3911,6 +3943,11 @@ public class OePOSTEFichePoste extends BasicProcess {
 		setStatut(STATUT_EMPLOI_SECONDAIRE, true);
 		return true;
 	}
+
+    public boolean performPB_RECHERCHE_METIER_SECONDAIRE(HttpServletRequest request) throws Exception {
+        setStatut(STATUT_METIER_SECONDAIRE, true);
+        return true;
+    }
 
 	/**
 	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
@@ -5689,6 +5726,11 @@ public class OePOSTEFichePoste extends BasicProcess {
 			if (testerParametre(request, getNOM_PB_RECHERCHE_EMPLOI_SECONDAIRE())) {
 				return performPB_RECHERCHE_EMPLOI_SECONDAIRE(request);
 			}
+
+            // Si clic sur le bouton PB_RECHERCHE_METIER_SECONDAIRE
+            if (testerParametre(request, getNOM_PB_RECHERCHE_METIER_SECONDAIRE())) {
+                return performPB_RECHERCHE_METIER_SECONDAIRE(request);
+            }
 
 			// Si clic sur le bouton PB_SUPPRIMER_EMPLOI_SECONDAIRE
 			if (testerParametre(request, getNOM_PB_SUPPRIMER_EMPLOI_SECONDAIRE())) {
