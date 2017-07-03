@@ -111,6 +111,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 	public static final int STATUT_REMPLACEMENT = 12;
 	public static final int STATUT_COMPETENCE = 13;
 	public static final int STATUT_FICHE_EMPLOI = 14;
+	public static final int STATUT_METIER_PRIMAIRE = 15;
+	public static final int STATUT_METIER_SECONDAIRE = 16;
 	public String ACTION_RECHERCHE = "Recherche.";
 	public String ACTION_CREATION = "Création.";
 	public String ACTION_DUPLICATION = "Duplication.";
@@ -401,7 +403,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 			}
 			afficheFES();
 			initialiseMission();
-			initialiseInfoEmploi();
+			initialiseInfos();
 			// si changement de FES, on ajoute la mission à  la mission actuelle
 			if (getEmploiSecondaire() != null) {
 				if (!getMission().toUpperCase().contains(getEmploiSecondaire().getDefinitionEmploi().toUpperCase())) {
@@ -430,7 +432,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 			afficheFEP();
 			initialiseMission();
-			initialiseInfoEmploi();
+			initialiseInfos();
 			// si changement de FES, on ajoute la mission à  la mission actuelle
 			if (getEmploiPrimaire() != null) {
 				if (!getMission().toUpperCase().contains(getEmploiPrimaire().getDefinitionEmploi().toUpperCase())) {
@@ -447,6 +449,43 @@ public class OePOSTEFichePoste extends BasicProcess {
 				ArrayList<FEFP> liens = getFefpDao().listerFEFPAvecFP(getFichePosteCourante().getIdFichePoste());
 				setEmploiPrimaire(getFicheEmploiDao().chercherFicheEmploiAvecFichePoste(true, liens));
 				afficheFEP();
+			}
+		}
+
+		if (etatStatut() == STATUT_METIER_PRIMAIRE) {
+			FicheMetier fmp = (FicheMetier) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_FICHE_METIER);
+			VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_FICHE_METIER);
+			if (fmp == null) {
+				if (getMetierPrimaire() == null) {
+					setMetierPrimaire(fmp);
+				}
+			} else {
+				setMetierPrimaire(fmp);
+			}
+			afficheFMP();
+
+			initialiseMissionMetier();
+			initialiseInfos();
+
+			// si changement de FES, on ajoute la mission à  la mission actuelle
+			if (getMetierPrimaire() != null) {
+				if (!getMission().toUpperCase().contains(getMetierPrimaire().getDefinitionMetier().toUpperCase())) {
+					setMission(getMission() + " " + getMetierPrimaire().getDefinitionMetier());
+				}
+			}
+
+			addZone(getNOM_EF_MISSIONS(), getMission() == null ? Const.CHAINE_VIDE : getMission());
+			return;
+		} else {
+			if (getMetierPrimaire() == null && getFichePosteCourante() != null && getFichePosteCourante().getIdFichePoste() != null) {
+
+				// Recherche du lien FicheMetier / FichePoste
+				FMFP fmfpPrimaire = getFmfpDao().chercherFMFPAvecNumFP(getFichePosteCourante().getIdFichePoste(), true);
+				// Init fiche métier primaire
+				if (fmfpPrimaire != null) {
+					setMetierPrimaire(getFicheMetierDao().chercherFicheMetierAvecFichePoste(fmfpPrimaire));
+				}
+				afficheFMP();
 			}
 		}
 
@@ -621,7 +660,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 			afficheFEP();
 
 			// FICHE METIER PRIMAIRE
-			afficheFEM();
+			afficheFMP();
 
 			// FICHE EMPLOI SECONDAIRE
 			afficheFES();
@@ -788,7 +827,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 		}
 	}
 
-	private void afficheFEM() throws Exception {
+	private void afficheFMP() throws Exception {
 		if (getMetierPrimaire() != null) {
 			addZone(getNOM_ST_METIER_PRIMAIRE(), getMetierPrimaire().getRefMairie());
 		} else {
@@ -3699,7 +3738,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 		VariablesActivite.enlever(this, "LISTEACTIVITE");
 	}
 
-	private void initialiseInfoEmploi() throws Exception {
+	private void initialiseInfos() throws Exception {
 		// on fait une liste de toutes les niveau etude
 		setListeTousNiveau(new ArrayList<NiveauEtude>());
 
@@ -3782,6 +3821,29 @@ public class OePOSTEFichePoste extends BasicProcess {
 		addZone(getNOM_EF_MISSIONS(), getMission() == null ? Const.CHAINE_VIDE : getMission());
 	}
 
+	private void initialiseMissionMetier() {
+		// Init missions
+		setMission(Const.CHAINE_VIDE);
+		if (getFichePosteCourante() != null) {
+			if (getFichePosteCourante().getMissions() != null && getFichePosteCourante().getMissions().length() != 0) {
+				setMission(getMission() + " " + getFichePosteCourante().getMissions());
+			} else {
+				if (getMetierPrimaire() != null) {
+					if (!getMission().toUpperCase().contains(getMetierPrimaire().getDefinitionMetier().toUpperCase())) {
+						setMission(getMission() + " " + getMetierPrimaire().getDefinitionMetier());
+					}
+				}
+				if (getMetierSecondaire() != null) {
+					if (!getMission().toUpperCase().contains(getMetierSecondaire().getDefinitionMetier().toUpperCase())) {
+						setMission(getMission() + " " + getMetierSecondaire().getDefinitionMetier());
+					}
+				}
+			}
+		}
+
+		addZone(getNOM_EF_MISSIONS(), getMission() == null ? Const.CHAINE_VIDE : getMission());
+	}
+
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_RECHERCHE_EMPLOI_PRIMAIRE
 	 * Date de création : (13/07/11 09:49:02)
@@ -3790,6 +3852,10 @@ public class OePOSTEFichePoste extends BasicProcess {
 	 */
 	public String getNOM_PB_RECHERCHE_EMPLOI_PRIMAIRE() {
 		return "NOM_PB_RECHERCHE_EMPLOI_PRIMAIRE";
+	}
+
+	public String getNOM_PB_RECHERCHE_METIER_PRIMAIRE() {
+		return "NOM_PB_RECHERCHE_METIER_PRIMAIRE";
 	}
 
 	/**
@@ -3803,6 +3869,13 @@ public class OePOSTEFichePoste extends BasicProcess {
 	public boolean performPB_RECHERCHE_EMPLOI_PRIMAIRE(HttpServletRequest request) throws Exception {
 		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_FICHE_EMPLOI, getZone(getNOM_ST_EMPLOI_PRIMAIRE()));
 		setStatut(STATUT_EMPLOI_PRIMAIRE, true);
+		return true;
+	}
+
+	public boolean performPB_RECHERCHE_METIER_PRIMAIRE(HttpServletRequest request) throws Exception {
+		//TODOSIRH: modifier pour que ca fonctionne avec les fiches métiers
+		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_FICHE_METIER, getZone(getNOM_ST_METIER_PRIMAIRE()));
+		setStatut(STATUT_METIER_PRIMAIRE, true);
 		return true;
 	}
 
@@ -3874,7 +3947,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 		// RG_PE_FP_C09
 		this.emploiPrimaire = newEmploiPrimaire;
 		if (newEmploiPrimaire != null) {
-			initialiseInfoEmploi();
+			initialiseInfos();
 			initialiseActivites();
 			initialiseCompetence();
 		}
@@ -3970,7 +4043,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 		setListeActiFES(null);
 		setListeCompFES(null);
 		if (newEmploiSecondaire != null) {
-			initialiseInfoEmploi();
+			initialiseInfos();
 			initialiseActivites();
 			initialiseCompetence();
 		}
@@ -4828,7 +4901,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 			setContratCourant(null);
 			setTypeContratCourant(null);
 
-			initialiseInfoEmploi();
+			initialiseInfos();
 			initialiseActivites();
 			initialiseCompetence();
 
@@ -5605,6 +5678,11 @@ public class OePOSTEFichePoste extends BasicProcess {
 			// Si clic sur le bouton PB_RECHERCHE_EMPLOI_PRIMAIRE
 			if (testerParametre(request, getNOM_PB_RECHERCHE_EMPLOI_PRIMAIRE())) {
 				return performPB_RECHERCHE_EMPLOI_PRIMAIRE(request);
+			}
+
+			// Si clic sur le bouton PB_RECHERCHE_METIER_PRIMAIRE
+			if (testerParametre(request, getNOM_PB_RECHERCHE_METIER_PRIMAIRE())) {
+				return performPB_RECHERCHE_METIER_PRIMAIRE(request);
 			}
 
 			// Si clic sur le bouton PB_RECHERCHE_EMPLOI_SECONDAIRE
