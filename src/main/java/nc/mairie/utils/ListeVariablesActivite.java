@@ -58,6 +58,7 @@ public interface ListeVariablesActivite {
 	// POSTE //
 	///////////
 	public static final String ACTIVITE_FICHE_EMPLOI = "Fiche emploi";
+	public static final String ACTIVITE_FICHE_METIER = "Fiche metier";
 	public static final String ACTIVITE_FICHE_POSTE = "Fiche poste";
 	public static final String ACTIVITE_TYPE_COMP_RECH = "Type compétence recherchée";
 	public static final String ACTIVITE_COMPETENCE = "Competence";

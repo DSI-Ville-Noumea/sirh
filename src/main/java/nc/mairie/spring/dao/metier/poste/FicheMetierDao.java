@@ -5,6 +5,8 @@ import nc.mairie.metier.poste.FicheMetier;
 import nc.mairie.spring.dao.utils.SirhDao;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 
+import java.util.List;
+
 /**
  * Created by gael on 29/06/2017.
  */
@@ -28,7 +30,13 @@ public class FicheMetierDao extends SirhDao implements FicheMetierDaoInterface {
     public FicheMetier chercherFicheMetierAvecFichePoste(FMFP lien) throws Exception {
         String sql = "SELECT * FROM " + NOM_TABLE + " WHERE " + CHAMP_ID_FICHE_METIER  + " = ?";
         return jdbcTemplate.queryForObject(sql, new Object[] { lien.getIdFicheMetier() },
-                new BeanPropertyRowMapper<FicheMetier>(FicheMetier.class));
+                new BeanPropertyRowMapper<>(FicheMetier.class));
     }
 
+    @Override
+    public List<FicheMetier> listerFicheMetierAvecRefMairieOuLibelle(String keyword) {
+        String searchParam = keyword == null? "" : keyword.toUpperCase();
+        String sql = "select * from " + NOM_TABLE + " where char(" + CHAMP_REF_MAIRIE + ") like ?  or upper(" + CHAMP_NOM_METIER + ") like ? order by " + CHAMP_NOM_METIER;
+        return jdbcTemplate.query(sql, new Object[] { searchParam + "%", "%" + searchParam + "%" }, new BeanPropertyRowMapper<>(FicheMetier.class));
+    }
 }

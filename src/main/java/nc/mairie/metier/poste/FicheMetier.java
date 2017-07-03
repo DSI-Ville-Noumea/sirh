@@ -5,13 +5,13 @@ package nc.mairie.metier.poste;
  */
 public class FicheMetier implements Cloneable {
 
-    Integer idFicheMetier;
-    Integer idDomaineFM;
-    Integer idFamilleMetier;
-    String refMairie;
-    String nomMetier;
-    String definitionMetier;
-    String cadreStatutaire;
+    private Integer idFicheMetier;
+    private Integer idDomaineFM;
+    private Integer idFamilleMetier;
+    private String refMairie;
+    private String nomMetier;
+    private String definitionMetier;
+    private String cadreStatutaire;
 
     public Integer getIdFicheMetier() {
         return idFicheMetier;
