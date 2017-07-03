@@ -123,7 +123,7 @@
 					<td>
 						<INPUT <%= process.estFDPInactive ?  "disabled='disabled'" : "" %> class="sigp2-saisie" maxlength="5" size="6" readonly="readonly" value="<%=process.getVAL_ST_METIER_SECONDAIRE()%>" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>>
 						<INPUT type="image" class="<%=process.estFDPInactive ? MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, ""): MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/loupe.gif" height="16px" width="16px" name="<%=process.getNOM_PB_RECHERCHE_METIER_SECONDAIRE()%>">
-						<INPUT type="image" class="<%=process.estFDPInactive ? MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, ""): MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_SUPPRIMER_EMPLOI_SECONDAIRE()%>" src="images/suppression.gif" height="16px" width="16px" >
+						<INPUT type="image" class="<%=process.estFDPInactive ? MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, ""): MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_SUPPRIMER_METIER_SECONDAIRE()%>" src="images/suppression.gif" height="16px" width="16px" >
 					</td>
 				</tr>
 
