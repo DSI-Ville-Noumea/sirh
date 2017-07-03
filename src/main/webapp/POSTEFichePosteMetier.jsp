@@ -114,9 +114,6 @@
 					<td>
 						<INPUT <%= process.estFDPInactive ?  "disabled='disabled'" : "" %> class="sigp2-saisie" maxlength="5" size="6"	type="text" readonly="readonly" value="<%=process.getVAL_ST_METIER_PRIMAIRE()%>" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>>
 						<INPUT type="image" class="<%=process.estFDPInactive ? MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, ""): MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/loupe.gif" height="16px" width="16px" editable="false" name="<%=process.getNOM_PB_RECHERCHE_METIER_PRIMAIRE()%>">
-						<% if(null != process.getVAL_ST_METIER_PRIMAIRE() && !"".equals(process.getVAL_ST_METIER_PRIMAIRE().trim())) { %>
-						<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%=process.estFDPInactive ? MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, ""): MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_CONSULTER_FICHE_EMPLOI_PRIMAIRE()%>">
-						<% } %>
 					</td>
 				</tr>
 				<tr>
@@ -125,11 +122,8 @@
 					</td>
 					<td>
 						<INPUT <%= process.estFDPInactive ?  "disabled='disabled'" : "" %> class="sigp2-saisie" maxlength="5" size="6" readonly="readonly" value="<%=process.getVAL_ST_METIER_SECONDAIRE()%>" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>>
-						<INPUT type="image" class="<%=process.estFDPInactive ? MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, ""): MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/loupe.gif" height="16px" width="16px" name="<%=process.getNOM_PB_RECHERCHE_EMPLOI_SECONDAIRE()%>">
+						<INPUT type="image" class="<%=process.estFDPInactive ? MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, ""): MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/loupe.gif" height="16px" width="16px" name="<%=process.getNOM_PB_RECHERCHE_METIER_SECONDAIRE()%>">
 						<INPUT type="image" class="<%=process.estFDPInactive ? MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, ""): MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_SUPPRIMER_EMPLOI_SECONDAIRE()%>" src="images/suppression.gif" height="16px" width="16px" >
-						<% if(null != process.getVAL_ST_METIER_SECONDAIRE() && !"".equals(process.getVAL_ST_METIER_SECONDAIRE().trim())) { %>
-						<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%=process.estFDPInactive ? MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, ""): MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_CONSULTER_FICHE_EMPLOI_SECONDAIRE()%>">
-						<% } %>
 					</td>
 				</tr>
 
