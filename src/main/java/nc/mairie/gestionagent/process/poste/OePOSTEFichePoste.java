@@ -3901,7 +3901,6 @@ public class OePOSTEFichePoste extends BasicProcess {
 	}
 
 	public boolean performPB_RECHERCHE_METIER_PRIMAIRE(HttpServletRequest request) throws Exception {
-		//TODOSIRH: modifier pour que ca fonctionne avec les fiches métiers
 		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_FICHE_METIER, getZone(getNOM_ST_METIER_PRIMAIRE()));
 		setStatut(STATUT_METIER_PRIMAIRE, true);
 		return true;
@@ -3929,6 +3928,10 @@ public class OePOSTEFichePoste extends BasicProcess {
 	 */
 	public String getNOM_PB_SUPPRIMER_EMPLOI_SECONDAIRE() {
 		return "NOM_PB_SUPPRIMER_EMPLOI_SECONDAIRE";
+	}
+
+	public String getNOM_PB_SUPPRIMER_METIER_SECONDAIRE() {
+		return "NOM_PB_SUPPRIMER_METIER_SECONDAIRE";
 	}
 
 	/**
@@ -3961,6 +3964,13 @@ public class OePOSTEFichePoste extends BasicProcess {
 		// On enleve la fiche emploi secondaire selectionnée
 		setEmploiSecondaire(null);
 		addZone(getNOM_ST_EMPLOI_SECONDAIRE(), Const.CHAINE_VIDE);
+		return true;
+	}
+
+	public boolean performPB_SUPPRIMER_METIER_SECONDAIRE(HttpServletRequest request) throws Exception {
+		// On enleve la fiche metier secondaire selectionnée
+		setMetierSecondaire(null);
+		addZone(getNOM_ST_METIER_SECONDAIRE(), Const.CHAINE_VIDE);
 		return true;
 	}
 
@@ -4002,9 +4012,10 @@ public class OePOSTEFichePoste extends BasicProcess {
 	 *
 	 * @param newFicheMetier
 	 */
-	private void setMetierPrimaire(FicheMetier newFicheMetier) {
+	private void setMetierPrimaire(FicheMetier newFicheMetier) throws Exception {
 		this.metierPrimaire = newFicheMetier;
-		//TODOSIRH: init les zones de la fiche métier dans la fiche de poste
+		initialiseInfos();
+		//TODOSIRH: init les zones de la fiche métier dans la fiche de poste (compétences etc ...)
 	}
 
 	/**
@@ -4090,9 +4101,10 @@ public class OePOSTEFichePoste extends BasicProcess {
 		return metierSecondaire;
 	}
 
-	public void setMetierSecondaire(FicheMetier metierSecondaire) {
+	public void setMetierSecondaire(FicheMetier metierSecondaire) throws Exception {
 		this.metierSecondaire = metierSecondaire;
-		//TODOSIRH: init les zones de la fiche métier dans la fiche de poste
+		initialiseInfos();
+		//TODOSIRH: init les zones de la fiche métier dans la fiche de poste (compétences etc ...)
 	}
 
 	/**
@@ -5735,6 +5747,11 @@ public class OePOSTEFichePoste extends BasicProcess {
 			// Si clic sur le bouton PB_SUPPRIMER_EMPLOI_SECONDAIRE
 			if (testerParametre(request, getNOM_PB_SUPPRIMER_EMPLOI_SECONDAIRE())) {
 				return performPB_SUPPRIMER_EMPLOI_SECONDAIRE(request);
+			}
+
+			// Si clic sur le bouton PB_SUPPRIMER_METIER_SECONDAIRE
+			if (testerParametre(request, getNOM_PB_SUPPRIMER_METIER_SECONDAIRE())) {
+				return performPB_SUPPRIMER_METIER_SECONDAIRE(request);
 			}
 
 			// Si clic sur le bouton PB_AJOUTER_GRADE
