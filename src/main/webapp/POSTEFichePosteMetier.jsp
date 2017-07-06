@@ -8,7 +8,7 @@
 <%@page import="nc.mairie.utils.MairieUtils"%>
 <%@page import="nc.mairie.enums.EnumTypeDroit"%>
 <jsp:useBean class="nc.mairie.gestionagent.process.poste.OePOSTEFichePoste" id="process" scope="session"></jsp:useBean>
-<% if (process.getEmploiPrimaire() != null){ %>
+<% if (process.getMetierPrimaire() != null){ %>
 <div  style="width:1020px;">
 	<div style="width:570px;float:left;">
 		<fieldset class="sigp2Fieldset" style="width:570px;">
@@ -103,13 +103,13 @@
 	<div style="width:400px;float:right;">
 		<fieldset class="sigp2Fieldset" style="width:400px;">
 			<legend class="sigp2Legend">Information budgétaire</legend>
-			<% if ((process.ACTION_CREATION.equals(process.getVAL_ST_ACTION()) || process.ACTION_DUPLICATION.equals(process.getVAL_ST_ACTION())) && process.getEmploiPrimaire() == null){ %>
+			<% if ((process.ACTION_CREATION.equals(process.getVAL_ST_ACTION()) || process.ACTION_DUPLICATION.equals(process.getVAL_ST_ACTION())) && process.getMetierPrimaire() == null){ %>
 			<%} else {%>
 			<table>
 
 				<tr>
 					<td width="150px">
-						<span class="sigp2Mandatory"> Fiche métier primaire : </span>
+						<span class="sigp2Mandatory">Fiche emploi ville primaire : </span>
 					</td>
 					<td>
 						<INPUT <%= process.estFDPInactive ?  "disabled='disabled'" : "" %> class="sigp2-saisie" maxlength="5" size="6"	type="text" readonly="readonly" value="<%=process.getVAL_ST_METIER_PRIMAIRE()%>" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>>
@@ -118,7 +118,7 @@
 				</tr>
 				<tr>
 					<td>
-						<span class="sigp2"> Fiche métier secondaire : </span>
+						<span class="sigp2">Fiche emploi ville secondaire : </span>
 					</td>
 					<td>
 						<INPUT <%= process.estFDPInactive ?  "disabled='disabled'" : "" %> class="sigp2-saisie" maxlength="5" size="6" readonly="readonly" value="<%=process.getVAL_ST_METIER_SECONDAIRE()%>" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>>
@@ -540,7 +540,7 @@
 </fieldset>
 <% } %>
 
-<% if (process.getEmploiPrimaire() != null){ %>
+<% if (process.getMetierPrimaire() != null){ %>
 <FIELDSET style="text-align: center; margin: 10px; width:1020px;" class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "sigp2Fieldset") %>">
 	<% if (process.ACTION_CREATION.equals(process.getVAL_ST_ACTION()) ){ %>
 	<INPUT type="submit" value="Créer" name="<%=process.getNOM_PB_CREER()%>" class="sigp2-Bouton-100">
