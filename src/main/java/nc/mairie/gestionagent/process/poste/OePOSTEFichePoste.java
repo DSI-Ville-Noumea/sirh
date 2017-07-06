@@ -1433,6 +1433,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 		addZone(getNOM_ST_INFO_FP(), Const.CHAINE_VIDE);
 		addZone(getNOM_ST_EMPLOI_PRIMAIRE(), Const.CHAINE_VIDE);
 		addZone(getNOM_ST_EMPLOI_SECONDAIRE(), Const.CHAINE_VIDE);
+		addZone(getNOM_ST_METIER_PRIMAIRE(), Const.CHAINE_VIDE);
+		addZone(getNOM_ST_METIER_SECONDAIRE(), Const.CHAINE_VIDE);
 		addZone(getNOM_EF_NFA(), Const.CHAINE_VIDE);
 		addZone(getNOM_ST_NUMERO(), Const.CHAINE_VIDE);
 		addZone(getNOM_EF_OPI(), Const.CHAINE_VIDE);
@@ -1471,6 +1473,9 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 		setEmploiPrimaire(null);
 		setEmploiSecondaire(null);
+
+		setMetierPrimaire(null);
+		setMetierSecondaire(null);
 
 		setAgentCourant(null);
 		setAffectationCourante(null);
@@ -5945,6 +5950,9 @@ public class OePOSTEFichePoste extends BasicProcess {
 	}
 
 	public ArrayList<Activite> getListeToutesActi() {
+		if (listeToutesActi == null) {
+			setListeToutesActi(new ArrayList<Activite>());
+		}
 		return listeToutesActi;
 	}
 

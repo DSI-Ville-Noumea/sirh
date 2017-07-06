@@ -90,16 +90,16 @@
 				<fieldset class="sigp2Fieldset" style="width:1020px">
 					<legend class="sigp2Legend">Fiche de poste</legend>
 
-						<% if ((process.ACTION_CREATION.equals(process.getVAL_ST_ACTION()) || process.ACTION_DUPLICATION.equals(process.getVAL_ST_ACTION())) && process.getEmploiPrimaire() == null){ %>
-							<span class="sigp2Mandatory" style="width:150px;">Recherche fiche emploi primaire : </span>
-							<INPUT class="sigp2-saisie" maxlength="60" size="20" type="text" style="margin-right:10px;"name="<%= process.getNOM_ST_EMPLOI_PRIMAIRE() %>" value="<%=process.getVAL_ST_EMPLOI_PRIMAIRE()%>" >
-							<INPUT type="image" src="images/loupe.gif" height="16px" width="16px" editable="false" name="<%=process.getNOM_PB_RECHERCHE_EMPLOI_PRIMAIRE()%>">
-						<%}else if(process.getEmploiPrimaire() == null){ %>
-							<span class="sigp2Mandatory"> Il n'y a pas de fiche emploi associé à cette fiche de poste (<%=process.getVAL_ST_NUMERO()%>). Merci d'en choisir une.</span>
+						<% if ((process.ACTION_CREATION.equals(process.getVAL_ST_ACTION()) || process.ACTION_DUPLICATION.equals(process.getVAL_ST_ACTION())) && process.getMetierPrimaire() == null){ %>
+							<span class="sigp2Mandatory" style="width:150px;">Recherche fiche emploi ville primaire : </span>
+							<INPUT class="sigp2-saisie" maxlength="60" size="20" type="text" style="margin-right:10px;"name="<%= process.getNOM_ST_METIER_PRIMAIRE() %>" value="<%=process.getVAL_ST_METIER_PRIMAIRE()%>" >
+							<INPUT type="image" src="images/loupe.gif" height="16px" width="16px" editable="false" name="<%=process.getNOM_PB_RECHERCHE_METIER_PRIMAIRE()%>">
+						<%}else if(process.getEmploiPrimaire() == null && process.getMetierPrimaire() == null){ %>
+							<span class="sigp2Mandatory"> Il n'y a pas de fiche métier associée à cette fiche de poste (<%=process.getVAL_ST_NUMERO()%>). Merci d'en choisir une.</span>
 							<BR/><BR/>
-							<span class="sigp2Mandatory" style="width:150px;">Recherche fiche emploi primaire : </span>
-							<INPUT class="sigp2-saisie" maxlength="60" size="20" type="text" style="margin-right:10px;"name="<%= process.getNOM_ST_EMPLOI_PRIMAIRE() %>" value="<%=process.getVAL_ST_EMPLOI_PRIMAIRE()%>" >
-							<INPUT type="image" src="images/loupe.gif" height="16px" width="16px" editable="false" name="<%=process.getNOM_PB_RECHERCHE_EMPLOI_PRIMAIRE()%>">
+							<span class="sigp2Mandatory" style="width:150px;">Recherche fiche emploi ville primaire : </span>
+							<INPUT class="sigp2-saisie" maxlength="60" size="20" type="text" style="margin-right:10px;"name="<%= process.getNOM_ST_METIER_PRIMAIRE() %>" value="<%=process.getVAL_ST_METIER_PRIMAIRE()%>" >
+							<INPUT type="image" src="images/loupe.gif" height="16px" width="16px" editable="false" name="<%=process.getNOM_PB_RECHERCHE_METIER_PRIMAIRE()%>">
 						<%} else {%>
 							<span class="sigp2Mandatory" style="width:70px"> Numéro : </span>
 							<span class="sigp2-saisie" style="width:150px"><%=process.getVAL_ST_NUMERO()%></span>
