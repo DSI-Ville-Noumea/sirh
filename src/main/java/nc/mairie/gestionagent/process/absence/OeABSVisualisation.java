@@ -770,82 +770,32 @@ public class OeABSVisualisation extends BasicProcess {
 			groupe = (RefGroupeAbsenceDto) getListeGroupeAbsence().get(numGroupe - 1);
 		}
 
-		String idAgentDemande = getVAL_ST_AGENT_DEMANDE().equals(Const.CHAINE_VIDE) ? null : "900" + getVAL_ST_AGENT_DEMANDE();
-
 		// SERVICE
-		List<String> idAgentService = new ArrayList<>();
-		String sigle = getVAL_EF_SERVICE().toUpperCase();
+		String idAgentDemande = getVAL_ST_AGENT_DEMANDE().equals(Const.CHAINE_VIDE) ? null : "900" + getVAL_ST_AGENT_DEMANDE();
 		String idServiceAds = getVAL_ST_ID_SERVICE_ADS().toUpperCase();
-
-		if (!sigle.equals(Const.CHAINE_VIDE) && null == idAgentDemande) {
-			EntiteDto service = adsService.getEntiteBySigle(sigle);
-			idServiceAds = new Long(service.getIdEntite()).toString();
-		}
-
-		if (!idServiceAds.equals(Const.CHAINE_VIDE) && null == idAgentDemande) {
-			// Récupération des agents
-			// on recupere les sous-service du service selectionne
-			List<Integer> listeSousService = adsService.getListIdsEntiteWithEnfantsOfEntite(new Integer(idServiceAds));
-
-			if (null != listeSousService && !listeSousService.isEmpty()) {
-				ArrayList<Agent> listAgent = getAgentDao().listerAgentAvecServicesETMatricules(listeSousService, null, null);
-				for (Agent ag : listAgent) {
-					if (!idAgentService.contains(ag.getIdAgent().toString())) {
-						idAgentService.add(ag.getIdAgent().toString());
-					}
-				}
-			}
-		}
-
+		
+		List<String> idAgentService = getListAgentIdByService(idAgentDemande);
+		
 		if (idAgentService.size() >= 1000) {
-			// "ERR501",
-			// "La sélection des filtres engendre plus de 1000 agents. Merci de reduire la sélection."
+			// "ERR501", "La sélection des filtres engendre plus de 1000 agents. Merci de reduire la sélection."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR501"));
 			return false;
 		}
-
+		
 		// GESTIONNAIRE
 		int numGestionnaire = (Services.estNumerique(getZone(getNOM_LB_GESTIONNAIRE_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_GESTIONNAIRE_SELECT())) : -1);
 		ReferentRh gestionnaire = null;
 		if (numGestionnaire != -1 && numGestionnaire != 0) {
 			gestionnaire = (ReferentRh) getListeGestionnaire().get(numGestionnaire - 1);
 		}
-		if (idServiceAds.equals(Const.CHAINE_VIDE) && null == idAgentDemande && gestionnaire != null) {
-
-			List<ReferentRh> listServiceRH = null;
-			try {
-				listServiceRH = getReferentRhDao().listerServiceAvecReferentRh(gestionnaire.getIdAgentReferent());
-			} catch (NumberFormatException e) {
-				getTransaction().declarerErreur("Une erreur de saisie sur le gestionnaire est survenue.");
+		if (gestionnaire != null) {
+			if (idServiceAds.equals(Const.CHAINE_VIDE) && null == idAgentDemande) {
+				idAgentService = getListMatriculeByGestionnaire(gestionnaire, idAgentService);
+				if (getTransaction().isErreur())
+					return false;
+			} else {
+				getTransaction().declarerErreur("Vous ne pouvez pas utiliser le filtre 'gestionnaire' avec les filtres 'service' et 'agent'.");
 				return false;
-			}
-			if (null == listServiceRH || listServiceRH.isEmpty()) {
-				getTransaction().declarerErreur("Le gestionnaire saisi n'est pas un référent RH.");
-				return false;
-			}
-			// Récupération des agents
-			// on recupere les sous-service du service selectionne
-			List<Integer> listeIdsServiceAdsReferentRh = new ArrayList<Integer>();
-			for (ReferentRh service : listServiceRH) {
-				listeIdsServiceAdsReferentRh.add(service.getIdServiceAds());
-			}
-			List<Integer> listeSousServiceTmp = new ArrayList<Integer>();
-			for (Integer idService : listeIdsServiceAdsReferentRh) {
-				listeSousServiceTmp.addAll(adsService.getListIdsEntiteWithEnfantsOfEntite(idService));
-			}
-			// on trie la liste des sous service pour supprimer les doublons
-			ArrayList<Integer> listeSousService = new ArrayList<Integer>();
-			for (Integer sousService : listeSousServiceTmp) {
-				if (!listeSousService.contains(sousService)) {
-					listeSousService.add(sousService);
-				}
-			}
-
-			List<Agent> listAgent = getAgentDao().listerAgentAvecServicesETMatricules(listeSousService, null, null);
-			for (Agent ag : listAgent) {
-				if (!idAgentService.contains(ag.getIdAgent().toString())) {
-					idAgentService.add(ag.getIdAgent().toString());
-				}
 			}
 		}
 
@@ -873,6 +823,50 @@ public class OeABSVisualisation extends BasicProcess {
 		setTypeFiltre("GLOBAL");
 
 		return true;
+	}
+	
+	/**
+	 * Retourne la liste des matricules des agents appartenant au gestionnaire choisi.
+	 * @param gestionnaire
+	 * @param listeMatr
+	 * @return
+	 * @throws Exception
+	 */
+	private List<String> getListMatriculeByGestionnaire(ReferentRh gestionnaire, List<String> listeMatr) throws Exception {
+		List<ReferentRh> listServiceRH = null;
+		try {
+			listServiceRH = getReferentRhDao().listerServiceAvecReferentRh(gestionnaire.getIdAgentReferent());
+		} catch (NumberFormatException e) {
+			getTransaction().declarerErreur("Une erreur de saisie sur le gestionnaire est survenue.");
+		}
+		if (null == listServiceRH || listServiceRH.isEmpty()) {
+			getTransaction().declarerErreur("Le gestionnaire saisi n'est pas un référent RH.");
+		}
+		// Récupération des agents
+		// on recupere les sous-service du service selectionne
+		List<Integer> listeIdsServiceAdsReferentRh = new ArrayList<Integer>();
+		for (ReferentRh service : listServiceRH) {
+			listeIdsServiceAdsReferentRh.add(service.getIdServiceAds());
+		}
+		List<Integer> listeSousServiceTmp = new ArrayList<Integer>();
+		for (Integer idService : listeIdsServiceAdsReferentRh) {
+			listeSousServiceTmp.addAll(adsService.getListIdsEntiteWithEnfantsOfEntite(idService));
+		}
+		// on trie la liste des sous service pour supprimer les doublons
+		ArrayList<Integer> listeSousService = new ArrayList<Integer>();
+		for (Integer sousService : listeSousServiceTmp) {
+			if (!listeSousService.contains(sousService)) {
+				listeSousService.add(sousService);
+			}
+		}
+
+		List<Agent> listAgent = getAgentDao().listerAgentAvecServicesETMatricules(listeSousService, null, null);
+		for (Agent ag : listAgent) {
+			if (!listeMatr.contains(ag.getIdAgent().toString())) {
+				listeMatr.add(ag.getIdAgent().toString());
+			}
+		}
+		return listeMatr;
 	}
 
 	private void afficheListeAbsence() throws Exception {
@@ -986,7 +980,7 @@ public class OeABSVisualisation extends BasicProcess {
 
 	private boolean performControlerFiltres() throws Exception {
 
-		// on controle que le service saisie est bien un service
+		// on controle que le service saisi soit bien un service
 		String sigle = getVAL_EF_SERVICE().toUpperCase();
 		if (!sigle.equals(Const.CHAINE_VIDE)) {
 			// on cherche le code service associé
@@ -3054,6 +3048,10 @@ public class OeABSVisualisation extends BasicProcess {
 
 	public boolean performPB_FILTRER_DEMANDE_A_VALIDER(HttpServletRequest request) throws Exception {
 
+		if (!performControlerFiltres()) {
+			return false;
+		}
+
 		String dateDeb = getVAL_ST_DATE_MIN();
 		String dateMin = dateDeb.equals(Const.CHAINE_VIDE) ? null : Services.convertitDate(dateDeb, "dd/MM/yyyy", "yyyyMMdd");
 
@@ -3069,7 +3067,6 @@ public class OeABSVisualisation extends BasicProcess {
 		List<Integer> listeEtat = new ArrayList<Integer>();
 		if (etat != null)
 			listeEtat.add(etat.getCode());
-
 		// famille
 		int numType = (Services.estNumerique(getZone(getNOM_LB_FAMILLE_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_FAMILLE_SELECT())) : -1);
 		TypeAbsenceDto type = null;
@@ -3084,49 +3081,31 @@ public class OeABSVisualisation extends BasicProcess {
 		}
 
 		String idAgentDemande = getVAL_ST_AGENT_DEMANDE().equals(Const.CHAINE_VIDE) ? null : "900" + getVAL_ST_AGENT_DEMANDE();
+		String idServiceAds = getVAL_ST_ID_SERVICE_ADS().toUpperCase();
 
+		List<String> idAgentService = getListAgentIdByService(idAgentDemande);
+
+		if (idAgentService.size() >= 1000) {
+			// "ERR501",
+			// "La sélection des filtres engendre plus de 1000 agents. Merci de reduire la sélection."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR501"));
+			return false;
+		}
+		
 		// GESTIONNAIRE
 		int numGestionnaire = (Services.estNumerique(getZone(getNOM_LB_GESTIONNAIRE_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_GESTIONNAIRE_SELECT())) : -1);
 		ReferentRh gestionnaire = null;
 		if (numGestionnaire != -1 && numGestionnaire != 0) {
 			gestionnaire = (ReferentRh) getListeGestionnaire().get(numGestionnaire - 1);
 		}
-		List<String> idAgentService = new ArrayList<>();
 		if (gestionnaire != null) {
-			List<ReferentRh> listServiceRH = null;
-			try {
-				listServiceRH = getReferentRhDao().listerServiceAvecReferentRh(gestionnaire.getIdAgentReferent());
-			} catch (NumberFormatException e) {
-				getTransaction().declarerErreur("Une erreur de saisie sur le gestionnaire est survenue.");
+			if (idServiceAds.equals(Const.CHAINE_VIDE) && null == idAgentDemande) {
+				idAgentService = getListMatriculeByGestionnaire(gestionnaire, idAgentService);
+				if (getTransaction().isErreur())
+					return false;
+			} else {
+				getTransaction().declarerErreur("Vous ne pouvez pas utiliser le filtre 'gestionnaire' avec les filtres 'service' et 'agent'.");
 				return false;
-			}
-			if (null == listServiceRH || listServiceRH.isEmpty()) {
-				getTransaction().declarerErreur("Le gestionnaire saisi n'est pas un référent RH.");
-				return false;
-			}
-			// Récupération des agents
-			// on recupere les sous-service du service selectionne
-			List<Integer> listeService = new ArrayList<Integer>();
-			for (ReferentRh service : listServiceRH) {
-				listeService.add(service.getIdServiceAds());
-			}
-			List<Integer> listeSousServiceTmp = new ArrayList<Integer>();
-			for (Integer idService : listeService) {
-				listeSousServiceTmp.addAll(adsService.getListIdsEntiteWithEnfantsOfEntite(idService));
-			}
-			// on trie la liste des sous service pour supprimer les doublons
-			ArrayList<Integer> listeSousService = new ArrayList<Integer>();
-			for (Integer sousService : listeSousServiceTmp) {
-				if (!listeSousService.contains(sousService)) {
-					listeSousService.add(sousService);
-				}
-			}
-
-			List<Agent> listAgent = getAgentDao().listerAgentAvecServicesETMatricules(listeSousService, null, null);
-			for (Agent ag : listAgent) {
-				if (!idAgentService.contains(ag.getIdAgent().toString())) {
-					idAgentService.add(ag.getIdAgent().toString());
-				}
 			}
 		}
 
@@ -3134,8 +3113,7 @@ public class OeABSVisualisation extends BasicProcess {
 				type == null ? null : type.getIdRefTypeAbsence(), idAgentDemande == null ? null : Integer.valueOf(idAgentDemande), groupe == null ? null : groupe.getIdRefGroupeAbsence(), true,
 				idAgentService);
 
-		logger.debug("Taille liste absences : " + listeDemande.size());
-
+		logger.debug("Taille liste absences à valider : " + listeDemande.size());
 		setListeAbsence((ArrayList<DemandeDto>) listeDemande);
 
 		// redmine #13453
@@ -3146,6 +3124,41 @@ public class OeABSVisualisation extends BasicProcess {
 		setTypeFiltre("VALIDER");
 
 		return true;
+	}
+	
+	/**
+	 * Récupère la liste des matricules des agents associés au service filtré.
+	 * @param idAgentDemande
+	 * @throws Exception
+	 */
+	private List<String> getListAgentIdByService(String idAgentDemande) throws Exception {
+		List<String> idAgentService = new ArrayList<>();
+		String sigle = getVAL_EF_SERVICE().toUpperCase();
+		String idServiceAds = getVAL_ST_ID_SERVICE_ADS().toUpperCase();
+
+		if (!sigle.equals(Const.CHAINE_VIDE) && null == idAgentDemande) {
+			EntiteDto service = adsService.getEntiteBySigle(sigle);
+			idServiceAds = new Long(service.getIdEntite()).toString();
+		}
+
+		if (!idServiceAds.equals(Const.CHAINE_VIDE) && null == idAgentDemande) {
+			// Récupération des agents
+			// on recupere les sous-service du service selectionne
+			List<Integer> listeSousService = adsService.getListIdsEntiteWithEnfantsOfEntite(new Integer(idServiceAds));
+
+			if (null != listeSousService && !listeSousService.isEmpty()) {
+				ArrayList<Agent> listAgent = getAgentDao().listerAgentAvecServicesETMatricules(listeSousService, null, null);
+				if (listAgent.isEmpty()) {
+					getTransaction().declarerErreur("Aucun agent associé à ce service n'a été trouvé. Le filtre sur le service n'a donc pas été pris en compte.");
+				}
+				for (Agent ag : listAgent) {
+					if (!idAgentService.contains(ag.getIdAgent().toString())) {
+						idAgentService.add(ag.getIdAgent().toString());
+					}
+				}
+			}
+		}
+		return idAgentService;
 	}
 
 	public AffectationDao getAffectationDao() {
