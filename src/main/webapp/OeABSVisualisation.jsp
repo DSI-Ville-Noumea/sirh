@@ -93,8 +93,9 @@
                            {"sType": "date-francais", "bSortable": true, "sWidth": "60px","sClass" : "center" },
                            {"sType": "date-francais", "bSortable": true,"sWidth": "60px","sClass" : "center"},
                            {"bSortable": true,"sWidth": "40px"},
-                           {"bSortable": true,"sWidth": "120px"},
-                           {"bSortable": true,"sWidth": "60px"},
+                           {"bSortable": true,"sWidth": "100px"},
+                           {"bSortable": true,"sWidth": "40px"},
+                           {"bSortable": true,"sWidth": "40px"},
                            {"bSearchable": false,"bSortable": false,"sWidth": "20px","sClass" : "center"},
                            {"bSearchable": false,"bSortable": false,"sWidth": "20px","sClass" : "center"},
                            {"bSearchable": false,"bSortable": false,"sWidth": "20px","sClass" : "center"},
@@ -842,7 +843,7 @@
             <FIELDSET class="sigp2Fieldset" style="text-align:left;">
                 <legend class="sigp2Legend">Visualisation des demandes</legend>
                 <BR/>
-                <table width="880px" cellpadding="0" cellspacing="0" border="0" class="display" id="VisualisationAbsenceList"> 
+                <table cellpadding="0" cellspacing="0" border="0" class="display" id="VisualisationAbsenceList"> 
                     <thead>
                         <tr>
                             <th width="20px" align="center">
@@ -858,6 +859,7 @@
                             <th>Fin</th>
                             <th>Durée</th>
                             <th>Commentaire</th>
+                            <th>Prescripteur</th>
                             <th>Etat</th>
                             <th><img onkeydown="" onkeypress="" onkeyup="" title="Valider" type="image" src="images/hand-vert.png"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_VALIDER_ALL()%>" onclick="executeBouton('<%=process.getNOM_PB_VALIDER_ALL()%>');"></th>
                             <th><img onkeydown="" onkeypress="" onkeyup="" title="Rejeter" type="image" src="images/hand-rouge.png"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_REJETER_ALL()%>" onclick="executeBouton('<%=process.getNOM_PB_REJETER_ALL()%>');"></th>
@@ -908,12 +910,13 @@
                             <td width="60px"><%=process.getVAL_ST_DATE_DEB(indiceAbs)%></td>
                             <td width="60px"><%=process.getVAL_ST_DATE_FIN(indiceAbs)%></td>
                             <td width="40px"><%=process.getVAL_ST_DUREE(indiceAbs)%></td>
-                            <td width="120px">
+                            <td width="100px">
                             	<%=process.getVAL_ST_MOTIF(indiceAbs)%>
                             	<img onkeydown="" onkeypress="" onkeyup="" src="images/loupe.gif" height="16px" width="16px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>" title="<%=process.getCommentaireDRH(abs) %>"  name="<%=process.getNOM_PB_COMMENTAIRE_DRH(indiceAbs)%>" onclick="executeBouton('<%=process.getNOM_PB_COMMENTAIRE_DRH(indiceAbs)%>');">                            	
                             	<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_COMMENTAIRE_DRH(indiceAbs)%>" value="">
                             </td>
-                            <td width="60px"><%=process.getVAL_ST_ETAT(indiceAbs)%></td>
+                            <td width="40px"><%=process.getVAL_ST_PRESCRIPTEUR(indiceAbs)%></td>
+                            <td width="40px"><%=process.getVAL_ST_ETAT(indiceAbs)%></td>
                             <td width="20px" align="center">
                             <!-- #14696 ajout de l etat A VALIDER car erreur lors de la reprise de donnees des conges exceptionnels mis  l etat A VALIDER au lieu de SAISI ou APPROUVE -->
                             <%if(abs.isAffichageValidation()){ %>
