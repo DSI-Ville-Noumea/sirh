@@ -899,6 +899,7 @@ public class OeABSVisualisation extends BasicProcess {
 						: type.getLibelle() + baseConges + prolongation + "<br/>" + sdf.format(abs.getDateDemande());
 
 				addZone(getNOM_ST_TYPE(i), ST_type);
+				addZone(getNOM_ST_PRESCRIPTEUR(i), abs.getPrescripteur());
 
 				String debutMAM = abs.isDateDebutAM() ? "M" : abs.isDateDebutPM() ? "A" : Const.CHAINE_VIDE;
 				addZone(getNOM_ST_DATE_DEB(i), sdf.format(abs.getDateDebut()) + "<br/>" + (debutMAM.equals(Const.CHAINE_VIDE) ? hrs.format(abs.getDateDebut()) : debutMAM));
@@ -1509,6 +1510,14 @@ public class OeABSVisualisation extends BasicProcess {
 
 	public String getVAL_ST_TYPE(int i) {
 		return getZone(getNOM_ST_TYPE(i));
+	}
+
+	public String getNOM_ST_PRESCRIPTEUR(int i) {
+		return "NOM_ST_PRESCRIPTEUR_" + i;
+	}
+
+	public String getVAL_ST_PRESCRIPTEUR(int i) {
+		return getZone(getNOM_ST_PRESCRIPTEUR(i));
 	}
 
 	public String getNOM_ST_DATE_DEB(int i) {
