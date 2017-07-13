@@ -64,6 +64,7 @@ import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
 import nc.mairie.utils.VariablesActivite;
+import nc.noumea.mairie.abs.RefTypeGroupeAbsenceEnum;
 import nc.noumea.mairie.ads.dto.EntiteDto;
 import nc.noumea.spring.service.AbsService;
 import nc.noumea.spring.service.IAbsService;
@@ -2994,9 +2995,15 @@ public class OeABSVisualisation extends BasicProcess {
 		FormateListe aFormat = new FormateListe(tailles);
 		for (ListIterator<TypeAbsenceDto> list = getListeFamilleAbsence().listIterator(); list.hasNext();) {
 			TypeAbsenceDto type = (TypeAbsenceDto) list.next();
-			String ligne[] = { type.getLibelle() };
-
-			aFormat.ajouteLigne(ligne);
+			// #40647 : Affichage de la base du congé annuel
+			if (type.getGroupeAbsence().getIdRefGroupeAbsence().equals(RefTypeGroupeAbsenceEnum.CONGES_ANNUELS.getValue())) {
+				String ligne[] = { type.getLibelle() + " (Base " + type.getTypeSaisiCongeAnnuelDto().getCodeBaseHoraireAbsence() + ")"};
+				aFormat.ajouteLigne(ligne);
+			}
+			else { 
+				String ligne2[] = { type.getLibelle() };
+				aFormat.ajouteLigne(ligne2);
+			}
 		}
 		setLB_FAMILLE(aFormat.getListeFormatee(true));
 		addZone(getNOM_LB_FAMILLE_SELECT(), Const.ZERO);
@@ -3025,9 +3032,15 @@ public class OeABSVisualisation extends BasicProcess {
 		if (getListeFamilleAbsenceCreation() != null) {
 			for (ListIterator<TypeAbsenceDto> list = getListeFamilleAbsenceCreation().listIterator(); list.hasNext();) {
 				TypeAbsenceDto type = (TypeAbsenceDto) list.next();
-				String ligne[] = { type.getLibelle() };
-	
-				aFormat.ajouteLigne(ligne);
+				// #40647 : Affichage de la base du congé annuel
+				if (type.getGroupeAbsence().getIdRefGroupeAbsence().equals(RefTypeGroupeAbsenceEnum.CONGES_ANNUELS.getValue())) {
+					String ligne[] = { type.getLibelle() + " (Base " + type.getTypeSaisiCongeAnnuelDto().getCodeBaseHoraireAbsence() + ")"};
+					aFormat.ajouteLigne(ligne);
+				}
+				else { 
+					String ligne2[] = { type.getLibelle() };
+					aFormat.ajouteLigne(ligne2);
+				}
 			}
 		}
 		setLB_FAMILLE_CREATION(aFormat.getListeFormatee(true));
