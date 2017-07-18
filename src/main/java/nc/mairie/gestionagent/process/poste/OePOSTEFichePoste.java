@@ -178,6 +178,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	private ArrayList<Horaire> listeHoraire;
 	private String observation;
 	private String mission;
+	private String specialisation;
 	private boolean afficherListeGrade = false;
 	private boolean afficherListeNivEt = false;
 	private boolean fpCouranteAffectee = false;
@@ -431,6 +432,7 @@ public class OePOSTEFichePoste extends BasicProcess {
             }
             afficheFMS();
             initialiseMissionMetier();
+            initialiseSpecialisation();
             initialiseInfos();
             // si changement de FMS, on ajoute la mission à  la mission actuelle
             if (getMetierSecondaire() != null) {
@@ -493,6 +495,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 			afficheFMP();
 
 			initialiseMissionMetier();
+			initialiseSpecialisation();
 			initialiseInfos();
 
 			// si changement de FES, on ajoute la mission à  la mission actuelle
@@ -684,23 +687,35 @@ public class OePOSTEFichePoste extends BasicProcess {
 				addZone(getNOM_ST_INFO_SERVICE(), infoService);
 			}
 
-			// FICHE EMPLOI PRIMAIRE
-			afficheFEP();
+			if (versionFicheMetier()) {
 
-			// FICHE METIER PRIMAIRE
-			afficheFMP();
+				// FICHE METIER PRIMAIRE
+				afficheFMP();
 
-			// FICHE EMPLOI SECONDAIRE
-			afficheFES();
+				// FICHE METIER SECONDAIRE
+				afficheFMS();
 
-			// FICHE METIER SECONDAIRE
-			afficheFMS();
+				// MISSION METIER
+				initialiseMissionMetier();
+
+				// Specialisation METIER
+				initialiseSpecialisation();
+
+			} else {
+
+				// FICHE EMPLOI PRIMAIRE
+				afficheFEP();
+
+				// FICHE EMPLOI SECONDAIRE
+				afficheFES();
+
+				// MISSION
+				initialiseMission();
+
+			}
 
 			// OBSERVATION
 			initialiseObservation();
-
-			// MISSION
-			initialiseMission();
 
 			// INFOS
 			afficheInfosAffectationFP();
@@ -1883,6 +1898,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 		String observation = getVAL_EF_OBSERVATION();
 		String nfa = getVAL_EF_NFA();
 		String missions = getVAL_EF_MISSIONS();
+		String specialisation = getVAL_EF_SPECIALISATION();
 		Integer idServiceADS = new Integer(getVAL_ST_ID_SERVICE_ADS());
 		String grade = getVAL_EF_CODE_GRADE();
 
@@ -1984,6 +2000,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 		getFichePosteCourante().setDateDebutValiditeFp(null);
 		getFichePosteCourante().setObservation(observation);
 		getFichePosteCourante().setMissions(missions);
+		getFichePosteCourante().setSpecialisation(specialisation);
 		getFichePosteCourante().setIdStatutFp(statut.getIdStatutFp());
 		getFichePosteCourante().setIdBudget(budget.getIdBudget());
 		getFichePosteCourante().setOpi(opi);
@@ -3877,6 +3894,12 @@ public class OePOSTEFichePoste extends BasicProcess {
 		addZone(getNOM_EF_MISSIONS(), getMission() == null ? Const.CHAINE_VIDE : getMission());
 	}
 
+	private void initialiseSpecialisation() {
+		if (getFichePosteCourante() != null) {
+			addZone(getNOM_EF_SPECIALISATION(), getFichePosteCourante().getSpecialisation());
+		}
+	}
+
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_RECHERCHE_EMPLOI_PRIMAIRE
 	 * Date de création : (13/07/11 09:49:02)
@@ -4713,6 +4736,14 @@ public class OePOSTEFichePoste extends BasicProcess {
 	 */
 	public String getVAL_EF_MISSIONS() {
 		return getZone(getNOM_EF_MISSIONS());
+	}
+
+	public String getNOM_EF_SPECIALISATION() {
+		return "NOM_EF_SPECIALISATION";
+	}
+
+	public String getVAL_EF_SPECIALISATION() {
+		return getZone(getNOM_EF_SPECIALISATION());
 	}
 
 	/**
@@ -5889,6 +5920,14 @@ public class OePOSTEFichePoste extends BasicProcess {
 		this.mission = mission;
 	}
 
+	public String getSpecialisation() {
+		return specialisation == null? Const.CHAINE_VIDE: specialisation.trim();
+	}
+
+	public void setSpecialisation(String specialisation) {
+		this.specialisation = specialisation;
+	}
+
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_ID_ACTI Date de
 	 * création : (21/11/11 09:55:36)
@@ -7055,5 +7094,9 @@ public class OePOSTEFichePoste extends BasicProcess {
 			logger.error("Pas de service selectionne.");
 		}
 		return true;
+	}
+
+	private boolean versionFicheMetier() {
+		return getMetierPrimaire() != null;
 	}
 }
