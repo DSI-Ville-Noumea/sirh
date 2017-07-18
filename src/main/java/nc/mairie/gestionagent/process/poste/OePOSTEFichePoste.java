@@ -179,6 +179,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	private String observation;
 	private String mission;
 	private String specialisation;
+	private String informations_complementaires;
 	private boolean afficherListeGrade = false;
 	private boolean afficherListeNivEt = false;
 	private boolean fpCouranteAffectee = false;
@@ -433,6 +434,7 @@ public class OePOSTEFichePoste extends BasicProcess {
             afficheFMS();
             initialiseMissionMetier();
             initialiseSpecialisation();
+            initialiseInfosComplementaires();
             initialiseInfos();
             // si changement de FMS, on ajoute la mission à  la mission actuelle
             if (getMetierSecondaire() != null) {
@@ -496,6 +498,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 			initialiseMissionMetier();
 			initialiseSpecialisation();
+			initialiseInfosComplementaires();
 			initialiseInfos();
 
 			// si changement de FES, on ajoute la mission à  la mission actuelle
@@ -700,6 +703,9 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 				// Specialisation METIER
 				initialiseSpecialisation();
+
+				// Infos complémentaires METIER
+				initialiseInfosComplementaires();
 
 			} else {
 
@@ -1899,6 +1905,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 		String nfa = getVAL_EF_NFA();
 		String missions = getVAL_EF_MISSIONS();
 		String specialisation = getVAL_EF_SPECIALISATION();
+		String informations_complementaires = getVAL_EF_INFORMATIONS_COMPLEMENTAIRES();
 		Integer idServiceADS = new Integer(getVAL_ST_ID_SERVICE_ADS());
 		String grade = getVAL_EF_CODE_GRADE();
 
@@ -2001,6 +2008,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 		getFichePosteCourante().setObservation(observation);
 		getFichePosteCourante().setMissions(missions);
 		getFichePosteCourante().setSpecialisation(specialisation);
+		getFichePosteCourante().setInformations_complementaires(informations_complementaires);
 		getFichePosteCourante().setIdStatutFp(statut.getIdStatutFp());
 		getFichePosteCourante().setIdBudget(budget.getIdBudget());
 		getFichePosteCourante().setOpi(opi);
@@ -3900,6 +3908,12 @@ public class OePOSTEFichePoste extends BasicProcess {
 		}
 	}
 
+	private void initialiseInfosComplementaires() {
+		if (getFichePosteCourante() != null) {
+			addZone(getNOM_EF_INFORMATIONS_COMPLEMENTAIRES(), getFichePosteCourante().getInformations_complementaires());
+		}
+	}
+
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_RECHERCHE_EMPLOI_PRIMAIRE
 	 * Date de création : (13/07/11 09:49:02)
@@ -4744,6 +4758,14 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 	public String getVAL_EF_SPECIALISATION() {
 		return getZone(getNOM_EF_SPECIALISATION());
+	}
+
+	public String getNOM_EF_INFORMATIONS_COMPLEMENTAIRES() {
+		return "NOM_EF_INFORMATIONS_COMPLEMENTAIRES";
+	}
+
+	public String getVAL_EF_INFORMATIONS_COMPLEMENTAIRES() {
+		return getZone(getNOM_EF_INFORMATIONS_COMPLEMENTAIRES());
 	}
 
 	/**
@@ -5926,6 +5948,14 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 	public void setSpecialisation(String specialisation) {
 		this.specialisation = specialisation;
+	}
+
+	public String getInformations_complementaires() {
+		return informations_complementaires == null? Const.CHAINE_VIDE: informations_complementaires.trim();
+	}
+
+	public void setInformations_complementaires(String informations_complementaires) {
+		this.informations_complementaires = informations_complementaires;
 	}
 
 	/**
