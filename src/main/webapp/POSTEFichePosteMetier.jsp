@@ -317,6 +317,13 @@
 	<br/>
 </fieldset>
 
+<fieldset class="sigp2Fieldset" style="width:1020px">
+	<legend class="sigp2Legend">Informations complémentaires</legend>
+	<br/>
+	<textarea <%= process.estFDPInactive ?  "disabled='disabled'" : "" %> <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> rows="4" cols="190" class="sigp2-saisie" style="margin-right:10px;" name="<%= process.getNOM_EF_INFORMATIONS_COMPLEMENTAIRES()%>" ><%= process.getVAL_EF_INFORMATIONS_COMPLEMENTAIRES() %></textarea>
+	<br/>
+</fieldset>
+
 <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
 	<legend class="sigp2Legend">Activités</legend>
 	<span class="sigp2Mandatory" style="width:150px"> Ajouter une activité : </span>
