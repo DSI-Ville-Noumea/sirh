@@ -7,6 +7,7 @@
 <%@page import="nc.mairie.metier.poste.TitrePoste"%>
 <%@page import="nc.mairie.utils.MairieUtils"%>
 <%@page import="nc.mairie.enums.EnumTypeDroit"%>
+<%@ page import="nc.mairie.metier.poste.SavoirFaire" %>
 <jsp:useBean class="nc.mairie.gestionagent.process.poste.OePOSTEFichePoste" id="process" scope="session"></jsp:useBean>
 <% if (process.getMetierPrimaire() != null){ %>
 <div  style="width:1020px;">
@@ -324,116 +325,167 @@
 	<br/>
 </fieldset>
 
-<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
-	<legend class="sigp2Legend">Activités</legend>
-	<span class="sigp2Mandatory" style="width:150px"> Ajouter une activité : </span>
-	<span class="<%=process.estFDPInactive ? MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, ""): MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>">
-					            <INPUT type="image" src="images/ajout.gif" height="16px" width="16px" name="<%=process.getNOM_PB_AJOUTER_ACTIVITE()%>" style="margin-bottom:5px;">
+<%--<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">--%>
+	<%--<legend class="sigp2Legend">Activités</legend>--%>
+	<%--<span class="sigp2Mandatory" style="width:150px"> Ajouter une activité : </span>--%>
+	<%--<span class="<%=process.estFDPInactive ? MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, ""): MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>">--%>
+					            <%--<INPUT type="image" src="images/ajout.gif" height="16px" width="16px" name="<%=process.getNOM_PB_AJOUTER_ACTIVITE()%>" style="margin-bottom:5px;">--%>
 
-							</span>
-	<BR/><BR/>
-	<table class="display" id="tabActiFP">
+							<%--</span>--%>
+	<%--<BR/><BR/>--%>
+	<%--<table class="display" id="tabActiFP">--%>
+		<%--<thead>--%>
+		<%--<tr>--%>
+			<%--<th>idActi</th>--%>
+			<%--<th width="50" >Selection <INPUT class="<%=process.estFDPInactive ? MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, ""): MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" type="checkbox" name="CHECK_ALL_ACTI" onClick='activeACTI("<%=process.getListeToutesActi().size() %>")'></th>--%>
+			<%--<th>Libellé</th>--%>
+			<%--<th>Provenance</th>--%>
+		<%--</tr>--%>
+		<%--</thead>--%>
+		<%--<tbody>--%>
+		<%--<%--%>
+			<%--if (process.getListeToutesActi()!=null){--%>
+				<%--for (int indiceActi = 0;indiceActi<process.getListeToutesActi().size();indiceActi++){--%>
+		<%--%>--%>
+		<%--<tr>--%>
+			<%--<td><%=process.getVAL_ST_ID_ACTI(indiceActi)%></td>--%>
+			<%--<td><INPUT class="<%=process.estFDPInactive ? MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, ""): MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" type="checkbox"  <%= process.forCheckBoxHTML(process.getNOM_CK_SELECT_LIGNE_ACTI(indiceActi),process.getVAL_CK_SELECT_LIGNE_ACTI(indiceActi))%>></td>--%>
+			<%--<td><%=process.getVAL_ST_LIB_ACTI(indiceActi)%></td>--%>
+			<%--<td><%=process.getVAL_ST_LIB_ORIGINE_ACTI(indiceActi)%></td>--%>
+		<%--</tr>--%>
+		<%--<%--%>
+				<%--}--%>
+			<%--}--%>
+		<%--%>--%>
+		<%--</tbody>--%>
+	<%--</table>--%>
+	<%--<script type="text/javascript">--%>
+        <%--$(document).ready(function() {--%>
+            <%--$('#tabActiFP').dataTable({--%>
+                <%--"oLanguage": {"sUrl": "media/dataTables/language/fr_FR.txt"},--%>
+                <%--"aoColumns": [{"bSearchable":false, "bVisible":false},{"bSearchable":false,"bSortable":false},null,null],--%>
+                <%--"sScrollY": "275px",--%>
+                <%--"bPaginate": false,--%>
+                <%--"aaSorting": [],--%>
+                <%--"sDom": '<"H"f>t<"F"i>'--%>
+            <%--});--%>
+        <%--} );--%>
+	<%--</script>--%>
+<%--</FIELDSET>--%>
+
+<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
+	<legend class="sigp2Legend">Activités métier</legend>
+	<table class="display" id="tabActiMetier">
 		<thead>
 		<tr>
-			<th>idActi</th>
-			<th width="50" >Selection <INPUT class="<%=process.estFDPInactive ? MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, ""): MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" type="checkbox" name="CHECK_ALL_ACTI" onClick='activeACTI("<%=process.getListeToutesActi().size() %>")'></th>
-			<th>Libellé</th>
-			<th>Provenance</th>
+			<th style="display: none;">idActi</th>
+			<th width="50" >Selection <INPUT class="<%=process.estFDPInactive ? MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, ""): MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" type="checkbox" name="CHECK_ALL_ACTI" onClick='/***TODOSIRH activeACTI("<%=process.getListeToutesActi().size() %>")***/'></th>
+			<th colspan="2">Libellé</th>
 		</tr>
 		</thead>
 		<tbody>
 		<%
-			if (process.getListeToutesActi()!=null){
-				for (int indiceActi = 0;indiceActi<process.getListeToutesActi().size();indiceActi++){
+			if (process.getListActiviteMetier()!=null){
+				for (int indiceActi = 0;indiceActi<process.getListActiviteMetier().size();indiceActi++){
 		%>
-		<tr>
-			<td><%=process.getVAL_ST_ID_ACTI(indiceActi)%></td>
-			<td><INPUT class="<%=process.estFDPInactive ? MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, ""): MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" type="checkbox"  <%= process.forCheckBoxHTML(process.getNOM_CK_SELECT_LIGNE_ACTI(indiceActi),process.getVAL_CK_SELECT_LIGNE_ACTI(indiceActi))%>></td>
-			<td><%=process.getVAL_ST_LIB_ACTI(indiceActi)%></td>
-			<td><%=process.getVAL_ST_LIB_ORIGINE_ACTI(indiceActi)%></td>
+		<tr class="activite-metier">
+			<td style="display: none;"><%=process.getVAL_ST_ID_ACTI_METIER(indiceActi)%></td>
+			<td><INPUT class="<%=process.estFDPInactive ? MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, ""): MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" type="checkbox"  <%= process.forCheckBoxHTML(process.getNOM_CK_SELECT_LIGNE_ACTI_METIER(indiceActi),process.getVAL_CK_SELECT_LIGNE_ACTI_METIER(indiceActi))%>></td>
+			<td colspan="2"><%=process.getVAL_ST_LIB_ACTI_METIER(indiceActi)%></td>
 		</tr>
 		<%
+					for (int indiceSavoirFaire = 0; indiceSavoirFaire < process.getListActiviteMetier().get(indiceActi).getListSavoirFaire().size(); indiceSavoirFaire++) {
+						SavoirFaire sf = process.getListActiviteMetier().get(indiceActi).getListSavoirFaire().get(indiceSavoirFaire);
+						%>
+							<tr class="activite-metier-savoir">
+								<td  style="display: none;"><%=process.getVAL_ST_ID_ACTI_METIER_SAVOIR(indiceActi, indiceSavoirFaire)%></td>
+								<td></td>
+								<td><INPUT class="<%=process.estFDPInactive ? MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, ""): MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" type="checkbox"  <%= process.forCheckBoxHTML(process.getNOM_CK_SELECT_LIGNE_ACTI_METIER_SAVOIR(indiceActi, indiceSavoirFaire),process.getVAL_CK_SELECT_LIGNE_ACTI_METIER_SAVOIR(indiceActi, indiceSavoirFaire))%>></td>
+								<td><%=process.getVAL_ST_LIB_ACTI_METIER_SAVOIR(indiceActi, indiceSavoirFaire)%></td>
+							</tr>
+						<%
+					}
 				}
 			}
 		%>
 		</tbody>
 	</table>
-	<script type="text/javascript">
-        $(document).ready(function() {
-            $('#tabActiFP').dataTable({
-                "oLanguage": {"sUrl": "media/dataTables/language/fr_FR.txt"},
-                "aoColumns": [{"bSearchable":false, "bVisible":false},{"bSearchable":false,"bSortable":false},null,null],
-                "sScrollY": "275px",
-                "bPaginate": false,
-                "aaSorting": [],
-                "sDom": '<"H"f>t<"F"i>'
-            });
-        } );
-	</script>
+	<%--<script type="text/javascript">--%>
+        <%--$(document).ready(function() {--%>
+            <%--var tableActiMetier = $('#tabActiMetier').dataTable({--%>
+                <%--"oLanguage": {"sUrl": "media/dataTables/language/fr_FR.txt"},--%>
+                <%--"aoColumns": [{"bSearchable":false, "bVisible":false},{"bSearchable":false,"bSortable":false},null],--%>
+                <%--"sScrollY": "275px",--%>
+                <%--"bPaginate": false,--%>
+                <%--"aaSorting": []--%>
+            <%--});--%>
+            <%--tableActiMetier.column();--%>
+        <%--} );--%>
+	<%--</script>--%>
 </FIELDSET>
 
-<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
-	<legend class="sigp2Legend">Compétences</legend>
-	<div align="left" style="width:980px">
-		<span class="sigp2Mandatory" style="width:80px"> Ajouter : </span>
-		<span class="sigp2Mandatory" style="width:50px">Savoir </span>
-		<span class="<%=process.estFDPInactive ? MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, ""): MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>">
-					            <INPUT type="image" src="images/ajout.gif" height="16px" width="16px" name="<%=process.getNOM_PB_AJOUTER_COMPETENCE_SAVOIR()%>" style="margin-bottom:5px;">
-							</span>
-		<span class="sigp2Mandatory" style="width:50px"></span>
-		<span class="sigp2Mandatory" style="width:80px">Savoir Faire </span>
-		<span class="<%=process.estFDPInactive ? MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, ""): MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>">
-					            <INPUT type="image" src="images/ajout.gif" height="16px" width="16px" name="<%=process.getNOM_PB_AJOUTER_COMPETENCE_SAVOIR_FAIRE()%>" style="margin-bottom:5px;">
-							</span>
-		<span class="sigp2Mandatory" style="width:50px"></span>
-		<span class="sigp2Mandatory" style="width:180px">Comportements professionnels </span>
-		<span class="<%=process.estFDPInactive ? MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, ""): MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>">
-					            <INPUT type="image" src="images/ajout.gif" height="16px" width="16px" name="<%=process.getNOM_PB_AJOUTER_COMPETENCE_COMPORTEMENT()%>" style="margin-bottom:5px;">
+<%--<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">--%>
+	<%--<legend class="sigp2Legend">Compétences</legend>--%>
+	<%--<div align="left" style="width:980px">--%>
+		<%--<span class="sigp2Mandatory" style="width:80px"> Ajouter : </span>--%>
+		<%--<span class="sigp2Mandatory" style="width:50px">Savoir </span>--%>
+		<%--<span class="<%=process.estFDPInactive ? MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, ""): MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>">--%>
+					            <%--<INPUT type="image" src="images/ajout.gif" height="16px" width="16px" name="<%=process.getNOM_PB_AJOUTER_COMPETENCE_SAVOIR()%>" style="margin-bottom:5px;">--%>
+							<%--</span>--%>
+		<%--<span class="sigp2Mandatory" style="width:50px"></span>--%>
+		<%--<span class="sigp2Mandatory" style="width:80px">Savoir Faire </span>--%>
+		<%--<span class="<%=process.estFDPInactive ? MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, ""): MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>">--%>
+					            <%--<INPUT type="image" src="images/ajout.gif" height="16px" width="16px" name="<%=process.getNOM_PB_AJOUTER_COMPETENCE_SAVOIR_FAIRE()%>" style="margin-bottom:5px;">--%>
+							<%--</span>--%>
+		<%--<span class="sigp2Mandatory" style="width:50px"></span>--%>
+		<%--<span class="sigp2Mandatory" style="width:180px">Comportements professionnels </span>--%>
+		<%--<span class="<%=process.estFDPInactive ? MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, ""): MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>">--%>
+					            <%--<INPUT type="image" src="images/ajout.gif" height="16px" width="16px" name="<%=process.getNOM_PB_AJOUTER_COMPETENCE_COMPORTEMENT()%>" style="margin-bottom:5px;">--%>
 
-							</span>
-	</div>
-	<BR/>
-	<table class="display" id="tabCompFP">
-		<thead>
-		<tr>
-			<th>idComp</th>
-			<th width="50" >Selection<INPUT class="<%=process.estFDPInactive ? MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, ""): MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" type="checkbox" name="CHECK_ALL_COMP" onClick='activeCOMP("<%=process.getListeToutesComp().size() %>")'></th>
-			<th width="700">Libellé</th>
-			<th>Type</th>
-			<th>Provenance</th>
-		</tr>
-		</thead>
-		<tbody>
-		<%
-			if (process.getListeToutesComp()!=null){
-				for (int indiceComp = 0;indiceComp<process.getListeToutesComp().size();indiceComp++){
-		%>
-		<tr>
-			<td><%=process.getVAL_ST_ID_COMP(indiceComp)%></td>
-			<td width="50"><INPUT type="checkbox" class="<%=process.estFDPInactive ? MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, ""): MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>"  <%= process.forCheckBoxHTML(process.getNOM_CK_SELECT_LIGNE_COMP(indiceComp),process.getVAL_CK_SELECT_LIGNE_COMP(indiceComp))%>></td>
-			<td width="700"><%=process.getVAL_ST_LIB_COMP(indiceComp)%></td>
-			<td><%=process.getVAL_ST_TYPE_COMP(indiceComp)%></td>
-			<td><%=process.getVAL_ST_LIB_ORIGINE_COMP(indiceComp)%></td>
-		</tr>
-		<%
-				}
-			}
-		%>
-		</tbody>
-	</table>
-	<script type="text/javascript">
-        $(document).ready(function() {
-            $('#tabCompFP').dataTable({
-                "oLanguage": {"sUrl": "media/dataTables/language/fr_FR.txt"},
-                "aoColumns": [{"bSearchable":false, "bVisible":false},{"bSearchable":false,"bSortable":false},null,null,null],
-                "sScrollY": "275px",
-                "bPaginate": false,
-                "aaSorting": [],
-                "sDom": '<"H"f>t<"F"i>'
-            });
-        } );
-	</script>
-</FIELDSET>
+							<%--</span>--%>
+	<%--</div>--%>
+	<%--<BR/>--%>
+	<%--<table class="display" id="tabCompFP">--%>
+		<%--<thead>--%>
+		<%--<tr>--%>
+			<%--<th>idComp</th>--%>
+			<%--<th width="50" >Selection<INPUT class="<%=process.estFDPInactive ? MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, ""): MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" type="checkbox" name="CHECK_ALL_COMP" onClick='activeCOMP("<%=process.getListeToutesComp().size() %>")'></th>--%>
+			<%--<th width="700">Libellé</th>--%>
+			<%--<th>Type</th>--%>
+			<%--<th>Provenance</th>--%>
+		<%--</tr>--%>
+		<%--</thead>--%>
+		<%--<tbody>--%>
+		<%--<%--%>
+			<%--if (process.getListeToutesComp()!=null){--%>
+				<%--for (int indiceComp = 0;indiceComp<process.getListeToutesComp().size();indiceComp++){--%>
+		<%--%>--%>
+		<%--<tr>--%>
+			<%--<td><%=process.getVAL_ST_ID_COMP(indiceComp)%></td>--%>
+			<%--<td width="50"><INPUT type="checkbox" class="<%=process.estFDPInactive ? MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, ""): MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>"  <%= process.forCheckBoxHTML(process.getNOM_CK_SELECT_LIGNE_COMP(indiceComp),process.getVAL_CK_SELECT_LIGNE_COMP(indiceComp))%>></td>--%>
+			<%--<td width="700"><%=process.getVAL_ST_LIB_COMP(indiceComp)%></td>--%>
+			<%--<td><%=process.getVAL_ST_TYPE_COMP(indiceComp)%></td>--%>
+			<%--<td><%=process.getVAL_ST_LIB_ORIGINE_COMP(indiceComp)%></td>--%>
+		<%--</tr>--%>
+		<%--<%--%>
+				<%--}--%>
+			<%--}--%>
+		<%--%>--%>
+		<%--</tbody>--%>
+	<%--</table>--%>
+	<%--<script type="text/javascript">--%>
+        <%--$(document).ready(function() {--%>
+            <%--$('#tabCompFP').dataTable({--%>
+                <%--"oLanguage": {"sUrl": "media/dataTables/language/fr_FR.txt"},--%>
+                <%--"aoColumns": [{"bSearchable":false, "bVisible":false},{"bSearchable":false,"bSortable":false},null,null,null],--%>
+                <%--"sScrollY": "275px",--%>
+                <%--"bPaginate": false,--%>
+                <%--"aaSorting": [],--%>
+                <%--"sDom": '<"H"f>t<"F"i>'--%>
+            <%--});--%>
+        <%--} );--%>
+	<%--</script>--%>
+<%--</FIELDSET>--%>
 <fieldset class="sigp2Fieldset" style="width:1030px">
 	<legend class="sigp2Legend">Spécificités</legend>
 	<BR/>
