@@ -131,6 +131,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 	private String[] LB_BASE_HORAIRE_ABSENCE;
 	// nouvelle liste suite remaniement fdp/activites
 	private ArrayList<Activite> listeToutesActi;
+	// liste des activité metier
+	private List<ActiviteMetier> listActiviteMetier = new ArrayList<>();
 	// activites de la fiche emploi primaire
 	private ArrayList<Activite> listeActiFEP;
 	// activites de la fiche emploi secondaire
@@ -244,6 +246,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	private FicheEmploiDao ficheEmploiDao;
 	private FicheMetierDao ficheMetierDao;
 	private FichePosteDao fichePosteDao;
+	private ActiviteMetierDao activiteMetierDao;
 	private HistoFichePosteDao histoFichePosteDao;
 	private AffectationDao affectationDao;
 	private AgentDao agentDao;
@@ -307,6 +310,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 		if (etatStatut() == STATUT_ACTI_PRINC) {
 			initialiseActivites();
+			//TODOSIRH: Modifier pour initialiser les activités métier
 		}
 
 		if (etatStatut() == STATUT_COMPETENCE) {
@@ -636,6 +640,9 @@ public class OePOSTEFichePoste extends BasicProcess {
 		if (getFichePosteDao() == null) {
 			setFichePosteDao(new FichePosteDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (getActiviteMetierDao() == null) {
+			setActiviteMetierDao(new ActiviteMetierDao((SirhDao) context.getBean("sirhDao")));
+		}
 		if (getHistoFichePosteDao() == null) {
 			setHistoFichePosteDao(new HistoFichePosteDao((SirhDao) context.getBean("sirhDao")));
 		}
@@ -682,6 +689,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 				estFDPInactive = false;
 			}
 
+			getActiviteMetierDao().listerToutesActiviteMetier(getFichePosteCourante());
+
 			// SERVICE
 			if (getService() != null) {
 				addZone(getNOM_EF_SERVICE(), getService().getSigle());
@@ -706,6 +715,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 				// Infos complémentaires METIER
 				initialiseInfosComplementaires();
+
+				//
 
 			} else {
 
@@ -2494,6 +2505,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 			getListeAjoutActiFP().clear();
 			initialiseActivites();
+			//TODOSIRH: Modifier pour initialiser les activités métier
 
 			// setListeAjoutCompFP(null);
 			getListeAjoutCompFP().clear();
@@ -3796,6 +3808,26 @@ public class OePOSTEFichePoste extends BasicProcess {
 		VariablesActivite.enlever(this, "LISTEACTIVITE");
 	}
 
+	private void initialiseActivitesMetier() {
+		if (getFichePosteCourante() != null && getFichePosteCourante().getIdFichePoste() != null) {
+			setListActiviteMetier(getActiviteMetierDao().listerToutesActiviteMetier(getFichePosteCourante()));
+		}
+		for (int i = 0; i < listActiviteMetier.size(); i++) {
+			ActiviteMetier am = listActiviteMetier.get(i);
+
+			addZone(getNOM_ST_ID_ACTI_METIER(i), am.getIdActiviteMetier().toString());
+			addZone(getNOM_ST_LIB_ACTI_METIER(i), am.getNomActiviteMetier());
+			addZone(getNOM_CK_SELECT_LIGNE_ACTI_METIER(i), am.isChecked()? getCHECKED_ON(): getCHECKED_OFF());
+			for (int j = 0; j < am.getListSavoirFaire().size(); j++) {
+				SavoirFaire sf = am.getListSavoirFaire().get(j);
+				addZone(getNOM_ST_ID_ACTI_METIER_SAVOIR(i, j), sf.getIdSavoirFaire().toString());
+				addZone(getNOM_CK_SELECT_LIGNE_ACTI_METIER_SAVOIR(i, j), sf.getChecked()? getCHECKED_ON(): getCHECKED_OFF());
+				addZone(getNOM_ST_LIB_ACTI_METIER_SAVOIR(i, j), sf.getNomSavoirFaire());
+			}
+		}
+
+	}
+
 	private void initialiseInfos() throws Exception {
 		// on fait une liste de toutes les niveau etude
 		setListeTousNiveau(new ArrayList<NiveauEtude>());
@@ -4057,6 +4089,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	private void setMetierPrimaire(FicheMetier newFicheMetier) throws Exception {
 		this.metierPrimaire = newFicheMetier;
 		initialiseInfos();
+		initialiseActivitesMetier();
 		//TODOSIRH: init les zones de la fiche métier dans la fiche de poste (compétences etc ...)
 	}
 
@@ -4146,6 +4179,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	public void setMetierSecondaire(FicheMetier metierSecondaire) throws Exception {
 		this.metierSecondaire = metierSecondaire;
 		initialiseInfos();
+		initialiseActivitesMetier();
 		//TODOSIRH: init les zones de la fiche métier dans la fiche de poste (compétences etc ...)
 	}
 
@@ -5009,8 +5043,13 @@ public class OePOSTEFichePoste extends BasicProcess {
 			setTypeContratCourant(null);
 
 			initialiseInfos();
-			initialiseActivites();
-			initialiseCompetence();
+			if (versionFicheMetier()) {
+				initialiseActivitesMetier();
+				//TODOSIRH: ajouter les initialisations nécessaires
+			} else {
+				initialiseActivites();
+				initialiseCompetence();
+			}
 
 			setFichePosteCourante(fichePDupliquee);
 
@@ -5988,6 +6027,30 @@ public class OePOSTEFichePoste extends BasicProcess {
 		return "NOM_ST_LIB_ACTI_" + i;
 	}
 
+	public String getNOM_ST_LIB_ACTI_METIER(int i) {
+		return "NOM_ST_LIB_ACTI_METIER_" + i;
+	}
+
+	public String getNOM_ST_LIB_ACTI_METIER_SAVOIR(int i, int j) {
+		return "NOM_ST_LIB_ACTI_METIER_SAVOIR_" + i + "_" + j;
+	}
+
+	public String getNOM_ST_ID_ACTI_METIER(int i) {
+		return "NOM_ST_ID_ACTI_METIER_" + i;
+	}
+
+	public String getVAL_ST_ID_ACTI_METIER(int i) {
+		return getZone(getNOM_ST_ID_ACTI_METIER(i));
+	}
+
+	public String getNOM_ST_ID_ACTI_METIER_SAVOIR(int i, int j) {
+		return "NOM_ST_ID_ACTI_METIER_SAVOIR_" + i + "_" + j;
+	}
+
+	public String getVAL_ST_ID_ACTI_METIER_SAVOIR(int i, int j) {
+		return getZone(getNOM_ST_ID_ACTI_METIER_SAVOIR(i, j));
+	}
+
 	/**
 	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_LIB_ACTI Date
 	 * de création : (21/11/11 09:55:36)
@@ -5996,6 +6059,14 @@ public class OePOSTEFichePoste extends BasicProcess {
 	 */
 	public String getVAL_ST_LIB_ACTI(int i) {
 		return getZone(getNOM_ST_LIB_ACTI(i));
+	}
+
+	public String getVAL_ST_LIB_ACTI_METIER(int i) {
+		return getZone(getNOM_ST_LIB_ACTI_METIER(i));
+	}
+
+	public String getVAL_ST_LIB_ACTI_METIER_SAVOIR(int i, int j) {
+		return getZone(getNOM_ST_LIB_ACTI_METIER_SAVOIR(i, j));
 	}
 
 	/**
@@ -6018,6 +6089,28 @@ public class OePOSTEFichePoste extends BasicProcess {
 		return getZone(getNOM_CK_SELECT_LIGNE_ACTI(i));
 	}
 
+	public String getNOM_CK_SELECT_LIGNE_ACTI_METIER(int i) {
+		return "NOM_CK_SELECT_LIGNE_ACTI_METIER_" + i;
+	}
+
+	public String getNOM_CK_SELECT_LIGNE_ACTI_METIER_SAVOIR(int i, int j) {
+		return "NOM_CK_SELECT_LIGNE_ACTI_METIER_SAVOIR_" + i + "_" + j;
+	}
+
+	/**
+	 * Retourne la valeur de la case à  cocher à  afficher par la JSP pour la case
+	 * a cocher : CK_SELECT_LIGNE_ACTI_METIER Date de création : (21/11/11 09:55:36)
+	 *
+	 *
+	 */
+	public String getVAL_CK_SELECT_LIGNE_ACTI_METIER(int i) {
+		return getZone(getNOM_CK_SELECT_LIGNE_ACTI_METIER(i));
+	}
+
+	public String getVAL_CK_SELECT_LIGNE_ACTI_METIER_SAVOIR(int i, int j) {
+		return getZone(getNOM_CK_SELECT_LIGNE_ACTI_METIER_SAVOIR(i, j));
+	}
+
 	public ArrayList<Activite> getListeToutesActi() {
 		if (listeToutesActi == null) {
 			setListeToutesActi(new ArrayList<Activite>());
@@ -6027,6 +6120,17 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 	private void setListeToutesActi(ArrayList<Activite> listeToutesActi) {
 		this.listeToutesActi = listeToutesActi;
+	}
+
+	public List<ActiviteMetier> getListActiviteMetier() {
+		if (listActiviteMetier == null) {
+			listActiviteMetier = new ArrayList<>();
+		}
+		return listActiviteMetier;
+	}
+
+	public void setListActiviteMetier(List<ActiviteMetier> listActiviteMetier) {
+		this.listActiviteMetier = listActiviteMetier;
 	}
 
 	private ArrayList<ActiviteFP> getListeActiFP() {
@@ -6907,6 +7011,14 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 	public void setFichePosteDao(FichePosteDao fichePosteDao) {
 		this.fichePosteDao = fichePosteDao;
+	}
+
+	public ActiviteMetierDao getActiviteMetierDao() {
+		return activiteMetierDao;
+	}
+
+	public void setActiviteMetierDao(ActiviteMetierDao activiteMetierDao) {
+		this.activiteMetierDao = activiteMetierDao;
 	}
 
 	public HistoFichePosteDao getHistoFichePosteDao() {

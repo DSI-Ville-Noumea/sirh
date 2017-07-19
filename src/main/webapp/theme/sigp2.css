@@ -256,3 +256,14 @@
 .selectLigne {
 	background-color: #EFEFEF;
 }
+
+.activite-metier {
+	text-transform: uppercase;
+	background-color: beige;
+	font-weight: 600;
+	font-size: 1.2em;
+}
+
+.activite-metier-savoir {
+	background-color: #dcf4f5;
+}
