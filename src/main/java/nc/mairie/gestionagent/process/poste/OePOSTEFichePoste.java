@@ -135,6 +135,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 	private List<ActiviteMetier> listActiviteMetier = new ArrayList<>();
 	// liste des savoir-faire généraux
 	private List<SavoirFaire> listSavoirFaire = new ArrayList<>();
+	//liste des activites generales
+	private List<ActiviteGenerale> listActiviteGenerale = new ArrayList<>();
 	// activites de la fiche emploi primaire
 	private ArrayList<Activite> listeActiFEP;
 	// activites de la fiche emploi secondaire
@@ -250,6 +252,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	private FichePosteDao fichePosteDao;
 	private ActiviteMetierDao activiteMetierDao;
 	private SavoirFaireDao savoirFaireDao;
+	private ActiviteGeneraleDao activiteGeneraleDao;
 	private HistoFichePosteDao histoFichePosteDao;
 	private AffectationDao affectationDao;
 	private AgentDao agentDao;
@@ -648,6 +651,9 @@ public class OePOSTEFichePoste extends BasicProcess {
 		}
 		if (getSavoirFaireDao() == null) {
 			setSavoirFaireDao(new SavoirFaireDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getActiviteGeneraleDao() == null) {
+			setActiviteGeneraleDao(new ActiviteGeneraleDao((SirhDao) context.getBean("sirhDao")));
 		}
 		if (getHistoFichePosteDao() == null) {
 			setHistoFichePosteDao(new HistoFichePosteDao((SirhDao) context.getBean("sirhDao")));
@@ -3847,6 +3853,18 @@ public class OePOSTEFichePoste extends BasicProcess {
 		}
 	}
 
+	private void initialiseActivitesGenerales() {
+		if (getFichePosteCourante() != null && getFichePosteCourante().getIdFichePoste() != null) {
+			setListActiviteGenerale(getActiviteGeneraleDao().listerToutesActiviteGenerale(getFichePosteCourante()));
+		}
+		for (int i = 0; i < listActiviteGenerale.size(); i++) {
+			ActiviteGenerale ag = listActiviteGenerale.get(i);
+			addZone(getNOM_ST_ID_AG(i), ag.getIdActiviteGenerale().toString());
+			addZone(getNOM_CK_SELECT_LIGNE_AG(i), ag.getChecked()? getCHECKED_ON(): getCHECKED_OFF());
+			addZone(getNOM_ST_LIB_AG(i), ag.getNomActiviteGenerale());
+		}
+	}
+
 	private void initialiseInfos() throws Exception {
 		// on fait une liste de toutes les niveau etude
 		setListeTousNiveau(new ArrayList<NiveauEtude>());
@@ -4110,6 +4128,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 		initialiseInfos();
 		initialiseActivitesMetier();
 		initialiseSavoirFaireGeneraux();
+		initialiseActivitesGenerales();
 		//TODOSIRH: init les zones de la fiche métier dans la fiche de poste (compétences etc ...)
 	}
 
@@ -4201,6 +4220,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 		initialiseInfos();
 		initialiseActivitesMetier();
 		initialiseSavoirFaireGeneraux();
+		initialiseActivitesGenerales();
 		//TODOSIRH: init les zones de la fiche métier dans la fiche de poste (compétences etc ...)
 	}
 
@@ -5067,6 +5087,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 			if (versionFicheMetier()) {
 				initialiseActivitesMetier();
 				initialiseSavoirFaireGeneraux();
+				initialiseActivitesGenerales();
 				//TODOSIRH: ajouter les initialisations nécessaires
 			} else {
 				initialiseActivites();
@@ -6036,6 +6057,14 @@ public class OePOSTEFichePoste extends BasicProcess {
 		return getZone(getNOM_ST_ID_SF(i));
 	}
 
+	public String getNOM_ST_ID_AG(int i) {
+		return "NOM_ST_ID_AG_" + i;
+	}
+
+	public String getVAL_ST_ID_AG(int i) {
+		return getZone(getNOM_ST_ID_AG(i));
+	}
+
 	public String getNOM_ST_LIB_ACTI(int i) {
 		return "NOM_ST_LIB_ACTI_" + i;
 	}
@@ -6050,6 +6079,14 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 	public String getVAL_ST_LIB_SF(int i) {
 		return getZone(getNOM_ST_LIB_SF(i));
+	}
+
+	public String getNOM_ST_LIB_AG(int i) {
+		return "NOM_ST_LIB_AG_" + i;
+	}
+
+	public String getVAL_ST_LIB_AG(int i) {
+		return getZone(getNOM_ST_LIB_AG(i));
 	}
 
 	public String getNOM_ST_LIB_ACTI_METIER(int i) {
@@ -6106,6 +6143,14 @@ public class OePOSTEFichePoste extends BasicProcess {
 		return getZone(getNOM_CK_SELECT_LIGNE_SF(i));
 	}
 
+	public String getNOM_CK_SELECT_LIGNE_AG(int i) {
+		return "NOM_CK_SELECT_LIGNE_AG_" + i;
+	}
+
+	public String getVAL_CK_SELECT_LIGNE_AG(int i) {
+		return getZone(getNOM_CK_SELECT_LIGNE_AG(i));
+	}
+
 	public String getNOM_CK_SELECT_LIGNE_ACTI_METIER(int i) {
 		return "NOM_CK_SELECT_LIGNE_ACTI_METIER_" + i;
 	}
@@ -6156,6 +6201,14 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 	public void setListSavoirFaire(List<SavoirFaire> listSavoirFaire) {
 		this.listSavoirFaire = listSavoirFaire;
+	}
+
+	public List<ActiviteGenerale> getListActiviteGenerale() {
+		return listActiviteGenerale;
+	}
+
+	public void setListActiviteGenerale(List<ActiviteGenerale> listActiviteGenerale) {
+		this.listActiviteGenerale = listActiviteGenerale;
 	}
 
 	private ArrayList<ActiviteFP> getListeActiFP() {
@@ -7036,6 +7089,14 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 	public void setSavoirFaireDao(SavoirFaireDao savoirFaireDao) {
 		this.savoirFaireDao = savoirFaireDao;
+	}
+
+	public ActiviteGeneraleDao getActiviteGeneraleDao() {
+		return activiteGeneraleDao;
+	}
+
+	public void setActiviteGeneraleDao(ActiviteGeneraleDao activiteGeneraleDao) {
+		this.activiteGeneraleDao = activiteGeneraleDao;
 	}
 
 	public FichePosteDao getFichePosteDao() {
