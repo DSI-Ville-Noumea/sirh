@@ -326,51 +326,6 @@
 </fieldset>
 
 <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
-	<legend class="sigp2Legend">Savoir-faire</legend>
-	<table class="display" id="tabSavoirFaire">
-		<thead>
-		<tr>
-			<th>idSavoirFaire</th>
-			<th width="50" >Selection <INPUT class="<%=process.estFDPInactive ? MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, ""): MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" type="checkbox" name="CHECK_ALL_ACTI" onClick='/** activeACTI("<%=process.getListeToutesActi().size() %>")***/'></th>
-			<th>Libellé</th>
-		</tr>
-		</thead>
-		<tbody>
-		<%
-			if (process.getListSavoirFaire()!=null){
-				for (int indiceSF = 0; indiceSF < process.getListSavoirFaire().size(); indiceSF++) {
-		%>
-		<tr>
-			<td><%=process.getVAL_ST_ID_SF(indiceSF)%></td>
-			<td><INPUT class="<%=process.estFDPInactive ? MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, ""): MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" type="checkbox"  <%= process.forCheckBoxHTML(process.getNOM_CK_SELECT_LIGNE_SF(indiceSF),process.getVAL_CK_SELECT_LIGNE_SF(indiceSF))%>></td>
-			<td><%=process.getVAL_ST_LIB_SF(indiceSF)%></td>
-		</tr>
-		<%
-				}
-			}
-		%>
-		</tbody>
-	</table>
-	<script type="text/javascript">
-        $(document).ready(function () {
-            $('#tabSavoirFaire').dataTable({
-                "oLanguage": {"sUrl": "media/dataTables/language/fr_FR.txt"},
-                "aoColumns": [{"bSearchable": false, "bVisible": false}, {
-                    "bSearchable": false,
-                    "bSortable": false
-                }, {
-                    "bSearchable": false,
-                    "bSortable": true
-                }],
-                "sScrollY": "275px",
-                "bPaginate": false,
-                "aaSorting": []
-            });
-        });
-	</script>
-</FIELDSET>
-
-<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
 	<legend class="sigp2Legend">Activités métier</legend>
 	<table class="display" id="tabActiMetier">
 		<thead>
@@ -450,6 +405,51 @@
 	<script type="text/javascript">
         $(document).ready(function () {
             $('#tabSavoirFaire').dataTable({
+                "oLanguage": {"sUrl": "media/dataTables/language/fr_FR.txt"},
+                "aoColumns": [{"bSearchable": false, "bVisible": false}, {
+                    "bSearchable": false,
+                    "bSortable": false
+                }, {
+                    "bSearchable": false,
+                    "bSortable": true
+                }],
+                "sScrollY": "275px",
+                "bPaginate": false,
+                "aaSorting": []
+            });
+        });
+	</script>
+</FIELDSET>
+
+<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
+	<legend class="sigp2Legend">Activités et compétences générales</legend>
+	<table class="display" id="tabActiviteGenerale">
+		<thead>
+		<tr>
+			<th>idActiviteGenerale</th>
+			<th width="50" >Selection <INPUT class="<%=process.estFDPInactive ? MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, ""): MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" type="checkbox" name="CHECK_ALL_ACTI" onClick='/** activeACTI("<%=process.getListeToutesActi().size() %>")***/'></th>
+			<th>Libellé</th>
+		</tr>
+		</thead>
+		<tbody>
+		<%
+			if (process.getListActiviteGenerale()!=null){
+				for (int indiceAG = 0; indiceAG < process.getListActiviteGenerale().size(); indiceAG++) {
+		%>
+		<tr>
+			<td><%=process.getVAL_ST_ID_AG(indiceAG)%></td>
+			<td><INPUT class="<%=process.estFDPInactive ? MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, ""): MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" type="checkbox"  <%= process.forCheckBoxHTML(process.getNOM_CK_SELECT_LIGNE_AG(indiceAG),process.getVAL_CK_SELECT_LIGNE_AG(indiceAG))%>></td>
+			<td><%=process.getVAL_ST_LIB_AG(indiceAG)%></td>
+		</tr>
+		<%
+				}
+			}
+		%>
+		</tbody>
+	</table>
+	<script type="text/javascript">
+        $(document).ready(function () {
+            $('#tabActiviteGenerale').dataTable({
                 "oLanguage": {"sUrl": "media/dataTables/language/fr_FR.txt"},
                 "aoColumns": [{"bSearchable": false, "bVisible": false}, {
                     "bSearchable": false,

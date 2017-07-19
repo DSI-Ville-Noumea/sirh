@@ -1,15 +1,10 @@
 package nc.mairie.spring.dao.metier.poste;
 
-import nc.mairie.metier.poste.FicheMetier;
 import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.poste.SavoirFaire;
 import nc.mairie.spring.dao.utils.SirhDao;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.RowMapper;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,7 +21,6 @@ public class SavoirFaireDao extends SirhDao implements SavoirFaireInterface {
 
     @Override
     public List<SavoirFaire> listerTousSavoirFaireGeneraux(FichePoste fp) {
-        List<SavoirFaire> listSavoirFaire = new ArrayList<>();
         String sql = "SELECT DISTINCT SF.ID_SAVOIR_FAIRE, SF.NOM_SAVOIR_FAIRE, " +
                 "CASE WHEN SF_FP.ID_SAVOIR_FAIRE IS NULL THEN '0' ELSE '1' END AS CHECKED  " +
                 "FROM SAVOIR_FAIRE_FM SF_FM " +
