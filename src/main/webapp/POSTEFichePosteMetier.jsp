@@ -466,6 +466,51 @@
 	</script>
 </FIELDSET>
 
+<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
+	<legend class="sigp2Legend">Conditions d'exercice</legend>
+	<table class="display" id="tabConditionsExercice">
+		<thead>
+		<tr>
+			<th>idConditionExercice</th>
+			<th width="50" >Selection <INPUT class="<%=process.estFDPInactive ? MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, ""): MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" type="checkbox" name="CHECK_ALL_ACTI" onClick='/** activeACTI("<%=process.getListeToutesActi().size() %>")***/'></th>
+			<th>Libellé</th>
+		</tr>
+		</thead>
+		<tbody>
+		<%
+			if (process.getListConditionExercice()!=null){
+				for (int indiceCE = 0; indiceCE < process.getListConditionExercice().size(); indiceCE++) {
+		%>
+		<tr>
+			<td><%=process.getVAL_ST_ID_CE(indiceCE)%></td>
+			<td><INPUT class="<%=process.estFDPInactive ? MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, ""): MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" type="checkbox"  <%= process.forCheckBoxHTML(process.getNOM_CK_SELECT_LIGNE_CE(indiceCE),process.getVAL_CK_SELECT_LIGNE_CE(indiceCE))%>></td>
+			<td><%=process.getVAL_ST_LIB_CE(indiceCE)%></td>
+		</tr>
+		<%
+				}
+			}
+		%>
+		</tbody>
+	</table>
+	<script type="text/javascript">
+        $(document).ready(function () {
+            $('#tabConditionsExercice').dataTable({
+                "oLanguage": {"sUrl": "media/dataTables/language/fr_FR.txt"},
+                "aoColumns": [{"bSearchable": false, "bVisible": false}, {
+                    "bSearchable": false,
+                    "bSortable": false
+                }, {
+                    "bSearchable": false,
+                    "bSortable": true
+                }],
+                "sScrollY": "275px",
+                "bPaginate": false,
+                "aaSorting": []
+            });
+        });
+	</script>
+</FIELDSET>
+
 <fieldset class="sigp2Fieldset" style="width:1030px">
 	<legend class="sigp2Legend">Spécificités</legend>
 	<BR/>

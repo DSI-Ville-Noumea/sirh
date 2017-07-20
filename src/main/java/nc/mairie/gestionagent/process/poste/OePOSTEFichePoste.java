@@ -137,6 +137,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 	private List<SavoirFaire> listSavoirFaire = new ArrayList<>();
 	//liste des activites generales
 	private List<ActiviteGenerale> listActiviteGenerale = new ArrayList<>();
+	//liste des conditions d'exercice
+	private List<ConditionExercice> listConditionExercice = new ArrayList<>();
 	// activites de la fiche emploi primaire
 	private ArrayList<Activite> listeActiFEP;
 	// activites de la fiche emploi secondaire
@@ -253,6 +255,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	private ActiviteMetierDao activiteMetierDao;
 	private SavoirFaireDao savoirFaireDao;
 	private ActiviteGeneraleDao activiteGeneraleDao;
+	private ConditionExerciceDao conditionExerciceDao;
 	private HistoFichePosteDao histoFichePosteDao;
 	private AffectationDao affectationDao;
 	private AgentDao agentDao;
@@ -654,6 +657,9 @@ public class OePOSTEFichePoste extends BasicProcess {
 		}
 		if (getActiviteGeneraleDao() == null) {
 			setActiviteGeneraleDao(new ActiviteGeneraleDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getConditionExerciceDao() == null) {
+			setConditionExerciceDao(new ConditionExerciceDao((SirhDao) context.getBean("sirhDao")));
 		}
 		if (getHistoFichePosteDao() == null) {
 			setHistoFichePosteDao(new HistoFichePosteDao((SirhDao) context.getBean("sirhDao")));
@@ -3837,7 +3843,6 @@ public class OePOSTEFichePoste extends BasicProcess {
 				addZone(getNOM_ST_LIB_ACTI_METIER_SAVOIR(i, j), sf.getNomSavoirFaire());
 			}
 		}
-
 	}
 
 	private void initialiseSavoirFaireGeneraux() {
@@ -3862,6 +3867,18 @@ public class OePOSTEFichePoste extends BasicProcess {
 			addZone(getNOM_ST_ID_AG(i), ag.getIdActiviteGenerale().toString());
 			addZone(getNOM_CK_SELECT_LIGNE_AG(i), ag.getChecked()? getCHECKED_ON(): getCHECKED_OFF());
 			addZone(getNOM_ST_LIB_AG(i), ag.getNomActiviteGenerale());
+		}
+	}
+
+	private void initialiseConditionsExercices() {
+		if (getFichePosteCourante() != null && getFichePosteCourante().getIdFichePoste() != null) {
+			setListConditionExercice(getConditionExerciceDao().listerToutesConditionExercice(getFichePosteCourante()));
+		}
+		for (int i = 0; i < listConditionExercice.size(); i++) {
+			ConditionExercice ce = listConditionExercice.get(i);
+			addZone(getNOM_ST_ID_CE(i), ce.getIdConditionExercice().toString());
+			addZone(getNOM_CK_SELECT_LIGNE_CE(i), ce.getChecked()? getCHECKED_ON(): getCHECKED_OFF());
+			addZone(getNOM_ST_LIB_CE(i), ce.getNomConditionExercice());
 		}
 	}
 
@@ -4129,6 +4146,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 		initialiseActivitesMetier();
 		initialiseSavoirFaireGeneraux();
 		initialiseActivitesGenerales();
+		initialiseConditionsExercices();
 		//TODOSIRH: init les zones de la fiche métier dans la fiche de poste (compétences etc ...)
 	}
 
@@ -4221,6 +4239,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 		initialiseActivitesMetier();
 		initialiseSavoirFaireGeneraux();
 		initialiseActivitesGenerales();
+		initialiseConditionsExercices();
 		//TODOSIRH: init les zones de la fiche métier dans la fiche de poste (compétences etc ...)
 	}
 
@@ -5088,6 +5107,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 				initialiseActivitesMetier();
 				initialiseSavoirFaireGeneraux();
 				initialiseActivitesGenerales();
+				initialiseConditionsExercices();
 				//TODOSIRH: ajouter les initialisations nécessaires
 			} else {
 				initialiseActivites();
@@ -6065,6 +6085,14 @@ public class OePOSTEFichePoste extends BasicProcess {
 		return getZone(getNOM_ST_ID_AG(i));
 	}
 
+	public String getNOM_ST_ID_CE(int i) {
+		return "NOM_ST_ID_CE_" + i;
+	}
+
+	public String getVAL_ST_ID_CE(int i) {
+		return getZone(getNOM_ST_ID_CE(i));
+	}
+
 	public String getNOM_ST_LIB_ACTI(int i) {
 		return "NOM_ST_LIB_ACTI_" + i;
 	}
@@ -6087,6 +6115,14 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 	public String getVAL_ST_LIB_AG(int i) {
 		return getZone(getNOM_ST_LIB_AG(i));
+	}
+
+	public String getNOM_ST_LIB_CE(int i) {
+		return "NOM_ST_LIB_CE_" + i;
+	}
+
+	public String getVAL_ST_LIB_CE(int i) {
+		return getZone(getNOM_ST_LIB_CE(i));
 	}
 
 	public String getNOM_ST_LIB_ACTI_METIER(int i) {
@@ -6151,6 +6187,14 @@ public class OePOSTEFichePoste extends BasicProcess {
 		return getZone(getNOM_CK_SELECT_LIGNE_AG(i));
 	}
 
+	public String getNOM_CK_SELECT_LIGNE_CE(int i) {
+		return "NOM_CK_SELECT_LIGNE_CE_" + i;
+	}
+
+	public String getVAL_CK_SELECT_LIGNE_CE(int i) {
+		return getZone(getNOM_CK_SELECT_LIGNE_CE(i));
+	}
+
 	public String getNOM_CK_SELECT_LIGNE_ACTI_METIER(int i) {
 		return "NOM_CK_SELECT_LIGNE_ACTI_METIER_" + i;
 	}
@@ -6205,6 +6249,14 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 	public List<ActiviteGenerale> getListActiviteGenerale() {
 		return listActiviteGenerale;
+	}
+
+	public List<ConditionExercice> getListConditionExercice() {
+		return listConditionExercice;
+	}
+
+	public void setListConditionExercice(List<ConditionExercice> listConditionExercice) {
+		this.listConditionExercice = listConditionExercice;
 	}
 
 	public void setListActiviteGenerale(List<ActiviteGenerale> listActiviteGenerale) {
@@ -7097,6 +7149,14 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 	public void setActiviteGeneraleDao(ActiviteGeneraleDao activiteGeneraleDao) {
 		this.activiteGeneraleDao = activiteGeneraleDao;
+	}
+
+	public ConditionExerciceDao getConditionExerciceDao() {
+		return conditionExerciceDao;
+	}
+
+	public void setConditionExerciceDao(ConditionExerciceDao conditionExerciceDao) {
+		this.conditionExerciceDao = conditionExerciceDao;
 	}
 
 	public FichePosteDao getFichePosteDao() {
