@@ -427,7 +427,7 @@
 	<legend class="sigp2Legend">Spécificités</legend>
 	<BR/>
 	<div align="left" style="float:left;">
-		<span class="sigp2" style="text-align:left;width:900;"><u>Avantage(s) en nature</u></span>
+		<span class="sigp2" style="text-align:left;width:900px;"><u>Avantage(s) en nature</u></span>
 		<%if(process.getListeAvantage()!= null && process.getListeAvantage().size()>0){ %>
 		<br/><br/>
 		<span style="margin-left:5px;position:relative;width:350px;text-align: left;">Type</span>
@@ -456,7 +456,7 @@
 		<BR/><BR/>
 	</div>
 	<div align="left" style="float:left;width:980px">
-		<span class="sigp2" style="text-align:left;width:900;"><u>Délégation(s)</u></span>
+		<span class="sigp2" style="text-align:left;width:900px;"><u>Délégation(s)</u></span>
 		<%if(process.getListeDelegation()!= null && process.getListeDelegation().size()>0){ %>
 		<br/><br/>
 		<span style="margin-left:5px;position:relative;width:250px;">Type</span>
@@ -483,7 +483,7 @@
 		<BR/><BR/>
 	</div>
 	<div align="left" style="float:left;width:980px">
-		<span class="sigp2" style="text-align:left;width:900;"><u>Régime(s) indemnitaire(s)</u></span>
+		<span class="sigp2" style="text-align:left;width:900px;"><u>Régime(s) indemnitaire(s)</u></span>
 		<%if(process.getListeRegime()!= null && process.getListeRegime().size()>0){ %>
 		<br/><br/>
 		<span style="margin-left:5px;position:relative;width:100px;text-align: left;">Type</span>
@@ -512,7 +512,7 @@
 		<BR/><BR/>
 	</div>
 	<div align="left" style="float:left;width:980px">
-		<span class="sigp2" style="text-align:left;width:900;"><u>Prime(s) de pointage</u></span>
+		<span class="sigp2" style="text-align:left;width:900px;"><u>Prime(s) de pointage</u></span>
 		<%if(process.getListePrimePointageFP()!= null && process.getListePrimePointageFP().size()>0){ %>
 		<br/><br/>
 		<span style="margin-left:5px;position:relative;text-align: left;">Rubrique</span>

@@ -307,21 +307,21 @@
 <fieldset class="sigp2Fieldset" style="width:1020px">
 	<legend class="sigp2Legend">Définition du poste</legend>
 	<br/>
-	<textarea <%= process.estFDPInactive ?  "disabled='disabled'" : "" %> <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> rows="4" cols="190" class="sigp2-saisie" style="margin-right:10px;" name="<%= process.getNOM_EF_MISSIONS()%>" ><%= process.getVAL_EF_MISSIONS() %></textarea>
+	<textarea <%= process.estFDPInactive ?  "disabled='disabled'" : "" %> <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> rows="4" cols="160" class="sigp2-saisie" style="margin-right:10px;" name="<%= process.getNOM_EF_MISSIONS()%>" ><%= process.getVAL_EF_MISSIONS() %></textarea>
 	<br/>
 </fieldset>
 
 <fieldset class="sigp2Fieldset" style="width:1020px">
 	<legend class="sigp2Legend">Spécialisation éventuelle</legend>
 	<br/>
-	<textarea <%= process.estFDPInactive ?  "disabled='disabled'" : "" %> <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> rows="4" cols="190" class="sigp2-saisie" style="margin-right:10px;" name="<%= process.getNOM_EF_SPECIALISATION()%>" ><%= process.getVAL_EF_SPECIALISATION() %></textarea>
+	<textarea <%= process.estFDPInactive ?  "disabled='disabled'" : "" %> <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> rows="4" cols="160" class="sigp2-saisie" style="margin-right:10px;" name="<%= process.getNOM_EF_SPECIALISATION()%>" ><%= process.getVAL_EF_SPECIALISATION() %></textarea>
 	<br/>
 </fieldset>
 
 <fieldset class="sigp2Fieldset" style="width:1020px">
 	<legend class="sigp2Legend">Informations complémentaires</legend>
 	<br/>
-	<textarea <%= process.estFDPInactive ?  "disabled='disabled'" : "" %> <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> rows="4" cols="190" class="sigp2-saisie" style="margin-right:10px;" name="<%= process.getNOM_EF_INFORMATIONS_COMPLEMENTAIRES()%>" ><%= process.getVAL_EF_INFORMATIONS_COMPLEMENTAIRES() %></textarea>
+	<textarea <%= process.estFDPInactive ?  "disabled='disabled'" : "" %> <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> rows="4" cols="160" class="sigp2-saisie" style="margin-right:10px;" name="<%= process.getNOM_EF_INFORMATIONS_COMPLEMENTAIRES()%>" ><%= process.getVAL_EF_INFORMATIONS_COMPLEMENTAIRES() %></textarea>
 	<br/>
 </fieldset>
 
@@ -330,8 +330,8 @@
 	<table class="display" id="tabActiMetier">
 		<thead>
 		<tr>
-			<th style="display: none;">idActi</th>
-			<th width="50" >Selection <INPUT class="<%=process.estFDPInactive ? MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, ""): MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" type="checkbox" name="CHECK_ALL_ACTI" onClick='/***TODOSIRH activeACTI("<%=process.getListeToutesActi().size() %>")***/'></th>
+			<th class="masqued-id">idActi</th>
+			<th width="50" >Selection <INPUT id="checkAllACT" class="<%=process.estFDPInactive ? MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, ""): MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" type="checkbox"></th>
 			<th colspan="2">Libellé</th>
 		</tr>
 		</thead>
@@ -341,18 +341,18 @@
 				for (int indiceActi = 0;indiceActi<process.getListActiviteMetier().size();indiceActi++){
 		%>
 		<tr class="activite-metier">
-			<td style="display: none;"><%=process.getVAL_ST_ID_ACTI_METIER(indiceActi)%></td>
-			<td><INPUT class="<%=process.estFDPInactive ? MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, ""): MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" type="checkbox"  <%= process.forCheckBoxHTML(process.getNOM_CK_SELECT_LIGNE_ACTI_METIER(indiceActi),process.getVAL_CK_SELECT_LIGNE_ACTI_METIER(indiceActi))%>></td>
+			<td class="masqued-id"><%=process.getVAL_ST_ID_ACTI_METIER(indiceActi)%></td>
+			<td><INPUT data-id="<%=indiceActi%>" class="actiCheckAll <%=process.estFDPInactive ? MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, ""): MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" type="checkbox"  <%= process.forCheckBoxHTML(process.getNOM_CK_SELECT_LIGNE_ACTI_METIER(indiceActi),process.getVAL_CK_SELECT_LIGNE_ACTI_METIER(indiceActi))%>></td>
 			<td colspan="2"><%=process.getVAL_ST_LIB_ACTI_METIER(indiceActi)%></td>
 		</tr>
 		<%
 					for (int indiceSavoirFaire = 0; indiceSavoirFaire < process.getListActiviteMetier().get(indiceActi).getListSavoirFaire().size(); indiceSavoirFaire++) {
 						SavoirFaire sf = process.getListActiviteMetier().get(indiceActi).getListSavoirFaire().get(indiceSavoirFaire);
 						%>
-							<tr class="activite-metier-savoir">
+							<tr class="block-element-<%=(indiceSavoirFaire % 2) == 0 ? "even" : "odd" %>">
 								<td  style="display: none;"><%=process.getVAL_ST_ID_ACTI_METIER_SAVOIR(indiceActi, indiceSavoirFaire)%></td>
 								<td></td>
-								<td><INPUT class="<%=process.estFDPInactive ? MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, ""): MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" type="checkbox"  <%= process.forCheckBoxHTML(process.getNOM_CK_SELECT_LIGNE_ACTI_METIER_SAVOIR(indiceActi, indiceSavoirFaire),process.getVAL_CK_SELECT_LIGNE_ACTI_METIER_SAVOIR(indiceActi, indiceSavoirFaire))%>></td>
+								<td><INPUT class="acti<%=indiceActi%>-sf <%=process.estFDPInactive ? MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, ""): MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" type="checkbox"  <%= process.forCheckBoxHTML(process.getNOM_CK_SELECT_LIGNE_ACTI_METIER_SAVOIR(indiceActi, indiceSavoirFaire),process.getVAL_CK_SELECT_LIGNE_ACTI_METIER_SAVOIR(indiceActi, indiceSavoirFaire))%>></td>
 								<td><%=process.getVAL_ST_LIB_ACTI_METIER_SAVOIR(indiceActi, indiceSavoirFaire)%></td>
 							</tr>
 						<%
@@ -362,18 +362,23 @@
 		%>
 		</tbody>
 	</table>
-	<%--<script type="text/javascript">--%>
-        <%--$(document).ready(function() {--%>
-            <%--var tableActiMetier = $('#tabActiMetier').dataTable({--%>
-                <%--"oLanguage": {"sUrl": "media/dataTables/language/fr_FR.txt"},--%>
-                <%--"aoColumns": [{"bSearchable":false, "bVisible":false},{"bSearchable":false,"bSortable":false},null],--%>
-                <%--"sScrollY": "275px",--%>
-                <%--"bPaginate": false,--%>
-                <%--"aaSorting": []--%>
-            <%--});--%>
-            <%--tableActiMetier.column();--%>
-        <%--} );--%>
-	<%--</script>--%>
+	<script type="text/javascript">
+        $(document).ready(function() {
+            $("#checkAllACT").change(function() {
+                var checkAllACT = $(this);
+                $("#tabActiMetier > tbody > tr > td:nth-child(2) > input:checkbox").each(function() {
+                    $(this).prop("checked", checkAllACT.prop('checked')).change();
+                });
+            });
+            $(".actiCheckAll").change(function() {
+                var actiCheckAll = $(this);
+                var actiId = $(this).data("id");
+                $("#tabActiMetier > tbody > tr > td:nth-child(3) > input:checkbox").filter(".acti" + actiId + "-sf").each(function() {
+                    $(this).prop("checked", actiCheckAll.prop('checked'));
+                });
+            });
+        } );
+	</script>
 </FIELDSET>
 
 <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
@@ -381,8 +386,8 @@
 	<table class="display" id="tabSavoirFaire">
 		<thead>
 		<tr>
-			<th>idSavoirFaire</th>
-			<th width="50" >Selection <INPUT class="<%=process.estFDPInactive ? MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, ""): MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" type="checkbox" name="CHECK_ALL_ACTI" onClick='/** activeACTI("<%=process.getListeToutesActi().size() %>")***/'></th>
+			<th class="masqued-id">idSavoirFaire</th>
+			<th width="50" >Selection <INPUT id="checkAllSF" class="<%=process.estFDPInactive ? MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, ""): MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" type="checkbox" ></th>
 			<th>Libellé</th>
 		</tr>
 		</thead>
@@ -391,8 +396,8 @@
 			if (process.getListSavoirFaire()!=null){
 				for (int indiceSF = 0; indiceSF < process.getListSavoirFaire().size(); indiceSF++) {
 		%>
-		<tr>
-			<td><%=process.getVAL_ST_ID_SF(indiceSF)%></td>
+		<tr class="block-element-<%=(indiceSF % 2) == 0 ? "even" : "odd" %>">
+			<td class="masqued-id"><%=process.getVAL_ST_ID_SF(indiceSF)%></td>
 			<td><INPUT class="<%=process.estFDPInactive ? MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, ""): MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" type="checkbox"  <%= process.forCheckBoxHTML(process.getNOM_CK_SELECT_LIGNE_SF(indiceSF),process.getVAL_CK_SELECT_LIGNE_SF(indiceSF))%>></td>
 			<td><%=process.getVAL_ST_LIB_SF(indiceSF)%></td>
 		</tr>
@@ -403,21 +408,14 @@
 		</tbody>
 	</table>
 	<script type="text/javascript">
-        $(document).ready(function () {
-            $('#tabSavoirFaire').dataTable({
-                "oLanguage": {"sUrl": "media/dataTables/language/fr_FR.txt"},
-                "aoColumns": [{"bSearchable": false, "bVisible": false}, {
-                    "bSearchable": false,
-                    "bSortable": false
-                }, {
-                    "bSearchable": false,
-                    "bSortable": true
-                }],
-                "sScrollY": "275px",
-                "bPaginate": false,
-                "aaSorting": []
-            });
-        });
+        $(document).ready(function() {
+            $("#checkAllSF").change(function() {
+                var checkAllSF = $(this);
+                $("#tabSavoirFaire > tbody > tr > td:nth-child(2) > input:checkbox").each(function() {
+                    $(this).prop("checked", checkAllSF.prop('checked'));
+                });
+			});
+        } );
 	</script>
 </FIELDSET>
 
@@ -426,8 +424,8 @@
 	<table class="display" id="tabActiviteGenerale">
 		<thead>
 		<tr>
-			<th>idActiviteGenerale</th>
-			<th width="50" >Selection <INPUT class="<%=process.estFDPInactive ? MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, ""): MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" type="checkbox" name="CHECK_ALL_ACTI" onClick='/** activeACTI("<%=process.getListeToutesActi().size() %>")***/'></th>
+			<th class="masqued-id">idActiviteGenerale</th>
+			<th width="50" >Selection <INPUT id="checkAllAG" class="<%=process.estFDPInactive ? MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, ""): MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" type="checkbox" name="CHECK_ALL_ACTI" onClick='/** activeACTI("<%=process.getListeToutesActi().size() %>")***/'></th>
 			<th>Libellé</th>
 		</tr>
 		</thead>
@@ -436,8 +434,8 @@
 			if (process.getListActiviteGenerale()!=null){
 				for (int indiceAG = 0; indiceAG < process.getListActiviteGenerale().size(); indiceAG++) {
 		%>
-		<tr>
-			<td><%=process.getVAL_ST_ID_AG(indiceAG)%></td>
+		<tr class="block-element-<%=(indiceAG % 2) == 0 ? "even" : "odd" %>">
+			<td class="masqued-id"><%=process.getVAL_ST_ID_AG(indiceAG)%></td>
 			<td><INPUT class="<%=process.estFDPInactive ? MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, ""): MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" type="checkbox"  <%= process.forCheckBoxHTML(process.getNOM_CK_SELECT_LIGNE_AG(indiceAG),process.getVAL_CK_SELECT_LIGNE_AG(indiceAG))%>></td>
 			<td><%=process.getVAL_ST_LIB_AG(indiceAG)%></td>
 		</tr>
@@ -448,21 +446,14 @@
 		</tbody>
 	</table>
 	<script type="text/javascript">
-        $(document).ready(function () {
-            $('#tabActiviteGenerale').dataTable({
-                "oLanguage": {"sUrl": "media/dataTables/language/fr_FR.txt"},
-                "aoColumns": [{"bSearchable": false, "bVisible": false}, {
-                    "bSearchable": false,
-                    "bSortable": false
-                }, {
-                    "bSearchable": false,
-                    "bSortable": true
-                }],
-                "sScrollY": "275px",
-                "bPaginate": false,
-                "aaSorting": []
+        $(document).ready(function() {
+            $("#checkAllAG").change(function() {
+                var checkAllAG = $(this);
+                $("#tabActiviteGenerale > tbody > tr > td:nth-child(2) > input:checkbox").each(function() {
+                    $(this).prop("checked", checkAllAG.prop('checked'));
+                });
             });
-        });
+        } );
 	</script>
 </FIELDSET>
 
@@ -471,8 +462,8 @@
 	<table class="display" id="tabConditionsExercice">
 		<thead>
 		<tr>
-			<th>idConditionExercice</th>
-			<th width="50" >Selection <INPUT class="<%=process.estFDPInactive ? MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, ""): MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" type="checkbox" name="CHECK_ALL_ACTI" onClick='/** activeACTI("<%=process.getListeToutesActi().size() %>")***/'></th>
+			<th class="masqued-id">idConditionExercice</th>
+			<th width="50" >Selection <INPUT id="checkAllCE" class="<%=process.estFDPInactive ? MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, ""): MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" type="checkbox" name="CHECK_ALL_ACTI" onClick='/** activeACTI("<%=process.getListeToutesActi().size() %>")***/'></th>
 			<th>Libellé</th>
 		</tr>
 		</thead>
@@ -481,8 +472,8 @@
 			if (process.getListConditionExercice()!=null){
 				for (int indiceCE = 0; indiceCE < process.getListConditionExercice().size(); indiceCE++) {
 		%>
-		<tr>
-			<td><%=process.getVAL_ST_ID_CE(indiceCE)%></td>
+		<tr class="block-element-<%=(indiceCE % 2) == 0 ? "even" : "odd" %>">
+			<td class="masqued-id"><%=process.getVAL_ST_ID_CE(indiceCE)%></td>
 			<td><INPUT class="<%=process.estFDPInactive ? MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, ""): MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" type="checkbox"  <%= process.forCheckBoxHTML(process.getNOM_CK_SELECT_LIGNE_CE(indiceCE),process.getVAL_CK_SELECT_LIGNE_CE(indiceCE))%>></td>
 			<td><%=process.getVAL_ST_LIB_CE(indiceCE)%></td>
 		</tr>
@@ -493,21 +484,14 @@
 		</tbody>
 	</table>
 	<script type="text/javascript">
-        $(document).ready(function () {
-            $('#tabConditionsExercice').dataTable({
-                "oLanguage": {"sUrl": "media/dataTables/language/fr_FR.txt"},
-                "aoColumns": [{"bSearchable": false, "bVisible": false}, {
-                    "bSearchable": false,
-                    "bSortable": false
-                }, {
-                    "bSearchable": false,
-                    "bSortable": true
-                }],
-                "sScrollY": "275px",
-                "bPaginate": false,
-                "aaSorting": []
+        $(document).ready(function() {
+            $("#checkAllCE").change(function() {
+                var checkAllCE = $(this);
+                $("#tabConditionsExercice > tbody > tr > td:nth-child(2) > input:checkbox").each(function() {
+                    $(this).prop("checked", checkAllCE.prop('checked'));
+                });
             });
-        });
+        } );
 	</script>
 </FIELDSET>
 

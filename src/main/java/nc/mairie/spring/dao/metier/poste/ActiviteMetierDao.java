@@ -28,14 +28,16 @@ public class ActiviteMetierDao extends SirhDao implements ActiviteMetierDaoInter
         String sql = "SELECT AMS_FP.ID_ACTIVITE_METIER, SF.ID_SAVOIR_FAIRE, AM.NOM_ACTIVITE_METIER, SF.NOM_SAVOIR_FAIRE FROM ACTIVITE_METIER_SAVOIR_FP AMS_FP " +
                 "JOIN ACTIVITE_METIER AM ON AM.ID_ACTIVITE_METIER = AMS_FP.ID_ACTIVITE_METIER " +
                 "JOIN SAVOIR_FAIRE SF ON SF.ID_SAVOIR_FAIRE = AMS_FP.ID_SAVOIR_FAIRE " +
-                "WHERE AMS_FP.ID_FICHE_POSTE = ?";
+                "WHERE AMS_FP.ID_FICHE_POSTE = ? " +
+                "ORDER BY AM.NOM_ACTIVITE_METIER, SF.NOM_SAVOIR_FAIRE";
         List<Map<String, Object>> activitesFromFichePoste = jdbcTemplate.queryForList(sql, fp.getIdFichePoste());
         //Liste des activités depuis la fiche métier
         sql = "SELECT DISTINCT AM_FM.ID_ACTIVITE_METIER, SF.ID_SAVOIR_FAIRE, AM.NOM_ACTIVITE_METIER, SF.NOM_SAVOIR_FAIRE FROM ACTIVITE_METIER_FM AM_FM " +
                 "JOIN ACTIVITE_METIER AM ON AM.ID_ACTIVITE_METIER = AM_FM.ID_ACTIVITE_METIER " +
                 "JOIN SAVOIR_FAIRE SF ON SF.ID_ACTIVITE_METIER = AM.ID_ACTIVITE_METIER " +
                 "JOIN FM_FP ON FM_FP.ID_FICHE_METIER = AM_FM.ID_FICHE_METIER " +
-                "WHERE FM_FP.ID_FICHE_POSTE = ?";
+                "WHERE FM_FP.ID_FICHE_POSTE = ? " +
+                "ORDER BY AM.NOM_ACTIVITE_METIER, SF.NOM_SAVOIR_FAIRE";
         //Ajout des activités métiers manquantes dans les activités de la fiche de poste
         List<Map<String, Object>> activitesFromFicheMetier = jdbcTemplate.queryForList(sql, fp.getIdFichePoste());
         for (int i = 0; i < activitesFromFicheMetier.size(); i++) {
