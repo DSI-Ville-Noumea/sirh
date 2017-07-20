@@ -264,6 +264,14 @@
 	font-size: 1.2em;
 }
 
-.activite-metier-savoir {
-	background-color: #dcf4f5;
+.block-element-odd {
+	background-color: rgb(226, 228, 255);
+}
+
+.block-element-even {
+	background-color: white;
+}
+
+.masqued-id {
+	display: none;
 }

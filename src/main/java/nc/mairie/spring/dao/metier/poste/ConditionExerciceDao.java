@@ -1,6 +1,5 @@
 package nc.mairie.spring.dao.metier.poste;
 
-import nc.mairie.metier.poste.ActiviteGenerale;
 import nc.mairie.metier.poste.ConditionExercice;
 import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.spring.dao.utils.SirhDao;
@@ -28,7 +27,8 @@ public class ConditionExerciceDao extends SirhDao implements ConditionExerciceIn
                 "JOIN CONDITION_EXERCICE CE ON CE.ID_CONDITION_EXERCICE = CE_FM.ID_CONDITION_EXERCICE " +
                 "JOIN FM_FP ON FM_FP.ID_FICHE_METIER = CE_FM.ID_FICHE_METIER " +
                 "LEFT JOIN CONDITION_EXERCICE_FP CE_FP ON CE_FP.ID_FICHE_POSTE = FM_FP.ID_FICHE_POSTE AND CE_FP.ID_CONDITION_EXERCICE = CE.ID_CONDITION_EXERCICE " +
-                "WHERE FM_FP.ID_FICHE_POSTE = ?";
+                "WHERE FM_FP.ID_FICHE_POSTE = ? " +
+                "ORDER BY CE.NOM_CONDITION_EXERCICE";
         return jdbcTemplate.query(sql, new Object[]{fp.getIdFichePoste()}, new BeanPropertyRowMapper<>(ConditionExercice.class));
     }
 }

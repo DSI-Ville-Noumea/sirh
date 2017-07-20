@@ -27,7 +27,8 @@ public class SavoirFaireDao extends SirhDao implements SavoirFaireInterface {
                 "JOIN SAVOIR_FAIRE SF ON SF.ID_SAVOIR_FAIRE = SF_FM.ID_SAVOIR_FAIRE " +
                 "JOIN FM_FP ON FM_FP.ID_FICHE_METIER = SF_FM.ID_FICHE_METIER " +
                 "LEFT JOIN SAVOIR_FAIRE_FP SF_FP ON SF_FP.ID_FICHE_POSTE = FM_FP.ID_FICHE_POSTE AND SF_FP.ID_SAVOIR_FAIRE = SF.ID_SAVOIR_FAIRE " +
-                "WHERE FM_FP.ID_FICHE_POSTE = ?";
+                "WHERE FM_FP.ID_FICHE_POSTE = ? " +
+                "ORDER BY SF.NOM_SAVOIR_FAIRE";
         return jdbcTemplate.query(sql, new Object[]{fp.getIdFichePoste()}, new BeanPropertyRowMapper<>(SavoirFaire.class));
     }
 }
