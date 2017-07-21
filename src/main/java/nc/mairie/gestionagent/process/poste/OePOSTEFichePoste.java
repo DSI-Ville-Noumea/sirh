@@ -254,6 +254,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	private FichePosteDao fichePosteDao;
 	private ActiviteMetierDao activiteMetierDao;
 	private SavoirFaireDao savoirFaireDao;
+	private SavoirFaireFMDao savoirFaireFMDao;
 	private ActiviteGeneraleDao activiteGeneraleDao;
 	private ConditionExerciceDao conditionExerciceDao;
 	private HistoFichePosteDao histoFichePosteDao;
@@ -654,6 +655,9 @@ public class OePOSTEFichePoste extends BasicProcess {
 		}
 		if (getSavoirFaireDao() == null) {
 			setSavoirFaireDao(new SavoirFaireDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getSavoirFaireFMDao() == null) {
+			setSavoirFaireFMDao(new SavoirFaireFMDao((SirhDao) context.getBean("sirhDao")));
 		}
 		if (getActiviteGeneraleDao() == null) {
 			setActiviteGeneraleDao(new ActiviteGeneraleDao((SirhDao) context.getBean("sirhDao")));
@@ -1713,18 +1717,20 @@ public class OePOSTEFichePoste extends BasicProcess {
 		// **********************
 		// Verification activites
 		// **********************
-		boolean auMoinsUneligneSelect = false;
-		for (int i = 0; i < getListeToutesActi().size(); i++) {
-			// si la ligne est cochée
-			if (getVAL_CK_SELECT_LIGNE_ACTI(i).equals(getCHECKED_ON())) {
-				auMoinsUneligneSelect = true;
-				break;
+		if (!versionFicheMetier()) {
+			boolean auMoinsUneligneSelect = false;
+			for (int i = 0; i < getListeToutesActi().size(); i++) {
+				// si la ligne est cochée
+				if (getVAL_CK_SELECT_LIGNE_ACTI(i).equals(getCHECKED_ON())) {
+					auMoinsUneligneSelect = true;
+					break;
+				}
 			}
-		}
-		if (!auMoinsUneligneSelect) {
-			// "ERR008", Aucun élément n'est sélectionné dans la liste des @.
-			setStatut(STATUT_MEME_PROCESS, true, MessageUtils.getMessage("ERR008", "activités"));
-			return false;
+			if (!auMoinsUneligneSelect) {
+				// "ERR008", Aucun élément n'est sélectionné dans la liste des @.
+				setStatut(STATUT_MEME_PROCESS, true, MessageUtils.getMessage("ERR008", "activités"));
+				return false;
+			}
 		}
 
 		// **********************
@@ -2353,6 +2359,43 @@ public class OePOSTEFichePoste extends BasicProcess {
 		return true;
 	}
 
+	private boolean saveJoinMetier() {
+		//1. Vérifier si la fiche métier primaire est persistée en base
+		FicheMetier fmPrimaireEnBase = getFicheMetierDao().chercherFicheMetierAvecFichePoste(
+				new FMFP(getMetierPrimaire().getIdFicheMetier(), getFichePosteCourante().getIdFichePoste(), true));
+		if (fmPrimaireEnBase == null) {
+			//création
+		} else {
+			//modification
+		}
+		//2. Vérifier si la fiche métier secondaire est persistée en base
+		if (getMetierSecondaire() != null) {
+			FicheMetier fmSecondaireEnBase = getFicheMetierDao().chercherFicheMetierAvecFichePoste(
+					new FMFP(getMetierSecondaire().getIdFicheMetier(), getFichePosteCourante().getIdFichePoste(), false));
+			if (fmSecondaireEnBase == null) {
+				//création
+			} else {
+				//modification
+			}
+		}
+
+		//TODOSIRH: Niveau études de la fiche de poste
+
+		//Mise à jour des savoir-faire généraux
+		for (int i = 0; i < getListSavoirFaire().size(); i++) {
+			SavoirFaire sfEnBase = getListSavoirFaire().get(i);
+			SavoirFaireFP sfLien = new SavoirFaireFP(getFichePosteCourante().getIdFichePoste(), sfEnBase.getIdSavoirFaire());
+			if (sfEnBase.getChecked() && getVAL_CK_SELECT_LIGNE_SF(i).equals(getCHECKED_OFF())) {
+				//Delete existing link
+				getSavoirFaireFMDao().supprimerSavoirFaireFP(sfLien);
+			} else if (!sfEnBase.getChecked() && getVAL_CK_SELECT_LIGNE_SF(i).equals(getCHECKED_ON())) {
+				getSavoirFaireFMDao().ajouterSavoirFaireFP(sfLien);
+			}
+		}
+
+		return true;
+	}
+
 	/**
 	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
 	 * regles de gestion du process - Positionne un statut en fonction de ces
@@ -2420,7 +2463,9 @@ public class OePOSTEFichePoste extends BasicProcess {
 			return false;
 		}
 
-		if (!saveJoin(request)) {
+		if (versionFicheMetier()) {
+			//TODOSIRH: save all the elements checked
+		} else if (!saveJoin(request)) {
 			return false;
 		}
 
@@ -7141,6 +7186,14 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 	public void setSavoirFaireDao(SavoirFaireDao savoirFaireDao) {
 		this.savoirFaireDao = savoirFaireDao;
+	}
+
+	public SavoirFaireFMDao getSavoirFaireFMDao() {
+		return savoirFaireFMDao;
+	}
+
+	public void setSavoirFaireFMDao(SavoirFaireFMDao savoirFaireFMDao) {
+		this.savoirFaireFMDao = savoirFaireFMDao;
 	}
 
 	public ActiviteGeneraleDao getActiviteGeneraleDao() {

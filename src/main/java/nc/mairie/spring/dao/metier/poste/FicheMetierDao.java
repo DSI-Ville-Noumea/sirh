@@ -3,6 +3,7 @@ package nc.mairie.spring.dao.metier.poste;
 import nc.mairie.metier.poste.FMFP;
 import nc.mairie.metier.poste.FicheMetier;
 import nc.mairie.spring.dao.utils.SirhDao;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 
 import java.util.List;
@@ -27,10 +28,14 @@ public class FicheMetierDao extends SirhDao implements FicheMetierDaoInterface {
     }
 
     @Override
-    public FicheMetier chercherFicheMetierAvecFichePoste(FMFP lien) throws Exception {
-        String sql = "SELECT * FROM " + NOM_TABLE + " WHERE " + CHAMP_ID_FICHE_METIER  + " = ?";
-        return jdbcTemplate.queryForObject(sql, new Object[] { lien.getIdFicheMetier() },
-                new BeanPropertyRowMapper<>(FicheMetier.class));
+    public FicheMetier chercherFicheMetierAvecFichePoste(FMFP lien) {
+        String sql = "SELECT * FROM " + NOM_TABLE + " WHERE " + CHAMP_ID_FICHE_METIER + " = ?";
+        try {
+            return jdbcTemplate.queryForObject(sql, new Object[]{lien.getIdFicheMetier()},
+                    new BeanPropertyRowMapper<>(FicheMetier.class));
+        } catch (EmptyResultDataAccessException ex) {
+            return null;
+        }
     }
 
     @Override
