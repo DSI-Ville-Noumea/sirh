@@ -255,6 +255,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	private ActiviteMetierDao activiteMetierDao;
 	private SavoirFaireDao savoirFaireDao;
 	private SavoirFaireFMDao savoirFaireFMDao;
+	private ActiviteGeneraleFPDao activiteGeneraleFPDao;
 	private ActiviteGeneraleDao activiteGeneraleDao;
 	private ConditionExerciceDao conditionExerciceDao;
 	private HistoFichePosteDao histoFichePosteDao;
@@ -659,7 +660,10 @@ public class OePOSTEFichePoste extends BasicProcess {
 		if (getSavoirFaireFMDao() == null) {
 			setSavoirFaireFMDao(new SavoirFaireFMDao((SirhDao) context.getBean("sirhDao")));
 		}
-		if (getActiviteGeneraleDao() == null) {
+        if (getActiviteGeneraleFPDao() == null) {
+		    setActiviteGeneraleFPDao(new ActiviteGeneraleFPDao((SirhDao) context.getBean("sirhDao")));
+        }
+        if (getActiviteGeneraleDao() == null) {
 			setActiviteGeneraleDao(new ActiviteGeneraleDao((SirhDao) context.getBean("sirhDao")));
 		}
 		if (getConditionExerciceDao() == null) {
@@ -2392,6 +2396,17 @@ public class OePOSTEFichePoste extends BasicProcess {
 				getSavoirFaireFMDao().ajouterSavoirFaireFP(sfLien);
 			}
 		}
+
+		//Mise à jour des activités générales
+        for (int i = 0; i < getListActiviteGenerale().size(); i++) {
+            ActiviteGenerale agEnBase = getListActiviteGenerale().get(i);
+            ActiviteGeneraleFP agLien = new ActiviteGeneraleFP(getFichePosteCourante().getIdFichePoste(), agEnBase.getIdActiviteGenerale());
+            if (agEnBase.getChecked() && getVAL_CK_SELECT_LIGNE_AG(i).equals(getCHECKED_OFF())) {
+                getActiviteGeneraleFPDao().supprimerActiviteGeneraleFP(agLien);
+            } else if (!agEnBase.getChecked() && getVAL_CK_SELECT_LIGNE_AG(i).equals(getCHECKED_ON())) {
+                getActiviteGeneraleFPDao().ajouterActiviteGeneraleFP(agLien);
+            }
+        }
 
 		return true;
 	}
@@ -7196,7 +7211,15 @@ public class OePOSTEFichePoste extends BasicProcess {
 		this.savoirFaireFMDao = savoirFaireFMDao;
 	}
 
-	public ActiviteGeneraleDao getActiviteGeneraleDao() {
+    public ActiviteGeneraleFPDao getActiviteGeneraleFPDao() {
+        return activiteGeneraleFPDao;
+    }
+
+    public void setActiviteGeneraleFPDao(ActiviteGeneraleFPDao activiteGeneraleFPDao) {
+        this.activiteGeneraleFPDao = activiteGeneraleFPDao;
+    }
+
+    public ActiviteGeneraleDao getActiviteGeneraleDao() {
 		return activiteGeneraleDao;
 	}
 
