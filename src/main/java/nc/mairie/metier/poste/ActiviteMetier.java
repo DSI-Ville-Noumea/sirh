@@ -8,9 +8,10 @@ import java.util.List;
  */
 public class ActiviteMetier {
 
-    public Integer idActiviteMetier;
-    public String nomActiviteMetier;
-    public List<SavoirFaire> listSavoirFaire = new ArrayList<>();
+    private Integer idActiviteMetier;
+    private String nomActiviteMetier;
+    private List<SavoirFaire> listSavoirFaire = new ArrayList<>();
+    private Boolean checked;
 
     public ActiviteMetier() {
     }
@@ -43,7 +44,8 @@ public class ActiviteMetier {
     }
 
     public Boolean isChecked() {
-        if (listSavoirFaire.isEmpty()) {
+        //Si checked au niveau
+        if (checked) {
             return true;
         }
         boolean isChecked = false;
@@ -53,6 +55,10 @@ public class ActiviteMetier {
             i++;
         }
         return isChecked;
+    }
+
+    public void setChecked(Boolean checked) {
+        this.checked = checked;
     }
 
     public List<SavoirFaire> getListSavoirFaire() {
