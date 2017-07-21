@@ -256,6 +256,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	private SavoirFaireDao savoirFaireDao;
 	private SavoirFaireFMDao savoirFaireFMDao;
 	private ActiviteGeneraleFPDao activiteGeneraleFPDao;
+	private ConditionExerciceFPDao conditionExerciceFPDao;
 	private ActiviteGeneraleDao activiteGeneraleDao;
 	private ConditionExerciceDao conditionExerciceDao;
 	private HistoFichePosteDao histoFichePosteDao;
@@ -662,6 +663,9 @@ public class OePOSTEFichePoste extends BasicProcess {
 		}
         if (getActiviteGeneraleFPDao() == null) {
 		    setActiviteGeneraleFPDao(new ActiviteGeneraleFPDao((SirhDao) context.getBean("sirhDao")));
+        }
+        if (getConditionExerciceFPDao() == null) {
+            setConditionExerciceFPDao(new ConditionExerciceFPDao((SirhDao) context.getBean("sirhDao")));
         }
         if (getActiviteGeneraleDao() == null) {
 			setActiviteGeneraleDao(new ActiviteGeneraleDao((SirhDao) context.getBean("sirhDao")));
@@ -2405,6 +2409,17 @@ public class OePOSTEFichePoste extends BasicProcess {
                 getActiviteGeneraleFPDao().supprimerActiviteGeneraleFP(agLien);
             } else if (!agEnBase.getChecked() && getVAL_CK_SELECT_LIGNE_AG(i).equals(getCHECKED_ON())) {
                 getActiviteGeneraleFPDao().ajouterActiviteGeneraleFP(agLien);
+            }
+        }
+
+        //Mise à jour des conditions d'exercice
+        for (int i = 0; i < getListConditionExercice().size(); i++) {
+            ConditionExercice ceEnBase = getListConditionExercice().get(i);
+            ConditionExerciceFP ceLien = new ConditionExerciceFP(getFichePosteCourante().getIdFichePoste(), ceEnBase.getIdConditionExercice());
+            if (ceEnBase.getChecked() && getVAL_CK_SELECT_LIGNE_CE(i).equals(getCHECKED_OFF())) {
+                getConditionExerciceFPDao().supprimerConditionExerciceFP(ceLien);
+            } else if (!ceEnBase.getChecked() && getVAL_CK_SELECT_LIGNE_CE(i).equals(getCHECKED_ON())) {
+                getConditionExerciceFPDao().ajouterConditionExerciceFP(ceLien);
             }
         }
 
@@ -7217,6 +7232,14 @@ public class OePOSTEFichePoste extends BasicProcess {
 
     public void setActiviteGeneraleFPDao(ActiviteGeneraleFPDao activiteGeneraleFPDao) {
         this.activiteGeneraleFPDao = activiteGeneraleFPDao;
+    }
+
+    public ConditionExerciceFPDao getConditionExerciceFPDao() {
+        return conditionExerciceFPDao;
+    }
+
+    public void setConditionExerciceFPDao(ConditionExerciceFPDao conditionExerciceFPDao) {
+        this.conditionExerciceFPDao = conditionExerciceFPDao;
     }
 
     public ActiviteGeneraleDao getActiviteGeneraleDao() {

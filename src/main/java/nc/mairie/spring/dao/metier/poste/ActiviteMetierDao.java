@@ -24,53 +24,38 @@ public class ActiviteMetierDao extends SirhDao implements ActiviteMetierDaoInter
     }
 
     public List<ActiviteMetier> listerToutesActiviteMetier(FichePoste fp) {
-        //Liste des activites depuis la fiche de poste
-        String sql = "SELECT AMS_FP.ID_ACTIVITE_METIER, SF.ID_SAVOIR_FAIRE, AM.NOM_ACTIVITE_METIER, SF.NOM_SAVOIR_FAIRE FROM ACTIVITE_METIER_SAVOIR_FP AMS_FP " +
-                "JOIN ACTIVITE_METIER AM ON AM.ID_ACTIVITE_METIER = AMS_FP.ID_ACTIVITE_METIER " +
-                "JOIN SAVOIR_FAIRE SF ON SF.ID_SAVOIR_FAIRE = AMS_FP.ID_SAVOIR_FAIRE " +
-                "WHERE AMS_FP.ID_FICHE_POSTE = ? " +
-                "ORDER BY AM.NOM_ACTIVITE_METIER, SF.NOM_SAVOIR_FAIRE";
-        List<Map<String, Object>> activitesFromFichePoste = jdbcTemplate.queryForList(sql, fp.getIdFichePoste());
-        //Liste des activités depuis la fiche métier
-        sql = "SELECT DISTINCT AM_FM.ID_ACTIVITE_METIER, SF.ID_SAVOIR_FAIRE, AM.NOM_ACTIVITE_METIER, SF.NOM_SAVOIR_FAIRE FROM ACTIVITE_METIER_FM AM_FM " +
+        String sql = "SELECT DISTINCT AM_FM.ID_ACTIVITE_METIER, SF.ID_SAVOIR_FAIRE, AM.NOM_ACTIVITE_METIER, SF.NOM_SAVOIR_FAIRE, " +
+                "CASE WHEN AMS_FP.ID_ACTIVITE_METIER IS NULL THEN '0' ELSE '1' END AS ACT_CHECKED, " +
+                "CASE WHEN AMS_FP2.ID_SAVOIR_FAIRE IS NULL THEN '0' ELSE '1' END AS SF_CHECKED " +
+                "FROM ACTIVITE_METIER_FM AM_FM " +
                 "JOIN ACTIVITE_METIER AM ON AM.ID_ACTIVITE_METIER = AM_FM.ID_ACTIVITE_METIER " +
-                "JOIN SAVOIR_FAIRE SF ON SF.ID_ACTIVITE_METIER = AM.ID_ACTIVITE_METIER " +
+                "LEFT JOIN SAVOIR_FAIRE SF ON SF.ID_ACTIVITE_METIER = AM.ID_ACTIVITE_METIER " +
                 "JOIN FM_FP ON FM_FP.ID_FICHE_METIER = AM_FM.ID_FICHE_METIER " +
+                "LEFT JOIN ACTIVITE_METIER_SAVOIR_FP AMS_FP ON AMS_FP.ID_FICHE_POSTE = FM_FP.ID_FICHE_POSTE AND AMS_FP.ID_ACTIVITE_METIER = AM.ID_ACTIVITE_METIER " +
+                "LEFT JOIN ACTIVITE_METIER_SAVOIR_FP AMS_FP2 ON AMS_FP2.ID_FICHE_POSTE = FM_FP.ID_FICHE_POSTE AND AMS_FP2.ID_ACTIVITE_METIER = AM.ID_ACTIVITE_METIER AND AMS_FP2.ID_SAVOIR_FAIRE = SF.ID_SAVOIR_FAIRE " +
                 "WHERE FM_FP.ID_FICHE_POSTE = ? " +
                 "ORDER BY AM.NOM_ACTIVITE_METIER, SF.NOM_SAVOIR_FAIRE";
-        //Ajout des activités métiers manquantes dans les activités de la fiche de poste
-        List<Map<String, Object>> activitesFromFicheMetier = jdbcTemplate.queryForList(sql, fp.getIdFichePoste());
-        for (int i = 0; i < activitesFromFicheMetier.size(); i++) {
-            Map<String, Object> activiteFromFM = activitesFromFicheMetier.get(i);
-            if (!activitesFromFichePoste.contains(activitesFromFicheMetier.get(i))) {
-                //Rajout d'un attribut checked pour dire qu'il n'est pas coché
-                activiteFromFM.put("unchecked", true);
-                activitesFromFichePoste.add(activiteFromFM);
-            }
-        }
-        //Création des POJOs ActiviteMetier et des Savoirs faire liés
+        List<Map<String, Object>> mapsActiviteMetier = jdbcTemplate.queryForList(sql, fp.getIdFichePoste());
         List<ActiviteMetier> listeActiviteMetier = new ArrayList<>();
-        for (int i = 0; i < activitesFromFichePoste.size(); i++) {
-            Map<String, Object> activiteFromFP = activitesFromFichePoste.get(i);
+        for (Map<String, Object> am : mapsActiviteMetier) {
             ActiviteMetier activiteMetier = new ActiviteMetier();
-            activiteMetier.setIdActiviteMetier((Integer)activiteFromFP.get("ID_ACTIVITE_METIER"));
-            activiteMetier.setNomActiviteMetier(activiteFromFP.get("NOM_ACTIVITE_METIER").toString());
-            //activiteMetier.setChecked(!activiteFromFP.containsKey("unchecked"));
+            activiteMetier.setIdActiviteMetier((Integer)am.get("ID_ACTIVITE_METIER"));
+            activiteMetier.setNomActiviteMetier(am.get("NOM_ACTIVITE_METIER").toString());
+            activiteMetier.setChecked(am.get("ACT_CHECKED").equals("1"));
             if (!listeActiviteMetier.contains(activiteMetier)) {
                 listeActiviteMetier.add(activiteMetier);
             } else {
                 activiteMetier = listeActiviteMetier.get(listeActiviteMetier.indexOf(activiteMetier));
             }
-            if (activiteFromFP.get("ID_SAVOIR_FAIRE") != null) {
+            if (am.get("ID_SAVOIR_FAIRE") != null) {
                 SavoirFaire savoirFaire = new SavoirFaire();
                 savoirFaire.setIdActiviteMetier(activiteMetier.getIdActiviteMetier());
-                savoirFaire.setIdSavoirFaire((Integer)activiteFromFP.get("ID_SAVOIR_FAIRE"));
-                savoirFaire.setNomSavoirFaire(activiteFromFP.get("NOM_SAVOIR_FAIRE").toString());
-                savoirFaire.setChecked(!activiteFromFP.containsKey("unchecked"));
+                savoirFaire.setIdSavoirFaire((Integer)am.get("ID_SAVOIR_FAIRE"));
+                savoirFaire.setNomSavoirFaire(am.get("NOM_SAVOIR_FAIRE").toString());
+                savoirFaire.setChecked(am.get("SF_CHECKED").equals("1"));
                 activiteMetier.addToListSavoirFaire(savoirFaire);
             }
         }
-
         return listeActiviteMetier;
     }
 }
