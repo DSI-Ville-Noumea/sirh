@@ -43,9 +43,12 @@ public class ActiviteMetier {
     }
 
     public Boolean isChecked() {
-        boolean isChecked = true;
+        if (listSavoirFaire.isEmpty()) {
+            return true;
+        }
+        boolean isChecked = false;
         int i = 0;
-        while (isChecked && i < listSavoirFaire.size()) {
+        while (!isChecked && i < listSavoirFaire.size()) {
             isChecked = listSavoirFaire.get(i).getChecked();
             i++;
         }
