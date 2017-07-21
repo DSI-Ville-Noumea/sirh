@@ -256,6 +256,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	private SavoirFaireDao savoirFaireDao;
 	private SavoirFaireFMDao savoirFaireFMDao;
 	private ActiviteGeneraleFPDao activiteGeneraleFPDao;
+	private ActiviteMetierSavoirFPDao activiteMetierSavoirFPDao;
 	private ConditionExerciceFPDao conditionExerciceFPDao;
 	private ActiviteGeneraleDao activiteGeneraleDao;
 	private ConditionExerciceDao conditionExerciceDao;
@@ -664,6 +665,9 @@ public class OePOSTEFichePoste extends BasicProcess {
         if (getActiviteGeneraleFPDao() == null) {
 		    setActiviteGeneraleFPDao(new ActiviteGeneraleFPDao((SirhDao) context.getBean("sirhDao")));
         }
+		if (getActiviteMetierSavoirFPDao() == null) {
+			setActiviteMetierSavoirFPDao(new ActiviteMetierSavoirFPDao((SirhDao) context.getBean("sirhDao")));
+		}
         if (getConditionExerciceFPDao() == null) {
             setConditionExerciceFPDao(new ConditionExerciceFPDao((SirhDao) context.getBean("sirhDao")));
         }
@@ -2388,6 +2392,29 @@ public class OePOSTEFichePoste extends BasicProcess {
 		}
 
 		//TODOSIRH: Niveau études de la fiche de poste
+
+		//Mise à jour des activités et compétences
+		for (int i = 0; i < listActiviteMetier.size(); i++) {
+			ActiviteMetier am = getListActiviteMetier().get(i);
+			ActiviteMetierSavoirFP amsLien = new ActiviteMetierSavoirFP(getFichePosteCourante().getIdFichePoste(), am.getIdActiviteMetier(), null);
+			if (am.getListSavoirFaire().isEmpty()) {
+				if (am.isChecked() && getNOM_CK_SELECT_LIGNE_ACTI_METIER(i).equals(getCHECKED_OFF())) {
+					getActiviteMetierSavoirFPDao().supprimerActiviteMetierSavoirFP(amsLien);
+				} else if (!am.isChecked() && getNOM_CK_SELECT_LIGNE_ACTI_METIER(i).equals(getCHECKED_ON())) {
+					getActiviteMetierSavoirFPDao().ajouterActiviteMetierSavoirFP(amsLien);
+				}
+			} else {
+				for (int j = 0; j < am.getListSavoirFaire().size(); j++) {
+					SavoirFaire sf = am.getListSavoirFaire().get(j);
+					amsLien.setIdSavoirFaire(sf.getIdSavoirFaire());
+					if (sf.getChecked() && getNOM_CK_SELECT_LIGNE_ACTI_METIER_SAVOIR(i, j).equals(getCHECKED_OFF())) {
+						getActiviteMetierSavoirFPDao().supprimerActiviteMetierSavoirFP(amsLien);
+					} else if (!sf.getChecked() && getNOM_CK_SELECT_LIGNE_ACTI_METIER_SAVOIR(i, j).equals(getCHECKED_ON())) {
+						getActiviteMetierSavoirFPDao().ajouterActiviteMetierSavoirFP(amsLien);
+					}
+				}
+			}
+		}
 
 		//Mise à jour des savoir-faire généraux
 		for (int i = 0; i < getListSavoirFaire().size(); i++) {
@@ -7234,7 +7261,15 @@ public class OePOSTEFichePoste extends BasicProcess {
         this.activiteGeneraleFPDao = activiteGeneraleFPDao;
     }
 
-    public ConditionExerciceFPDao getConditionExerciceFPDao() {
+	public ActiviteMetierSavoirFPDao getActiviteMetierSavoirFPDao() {
+		return activiteMetierSavoirFPDao;
+	}
+
+	public void setActiviteMetierSavoirFPDao(ActiviteMetierSavoirFPDao activiteMetierSavoirFPDao) {
+		this.activiteMetierSavoirFPDao = activiteMetierSavoirFPDao;
+	}
+
+	public ConditionExerciceFPDao getConditionExerciceFPDao() {
         return conditionExerciceFPDao;
     }
 
