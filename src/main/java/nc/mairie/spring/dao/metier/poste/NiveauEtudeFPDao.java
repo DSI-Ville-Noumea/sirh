@@ -19,7 +19,7 @@ public class NiveauEtudeFPDao extends SirhDao implements NiveauEtudeFPDaoInterfa
 	}
 
 	@Override
-	public ArrayList<NiveauEtudeFP> listerNiveauEtudeFPAvecFP(Integer idFichePoste) throws Exception {
+	public ArrayList<NiveauEtudeFP> listerNiveauEtudeFPAvecFP(Integer idFichePoste) {
 		String sql = "select * from " + NOM_TABLE + " where  " + CHAMP_ID_FICHE_POSTE + "=?";
 
 		ArrayList<NiveauEtudeFP> liste = new ArrayList<NiveauEtudeFP>();
@@ -36,14 +36,14 @@ public class NiveauEtudeFPDao extends SirhDao implements NiveauEtudeFPDaoInterfa
 	}
 
 	@Override
-	public void creerNiveauEtudeFP(Integer idNiveau, Integer idFichePoste) throws Exception {
+	public void creerNiveauEtudeFP(Integer idNiveau, Integer idFichePoste) {
 		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_ID_NIVEAU_ETUDE + "," + CHAMP_ID_FICHE_POSTE + ") "
 				+ "VALUES (?,?)";
 		jdbcTemplate.update(sql, new Object[] { idNiveau, idFichePoste });
 	}
 
 	@Override
-	public void supprimerNiveauEtudeFP(Integer idNiveau, Integer idFichePoste) throws Exception {
+	public void supprimerNiveauEtudeFP(Integer idNiveau, Integer idFichePoste) {
 		String sql = "DELETE FROM " + NOM_TABLE + "  where " + CHAMP_ID_NIVEAU_ETUDE + "=? and " + CHAMP_ID_FICHE_POSTE
 				+ "=?";
 		jdbcTemplate.update(sql, new Object[] { idNiveau, idFichePoste });

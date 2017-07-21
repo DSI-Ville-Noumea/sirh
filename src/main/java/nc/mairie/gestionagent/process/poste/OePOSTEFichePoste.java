@@ -2372,6 +2372,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	}
 
 	private boolean saveJoinMetier() {
+		//TODOSIRH: implémenter création et modif fiche métier primaire, secondaire
 		//1. Vérifier si la fiche métier primaire est persistée en base
 		FicheMetier fmPrimaireEnBase = getFicheMetierDao().chercherFicheMetierAvecFichePoste(
 				new FMFP(getMetierPrimaire().getIdFicheMetier(), getFichePosteCourante().getIdFichePoste(), true));
@@ -2391,7 +2392,18 @@ public class OePOSTEFichePoste extends BasicProcess {
 			}
 		}
 
-		//TODOSIRH: Niveau études de la fiche de poste
+		// on supprime tous les niveaux etude de la FDP
+		ArrayList<NiveauEtudeFP> niveauFPExistant = getNiveauEtudeFPDao().listerNiveauEtudeFPAvecFP(getFichePosteCourante().getIdFichePoste());
+		if (niveauFPExistant != null && niveauFPExistant.size() > 0) {
+			for (int i = 0; i < niveauFPExistant.size(); i++) {
+				NiveauEtudeFP niveauFP = (NiveauEtudeFP) niveauFPExistant.get(i);
+				getNiveauEtudeFPDao().supprimerNiveauEtudeFP(niveauFP.getIdNiveauEtude(), niveauFP.getIdFichePoste());
+			}
+		}
+		// on ajoute le niveau etude dela FDP
+		NiveauEtude niveauAAjouter = (NiveauEtude) getListeTousNiveau().get(0);
+		NiveauEtudeFP niveauFP = new NiveauEtudeFP(getFichePosteCourante().getIdFichePoste(), niveauAAjouter.getIdNiveauEtude());
+		getNiveauEtudeFPDao().creerNiveauEtudeFP(niveauFP.getIdNiveauEtude(), niveauFP.getIdFichePoste());
 
 		//Mise à jour des activités et compétences
 		for (int i = 0; i < listActiviteMetier.size(); i++) {
