@@ -410,97 +410,6 @@ public class OePOSTEFichePoste extends BasicProcess {
 			}
 		}
 
-		if (etatStatut() == STATUT_EMPLOI_SECONDAIRE) {
-			FicheEmploi fes = (FicheEmploi) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_FICHE_EMPLOI);
-			VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_FICHE_EMPLOI);
-			if (fes == null) {
-				if (getEmploiSecondaire() == null) {
-					setEmploiSecondaire(fes);
-				}
-			} else {
-				setEmploiSecondaire(fes);
-			}
-			afficheFES();
-			initialiseMission();
-			initialiseInfos();
-			// si changement de FES, on ajoute la mission à  la mission actuelle
-			if (getEmploiSecondaire() != null) {
-				if (!getMission().toUpperCase().contains(getEmploiSecondaire().getDefinitionEmploi().toUpperCase())) {
-					setMission(getMission() + " " + getEmploiSecondaire().getDefinitionEmploi());
-				}
-			}
-
-			addZone(getNOM_EF_MISSIONS(), getMission() == null ? Const.CHAINE_VIDE : getMission());
-			return;
-		} else {
-			if (getEmploiSecondaire() != null) {
-				afficheFES();
-			}
-		}
-
-        if (etatStatut() == STATUT_METIER_SECONDAIRE) {
-            FicheMetier fms = (FicheMetier) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_FICHE_METIER);
-            VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_FICHE_METIER);
-            if (fms == null) {
-                if (getMetierSecondaire() == null) {
-                    setMetierSecondaire(fms);
-                }
-            } else {
-                setMetierSecondaire(fms);
-            }
-            afficheFMS();
-            initialiseMissionMetier();
-            initialiseSpecialisation();
-            initialiseInfosComplementaires();
-            initialiseInfos();
-            // si changement de FMS, on ajoute la mission à  la mission actuelle
-            if (getMetierSecondaire() != null) {
-                if (!getMission().toUpperCase().contains(getMetierSecondaire().getDefinitionMetier().toUpperCase())) {
-                    setMission(getMission() + " " + getMetierSecondaire().getDefinitionMetier());
-                }
-            }
-
-            addZone(getNOM_EF_MISSIONS(), getMission() == null ? Const.CHAINE_VIDE : getMission());
-            return;
-        } else {
-            if (getMetierSecondaire() != null) {
-                afficheFMS();
-            }
-        }
-
-		if (etatStatut() == STATUT_EMPLOI_PRIMAIRE) {
-			FicheEmploi fep = (FicheEmploi) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_FICHE_EMPLOI);
-			VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_FICHE_EMPLOI);
-			if (fep == null) {
-				if (getEmploiPrimaire() == null) {
-					setEmploiPrimaire(fep);
-				}
-			} else {
-				setEmploiPrimaire(fep);
-			}
-
-			afficheFEP();
-			initialiseMission();
-			initialiseInfos();
-			// si changement de FES, on ajoute la mission à  la mission actuelle
-			if (getEmploiPrimaire() != null) {
-				if (!getMission().toUpperCase().contains(getEmploiPrimaire().getDefinitionEmploi().toUpperCase())) {
-					setMission(getMission() + " " + getEmploiPrimaire().getDefinitionEmploi());
-				}
-			}
-
-			addZone(getNOM_EF_MISSIONS(), getMission() == null ? Const.CHAINE_VIDE : getMission());
-			return;
-		} else {
-			if (getEmploiPrimaire() == null && getFichePosteCourante() != null && getFichePosteCourante().getIdFichePoste() != null) {
-
-				// Recherche de tous les liens FicheEmploi / FichePoste
-				ArrayList<FEFP> liens = getFefpDao().listerFEFPAvecFP(getFichePosteCourante().getIdFichePoste());
-				setEmploiPrimaire(getFicheEmploiDao().chercherFicheEmploiAvecFichePoste(true, liens));
-				afficheFEP();
-			}
-		}
-
 		if (etatStatut() == STATUT_METIER_PRIMAIRE) {
 			FicheMetier fmp = (FicheMetier) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_FICHE_METIER);
 			VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_FICHE_METIER);
@@ -539,6 +448,97 @@ public class OePOSTEFichePoste extends BasicProcess {
 				afficheFMP();
 			}
 		}
+
+		if (etatStatut() == STATUT_EMPLOI_PRIMAIRE) {
+			FicheEmploi fep = (FicheEmploi) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_FICHE_EMPLOI);
+			VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_FICHE_EMPLOI);
+			if (fep == null) {
+				if (getEmploiPrimaire() == null) {
+					setEmploiPrimaire(fep);
+				}
+			} else {
+				setEmploiPrimaire(fep);
+			}
+
+			afficheFEP();
+			initialiseMission();
+			initialiseInfos();
+			// si changement de FES, on ajoute la mission à  la mission actuelle
+			if (getEmploiPrimaire() != null) {
+				if (!getMission().toUpperCase().contains(getEmploiPrimaire().getDefinitionEmploi().toUpperCase())) {
+					setMission(getMission() + " " + getEmploiPrimaire().getDefinitionEmploi());
+				}
+			}
+
+			addZone(getNOM_EF_MISSIONS(), getMission() == null ? Const.CHAINE_VIDE : getMission());
+			return;
+		} else {
+			if (!versionFicheMetier() && getEmploiPrimaire() == null && getFichePosteCourante() != null && getFichePosteCourante().getIdFichePoste() != null) {
+
+				// Recherche de tous les liens FicheEmploi / FichePoste
+				ArrayList<FEFP> liens = getFefpDao().listerFEFPAvecFP(getFichePosteCourante().getIdFichePoste());
+				setEmploiPrimaire(getFicheEmploiDao().chercherFicheEmploiAvecFichePoste(true, liens));
+				afficheFEP();
+			}
+		}
+
+		if (etatStatut() == STATUT_METIER_SECONDAIRE) {
+			FicheMetier fms = (FicheMetier) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_FICHE_METIER);
+			VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_FICHE_METIER);
+			if (fms == null) {
+				if (getMetierSecondaire() == null) {
+					setMetierSecondaire(fms);
+				}
+			} else {
+				setMetierSecondaire(fms);
+			}
+			afficheFMS();
+			initialiseMissionMetier();
+			initialiseSpecialisation();
+			initialiseInfosComplementaires();
+			initialiseInfos();
+			// si changement de FMS, on ajoute la mission à  la mission actuelle
+			if (getMetierSecondaire() != null) {
+				if (!getMission().toUpperCase().contains(getMetierSecondaire().getDefinitionMetier().toUpperCase())) {
+					setMission(getMission() + " " + getMetierSecondaire().getDefinitionMetier());
+				}
+			}
+
+			addZone(getNOM_EF_MISSIONS(), getMission() == null ? Const.CHAINE_VIDE : getMission());
+			return;
+		} else if (!versionFicheMetier() && getMetierSecondaire() != null) {
+			afficheFMS();
+		}
+
+		if (etatStatut() == STATUT_EMPLOI_SECONDAIRE) {
+			FicheEmploi fes = (FicheEmploi) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_FICHE_EMPLOI);
+			VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_FICHE_EMPLOI);
+			if (fes == null) {
+				if (getEmploiSecondaire() == null) {
+					setEmploiSecondaire(fes);
+				}
+			} else {
+				setEmploiSecondaire(fes);
+			}
+			afficheFES();
+			initialiseMission();
+			initialiseInfos();
+			// si changement de FES, on ajoute la mission à  la mission actuelle
+			if (getEmploiSecondaire() != null) {
+				if (!getMission().toUpperCase().contains(getEmploiSecondaire().getDefinitionEmploi().toUpperCase())) {
+					setMission(getMission() + " " + getEmploiSecondaire().getDefinitionEmploi());
+				}
+			}
+
+			addZone(getNOM_EF_MISSIONS(), getMission() == null ? Const.CHAINE_VIDE : getMission());
+			return;
+		} else {
+			if (getEmploiSecondaire() != null) {
+				afficheFES();
+			}
+		}
+
+
 
 		if (etatStatut() == STATUT_SPECIFICITES) {
 			// Affiche les spécificités de la fiche de poste
@@ -2379,6 +2379,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 		if (fmPrimaireEnBase == null) {
 			//création
 		} else {
+			System.out.println("Modification");
 			//modification
 		}
 		//2. Vérifier si la fiche métier secondaire est persistée en base
@@ -2635,13 +2636,16 @@ public class OePOSTEFichePoste extends BasicProcess {
 				}
 			}
 
-			getListeAjoutActiFP().clear();
-			initialiseActivites();
-			//TODOSIRH: Modifier pour initialiser les activités métier
+			if (versionFicheMetier()) {
+				//TODOSIRH: Modifier pour initialiser les activités métier
+			} else {
+				getListeAjoutActiFP().clear();
+				initialiseActivites();
 
-			// setListeAjoutCompFP(null);
-			getListeAjoutCompFP().clear();
-			initialiseCompetence();
+				// setListeAjoutCompFP(null);
+				getListeAjoutCompFP().clear();
+				initialiseCompetence();
+			}
 
 			// Suppression des listes de spécificités en session
 			VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_LST_AV_NATURE);
@@ -3702,15 +3706,6 @@ public class OePOSTEFichePoste extends BasicProcess {
 		this.fichePosteCourante = fichePosteCourante;
 
 		if (fichePosteCourante != null && fichePosteCourante.getIdFichePoste() != null && !getVAL_ST_ACTION().equals(ACTION_CREATION)) {
-			// Vérifie l'affectation
-			ArrayList<Affectation> liste = getAffectationDao().listerAffectationAvecFPPrimaireOuSecondaire(getFichePosteCourante().getIdFichePoste());
-			setFpCouranteAffectee(getFichePosteDao().estAffectee(getFichePosteCourante().getIdFichePoste(), liste));
-
-			// Recherche de tous les liens FicheEmploi / FichePoste
-			ArrayList<FEFP> liens1 = getFefpDao().listerFEFPAvecFP(getFichePosteCourante().getIdFichePoste());
-			// Init fiches emploi
-			setEmploiPrimaire(getFicheEmploiDao().chercherFicheEmploiAvecFichePoste(true, liens1));
-
 			// Recherche du lien FicheMetier / FichePoste primaire
 			FMFP fmfpPrimaire = getFmfpDao().chercherFMFPAvecNumFP(getFichePosteCourante().getIdFichePoste(), true);
 			// Init fiche métier primaire
@@ -3726,10 +3721,20 @@ public class OePOSTEFichePoste extends BasicProcess {
 				setMetierSecondaire(getFicheMetierDao().chercherFicheMetierAvecFichePoste(fmfpSecondaire));
 			}
 
+			if (!versionFicheMetier()) {
+				// Vérifie l'affectation
+				ArrayList<Affectation> liste = getAffectationDao().listerAffectationAvecFPPrimaireOuSecondaire(getFichePosteCourante().getIdFichePoste());
+				setFpCouranteAffectee(getFichePosteDao().estAffectee(getFichePosteCourante().getIdFichePoste(), liste));
 
-			// Recherche de tous les liens FicheEmploi / FichePoste
-			ArrayList<FEFP> liens2 = getFefpDao().listerFEFPAvecFP(getFichePosteCourante().getIdFichePoste());
-			setEmploiSecondaire(getFicheEmploiDao().chercherFicheEmploiAvecFichePoste(false, liens2));
+				// Recherche de tous les liens FicheEmploi / FichePoste
+				ArrayList<FEFP> liens1 = getFefpDao().listerFEFPAvecFP(getFichePosteCourante().getIdFichePoste());
+				// Init fiches emploi
+				setEmploiPrimaire(getFicheEmploiDao().chercherFicheEmploiAvecFichePoste(true, liens1));
+
+				// Recherche de tous les liens FicheEmploi / FichePoste
+				ArrayList<FEFP> liens2 = getFefpDao().listerFEFPAvecFP(getFichePosteCourante().getIdFichePoste());
+				setEmploiSecondaire(getFicheEmploiDao().chercherFicheEmploiAvecFichePoste(false, liens2));
+			}
 
 			// Init Service
 			if (getFichePosteCourante().getIdServiceAds() != null) {
