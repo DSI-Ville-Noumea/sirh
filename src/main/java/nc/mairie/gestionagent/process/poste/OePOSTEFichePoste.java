@@ -2420,9 +2420,9 @@ public class OePOSTEFichePoste extends BasicProcess {
 				for (int j = 0; j < am.getListSavoirFaire().size(); j++) {
 					SavoirFaire sf = am.getListSavoirFaire().get(j);
 					amsLien.setIdSavoirFaire(sf.getIdSavoirFaire());
-					if (sf.getChecked() && getNOM_CK_SELECT_LIGNE_ACTI_METIER_SAVOIR(i, j).equals(getCHECKED_OFF())) {
+					if (sf.getChecked() && getVAL_CK_SELECT_LIGNE_ACTI_METIER_SAVOIR(i, j).equals(getCHECKED_OFF())) {
 						getActiviteMetierSavoirFPDao().supprimerActiviteMetierSavoirFP(amsLien);
-					} else if (!sf.getChecked() && getNOM_CK_SELECT_LIGNE_ACTI_METIER_SAVOIR(i, j).equals(getCHECKED_ON())) {
+					} else if (!sf.getChecked() && getVAL_CK_SELECT_LIGNE_ACTI_METIER_SAVOIR(i, j).equals(getCHECKED_ON())) {
 						getActiviteMetierSavoirFPDao().ajouterActiviteMetierSavoirFP(amsLien);
 					}
 				}
@@ -2534,7 +2534,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 		}
 
 		if (versionFicheMetier()) {
-			//TODOSIRH: save all the elements checked
+			saveJoinMetier();
 		} else if (!saveJoin(request)) {
 			return false;
 		}
