@@ -2432,7 +2432,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 					}
 				}
 			}
-			//TODO: clean removed activities already not showned
+			//TODOSIRH: clean removed elements already not showned
 		}
 		initialiseActivitesMetier();
 
@@ -2447,7 +2447,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 				getSavoirFaireFMDao().ajouterSavoirFaireFP(sfLien);
 			}
 		}
-		setListSavoirFaire(getSavoirFaireDao().listerTousSavoirFaireGeneraux(getFichePosteCourante()));
+		//TODOSIRH: clean removed elements already not showned
+		initialiseSavoirFaireGeneraux();
 
 		//Mise à jour des activités générales
         for (int i = 0; i < getListActiviteGenerale().size(); i++) {
@@ -3980,9 +3981,9 @@ public class OePOSTEFichePoste extends BasicProcess {
 	}
 
 	private void initialiseSavoirFaireGeneraux() {
-		if (getFichePosteCourante() != null && getFichePosteCourante().getIdFichePoste() != null) {
-			setListSavoirFaire(getSavoirFaireDao().listerTousSavoirFaireGeneraux(getFichePosteCourante()));
-		}
+		setListSavoirFaire(getSavoirFaireDao().listerTousSavoirFaireGeneraux(getFichePosteCourante(),
+				getMetierPrimaire() != null ? getMetierPrimaire().getIdFicheMetier() : null,
+				getMetierSecondaire() != null ? getMetierSecondaire().getIdFicheMetier() : null));
 		for (int i = 0; i < listSavoirFaire.size(); i++) {
 			SavoirFaire sf = listSavoirFaire.get(i);
 			addZone(getNOM_ST_ID_SF(i), sf.getIdSavoirFaire().toString());
