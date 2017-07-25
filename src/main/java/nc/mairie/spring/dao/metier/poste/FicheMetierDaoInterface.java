@@ -14,4 +14,6 @@ public interface FicheMetierDaoInterface {
 
     public List<FicheMetier> listerFicheMetierAvecRefMairieOuLibelle(String keyword);
 
+    public FicheMetier chercherFicheMetierAvecFichePoste(Integer idFichePoste, boolean fmPrimaire);
+
 }

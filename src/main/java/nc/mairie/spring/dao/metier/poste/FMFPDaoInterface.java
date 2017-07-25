@@ -9,4 +9,8 @@ public interface FMFPDaoInterface {
 
     public FMFP chercherFMFPAvecNumFP(Integer idFicheMetier, boolean metierPrimaire) throws Exception;
 
+    public void creerFMFP(Integer idFicheMetier, Integer idFichePoste, boolean metierPrimaire);
+
+    public void supprimerFMFP(Integer idFicheMetier, Integer idFichePoste, boolean metierPrimaire);
+
 }

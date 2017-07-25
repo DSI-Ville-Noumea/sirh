@@ -31,4 +31,17 @@ public class FMFPDao extends SirhDao implements FMFPDaoInterface {
                 new BeanPropertyRowMapper<FMFP>(FMFP.class));
         return fmfps.isEmpty() ? null : fmfps.get(0);
     }
+
+    @Override
+    public void creerFMFP(Integer idFicheMetier, Integer idFichePoste, boolean metierPrimaire) {
+        String sql = "INSERT INTO " + NOM_TABLE + " (ID_FICHE_METIER, ID_FICHE_POSTE, FM_PRIMAIRE) VALUES(?,?,?)";
+        jdbcTemplate.update(sql, new Object[] { idFicheMetier, idFichePoste, metierPrimaire });
+    }
+
+    public void supprimerFMFP(Integer idFicheMetier, Integer idFichePoste, boolean metierPrimaire) {
+        String sql = "DELETE FROM " + NOM_TABLE + " WHERE ID_FICHE_METIER = ? AND ID_FICHE_POSTE = ? AND FM_PRIMAIRE = ?";
+        jdbcTemplate.update(sql, new Object[] { idFicheMetier, idFichePoste, metierPrimaire });
+    }
+
+
 }

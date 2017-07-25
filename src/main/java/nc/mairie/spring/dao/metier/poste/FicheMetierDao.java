@@ -38,6 +38,18 @@ public class FicheMetierDao extends SirhDao implements FicheMetierDaoInterface {
         }
     }
 
+    public FicheMetier chercherFicheMetierAvecFichePoste(Integer idFichePoste, boolean fmPrimaire) {
+        String sql = "SELECT FM.* FROM FICHE_METIER FM " +
+                "JOIN FM_FP ON FM_FP.ID_FICHE_METIER = FM.ID_FICHE_METIER " +
+                "WHERE FM_FP.ID_FICHE_POSTE = ? AND FM_FP.FM_PRIMAIRE = ?";
+        try {
+            return jdbcTemplate.queryForObject(sql, new Object[]{idFichePoste, fmPrimaire},
+                    new BeanPropertyRowMapper<>(FicheMetier.class));
+        } catch (EmptyResultDataAccessException ex) {
+            return null;
+        }
+    }
+
     @Override
     public List<FicheMetier> listerFicheMetierAvecRefMairieOuLibelle(String keyword) {
         String searchParam = keyword == null? "" : keyword.toUpperCase();

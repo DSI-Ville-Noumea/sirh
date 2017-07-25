@@ -380,13 +380,13 @@
             });
             $(".acti-sf").change(function () {
                 if ($(this).prop("checked")) {
-                    $(".actiCheckAll" + $(this).data("id-acti")).prop("checked", true).change();
+                    $(".actiCheckAll" + $(this).data("id-acti")).prop("checked", true);
 				}
             });
             $(".actiCheckAll").change(function () {
                 $("#checkAllACT").prop("checked", $(".actiCheckAll:checked").length === $(".actiCheckAll").length);
             });
-            $(".actiCheckAll").change();
+            //$(".actiCheckAll").change();
         } );
 	</script>
 </FIELDSET>

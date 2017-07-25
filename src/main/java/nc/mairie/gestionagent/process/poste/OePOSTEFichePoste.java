@@ -723,8 +723,6 @@ public class OePOSTEFichePoste extends BasicProcess {
 				estFDPInactive = false;
 			}
 
-			getActiviteMetierDao().listerToutesActiviteMetier(getFichePosteCourante());
-
 			// SERVICE
 			if (getService() != null) {
 				addZone(getNOM_EF_SERVICE(), getService().getSigle());
@@ -1572,6 +1570,11 @@ public class OePOSTEFichePoste extends BasicProcess {
 		setListeCompFES(new ArrayList<Competence>());
 		setListeCompFEP(new ArrayList<Competence>());
 		setListeAjoutCompFP(new ArrayList<Competence>());
+
+		setListActiviteMetier(new ArrayList<ActiviteMetier>());
+		setListSavoirFaire(new ArrayList<SavoirFaire>());
+		setListActiviteGenerale(new ArrayList<ActiviteGenerale>());
+		setListConditionExercice(new ArrayList<ConditionExercice>());
 	}
 
 	/**
@@ -2372,25 +2375,25 @@ public class OePOSTEFichePoste extends BasicProcess {
 	}
 
 	private boolean saveJoinMetier() {
-		//TODOSIRH: implémenter création et modif fiche métier primaire, secondaire
 		//1. Vérifier si la fiche métier primaire est persistée en base
-		FicheMetier fmPrimaireEnBase = getFicheMetierDao().chercherFicheMetierAvecFichePoste(
-				new FMFP(getMetierPrimaire().getIdFicheMetier(), getFichePosteCourante().getIdFichePoste(), true));
+		FicheMetier fmPrimaireEnBase = getFicheMetierDao().chercherFicheMetierAvecFichePoste(getFichePosteCourante().getIdFichePoste(), true);
 		if (fmPrimaireEnBase == null) {
-			//création
-		} else {
-			System.out.println("Modification");
-			//modification
+			getFmfpDao().creerFMFP(getMetierPrimaire().getIdFicheMetier(), getFichePosteCourante().getIdFichePoste(), true);
+		} else if (fmPrimaireEnBase.getIdFicheMetier() != getMetierPrimaire().getIdFicheMetier()) {
+			getFmfpDao().supprimerFMFP(fmPrimaireEnBase.getIdFicheMetier(), getFichePosteCourante().getIdFichePoste(), true);
+			getFmfpDao().creerFMFP(getMetierPrimaire().getIdFicheMetier(), getFichePosteCourante().getIdFichePoste(), true);
 		}
 		//2. Vérifier si la fiche métier secondaire est persistée en base
+		FicheMetier fmSecondaireEnBase = getFicheMetierDao().chercherFicheMetierAvecFichePoste(getFichePosteCourante().getIdFichePoste(), false);
 		if (getMetierSecondaire() != null) {
-			FicheMetier fmSecondaireEnBase = getFicheMetierDao().chercherFicheMetierAvecFichePoste(
-					new FMFP(getMetierSecondaire().getIdFicheMetier(), getFichePosteCourante().getIdFichePoste(), false));
 			if (fmSecondaireEnBase == null) {
-				//création
-			} else {
-				//modification
+				getFmfpDao().creerFMFP(getMetierSecondaire().getIdFicheMetier(), getFichePosteCourante().getIdFichePoste(), false);
+			} else if (fmSecondaireEnBase.getIdFicheMetier() != getMetierSecondaire().getIdFicheMetier()) {
+				getFmfpDao().supprimerFMFP(fmSecondaireEnBase.getIdFicheMetier(), getFichePosteCourante().getIdFichePoste(), false);
+				getFmfpDao().creerFMFP(getMetierSecondaire().getIdFicheMetier(), getFichePosteCourante().getIdFichePoste(), false);
 			}
+		} else if (fmSecondaireEnBase != null) {
+			getFmfpDao().supprimerFMFP(fmSecondaireEnBase.getIdFicheMetier(), getFichePosteCourante().getIdFichePoste(), false);
 		}
 
 		// on supprime tous les niveaux etude de la FDP
@@ -2410,13 +2413,15 @@ public class OePOSTEFichePoste extends BasicProcess {
 		for (int i = 0; i < listActiviteMetier.size(); i++) {
 			ActiviteMetier am = getListActiviteMetier().get(i);
 			ActiviteMetierSavoirFP amsLien = new ActiviteMetierSavoirFP(getFichePosteCourante().getIdFichePoste(), am.getIdActiviteMetier(), null);
+			//Cas d'une activité sans sous compétences
 			if (am.getListSavoirFaire().isEmpty()) {
-				if (am.isChecked() && getNOM_CK_SELECT_LIGNE_ACTI_METIER(i).equals(getCHECKED_OFF())) {
+				if (am.isChecked() && getVAL_CK_SELECT_LIGNE_ACTI_METIER(i).equals(getCHECKED_OFF())) {
 					getActiviteMetierSavoirFPDao().supprimerActiviteMetierSavoirFP(amsLien);
-				} else if (!am.isChecked() && getNOM_CK_SELECT_LIGNE_ACTI_METIER(i).equals(getCHECKED_ON())) {
+				} else if (!am.isChecked() && getVAL_CK_SELECT_LIGNE_ACTI_METIER(i).equals(getCHECKED_ON())) {
 					getActiviteMetierSavoirFPDao().ajouterActiviteMetierSavoirFP(amsLien);
 				}
 			} else {
+				//Cas d'une activité avec des sous compétences
 				for (int j = 0; j < am.getListSavoirFaire().size(); j++) {
 					SavoirFaire sf = am.getListSavoirFaire().get(j);
 					amsLien.setIdSavoirFaire(sf.getIdSavoirFaire());
@@ -2427,7 +2432,9 @@ public class OePOSTEFichePoste extends BasicProcess {
 					}
 				}
 			}
+			//TODO: clean removed activities already not showned
 		}
+		initialiseActivitesMetier();
 
 		//Mise à jour des savoir-faire généraux
 		for (int i = 0; i < getListSavoirFaire().size(); i++) {
@@ -2440,6 +2447,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 				getSavoirFaireFMDao().ajouterSavoirFaireFP(sfLien);
 			}
 		}
+		setListSavoirFaire(getSavoirFaireDao().listerTousSavoirFaireGeneraux(getFichePosteCourante()));
 
 		//Mise à jour des activités générales
         for (int i = 0; i < getListActiviteGenerale().size(); i++) {
@@ -2451,6 +2459,7 @@ public class OePOSTEFichePoste extends BasicProcess {
                 getActiviteGeneraleFPDao().ajouterActiviteGeneraleFP(agLien);
             }
         }
+        setListActiviteGenerale(getActiviteGeneraleDao().listerToutesActiviteGenerale(getFichePosteCourante()));
 
         //Mise à jour des conditions d'exercice
         for (int i = 0; i < getListConditionExercice().size(); i++) {
@@ -2462,6 +2471,7 @@ public class OePOSTEFichePoste extends BasicProcess {
                 getConditionExerciceFPDao().ajouterConditionExerciceFP(ceLien);
             }
         }
+        setListConditionExercice(getConditionExerciceDao().listerToutesConditionExercice(getFichePosteCourante()));
 
 		return true;
 	}
@@ -3947,7 +3957,12 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 	private void initialiseActivitesMetier() {
 		if (getFichePosteCourante() != null && getFichePosteCourante().getIdFichePoste() != null) {
-			setListActiviteMetier(getActiviteMetierDao().listerToutesActiviteMetier(getFichePosteCourante()));
+			setListActiviteMetier(getActiviteMetierDao().listerToutesActiviteMetier(getFichePosteCourante(),
+					getMetierPrimaire().getIdFicheMetier(), getMetierSecondaire() != null ? getMetierSecondaire().getIdFicheMetier() : null));
+		} else {
+			setListActiviteMetier(getActiviteMetierDao().listerToutesActiviteMetier(
+					getMetierPrimaire() != null ? getMetierPrimaire().getIdFicheMetier() : null,
+					getMetierSecondaire() != null ? getMetierSecondaire().getIdFicheMetier() : null));
 		}
 		for (int i = 0; i < listActiviteMetier.size(); i++) {
 			ActiviteMetier am = listActiviteMetier.get(i);
@@ -3979,6 +3994,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 	private void initialiseActivitesGenerales() {
 		if (getFichePosteCourante() != null && getFichePosteCourante().getIdFichePoste() != null) {
+			setListActiviteGenerale(getActiviteGeneraleDao().listerToutesActiviteGenerale(getFichePosteCourante()));
 			setListActiviteGenerale(getActiviteGeneraleDao().listerToutesActiviteGenerale(getFichePosteCourante()));
 		}
 		for (int i = 0; i < listActiviteGenerale.size(); i++) {
