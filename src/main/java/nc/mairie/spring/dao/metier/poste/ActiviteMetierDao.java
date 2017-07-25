@@ -1,10 +1,8 @@
 package nc.mairie.spring.dao.metier.poste;
 
-import nc.mairie.metier.poste.ActiviteMetier;
-import nc.mairie.metier.poste.FicheMetier;
-import nc.mairie.metier.poste.FichePoste;
-import nc.mairie.metier.poste.SavoirFaire;
+import nc.mairie.metier.poste.*;
 import nc.mairie.spring.dao.utils.SirhDao;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -159,5 +157,10 @@ public class ActiviteMetierDao extends SirhDao implements ActiviteMetierDaoInter
             }
         }
         return listeActiviteMetier;
+    }
+
+    public void supprimerToutesActiviteMetier(FichePoste fp) {
+        String sql = "DELETE FROM ACTIVITE_METIER_SAVOIR_FP WHERE ID_FICHE_POSTE = ?";
+        jdbcTemplate.update(sql, new Object[]{fp.getIdFichePoste()});
     }
 }
