@@ -1,6 +1,7 @@
 package nc.mairie.spring.dao.metier.poste;
 
 import nc.mairie.metier.poste.ActiviteMetier;
+import nc.mairie.metier.poste.FicheMetier;
 import nc.mairie.metier.poste.FichePoste;
 
 import java.util.List;
@@ -11,4 +12,6 @@ import java.util.List;
 public interface ActiviteMetierDaoInterface {
 
     public List<ActiviteMetier> listerToutesActiviteMetier(FichePoste fp);
+
+    public List<ActiviteMetier> listerToutesActiviteMetier(FicheMetier fm);
 }
