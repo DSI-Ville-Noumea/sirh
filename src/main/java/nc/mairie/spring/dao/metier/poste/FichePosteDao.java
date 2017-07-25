@@ -66,7 +66,7 @@ public class FichePosteDao extends SirhDao implements FichePosteDaoInterface {
 	@Override
 	public FichePoste chercherDernierNumFichePoste(Integer annee) throws Exception {
 		String orderBy = "order by cast(substr("+CHAMP_NUM_FP+",1,4) as Integer) desc,cast(substr("+CHAMP_NUM_FP+",6) as Integer) desc";
-		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ANNEE_CREATION + " = ? " + orderBy;
+		String sql = "select * from " + NOM_TABLE + " where cast(substr("+CHAMP_NUM_FP+",1,4) as Integer) = ? " + orderBy;
 
 		ArrayList<FichePoste> liste = new ArrayList<FichePoste>();
 
@@ -609,13 +609,13 @@ public class FichePosteDao extends SirhDao implements FichePosteDaoInterface {
 				+ "," + CHAMP_ID_RESPONSABLE + "," + CHAMP_ID_REMPLACEMENT + "," + CHAMP_ID_CDTHOR_BUD + "," + CHAMP_ID_CDTHOR_REG + "," + CHAMP_DATE_FIN_VALIDITE_FP + "," + CHAMP_OPI + ","
 				+ CHAMP_NFA + "," + CHAMP_MISSIONS + "," + CHAMP_ANNEE_CREATION + "," + CHAMP_NUM_FP + "," + CHAMP_DATE_DEBUT_VALIDITE_FP + "," + CHAMP_DATE_DEB_APPLI_SERV + "," + CHAMP_OBSERVATION
 				+ "," + CHAMP_CODE_GRADE + "," + CHAMP_ID_NATURE_CREDIT + "," + CHAMP_NUM_DELIBERATION + "," + CHAMP_ID_BASE_HORAIRE_POINTAGE + "," + CHAMP_ID_BASE_HORAIRE_ABSENCE + ","
-				+ CHAMP_ID_SERVICE_ADS + "," + CHAMP_ID_SERVI + ") " + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?))";
+				+ CHAMP_ID_SERVICE_ADS + "," + CHAMP_ID_SERVI + "," + CHAMP_SPECIALISATION  + "," + CHAMP_INFORMATIONS_COMPLEMENTAIRES  + ") " + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?))";
 		Integer id = jdbcTemplate.queryForObject(
 				sql,
 				new Object[] { fp.getIdTitrePoste(), fp.getIdEntiteGeo(), fp.getIdBudget(), fp.getIdStatutFp(), fp.getIdResponsable(), fp.getIdRemplacement(), fp.getIdCdthorBud(),
 						fp.getIdCdthorReg(), fp.getDateFinValiditeFp(), fp.getOpi(), fp.getNfa(), fp.getMissions(), fp.getAnneeCreation(), fp.getNumFp(), fp.getDateDebutValiditeFp(),
 						fp.getDateDebAppliServ(), fp.getObservation(), fp.getCodeGrade(), fp.getIdNatureCredit(), fp.getNumDeliberation(), fp.getIdBaseHorairePointage(), fp.getIdBaseHoraireAbsence(),
-						fp.getIdServiceAds(), fp.getIdServi() }, Integer.class);
+						fp.getIdServiceAds(), fp.getIdServi(), fp.getSpecialisation(), fp.getInformations_complementaires() }, Integer.class);
 		return id;
 	}
 
