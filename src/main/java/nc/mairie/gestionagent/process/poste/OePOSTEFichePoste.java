@@ -1521,6 +1521,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 		addZone(getNOM_ST_INFO_REMP(), Const.CHAINE_VIDE);
 		addZone(getNOM_LB_NATURE_CREDIT_SELECT(), "0");
 		addZone(getNOM_LB_BASE_HORAIRE_POINTAGE_SELECT(), "0");
+		addZone(getNOM_LB_BASE_HORAIRE_ABSENCE_SELECT(), "0");
 
 		setLB_NIVEAU_ETUDE(null);
 	}
