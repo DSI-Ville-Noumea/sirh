@@ -2460,7 +2460,7 @@ public class OePOSTEFichePoste extends BasicProcess {
                 getActiviteGeneraleFPDao().ajouterActiviteGeneraleFP(agLien);
             }
         }
-        setListActiviteGenerale(getActiviteGeneraleDao().listerToutesActiviteGenerale(getFichePosteCourante()));
+        initialiseActivitesGenerales();
 
         //Mise à jour des conditions d'exercice
         for (int i = 0; i < getListConditionExercice().size(); i++) {
@@ -3994,10 +3994,9 @@ public class OePOSTEFichePoste extends BasicProcess {
 	}
 
 	private void initialiseActivitesGenerales() {
-		if (getFichePosteCourante() != null && getFichePosteCourante().getIdFichePoste() != null) {
-			setListActiviteGenerale(getActiviteGeneraleDao().listerToutesActiviteGenerale(getFichePosteCourante()));
-			setListActiviteGenerale(getActiviteGeneraleDao().listerToutesActiviteGenerale(getFichePosteCourante()));
-		}
+		setListActiviteGenerale(getActiviteGeneraleDao().listerToutesActiviteGenerale(getFichePosteCourante(),
+				getMetierPrimaire() != null ? getMetierPrimaire().getIdFicheMetier() : null,
+				getMetierSecondaire() != null ? getMetierSecondaire().getIdFicheMetier() : null));
 		for (int i = 0; i < listActiviteGenerale.size(); i++) {
 			ActiviteGenerale ag = listActiviteGenerale.get(i);
 			addZone(getNOM_ST_ID_AG(i), ag.getIdActiviteGenerale().toString());
