@@ -86,7 +86,8 @@ public class ADSWSConsumer extends BaseWsConsumer implements IADSWSConsumer {
 			return null;
 		}
 
-		String url = String.format(adsWsBaseUrl + sirhAdsGetEntiteBySigleUrl + sigle);
+		// #39324 : On ne passe pas par un String.format() à cause des espaces à changer en '%20' pour l'URL
+		String url = adsWsBaseUrl + sirhAdsGetEntiteBySigleUrl + sigle.replaceAll(" ", "%20");
 
 		Map<String, String> parameters = new HashMap<String, String>();
 
