@@ -2410,14 +2410,15 @@ public class OePOSTEFichePoste extends BasicProcess {
 		getNiveauEtudeFPDao().creerNiveauEtudeFP(niveauFP.getIdNiveauEtude(), niveauFP.getIdFichePoste());
 
 		//Mise à jour des activités et compétences
+		getActiviteMetierDao().supprimerToutesActiviteMetier(getFichePosteCourante());
 		for (int i = 0; i < listActiviteMetier.size(); i++) {
 			ActiviteMetier am = getListActiviteMetier().get(i);
 			ActiviteMetierSavoirFP amsLien = new ActiviteMetierSavoirFP(getFichePosteCourante().getIdFichePoste(), am.getIdActiviteMetier(), null);
 			//Cas d'une activité sans sous compétences
 			if (am.getListSavoirFaire().isEmpty()) {
-				if (am.isChecked() && getVAL_CK_SELECT_LIGNE_ACTI_METIER(i).equals(getCHECKED_OFF())) {
+				if (getVAL_CK_SELECT_LIGNE_ACTI_METIER(i).equals(getCHECKED_OFF())) {
 					getActiviteMetierSavoirFPDao().supprimerActiviteMetierSavoirFP(amsLien);
-				} else if (!am.isChecked() && getVAL_CK_SELECT_LIGNE_ACTI_METIER(i).equals(getCHECKED_ON())) {
+				} else if (getVAL_CK_SELECT_LIGNE_ACTI_METIER(i).equals(getCHECKED_ON())) {
 					getActiviteMetierSavoirFPDao().ajouterActiviteMetierSavoirFP(amsLien);
 				}
 			} else {
@@ -2425,54 +2426,55 @@ public class OePOSTEFichePoste extends BasicProcess {
 				for (int j = 0; j < am.getListSavoirFaire().size(); j++) {
 					SavoirFaire sf = am.getListSavoirFaire().get(j);
 					amsLien.setIdSavoirFaire(sf.getIdSavoirFaire());
-					if (sf.getChecked() && getVAL_CK_SELECT_LIGNE_ACTI_METIER_SAVOIR(i, j).equals(getCHECKED_OFF())) {
+					if (getVAL_CK_SELECT_LIGNE_ACTI_METIER_SAVOIR(i, j).equals(getCHECKED_OFF())) {
 						getActiviteMetierSavoirFPDao().supprimerActiviteMetierSavoirFP(amsLien);
-					} else if (!sf.getChecked() && getVAL_CK_SELECT_LIGNE_ACTI_METIER_SAVOIR(i, j).equals(getCHECKED_ON())) {
+					} else if (getVAL_CK_SELECT_LIGNE_ACTI_METIER_SAVOIR(i, j).equals(getCHECKED_ON())) {
 						getActiviteMetierSavoirFPDao().ajouterActiviteMetierSavoirFP(amsLien);
 					}
 				}
 			}
-			//TODOSIRH: clean removed elements already not showned
 		}
 		initialiseActivitesMetier();
 
 		//Mise à jour des savoir-faire généraux
+		getSavoirFaireDao().supprimerTousSavoirFaireGeneraux(getFichePosteCourante());
 		for (int i = 0; i < getListSavoirFaire().size(); i++) {
 			SavoirFaire sfEnBase = getListSavoirFaire().get(i);
 			SavoirFaireFP sfLien = new SavoirFaireFP(getFichePosteCourante().getIdFichePoste(), sfEnBase.getIdSavoirFaire());
-			if (sfEnBase.getChecked() && getVAL_CK_SELECT_LIGNE_SF(i).equals(getCHECKED_OFF())) {
+			if (getVAL_CK_SELECT_LIGNE_SF(i).equals(getCHECKED_OFF())) {
 				//Delete existing link
 				getSavoirFaireFMDao().supprimerSavoirFaireFP(sfLien);
-			} else if (!sfEnBase.getChecked() && getVAL_CK_SELECT_LIGNE_SF(i).equals(getCHECKED_ON())) {
+			} else if (getVAL_CK_SELECT_LIGNE_SF(i).equals(getCHECKED_ON())) {
 				getSavoirFaireFMDao().ajouterSavoirFaireFP(sfLien);
 			}
 		}
-		//TODOSIRH: clean removed elements already not showned
 		initialiseSavoirFaireGeneraux();
 
 		//Mise à jour des activités générales
+		getActiviteGeneraleDao().supprimerToutesActiviteGenerale(getFichePosteCourante());
         for (int i = 0; i < getListActiviteGenerale().size(); i++) {
             ActiviteGenerale agEnBase = getListActiviteGenerale().get(i);
             ActiviteGeneraleFP agLien = new ActiviteGeneraleFP(getFichePosteCourante().getIdFichePoste(), agEnBase.getIdActiviteGenerale());
-            if (agEnBase.getChecked() && getVAL_CK_SELECT_LIGNE_AG(i).equals(getCHECKED_OFF())) {
+            if (getVAL_CK_SELECT_LIGNE_AG(i).equals(getCHECKED_OFF())) {
                 getActiviteGeneraleFPDao().supprimerActiviteGeneraleFP(agLien);
-            } else if (!agEnBase.getChecked() && getVAL_CK_SELECT_LIGNE_AG(i).equals(getCHECKED_ON())) {
+            } else if (getVAL_CK_SELECT_LIGNE_AG(i).equals(getCHECKED_ON())) {
                 getActiviteGeneraleFPDao().ajouterActiviteGeneraleFP(agLien);
             }
         }
         initialiseActivitesGenerales();
 
         //Mise à jour des conditions d'exercice
+		getConditionExerciceDao().supprimerToutesConditionExercice(getFichePosteCourante());
         for (int i = 0; i < getListConditionExercice().size(); i++) {
             ConditionExercice ceEnBase = getListConditionExercice().get(i);
             ConditionExerciceFP ceLien = new ConditionExerciceFP(getFichePosteCourante().getIdFichePoste(), ceEnBase.getIdConditionExercice());
-            if (ceEnBase.getChecked() && getVAL_CK_SELECT_LIGNE_CE(i).equals(getCHECKED_OFF())) {
+            if (getVAL_CK_SELECT_LIGNE_CE(i).equals(getCHECKED_OFF())) {
                 getConditionExerciceFPDao().supprimerConditionExerciceFP(ceLien);
-            } else if (!ceEnBase.getChecked() && getVAL_CK_SELECT_LIGNE_CE(i).equals(getCHECKED_ON())) {
+            } else if (getVAL_CK_SELECT_LIGNE_CE(i).equals(getCHECKED_ON())) {
                 getConditionExerciceFPDao().ajouterConditionExerciceFP(ceLien);
             }
         }
-        setListConditionExercice(getConditionExerciceDao().listerToutesConditionExercice(getFichePosteCourante()));
+        initialiseConditionsExercices();
 
 		return true;
 	}
@@ -4006,9 +4008,9 @@ public class OePOSTEFichePoste extends BasicProcess {
 	}
 
 	private void initialiseConditionsExercices() {
-		if (getFichePosteCourante() != null && getFichePosteCourante().getIdFichePoste() != null) {
-			setListConditionExercice(getConditionExerciceDao().listerToutesConditionExercice(getFichePosteCourante()));
-		}
+		setListConditionExercice(getConditionExerciceDao().listerToutesConditionExercice(getFichePosteCourante(),
+				getMetierPrimaire() != null ? getMetierPrimaire().getIdFicheMetier() : null,
+				getMetierSecondaire() != null ? getMetierSecondaire().getIdFicheMetier() : null));
 		for (int i = 0; i < listConditionExercice.size(); i++) {
 			ConditionExercice ce = listConditionExercice.get(i);
 			addZone(getNOM_ST_ID_CE(i), ce.getIdConditionExercice().toString());

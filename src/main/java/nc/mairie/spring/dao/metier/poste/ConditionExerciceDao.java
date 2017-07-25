@@ -1,5 +1,6 @@
 package nc.mairie.spring.dao.metier.poste;
 
+import nc.mairie.metier.poste.ActiviteGenerale;
 import nc.mairie.metier.poste.ConditionExercice;
 import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.spring.dao.utils.SirhDao;
@@ -30,5 +31,24 @@ public class ConditionExerciceDao extends SirhDao implements ConditionExerciceIn
                 "WHERE FM_FP.ID_FICHE_POSTE = ? " +
                 "ORDER BY CE.NOM_CONDITION_EXERCICE";
         return jdbcTemplate.query(sql, new Object[]{fp.getIdFichePoste()}, new BeanPropertyRowMapper<>(ConditionExercice.class));
+    }
+
+    public List<ConditionExercice> listerToutesConditionExercice(FichePoste fp, Integer idFicheMetierPrimaire, Integer idFicheMetierSecondaire) {
+        Integer idFichePoste = fp != null ? fp.getIdFichePoste() : null;
+        String sql = "SELECT DISTINCT CE_FM.ID_CONDITION_EXERCICE, CE.NOM_CONDITION_EXERCICE, " +
+                "            CASE WHEN CE_FP.ID_CONDITION_EXERCICE IS NULL THEN '0' ELSE '1' END AS CHECKED  " +
+                "                FROM CONDITION_EXERCICE_FM CE_FM " +
+                "                JOIN FM_FP ON FM_FP.ID_FICHE_METIER = CE_FM.ID_FICHE_METIER " +
+                "                JOIN CONDITION_EXERCICE CE ON CE.ID_CONDITION_EXERCICE = CE_FM.ID_CONDITION_EXERCICE " +
+                "                LEFT JOIN CONDITION_EXERCICE_FP CE_FP ON CE_FP.ID_CONDITION_EXERCICE = CE.ID_CONDITION_EXERCICE AND (CE_FP.ID_FICHE_POSTE = ?) " +
+                "                WHERE (FM_FP.ID_FICHE_POSTE = ? AND FM_FP.ID_FICHE_METIER IN(?, ?)) " +
+                "                OR (FM_FP.ID_FICHE_METIER NOT IN (SELECT FM_FP.ID_FICHE_METIER FROM FM_FP WHERE FM_FP.ID_FICHE_POSTE = ?) AND FM_FP.ID_FICHE_METIER IN (?, ?)) " +
+                "                ORDER BY CE.NOM_CONDITION_EXERCICE";
+        return jdbcTemplate.query(sql, new Object[]{idFichePoste, idFichePoste, idFicheMetierPrimaire, idFicheMetierSecondaire, idFichePoste, idFicheMetierPrimaire, idFicheMetierSecondaire}, new BeanPropertyRowMapper<>(ConditionExercice.class));
+    }
+
+    public void supprimerToutesConditionExercice(FichePoste fp) {
+        String sql = "DELETE FROM CONDITION_EXERCICE_FP WHERE ID_FICHE_POSTE = ?";
+        jdbcTemplate.update(sql, new Object[]{fp.getIdFichePoste()});
     }
 }

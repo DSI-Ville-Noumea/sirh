@@ -45,4 +45,9 @@ public class SavoirFaireDao extends SirhDao implements SavoirFaireInterface {
                 "                ORDER BY SF.NOM_SAVOIR_FAIRE";
         return jdbcTemplate.query(sql, new Object[]{idFichePoste, idFichePoste, idFicheMetierPrimaire, idFicheMetierSecondaire, idFichePoste, idFicheMetierPrimaire, idFicheMetierSecondaire}, new BeanPropertyRowMapper<>(SavoirFaire.class));
     }
+
+    public void supprimerTousSavoirFaireGeneraux(FichePoste fp) {
+        String sql = "DELETE FROM SAVOIR_FAIRE_FP WHERE ID_FICHE_POSTE = ?";
+        jdbcTemplate.update(sql, new Object[]{fp.getIdFichePoste()});
+    }
 }

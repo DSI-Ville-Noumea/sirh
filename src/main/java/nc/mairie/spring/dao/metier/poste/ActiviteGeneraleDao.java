@@ -46,4 +46,9 @@ public class ActiviteGeneraleDao extends SirhDao implements ActiviteGeneraleInte
                 "                ORDER BY AG.NOM_ACTIVITE_GENERALE";
         return jdbcTemplate.query(sql, new Object[]{idFichePoste, idFichePoste, idFicheMetierPrimaire, idFicheMetierSecondaire, idFichePoste, idFicheMetierPrimaire, idFicheMetierSecondaire}, new BeanPropertyRowMapper<>(ActiviteGenerale.class));
     }
+
+    public void supprimerToutesActiviteGenerale(FichePoste fp) {
+        String sql = "DELETE FROM ACTIVITE_GENERALE_FP WHERE ID_FICHE_POSTE = ?";
+        jdbcTemplate.update(sql, new Object[]{fp.getIdFichePoste()});
+    }
 }
