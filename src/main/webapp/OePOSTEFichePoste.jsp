@@ -81,8 +81,14 @@
           		<INPUT title="Recherche" type="image" src="images/loupe.gif" height="16px" width="16px" name="<%=process.getNOM_PB_RECHERCHER()%>">
        			<INPUT title="Recherche avancée" type="image" src="images/rechercheAvancee.gif" height="16px" width="16px" name="<%=process.getNOM_PB_RECHERCHE_AVANCEE()%>" >
           		<INPUT title="Créer une FDP" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="16px" width="16px" name="<%=process.getNOM_PB_AJOUTER_FP()%>">
-          		<INPUT title="Dupliquer une FDP" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/dupliquer.gif" height="16px" width="16px" name="<%=process.getNOM_PB_DUPLIQUER_FP()%>">
-          		<INPUT title="Supprimer une FDP" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/suppression.gif" height="16px" width="16px" name="<%=process.getNOM_PB_SUPPRIMER_FP()%>">
+				<%
+					if (process.versionFicheMetier()) {
+				%>
+          			<INPUT title="Dupliquer une FDP" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/dupliquer.gif" height="16px" width="16px" name="<%=process.getNOM_PB_DUPLIQUER_FP()%>">
+				<%
+					}
+				%>
+          		<%--<INPUT title="Supprimer une FDP" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/suppression.gif" height="16px" width="16px" name="<%=process.getNOM_PB_SUPPRIMER_FP()%>">--%>
        		</fieldset>
 
 			<% if (!process.ACTION_RECHERCHE.equals(process.getVAL_ST_ACTION())){ %>
