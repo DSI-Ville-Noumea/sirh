@@ -2375,28 +2375,37 @@ public class OePOSTEFichePoste extends BasicProcess {
 		return true;
 	}
 
-	private boolean saveJoinMetier() {
-		//1. Vérifier si la fiche métier primaire est persistée en base
+	/**
+	 * Sauve une fiche poste liée à une fiche métier avec toutes les liaisons vers
+	 * les tables contenant les activités métiers, les savoir-faire, etc...
+	 * @return
+	 */
+	private void saveJoinMetier() {
+		/*** 1. Vérifier si la fiche métier primaire est persistée en base ***/
 		FicheMetier fmPrimaireEnBase = getFicheMetierDao().chercherFicheMetierAvecFichePoste(getFichePosteCourante().getIdFichePoste(), true);
+		//Cas ou la fiche n'est pas encore liée en base
 		if (fmPrimaireEnBase == null) {
 			getFmfpDao().creerFMFP(getMetierPrimaire().getIdFicheMetier(), getFichePosteCourante().getIdFichePoste(), true);
-		} else if (fmPrimaireEnBase.getIdFicheMetier() != getMetierPrimaire().getIdFicheMetier()) {
+		} else if (fmPrimaireEnBase.getIdFicheMetier() != getMetierPrimaire().getIdFicheMetier()) { //Cas ou la fiche métier en base doit être modifiée
 			getFmfpDao().supprimerFMFP(fmPrimaireEnBase.getIdFicheMetier(), getFichePosteCourante().getIdFichePoste(), true);
 			getFmfpDao().creerFMFP(getMetierPrimaire().getIdFicheMetier(), getFichePosteCourante().getIdFichePoste(), true);
 		}
-		//2. Vérifier si la fiche métier secondaire est persistée en base
+
+		/*** 2. Vérifier si la fiche métier secondaire est persistée en base ***/
 		FicheMetier fmSecondaireEnBase = getFicheMetierDao().chercherFicheMetierAvecFichePoste(getFichePosteCourante().getIdFichePoste(), false);
 		if (getMetierSecondaire() != null) {
+			//Cas ou la fiche n'est pas encore liée en base
 			if (fmSecondaireEnBase == null) {
 				getFmfpDao().creerFMFP(getMetierSecondaire().getIdFicheMetier(), getFichePosteCourante().getIdFichePoste(), false);
-			} else if (fmSecondaireEnBase.getIdFicheMetier() != getMetierSecondaire().getIdFicheMetier()) {
+			} else if (fmSecondaireEnBase.getIdFicheMetier() != getMetierSecondaire().getIdFicheMetier()) { //Cas ou la fiche métier en base doit être modifiée
 				getFmfpDao().supprimerFMFP(fmSecondaireEnBase.getIdFicheMetier(), getFichePosteCourante().getIdFichePoste(), false);
 				getFmfpDao().creerFMFP(getMetierSecondaire().getIdFicheMetier(), getFichePosteCourante().getIdFichePoste(), false);
 			}
-		} else if (fmSecondaireEnBase != null) {
+		} else if (fmSecondaireEnBase != null) { //Cas ou la fiche métier secondaire doit être supprimée si elle existe
 			getFmfpDao().supprimerFMFP(fmSecondaireEnBase.getIdFicheMetier(), getFichePosteCourante().getIdFichePoste(), false);
 		}
 
+		/*** 3.  Les niveaux d'étude de la de la fiche de poste sont mis à jour ***/
 		// on supprime tous les niveaux etude de la FDP
 		ArrayList<NiveauEtudeFP> niveauFPExistant = getNiveauEtudeFPDao().listerNiveauEtudeFPAvecFP(getFichePosteCourante().getIdFichePoste());
 		if (niveauFPExistant != null && niveauFPExistant.size() > 0) {
@@ -2410,8 +2419,9 @@ public class OePOSTEFichePoste extends BasicProcess {
 		NiveauEtudeFP niveauFP = new NiveauEtudeFP(getFichePosteCourante().getIdFichePoste(), niveauAAjouter.getIdNiveauEtude());
 		getNiveauEtudeFPDao().creerNiveauEtudeFP(niveauFP.getIdNiveauEtude(), niveauFP.getIdFichePoste());
 
-		//Mise à jour des activités et compétences
-		getActiviteMetierDao().supprimerToutesActiviteMetier(getFichePosteCourante());
+		/*** 4. Mise à jour des activités et compétences ***/
+		getActiviteMetierDao().supprimerToutesActiviteMetier(getFichePosteCourante());//tabula rasa
+		//Mise à jour des activités et compétences liées si il en a
 		for (int i = 0; i < listActiviteMetier.size(); i++) {
 			ActiviteMetier am = getListActiviteMetier().get(i);
 			ActiviteMetierSavoirFP amsLien = new ActiviteMetierSavoirFP(getFichePosteCourante().getIdFichePoste(), am.getIdActiviteMetier(), null);
@@ -2435,10 +2445,11 @@ public class OePOSTEFichePoste extends BasicProcess {
 				}
 			}
 		}
+		//On recharge ce qui est maintenant en base
 		initialiseActivitesMetier();
 
-		//Mise à jour des savoir-faire généraux
-		getSavoirFaireDao().supprimerTousSavoirFaireGeneraux(getFichePosteCourante());
+		/*** 5.  Mise à jour des savoir-faire généraux ***/
+		getSavoirFaireDao().supprimerTousSavoirFaireGeneraux(getFichePosteCourante()); //tabula rasa
 		for (int i = 0; i < getListSavoirFaire().size(); i++) {
 			SavoirFaire sfEnBase = getListSavoirFaire().get(i);
 			SavoirFaireFP sfLien = new SavoirFaireFP(getFichePosteCourante().getIdFichePoste(), sfEnBase.getIdSavoirFaire());
@@ -2449,10 +2460,11 @@ public class OePOSTEFichePoste extends BasicProcess {
 				getSavoirFaireFMDao().ajouterSavoirFaireFP(sfLien);
 			}
 		}
+		//On recharge ce qui est maintenant en base
 		initialiseSavoirFaireGeneraux();
 
-		//Mise à jour des activités générales
-		getActiviteGeneraleDao().supprimerToutesActiviteGenerale(getFichePosteCourante());
+		/*** 6. Mise à jour des activités générales ***/
+		getActiviteGeneraleDao().supprimerToutesActiviteGenerale(getFichePosteCourante()); //tabula rasa
         for (int i = 0; i < getListActiviteGenerale().size(); i++) {
             ActiviteGenerale agEnBase = getListActiviteGenerale().get(i);
             ActiviteGeneraleFP agLien = new ActiviteGeneraleFP(getFichePosteCourante().getIdFichePoste(), agEnBase.getIdActiviteGenerale());
@@ -2462,10 +2474,11 @@ public class OePOSTEFichePoste extends BasicProcess {
                 getActiviteGeneraleFPDao().ajouterActiviteGeneraleFP(agLien);
             }
         }
+		//On recharge ce qui est maintenant en base
         initialiseActivitesGenerales();
 
-        //Mise à jour des conditions d'exercice
-		getConditionExerciceDao().supprimerToutesConditionExercice(getFichePosteCourante());
+        /*** 7. Mise à jour des conditions d'exercice ***/
+		getConditionExerciceDao().supprimerToutesConditionExercice(getFichePosteCourante()); //tabula rasa
         for (int i = 0; i < getListConditionExercice().size(); i++) {
             ConditionExercice ceEnBase = getListConditionExercice().get(i);
             ConditionExerciceFP ceLien = new ConditionExerciceFP(getFichePosteCourante().getIdFichePoste(), ceEnBase.getIdConditionExercice());
@@ -2475,9 +2488,8 @@ public class OePOSTEFichePoste extends BasicProcess {
                 getConditionExerciceFPDao().ajouterConditionExerciceFP(ceLien);
             }
         }
+		//On recharge ce qui est maintenant en base
         initialiseConditionsExercices();
-
-		return true;
 	}
 
 	/**
@@ -5246,7 +5258,6 @@ public class OePOSTEFichePoste extends BasicProcess {
 				initialiseSavoirFaireGeneraux();
 				initialiseActivitesGenerales();
 				initialiseConditionsExercices();
-				//TODOSIRH: ajouter les initialisations nécessaires
 			} else {
 				initialiseActivites();
 				initialiseCompetence();
