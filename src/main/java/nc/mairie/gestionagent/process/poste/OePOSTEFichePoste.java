@@ -7562,7 +7562,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 		return true;
 	}
 
-	private boolean versionFicheMetier() {
+	public boolean versionFicheMetier() {
 		return getMetierPrimaire() != null;
 	}
 }
