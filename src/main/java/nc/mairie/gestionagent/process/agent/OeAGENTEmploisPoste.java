@@ -79,6 +79,7 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 	private List<ActiviteMetier>            listActiviteMetier;
 	private List<SavoirFaire>               listSavoirFaire;
 	private List<ActiviteGenerale>          listActiviteGenerale;
+	private List<ConditionExercice>         listConditionExercice;
 	private ArrayList<Competence>			listeCompetence;
 
 	private Agent							agentCourant;
@@ -133,6 +134,7 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 	private ActiviteMetierDao 				activiteMetierDao;
 	private SavoirFaireDao                  savoirFaireDao;
 	private ActiviteGeneraleDao             activiteGeneraleDao;
+	private ConditionExerciceDao            conditionExerciceDao;
 	private FMFPDao                         fmfpDao;
 	private FicheMetierDao                  ficheMetierDao;
 	private ActiviteFPDao					activiteFPDao;
@@ -302,7 +304,10 @@ public class OeAGENTEmploisPoste extends BasicProcess {
         if (getActiviteGeneraleDao() == null) {
 		    setActiviteGeneraleDao(new ActiviteGeneraleDao((SirhDao) context.getBean("sirhDao")));
         }
-        if (getFmfpDao() == null) {
+		if (getConditionExerciceDao() == null) {
+			setConditionExerciceDao(new ConditionExerciceDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getFmfpDao() == null) {
 			setFmfpDao(new FMFPDao((SirhDao) context.getBean("sirhDao")));
 		}
 		if (getFicheMetierDao() == null) {
@@ -394,6 +399,7 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 				initialiserActiviteMetier();
 				initialiseSavoirFaireGeneraux();
 				initialiserActiviteGenerale();
+				initialiserConditionExercice();
 			} else {
 				// Affiche les activités
 				initialiserActivite();
@@ -654,6 +660,16 @@ public class OeAGENTEmploisPoste extends BasicProcess {
         }
     }
 
+	private void initialiserConditionExercice() {
+		setListConditionExercice(getConditionExerciceDao().listerToutesConditionExerciceChecked(getFichePosteCourant()));
+		for (int i = 0; i < listConditionExercice.size(); i++) {
+			ConditionExercice ce = listConditionExercice.get(i);
+			addZone(getNOM_ST_ID_CE(i), ce.getIdConditionExercice().toString());
+			addZone(getNOM_CK_SELECT_LIGNE_CE(i), ce.getChecked()? getCHECKED_ON(): getCHECKED_OFF());
+			addZone(getNOM_ST_LIB_CE(i), ce.getNomConditionExercice());
+		}
+	}
+
 	public void alimenterZones() throws Exception {
 		addZone(getNOM_ST_BUDGET(), getFichePosteCourant().getIdBudget() == null ? Const.CHAINE_VIDE
 				: getBudgetDao().chercherBudget(getFichePosteCourant().getIdBudget()).getLibBudget());
@@ -815,6 +831,22 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 
 	public String getVAL_CK_SELECT_LIGNE_CE(int i) {
 		return getZone(getNOM_CK_SELECT_LIGNE_CE(i));
+	}
+
+	public String getNOM_ST_ID_CE(int i) {
+		return "NOM_ST_ID_CE_" + i;
+	}
+
+	public String getVAL_ST_ID_CE(int i) {
+		return getZone(getNOM_ST_ID_CE(i));
+	}
+
+	public String getNOM_ST_LIB_CE(int i) {
+		return "NOM_ST_LIB_CE_" + i;
+	}
+
+	public String getVAL_ST_LIB_CE(int i) {
+		return getZone(getNOM_ST_LIB_CE(i));
 	}
 
     public String getNOM_ST_ID_AG(int i) {
@@ -1345,7 +1377,15 @@ public class OeAGENTEmploisPoste extends BasicProcess {
         this.listActiviteGenerale = listActiviteGenerale;
     }
 
-    /**
+	public List<ConditionExercice> getListConditionExercice() {
+		return listConditionExercice;
+	}
+
+	public void setListConditionExercice(List<ConditionExercice> listConditionExercice) {
+		this.listConditionExercice = listConditionExercice;
+	}
+
+	/**
 	 * Retourne la liste des activités.
 	 * 
 	 * @return listeActivite
@@ -2538,7 +2578,15 @@ public class OeAGENTEmploisPoste extends BasicProcess {
         this.activiteGeneraleDao = activiteGeneraleDao;
     }
 
-    public FMFPDao getFmfpDao() {
+	public ConditionExerciceDao getConditionExerciceDao() {
+		return conditionExerciceDao;
+	}
+
+	public void setConditionExerciceDao(ConditionExerciceDao conditionExerciceDao) {
+		this.conditionExerciceDao = conditionExerciceDao;
+	}
+
+	public FMFPDao getFmfpDao() {
 		return fmfpDao;
 	}
 

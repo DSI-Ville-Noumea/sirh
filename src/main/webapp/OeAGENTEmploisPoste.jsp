@@ -431,6 +431,32 @@ document.formu.elements[nom].focus();
                 </tbody>
             </table>
         </FIELDSET>
+
+        <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
+            <legend class="sigp2Legend">Conditions d'exercice</legend>
+            <table class="display" >
+                <thead>
+                <tr>
+                    <th class="masqued-id"></th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <%
+                    if (process.getListConditionExercice()!=null){
+                        for (int indiceCE = 0; indiceCE < process.getListConditionExercice().size(); indiceCE++) {
+                %>
+                <tr>
+                    <td class="masqued-id"><%=process.getVAL_ST_ID_CE(indiceCE)%></td>
+                    <td class="sigp2-statique">* <%=process.getVAL_ST_LIB_CE(indiceCE)%></td>
+                </tr>
+                <%
+                        }
+                    }
+                %>
+                </tbody>
+            </table>
+        </FIELDSET>
         <% }%>
 
         <FIELDSET class="sigp2Fieldset" style="text-align:left;margin:10px;width:1030px;">
