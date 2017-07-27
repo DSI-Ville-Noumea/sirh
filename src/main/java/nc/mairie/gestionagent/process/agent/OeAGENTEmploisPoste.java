@@ -77,6 +77,7 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 	private ArrayList<Competence>			listeComportementPro;
 	private ArrayList<Activite>				listeActivite;
 	private List<ActiviteMetier>            listActiviteMetier;
+	private List<SavoirFaire>               listSavoirFaire;
 	private ArrayList<Competence>			listeCompetence;
 
 	private Agent							agentCourant;
@@ -129,6 +130,7 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 	private CompetenceFPDao					competenceFPDao;
 	private ActiviteDao						activiteDao;
 	private ActiviteMetierDao 				activiteMetierDao;
+	private SavoirFaireDao                  savoirFaireDao;
 	private FMFPDao                         fmfpDao;
 	private FicheMetierDao                  ficheMetierDao;
 	private ActiviteFPDao					activiteFPDao;
@@ -292,6 +294,9 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 		if (getActiviteMetierDao() == null) {
 			setActiviteMetierDao(new ActiviteMetierDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (getSavoirFaireDao() == null) {
+			setSavoirFaireDao(new SavoirFaireDao((SirhDao) context.getBean("sirhDao")));
+		}
 		if (getFmfpDao() == null) {
 			setFmfpDao(new FMFPDao((SirhDao) context.getBean("sirhDao")));
 		}
@@ -382,6 +387,7 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 			alimenterZones();
 			if (versionFicheMetier()) {
 				initialiserActiviteMetier();
+				initialiseSavoirFaireGeneraux();
 			} else {
 				// Affiche les activités
 				initialiserActivite();
@@ -621,6 +627,17 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 		}
 	}
 
+	private void initialiseSavoirFaireGeneraux() {
+		setListSavoirFaire(getSavoirFaireDao().listerTousSavoirFaireGenerauxChecked(getFichePosteCourant()));
+		for (int i = 0; i < listSavoirFaire.size(); i++) {
+			SavoirFaire sf = listSavoirFaire.get(i);
+			addZone(getNOM_ST_ID_SF(i), sf.getIdSavoirFaire().toString());
+			addZone(getNOM_CK_SELECT_LIGNE_SF(i), sf.getChecked()? getCHECKED_ON(): getCHECKED_OFF());
+			addZone(getNOM_ST_LIB_SF(i), sf.getNomSavoirFaire());
+
+		}
+	}
+
 	public void alimenterZones() throws Exception {
 		addZone(getNOM_ST_BUDGET(), getFichePosteCourant().getIdBudget() == null ? Const.CHAINE_VIDE
 				: getBudgetDao().chercherBudget(getFichePosteCourant().getIdBudget()).getLibBudget());
@@ -782,6 +799,22 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 
 	public String getVAL_CK_SELECT_LIGNE_CE(int i) {
 		return getZone(getNOM_CK_SELECT_LIGNE_CE(i));
+	}
+
+	public String getNOM_ST_ID_SF(int i) {
+		return "NOM_ST_ID_SF_" + i;
+	}
+
+	public String getVAL_ST_ID_SF(int i) {
+		return getZone(getNOM_ST_ID_SF(i));
+	}
+
+	public String getNOM_ST_LIB_SF(int i) {
+		return "NOM_ST_LIB_SF_" + i;
+	}
+
+	public String getVAL_ST_LIB_SF(int i) {
+		return getZone(getNOM_ST_LIB_SF(i));
 	}
 
 	public String getNOM_CK_SELECT_LIGNE_ACTI_METIER(int i) {
@@ -1262,6 +1295,14 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 
 	public void setListActiviteMetier(List<ActiviteMetier> listActiviteMetier) {
 		this.listActiviteMetier = listActiviteMetier;
+	}
+
+	public List<SavoirFaire> getListSavoirFaire() {
+		return listSavoirFaire;
+	}
+
+	public void setListSavoirFaire(List<SavoirFaire> listSavoirFaire) {
+		this.listSavoirFaire = listSavoirFaire;
 	}
 
 	/**
@@ -2439,6 +2480,14 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 
 	public void setActiviteMetierDao(ActiviteMetierDao activiteMetierDao) {
 		this.activiteMetierDao = activiteMetierDao;
+	}
+
+	public SavoirFaireDao getSavoirFaireDao() {
+		return savoirFaireDao;
+	}
+
+	public void setSavoirFaireDao(SavoirFaireDao savoirFaireDao) {
+		this.savoirFaireDao = savoirFaireDao;
 	}
 
 	public FMFPDao getFmfpDao() {
