@@ -2425,23 +2425,25 @@ public class OePOSTEFichePoste extends BasicProcess {
 		for (int i = 0; i < listActiviteMetier.size(); i++) {
 			ActiviteMetier am = getListActiviteMetier().get(i);
 			ActiviteMetierSavoirFP amsLien = new ActiviteMetierSavoirFP(getFichePosteCourante().getIdFichePoste(), am.getIdActiviteMetier(), null);
+			//Cas d'une activité avec des sous compétences
+			boolean unSavoirfaireChecked = false;
+			for (int j = 0; j < am.getListSavoirFaire().size(); j++) {
+				SavoirFaire sf = am.getListSavoirFaire().get(j);
+				amsLien.setIdSavoirFaire(sf.getIdSavoirFaire());
+				if (getVAL_CK_SELECT_LIGNE_ACTI_METIER_SAVOIR(i, j).equals(getCHECKED_OFF())) {
+					getActiviteMetierSavoirFPDao().supprimerActiviteMetierSavoirFP(amsLien);
+				} else if (getVAL_CK_SELECT_LIGNE_ACTI_METIER_SAVOIR(i, j).equals(getCHECKED_ON())) {
+					unSavoirfaireChecked = true;
+					getActiviteMetierSavoirFPDao().ajouterActiviteMetierSavoirFP(amsLien);
+				}
+			}
 			//Cas d'une activité sans sous compétences
-			if (am.getListSavoirFaire().isEmpty()) {
+			if (am.getListSavoirFaire().isEmpty() || !unSavoirfaireChecked) {
+				amsLien.setIdSavoirFaire(null);
 				if (getVAL_CK_SELECT_LIGNE_ACTI_METIER(i).equals(getCHECKED_OFF())) {
 					getActiviteMetierSavoirFPDao().supprimerActiviteMetierSavoirFP(amsLien);
 				} else if (getVAL_CK_SELECT_LIGNE_ACTI_METIER(i).equals(getCHECKED_ON())) {
 					getActiviteMetierSavoirFPDao().ajouterActiviteMetierSavoirFP(amsLien);
-				}
-			} else {
-				//Cas d'une activité avec des sous compétences
-				for (int j = 0; j < am.getListSavoirFaire().size(); j++) {
-					SavoirFaire sf = am.getListSavoirFaire().get(j);
-					amsLien.setIdSavoirFaire(sf.getIdSavoirFaire());
-					if (getVAL_CK_SELECT_LIGNE_ACTI_METIER_SAVOIR(i, j).equals(getCHECKED_OFF())) {
-						getActiviteMetierSavoirFPDao().supprimerActiviteMetierSavoirFP(amsLien);
-					} else if (getVAL_CK_SELECT_LIGNE_ACTI_METIER_SAVOIR(i, j).equals(getCHECKED_ON())) {
-						getActiviteMetierSavoirFPDao().ajouterActiviteMetierSavoirFP(amsLien);
-					}
 				}
 			}
 		}

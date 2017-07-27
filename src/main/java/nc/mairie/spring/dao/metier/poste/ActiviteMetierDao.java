@@ -95,6 +95,26 @@ public class ActiviteMetierDao extends SirhDao implements ActiviteMetierDaoInter
         return listeActiviteMetier;
     }
 
+    public List<ActiviteMetier> listerToutesActiviteMetierChecked(FichePoste fp) {
+        List<ActiviteMetier> listeActiviteMetier = listerToutesActiviteMetier(fp);
+        List<ActiviteMetier> listeActiviteMetierChecked = new ArrayList<>();
+        for (int i = 0; i < listeActiviteMetier.size(); i++) {
+            ActiviteMetier am = listeActiviteMetier.get(i);
+            if (am.isChecked()) {
+                listeActiviteMetierChecked.add(am);
+                List<SavoirFaire> listeSavoirFaire = new ArrayList<>();
+                for (int j = 0; j < am.getListSavoirFaire().size(); j++) {
+                    SavoirFaire sf = am.getListSavoirFaire().get(j);
+                    if (sf.getChecked()) {
+                        listeSavoirFaire.add(sf);
+                    }
+                }
+                am.setListSavoirFaire(listeSavoirFaire);
+            }
+        }
+        return listeActiviteMetierChecked;
+    }
+
     @Override
     public List<ActiviteMetier> listerToutesActiviteMetier(FicheMetier fm) {
         String sql = "SELECT AM.ID_ACTIVITE_METIER, SF.ID_SAVOIR_FAIRE, AM.NOM_ACTIVITE_METIER, SF.NOM_SAVOIR_FAIRE FROM ACTIVITE_METIER_FM AM_FM\n" +
