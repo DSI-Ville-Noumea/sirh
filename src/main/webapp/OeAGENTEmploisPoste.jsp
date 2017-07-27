@@ -241,7 +241,7 @@ document.formu.elements[nom].focus();
                     %>
                     <tr style="font-weight: bold;">
                         <td class="masqued-id"><%=process.getVAL_ST_ID_ACTI_METIER(indiceActi)%></td>
-                        <td colspan="2"><%=process.getVAL_ST_LIB_ACTI_METIER(indiceActi)%></td>
+                        <td colspan="2" class="sigp2-statique"><%=process.getVAL_ST_LIB_ACTI_METIER(indiceActi)%></td>
                     </tr>
                     <%
                         for (int indiceSavoirFaire = 0; indiceSavoirFaire < process.getListActiviteMetier().get(indiceActi).getListSavoirFaire().size(); indiceSavoirFaire++) {
@@ -250,7 +250,7 @@ document.formu.elements[nom].focus();
                     <tr>
                         <td  style="display: none;"><%=process.getVAL_ST_ID_ACTI_METIER_SAVOIR(indiceActi, indiceSavoirFaire)%></td>
                         <td width="10"></td>
-                        <td>* <%=process.getVAL_ST_LIB_ACTI_METIER_SAVOIR(indiceActi, indiceSavoirFaire)%></td>
+                        <td class="sigp2-statique">* <%=process.getVAL_ST_LIB_ACTI_METIER_SAVOIR(indiceActi, indiceSavoirFaire)%></td>
                     </tr>
                     <%
                                 }
@@ -289,91 +289,120 @@ document.formu.elements[nom].focus();
                 <br/>
             </FIELDSET>
         <% }%>
-        <FIELDSET class="sigp2Fieldset" style="text-align:left;margin:10px;width:1030px;">
-            <legend class="sigp2Legend">Compétences</legend>
-            <%if ((process.getListeSavoirFaire() != null || process.getListeSavoir() != null || process.getListeComportementPro() != null) && (process.getListeSavoirFaire().size() > 0 || process.getListeSavoir().size() > 0 || process.getListeComportementPro().size() > 0)) { %>
-            <span class="sigp2Mandatory" style="text-align:center">
-				<INPUT type="radio" <%= process.forRadioHTML(process.getNOM_RG_TYPE_COMPETENCE(),process.getNOM_RB_TYPE_COMPETENCE_S())%>
-                       onclick='executeBouton("<%=process.getNOM_PB_CHANGER_TYPE() %>")'>Savoir
-				<span style="width:10px"></span>
-				<INPUT type="radio" <%= process.forRadioHTML(process.getNOM_RG_TYPE_COMPETENCE(),process.getNOM_RB_TYPE_COMPETENCE_SF())%>
-                       onclick='executeBouton("<%=process.getNOM_PB_CHANGER_TYPE() %>")'>Savoir-faire
-				<span style="width:10px"></span>
-				<INPUT type="radio" <%= process.forRadioHTML(process.getNOM_RG_TYPE_COMPETENCE(),process.getNOM_RB_TYPE_COMPETENCE_C())%>
-                       onclick='executeBouton("<%=process.getNOM_PB_CHANGER_TYPE() %>")'>Comportements professionnels
-			</span>
-            <INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_CHANGER_TYPE()%>" value="OK">
-            <br/>
-            <%if (process.getTypeCompetenceCourant() != null && process.getTypeCompetenceCourant().getIdTypeCompetence().toString().equals(EnumTypeCompetence.SAVOIR_FAIRE.getCode().toString())) { %>
-            <div align="left" style="float:left">
-                <br/>
-                <div style="overflow: auto;height: 120px;width:1000px;margin-right: 0px;margin-left: 0px;">
-                    <table class="sigp2NewTab" style="text-align:left;width:980px;">
-                        <%
-                            int indiceCompSF = 0;
-                            if (process.getListeSavoirFaire() != null) {
-                                for (int i = 0; i < process.getListeSavoirFaire().size(); i++) {
-                        %>
+
+        <% if (process.versionFicheMetier()) { %>
+            <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
+                <legend class="sigp2Legend">Savoir-faire</legend>
+                <table class="display" id="tabSavoirFaire">
+                    <thead>
+                    <tr>
+                        <th class="masqued-id">idSavoirFaire</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <%
+                        if (process.getListSavoirFaire()!=null){
+                            for (int indiceSF = 0; indiceSF < process.getListSavoirFaire().size(); indiceSF++) {
+                    %>
                         <tr>
-                            <td class="sigp2NewTab-liste"
-                                style="position:relative;"><%=process.getVAL_ST_LIB_COMP_SF(indiceCompSF)%>
-                            </td>
+                            <td class="masqued-id"><%=process.getVAL_ST_ID_SF(indiceSF)%></td>
+                            <td class="sigp2-statique">* <%=process.getVAL_ST_LIB_SF(indiceSF)%></td>
                         </tr>
-                        <%
-                                    indiceCompSF++;
-                                }
-                            }%>
-                    </table>
-                </div>
-            </div>
-            <%} else if (process.getTypeCompetenceCourant() != null && process.getTypeCompetenceCourant().getIdTypeCompetence().toString().equals(EnumTypeCompetence.SAVOIR.getCode().toString())) {%>
-            <div align="left" style="float:left">
+                    <%
+                            }
+                        }
+                    %>
+                    </tbody>
+                </table>
+            </FIELDSET>
+        <% } else { %>
+            <FIELDSET class="sigp2Fieldset" style="text-align:left;margin:10px;width:1030px;">
+                <legend class="sigp2Legend">Compétences</legend>
+                <%if ((process.getListeSavoirFaire() != null || process.getListeSavoir() != null || process.getListeComportementPro() != null) && (process.getListeSavoirFaire().size() > 0 || process.getListeSavoir().size() > 0 || process.getListeComportementPro().size() > 0)) { %>
+                <span class="sigp2Mandatory" style="text-align:center">
+                    <INPUT type="radio" <%= process.forRadioHTML(process.getNOM_RG_TYPE_COMPETENCE(),process.getNOM_RB_TYPE_COMPETENCE_S())%>
+                           onclick='executeBouton("<%=process.getNOM_PB_CHANGER_TYPE() %>")'>Savoir
+                    <span style="width:10px"></span>
+                    <INPUT type="radio" <%= process.forRadioHTML(process.getNOM_RG_TYPE_COMPETENCE(),process.getNOM_RB_TYPE_COMPETENCE_SF())%>
+                           onclick='executeBouton("<%=process.getNOM_PB_CHANGER_TYPE() %>")'>Savoir-faire
+                    <span style="width:10px"></span>
+                    <INPUT type="radio" <%= process.forRadioHTML(process.getNOM_RG_TYPE_COMPETENCE(),process.getNOM_RB_TYPE_COMPETENCE_C())%>
+                           onclick='executeBouton("<%=process.getNOM_PB_CHANGER_TYPE() %>")'>Comportements professionnels
+                </span>
+                <INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_CHANGER_TYPE()%>" value="OK">
                 <br/>
-                <div style="overflow: auto;height: 120px;width:1000px;margin-right: 0px;margin-left: 0px;">
-                    <table class="sigp2NewTab" style="text-align:left;width:980px;">
-                        <%
-                            int indiceCompS = 0;
-                            if (process.getListeSavoir() != null) {
-                                for (int i = 0; i < process.getListeSavoir().size(); i++) {
-                        %>
-                        <tr>
-                            <td class="sigp2NewTab-liste"
-                                style="position:relative;"><%=process.getVAL_ST_LIB_COMP_S(indiceCompS)%>
-                            </td>
-                        </tr>
-                        <%
-                                    indiceCompS++;
-                                }
-                            }%>
-                    </table>
+                <%if (process.getTypeCompetenceCourant() != null && process.getTypeCompetenceCourant().getIdTypeCompetence().toString().equals(EnumTypeCompetence.SAVOIR_FAIRE.getCode().toString())) { %>
+                <div align="left" style="float:left">
+                    <br/>
+                    <div style="overflow: auto;height: 120px;width:1000px;margin-right: 0px;margin-left: 0px;">
+                        <table class="sigp2NewTab" style="text-align:left;width:980px;">
+                            <%
+                                int indiceCompSF = 0;
+                                if (process.getListeSavoirFaire() != null) {
+                                    for (int i = 0; i < process.getListeSavoirFaire().size(); i++) {
+                            %>
+                            <tr>
+                                <td class="sigp2NewTab-liste"
+                                    style="position:relative;"><%=process.getVAL_ST_LIB_COMP_SF(indiceCompSF)%>
+                                </td>
+                            </tr>
+                            <%
+                                        indiceCompSF++;
+                                    }
+                                }%>
+                        </table>
+                    </div>
                 </div>
-            </div>
-            <%} else if (process.getTypeCompetenceCourant() != null && process.getTypeCompetenceCourant().getIdTypeCompetence().toString().equals(EnumTypeCompetence.COMPORTEMENT.getCode().toString())) {%>
-            <div align="left" style="float:left">
+                <%} else if (process.getTypeCompetenceCourant() != null && process.getTypeCompetenceCourant().getIdTypeCompetence().toString().equals(EnumTypeCompetence.SAVOIR.getCode().toString())) {%>
+                <div align="left" style="float:left">
+                    <br/>
+                    <div style="overflow: auto;height: 120px;width:1000px;margin-right: 0px;margin-left: 0px;">
+                        <table class="sigp2NewTab" style="text-align:left;width:980px;">
+                            <%
+                                int indiceCompS = 0;
+                                if (process.getListeSavoir() != null) {
+                                    for (int i = 0; i < process.getListeSavoir().size(); i++) {
+                            %>
+                            <tr>
+                                <td class="sigp2NewTab-liste"
+                                    style="position:relative;"><%=process.getVAL_ST_LIB_COMP_S(indiceCompS)%>
+                                </td>
+                            </tr>
+                            <%
+                                        indiceCompS++;
+                                    }
+                                }%>
+                        </table>
+                    </div>
+                </div>
+                <%} else if (process.getTypeCompetenceCourant() != null && process.getTypeCompetenceCourant().getIdTypeCompetence().toString().equals(EnumTypeCompetence.COMPORTEMENT.getCode().toString())) {%>
+                <div align="left" style="float:left">
+                    <br/>
+                    <div style="overflow: auto;height: 120px;width:1000px;margin-right: 0px;margin-left: 0px;">
+                        <table class="sigp2NewTab" style="text-align:left;width:980px;">
+                            <%
+                                int indiceCompPro = 0;
+                                if (process.getListeComportementPro() != null) {
+                                    for (int i = 0; i < process.getListeComportementPro().size(); i++) {
+                            %>
+                            <tr>
+                                <td class="sigp2NewTab-liste"
+                                    style="position:relative;"><%=process.getVAL_ST_LIB_COMP_PRO(indiceCompPro)%>
+                                </td>
+                            </tr>
+                            <%
+                                        indiceCompPro++;
+                                    }
+                                }%>
+                        </table>
+                    </div>
+                </div>
+                <%} %>
+                <%} %>
                 <br/>
-                <div style="overflow: auto;height: 120px;width:1000px;margin-right: 0px;margin-left: 0px;">
-                    <table class="sigp2NewTab" style="text-align:left;width:980px;">
-                        <%
-                            int indiceCompPro = 0;
-                            if (process.getListeComportementPro() != null) {
-                                for (int i = 0; i < process.getListeComportementPro().size(); i++) {
-                        %>
-                        <tr>
-                            <td class="sigp2NewTab-liste"
-                                style="position:relative;"><%=process.getVAL_ST_LIB_COMP_PRO(indiceCompPro)%>
-                            </td>
-                        </tr>
-                        <%
-                                    indiceCompPro++;
-                                }
-                            }%>
-                    </table>
-                </div>
-            </div>
-            <%} %>
-            <%} %>
-            <br/>
-        </FIELDSET>
+            </FIELDSET>
+        <% } %>
         <FIELDSET class="sigp2Fieldset" style="text-align:left;margin:10px;width:1030px;">
             <legend class="sigp2Legend">Spécificités</legend>
             <BR/>
