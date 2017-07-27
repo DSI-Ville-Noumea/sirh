@@ -403,6 +403,36 @@ document.formu.elements[nom].focus();
                 <br/>
             </FIELDSET>
         <% } %>
+
+
+        <% if (process.versionFicheMetier()) { %>
+        <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
+            <legend class="sigp2Legend">Activités et compétences générales</legend>
+            <table class="display" >
+                <thead>
+                <tr>
+                    <th class="masqued-id"></th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <%
+                    if (process.getListActiviteGenerale()!=null){
+                        for (int indiceAG = 0; indiceAG < process.getListActiviteGenerale().size(); indiceAG++) {
+                %>
+                <tr>
+                    <td class="masqued-id"><%=process.getVAL_ST_ID_AG(indiceAG)%></td>
+                    <td class="sigp2-statique">* <%=process.getVAL_ST_LIB_AG(indiceAG)%></td>
+                </tr>
+                <%
+                        }
+                    }
+                %>
+                </tbody>
+            </table>
+        </FIELDSET>
+        <% }%>
+
         <FIELDSET class="sigp2Fieldset" style="text-align:left;margin:10px;width:1030px;">
             <legend class="sigp2Legend">Spécificités</legend>
             <BR/>
