@@ -78,6 +78,7 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 	private ArrayList<Activite>				listeActivite;
 	private List<ActiviteMetier>            listActiviteMetier;
 	private List<SavoirFaire>               listSavoirFaire;
+	private List<ActiviteGenerale>          listActiviteGenerale;
 	private ArrayList<Competence>			listeCompetence;
 
 	private Agent							agentCourant;
@@ -131,6 +132,7 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 	private ActiviteDao						activiteDao;
 	private ActiviteMetierDao 				activiteMetierDao;
 	private SavoirFaireDao                  savoirFaireDao;
+	private ActiviteGeneraleDao             activiteGeneraleDao;
 	private FMFPDao                         fmfpDao;
 	private FicheMetierDao                  ficheMetierDao;
 	private ActiviteFPDao					activiteFPDao;
@@ -297,7 +299,10 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 		if (getSavoirFaireDao() == null) {
 			setSavoirFaireDao(new SavoirFaireDao((SirhDao) context.getBean("sirhDao")));
 		}
-		if (getFmfpDao() == null) {
+        if (getActiviteGeneraleDao() == null) {
+		    setActiviteGeneraleDao(new ActiviteGeneraleDao((SirhDao) context.getBean("sirhDao")));
+        }
+        if (getFmfpDao() == null) {
 			setFmfpDao(new FMFPDao((SirhDao) context.getBean("sirhDao")));
 		}
 		if (getFicheMetierDao() == null) {
@@ -388,6 +393,7 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 			if (versionFicheMetier()) {
 				initialiserActiviteMetier();
 				initialiseSavoirFaireGeneraux();
+				initialiserActiviteGenerale();
 			} else {
 				// Affiche les activités
 				initialiserActivite();
@@ -638,6 +644,16 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 		}
 	}
 
+    private void initialiserActiviteGenerale() {
+        setListActiviteGenerale(getActiviteGeneraleDao().listerToutesActiviteGeneraleChecked(getFichePosteCourant()));
+        for (int i = 0; i < listActiviteGenerale.size(); i++) {
+            ActiviteGenerale ag = listActiviteGenerale.get(i);
+            addZone(getNOM_ST_ID_AG(i), ag.getIdActiviteGenerale().toString());
+            addZone(getNOM_CK_SELECT_LIGNE_AG(i), ag.getChecked()? getCHECKED_ON(): getCHECKED_OFF());
+            addZone(getNOM_ST_LIB_AG(i), ag.getNomActiviteGenerale());
+        }
+    }
+
 	public void alimenterZones() throws Exception {
 		addZone(getNOM_ST_BUDGET(), getFichePosteCourant().getIdBudget() == null ? Const.CHAINE_VIDE
 				: getBudgetDao().chercherBudget(getFichePosteCourant().getIdBudget()).getLibBudget());
@@ -800,6 +816,22 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 	public String getVAL_CK_SELECT_LIGNE_CE(int i) {
 		return getZone(getNOM_CK_SELECT_LIGNE_CE(i));
 	}
+
+    public String getNOM_ST_ID_AG(int i) {
+        return "NOM_ST_ID_AG_" + i;
+    }
+
+    public String getVAL_ST_ID_AG(int i) {
+        return getZone(getNOM_ST_ID_AG(i));
+    }
+
+    public String getNOM_ST_LIB_AG(int i) {
+        return "NOM_ST_LIB_AG_" + i;
+    }
+
+    public String getVAL_ST_LIB_AG(int i) {
+        return getZone(getNOM_ST_LIB_AG(i));
+    }
 
 	public String getNOM_ST_ID_SF(int i) {
 		return "NOM_ST_ID_SF_" + i;
@@ -1305,7 +1337,15 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 		this.listSavoirFaire = listSavoirFaire;
 	}
 
-	/**
+    public List<ActiviteGenerale> getListActiviteGenerale() {
+        return listActiviteGenerale;
+    }
+
+    public void setListActiviteGenerale(List<ActiviteGenerale> listActiviteGenerale) {
+        this.listActiviteGenerale = listActiviteGenerale;
+    }
+
+    /**
 	 * Retourne la liste des activités.
 	 * 
 	 * @return listeActivite
@@ -2490,7 +2530,15 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 		this.savoirFaireDao = savoirFaireDao;
 	}
 
-	public FMFPDao getFmfpDao() {
+    public ActiviteGeneraleDao getActiviteGeneraleDao() {
+        return activiteGeneraleDao;
+    }
+
+    public void setActiviteGeneraleDao(ActiviteGeneraleDao activiteGeneraleDao) {
+        this.activiteGeneraleDao = activiteGeneraleDao;
+    }
+
+    public FMFPDao getFmfpDao() {
 		return fmfpDao;
 	}
 
