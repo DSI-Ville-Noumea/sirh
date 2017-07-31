@@ -326,7 +326,7 @@
 </fieldset>
 
 <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
-	<legend class="sigp2Legend">Activités métier</legend>
+	<legend class="sigp2Legend">Activités métier et savoir-faire</legend>
 	<table class="display" id="tabActiMetier">
 		<thead>
 		<tr>
