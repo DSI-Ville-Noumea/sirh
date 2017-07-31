@@ -224,6 +224,22 @@ document.formu.elements[nom].focus();
 		    	</tr>
 		    </table>
 		</FIELDSET>
+        <% if (process.versionFicheMetier()) { %>
+            <fieldset class="sigp2Fieldset" style="width:1020px">
+                <legend class="sigp2Legend">Spécialisation éventuelle</legend>
+                <br/>
+                <textarea disabled='disabled' rows="4" cols="160" class="sigp2-saisie" style="margin-right:10px;" name="<%= process.getNOM_EF_SPECIALISATION()%>" ><%= process.getVAL_EF_SPECIALISATION() %></textarea>
+                <br/>
+            </fieldset>
+
+            <fieldset class="sigp2Fieldset" style="width:1020px">
+                <legend class="sigp2Legend">Informations complémentaires</legend>
+                <br/>
+                <textarea disabled='disabled' rows="4" cols="160" class="sigp2-saisie" style="margin-right:10px;" name="<%= process.getNOM_EF_INFORMATIONS_COMPLEMENTAIRES()%>" ><%= process.getVAL_EF_INFORMATIONS_COMPLEMENTAIRES() %></textarea>
+                <br/>
+            </fieldset>
+
+        <% } %>
 		<% if (process.versionFicheMetier()) { %>
             <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
                 <legend class="sigp2Legend">Activités métier et savoir-faire</legend>

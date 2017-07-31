@@ -396,6 +396,7 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 			// Affiche les zones de la page
 			alimenterZones();
 			if (versionFicheMetier()) {
+				initInfos();
 				initialiserActiviteMetier();
 				initialiseSavoirFaireGeneraux();
 				initialiserActiviteGenerale();
@@ -617,6 +618,11 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 		}
 	}
 
+	private void initInfos() {
+		addZone(getNOM_EF_SPECIALISATION(), getFichePosteCourant().getSpecialisation());
+		addZone(getNOM_EF_INFORMATIONS_COMPLEMENTAIRES(), getFichePosteCourant().getInformations_complementaires());
+	}
+
 	private void initialiserActiviteMetier() throws Exception {
 		if (getFichePosteCourant() != null && getFichePosteCourant().getIdFichePoste() != null) {
 			setListActiviteMetier(getActiviteMetierDao().listerToutesActiviteMetierChecked(getFichePosteCourant()));
@@ -831,6 +837,22 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 
 	public String getVAL_CK_SELECT_LIGNE_CE(int i) {
 		return getZone(getNOM_CK_SELECT_LIGNE_CE(i));
+	}
+
+	public String getNOM_EF_SPECIALISATION() {
+		return "NOM_EF_SPECIALISATION";
+	}
+
+	public String getVAL_EF_SPECIALISATION() {
+		return getZone(getNOM_EF_SPECIALISATION());
+	}
+
+	public String getNOM_EF_INFORMATIONS_COMPLEMENTAIRES() {
+		return "NOM_EF_INFORMATIONS_COMPLEMENTAIRES";
+	}
+
+	public String getVAL_EF_INFORMATIONS_COMPLEMENTAIRES() {
+		return getZone(getNOM_EF_INFORMATIONS_COMPLEMENTAIRES());
 	}
 
 	public String getNOM_ST_ID_CE(int i) {
