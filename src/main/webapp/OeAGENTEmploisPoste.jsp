@@ -292,7 +292,7 @@ document.formu.elements[nom].focus();
 
         <% if (process.versionFicheMetier()) { %>
             <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
-                <legend class="sigp2Legend">Savoir-faire</legend>
+                <legend class="sigp2Legend">Savoirs</legend>
                 <table class="display" id="tabSavoirFaire">
                     <thead>
                     <tr>
