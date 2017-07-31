@@ -7,6 +7,7 @@ public class SavoirFaireFP {
 
     private Integer idFichePoste;
     private Integer idSavoirFaire;
+    private Integer ordre;
 
     public SavoirFaireFP() {
     }
@@ -14,6 +15,12 @@ public class SavoirFaireFP {
     public SavoirFaireFP(Integer idFichePoste, Integer idSavoirFaire) {
         this.idFichePoste = idFichePoste;
         this.idSavoirFaire = idSavoirFaire;
+    }
+
+    public SavoirFaireFP(Integer idFichePoste, Integer idSavoirFaire, Integer ordre) {
+        this.idFichePoste = idFichePoste;
+        this.idSavoirFaire = idSavoirFaire;
+        this.ordre = ordre;
     }
 
     public Integer getIdFichePoste() {
@@ -30,6 +37,14 @@ public class SavoirFaireFP {
 
     public void setIdSavoirFaire(Integer idSavoirFaire) {
         this.idSavoirFaire = idSavoirFaire;
+    }
+
+    public Integer getOrdre() {
+        return ordre;
+    }
+
+    public void setOrdre(Integer ordre) {
+        this.ordre = ordre;
     }
 
     @Override

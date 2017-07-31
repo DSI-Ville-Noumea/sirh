@@ -7,6 +7,7 @@ public class ConditionExerciceFP {
 
     private Integer idFichePoste;
     private Integer idConditionExercice;
+    private Integer ordre;
 
     public ConditionExerciceFP() {
     }
@@ -14,6 +15,12 @@ public class ConditionExerciceFP {
     public ConditionExerciceFP(Integer idFichePoste, Integer idConditionExercice) {
         this.idFichePoste = idFichePoste;
         this.idConditionExercice = idConditionExercice;
+    }
+
+    public ConditionExerciceFP(Integer idFichePoste, Integer idConditionExercice, Integer ordre) {
+        this.idFichePoste = idFichePoste;
+        this.idConditionExercice = idConditionExercice;
+        this.ordre = ordre;
     }
 
     public Integer getIdFichePoste() {
@@ -30,6 +37,14 @@ public class ConditionExerciceFP {
 
     public void setIdConditionExercice(Integer idConditionExercice) {
         this.idConditionExercice = idConditionExercice;
+    }
+
+    public Integer getOrdre() {
+        return ordre;
+    }
+
+    public void setOrdre(Integer ordre) {
+        this.ordre = ordre;
     }
 
     @Override

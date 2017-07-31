@@ -7,6 +7,7 @@ public class ActiviteGeneraleFP {
 
     private Integer idFichePoste;
     private Integer idActiviteGenerale;
+    private Integer ordre;
 
     public ActiviteGeneraleFP() {
     }
@@ -14,6 +15,12 @@ public class ActiviteGeneraleFP {
     public ActiviteGeneraleFP(Integer idFichePoste, Integer idActiviteGenerale) {
         this.idFichePoste = idFichePoste;
         this.idActiviteGenerale = idActiviteGenerale;
+    }
+
+    public ActiviteGeneraleFP(Integer idFichePoste, Integer idActiviteGenerale, Integer ordre) {
+        this.idFichePoste = idFichePoste;
+        this.idActiviteGenerale = idActiviteGenerale;
+        this.ordre = ordre;
     }
 
     public Integer getIdFichePoste() {
@@ -30,6 +37,14 @@ public class ActiviteGeneraleFP {
 
     public void setIdActiviteGenerale(Integer idActiviteGenerale) {
         this.idActiviteGenerale = idActiviteGenerale;
+    }
+
+    public Integer getOrdre() {
+        return ordre;
+    }
+
+    public void setOrdre(Integer ordre) {
+        this.ordre = ordre;
     }
 
     @Override
