@@ -8,6 +8,7 @@ public class ActiviteMetierSavoirFP {
     private Integer idFichePoste;
     private Integer idActiviteMetier;
     private Integer idSavoirFaire;
+    private Integer ordre;
 
     public ActiviteMetierSavoirFP() {
     }
@@ -16,6 +17,13 @@ public class ActiviteMetierSavoirFP {
         this.idFichePoste = idFichePoste;
         this.idActiviteMetier = idActiviteMetier;
         this.idSavoirFaire = idSavoirFaire;
+    }
+
+    public ActiviteMetierSavoirFP(Integer idFichePoste, Integer idActiviteMetier, Integer idSavoirFaire, Integer ordre) {
+        this.idFichePoste = idFichePoste;
+        this.idActiviteMetier = idActiviteMetier;
+        this.idSavoirFaire = idSavoirFaire;
+        this.ordre = ordre;
     }
 
     public Integer getIdFichePoste() {
@@ -40,6 +48,14 @@ public class ActiviteMetierSavoirFP {
 
     public void setIdSavoirFaire(Integer idSavoirFaire) {
         this.idSavoirFaire = idSavoirFaire;
+    }
+
+    public Integer getOrdre() {
+        return ordre;
+    }
+
+    public void setOrdre(Integer ordre) {
+        this.ordre = ordre;
     }
 
     @Override
