@@ -29,22 +29,21 @@ public class ActiviteGeneraleDao extends SirhDao implements ActiviteGeneraleInte
                 "JOIN FM_FP ON FM_FP.ID_FICHE_METIER = AG_FM.ID_FICHE_METIER " +
                 "LEFT JOIN ACTIVITE_GENERALE_FP AG_FP ON AG_FP.ID_FICHE_POSTE = FM_FP.ID_FICHE_POSTE AND AG_FP.ID_ACTIVITE_GENERALE = AG.ID_ACTIVITE_GENERALE " +
                 "WHERE FM_FP.ID_FICHE_POSTE = ? " +
-                "ORDER BY AG_FP.ORDRE";
+                "ORDER BY FM_FP.FM_PRIMAIRE DESC, CASE WHEN AG_FP.ORDRE IS NULL THEN AG_FM.ORDRE ELSE AG_FP.ORDRE END";
         return jdbcTemplate.query(sql, new Object[]{fp.getIdFichePoste()}, new BeanPropertyRowMapper<>(ActiviteGenerale.class));
     }
 
     public List<ActiviteGenerale> listerToutesActiviteGenerale(FichePoste fp, Integer idFicheMetierPrimaire, Integer idFicheMetierSecondaire) {
         Integer idFichePoste = fp != null ? fp.getIdFichePoste() : null;
         String sql = "SELECT AG_FM.ID_ACTIVITE_GENERALE, AG.NOM_ACTIVITE_GENERALE, " +
-                "                CASE WHEN AG_FP.ID_ACTIVITE_GENERALE IS NULL THEN '0' ELSE '1' END AS CHECKED,  " +
-                "                CASE WHEN AG_FP.ORDRE IS NULL THEN AG_FM.ORDRE ELSE AG_FP.ORDRE END AS ORDRE " +
+                "                CASE WHEN AG_FP.ID_ACTIVITE_GENERALE IS NULL THEN '0' ELSE '1' END AS CHECKED  " +
                 "                FROM ACTIVITE_GENERALE_FM AG_FM " +
                 "                JOIN FM_FP ON FM_FP.ID_FICHE_METIER = AG_FM.ID_FICHE_METIER " +
                 "                JOIN ACTIVITE_GENERALE AG ON AG.ID_ACTIVITE_GENERALE = AG_FM.ID_ACTIVITE_GENERALE " +
                 "                LEFT JOIN ACTIVITE_GENERALE_FP AG_FP ON AG_FP.ID_ACTIVITE_GENERALE = AG.ID_ACTIVITE_GENERALE AND (AG_FP.ID_FICHE_POSTE = ?) " +
                 "                WHERE (FM_FP.ID_FICHE_POSTE = ? AND FM_FP.ID_FICHE_METIER IN(?, ?)) " +
                 "                OR (FM_FP.ID_FICHE_METIER NOT IN (SELECT FM_FP.ID_FICHE_METIER FROM FM_FP WHERE FM_FP.ID_FICHE_POSTE = ?) AND FM_FP.ID_FICHE_METIER IN (?, ?)) " +
-                "                ORDER BY ORDRE";
+                "                ORDER BY FM_FP.FM_PRIMAIRE DESC, CASE WHEN AG_FP.ORDRE IS NULL THEN AG_FM.ORDRE ELSE AG_FP.ORDRE END";
         return jdbcTemplate.query(sql, new Object[]{idFichePoste, idFichePoste, idFicheMetierPrimaire, idFicheMetierSecondaire, idFichePoste, idFicheMetierPrimaire, idFicheMetierSecondaire}, new BeanPropertyRowMapper<>(ActiviteGenerale.class));
     }
 
@@ -55,14 +54,13 @@ public class ActiviteGeneraleDao extends SirhDao implements ActiviteGeneraleInte
 
     public List<ActiviteGenerale> listerToutesActiviteGeneraleChecked(FichePoste fp) {
         String sql = "SELECT AG.ID_ACTIVITE_GENERALE, AG.NOM_ACTIVITE_GENERALE, " +
-                "CASE WHEN AG_FP.ID_ACTIVITE_GENERALE IS NULL THEN '0' ELSE '1' END AS CHECKED, " +
-                "CASE WHEN AG_FP.ORDRE IS NULL THEN AG_FM.ORDRE ELSE AG_FP.ORDRE END AS ORDRE " +
+                "CASE WHEN AG_FP.ID_ACTIVITE_GENERALE IS NULL THEN '0' ELSE '1' END AS CHECKED " +
                 "FROM ACTIVITE_GENERALE_FM AG_FM " +
                 "JOIN ACTIVITE_GENERALE AG ON AG.ID_ACTIVITE_GENERALE = AG_FM.ID_ACTIVITE_GENERALE " +
                 "JOIN FM_FP ON FM_FP.ID_FICHE_METIER = AG_FM.ID_FICHE_METIER " +
                 "LEFT JOIN ACTIVITE_GENERALE_FP AG_FP ON AG_FP.ID_FICHE_POSTE = FM_FP.ID_FICHE_POSTE AND AG_FP.ID_ACTIVITE_GENERALE = AG.ID_ACTIVITE_GENERALE " +
                 "WHERE FM_FP.ID_FICHE_POSTE = ? AND AG_FP.ID_ACTIVITE_GENERALE IS NOT NULL " +
-                "ORDER BY ORDRE";
+                "ORDER BY FM_FP.FM_PRIMAIRE DESC, CASE WHEN AG_FP.ORDRE IS NULL THEN AG_FM.ORDRE ELSE AG_FP.ORDRE END";
         return jdbcTemplate.query(sql, new Object[]{fp.getIdFichePoste()}, new BeanPropertyRowMapper<>(ActiviteGenerale.class));
     }
 }
