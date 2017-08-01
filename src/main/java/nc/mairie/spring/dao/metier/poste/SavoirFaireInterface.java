@@ -10,5 +10,9 @@ import java.util.List;
  */
 public interface SavoirFaireInterface {
 
-    public List<SavoirFaire> listerTousSavoirFaireGeneraux(FichePoste fp);
+    public List<SavoirFaire> listerTousSavoirFaireGeneraux(FichePoste fp, Integer idFicheMetierPrimaire, Integer idFicheMetierSecondaire);
+
+    public void supprimerTousSavoirFaireGeneraux(FichePoste fp);
+
+    public List<SavoirFaire> listerTousSavoirFaireGenerauxChecked(FichePoste fp);
 }
