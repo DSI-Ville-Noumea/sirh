@@ -14,5 +14,5 @@ public interface SavoirFaireInterface {
 
     public void supprimerTousSavoirFaireGeneraux(FichePoste fp);
 
-    public List<SavoirFaire> listerTousSavoirFaireGenerauxChecked(FichePoste fp);
+    public List<SavoirFaire> listerTousSavoirFaireGenerauxChecked(FichePoste fp, Integer idFicheMetierPrimaire, Integer idFicheMetierSecondaire);
 }
