@@ -13,5 +13,10 @@ public interface ActiviteMetierDaoInterface {
 
     public List<ActiviteMetier> listerToutesActiviteMetier(FichePoste fp);
 
-    public List<ActiviteMetier> listerToutesActiviteMetier(FicheMetier fm);
+    public List<ActiviteMetier> listerToutesActiviteMetier(FichePoste fp, Integer idFicheMetierPrimaire, Integer idFicheMetierSecondaire);
+
+    public List<ActiviteMetier> listerToutesActiviteMetierChecked(FichePoste fp);
+
+    public List<ActiviteMetier> listerToutesActiviteMetier(Integer idFicheMetierPrimaire, Integer idFicheMetierSecondaire);
+
 }
