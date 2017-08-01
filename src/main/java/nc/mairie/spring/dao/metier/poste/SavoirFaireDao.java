@@ -23,7 +23,7 @@ public class SavoirFaireDao extends SirhDao implements SavoirFaireInterface {
     public List<SavoirFaire> listerTousSavoirFaireGeneraux(FichePoste fp, Integer idFicheMetierPrimaire, Integer idFicheMetierSecondaire) {
         Integer idFichePoste = fp != null ? fp.getIdFichePoste() : null;
         Integer idFMSecondaire = idFicheMetierSecondaire != null ? idFicheMetierSecondaire : idFicheMetierPrimaire;
-        String sql = "SELECT ID_SAVOIR_FAIRE, NOM_SAVOIR_FAIRE, CHECKED, MIN(FM_ORDRE) AS SFR_ORDRE, SF_ORDRE FROM " +
+        String sql = "SELECT ID_SAVOIR_FAIRE, NOM_SAVOIR_FAIRE, CHECKED, MIN(FM_ORDRE) AS SFR_ORDRE, MIN(SF_ORDRE) AS SF_ORDRE FROM " +
                 "(SELECT DISTINCT SF_FM.ID_SAVOIR_FAIRE, SF.NOM_SAVOIR_FAIRE, FM_FP.FM_PRIMAIRE, " +
                 "CASE WHEN SF_FP.ORDRE IS NULL THEN SF_FM.ORDRE ELSE SF_FP.ORDRE END AS SF_ORDRE, " +
                 "CASE WHEN SF_FP.ID_SAVOIR_FAIRE IS NULL THEN '0' ELSE '1' END AS CHECKED, " +
@@ -34,7 +34,7 @@ public class SavoirFaireDao extends SirhDao implements SavoirFaireInterface {
                 "LEFT JOIN SAVOIR_FAIRE_FP SF_FP ON SF_FP.ID_SAVOIR_FAIRE = SF.ID_SAVOIR_FAIRE AND (SF_FP.ID_FICHE_POSTE = ?) " +
                 "WHERE SF_FM.ID_FICHE_METIER IN (?, ?) " +
                 "ORDER BY FM_ORDRE, SF_ORDRE) SFR " +
-                "GROUP BY ID_SAVOIR_FAIRE, NOM_SAVOIR_FAIRE, CHECKED, SF_ORDRE " +
+                "GROUP BY ID_SAVOIR_FAIRE, NOM_SAVOIR_FAIRE, CHECKED " +
                 "ORDER BY SFR_ORDRE, SF_ORDRE";
         return jdbcTemplate.query(sql, new Object[]{idFicheMetierPrimaire, idFichePoste, idFichePoste, idFicheMetierPrimaire, idFMSecondaire}, new BeanPropertyRowMapper<>(SavoirFaire.class));
     }
