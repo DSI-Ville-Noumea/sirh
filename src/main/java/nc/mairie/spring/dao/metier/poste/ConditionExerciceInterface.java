@@ -10,5 +10,10 @@ import java.util.List;
  */
 public interface ConditionExerciceInterface {
 
-    public List<ConditionExercice> listerToutesConditionExercice(FichePoste fp);
+    public List<ConditionExercice> listerToutesConditionExercice(FichePoste fp, Integer idFicheMetierPrimaire, Integer idFicheMetierSecondaire);
+
+    public void supprimerToutesConditionExercice(FichePoste fp);
+
+    public List<ConditionExercice> listerToutesConditionExerciceChecked(FichePoste fp);
+
 }

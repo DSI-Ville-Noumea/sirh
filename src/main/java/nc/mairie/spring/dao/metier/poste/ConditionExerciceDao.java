@@ -20,19 +20,6 @@ public class ConditionExerciceDao extends SirhDao implements ConditionExerciceIn
         super.CHAMP_ID = "ID_CONDITION_EXERCICE";
     }
 
-    @Override
-    public List<ConditionExercice> listerToutesConditionExercice(FichePoste fp) {
-        String sql = "SELECT CE.ID_CONDITION_EXERCICE, CE.NOM_CONDITION_EXERCICE, " +
-                "CASE WHEN CE_FP.ID_CONDITION_EXERCICE IS NULL THEN '0' ELSE '1' END AS CHECKED " +
-                "FROM CONDITION_EXERCICE_FM CE_FM " +
-                "JOIN CONDITION_EXERCICE CE ON CE.ID_CONDITION_EXERCICE = CE_FM.ID_CONDITION_EXERCICE " +
-                "JOIN FM_FP ON FM_FP.ID_FICHE_METIER = CE_FM.ID_FICHE_METIER " +
-                "LEFT JOIN CONDITION_EXERCICE_FP CE_FP ON CE_FP.ID_FICHE_POSTE = FM_FP.ID_FICHE_POSTE AND CE_FP.ID_CONDITION_EXERCICE = CE.ID_CONDITION_EXERCICE " +
-                "WHERE FM_FP.ID_FICHE_POSTE = ? " +
-                "ORDER BY FM_FP.FM_PRIMAIRE DESC, CASE WHEN CE_FP.ORDRE IS NULL THEN CE_FM.ORDRE ELSE CE_FP.ORDRE END";
-        return jdbcTemplate.query(sql, new Object[]{fp.getIdFichePoste()}, new BeanPropertyRowMapper<>(ConditionExercice.class));
-    }
-
     public List<ConditionExercice> listerToutesConditionExercice(FichePoste fp, Integer idFicheMetierPrimaire, Integer idFicheMetierSecondaire) {
         Integer idFichePoste = fp != null ? fp.getIdFichePoste() : null;
         String sql = "SELECT DISTINCT CE_FM.ID_CONDITION_EXERCICE, CE.NOM_CONDITION_EXERCICE,FM_FP.FM_PRIMAIRE, " +

@@ -10,5 +10,9 @@ import java.util.List;
  */
 public interface ActiviteGeneraleInterface {
 
-    public List<ActiviteGenerale> listerToutesActiviteGenerale(FichePoste fp);
+    public List<ActiviteGenerale> listerToutesActiviteGenerale(FichePoste fp, Integer idFicheMetierPrimaire, Integer idFicheMetierSecondaire);
+
+    public void supprimerToutesActiviteGenerale(FichePoste fp);
+
+    public List<ActiviteGenerale> listerToutesActiviteGeneraleChecked(FichePoste fp);
 }
