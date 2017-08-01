@@ -14,5 +14,5 @@ public interface ActiviteGeneraleInterface {
 
     public void supprimerToutesActiviteGenerale(FichePoste fp);
 
-    public List<ActiviteGenerale> listerToutesActiviteGeneraleChecked(FichePoste fp);
+    public List<ActiviteGenerale> listerToutesActiviteGeneraleChecked(FichePoste fp, Integer idFicheMetierPrimaire, Integer idFicheMetierSecondaire);
 }

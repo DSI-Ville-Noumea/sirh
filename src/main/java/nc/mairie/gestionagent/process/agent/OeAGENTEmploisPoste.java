@@ -655,7 +655,9 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 	}
 
     private void initialiserActiviteGenerale() {
-        setListActiviteGenerale(getActiviteGeneraleDao().listerToutesActiviteGeneraleChecked(getFichePosteCourant()));
+        setListActiviteGenerale(getActiviteGeneraleDao().listerToutesActiviteGeneraleChecked(getFichePosteCourant(),
+				getMetierPrimaire() != null ? getMetierPrimaire().getIdFicheMetier() : null,
+				getMetierSecondaire() != null ? getMetierSecondaire().getIdFicheMetier() : null));
         for (int i = 0; i < listActiviteGenerale.size(); i++) {
             ActiviteGenerale ag = listActiviteGenerale.get(i);
             addZone(getNOM_ST_ID_AG(i), ag.getIdActiviteGenerale().toString());
