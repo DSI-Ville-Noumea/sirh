@@ -65,7 +65,6 @@
 								<td align="center">Date déclaration</td>
 								<td align="center">Date début</td>
 								<td align="center">Date fin</td>
-								<td align="center">Rechute</td>
 								<td align="center">Nbr jour(s) IIT</td>
 								<td align="left">Type</td>
 								<td align="left">Siège des lésions</td>
@@ -87,7 +86,6 @@
 										<td class="sigp2NewTab-liste" style="position:relative;width:90px;text-align: center;"><%=process.getVAL_ST_DATE(indiceAcc)%></td>
 										<td class="sigp2NewTab-liste" style="position:relative;width:90px;text-align: center;"><%=process.getVAL_ST_DATE_DEBUT(indiceAcc)%></td>
 										<td class="sigp2NewTab-liste" style="position:relative;width:90px;text-align: center;"><%=process.getVAL_ST_DATE_FIN(indiceAcc)%></td>
-										<td class="sigp2NewTab-liste" style="position:relative;width:90px;text-align: center;"><%=process.getVAL_ST_RECHUTE(indiceAcc)%></td>
 										<td class="sigp2NewTab-liste" style="position:relative;width:40px;text-align: right;"><%=process.getVAL_ST_NB_JOURS(indiceAcc)%></td>
 										<td class="sigp2NewTab-liste" style="position:relative;width:300px;text-align: left;"><%=process.getVAL_ST_TYPE(indiceAcc)%></td>
 										<td class="sigp2NewTab-liste" style="position:relative;width:200px;text-align: left;"><%=process.getVAL_ST_SIEGE(indiceAcc)%></td>
