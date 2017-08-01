@@ -3974,14 +3974,9 @@ public class OePOSTEFichePoste extends BasicProcess {
 	}
 
 	private void initialiseActivitesMetier() {
-		if (getFichePosteCourante() != null && getFichePosteCourante().getIdFichePoste() != null) {
-			setListActiviteMetier(getActiviteMetierDao().listerToutesActiviteMetier(getFichePosteCourante(),
-					getMetierPrimaire().getIdFicheMetier(), getMetierSecondaire() != null ? getMetierSecondaire().getIdFicheMetier() : null));
-		} else {
-			setListActiviteMetier(getActiviteMetierDao().listerToutesActiviteMetier(
-					getMetierPrimaire() != null ? getMetierPrimaire().getIdFicheMetier() : null,
-					getMetierSecondaire() != null ? getMetierSecondaire().getIdFicheMetier() : null));
-		}
+		setListActiviteMetier(getActiviteMetierDao().listerToutesActiviteMetier(getFichePosteCourante(),
+				getMetierPrimaire() != null ? getMetierPrimaire().getIdFicheMetier() : null,
+				getMetierSecondaire() != null ? getMetierSecondaire().getIdFicheMetier() : null));
 		for (int i = 0; i < listActiviteMetier.size(); i++) {
 			ActiviteMetier am = listActiviteMetier.get(i);
 
@@ -4299,7 +4294,6 @@ public class OePOSTEFichePoste extends BasicProcess {
 		initialiseSavoirFaireGeneraux();
 		initialiseActivitesGenerales();
 		initialiseConditionsExercices();
-		//TODOSIRH: init les zones de la fiche métier dans la fiche de poste (compétences etc ...)
 	}
 
 	/**
@@ -4392,7 +4386,6 @@ public class OePOSTEFichePoste extends BasicProcess {
 		initialiseSavoirFaireGeneraux();
 		initialiseActivitesGenerales();
 		initialiseConditionsExercices();
-		//TODOSIRH: init les zones de la fiche métier dans la fiche de poste (compétences etc ...)
 	}
 
 	/**
