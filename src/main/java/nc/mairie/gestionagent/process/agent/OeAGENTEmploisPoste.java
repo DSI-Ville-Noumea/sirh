@@ -624,13 +624,9 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 	}
 
 	private void initialiserActiviteMetier() throws Exception {
-		if (getFichePosteCourant() != null && getFichePosteCourant().getIdFichePoste() != null) {
-			setListActiviteMetier(getActiviteMetierDao().listerToutesActiviteMetierChecked(getFichePosteCourant()));
-		} else {
-			setListActiviteMetier(getActiviteMetierDao().listerToutesActiviteMetier(
-					getMetierPrimaire() != null ? getMetierPrimaire().getIdFicheMetier() : null,
-					getMetierSecondaire() != null ? getMetierSecondaire().getIdFicheMetier() : null));
-		}
+		setListActiviteMetier(getActiviteMetierDao().listerToutesActiviteMetierChecked(getFichePosteCourant(),
+				getMetierPrimaire() != null ? getMetierPrimaire().getIdFicheMetier() : null,
+				getMetierSecondaire() != null ? getMetierSecondaire().getIdFicheMetier() : null));
 		for (int i = 0; i < listActiviteMetier.size(); i++) {
 			ActiviteMetier am = listActiviteMetier.get(i);
 			addZone(getNOM_ST_ID_ACTI_METIER(i), am.getIdActiviteMetier().toString());
