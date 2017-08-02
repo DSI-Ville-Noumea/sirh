@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.ListIterator;
 import javax.activation.MimetypesFileTypeMap;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.codec.language.RefinedSoundex;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -319,23 +321,10 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 				EnumEtatAbsence.PRISE.getCode().toString(), EnumTypeAbsence.MALADIES_PROFESSIONNELLE.getCode(), getAgentCourant().getIdAgent(),
 				EnumTypeGroupeAbsence.MALADIES.getValue(), false, null);
 
-		// #40735 : Les prolongations d'AT ne doivent pas apparaître dans la liste
-		ArrayList<DemandeDto> listeAllATSansProlongation = new ArrayList<>();
-		for (DemandeDto demande : listeATAnnulee) {
-			if (!demande.isProlongation())
-				listeAllATSansProlongation.add(demande);
-		}
-		for (DemandeDto demande : listeATPrise) {
-			if (!demande.isProlongation())
-				listeAllATSansProlongation.add(demande);
-		}
-		for (DemandeDto demande : listeATValidee) {
-			if (!demande.isProlongation())
-				listeAllATSansProlongation.add(demande);
-		}
-
 		ArrayList<DemandeDto> listeAT_MP = new ArrayList<DemandeDto>();
-		listeAT_MP.addAll(listeAllATSansProlongation);
+		listeAT_MP.addAll(listeATValidee);
+		listeAT_MP.addAll(listeATAnnulee);
+		listeAT_MP.addAll(listeATPrise);
 		listeAT_MP.addAll(listeRechuteValidee);
 		listeAT_MP.addAll(listeRechutePrise);
 		listeAT_MP.addAll(listeMPValidee);
