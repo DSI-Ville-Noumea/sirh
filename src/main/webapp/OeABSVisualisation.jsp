@@ -419,9 +419,14 @@
 	                        		<span class="sigp2Mandatory">Date de début :</span>
 		            			</td>
 		            			<td>
-			                        <input id="<%=process.getNOM_ST_DATE_DEBUT()%>" class="sigp2-saisie" maxlength="10"	
-			                        	name="<%= process.getNOM_ST_DATE_DEBUT()%>" size="10" type="text" value="<%= process.getVAL_ST_DATE_DEBUT()%>" 
-			                        	onblur='executeBouton("<%=process.getNOM_PB_SET_ITT() %>")' >
+		            				<% if(typeCreation.getTypeSaisiDto().isNombreITT()) { %>
+				                        <input id="<%=process.getNOM_ST_DATE_DEBUT()%>" class="sigp2-saisie" maxlength="10"	
+				                        	name="<%= process.getNOM_ST_DATE_DEBUT()%>" size="10" type="text" value="<%= process.getVAL_ST_DATE_DEBUT()%>" 
+				                        	onblur='executeBouton("<%=process.getNOM_PB_SET_ITT() %>")' >
+		            				<% } else { %>
+				                        <input id="<%=process.getNOM_ST_DATE_DEBUT()%>" class="sigp2-saisie" maxlength="10"	
+				                        	name="<%= process.getNOM_ST_DATE_DEBUT()%>" size="10" type="text" value="<%= process.getVAL_ST_DATE_DEBUT()%>" >
+		            				<% } %>
 			                        <IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_DEBUT()%>', 'dd/mm/y');" >
 		            			</td>
 		            			<% } %>
@@ -461,10 +466,15 @@
 	                        		<span class="sigp2Mandatory">Date de fin :</span>
 		            			</td>
 		            			<td>
-			                        <input id="<%=process.getNOM_ST_DATE_FIN()%>" class="sigp2-saisie" maxlength="10"	
-			                        	name="<%= process.getNOM_ST_DATE_FIN()%>" size="10" type="text" value="<%= process.getVAL_ST_DATE_FIN()%>"
-			                        	onblur='executeBouton("<%=process.getNOM_PB_SET_ITT() %>")' >
-			                        <IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_FIN()%>', 'dd/mm/y');">
+		            				<% if(typeCreation.getTypeSaisiDto().isNombreITT()) { %>
+				                        <input id="<%=process.getNOM_ST_DATE_FIN()%>" class="sigp2-saisie" maxlength="10"	
+				                        	name="<%= process.getNOM_ST_DATE_FIN()%>" size="10" type="text" value="<%= process.getVAL_ST_DATE_FIN()%>"
+				                        	onblur='executeBouton("<%=process.getNOM_PB_SET_ITT() %>")' >
+		            				<% } else { %>
+				                        <input id="<%=process.getNOM_ST_DATE_FIN()%>" class="sigp2-saisie" maxlength="10"	
+				                        	name="<%= process.getNOM_ST_DATE_FIN()%>" size="10" type="text" value="<%= process.getVAL_ST_DATE_FIN()%>" >
+		            				<% } %>
+				                    <IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_FIN()%>', 'dd/mm/y');">
 		            			</td>
 		            			<% } %>
 		            			<% if(typeCreation.getTypeSaisiDto().isCalendarHeureFin()) { %>
@@ -526,8 +536,12 @@
 	                        		<span class="sigp2Mandatory">Prolongation :</span>
 		            			</td>
 		            			<td>
-			                        <input type="checkbox" name="<%=process.getNOM_CK_PROLONGATION() %>" <% if(process.getVAL_CK_PROLONGATION().equals(process.getCHECKED_ON())){ %> checked="checked" <% } %> 
-			                        onclick='executeBouton("<%=process.getNOM_PB_SET_ITT() %>")' />
+		            				<% if(typeCreation.getTypeSaisiDto().isNombreITT()) { %>
+				                        <input type="checkbox" name="<%=process.getNOM_CK_PROLONGATION() %>" <% if(process.getVAL_CK_PROLONGATION().equals(process.getCHECKED_ON())){ %> checked="checked" <% } %> 
+				                        onclick='executeBouton("<%=process.getNOM_PB_SET_ITT() %>")' />
+				            		<% } else { %>
+				                        <input type="checkbox" name="<%=process.getNOM_CK_PROLONGATION() %>" <% if(process.getVAL_CK_PROLONGATION().equals(process.getCHECKED_ON())){ %> checked="checked" <% } %> />
+				            		<% } %>
 		            			</td>
 	            			</tr>
 	            			<% } %>
