@@ -14,6 +14,6 @@ public interface ConditionExerciceInterface {
 
     public void supprimerToutesConditionExercice(FichePoste fp);
 
-    public List<ConditionExercice> listerToutesConditionExerciceChecked(FichePoste fp);
+    public List<ConditionExercice> listerToutesConditionExerciceChecked(FichePoste fp, Integer idFicheMetierPrimaire, Integer idFicheMetierSecondaire);
 
 }

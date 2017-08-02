@@ -667,7 +667,9 @@ public class OeAGENTEmploisPoste extends BasicProcess {
     }
 
 	private void initialiserConditionExercice() {
-		setListConditionExercice(getConditionExerciceDao().listerToutesConditionExerciceChecked(getFichePosteCourant()));
+		setListConditionExercice(getConditionExerciceDao().listerToutesConditionExerciceChecked(getFichePosteCourant(),
+				getMetierPrimaire() != null ? getMetierPrimaire().getIdFicheMetier() : null,
+				getMetierSecondaire() != null ? getMetierSecondaire().getIdFicheMetier() : null));
 		for (int i = 0; i < listConditionExercice.size(); i++) {
 			ConditionExercice ce = listConditionExercice.get(i);
 			addZone(getNOM_ST_ID_CE(i), ce.getIdConditionExercice().toString());
