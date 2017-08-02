@@ -2,7 +2,9 @@ package nc.mairie.gestionagent.process.absence;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -19,6 +21,7 @@ import java.util.TreeMap;
 import javax.activation.MimetypesFileTypeMap;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -573,6 +576,10 @@ public class OeABSVisualisation extends BasicProcess {
 			// Si clic sur le bouton PB_VALIDER_COMMENTAIRE_DRH
 			if (testerParametre(request, getNOM_PB_VALIDER_COMMENTAIRE_DRH())) {
 				return performPB_VALIDER_COMMENTAIRE_DRH(request);
+			}
+			// Si clic sur le bouton PB_VALIDER_COMMENTAIRE_DRH
+			if (testerParametre(request, getNOM_PB_SET_ITT())) {
+				return performPB_SET_ITT(request);
 			}
 			// Si clic sur le bouton PB_VALIDER_MOTIF_EN_ATTENTE
 			if (testerParametre(request, getNOM_PB_VALIDER_MOTIF_EN_ATTENTE())) {
@@ -1924,6 +1931,41 @@ public class OeABSVisualisation extends BasicProcess {
 
 		// On pose le statut
 		setStatut(STATUT_MEME_PROCESS);
+		return true;
+	}
+
+	/**
+	 * Calcul le nombre d'ITT de la demande.
+	 * @param request
+	 * @throws ParseException
+	 */
+	public boolean performPB_SET_ITT(HttpServletRequest request) throws ParseException {
+		if (StringUtils.isEmpty(getVAL_ST_DATE_DEBUT())
+				|| StringUtils.isEmpty(getVAL_ST_DATE_FIN()))
+			return true;
+
+		Long nbITT = null;
+
+		switch (EnumTypeAbsence.getRefTypeAbsenceEnum(typeCreation.getIdRefTypeAbsence())) {
+			case MALADIES_ACCIDENT_TRAVAIL :
+				nbITT = ChronoUnit.DAYS.between(sdf.parse(getVAL_ST_DATE_DEBUT()).toInstant(), sdf.parse(getVAL_ST_DATE_FIN()).toInstant());
+				// #40134 : Une prolongation fonctionne comme une rechute
+				// Il faut donc ajouter une journée supplémentaire.
+				if (getVAL_CK_PROLONGATION().equals(getCHECKED_ON()))
+					++nbITT;
+				break;
+			case MALADIES_RECHUTE :
+				nbITT = ChronoUnit.DAYS.between(sdf.parse(getVAL_ST_DATE_DEBUT()).toInstant(), sdf.parse(getVAL_ST_DATE_FIN()).toInstant()) + 1;
+				break;
+			default:
+				break;
+		}
+
+		// On n'autorise pas un nombre de jour négatif (dans le cas d'un AT sur une journée)
+		if (nbITT != null) {
+			nbITT = nbITT > 0 ? nbITT : 0;
+			addZone(getNOM_ST_NOMBRE_ITT(), nbITT.toString());
+		}
 		return true;
 	}
 
@@ -3595,6 +3637,10 @@ public class OeABSVisualisation extends BasicProcess {
 		return "NOM_PB_VALIDER_COMMENTAIRE_DRH";
 	}
 	
+	public String getNOM_PB_SET_ITT() {
+		return "NOM_PB_SET_ITT";
+	}
+
 	public boolean performPB_VALIDER_COMMENTAIRE_DRH(HttpServletRequest request) throws Exception {
 		// on recupere les infos
 		String commDRH = getVAL_ST_COMMENTAIRE_DRH();
