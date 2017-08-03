@@ -304,13 +304,13 @@
                             <td width="60px"><%=process.getVAL_ST_ETAT(indiceTR)%></td>
                             <td width="60px"><%=process.getVAL_ST_DATE_ETAT(indiceTR)%></td>
                             <td width="20px" align="center">
-                            <%if((TR.getIdRefEtat()==EtatPointageEnum.SAISI.getCodeEtat() || TR.getIdRefEtat()==EtatPointageEnum.REJETE.getCodeEtat()) && TR.getCommande()){ %>
+                            <%if(TR.getIdRefEtat() == EtatPointageEnum.SAISI.getCodeEtat() && TR.getCommande()){ %>
                             	<img onkeydown="" onkeypress="" onkeyup="" title="Appouver" type="image" src="images/hand-vert.png"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_APPROUVER(indiceTR)%>" onclick="executeBouton('<%=process.getNOM_PB_APPROUVER(indiceTR)%>');">
 								<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_APPROUVER(indiceTR)%>" value="">
                             <%} %>
 							</td>  
                             <td width="20px" align="center">
-                            <%if((TR.getIdRefEtat()==EtatPointageEnum.SAISI.getCodeEtat() || TR.getIdRefEtat()==EtatPointageEnum.APPROUVE.getCodeEtat()) && TR.getCommande()){ %>
+                            <%if((TR.getIdRefEtat() == EtatPointageEnum.SAISI.getCodeEtat() || TR.getIdRefEtat() == EtatPointageEnum.APPROUVE.getCodeEtat()) && TR.getCommande()){ %>
                             	<img onkeydown="" onkeypress="" onkeyup="" title="Rejeter" type="image" src="images/hand-rouge.png"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_REJETER(indiceTR)%>" onclick="executeBouton('<%=process.getNOM_PB_REJETER(indiceTR)%>');">
 								<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_REJETER(indiceTR)%>" value="">
                             <%} %>

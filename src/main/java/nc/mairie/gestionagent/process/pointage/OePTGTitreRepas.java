@@ -507,7 +507,17 @@ public class OePTGTitreRepas extends BasicProcess {
 			return false;
 		}
 
-		changeState(request, getListeDemandeTR().values(), EtatPointageEnum.APPROUVE, null);
+		// #41059 : On n'approuve que les demandes qui sont à l'état "En attente", "Validée" ou "Saisie"
+		Collection<TitreRepasDemandeDto> demandesAApprouver = new ArrayList<>();
+		for (TitreRepasDemandeDto tr : getListeDemandeTR().values()) {
+			if (tr.getIdRefEtat().equals(EtatPointageEnum.EN_ATTENTE.getCodeEtat())
+					|| tr.getIdRefEtat().equals(EtatPointageEnum.SAISI.getCodeEtat())
+					|| tr.getIdRefEtat().equals(EtatPointageEnum.VALIDE.getCodeEtat())) {
+				demandesAApprouver.add(tr);
+			}
+		}
+		
+		changeState(request, demandesAApprouver, EtatPointageEnum.APPROUVE, null);
 
 		// On pose le statut
 		setStatut(STATUT_MEME_PROCESS);
