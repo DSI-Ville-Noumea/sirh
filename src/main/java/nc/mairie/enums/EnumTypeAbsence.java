@@ -84,6 +84,10 @@ public enum EnumTypeAbsence {
 				return MALADIES_CONVALESCENCE;
 			case 73:
 				return MALADIES_EVASAN;
+			case 77:
+				return MALADIES_ACCIDENT_TRAVAIL;
+			case 78:
+				return MALADIES_RECHUTE;
 			case 80:
 				return MALADIES_ENFANT_MALADE;
 			default:

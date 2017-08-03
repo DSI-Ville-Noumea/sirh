@@ -280,7 +280,7 @@
                				<span class="sigp2">Date début : </span>
                 		</td>
                 		<td>
-			                <input id="<%=process.getNOM_ST_DATE_MIN()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_MIN()%>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_MIN()%>" >
+			                <input id="<%=process.getNOM_ST_DATE_MIN()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_MIN()%>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_MIN()%>">
 			                <IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_MIN()%>', 'dd/mm/y');">
                 		</td>
                 		<td>
@@ -419,9 +419,15 @@
 	                        		<span class="sigp2Mandatory">Date de début :</span>
 		            			</td>
 		            			<td>
-			                        <input id="<%=process.getNOM_ST_DATE_DEBUT()%>" class="sigp2-saisie" maxlength="10"	
-			                        	name="<%= process.getNOM_ST_DATE_DEBUT()%>" size="10" type="text" value="<%= process.getVAL_ST_DATE_DEBUT()%>" >
-			                        <IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_DEBUT()%>', 'dd/mm/y');">
+		            				<% if(typeCreation.getTypeSaisiDto().isNombreITT()) { %>
+				                        <input id="<%=process.getNOM_ST_DATE_DEBUT()%>" class="sigp2-saisie" maxlength="10"	
+				                        	name="<%= process.getNOM_ST_DATE_DEBUT()%>" size="10" type="text" value="<%= process.getVAL_ST_DATE_DEBUT()%>" 
+				                        	onblur='executeBouton("<%=process.getNOM_PB_SET_ITT() %>")' >
+		            				<% } else { %>
+				                        <input id="<%=process.getNOM_ST_DATE_DEBUT()%>" class="sigp2-saisie" maxlength="10"	
+				                        	name="<%= process.getNOM_ST_DATE_DEBUT()%>" size="10" type="text" value="<%= process.getVAL_ST_DATE_DEBUT()%>" >
+		            				<% } %>
+			                        <IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_DEBUT()%>', 'dd/mm/y');" >
 		            			</td>
 		            			<% } %>
 		            			<% if(typeCreation.getTypeSaisiDto().isCalendarHeureDebut()) { %>
@@ -460,9 +466,15 @@
 	                        		<span class="sigp2Mandatory">Date de fin :</span>
 		            			</td>
 		            			<td>
-			                        <input id="<%=process.getNOM_ST_DATE_FIN()%>" class="sigp2-saisie" maxlength="10"	
-			                        	name="<%= process.getNOM_ST_DATE_FIN()%>" size="10" type="text" value="<%= process.getVAL_ST_DATE_FIN()%>" >
-			                        <IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_FIN()%>', 'dd/mm/y');">
+		            				<% if(typeCreation.getTypeSaisiDto().isNombreITT()) { %>
+				                        <input id="<%=process.getNOM_ST_DATE_FIN()%>" class="sigp2-saisie" maxlength="10"	
+				                        	name="<%= process.getNOM_ST_DATE_FIN()%>" size="10" type="text" value="<%= process.getVAL_ST_DATE_FIN()%>"
+				                        	onblur='executeBouton("<%=process.getNOM_PB_SET_ITT() %>")' >
+		            				<% } else { %>
+				                        <input id="<%=process.getNOM_ST_DATE_FIN()%>" class="sigp2-saisie" maxlength="10"	
+				                        	name="<%= process.getNOM_ST_DATE_FIN()%>" size="10" type="text" value="<%= process.getVAL_ST_DATE_FIN()%>" >
+		            				<% } %>
+				                    <IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_FIN()%>', 'dd/mm/y');">
 		            			</td>
 		            			<% } %>
 		            			<% if(typeCreation.getTypeSaisiDto().isCalendarHeureFin()) { %>
@@ -524,7 +536,12 @@
 	                        		<span class="sigp2Mandatory">Prolongation :</span>
 		            			</td>
 		            			<td>
-			                        <input type="checkbox" name="<%=process.getNOM_CK_PROLONGATION() %>" <% if(process.getVAL_CK_PROLONGATION().equals(process.getCHECKED_ON())){ %> checked="checked" <% } %> />
+		            				<% if(typeCreation.getTypeSaisiDto().isNombreITT()) { %>
+				                        <input type="checkbox" name="<%=process.getNOM_CK_PROLONGATION() %>" <% if(process.getVAL_CK_PROLONGATION().equals(process.getCHECKED_ON())){ %> checked="checked" <% } %> 
+				                        onclick='executeBouton("<%=process.getNOM_PB_SET_ITT() %>")' />
+				            		<% } else { %>
+				                        <input type="checkbox" name="<%=process.getNOM_CK_PROLONGATION() %>" <% if(process.getVAL_CK_PROLONGATION().equals(process.getCHECKED_ON())){ %> checked="checked" <% } %> />
+				            		<% } %>
 		            			</td>
 	            			</tr>
 	            			<% } %>
@@ -539,12 +556,13 @@
 		            		</tr>
 		            		<% } %>
 		            		<% if(typeCreation.getTypeSaisiDto().isNombreITT()) { %>
-		            		<tr>		            		
+		            		<tr>
 		            			<td>
 	                        		<span class="sigp2Mandatory">Nombre ITT :</span>
 		            			</td>
 		            			<td colspan="2">
-									<INPUT class="sigp2-saisie" maxlength="6" name="<%= process.getNOM_ST_NOMBRE_ITT() %>" size="6" type="text" value="<%= process.getVAL_ST_NOMBRE_ITT() %>">
+									<INPUT class="sigp2-saisie" maxlength="6" name="<%= process.getNOM_ST_NOMBRE_ITT() %>" 
+									size="6" type="text" value="<%= process.getVAL_ST_NOMBRE_ITT() %>" >
 									<span class="sigp2Mandatory"> jour(s)</span>
 		            			</td>
 		            		</tr>
@@ -978,10 +996,11 @@
             <INPUT type="submit" style="display:none;" name="<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_DEMANDE()%>" value="SUPPRECHERCHERAGENTDEMANDE">
             <INPUT type="submit" style="display:none;" name="<%=process.getNOM_PB_AJOUTER_ABSENCE()%>" value="AJOUTERABSENCE">        
             <INPUT type="submit" style="display:none;" name="<%=process.getNOM_PB_RECHERCHER_AGENT_CREATION()%>" value="RECHERCHERAGENTCREATION"> 
-            <INPUT type="submit" style="display:none;" name="<%=process.getNOM_PB_CALCUL_DUREE()%>" value="CALCULDUREE">        
+            <INPUT type="submit" style="display:none;" name="<%=process.getNOM_PB_CALCUL_DUREE()%>" value="CALCULDUREE">     
            
 			<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_VALIDER_ALL()%>" value="">
 			<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_REJETER_ALL()%>" value="">
+			<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_SET_ITT()%>" value="">   
         </FORM>
     </BODY>
 </HTML>
