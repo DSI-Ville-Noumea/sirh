@@ -11,6 +11,20 @@
 <% if (process.getEmploiPrimaire() != null){ %>
 <div  style="width:1020px;">
 	<div style="width:570px;float:left;">
+		<fieldset class="sigp2Fieldset" style="width:570px;float:left;">
+			<legend class="sigp2Legend">Migrer la fiche de poste</legend>
+			<table>
+				<tr>
+					<td width="width:1020px">
+						<span class="sigp2Mandatory">Fiche emploi ville primaire : </span>
+					</td>
+					<td>
+						<INPUT <%= process.estFDPInactive ?  "disabled='disabled'" : "" %> class="sigp2-saisie" maxlength="5" size="6"	type="text" readonly="readonly" value="<%=process.getVAL_ST_METIER_PRIMAIRE()%>" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>>
+						<INPUT type="image" class="<%=process.estFDPInactive ? MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, ""): MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/loupe.gif" height="16px" width="16px" editable="false" name="<%=process.getNOM_PB_RECHERCHE_METIER_PRIMAIRE()%>">
+					</td>
+				</tr>
+			</table>
+		</fieldset>
 		<fieldset class="sigp2Fieldset" style="width:570px;">
 			<legend class="sigp2Legend">Service</legend>
 			<table>
