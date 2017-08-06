@@ -619,7 +619,7 @@ document.formu.elements[nom].focus();
                    class="sigp2-Bouton-100">
             <INPUT type="submit" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>" class="sigp2-Bouton-100">
             <% } else {%>
-            <INPUT type="submit" value="Imprimer" name="<%=process.getNOM_PB_IMPRIMER()%>" class="sigp2-Bouton-100">
+            <INPUT type="submit" value="Exporter" name="<%=process.getNOM_PB_IMPRIMER()%>" class="sigp2-Bouton-100">
             <% } %>
 
         </FIELDSET>
