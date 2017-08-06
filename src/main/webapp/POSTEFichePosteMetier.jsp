@@ -645,11 +645,11 @@
 	<INPUT type="submit" value="Dupliquer" name="<%=process.getNOM_PB_CREER()%>" class="sigp2-Bouton-100">
 	<%} else {%>
 	<INPUT type="submit" value="Modifier" name="<%=process.getNOM_PB_CREER()%>" class="sigp2-Bouton-100">
-	<INPUT type="submit" value="Imprimer" name="<%=process.getNOM_PB_IMPRIMER()%>" class="sigp2-Bouton-100">
+	<INPUT type="submit" value="Exporter" name="<%=process.getNOM_PB_IMPRIMER()%>" class="sigp2-Bouton-100">
 	<%} %>
 	<INPUT type="submit" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>" class="sigp2-Bouton-100">
 </FIELDSET>
 <FIELDSET style="text-align: center; margin: 10px; width:1020px;" class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, "sigp2Fieldset") %>">
-	<INPUT type="submit" value="Imprimer" name="<%=process.getNOM_PB_IMPRIMER()%>" class="sigp2-Bouton-100">
+	<INPUT type="submit" value="Exporter" name="<%=process.getNOM_PB_IMPRIMER()%>" class="sigp2-Bouton-100">
 </FIELDSET>
 <%} %>
