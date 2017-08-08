@@ -239,5 +239,19 @@ document.write(menuParametrageTypesDocument.afficher());
 </script>
 
 </FORM>
+<img src="images/flame.png" class="kill-session" alt="Réinitialiser la session" title="Réinitialiser la session" />
+<script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".kill-session").click(function () {
+            $.ajax({
+                url : 'ResetSession.jsp',
+                success : function(code_html, statut){
+                    window.top.location.reload();
+                }
+            });
+        });
+    });
+</script>
 </BODY>
 </html>
