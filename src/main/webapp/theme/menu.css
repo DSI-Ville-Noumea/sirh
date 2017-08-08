@@ -174,3 +174,9 @@ body{
 #menuHaut ul li.LienHautActif:hover {
 	color:#FFFFFF;
 }
+
+.kill-session {
+    float:right;
+    margin-top: 3px;
+    cursor: pointer;
+}
