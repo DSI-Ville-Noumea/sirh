@@ -11,7 +11,7 @@
 <% if (process.getEmploiPrimaire() != null){ %>
 <div  style="width:1020px;">
 	<div style="width:570px;float:left;">
-		<fieldset class="sigp2Fieldset" style="width:570px;float:left;">
+		<fieldset class="sigp2Fieldset" style="width:570px;float:left;border-color:red;border-style:dashed;">
 			<legend class="sigp2Legend">Migrer la fiche de poste</legend>
 			<table>
 				<tr>
