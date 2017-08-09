@@ -22,7 +22,8 @@ public enum EnumTypeAbsence {
 	MALADIES_ACCIDENT_TRAVAIL(77, "Accident  de travail"), 
 	MALADIES_RECHUTE(78, "Rechute AT"), 
 	MALADIES_ENFANT_MALADE(80, "Enfant malade"), 
-	MALADIES_PROFESSIONNELLE(79, "Maladie professionnelle");
+	MALADIES_PROFESSIONNELLE(79, "Maladie professionnelle"),
+	MALADIES_CONGE_CONVALESCENCE(83, "Congé de convalescence");
 	// @formatter:on
 	/** L'attribut qui contient le code associe a l'enum */
 	private final Integer	code;
@@ -90,6 +91,8 @@ public enum EnumTypeAbsence {
 				return MALADIES_RECHUTE;
 			case 80:
 				return MALADIES_ENFANT_MALADE;
+			case 83:
+				return MALADIES_CONGE_CONVALESCENCE;
 			default:
 				return null;
 		}
