@@ -9,6 +9,6 @@
 	<SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT>
 </head>
 <BODY class="fondmenuhaut">
-<P><IMG src="images/navigation/logo.gif" align="top left" border="0" > </P>
+<P><IMG src="images/navigation/logo.gif" align="top left" border="0" ></P>
 </BODY>
 </html>
