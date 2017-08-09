@@ -377,15 +377,16 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 				
 				// Rechute
 				boolean hasRechute = false;
+				Double nbITT = demande.getNombreITT() == null ? 0 : demande.getNombreITT();
 				for (DemandeDto rechute : listeRechutes) {
-					hasRechute = false;
 					if (rechute.getAccidentTravailReference() != null && rechute.getAccidentTravailReference().getIdDemande().equals(demande.getIdDemande())) {
 						hasRechute = true;
-						break;
+						if (rechute.getNombreITT() != null)
+							nbITT += rechute.getNombreITT();
 					}
 				}
 				addZone(getNOM_ST_RECHUTE(indiceAcc), hasRechute ? "X" : "&nbsp;");
-				addZone(getNOM_ST_NB_JOURS(indiceAcc), demande.getNombreITT() == null ? "&nbsp;" : demande.getNombreITT().toString());
+				addZone(getNOM_ST_NB_JOURS(indiceAcc), nbITT == 0 ? "&nbsp;" : nbITT.toString());
 				addZone(getNOM_ST_NB_DOC(indiceAcc), null == demande.getPiecesJointes() || demande.getPiecesJointes().size() == 0 ? "&nbsp;"
 						: String.valueOf(demande.getPiecesJointes().size()));
 
