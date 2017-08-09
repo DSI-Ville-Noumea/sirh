@@ -322,16 +322,25 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 				EnumTypeGroupeAbsence.MALADIES.getValue(), false, null);
 
 		ArrayList<DemandeDto> listeAT_MP = new ArrayList<DemandeDto>();
+		ArrayList<DemandeDto> listeRechutes = new ArrayList<DemandeDto>();
 		listeAT_MP.addAll(listeATValidee);
 		listeAT_MP.addAll(listeATAnnulee);
 		listeAT_MP.addAll(listeATPrise);
-		listeAT_MP.addAll(listeRechuteValidee);
-		listeAT_MP.addAll(listeRechutePrise);
 		listeAT_MP.addAll(listeMPValidee);
 		listeAT_MP.addAll(listeMPPrise);
+		listeRechutes.addAll(listeRechuteValidee);
+		listeRechutes.addAll(listeRechutePrise);
+		
+		// #40735 : Ne mettre que les AT initiaux dans la liste
+		ArrayList<DemandeDto> listeAT_MPSansProlongation = new ArrayList<DemandeDto>();
+		for (DemandeDto demande : listeAT_MP){
+			if (!demande.isProlongation())
+				listeAT_MPSansProlongation.add(demande);
+		}
+		
 
-		Collections.sort(listeAT_MP, new DemandeDtoDateDeclarationComparator());
-		setListeAT_MP(listeAT_MP);
+		Collections.sort(listeAT_MPSansProlongation, new DemandeDtoDateDeclarationComparator());
+		setListeAT_MP(listeAT_MPSansProlongation);
 
 		int indiceAcc = 0;
 		if (getListeAT_MP() != null) {
@@ -351,7 +360,7 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 					addZone(getNOM_ST_SIEGE(indiceAcc), null == s || s.getLibelle().equals(Const.CHAINE_VIDE) ? "&nbsp;" : s.getLibelle());
 				}
 
-				if (demande.getTypeSaisi().isMaladiePro()) {
+				if (demande.getTypeSaisi().isMaladiePro() && demande.getTypeMaladiePro() != null) {
 					RefTypeDto t = (RefTypeDto) getHashTypeMP().get(demande.getTypeMaladiePro().getIdRefType());
 					addZone(getNOM_ST_TYPE(indiceAcc), t.getLibelle().equals(Const.CHAINE_VIDE) ? "&nbsp;" : t.getLibelle());
 				}
@@ -365,8 +374,19 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 				addZone(getNOM_ST_DATE(indiceAcc), null == demande.getDateDeclaration() ? "" : sdf.format(demande.getDateDeclaration()));
 				addZone(getNOM_ST_DATE_DEBUT(indiceAcc), null == demande.getDateDebut() ? "" : sdf.format(demande.getDateDebut()));
 				addZone(getNOM_ST_DATE_FIN(indiceAcc), null == demande.getDateFin() ? "" : sdf.format(demande.getDateFin()));
-				addZone(getNOM_ST_RECHUTE(indiceAcc), demande.getIdTypeDemande().equals(EnumTypeAbsence.MALADIES_RECHUTE.getCode()) ? "X" : "&nbsp;");
-				addZone(getNOM_ST_NB_JOURS(indiceAcc), demande.getNombreITT() == null ? "&nbsp;" : demande.getNombreITT().toString());
+				
+				// Rechute
+				boolean hasRechute = false;
+				Double nbITT = demande.getNombreITT() == null ? 0 : demande.getNombreITT();
+				for (DemandeDto rechute : listeRechutes) {
+					if (rechute.getAccidentTravailReference() != null && rechute.getAccidentTravailReference().getIdDemande().equals(demande.getIdDemande())) {
+						hasRechute = true;
+						if (rechute.getNombreITT() != null)
+							nbITT += rechute.getNombreITT();
+					}
+				}
+				addZone(getNOM_ST_RECHUTE(indiceAcc), hasRechute ? "X" : "&nbsp;");
+				addZone(getNOM_ST_NB_JOURS(indiceAcc), nbITT == 0 ? "&nbsp;" : nbITT.toString());
 				addZone(getNOM_ST_NB_DOC(indiceAcc), null == demande.getPiecesJointes() || demande.getPiecesJointes().size() == 0 ? "&nbsp;"
 						: String.valueOf(demande.getPiecesJointes().size()));
 
