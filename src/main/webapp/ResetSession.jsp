@@ -7,8 +7,15 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
-    Cookie sessionCookie = new Cookie("JSESSIONID", null);
-    sessionCookie.setMaxAge(0);
-    sessionCookie.setPath("/");
-    response.addCookie(sessionCookie);
+
+    for (Cookie cookie : request.getCookies()) {
+        cookie.setMaxAge(0);
+        cookie.setPath("/");
+        response.addCookie(cookie);
+        Cookie ctxCookie = new Cookie(cookie.getName(), cookie.getValue());
+        ctxCookie.setPath(request.getContextPath());
+        ctxCookie.setMaxAge(0);
+        response.addCookie(ctxCookie);
+
+    }
 %>
