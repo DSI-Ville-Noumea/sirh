@@ -784,6 +784,12 @@ public class OePOSTEFichePoste extends BasicProcess {
 				if (gg.getCodCadre() != null && (!gg.getCodCadre().equals(Const.CHAINE_VIDE))) {
 					String info = "Catégorie : " + gg.getCodCadre();
 
+					//Fix #41086 Message création shouté
+					String messageErreur = null;
+					if (getTransaction().isErreur()) {
+						 messageErreur = getTransaction().getMessageErreur();
+					}
+
 					if (gg.getIdCadreEmploi() != null) {
 						if (gg.getCdfili() != null) {
 							FiliereGrade fi = FiliereGrade.chercherFiliereGrade(getTransaction(), gg.getCdfili());
@@ -793,6 +799,9 @@ public class OePOSTEFichePoste extends BasicProcess {
 								info += " <br/> Filière : " + fi.getLibFiliere();
 							}
 						}
+					}
+					if (messageErreur != null) {
+						getTransaction().declarerErreur(messageErreur);
 					}
 					addZone(getNOM_ST_INFO_GRADE(), info);
 				}
