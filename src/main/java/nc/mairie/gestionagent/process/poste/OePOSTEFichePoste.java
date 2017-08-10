@@ -422,16 +422,17 @@ public class OePOSTEFichePoste extends BasicProcess {
 			}
 			afficheFMP();
 
-			initialiseMissionMetier();
+			//initialiseMissionMetier();
 			initialiseSpecialisation();
 			initialiseInfosComplementaires();
 			initialiseInfos();
 
 			// si changement de FES, on ajoute la mission à  la mission actuelle
 			if (getMetierPrimaire() != null) {
-				if (!getMission().toUpperCase().contains(getMetierPrimaire().getDefinitionMetier().toUpperCase())) {
-					setMission(getMission() + " " + getMetierPrimaire().getDefinitionMetier());
-				}
+				setMission(getMetierPrimaire().getDefinitionMetier());
+			}
+			if (getMetierSecondaire() != null) {
+				setMission(getMission() + " " + getMetierSecondaire().getDefinitionMetier());
 			}
 
 			addZone(getNOM_EF_MISSIONS(), getMission() == null ? Const.CHAINE_VIDE : getMission());
@@ -493,15 +494,16 @@ public class OePOSTEFichePoste extends BasicProcess {
 				setMetierSecondaire(fms);
 			}
 			afficheFMS();
-			initialiseMissionMetier();
+			//initialiseMissionMetier();
 			initialiseSpecialisation();
 			initialiseInfosComplementaires();
 			initialiseInfos();
-			// si changement de FMS, on ajoute la mission à  la mission actuelle
+			// si changement de FES, on ajoute la mission à  la mission actuelle
+			if (getMetierPrimaire() != null) {
+				setMission(getMetierPrimaire().getDefinitionMetier());
+			}
 			if (getMetierSecondaire() != null) {
-				if (!getMission().toUpperCase().contains(getMetierSecondaire().getDefinitionMetier().toUpperCase())) {
-					setMission(getMission() + " " + getMetierSecondaire().getDefinitionMetier());
-				}
+				setMission(getMission() + " " + getMetierSecondaire().getDefinitionMetier());
 			}
 
 			addZone(getNOM_EF_MISSIONS(), getMission() == null ? Const.CHAINE_VIDE : getMission());
@@ -4246,6 +4248,14 @@ public class OePOSTEFichePoste extends BasicProcess {
 		// On enleve la fiche metier secondaire selectionnée
 		setMetierSecondaire(null);
 		addZone(getNOM_ST_METIER_SECONDAIRE(), Const.CHAINE_VIDE);
+		// si changement de FES, on ajoute la mission à  la mission actuelle
+		if (getMetierPrimaire() != null) {
+			setMission(getMetierPrimaire().getDefinitionMetier());
+		}
+		if (getMetierSecondaire() != null) {
+			setMission(getMission() + " " + getMetierSecondaire().getDefinitionMetier());
+		}
+		addZone(getNOM_EF_MISSIONS(), getMission() == null ? Const.CHAINE_VIDE : getMission());
 		return true;
 	}
 
