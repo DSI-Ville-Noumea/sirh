@@ -37,7 +37,10 @@ res+=")</script>";
 </head>
 <!--<BODY background="file:///X:/TestLucimages/fond_titre.jpg" onload="init();">-->
 <BODY id="fondMenuHaut">
-<FORM name="leForm" method="POST" target="Main" action="GestionAgentServlet"><INPUT type="hidden" name="ACTIVITE" value="">
+<FORM name="leForm" method="POST" target="Main" action="GestionAgentServlet">
+	<img src="images/flame.png" class="kill-session" alt="Réinitialiser la session" title="Réinitialiser la session" />
+
+	<INPUT type="hidden" name="ACTIVITE" value="">
 <script language="javascript">
 
 //***************************************************************
@@ -237,9 +240,7 @@ menuParametrageTypesDocument.ajouterFils(new Lien("ParamTypeDocument", "TYPES DO
 document.write(menuParametrageTypesDocument.afficher());
 
 </script>
-
 </FORM>
-<img src="images/flame.png" class="kill-session" alt="Réinitialiser la session" title="Réinitialiser la session" />
 <script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
 <script type="text/javascript">
     $(document).ready(function () {
