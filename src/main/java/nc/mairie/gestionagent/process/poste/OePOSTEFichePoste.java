@@ -122,6 +122,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	private String[] LB_GRADE;
 	private String[] LB_LOC;
 	private String[] LB_BUDGET;
+	private String[] LB_NIVEAU_MANAGEMENT;
 	private String[] LB_BUDGETE;
 	private String[] LB_REGLEMENTAIRE;
 	private String[] LB_STATUT;
@@ -162,6 +163,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	// niveau etude de la fiche poste
 	private ArrayList<NiveauEtudeFP> listeNiveauFP;
 	// pour les liste deroulante
+	private ArrayList<NiveauManagement> listeNiveauManagement;
 	private ArrayList<NiveauEtude> listeNiveauEtude;
 	private ArrayList<Budget> listeBudget;
 	private ArrayList<StatutFP> listeStatut;
@@ -241,6 +243,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	private StatutFPDao statutFPDao;
 	private NiveauEtudeFPDao niveauEtudeFPDao;
 	private BudgetDao budgetDao;
+	private NiveauManagementDao niveauManagementDao;
 	private FEFPDao fefpDao;
 	private FMFPDao fmfpDao;
 	private CompetenceDao competenceDao;
@@ -622,6 +625,9 @@ public class OePOSTEFichePoste extends BasicProcess {
 		if (getBudgetDao() == null) {
 			setBudgetDao(new BudgetDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (niveauManagementDao == null) {
+			setNiveauManagementDao(new NiveauManagementDao((SirhDao) context.getBean("sirhDao")));
+		}
 		if (getFefpDao() == null) {
 			setFefpDao(new FEFPDao((SirhDao) context.getBean("sirhDao")));
 		}
@@ -829,6 +835,16 @@ public class OePOSTEFichePoste extends BasicProcess {
 				}
 			}
 
+			if (getListeNiveauManagement() != null) {
+				for (int i = 0; i < getListeNiveauManagement().size(); i++) {
+					NiveauManagement nm = getListeNiveauManagement().get(i);
+					if (nm.getIdNiveauManagement().toString().equals(getFichePosteCourante().getIdNiveauManagement().toString())) {
+						addZone(getNOM_LB_NIVEAU_MANAGEMENT_SELECT(), String.valueOf(i));
+						break;
+					}
+				}
+			}
+
 			if (getListeHoraire() != null) {
 				for (int i = 0; i < getListeHoraire().size(); i++) {
 					Horaire h = (Horaire) getListeHoraire().get(i);
@@ -1019,6 +1035,25 @@ public class OePOSTEFichePoste extends BasicProcess {
 				setLB_BUDGET(aFormat.getListeFormatee());
 			} else {
 				setLB_BUDGET(null);
+			}
+		}
+
+		// Si liste niveau management vide alors affectation
+		if (versionFicheMetier() && getLB_NIVEAU_MANAGEMENT() == LBVide) {
+			ArrayList<NiveauManagement> listeNiveauManagement = (ArrayList<NiveauManagement>) getNiveauManagementDao().listerNiveauManagement();
+			setListeNiveauManagement(listeNiveauManagement);
+
+			if (getListeNiveauManagement().size() != 0) {
+				int[] tailles = {20};
+				FormateListe aFormat = new FormateListe(tailles);
+				for (ListIterator<NiveauManagement> list = getListeNiveauManagement().listIterator(); list.hasNext(); ) {
+					NiveauManagement de = (NiveauManagement) list.next();
+					String ligne[] = {de.getLibNiveauManagement()};
+					aFormat.ajouteLigne(ligne);
+				}
+				setLB_NIVEAU_MANAGEMENT(aFormat.getListeFormatee());
+			} else {
+				setLB_NIVEAU_MANAGEMENT(null);
 			}
 		}
 
@@ -1521,6 +1556,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 		addZone(getNOM_LB_STATUT_SELECT(), "0");
 		addZone(getNOM_LB_BUDGET_SELECT(), "0");
 		addZone(getNOM_LB_BUDGETE_SELECT(), "0");
+		addZone(getNOM_LB_NIVEAU_MANAGEMENT_SELECT(), "0");
 		addZone(getNOM_LB_REGLEMENTAIRE_SELECT(), "0");
 		addZone(getNOM_LB_NIVEAU_ETUDE_SELECT(), "0");
 		addZone(getNOM_LB_LOC_SELECT(), "0");
@@ -2005,6 +2041,16 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 		Budget budget = (Budget) getListeBudget().get(numLigneBudget);
 
+		//Niveau management
+		int numLigneManagement = (Services.estNumerique(getZone(getNOM_LB_NIVEAU_MANAGEMENT_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_NIVEAU_MANAGEMENT_SELECT())) : -1);
+
+		if (numLigneManagement == -1 || getListeNiveauManagement().isEmpty() || numLigneManagement > getListeNiveauManagement().size()) {
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "niveaux de management"));
+			return false;
+		}
+
+		NiveauManagement niveauManagement = getListeNiveauManagement().get(numLigneManagement);
+
 		// Lieu
 		int numLigneLoc = (Services.estNumerique(getZone(getNOM_LB_LOC_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_LOC_SELECT())) : -1);
 
@@ -2073,6 +2119,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 		getFichePosteCourante().setInformations_complementaires(informations_complementaires);
 		getFichePosteCourante().setIdStatutFp(statut.getIdStatutFp());
 		getFichePosteCourante().setIdBudget(budget.getIdBudget());
+		getFichePosteCourante().setIdNiveauManagement(niveauManagement.getIdNiveauManagement());
 		getFichePosteCourante().setOpi(opi);
 		getFichePosteCourante().setNumDeliberation(numDeliberation);
 		getFichePosteCourante().setNfa(nfa);
@@ -3013,6 +3060,22 @@ public class OePOSTEFichePoste extends BasicProcess {
 		LB_BUDGET = newLB_BUDGET;
 	}
 
+	private String[] getLB_NIVEAU_MANAGEMENT() {
+		if (LB_NIVEAU_MANAGEMENT == null) {
+			LB_NIVEAU_MANAGEMENT = initialiseLazyLB();
+		}
+		return LB_NIVEAU_MANAGEMENT;
+	}
+
+	/**
+	 * Setter de la liste: LB_BUDGET Date de création : (07/07/11 13:23:11)
+	 *
+	 *
+	 */
+	private void setLB_NIVEAU_MANAGEMENT(String[] newLB_MANAGEMENT) {
+		LB_NIVEAU_MANAGEMENT = newLB_MANAGEMENT;
+	}
+
 	/**
 	 * Retourne le nom de la zone pour la JSP : NOM_LB_BUDGET Date de création :
 	 * (07/07/11 13:23:11)
@@ -3093,6 +3156,34 @@ public class OePOSTEFichePoste extends BasicProcess {
 	 */
 	public String getNOM_LB_BUDGETE_SELECT() {
 		return "NOM_LB_BUDGETE_SELECT";
+	}
+
+	public String getNOM_LB_NIVEAU_MANAGEMENT() {
+		return "NOM_LB_NIVEAU_MANAGEMENT";
+	}
+
+	/**
+	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
+	 * NOM_LB_BUDGETE_SELECT Date de création : (07/07/11 13:23:11)
+	 *
+	 *
+	 */
+	public String getNOM_LB_NIVEAU_MANAGEMENT_SELECT() {
+		return "NOM_LB_NIVEAU_MANAGEMENT_SELECT";
+	}
+
+	public String[] getVAL_LB_NIVEAU_MANAGEMENT() {
+		return getLB_NIVEAU_MANAGEMENT();
+	}
+
+	/**
+	 * Méthode à  personnaliser Retourne l'indice a selectionner pour la zone de
+	 * la JSP : LB_BUDGETE Date de création : (07/07/11 13:23:11)
+	 *
+	 *
+	 */
+	public String getVAL_LB_NIVEAU_MANAGEMENT_SELECT() {
+		return getZone(getNOM_LB_NIVEAU_MANAGEMENT_SELECT());
 	}
 
 	/**
@@ -6651,6 +6742,14 @@ public class OePOSTEFichePoste extends BasicProcess {
 		this.listeNiveauEtude = listeNiveauEtude;
 	}
 
+	public ArrayList<NiveauManagement> getListeNiveauManagement() {
+		return listeNiveauManagement;
+	}
+
+	public void setListeNiveauManagement(ArrayList<NiveauManagement> listeNiveauManagement) {
+		this.listeNiveauManagement = listeNiveauManagement;
+	}
+
 	/**
 	 * Retourne pour la JSP le LIEU_NAISS de la zone statique : ST_AV_TYPE Date
 	 * de création : (18/08/11 10:21:15)
@@ -7216,6 +7315,14 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 	public void setBudgetDao(BudgetDao budgetDao) {
 		this.budgetDao = budgetDao;
+	}
+
+	public NiveauManagementDao getNiveauManagementDao() {
+		return niveauManagementDao;
+	}
+
+	public void setNiveauManagementDao(NiveauManagementDao niveauManagementDao) {
+		this.niveauManagementDao = niveauManagementDao;
 	}
 
 	public FEFPDao getFefpDao() {

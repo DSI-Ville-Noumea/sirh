@@ -98,6 +98,17 @@
 						<INPUT class="sigp2-saisie" name="<%= process.getNOM_EF_CODE_GRADE() %>"  disabled="disabled" type="hidden" value="<%= process.getVAL_EF_CODE_GRADE() %>" >
 					</td>
 				</tr>
+				<tr>
+					<td>
+						<span class="sigp2Mandatory"> Niveau management : </span>
+					</td>
+					<td>
+						<SELECT <%= process.estFDPInactive ?  "disabled='disabled'" : "" %> class="sigp2-saisie" style="width:392px;" name="<%= process.getNOM_LB_NIVEAU_MANAGEMENT() %>" style="width:120px" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>>
+							<%=process.forComboHTML(process.getVAL_LB_NIVEAU_MANAGEMENT(), process.getVAL_LB_NIVEAU_MANAGEMENT_SELECT())%>
+						</SELECT>
+					</td>
+					<td></td>
+				</tr>
 			</table>
 		</fieldset>
 	</div>

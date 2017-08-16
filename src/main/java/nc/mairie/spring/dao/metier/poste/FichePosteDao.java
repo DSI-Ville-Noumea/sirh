@@ -48,6 +48,7 @@ public class FichePosteDao extends SirhDao implements FichePosteDaoInterface {
 	public static final String CHAMP_ID_SERVICE_ADS = "ID_SERVICE_ADS";
 	public static final String CHAMP_SPECIALISATION = "SPECIALISATION";
 	public static final String CHAMP_INFORMATIONS_COMPLEMENTAIRES = "INFORMATIONS_COMPLEMENTAIRES";
+	public static final String CHAMP_ID_NIVEAU_MANAGEMENT = "ID_NIVEAU_MANAGEMENT";
 
 	public FichePosteDao(SirhDao sirhDao) {
 		super.dataSource = sirhDao.getDataSource();
@@ -594,14 +595,14 @@ public class FichePosteDao extends SirhDao implements FichePosteDaoInterface {
 				+ CHAMP_ID_REMPLACEMENT + "=?," + CHAMP_ID_CDTHOR_BUD + "=?," + CHAMP_ID_CDTHOR_REG + "=?," + CHAMP_DATE_FIN_VALIDITE_FP + "=?," + CHAMP_OPI + "=?," + CHAMP_NFA + "=?,"
 				+ CHAMP_MISSIONS + "=?," + CHAMP_ANNEE_CREATION + "=?," + CHAMP_NUM_FP + "=?," + CHAMP_DATE_DEBUT_VALIDITE_FP + "=?," + CHAMP_DATE_DEB_APPLI_SERV + "=?," + CHAMP_OBSERVATION + "=?,"
 				+ CHAMP_CODE_GRADE + "=?," + CHAMP_ID_NATURE_CREDIT + "=?," + CHAMP_NUM_DELIBERATION + "=?," + CHAMP_ID_BASE_HORAIRE_POINTAGE + "=?," + CHAMP_ID_BASE_HORAIRE_ABSENCE + "=?,"
-				+ CHAMP_ID_SERVICE_ADS + "=? ," + CHAMP_ID_SERVI + "=? ," + CHAMP_SPECIALISATION  + "=? ," + CHAMP_INFORMATIONS_COMPLEMENTAIRES  + "=? where " + CHAMP_ID + " =?";
+				+ CHAMP_ID_SERVICE_ADS + "=? ," + CHAMP_ID_SERVI + "=? ," + CHAMP_SPECIALISATION  + "=? ," + CHAMP_INFORMATIONS_COMPLEMENTAIRES  + "=?, " + CHAMP_ID_NIVEAU_MANAGEMENT  + "=? where " + CHAMP_ID + " =?";
 		jdbcTemplate.update(
 				sql,
 				new Object[] { fichePoste.getIdTitrePoste(), fichePoste.getIdEntiteGeo(), fichePoste.getIdBudget(), fichePoste.getIdStatutFp(), fichePoste.getIdResponsable(),
 						fichePoste.getIdRemplacement(), fichePoste.getIdCdthorBud(), fichePoste.getIdCdthorReg(), fichePoste.getDateFinValiditeFp(), fichePoste.getOpi(), fichePoste.getNfa(),
 						fichePoste.getMissions(), fichePoste.getAnneeCreation(), fichePoste.getNumFp(), fichePoste.getDateDebutValiditeFp(), fichePoste.getDateDebAppliServ(),
 						fichePoste.getObservation(), fichePoste.getCodeGrade(), fichePoste.getIdNatureCredit(), fichePoste.getNumDeliberation(), fichePoste.getIdBaseHorairePointage(),
-						fichePoste.getIdBaseHoraireAbsence(), fichePoste.getIdServiceAds(), fichePoste.getIdServi(), fichePoste.getSpecialisation(), fichePoste.getInformations_complementaires(), fichePoste.getIdFichePoste() });
+						fichePoste.getIdBaseHoraireAbsence(), fichePoste.getIdServiceAds(), fichePoste.getIdServi(), fichePoste.getSpecialisation(), fichePoste.getInformations_complementaires(), fichePoste.getIdNiveauManagement(), fichePoste.getIdFichePoste() });
 	}
 
 	public Integer creerFichePosteBD(FichePoste fp) throws Exception {
@@ -609,13 +610,13 @@ public class FichePosteDao extends SirhDao implements FichePosteDaoInterface {
 				+ "," + CHAMP_ID_RESPONSABLE + "," + CHAMP_ID_REMPLACEMENT + "," + CHAMP_ID_CDTHOR_BUD + "," + CHAMP_ID_CDTHOR_REG + "," + CHAMP_DATE_FIN_VALIDITE_FP + "," + CHAMP_OPI + ","
 				+ CHAMP_NFA + "," + CHAMP_MISSIONS + "," + CHAMP_ANNEE_CREATION + "," + CHAMP_NUM_FP + "," + CHAMP_DATE_DEBUT_VALIDITE_FP + "," + CHAMP_DATE_DEB_APPLI_SERV + "," + CHAMP_OBSERVATION
 				+ "," + CHAMP_CODE_GRADE + "," + CHAMP_ID_NATURE_CREDIT + "," + CHAMP_NUM_DELIBERATION + "," + CHAMP_ID_BASE_HORAIRE_POINTAGE + "," + CHAMP_ID_BASE_HORAIRE_ABSENCE + ","
-				+ CHAMP_ID_SERVICE_ADS + "," + CHAMP_ID_SERVI + "," + CHAMP_SPECIALISATION  + "," + CHAMP_INFORMATIONS_COMPLEMENTAIRES  + ") " + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?))";
+				+ CHAMP_ID_SERVICE_ADS + "," + CHAMP_ID_SERVI + "," + CHAMP_SPECIALISATION  + "," + CHAMP_INFORMATIONS_COMPLEMENTAIRES + "," + CHAMP_ID_NIVEAU_MANAGEMENT  + ") " + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?))";
 		Integer id = jdbcTemplate.queryForObject(
 				sql,
 				new Object[] { fp.getIdTitrePoste(), fp.getIdEntiteGeo(), fp.getIdBudget(), fp.getIdStatutFp(), fp.getIdResponsable(), fp.getIdRemplacement(), fp.getIdCdthorBud(),
 						fp.getIdCdthorReg(), fp.getDateFinValiditeFp(), fp.getOpi(), fp.getNfa(), fp.getMissions(), fp.getAnneeCreation(), fp.getNumFp(), fp.getDateDebutValiditeFp(),
 						fp.getDateDebAppliServ(), fp.getObservation(), fp.getCodeGrade(), fp.getIdNatureCredit(), fp.getNumDeliberation(), fp.getIdBaseHorairePointage(), fp.getIdBaseHoraireAbsence(),
-						fp.getIdServiceAds(), fp.getIdServi(), fp.getSpecialisation(), fp.getInformations_complementaires() }, Integer.class);
+						fp.getIdServiceAds(), fp.getIdServi(), fp.getSpecialisation(), fp.getInformations_complementaires(), fp.getIdNiveauManagement() }, Integer.class);
 		return id;
 	}
 

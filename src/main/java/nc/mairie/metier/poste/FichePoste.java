@@ -36,6 +36,7 @@ public class FichePoste implements Cloneable {
 	public Integer idServiceAds;
 	public String specialisation;
 	public String informations_complementaires;
+	public Integer idNiveauManagement;
 
 	/**
 	 * Constructeur FichePoste.
@@ -329,6 +330,14 @@ public class FichePoste implements Cloneable {
 	 */
 	public void setMissions(String newMissions) {
 		missions = newMissions;
+	}
+
+	public Integer getIdNiveauManagement() {
+		return idNiveauManagement;
+	}
+
+	public void setIdNiveauManagement(Integer idNiveauManagement) {
+		this.idNiveauManagement = idNiveauManagement;
 	}
 
 	public Integer getIdRemplacement() {
