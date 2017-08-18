@@ -836,11 +836,15 @@ public class OePOSTEFichePoste extends BasicProcess {
 			}
 
 			if (getListeNiveauManagement() != null) {
-				for (int i = 0; i < getListeNiveauManagement().size(); i++) {
-					NiveauManagement nm = getListeNiveauManagement().get(i);
-					if (nm.getIdNiveauManagement().toString().equals(getFichePosteCourante().getIdNiveauManagement().toString())) {
-						addZone(getNOM_LB_NIVEAU_MANAGEMENT_SELECT(), String.valueOf(i));
-						break;
+				if (getFichePosteCourante().getIdNiveauManagement() == null) {
+					addZone(getNOM_LB_NIVEAU_MANAGEMENT_SELECT(), "0");
+				} else {
+					for (int i = 0; i < getListeNiveauManagement().size(); i++) {
+						NiveauManagement nm = getListeNiveauManagement().get(i);
+						if (nm.getIdNiveauManagement().toString().equals(getFichePosteCourante().getIdNiveauManagement().toString())) {
+							addZone(getNOM_LB_NIVEAU_MANAGEMENT_SELECT(), String.valueOf(i));
+							break;
+						}
 					}
 				}
 			}
@@ -1039,7 +1043,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 		}
 
 		// Si liste niveau management vide alors affectation
-		if (versionFicheMetier() && getLB_NIVEAU_MANAGEMENT() == LBVide) {
+		if (getLB_NIVEAU_MANAGEMENT() == LBVide) {
 			ArrayList<NiveauManagement> listeNiveauManagement = (ArrayList<NiveauManagement>) getNiveauManagementDao().listerNiveauManagement();
 			setListeNiveauManagement(listeNiveauManagement);
 
@@ -2042,7 +2046,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 		Budget budget = (Budget) getListeBudget().get(numLigneBudget);
 
 		//Niveau management
-		int numLigneManagement = (Services.estNumerique(getZone(getNOM_LB_NIVEAU_MANAGEMENT_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_NIVEAU_MANAGEMENT_SELECT())) : -1);
+		int numLigneManagement = (Services.estNumerique(getZone(getNOM_LB_NIVEAU_MANAGEMENT_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_NIVEAU_MANAGEMENT_SELECT())) : 0);
 
 		if (numLigneManagement == -1 || getListeNiveauManagement().isEmpty() || numLigneManagement > getListeNiveauManagement().size()) {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "niveaux de management"));
