@@ -276,7 +276,7 @@ document.formu.elements[nom].focus();
                     </tbody>
                 </table>
             </FIELDSET>
-        <% } else { %>}
+        <% } else { %>
             <FIELDSET class="sigp2Fieldset" style="text-align:left;margin:10px;width:1030px;">
                 <legend class="sigp2Legend">Activités</legend>
                 <%if (process.getListeActivite() != null && process.getListeActivite().size() > 0) { %>
