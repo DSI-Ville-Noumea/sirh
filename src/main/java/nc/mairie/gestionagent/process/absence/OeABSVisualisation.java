@@ -1146,7 +1146,7 @@ public class OeABSVisualisation extends BasicProcess {
 				|| type.getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.ASA_A54.getCode().toString())
 				|| type.getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.ASA_A55.getCode().toString())
 				|| type.getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.ASA_AMICALE.getCode().toString())))
-				|| (type != null && type.getGroupeAbsence() != null
+				|| (type.getGroupeAbsence() != null
 						&& (type.getGroupeAbsence().getIdRefGroupeAbsence() == EnumTypeGroupeAbsence.CONGES_EXCEP.getValue()
 								|| type.getGroupeAbsence().getIdRefGroupeAbsence() == EnumTypeGroupeAbsence.CONGES_ANNUELS.getValue()
 								|| type.getGroupeAbsence().getIdRefGroupeAbsence() == EnumTypeGroupeAbsence.MALADIES.getValue()))) {
@@ -1309,6 +1309,7 @@ public class OeABSVisualisation extends BasicProcess {
 		addZone(getNOM_ST_PRESCRIPTEUR(), Const.CHAINE_VIDE);
 		addZone(getNOM_ST_NOM_ENFANT(), Const.CHAINE_VIDE);
 		addZone(getNOM_ST_NOMBRE_ITT(), Const.CHAINE_VIDE);
+		addZone(getNOM_ST_DATE_ACCIDENT_TRAVAIL(), Const.CHAINE_VIDE);
 		addZone(getNOM_ST_DATE_DECLARATION(), Const.CHAINE_VIDE);
 		addZone(getNOM_CK_PROLONGATION(), Const.CHAINE_VIDE);
 		addZone(getNOM_LB_SIEGE_LESION_SELECT(), Const.ZERO);
@@ -1391,6 +1392,14 @@ public class OeABSVisualisation extends BasicProcess {
 
 	public String getVAL_ST_DATE_FIN() {
 		return getZone(getNOM_ST_DATE_FIN());
+	}
+
+	public String getNOM_ST_DATE_ACCIDENT_TRAVAIL() {
+		return "NOM_ST_DATE_ACCIDENT_TRAVAIL";
+	}
+
+	public String getVAL_ST_DATE_ACCIDENT_TRAVAIL() {
+		return getZone(getNOM_ST_DATE_ACCIDENT_TRAVAIL());
 	}
 
 	public String getNOM_ST_DATE_DECLARATION() {
@@ -1699,7 +1708,11 @@ public class OeABSVisualisation extends BasicProcess {
 		if ((null != type.getTypeSaisiDto() && type.getTypeSaisiDto().isCalendarDateFin()) || (null != type.getTypeSaisiCongeAnnuelDto() && type.getTypeSaisiCongeAnnuelDto().isCalendarDateFin())) {
 			addZone(getNOM_ST_DATE_FIN(), sdf.format(dem.getDateFin()));
 		}
-		// date de debut
+		// date de l'accident du travail
+		if ((null != type.getTypeSaisiDto() && type.getTypeSaisiDto().isDateAccidentTravail())) {
+			addZone(getNOM_ST_DATE_ACCIDENT_TRAVAIL(), sdf.format(dem.getDateAccidentTravail()));
+		}
+		// date de déclaration
 		if ((null != type.getTypeSaisiDto() && type.getTypeSaisiDto().isDateDeclaration())) {
 			addZone(getNOM_ST_DATE_DECLARATION(), sdf.format(dem.getDateDeclaration()));
 		}
@@ -2586,6 +2599,9 @@ public class OeABSVisualisation extends BasicProcess {
 					return false;
 				}
 				dto.setPrescripteur(getVAL_ST_PRESCRIPTEUR());
+			}
+			if (type.getTypeSaisiDto().isDateAccidentTravail()) {
+				dto.setDateAccidentTravail(sdf.parse(getVAL_ST_DATE_ACCIDENT_TRAVAIL()));
 			}
 			if (type.getTypeSaisiDto().isDateDeclaration()) {
 				if (null == getVAL_ST_DATE_DECLARATION() || Const.CHAINE_VIDE.equals(getVAL_ST_DATE_DECLARATION().trim())) {

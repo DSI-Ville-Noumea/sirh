@@ -518,6 +518,18 @@
 		            			</td>
 		            		</tr>
 		            		<% } %>
+	            			<% if(typeCreation.getTypeSaisiDto().isDateAccidentTravail()) { %>
+	            			<tr>
+		            			<td>
+	                        		<span class="sigp2Mandatory">Date de l'accident du travail :</span>
+		            			</td>
+		            			<td>
+			                        <input id="<%=process.getNOM_ST_DATE_ACCIDENT_TRAVAIL()%>" class="sigp2-saisie" maxlength="10"	
+			                        	name="<%= process.getNOM_ST_DATE_ACCIDENT_TRAVAIL()%>" size="10" type="text" value="<%= process.getVAL_ST_DATE_ACCIDENT_TRAVAIL()%>" >
+			                        <IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_ACCIDENT_TRAVAIL()%>', 'dd/mm/y');">
+		            			</td>
+	            			</tr>
+	            			<% } %>
 	            			<% if(typeCreation.getTypeSaisiDto().isDateDeclaration()) { %>
 	            			<tr>
 		            			<td>

@@ -101,6 +101,7 @@ public class DemandeDto implements IJSONDeserialize<DemandeDto> {
 	private RefTypeDto typeSiegeLesion;
 	private RefTypeDto typeMaladiePro;
 	private DemandeDto accidentTravailReference;
+	private Date dateAccidentTravail;
 	
 	// #32238 : Controle médical
 	private ControleMedicalDto controleMedical;
@@ -538,6 +539,14 @@ public class DemandeDto implements IJSONDeserialize<DemandeDto> {
 
 	public void setDateDeclaration(Date dateDeclaration) {
 		this.dateDeclaration = dateDeclaration;
+	}
+
+	public Date getDateAccidentTravail() {
+		return dateAccidentTravail;
+	}
+
+	public void setDateAccidentTravail(Date dateAccidentTravail) {
+		this.dateAccidentTravail = dateAccidentTravail;
 	}
 
 	public boolean isProlongation() {
