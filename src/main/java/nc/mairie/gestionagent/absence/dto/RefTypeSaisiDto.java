@@ -29,6 +29,7 @@ public class RefTypeSaisiDto {
 	// MALADIES
 	private boolean prescripteur;
 	private boolean dateDeclaration;
+	private boolean dateAccidentTravail;
 	private boolean prolongation;
 	private boolean nomEnfant;
 	private boolean nombreITT;
@@ -277,6 +278,14 @@ public class RefTypeSaisiDto {
 
 	public void setMotif(boolean motif) {
 		this.motif = motif;
+	}
+
+	public boolean isDateAccidentTravail() {
+		return dateAccidentTravail;
+	}
+
+	public void setDateAccidentTravail(boolean dateAccidentTravail) {
+		this.dateAccidentTravail = dateAccidentTravail;
 	}
 
 }
