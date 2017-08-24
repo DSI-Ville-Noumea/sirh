@@ -16,7 +16,7 @@ import org.springframework.context.ApplicationContext;
 
 import com.oreilly.servlet.MultipartRequest;
 
-import nc.mairie.comparator.DemandeDtoDateDeclarationComparator;
+import nc.mairie.comparator.DemandeDtoDateAccidentTravailComparator;
 import nc.mairie.enums.EnumEtatAbsence;
 import nc.mairie.enums.EnumTypeAbsence;
 import nc.mairie.enums.EnumTypeGroupeAbsence;
@@ -288,7 +288,7 @@ public class OeAGENTActesHSCT extends BasicProcess {
 				listeAT_MP.addAll(listeAT);
 				listeAT_MP.addAll(listeRechute);
 
-				Collections.sort(listeAT_MP, new DemandeDtoDateDeclarationComparator());
+				Collections.sort(listeAT_MP, new DemandeDtoDateAccidentTravailComparator());
 
 				if (listeAT_MP.size() > 0) {
 					int[] tailles = { 14, 60 };
@@ -321,7 +321,7 @@ public class OeAGENTActesHSCT extends BasicProcess {
 								.replace("]", "").replace(" ", ""),
 						EnumTypeAbsence.MALADIES_PROFESSIONNELLE.getCode(), EnumTypeGroupeAbsence.MALADIES.getValue());
 
-				Collections.sort(listeMP, new DemandeDtoDateDeclarationComparator());
+				Collections.sort(listeMP, new DemandeDtoDateAccidentTravailComparator());
 
 				if (listeMP.size() > 0) {
 					int[] tailles = { 14, 60 };

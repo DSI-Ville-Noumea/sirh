@@ -116,7 +116,8 @@ function doOnScroll(mondiv)
 			</div>
 			<%
 			UserAppli aUser= (UserAppli)VariableGlobale.recuperer(request,VariableGlobale.GLOBAL_USER_APPLI);
-			if (aUser.getUserName().equals("chata73") || aUser.getUserName().equals("nicno85")|| aUser.getUserName().equals("rebjo84")) {%>
+			if (aUser.getUserName().equals("chata73") || aUser.getUserName().equals("nicno85") 
+					|| aUser.getUserName().equals("rebjo84") || aUser.getUserName().equals("bodth91")) {%>
 			<BR/>
 			<div style="margin-top: 485px;">
 				<INPUT type="image" src="images/ajout.gif" height="20px" width="20px" name="<%=process.getNOM_PB_AJOUTER_ELEMENT()%>">

@@ -30,7 +30,7 @@ import com.oreilly.servlet.MultipartRequest;
 
 import flexjson.JSONSerializer;
 import nc.mairie.comparator.DemandeDtoDateDebutComparator;
-import nc.mairie.comparator.DemandeDtoDateDeclarationComparator;
+import nc.mairie.comparator.DemandeDtoDateAccidentTravailComparator;
 import nc.mairie.enums.EnumEtatAbsence;
 import nc.mairie.enums.EnumTypeAbsence;
 import nc.mairie.enums.EnumTypeGroupeAbsence;
@@ -2601,14 +2601,15 @@ public class OeABSVisualisation extends BasicProcess {
 				dto.setPrescripteur(getVAL_ST_PRESCRIPTEUR());
 			}
 			if (type.getTypeSaisiDto().isDateAccidentTravail()) {
+				if (null == getVAL_ST_DATE_ACCIDENT_TRAVAIL() || Const.CHAINE_VIDE.equals(getVAL_ST_DATE_ACCIDENT_TRAVAIL().trim())) {
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "date de l'accident du travail"));
+					return false;
+				}
 				dto.setDateAccidentTravail(sdf.parse(getVAL_ST_DATE_ACCIDENT_TRAVAIL()));
 			}
 			if (type.getTypeSaisiDto().isDateDeclaration()) {
-				if (null == getVAL_ST_DATE_DECLARATION() || Const.CHAINE_VIDE.equals(getVAL_ST_DATE_DECLARATION().trim())) {
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "date de déclaration"));
-					return false;
-				}
-				dto.setDateDeclaration(sdf.parse(getVAL_ST_DATE_DECLARATION()));
+				if (null != getVAL_ST_DATE_DECLARATION() && !Const.CHAINE_VIDE.equals(getVAL_ST_DATE_DECLARATION().trim()))
+					dto.setDateDeclaration(sdf.parse(getVAL_ST_DATE_DECLARATION()));
 			}
 			if (type.getTypeSaisiDto().isProlongation()) {
 				dto.setProlongation(null != getVAL_CK_PROLONGATION() && getVAL_CK_PROLONGATION().equals(getCHECKED_ON()));
@@ -3408,7 +3409,7 @@ public class OeABSVisualisation extends BasicProcess {
 				|| !listeATReference.get(0).getAgentWithServiceDto().getIdAgent().equals(idAgent)) {
 			List<DemandeDto> listeATRef = absService.getListeATReferenceForAgent(new Integer(idAgent));
 
-			Collections.sort(listeATRef, new DemandeDtoDateDeclarationComparator());
+			Collections.sort(listeATRef, new DemandeDtoDateAccidentTravailComparator());
 			setListeATReference((ArrayList<DemandeDto>) listeATRef);
 		}
 
