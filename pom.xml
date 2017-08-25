@@ -4,8 +4,7 @@
 
 	<groupId>nc.noumea.mairie</groupId>
 	<artifactId>SIRH_war</artifactId>
-	<!-- ATTENTION , penser à mettre a jour la version de sirh_api-->
-	<version>8.08</version>
+	<version>8.09</version>
 	<packaging>war</packaging>
 	<organization>
 		<name>Mairie de Nouméa</name>
