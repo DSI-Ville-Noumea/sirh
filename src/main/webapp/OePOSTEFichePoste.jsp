@@ -130,6 +130,7 @@
 			<% } %>
 			<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_SELECT_STATUT()%>" value="x">
 			<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_AJOUTER_GRADE()%>">
+			<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_REFRESH_NIVEAU_MANAGEMENT()%>">
 			<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_AJOUTER_NIVEAU_ETUDE()%>">
 			<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_INFO_SERVICE()%>">
 			<%=process.getUrlFichier()%>

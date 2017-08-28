@@ -136,6 +136,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 	private List<ActiviteMetier> listActiviteMetier = new ArrayList<>();
 	// liste des savoir-faire généraux
 	private List<SavoirFaire> listSavoirFaire = new ArrayList<>();
+	// Liste des compétences en management
+	private List<CompetenceManagement> listCompetenceManagement = new ArrayList<>();
 	//liste des activites generales
 	private List<ActiviteGenerale> listActiviteGenerale = new ArrayList<>();
 	//liste des conditions d'exercice
@@ -257,6 +259,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	private FichePosteDao fichePosteDao;
 	private ActiviteMetierDao activiteMetierDao;
 	private SavoirFaireDao savoirFaireDao;
+	private CompetenceManagementDao competenceManagementDao;
 	private SavoirFaireFMDao savoirFaireFMDao;
 	private ActiviteGeneraleFPDao activiteGeneraleFPDao;
 	private ActiviteMetierSavoirFPDao activiteMetierSavoirFPDao;
@@ -667,6 +670,9 @@ public class OePOSTEFichePoste extends BasicProcess {
 		if (getSavoirFaireDao() == null) {
 			setSavoirFaireDao(new SavoirFaireDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (getCompetenceManagementDao() == null) {
+			setCompetenceManagementDao(new CompetenceManagementDao((SirhDao) context.getBean("sirhDao")));
+		}
 		if (getSavoirFaireFMDao() == null) {
 			setSavoirFaireFMDao(new SavoirFaireFMDao((SirhDao) context.getBean("sirhDao")));
 		}
@@ -846,6 +852,12 @@ public class OePOSTEFichePoste extends BasicProcess {
 							break;
 						}
 					}
+				}
+				setListCompetenceManagement(getCompetenceManagementDao().listerToutesCompetencesManagement(fichePosteCourante.getIdNiveauManagement()));
+				for (int i = 0; i < listCompetenceManagement.size(); i++) {
+					CompetenceManagement cm = listCompetenceManagement.get(i);
+					addZone(getNOM_ST_ID_CM(i), cm.getIdCompetenceManagement().toString());
+					addZone(getNOM_ST_LIB_CM(i), cm.getLibCompetenceManagement());
 				}
 			}
 
@@ -2554,6 +2566,9 @@ public class OePOSTEFichePoste extends BasicProcess {
         }
 		//On recharge ce qui est maintenant en base
         initialiseConditionsExercices();
+
+        //On recharge les compétences de management
+        initialiseCompetenceManagement();
 	}
 
 	/**
@@ -3508,10 +3523,19 @@ public class OePOSTEFichePoste extends BasicProcess {
 		return true;
 	}
 
+	public String getNOM_PB_REFRESH_NIVEAU_MANAGEMENT() {
+		return "NOM_PB_REFRESH_NIVEAU_MANAGEMENT";
+	}
+
+	public boolean performPB_REFRESH_NIVEAU_MANAGEMENT(HttpServletRequest request) throws Exception {
+		initialiseCompetenceManagement();
+		return true;
+	}
+
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_AJOUTER_NIVEAU_ETUDE Date de
 	 * création : (08/07/11 09:21:06)
-	 * 
+	 *
 	 * 
 	 */
 	public String getNOM_PB_AJOUTER_NIVEAU_ETUDE() {
@@ -4098,6 +4122,22 @@ public class OePOSTEFichePoste extends BasicProcess {
 		}
 	}
 
+	private void initialiseCompetenceManagement() {
+		NiveauManagement niveauManagement;
+		if (getZone(getNOM_LB_NIVEAU_MANAGEMENT_SELECT()).isEmpty()) {
+
+		} else {
+			int numLigneManagement = (Services.estNumerique(getZone(getNOM_LB_NIVEAU_MANAGEMENT_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_NIVEAU_MANAGEMENT_SELECT())) : 0);
+			niveauManagement = getListeNiveauManagement().get(numLigneManagement);
+		}
+		setListCompetenceManagement(getCompetenceManagementDao().listerToutesCompetencesManagement(niveauManagement.getIdNiveauManagement()));
+		for (int i = 0; i < listCompetenceManagement.size(); i++) {
+			CompetenceManagement cm = listCompetenceManagement.get(i);
+			addZone(getNOM_ST_ID_CM(i), cm.getIdCompetenceManagement().toString());
+			addZone(getNOM_ST_LIB_CM(i), cm.getLibCompetenceManagement());
+		}
+	}
+
 	private void initialiseSavoirFaireGeneraux() {
 		setListSavoirFaire(getSavoirFaireDao().listerTousSavoirFaireGeneraux(getFichePosteCourante(),
 				getMetierPrimaire() != null ? getMetierPrimaire().getIdFicheMetier() : null,
@@ -4408,6 +4448,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 		initialiseSavoirFaireGeneraux();
 		initialiseActivitesGenerales();
 		initialiseConditionsExercices();
+		initialiseCompetenceManagement();
 	}
 
 	/**
@@ -4500,6 +4541,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 		initialiseSavoirFaireGeneraux();
 		initialiseActivitesGenerales();
 		initialiseConditionsExercices();
+		initialiseCompetenceManagement();
 	}
 
 	/**
@@ -5367,6 +5409,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 				initialiseSavoirFaireGeneraux();
 				initialiseActivitesGenerales();
 				initialiseConditionsExercices();
+				initialiseCompetenceManagement();
 			} else {
 				initialiseActivites();
 				initialiseCompetence();
@@ -6177,6 +6220,10 @@ public class OePOSTEFichePoste extends BasicProcess {
 				return performPB_AJOUTER_GRADE(request);
 			}
 
+			if (testerParametre(request, getNOM_PB_REFRESH_NIVEAU_MANAGEMENT())) {
+				return performPB_REFRESH_NIVEAU_MANAGEMENT(request);
+			}
+
 			// Si clic sur le bouton PB_AJOUTER_NIVEAU_ETUDE
 			if (testerParametre(request, getNOM_PB_AJOUTER_NIVEAU_ETUDE())) {
 				return performPB_AJOUTER_NIVEAU_ETUDE(request);
@@ -6327,6 +6374,14 @@ public class OePOSTEFichePoste extends BasicProcess {
 		return getZone(getNOM_ST_ID_ACTI(i));
 	}
 
+	public String getNOM_ST_ID_CM(int i) {
+		return "NOM_ST_ID_CM_" + i;
+	}
+
+	public String getVAL_ST_ID_CM(int i) {
+		return getZone(getNOM_ST_ID_CM(i));
+	}
+
 	public String getNOM_ST_ID_SF(int i) {
 		return "NOM_ST_ID_SF_" + i;
 	}
@@ -6357,6 +6412,14 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 	public String getVAL_ST_LIB_ACTI(int i) {
 		return getZone(getNOM_ST_LIB_ACTI(i));
+	}
+
+	public String getNOM_ST_LIB_CM(int i) {
+		return "NOM_ST_LIB_CM_" + i;
+	}
+
+	public String getVAL_ST_LIB_CM(int i) {
+		return getZone(getNOM_ST_LIB_CM(i));
 	}
 
 	public String getNOM_ST_LIB_SF(int i) {
@@ -6499,6 +6562,14 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 	public List<SavoirFaire> getListSavoirFaire() {
 		return listSavoirFaire;
+	}
+
+	public List<CompetenceManagement> getListCompetenceManagement() {
+		return listCompetenceManagement;
+	}
+
+	public void setListCompetenceManagement(List<CompetenceManagement> listCompetenceManagement) {
+		this.listCompetenceManagement = listCompetenceManagement;
 	}
 
 	public void setListSavoirFaire(List<SavoirFaire> listSavoirFaire) {
@@ -7411,6 +7482,14 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 	public SavoirFaireDao getSavoirFaireDao() {
 		return savoirFaireDao;
+	}
+
+	public CompetenceManagementDao getCompetenceManagementDao() {
+		return competenceManagementDao;
+	}
+
+	public void setCompetenceManagementDao(CompetenceManagementDao competenceManagementDao) {
+		this.competenceManagementDao = competenceManagementDao;
 	}
 
 	public void setSavoirFaireDao(SavoirFaireDao savoirFaireDao) {

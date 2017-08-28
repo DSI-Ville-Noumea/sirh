@@ -103,7 +103,7 @@
 						<span class="sigp2Mandatory"> Niveau management : </span>
 					</td>
 					<td>
-						<SELECT <%= process.estFDPInactive ?  "disabled='disabled'" : "" %> class="sigp2-saisie" style="width:392px;" name="<%= process.getNOM_LB_NIVEAU_MANAGEMENT() %>" style="width:120px" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>>
+						<SELECT <%= process.estFDPInactive ?  "disabled='disabled'" : "" %> class="sigp2-saisie" style="width:392px;" name="<%= process.getNOM_LB_NIVEAU_MANAGEMENT() %>" style="width:120px" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> onchange='executeBouton("<%=process.getNOM_PB_REFRESH_NIVEAU_MANAGEMENT() %>")'>
 							<%=process.forComboHTML(process.getVAL_LB_NIVEAU_MANAGEMENT(), process.getVAL_LB_NIVEAU_MANAGEMENT_SELECT())%>
 						</SELECT>
 					</td>
@@ -527,6 +527,34 @@
         } );
 	</script>
 </FIELDSET>
+
+<% if (process.getListCompetenceManagement() != null && !process.getListCompetenceManagement().isEmpty()) { %>
+	<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
+		<legend class="sigp2Legend">Compétences managériales</legend>
+		<table class="display" id="tabCompetenceManagement">
+			<thead>
+			<tr>
+				<th class="masqued-id">idCompetenceManagement</th>
+				<th>Libellé</th>
+			</tr>
+			</thead>
+			<tbody>
+			<%
+				if (process.getListCompetenceManagement()!=null){
+					for (int indiceCM = 0; indiceCM < process.getListCompetenceManagement().size(); indiceCM++) {
+			%>
+			<tr class="block-element-<%=(indiceCM % 2) == 0 ? "even" : "odd" %>">
+				<td class="masqued-id"><%=process.getVAL_ST_ID_CM(indiceCM)%></td>
+				<td style="padding: 5px;"><%=process.getVAL_ST_LIB_CM(indiceCM)%></td>
+			</tr>
+			<%
+					}
+				}
+			%>
+			</tbody>
+		</table>
+	</FIELDSET>
+<% } %>
 
 <fieldset class="sigp2Fieldset" style="width:1030px">
 	<legend class="sigp2Legend">Spécificités</legend>
