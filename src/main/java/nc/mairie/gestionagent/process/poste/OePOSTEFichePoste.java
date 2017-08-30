@@ -4124,12 +4124,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 	private void initialiseCompetenceManagement() {
 		NiveauManagement niveauManagement;
-		if (getZone(getNOM_LB_NIVEAU_MANAGEMENT_SELECT()).isEmpty()) {
-
-		} else {
-			int numLigneManagement = (Services.estNumerique(getZone(getNOM_LB_NIVEAU_MANAGEMENT_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_NIVEAU_MANAGEMENT_SELECT())) : 0);
-			niveauManagement = getListeNiveauManagement().get(numLigneManagement);
-		}
+		int numLigneManagement = (Services.estNumerique(getZone(getNOM_LB_NIVEAU_MANAGEMENT_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_NIVEAU_MANAGEMENT_SELECT())) : 0);
+		niveauManagement = getListeNiveauManagement().get(numLigneManagement);
 		setListCompetenceManagement(getCompetenceManagementDao().listerToutesCompetencesManagement(niveauManagement.getIdNiveauManagement()));
 		for (int i = 0; i < listCompetenceManagement.size(); i++) {
 			CompetenceManagement cm = listCompetenceManagement.get(i);
