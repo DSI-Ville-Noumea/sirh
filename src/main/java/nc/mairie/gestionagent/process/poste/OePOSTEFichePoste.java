@@ -5682,7 +5682,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 	private boolean imprimeModele(HttpServletRequest request) throws Exception {
 		
-		String nomFichier = "FP_" + getFichePosteCourante().getIdFichePoste() + ".doc";
+		String nomFichier = "FP_" + getFichePosteCourante().getIdFichePoste() + ".pdf";
 		String url = "PrintDocument?fromPage="+this.getClass().getName()+"&nomFichier="+nomFichier+"&idFichePoste="+getFichePosteCourante().getIdFichePoste();
 		setURLFichier(getScriptOuverture(url));
 

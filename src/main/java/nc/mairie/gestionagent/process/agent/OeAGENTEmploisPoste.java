@@ -1757,7 +1757,7 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 
 	private boolean imprimeModele(HttpServletRequest request) throws Exception {
 
-		String nomFichier = "FP_" + getFichePosteCourant().getIdFichePoste() + ".doc";
+		String nomFichier = "FP_" + getFichePosteCourant().getIdFichePoste() + ".pdf";
 		String url = "PrintDocument?fromPage=" + this.getClass().getName() + "&nomFichier=" + nomFichier + "&idFichePoste="
 				+ getFichePosteCourant().getIdFichePoste();
 		setURLFichier(getScriptOuverture(url));
