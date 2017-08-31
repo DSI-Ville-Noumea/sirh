@@ -263,7 +263,7 @@
 	</div>
 </div>
 <fieldset class="sigp2Fieldset" style="width:1020px">
-	<legend class="sigp2Legend">Descriptif du poste</legend>
+	<legend class="sigp2Legend">Définition du poste</legend>
 	<%if (process.getVAL_ST_INFO_FP().length() != 0){ %>
 	<span><%= process.getVAL_ST_INFO_FP()%></span>
 	<br/><br/>

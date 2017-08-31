@@ -101,7 +101,7 @@ document.formu.elements[nom].focus();
 		    </table>
 		</FIELDSET>
 	    <FIELDSET class="sigp2Fieldset" style="text-align:left;margin:10px;width:1030px;">
-		    <legend class="sigp2Legend">Descriptif du poste</legend>
+		    <legend class="sigp2Legend">Définition du poste</legend>
 		    <table>
 		    	<tr>
 		    		<td width="150px;">
