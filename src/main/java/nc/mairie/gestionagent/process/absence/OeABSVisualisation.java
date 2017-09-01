@@ -1248,7 +1248,7 @@ public class OeABSVisualisation extends BasicProcess {
 				libelle = "Siège des lésions non renseigné";
 
 			String ligne[] = { 
-			sdf.format(at.getDateDeclaration()) + " - " + libelle };
+			sdf.format(at.getDateAccidentTravail()) + " - " + libelle };
 			aFormat.ajouteLigne(ligne);
 		}
 		setLB_AT_REFERENCE(aFormat.getListeFormatee(false));
@@ -1312,6 +1312,7 @@ public class OeABSVisualisation extends BasicProcess {
 		addZone(getNOM_ST_DATE_ACCIDENT_TRAVAIL(), Const.CHAINE_VIDE);
 		addZone(getNOM_ST_DATE_DECLARATION(), Const.CHAINE_VIDE);
 		addZone(getNOM_CK_PROLONGATION(), Const.CHAINE_VIDE);
+		addZone(getNOM_CK_SANS_AT(), Const.CHAINE_VIDE);
 		addZone(getNOM_LB_SIEGE_LESION_SELECT(), Const.ZERO);
 		addZone(getNOM_LB_TYPE_AT_SELECT(), Const.ZERO);
 		addZone(getNOM_LB_MALADIE_PRO_SELECT(), Const.ZERO);
@@ -1416,6 +1417,14 @@ public class OeABSVisualisation extends BasicProcess {
 
 	public String getVAL_CK_PROLONGATION() {
 		return getZone(getNOM_CK_PROLONGATION());
+	}
+
+	public String getNOM_CK_SANS_AT() {
+		return "NOM_CK_SANS_AT";
+	}
+
+	public String getVAL_CK_SANS_AT() {
+		return getZone(getNOM_CK_SANS_AT());
 	}
 
 	public String getNOM_ST_DATE_REPRISE() {
@@ -1708,10 +1717,6 @@ public class OeABSVisualisation extends BasicProcess {
 		if ((null != type.getTypeSaisiDto() && type.getTypeSaisiDto().isCalendarDateFin()) || (null != type.getTypeSaisiCongeAnnuelDto() && type.getTypeSaisiCongeAnnuelDto().isCalendarDateFin())) {
 			addZone(getNOM_ST_DATE_FIN(), sdf.format(dem.getDateFin()));
 		}
-		// date de l'accident du travail
-		if ((null != type.getTypeSaisiDto() && type.getTypeSaisiDto().isDateAccidentTravail())) {
-			addZone(getNOM_ST_DATE_ACCIDENT_TRAVAIL(), sdf.format(dem.getDateAccidentTravail()));
-		}
 		// date de déclaration
 		if ((null != type.getTypeSaisiDto() && type.getTypeSaisiDto().isDateDeclaration())) {
 			addZone(getNOM_ST_DATE_DECLARATION(), sdf.format(dem.getDateDeclaration()));
@@ -1758,11 +1763,18 @@ public class OeABSVisualisation extends BasicProcess {
 
 		// MALADIES
 		if (null != type.getTypeSaisiDto()) {
+			// date de l'accident du travail
+			if (type.getTypeSaisiDto().isDateAccidentTravail()) {
+				addZone(getNOM_ST_DATE_ACCIDENT_TRAVAIL(), sdf.format(dem.getDateAccidentTravail()));
+			}
 			if (type.getTypeSaisiDto().isPrescripteur()) {
 				addZone(getNOM_ST_PRESCRIPTEUR(), dem.getPrescripteur() == null ? Const.CHAINE_VIDE : dem.getPrescripteur().trim());
 			}
 			if (type.getTypeSaisiDto().isProlongation()) {
 				addZone(getNOM_CK_PROLONGATION(), dem.isProlongation() ? getCHECKED_ON() : getCHECKED_OFF());
+			}
+			if (type.getTypeSaisiDto().isSansArretTravail()) {
+				addZone(getNOM_CK_SANS_AT(), dem.isSansArretTravail() ? getCHECKED_ON() : getCHECKED_OFF());
 			}
 			if (type.getTypeSaisiDto().isNomEnfant()) {
 				addZone(getNOM_ST_NOM_ENFANT(), dem.getNomEnfant() == null ? Const.CHAINE_VIDE : dem.getNomEnfant().trim());
@@ -1959,6 +1971,12 @@ public class OeABSVisualisation extends BasicProcess {
 
 		Long nbITT = null;
 
+		// #41504 : Si la case "Sans arrêt de travail" est cochée, alors le nombre d'ITT doit être 0
+		if (getVAL_CK_SANS_AT().equals(getCHECKED_ON())) {
+			addZone(getNOM_ST_NOMBRE_ITT(), "0");
+			return true;
+		}
+			
 		switch (EnumTypeAbsence.getRefTypeAbsenceEnum(typeCreation.getIdRefTypeAbsence())) {
 			case MALADIES_ACCIDENT_TRAVAIL :
 				nbITT = ChronoUnit.DAYS.between(sdf.parse(getVAL_ST_DATE_DEBUT()).toInstant(), sdf.parse(getVAL_ST_DATE_FIN()).toInstant());
@@ -1973,7 +1991,7 @@ public class OeABSVisualisation extends BasicProcess {
 			default:
 				break;
 		}
-
+		
 		// On n'autorise pas un nombre de jour négatif (dans le cas d'un AT sur une journée)
 		if (nbITT != null) {
 			nbITT = nbITT > 0 ? nbITT : 0;
@@ -2613,6 +2631,9 @@ public class OeABSVisualisation extends BasicProcess {
 			}
 			if (type.getTypeSaisiDto().isProlongation()) {
 				dto.setProlongation(null != getVAL_CK_PROLONGATION() && getVAL_CK_PROLONGATION().equals(getCHECKED_ON()));
+			}
+			if (type.getTypeSaisiDto().isSansArretTravail()) {
+				dto.setSansArretTravail(null != getVAL_CK_SANS_AT() && getVAL_CK_SANS_AT().equals(getCHECKED_ON()));
 			}
 			if (type.getTypeSaisiDto().isNomEnfant()) {
 				if (null == getVAL_ST_NOM_ENFANT() || Const.CHAINE_VIDE.equals(getVAL_ST_NOM_ENFANT().trim())) {

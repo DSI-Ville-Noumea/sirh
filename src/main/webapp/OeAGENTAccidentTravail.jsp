@@ -115,7 +115,7 @@
 				<% if(process.getDemandeCourant().getTypeSaisi().isDateAccidentTravail()) { %>
 				<tr>
 					<td width="155px;">
-						<span class="sigp2">Date de l'accident du travail :</span>
+						<span class="sigp2Mandatory">Date de l'accident du travail :</span>
 					</td>
 					<td width="320px;">
 						<input id="<%=process.getNOM_EF_DATE_ACCIDENT_TRAVAIL()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DATE_ACCIDENT_TRAVAIL() %>" size="10" type="text" value="<%= process.getVAL_EF_DATE_ACCIDENT_TRAVAIL() %>">
@@ -125,7 +125,7 @@
 				<% if(process.getDemandeCourant().getTypeSaisi().isDateDeclaration()) { %>
 				<tr>
 					<td width="155px;">
-						<span class="sigp2Mandatory">Date de déclaration :</span>
+						<span class="sigp2">Date de déclaration :</span>
 					</td>
 					<td width="320px;">
 						<input id="<%=process.getNOM_EF_DATE()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DATE() %>" size="10" type="text" value="<%= process.getVAL_EF_DATE() %>">

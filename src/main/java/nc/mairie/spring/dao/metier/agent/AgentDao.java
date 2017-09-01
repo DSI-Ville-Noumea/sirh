@@ -7,6 +7,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+
 import nc.mairie.connecteur.Connecteur;
 import nc.mairie.enums.EnumCollectivite;
 import nc.mairie.metier.Const;
@@ -18,9 +22,9 @@ import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.Transaction;
 
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
-
 public class AgentDao extends SirhDao implements AgentDaoInterface {
+	
+	private Logger logger = LoggerFactory.getLogger(AgentDao.class);
 
 	public static final String CHAMP_ID_VOIE = "ID_VOIE";
 	public static final String CHAMP_ID_COLLECTIVITE = "ID_COLLECTIVITE";
@@ -248,6 +252,7 @@ public class AgentDao extends SirhDao implements AgentDaoInterface {
 
 	@Override
 	public Agent chercherAgentParMatricule(Integer noMatr) throws Exception {
+		logger.info("Entering chercherAgentParMatricule() function, with agentId = " + noMatr + " and table_name = " + NOM_TABLE);
 		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_NOMATR + " = ? ";
 		Agent doc = (Agent) jdbcTemplate.queryForObject(sql, new Object[] { noMatr }, new BeanPropertyRowMapper<Agent>(
 				Agent.class));

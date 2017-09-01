@@ -36,6 +36,7 @@ public class RefTypeSaisiDto {
 	private boolean siegeLesion;
 	private boolean atReference;
 	private boolean maladiePro;
+	private boolean sansArretTravail;
 
 	public RefTypeSaisiDto() {
 	}
@@ -287,5 +288,13 @@ public class RefTypeSaisiDto {
 	public void setDateAccidentTravail(boolean dateAccidentTravail) {
 		this.dateAccidentTravail = dateAccidentTravail;
 	}
+
+	public boolean isSansArretTravail() {
+		return sansArretTravail;
+	}
+
+	public void setSansArretTravail(boolean sansArretTravail) {
+		this.sansArretTravail = sansArretTravail;
+	}	
 
 }

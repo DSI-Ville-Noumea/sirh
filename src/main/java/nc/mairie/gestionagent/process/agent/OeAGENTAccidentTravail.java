@@ -266,7 +266,7 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 				for (DemandeDto atReference : listeATReference) {
 					if (null != atReference.getTypeSiegeLesion()) {
 						RefTypeDto s = getHashSiegeLesion().get(atReference.getTypeSiegeLesion().getIdRefType());
-						String ligne[] = { sdf.format(atReference.getDateDeclaration()) + " - " + s.getLibelle() };
+						String ligne[] = { sdf.format(atReference.getDateAccidentTravail()) + " - " + s.getLibelle() };
 						aFormat.ajouteLigne(ligne);
 					}
 					getHashATReference().put(atReference.getIdDemande(), atReference);
@@ -462,7 +462,7 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 			int ligneAtReference = getListeATReference().indexOf(atReference);
 			addZone(getNOM_LB_AT_REFERENCE_SELECT(), String.valueOf(ligneAtReference + 1));
 			RefTypeDto s = getHashSiegeLesion().get(atReference.getTypeSiegeLesion().getIdRefType());
-			addZone(getNOM_LB_AT_REFERENCE(), sdf.format(atReference.getDateDeclaration()) + " - " + s.getLibelle());
+			addZone(getNOM_LB_AT_REFERENCE(), sdf.format(atReference.getDateAccidentTravail()) + " - " + s.getLibelle());
 		}
 
 		if (getDemandeCourant().getTypeSaisi().isMaladiePro() && null != getDemandeCourant().getTypeMaladiePro()) {

@@ -297,7 +297,7 @@ public class OeAGENTActesHSCT extends BasicProcess {
 						DemandeDto demande = (DemandeDto) list.next();
 						RefTypeDto tAt = demande.getTypeAccidentTravail();
 						if (null != tAt) {
-							String dateDeclaration = null != demande.getDateDeclaration() ? "AT - " + sdf.format(demande.getDateDeclaration())
+							String dateDeclaration = null != demande.getDateAccidentTravail() ? "AT - " + sdf.format(demande.getDateDeclaration())
 									: "AT Rechute ";
 							String ligne[] = { dateDeclaration, tAt.getLibelle() };
 							aFormat.ajouteLigne(ligne);
@@ -794,8 +794,8 @@ public class OeAGENTActesHSCT extends BasicProcess {
 					nomDoc = nomDoc.substring(nomDoc.indexOf("_") + 1, nomDoc.length());
 					String id = nomDoc.substring(0, nomDoc.indexOf("_"));
 					DemandeDto at = getHashMapAT().get(id);
-					if (at != null && at.getDateDeclaration() != null) {
-						info = "AT du : " + sdf.format(at.getDateDeclaration());
+					if (at != null && at.getDateAccidentTravail() != null) {
+						info = "AT du : " + sdf.format(at.getDateAccidentTravail());
 					}
 				} else if (td.getCodTypeDocument().equals(CmisUtils.CODE_TYPE_MP)) {
 					String nomDoc = doc.getNomDocument();
