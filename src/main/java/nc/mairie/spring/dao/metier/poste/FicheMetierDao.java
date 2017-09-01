@@ -35,6 +35,8 @@ public class FicheMetierDao extends SirhDao implements FicheMetierDaoInterface {
                     new BeanPropertyRowMapper<>(FicheMetier.class));
         } catch (EmptyResultDataAccessException ex) {
             return null;
+        } catch (NullPointerException ex) {
+            return null;
         }
     }
 
@@ -46,6 +48,8 @@ public class FicheMetierDao extends SirhDao implements FicheMetierDaoInterface {
             return jdbcTemplate.queryForObject(sql, new Object[]{idFichePoste, fmPrimaire},
                     new BeanPropertyRowMapper<>(FicheMetier.class));
         } catch (EmptyResultDataAccessException ex) {
+            return null;
+        } catch (NullPointerException ex) {
             return null;
         }
     }

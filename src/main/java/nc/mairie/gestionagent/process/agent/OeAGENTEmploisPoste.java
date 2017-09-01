@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.metier.poste.*;
 import nc.mairie.spring.dao.metier.poste.*;
+import nc.mairie.technique.Services;
 import org.springframework.context.ApplicationContext;
 
 import nc.mairie.enums.EnumTypeCompetence;
@@ -78,6 +79,7 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 	private ArrayList<Activite>				listeActivite;
 	private List<ActiviteMetier>            listActiviteMetier;
 	private List<SavoirFaire>               listSavoirFaire;
+	private List<CompetenceManagement> 		listCompetenceManagement = new ArrayList<>();
 	private List<ActiviteGenerale>          listActiviteGenerale;
 	private List<ConditionExercice>         listConditionExercice;
 	private ArrayList<Competence>			listeCompetence;
@@ -107,6 +109,7 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 	private TitrePoste						titrePosteResponsable;
 	private FicheMetier                     metierPrimaire;
 	private FicheMetier                     metierSecondaire;
+	private NiveauManagement                niveauManagement;
 
 	public String							ACTION_IMPRESSION	= "Impression d'un contrat.";
 	private String							focus				= null;
@@ -133,6 +136,8 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 	private ActiviteDao						activiteDao;
 	private ActiviteMetierDao 				activiteMetierDao;
 	private SavoirFaireDao                  savoirFaireDao;
+	private CompetenceManagementDao         competenceManagementDao;
+	private NiveauManagementDao 			niveauManagementDao;
 	private ActiviteGeneraleDao             activiteGeneraleDao;
 	private ConditionExerciceDao            conditionExerciceDao;
 	private FMFPDao                         fmfpDao;
@@ -212,19 +217,6 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 				if (getAffectationCourant().getIdFichePosteSecondaire() != null) {
 					setFichePosteSecondaireCourant(getFichePosteDao().chercherFichePoste(getAffectationCourant().getIdFichePosteSecondaire()));
 				}
-				FMFP fmfpPrimaire = getFmfpDao().chercherFMFPAvecNumFP(getFichePosteCourant().getIdFichePoste(), true);
-				// Init fiche métier primaire
-				if (fmfpPrimaire != null) {
-					setMetierPrimaire(getFicheMetierDao().chercherFicheMetierAvecFichePoste(fmfpPrimaire));
-				}
-
-				// Recherche du lien FicheMetier / FichePoste secondaire
-				FMFP fmfpSecondaire = getFmfpDao().chercherFMFPAvecNumFP(getFichePosteCourant().getIdFichePoste(), false);
-
-				if (fmfpSecondaire != null) {
-					// Init fiche métier secondaire
-					setMetierSecondaire(getFicheMetierDao().chercherFicheMetierAvecFichePoste(fmfpSecondaire));
-				}
 				alimenterFicheDePoste();
 			}
 		} else {
@@ -301,6 +293,12 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 		if (getSavoirFaireDao() == null) {
 			setSavoirFaireDao(new SavoirFaireDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (getCompetenceManagementDao() == null) {
+			setCompetenceManagementDao(new CompetenceManagementDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getNiveauManagementDao() == null) {
+			setNiveauManagementDao(new NiveauManagementDao((SirhDao) context.getBean("sirhDao")));
+		}
         if (getActiviteGeneraleDao() == null) {
 		    setActiviteGeneraleDao(new ActiviteGeneraleDao((SirhDao) context.getBean("sirhDao")));
         }
@@ -338,6 +336,14 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 
 	private void alimenterFicheDePoste() throws Exception {
 		if (getFichePosteCourant() != null) {
+			FMFP fmfpPrimaire = getFmfpDao().chercherFMFPAvecNumFP(getFichePosteCourant().getIdFichePoste(), true);
+			// Init fiche métier primaire
+			setMetierPrimaire(getFicheMetierDao().chercherFicheMetierAvecFichePoste(fmfpPrimaire));
+
+			// Recherche du lien FicheMetier / FichePoste secondaire
+			FMFP fmfpSecondaire = getFmfpDao().chercherFMFPAvecNumFP(getFichePosteCourant().getIdFichePoste(), false);
+
+			setMetierSecondaire(getFicheMetierDao().chercherFicheMetierAvecFichePoste(fmfpSecondaire));
 			// Recherche des informations à  afficher
 			setTitrePoste(getFichePosteCourant().getIdTitrePoste() == null ? Const.CHAINE_VIDE
 					: getTitrePosteDao().chercherTitrePoste(getFichePosteCourant().getIdTitrePoste()).getLibTitrePoste());
@@ -401,6 +407,7 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 				initialiseSavoirFaireGeneraux();
 				initialiserActiviteGenerale();
 				initialiserConditionExercice();
+				initialiseCompetenceManagement();
 			} else {
 				// Affiche les activités
 				initialiserActivite();
@@ -678,6 +685,17 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 		}
 	}
 
+	private void initialiseCompetenceManagement() {
+		NiveauManagement niveauManagement = getNiveauManagementDao().getNiveauManagement(getFichePosteCourant().getIdNiveauManagement());
+		setNiveauManagement(niveauManagement);
+		addZone(getNOM_ST_NIVEAU_MANAGEMENT(), niveauManagement.getLibNiveauManagement());
+		setListCompetenceManagement(getCompetenceManagementDao().listerToutesCompetencesManagement(niveauManagement.getIdNiveauManagement()));
+		for (int i = 0; i < listCompetenceManagement.size(); i++) {
+			CompetenceManagement cm = listCompetenceManagement.get(i);
+			addZone(getNOM_ST_LIB_CM(i), cm.getLibCompetenceManagement());
+		}
+	}
+
 	public void alimenterZones() throws Exception {
 		addZone(getNOM_ST_BUDGET(), getFichePosteCourant().getIdBudget() == null ? Const.CHAINE_VIDE
 				: getBudgetDao().chercherBudget(getFichePosteCourant().getIdBudget()).getLibBudget());
@@ -772,6 +790,7 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 		setFichePosteCourant(getFichePosteSecondaireCourant());
 		setFichePosteSecondaireCourant(origine);
 		setStatut(STATUT_MEME_PROCESS);
+		initialiseZones(request);
 		return true;
 	}
 
@@ -1391,6 +1410,14 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 
 	public void setListSavoirFaire(List<SavoirFaire> listSavoirFaire) {
 		this.listSavoirFaire = listSavoirFaire;
+	}
+
+	public List<CompetenceManagement> getListCompetenceManagement() {
+		return listCompetenceManagement;
+	}
+
+	public void setListCompetenceManagement(List<CompetenceManagement> listCompetenceManagement) {
+		this.listCompetenceManagement = listCompetenceManagement;
 	}
 
     public List<ActiviteGenerale> getListActiviteGenerale() {
@@ -2281,6 +2308,22 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 		return getZone(getNOM_ST_INFO_RESP());
 	}
 
+	public String getNOM_ST_LIB_CM(int i) {
+		return "NOM_ST_LIB_CM_" + i;
+	}
+
+	public String getVAL_ST_LIB_CM(int i) {
+		return getZone(getNOM_ST_LIB_CM(i));
+	}
+
+	public String getNOM_ST_NIVEAU_MANAGEMENT() {
+		return "NOM_ST_NIVEAU_MANAGEMENT";
+	}
+
+	public String getVAL_ST_NIVEAU_MANAGEMENT() {
+		return getZone(getNOM_ST_NIVEAU_MANAGEMENT());
+	}
+
 	/**
 	 * Affiche la fiche de poste "Responsable"
 	 */
@@ -2594,7 +2637,23 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 		this.savoirFaireDao = savoirFaireDao;
 	}
 
-    public ActiviteGeneraleDao getActiviteGeneraleDao() {
+	public CompetenceManagementDao getCompetenceManagementDao() {
+		return competenceManagementDao;
+	}
+
+	public void setCompetenceManagementDao(CompetenceManagementDao competenceManagementDao) {
+		this.competenceManagementDao = competenceManagementDao;
+	}
+
+	public NiveauManagementDao getNiveauManagementDao() {
+		return niveauManagementDao;
+	}
+
+	public void setNiveauManagementDao(NiveauManagementDao niveauManagementDao) {
+		this.niveauManagementDao = niveauManagementDao;
+	}
+
+	public ActiviteGeneraleDao getActiviteGeneraleDao() {
         return activiteGeneraleDao;
     }
 
@@ -2660,5 +2719,13 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 
 	public boolean versionFicheMetier() {
 		return getMetierPrimaire() != null;
+	}
+
+	public NiveauManagement getNiveauManagement() {
+		return niveauManagement;
+	}
+
+	public void setNiveauManagement(NiveauManagement niveauManagement) {
+		this.niveauManagement = niveauManagement;
 	}
 }

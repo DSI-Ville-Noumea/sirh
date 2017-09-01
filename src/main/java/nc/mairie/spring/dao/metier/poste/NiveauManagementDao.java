@@ -22,4 +22,10 @@ public class NiveauManagementDao extends SirhDao implements NiveauManagementDaoI
         return jdbcTemplate.query(sql, new Object[] {}, new BeanPropertyRowMapper<>(NiveauManagement.class));
     }
 
+    public NiveauManagement getNiveauManagement(Integer idNiveauManagement) {
+        String sql = "SELECT ID_NIVEAU_MANAGEMENT, LIB_NIVEAU_MANAGEMENT FROM " + NOM_TABLE
+                + " WHERE ID_NIVEAU_MANAGEMENT=?";
+        return jdbcTemplate.queryForObject(sql, new Object[] {idNiveauManagement}, new BeanPropertyRowMapper<>(NiveauManagement.class));
+    }
+
 }
