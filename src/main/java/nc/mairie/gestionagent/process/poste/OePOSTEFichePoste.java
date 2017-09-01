@@ -3879,11 +3879,11 @@ public class OePOSTEFichePoste extends BasicProcess {
 				setMetierSecondaire(getFicheMetierDao().chercherFicheMetierAvecFichePoste(fmfpSecondaire));
 			}
 
-			if (!versionFicheMetier()) {
-				// Vérifie l'affectation
-				ArrayList<Affectation> liste = getAffectationDao().listerAffectationAvecFPPrimaireOuSecondaire(getFichePosteCourante().getIdFichePoste());
-				setFpCouranteAffectee(getFichePosteDao().estAffectee(getFichePosteCourante().getIdFichePoste(), liste));
+			// Vérifie l'affectation
+			ArrayList<Affectation> liste = getAffectationDao().listerAffectationAvecFPPrimaireOuSecondaire(getFichePosteCourante().getIdFichePoste());
+			setFpCouranteAffectee(getFichePosteDao().estAffectee(getFichePosteCourante().getIdFichePoste(), liste));
 
+			if (!versionFicheMetier()) {
 				// Recherche de tous les liens FicheEmploi / FichePoste
 				ArrayList<FEFP> liens1 = getFefpDao().listerFEFPAvecFP(getFichePosteCourante().getIdFichePoste());
 				// Init fiches emploi
