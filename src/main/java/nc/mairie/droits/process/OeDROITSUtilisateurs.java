@@ -25,6 +25,8 @@ import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
 import nc.noumea.spring.service.IRadiService;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 
 /**
@@ -32,6 +34,8 @@ import org.springframework.context.ApplicationContext;
  * 
  */
 public class OeDROITSUtilisateurs extends BasicProcess {
+	
+	private Logger logger = LoggerFactory.getLogger(OeDROITSUtilisateurs.class);
 	/**
 	 * 
 	 */
@@ -157,14 +161,21 @@ public class OeDROITSUtilisateurs extends BasicProcess {
 
 				String infoAgent = "&nbsp;";
 				if (user != null && user.getEmployeeNumber() != null && user.getEmployeeNumber() != 0) {
-					Agent agent = getAgentDao().chercherAgentParMatricule(
-							radiService.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
-					String prenomAgent = agent.getPrenomAgent().toLowerCase();
-					String premLettre = prenomAgent.substring(0, 1).toUpperCase();
-					String restePrenom = prenomAgent.substring(1, prenomAgent.length()).toLowerCase();
-					prenomAgent = premLettre + restePrenom;
-					String nom = agent.getNomAgent().toUpperCase();
-					infoAgent = prenomAgent + " " + nom;
+					Agent agent = null;
+					try {
+						agent = getAgentDao().chercherAgentParMatricule(radiService.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
+					} catch (Exception e) {
+						logger.warn("Aucun agent ayant l'id {} (login {}) n'a pas été trouvé dans la table AGENT", user.getEmployeeNumber(), u.getLoginUtilisateur());
+						getTransaction().declarerErreur(MessageUtils.getMessage("INF600", u.getLoginUtilisateur().toString(), user.getEmployeeNumber().toString()));
+					}
+					if (agent != null) {
+						String prenomAgent = agent.getPrenomAgent().toLowerCase();
+						String premLettre = prenomAgent.substring(0, 1).toUpperCase();
+						String restePrenom = prenomAgent.substring(1, prenomAgent.length()).toLowerCase();
+						prenomAgent = premLettre + restePrenom;
+						String nom = agent.getNomAgent().toUpperCase();
+						infoAgent = prenomAgent + " " + nom;
+					}
 				}
 
 				addZone(getNOM_ST_NOM(indiceUtil),

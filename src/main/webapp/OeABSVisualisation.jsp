@@ -557,6 +557,21 @@
 		            			</td>
 	            			</tr>
 	            			<% } %>
+	            			<% if(typeCreation.getTypeSaisiDto().isSansArretTravail()) { %>
+	            			<tr>
+		            			<td>
+	                        		<span class="sigp2Mandatory">Sans arrêt de travail :</span>
+		            			</td>
+		            			<td>
+		            				<% if(typeCreation.getTypeSaisiDto().isNombreITT()) { %>
+				                        <input type="checkbox" name="<%=process.getNOM_CK_SANS_AT() %>" <% if(process.getVAL_CK_SANS_AT().equals(process.getCHECKED_ON())){ %> checked="checked" <% } %> 
+				                        onclick='executeBouton("<%=process.getNOM_PB_SET_ITT() %>")' />
+				            		<% } else { %>
+				                        <input type="checkbox" name="<%=process.getNOM_CK_SANS_AT() %>" <% if(process.getVAL_CK_SANS_AT().equals(process.getCHECKED_ON())){ %> checked="checked" <% } %> />
+				            		<% } %>
+		            			</td>
+	            			</tr>
+	            			<% } %>
 		            		<% if(typeCreation.getTypeSaisiDto().isNomEnfant()) { %>
 		            		<tr>
 		            			<td>

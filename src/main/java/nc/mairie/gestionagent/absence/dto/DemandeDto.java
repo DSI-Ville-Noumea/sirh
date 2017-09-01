@@ -102,6 +102,7 @@ public class DemandeDto implements IJSONDeserialize<DemandeDto> {
 	private RefTypeDto typeMaladiePro;
 	private DemandeDto accidentTravailReference;
 	private Date dateAccidentTravail;
+	private boolean sansArretTravail;
 	
 	// #32238 : Controle médical
 	private ControleMedicalDto controleMedical;
@@ -676,6 +677,14 @@ public class DemandeDto implements IJSONDeserialize<DemandeDto> {
 
 	public void setControleMedical(ControleMedicalDto controleMedical) {
 		this.controleMedical = controleMedical;
+	}
+
+	public boolean isSansArretTravail() {
+		return sansArretTravail;
+	}
+
+	public void setSansArretTravail(boolean sansArretTravail) {
+		this.sansArretTravail = sansArretTravail;
 	}
 
 }

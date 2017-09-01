@@ -2,11 +2,12 @@ package nc.mairie.gestionagent.process.agent;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
@@ -15,7 +16,7 @@ import java.util.ListIterator;
 import javax.activation.MimetypesFileTypeMap;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.codec.language.RefinedSoundex;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -23,13 +24,16 @@ import org.springframework.context.ApplicationContext;
 import com.oreilly.servlet.MultipartRequest;
 
 import flexjson.JSONSerializer;
-import nc.mairie.comparator.DemandeDtoDateDeclarationComparator;
+import nc.mairie.comparator.DemandeDtoDateAccidentTravailComparator;
 import nc.mairie.enums.EnumEtatAbsence;
 import nc.mairie.enums.EnumTypeAbsence;
 import nc.mairie.enums.EnumTypeGroupeAbsence;
 import nc.mairie.gestionagent.absence.dto.DemandeDto;
 import nc.mairie.gestionagent.absence.dto.PieceJointeDto;
+import nc.mairie.gestionagent.absence.dto.RefGroupeAbsenceDto;
 import nc.mairie.gestionagent.absence.dto.RefTypeDto;
+import nc.mairie.gestionagent.absence.dto.RefTypeSaisiDto;
+import nc.mairie.gestionagent.absence.dto.TypeAbsenceDto;
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
 import nc.mairie.gestionagent.radi.dto.LightUserDto;
 import nc.mairie.gestionagent.robot.MaClasse;
@@ -262,7 +266,7 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 				for (DemandeDto atReference : listeATReference) {
 					if (null != atReference.getTypeSiegeLesion()) {
 						RefTypeDto s = getHashSiegeLesion().get(atReference.getTypeSiegeLesion().getIdRefType());
-						String ligne[] = { sdf.format(atReference.getDateDeclaration()) + " - " + s.getLibelle() };
+						String ligne[] = { sdf.format(atReference.getDateAccidentTravail()) + " - " + s.getLibelle() };
 						aFormat.ajouteLigne(ligne);
 					}
 					getHashATReference().put(atReference.getIdDemande(), atReference);
@@ -320,26 +324,28 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 		ArrayList<DemandeDto> listeMPPrise = (ArrayList<DemandeDto>) absService.getListeDemandes(null, null,
 				EnumEtatAbsence.PRISE.getCode().toString(), EnumTypeAbsence.MALADIES_PROFESSIONNELLE.getCode(), getAgentCourant().getIdAgent(),
 				EnumTypeGroupeAbsence.MALADIES.getValue(), false, null);
-
-		ArrayList<DemandeDto> listeAT_MP = new ArrayList<DemandeDto>();
+		
+		ArrayList<DemandeDto> listeAllAT_MP = new ArrayList<DemandeDto>();
 		ArrayList<DemandeDto> listeRechutes = new ArrayList<DemandeDto>();
-		listeAT_MP.addAll(listeATValidee);
-		listeAT_MP.addAll(listeATAnnulee);
-		listeAT_MP.addAll(listeATPrise);
-		listeAT_MP.addAll(listeMPValidee);
-		listeAT_MP.addAll(listeMPPrise);
+		listeAllAT_MP.addAll(listeATValidee);
+		listeAllAT_MP.addAll(listeATAnnulee);
+		listeAllAT_MP.addAll(listeATPrise);
+		listeAllAT_MP.addAll(listeMPValidee);
+		listeAllAT_MP.addAll(listeMPPrise);
 		listeRechutes.addAll(listeRechuteValidee);
 		listeRechutes.addAll(listeRechutePrise);
 		
 		// #40735 : Ne mettre que les AT initiaux dans la liste
 		ArrayList<DemandeDto> listeAT_MPSansProlongation = new ArrayList<DemandeDto>();
-		for (DemandeDto demande : listeAT_MP){
+		List<DemandeDto> listeProlongations = new ArrayList<DemandeDto>();
+		for (DemandeDto demande : listeAllAT_MP){
 			if (!demande.isProlongation())
 				listeAT_MPSansProlongation.add(demande);
+			else
+				listeProlongations.add(demande);
 		}
-		
 
-		Collections.sort(listeAT_MPSansProlongation, new DemandeDtoDateDeclarationComparator());
+		Collections.sort(listeAT_MPSansProlongation, new DemandeDtoDateAccidentTravailComparator());
 		setListeAT_MP(listeAT_MPSansProlongation);
 
 		int indiceAcc = 0;
@@ -371,11 +377,12 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 					typeDemande += " (Refusé)";
 				
 				addZone(getNOM_ST_AT_MP(indiceAcc), typeDemande);
+				addZone(getNOM_ST_DATE_ACCIDENT_TRAVAIL(indiceAcc), null == demande.getDateAccidentTravail() ? "" : sdf.format(demande.getDateAccidentTravail()));
 				addZone(getNOM_ST_DATE(indiceAcc), null == demande.getDateDeclaration() ? "" : sdf.format(demande.getDateDeclaration()));
 				addZone(getNOM_ST_DATE_DEBUT(indiceAcc), null == demande.getDateDebut() ? "" : sdf.format(demande.getDateDebut()));
 				addZone(getNOM_ST_DATE_FIN(indiceAcc), null == demande.getDateFin() ? "" : sdf.format(demande.getDateFin()));
-				
-				// Rechute
+
+				// Calcul de l'ITT avec les rechutes et les prolongations
 				boolean hasRechute = false;
 				Double nbITT = demande.getNombreITT() == null ? 0 : demande.getNombreITT();
 				for (DemandeDto rechute : listeRechutes) {
@@ -383,6 +390,12 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 						hasRechute = true;
 						if (rechute.getNombreITT() != null)
 							nbITT += rechute.getNombreITT();
+					}
+				}
+				for (DemandeDto prolongation : listeProlongations) {
+					if (prolongation.getDateAccidentTravail() != null && prolongation.getDateAccidentTravail().equals(demande.getDateAccidentTravail())) {
+						if (prolongation.getNombreITT() != null)
+							nbITT += prolongation.getNombreITT();
 					}
 				}
 				addZone(getNOM_ST_RECHUTE(indiceAcc), hasRechute ? "X" : "&nbsp;");
@@ -449,7 +462,7 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 			int ligneAtReference = getListeATReference().indexOf(atReference);
 			addZone(getNOM_LB_AT_REFERENCE_SELECT(), String.valueOf(ligneAtReference + 1));
 			RefTypeDto s = getHashSiegeLesion().get(atReference.getTypeSiegeLesion().getIdRefType());
-			addZone(getNOM_LB_AT_REFERENCE(), sdf.format(atReference.getDateDeclaration()) + " - " + s.getLibelle());
+			addZone(getNOM_LB_AT_REFERENCE(), sdf.format(atReference.getDateAccidentTravail()) + " - " + s.getLibelle());
 		}
 
 		if (getDemandeCourant().getTypeSaisi().isMaladiePro() && null != getDemandeCourant().getTypeMaladiePro()) {
@@ -487,6 +500,10 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 		addZone(getNOM_LB_AVIS_COMMISSION_SELECT(), avisCommissionLB);
 
 		// Alim zones
+		if (getDemandeCourant().getTypeSaisi().isDateAccidentTravail()) {
+			addZone(getNOM_EF_DATE_ACCIDENT_TRAVAIL(),
+					getDemandeCourant().getDateAccidentTravail() == null ? Const.CHAINE_VIDE : sdf.format(getDemandeCourant().getDateAccidentTravail()));
+		}
 		if (getDemandeCourant().getTypeSaisi().isDateDeclaration()) {
 			addZone(getNOM_EF_DATE(),
 					getDemandeCourant().getDateDeclaration() == null ? Const.CHAINE_VIDE : sdf.format(getDemandeCourant().getDateDeclaration()));
@@ -561,6 +578,11 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 				return false;
 			}
 			getDemandeCourant().setDateDeclaration(sdf.parse(getZone(getNOM_EF_DATE())));
+			if (!Services.estUneDate(getZone(getNOM_EF_DATE_ACCIDENT_TRAVAIL()))) {
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR007", "de l'accident du travail"));
+				return false;
+			}
+			getDemandeCourant().setDateAccidentTravail(sdf.parse(getZone(getNOM_EF_DATE_ACCIDENT_TRAVAIL())));
 		}
 
 		if (getDemandeCourant().getIdTypeDemande().equals(EnumTypeAbsence.MALADIES_PROFESSIONNELLE.getCode())) {
@@ -706,8 +728,8 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 
 		// Récup de l'AT courant
 		setDemandeCourant((DemandeDto) getListeAT_MP().get(indiceEltAModifier));
-
-		// init du diplome courant
+		
+		 // init du diplome courant
 		if (!initialiseATCourant(request))
 			return false;
 
@@ -1338,6 +1360,14 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 		return getZone(getNOM_EF_DATE());
 	}
 
+	public String getNOM_EF_DATE_ACCIDENT_TRAVAIL() {
+		return "NOM_EF_DATE_ACCIDENT_TRAVAIL";
+	}
+
+	public String getVAL_EF_DATE_ACCIDENT_TRAVAIL() {
+		return getZone(getNOM_EF_DATE_ACCIDENT_TRAVAIL());
+	}
+
 	public String getNOM_EF_NB_JOUR_ITT() {
 		return "NOM_EF_NB_JOUR_ITT";
 	}
@@ -1678,5 +1708,13 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 
 	public void setDocumentCourant(PieceJointeDto documentCourant) {
 		this.documentCourant = documentCourant;
+	}
+
+	public String getNOM_ST_DATE_ACCIDENT_TRAVAIL(int i) {
+		return "NOM_ST_DATE_ACCIDENT_TRAVAIL" + i;
+	}
+
+	public String getVAL_ST_DATE_ACCIDENT_TRAVAIL(int i) {
+		return getZone(getNOM_ST_DATE_ACCIDENT_TRAVAIL(i));
 	}
 }
