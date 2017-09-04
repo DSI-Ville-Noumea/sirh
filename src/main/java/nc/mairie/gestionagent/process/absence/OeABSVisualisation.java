@@ -2626,8 +2626,11 @@ public class OeABSVisualisation extends BasicProcess {
 				dto.setDateAccidentTravail(sdf.parse(getVAL_ST_DATE_ACCIDENT_TRAVAIL()));
 			}
 			if (type.getTypeSaisiDto().isDateDeclaration()) {
-				if (null != getVAL_ST_DATE_DECLARATION() && !Const.CHAINE_VIDE.equals(getVAL_ST_DATE_DECLARATION().trim()))
-					dto.setDateDeclaration(sdf.parse(getVAL_ST_DATE_DECLARATION()));
+				if (null == getVAL_ST_DATE_DECLARATION() || Const.CHAINE_VIDE.equals(getVAL_ST_DATE_DECLARATION().trim())) {
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "date de déclaration"));
+					return false;
+				}
+				dto.setDateAccidentTravail(sdf.parse(getVAL_ST_DATE_DECLARATION()));
 			}
 			if (type.getTypeSaisiDto().isProlongation()) {
 				dto.setProlongation(null != getVAL_CK_PROLONGATION() && getVAL_CK_PROLONGATION().equals(getCHECKED_ON()));
