@@ -573,16 +573,17 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 			getDemandeCourant().setTypeAccidentTravail(typeAt);
 			getDemandeCourant().setTypeSiegeLesion(typeSiege);
 			
-			if (!Services.estUneDate(getZone(getNOM_EF_DATE()))) {
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR007", "de déclaration"));
-				return false;
-			}
-			getDemandeCourant().setDateDeclaration(sdf.parse(getZone(getNOM_EF_DATE())));
 			if (!Services.estUneDate(getZone(getNOM_EF_DATE_ACCIDENT_TRAVAIL()))) {
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR007", "de l'accident du travail"));
 				return false;
 			}
 			getDemandeCourant().setDateAccidentTravail(sdf.parse(getZone(getNOM_EF_DATE_ACCIDENT_TRAVAIL())));
+
+			if (!Services.estUneDate(getZone(getNOM_EF_DATE()))) {
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR007", "de déclaration"));
+				return false;
+			}
+			getDemandeCourant().setDateDeclaration(sdf.parse(getZone(getNOM_EF_DATE())));
 		}
 
 		if (getDemandeCourant().getIdTypeDemande().equals(EnumTypeAbsence.MALADIES_PROFESSIONNELLE.getCode())) {
