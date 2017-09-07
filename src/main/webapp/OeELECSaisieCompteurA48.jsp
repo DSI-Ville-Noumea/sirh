@@ -104,6 +104,7 @@ function testClickEnrigistrer(){
 							}%>
 						</table>	
 				</div>	
+        		<jsp:include page="Pagination.jsp" />
 		</FIELDSET>
 		<%if (! "".equals(process.getVAL_ST_ACTION()) && (process.getVAL_ST_ACTION().equals(process.ACTION_CREATION) || process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION)|| process.getVAL_ST_ACTION().equals(process.ACTION_VISUALISATION)) ) {%>
 		<FIELDSET class="sigp2Fieldset" style="text-align: left; width:1030px;">
