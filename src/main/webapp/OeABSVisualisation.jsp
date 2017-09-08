@@ -518,6 +518,18 @@
 		            			</td>
 		            		</tr>
 		            		<% } %>
+	            			<% if(typeCreation.getTypeSaisiDto().isDateAccidentTravail()) { %>
+	            			<tr>
+		            			<td>
+	                        		<span class="sigp2Mandatory">Date de l'accident du travail :</span>
+		            			</td>
+		            			<td>
+			                        <input id="<%=process.getNOM_ST_DATE_ACCIDENT_TRAVAIL()%>" class="sigp2-saisie" maxlength="10"	
+			                        	name="<%= process.getNOM_ST_DATE_ACCIDENT_TRAVAIL()%>" size="10" type="text" value="<%= process.getVAL_ST_DATE_ACCIDENT_TRAVAIL()%>" >
+			                        <IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_ACCIDENT_TRAVAIL()%>', 'dd/mm/y');">
+		            			</td>
+	            			</tr>
+	            			<% } %>
 	            			<% if(typeCreation.getTypeSaisiDto().isDateDeclaration()) { %>
 	            			<tr>
 		            			<td>
@@ -541,6 +553,21 @@
 				                        onclick='executeBouton("<%=process.getNOM_PB_SET_ITT() %>")' />
 				            		<% } else { %>
 				                        <input type="checkbox" name="<%=process.getNOM_CK_PROLONGATION() %>" <% if(process.getVAL_CK_PROLONGATION().equals(process.getCHECKED_ON())){ %> checked="checked" <% } %> />
+				            		<% } %>
+		            			</td>
+	            			</tr>
+	            			<% } %>
+	            			<% if(typeCreation.getTypeSaisiDto().isSansArretTravail()) { %>
+	            			<tr>
+		            			<td>
+	                        		<span class="sigp2Mandatory">Sans arrêt de travail :</span>
+		            			</td>
+		            			<td>
+		            				<% if(typeCreation.getTypeSaisiDto().isNombreITT()) { %>
+				                        <input type="checkbox" name="<%=process.getNOM_CK_SANS_AT() %>" <% if(process.getVAL_CK_SANS_AT().equals(process.getCHECKED_ON())){ %> checked="checked" <% } %> 
+				                        onclick='executeBouton("<%=process.getNOM_PB_SET_ITT() %>")' />
+				            		<% } else { %>
+				                        <input type="checkbox" name="<%=process.getNOM_CK_SANS_AT() %>" <% if(process.getVAL_CK_SANS_AT().equals(process.getCHECKED_ON())){ %> checked="checked" <% } %> />
 				            		<% } %>
 		            			</td>
 	            			</tr>

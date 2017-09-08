@@ -16,7 +16,7 @@ import org.springframework.context.ApplicationContext;
 
 import com.oreilly.servlet.MultipartRequest;
 
-import nc.mairie.comparator.DemandeDtoDateDeclarationComparator;
+import nc.mairie.comparator.DemandeDtoDateAccidentTravailComparator;
 import nc.mairie.enums.EnumEtatAbsence;
 import nc.mairie.enums.EnumTypeAbsence;
 import nc.mairie.enums.EnumTypeGroupeAbsence;
@@ -288,7 +288,7 @@ public class OeAGENTActesHSCT extends BasicProcess {
 				listeAT_MP.addAll(listeAT);
 				listeAT_MP.addAll(listeRechute);
 
-				Collections.sort(listeAT_MP, new DemandeDtoDateDeclarationComparator());
+				Collections.sort(listeAT_MP, new DemandeDtoDateAccidentTravailComparator());
 
 				if (listeAT_MP.size() > 0) {
 					int[] tailles = { 14, 60 };
@@ -297,7 +297,7 @@ public class OeAGENTActesHSCT extends BasicProcess {
 						DemandeDto demande = (DemandeDto) list.next();
 						RefTypeDto tAt = demande.getTypeAccidentTravail();
 						if (null != tAt) {
-							String dateDeclaration = null != demande.getDateDeclaration() ? "AT - " + sdf.format(demande.getDateDeclaration())
+							String dateDeclaration = null != demande.getDateAccidentTravail() ? "AT - " + sdf.format(demande.getDateDeclaration())
 									: "AT Rechute ";
 							String ligne[] = { dateDeclaration, tAt.getLibelle() };
 							aFormat.ajouteLigne(ligne);
@@ -321,7 +321,7 @@ public class OeAGENTActesHSCT extends BasicProcess {
 								.replace("]", "").replace(" ", ""),
 						EnumTypeAbsence.MALADIES_PROFESSIONNELLE.getCode(), EnumTypeGroupeAbsence.MALADIES.getValue());
 
-				Collections.sort(listeMP, new DemandeDtoDateDeclarationComparator());
+				Collections.sort(listeMP, new DemandeDtoDateAccidentTravailComparator());
 
 				if (listeMP.size() > 0) {
 					int[] tailles = { 14, 60 };
@@ -794,8 +794,8 @@ public class OeAGENTActesHSCT extends BasicProcess {
 					nomDoc = nomDoc.substring(nomDoc.indexOf("_") + 1, nomDoc.length());
 					String id = nomDoc.substring(0, nomDoc.indexOf("_"));
 					DemandeDto at = getHashMapAT().get(id);
-					if (at != null && at.getDateDeclaration() != null) {
-						info = "AT du : " + sdf.format(at.getDateDeclaration());
+					if (at != null && at.getDateAccidentTravail() != null) {
+						info = "AT du : " + sdf.format(at.getDateAccidentTravail());
 					}
 				} else if (td.getCodTypeDocument().equals(CmisUtils.CODE_TYPE_MP)) {
 					String nomDoc = doc.getNomDocument();

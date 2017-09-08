@@ -302,6 +302,9 @@ public class ListeMessagesSIRH {
 			listeMessages.put("INF501", "L'EAE a été correctement sauvegardé.");
 			listeMessages.put("INF502", "Le lancement du calcul des EAE est bien pris en compte. Celui-ci est en cours de traitement.");
 
+			// PARAM
+			listeMessages.put("INF600", "L'agent @ (matricule @) n'a pas été trouvé.");
+
 			
 			// ELECTION
 			listeMessages.put("INF700", "Les représentants ont bien été mis à  jour.");

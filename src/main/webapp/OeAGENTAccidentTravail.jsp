@@ -60,8 +60,10 @@
 				<div style="overflow: auto;height: 250px;width:1000px;margin-right: 0px;margin-left: 0px;">
 						<table class="sigp2NewTab" style="text-align:left;width:980px;">
 							<tr bgcolor="#EFEFEF"  valign="bottom">
-								<td align="left"> </td>
+					    		<td align="left">
+					    		</td>
 								<td align="center">AT / MP</td>
+								<td align="center">Date de l'accident du travail</td>
 								<td align="center">Date déclaration</td>
 								<td align="center">Date début</td>
 								<td align="center">Date fin</td>
@@ -83,14 +85,15 @@
 											<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_CONSULTER(indiceAcc)%>">
 											<INPUT title="documents" type="image" src="images/ajout-doc.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_DOCUMENT(indiceAcc)%>">
 										</td>
-										<td class="sigp2NewTab-liste" style="position:relative;width:90px;text-align: center;"><%=process.getVAL_ST_AT_MP(indiceAcc)%></td>
+										<td class="sigp2NewTab-liste" style="position:relative;width:70px;text-align: center;"><%=process.getVAL_ST_AT_MP(indiceAcc)%></td>
+										<td class="sigp2NewTab-liste" style="position:relative;width:90px;text-align: center;"><%=process.getVAL_ST_DATE_ACCIDENT_TRAVAIL(indiceAcc)%></td>
 										<td class="sigp2NewTab-liste" style="position:relative;width:90px;text-align: center;"><%=process.getVAL_ST_DATE(indiceAcc)%></td>
 										<td class="sigp2NewTab-liste" style="position:relative;width:90px;text-align: center;"><%=process.getVAL_ST_DATE_DEBUT(indiceAcc)%></td>
 										<td class="sigp2NewTab-liste" style="position:relative;width:90px;text-align: center;"><%=process.getVAL_ST_DATE_FIN(indiceAcc)%></td>
-										<td class="sigp2NewTab-liste" style="position:relative;width:90px;text-align: center;"><%=process.getVAL_ST_RECHUTE(indiceAcc)%></td>
+										<td class="sigp2NewTab-liste" style="position:relative;width:40px;text-align: center;"><%=process.getVAL_ST_RECHUTE(indiceAcc)%></td>
 										<td class="sigp2NewTab-liste" style="position:relative;width:40px;text-align: right;"><%=process.getVAL_ST_NB_JOURS(indiceAcc)%></td>
-										<td class="sigp2NewTab-liste" style="position:relative;width:300px;text-align: left;"><%=process.getVAL_ST_TYPE(indiceAcc)%></td>
-										<td class="sigp2NewTab-liste" style="position:relative;width:200px;text-align: left;"><%=process.getVAL_ST_SIEGE(indiceAcc)%></td>
+										<td class="sigp2NewTab-liste" style="position:relative;width:230px;text-align: left;"><%=process.getVAL_ST_TYPE(indiceAcc)%></td>
+										<td class="sigp2NewTab-liste" style="position:relative;width:170px;text-align: left;"><%=process.getVAL_ST_SIEGE(indiceAcc)%></td>
 										<td class="sigp2NewTab-liste" style="position:relative;text-align: center;"><%=process.getVAL_ST_NB_DOC(indiceAcc)%></td>
 									</tr>
 									<%
@@ -109,9 +112,19 @@
 					&& !process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT_SUPPRESSION) 
 					&& !process.getVAL_ST_ACTION().equals(process.ACTION_CONSULTATION) ){ %>
 			<table>
+				<% if(process.getDemandeCourant().getTypeSaisi().isDateAccidentTravail()) { %>
+				<tr>
+					<td width="155px;">
+						<span class="sigp2Mandatory">Date de l'accident du travail :</span>
+					</td>
+					<td width="320px;">
+						<input id="<%=process.getNOM_EF_DATE_ACCIDENT_TRAVAIL()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DATE_ACCIDENT_TRAVAIL() %>" size="10" type="text" value="<%= process.getVAL_EF_DATE_ACCIDENT_TRAVAIL() %>">
+					</td>
+				</tr>
+				<% } %>
 				<% if(process.getDemandeCourant().getTypeSaisi().isDateDeclaration()) { %>
 				<tr>
-					<td width="150px;">
+					<td width="155px;">
 						<span class="sigp2Mandatory">Date de déclaration :</span>
 					</td>
 					<td width="320px;">
@@ -245,7 +258,10 @@
 				<% } %>
 			</table>
             
-			<%}else if(process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT) || process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT_CREATION) || process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT_SUPPRESSION)){ %>			
+            
+			<%} else if(process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT) 
+					|| process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT_CREATION) 
+					|| process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT_SUPPRESSION)){ %>			
 				<div style="overflow: auto;height: 250px;width:1000px;margin-right: 0px;margin-left: 0px;">
 					<table class="sigp2NewTab" style="text-align:left;width:980px;">
 						<tr bgcolor="#EFEFEF">
@@ -330,7 +346,7 @@
 						<INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
 					</div>
 				<%} %>
-			<% } else{ %>
+			<% } else { %>
 			<div>
 			<% if (!process.getVAL_ST_ACTION().equals(process.ACTION_CONSULTATION) ){ %>
 		    	<FONT color='red'>Veuillez valider votre choix.</FONT>
@@ -338,10 +354,20 @@
 		    <% } %>
 		    <table>
 				<tr>
-					<td width="150px;">&nbsp;</td>
+					<td width="155px;">&nbsp;</td>
 					<td width="320px;">&nbsp;</td>
 				</tr>
-				<% if(process.getDemandeCourant().getTypeSaisi().isDateDeclaration()) { %>
+			<% if(process.getDemandeCourant().getTypeSaisi().isDateAccidentTravail()) { %>
+				<tr>
+					<td>
+						<span class="sigp2">Date de l'accident du travail :</span>
+					</td>
+					<td>
+						<span class="sigp2-saisie"><%=process.getVAL_EF_DATE_ACCIDENT_TRAVAIL()%></span>
+					</td>
+				</tr>
+				<% } %>
+			<% if(process.getDemandeCourant().getTypeSaisi().isDateDeclaration()) { %>
 				<tr>
 					<td>
 						<span class="sigp2">Date de déclaration :</span>
@@ -476,7 +502,9 @@
 		</div>
 		<%} %>
 			<BR/>
-			<% if (!process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT) && !process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT_CREATION) && !process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT_SUPPRESSION)){ %>
+			<% if (!process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT) 
+					&& !process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT_CREATION) 
+					&& !process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT_SUPPRESSION)){ %>
 			<TABLE align="center" border="0" cellpadding="0" cellspacing="0">
 				<TBODY>
 					<TR>
