@@ -107,6 +107,8 @@ public interface ISirhAbsWSConsumer {
 	SoldeDto getSoldeAgent(Integer idAgent, String json);
 
 	// compteurs
+	Integer getCountAllCompteursByYearAndOS(String typeCompteur, String year, Integer idOS);
+	
 	ReturnMessageDto addCompteurRecup(Integer idAgentConnecte, String json);
 
 	ReturnMessageDto addCompteurReposComp(Integer idAgentConnecte, String json);
@@ -129,11 +131,11 @@ public interface ISirhAbsWSConsumer {
 
 	ReturnMessageDto addCompteurCongeAnnuel(Integer idAgent, String json);
 
-	List<CompteurDto> getListeCompteursA48(Integer annee, Integer idOrganisation);
+	List<CompteurDto> getListeCompteursA48(Integer annee, Integer idOrganisation, Integer pageSize, Integer pageNumber);
 
-	List<CompteurDto> getListeCompteursA54(Integer annee, Integer idOrganisation);
+	List<CompteurDto> getListeCompteursA54(Integer annee, Integer idOrganisation, Integer pageSize, Integer pageNumber);
 
-	List<CompteurDto> getListeCompteursA55();
+	List<CompteurDto> getListeCompteursA55(Integer pageSize, Integer pageNumber);
 
 	List<CompteurDto> getListeCompteursAmicale();
 

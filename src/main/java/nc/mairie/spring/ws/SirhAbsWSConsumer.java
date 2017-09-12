@@ -46,6 +46,8 @@ public class SirhAbsWSConsumer extends BaseWsConsumer implements ISirhAbsWSConsu
 	@Qualifier("absWsBaseUrl")
 	private String				absWsBaseUrl;
 
+	private static final String	sirhAbsCountAllCompteurs							= "/countAllByYear";
+
 	private static final String	sirhAbsListOrganisationSyndicale					= "organisation/listOrganisation";
 	private static final String	sirhAbsOrganisationSyndicaleSauvegarde				= "organisation/addOS";
 	private static final String	sirhAbsAddRepresentantAsaA52						= "asaA52/saveRepresentant";
@@ -271,14 +273,33 @@ public class SirhAbsWSConsumer extends BaseWsConsumer implements ISirhAbsWSConsu
 	}
 
 	@Override
-	public List<CompteurDto> getListeCompteursA48(Integer annee, Integer idOrganisation) {
+	public List<CompteurDto> getListeCompteursA48(Integer annee, Integer idOrganisation, Integer pageSize, Integer pageNumber) {
 		String url = String.format(absWsBaseUrl + sirhAbsListeCompteurA48);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("annee", annee.toString());
 		if (idOrganisation != null)
 			params.put("idOrganisation", idOrganisation.toString());
+		if (pageSize != null)
+			params.put("pageSize", pageSize.toString());
+		if (pageNumber != null)
+			params.put("pageNumber", pageNumber.toString());
 		ClientResponse res = createAndFireRequest(params, url);
 		return readResponseAsList(CompteurDto.class, res, url);
+	}
+
+	@Override
+	public Integer getCountAllCompteursByYearAndOS(String typeCompteur, String year, Integer idOS) {
+		String url = String.format(absWsBaseUrl + typeCompteur + sirhAbsCountAllCompteurs);
+		HashMap<String, String> params = new HashMap<>();
+
+		if (year != null)
+			params.put("year", year);
+
+		if (idOS != null)
+			params.put("idOS", idOS.toString());
+		
+		ClientResponse res = createAndFireRequest(params, url);
+		return readResponseAsInteger(res, url);
 	}
 
 	@Override
@@ -413,20 +434,32 @@ public class SirhAbsWSConsumer extends BaseWsConsumer implements ISirhAbsWSConsu
 	}
 
 	@Override
-	public List<CompteurDto> getListeCompteursA54(Integer annee, Integer idOrganisation) {
+	public List<CompteurDto> getListeCompteursA54(Integer annee, Integer idOrganisation, Integer pageSize, Integer pageNumber) {
 		String url = String.format(absWsBaseUrl + sirhAbsListeCompteurA54);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("annee", annee.toString());
 		if (idOrganisation != null)
 			params.put("idOrganisation", idOrganisation.toString());
+		if (pageSize != null)
+			params.put("pageSize", pageSize.toString());
+		if (pageNumber != null)
+			params.put("pageNumber", pageNumber.toString());
+
 		ClientResponse res = createAndFireRequest(params, url);
 		return readResponseAsList(CompteurDto.class, res, url);
 	}
 
 	@Override
-	public List<CompteurDto> getListeCompteursA55() {
+	public List<CompteurDto> getListeCompteursA55(Integer pageSize, Integer pageNumber) {
 		String url = String.format(absWsBaseUrl + sirhAbsListeCompteurA55);
 		HashMap<String, String> params = new HashMap<>();
+		
+		if (pageSize != null)
+			params.put("pageSize", pageSize.toString());
+		
+		if (pageNumber != null)
+			params.put("pageNumber", pageNumber.toString());
+		
 		ClientResponse res = createAndFireRequest(params, url);
 		return readResponseAsList(CompteurDto.class, res, url);
 	}
