@@ -57,7 +57,7 @@ document.formu.elements[nom].focus();
 					<tr>
 						<th>Direction</th>
 						<th>Section</th>
-						<th>Non affecté</th>
+						<th>Sans évaluateur</th>
 						<th>Non débuté</th>
 						<th>Crée</th>
 						<th>En cours</th>
