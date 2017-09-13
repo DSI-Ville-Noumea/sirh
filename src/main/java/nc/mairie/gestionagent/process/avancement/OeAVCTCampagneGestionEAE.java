@@ -273,10 +273,9 @@ public class OeAVCTCampagneGestionEAE extends OePaginable {
 			BirtDto evalue = eae.getEvalue();
 			try {
 				EaeFichePosteDto eaeFDP = eae.getFichePoste();
-				addZone(getNOM_ST_DIRECTION(i),
-						(eaeFDP.getDirectionService() == null ? "&nbsp;" : eaeFDP.getDirectionService()) + " <br> "
-								+ (eaeFDP.getSectionService() == null ? "&nbsp;" : eaeFDP.getSectionService()) + " <br> "
-								+ (eaeFDP.getService() == null ? "&nbsp;" : eaeFDP.getService()));
+				addZone(getNOM_ST_DIRECTION(i), (eaeFDP.getDirectionService() == null ? "&nbsp;" : eaeFDP.getDirectionService()));
+				addZone(getNOM_ST_SECTION(i), eaeFDP.getSectionService() == null ? "&nbsp;" : eaeFDP.getSectionService());
+				addZone(getNOM_ST_SERVICE(i), eaeFDP.getService() == null ? "&nbsp;" : eaeFDP.getService());
 				if (eaeFDP.getIdAgentShd() != null) {
 					try {
 						Agent agentResp = getAgentDao().chercherAgent(eaeFDP.getIdAgentShd());
@@ -289,6 +288,8 @@ public class OeAVCTCampagneGestionEAE extends OePaginable {
 				}
 			} catch (Exception e) {
 				addZone(getNOM_ST_DIRECTION(i), "&nbsp;");
+				addZone(getNOM_ST_SECTION(i), "&nbsp;");
+				addZone(getNOM_ST_SERVICE(i), "&nbsp;");
 				addZone(getNOM_ST_SHD(i), "&nbsp;");
 			}
 			EaeEvaluationDto evaluation = null;
@@ -1011,6 +1012,42 @@ public class OeAVCTCampagneGestionEAE extends OePaginable {
 	 */
 	public String getVAL_ST_DIRECTION(int i) {
 		return getZone(getNOM_ST_DIRECTION(i));
+	}
+
+	/**
+	 * Retourne pour la JSP le nom de la zone statique : ST_DIRECTION Date de
+	 * création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getNOM_ST_SERVICE(int i) {
+		return "NOM_ST_SERVICE_" + i;
+	}
+
+	/**
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_DIRECTION
+	 * Date de création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getVAL_ST_SERVICE(int i) {
+		return getZone(getNOM_ST_SERVICE(i));
+	}
+
+	/**
+	 * Retourne pour la JSP le nom de la zone statique : ST_DIRECTION Date de
+	 * création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getNOM_ST_SECTION(int i) {
+		return "NOM_ST_SECTION_" + i;
+	}
+
+	/**
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_DIRECTION
+	 * Date de création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getVAL_ST_SECTION(int i) {
+		return getZone(getNOM_ST_SECTION(i));
 	}
 
 	/**

@@ -132,7 +132,9 @@ function setfocus(nom)
 			<table class="display" id="tabEAE" width="100%">
 				<thead>
 					<tr>
-						<th>Direction <br> Section <br> Service</th>
+						<th>Direction</th>
+						<th>Service</th>
+						<th>Section</th>
 						<th>Matr</th>
 						<th>Nom <br> Prénom</th>
 						<th>Statut <br> Dét. </th>
@@ -160,6 +162,8 @@ function setfocus(nom)
 				%>
 						<tr>
 							<td><%=process.getVAL_ST_DIRECTION(indiceAvct)%></td>
+							<td><%=process.getVAL_ST_SERVICE(indiceAvct)%></td>
+							<td><%=process.getVAL_ST_SECTION(indiceAvct)%></td>
 							<td><%=process.getVAL_ST_MATRICULE_AGENT(indiceAvct)%></td>
 							<td><%=process.getVAL_ST_AGENT(indiceAvct)%></td>
 							<td><%=process.getVAL_ST_STATUT(indiceAvct)%></td>
@@ -235,7 +239,7 @@ function setfocus(nom)
 				$(document).ready(function() {
 				    $('#tabEAE').dataTable({
 						"oLanguage": {"sUrl": "media/dataTables/language/fr_FR.txt"},
-						"aoColumns": [{"bSearchable":false},null,null,{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false,"bSortable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false}],                        
+						"aoColumns": [{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},null,null,{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false,"bSortable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false}],                        
                         "sDom": '<"H"fl>t<"F"iT>',
 						"sScrollY": "375px",
 						"bPaginate": false,
