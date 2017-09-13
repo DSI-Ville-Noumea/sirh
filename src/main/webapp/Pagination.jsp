@@ -8,7 +8,7 @@
 <INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_NEXT_PAGE()%>" value="NEXT_PAGE">
 <INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_PREVIOUS_PAGE()%>" value="PREVIOUS_PAGE">
 <INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_CHANGE_PAGINATION()%>" value="CHANGE_PAGINATION">
-<div>
+<div style="width:100%">
 	<span class="sigp2" style="width:40px">Afficher
 		<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_PAGE_LINE() %>" onchange='executeBouton("<%=process.getNOM_PB_CHANGE_PAGINATION()%>")' style="width:50px;">
 			<%=process.forComboHTML(process.getVAL_LB_PAGE_LINE(), process.getVAL_LB_PAGE_LINE_SELECT()) %>
@@ -16,7 +16,7 @@
 		lignes par page.
 	</span>
 	
-	<span style="margin-left:200px;">
+	<span style="margin-left:30%;">
 		<% if (process.getPageNumber() == 1) { %>
 			<input type="button" onclick='executeBouton("<%=process.getNOM_PB_PREVIOUS_PAGE()%>")' class="paginate_disabled_previous" disabled="disabled" style="float:none;margin-right:10px;"/>
 		<% } else { %>

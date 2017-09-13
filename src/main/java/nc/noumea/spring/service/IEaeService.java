@@ -20,7 +20,9 @@ public interface IEaeService {
 
 	EaeDto getEaeDtoByIdAgent(List<EaeDto> listEae, Integer idAgent);
 
-	List<EaeDto> getListeEaeDto(Integer idAgentSirh, FormRehercheGestionEae form);
+	Integer getCountList(FormRehercheGestionEae form);
+
+	List<EaeDto> getListeEaeDto(Integer idAgentSirh, FormRehercheGestionEae form, Integer pageSize, Integer pageNumber);
 
 	CampagneEaeDto getCampagneAnneePrecedente(Integer idAgentSirh, Integer anneePrecedente);
 

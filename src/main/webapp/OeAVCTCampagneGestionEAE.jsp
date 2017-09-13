@@ -195,7 +195,7 @@ function setfocus(nom)
 							<td><%=process.getVAL_ST_CONTROLE(indiceAvct)%></td>
 							<td><%=process.getVAL_ST_ACTIONS_DEFINALISE(indiceAvct)%>
 							<%if( process.getCampagneCourante()!=null && process.getCampagneCourante().estOuverte() &&eae!=null && eae.getEtat().equals(EnumEtatEAE.FINALISE.getCode())){ %>
-							<INPUT title="dé-finalisé EAE" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/suppression.gif" height="16px" width="16px" name="<%=process.getNOM_PB_DEFINALISE_EAE(indiceAvct)%>">
+							<INPUT title="dé-finaliser EAE" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/suppression.gif" height="16px" width="16px" name="<%=process.getNOM_PB_DEFINALISE_EAE(indiceAvct)%>">
 							<%} %>
 							</td>
 							<td><%=process.getVAL_ST_ACTIONS_MAJ(indiceAvct)%>
@@ -247,6 +247,7 @@ function setfocus(nom)
 				} );
 			</script>
 			<BR/>	
+			<jsp:include page="Pagination.jsp" />
 		</FIELDSET>
 		
 		<INPUT name="JSP" type="hidden" value="<%= process.getJSP() %>">

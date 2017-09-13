@@ -42,8 +42,8 @@ public class EaeService implements IEaeService {
 	}
 
 	@Override
-	public List<EaeDto> getListeEaeDto(Integer idAgentSirh, FormRehercheGestionEae form) {
-		return eaeConsumer.getListeEaeDto(idAgentSirh, form);
+	public List<EaeDto> getListeEaeDto(Integer idAgentSirh, FormRehercheGestionEae form, Integer pageSize, Integer pageNumber) {
+		return eaeConsumer.getListeEaeDto(idAgentSirh, form, pageSize, pageNumber);
 	}
 
 	@Override
@@ -154,6 +154,11 @@ public class EaeService implements IEaeService {
 	@Override
 	public CampagneEaeDto getCampagneAnneePrecedenteLight(Integer idAgentSirh, Integer anneePrecedente) {
 		return eaeConsumer.getCampagneAnneePrecedenteLight(idAgentSirh, anneePrecedente);
+	}
+
+	@Override
+	public Integer getCountList(FormRehercheGestionEae form) {
+		return eaeConsumer.getCountList(form);
 	}
 
 }

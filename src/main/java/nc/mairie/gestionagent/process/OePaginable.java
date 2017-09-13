@@ -52,6 +52,11 @@ public abstract class OePaginable extends BasicProcess {
 	}
 	
 	public void updateMaxPageNumber() {
+		// S'il n'y a pas de résultats, on affiche une seule page vide.
+		if (getResultSize() == null) {
+			setMaxPageNumber(1);
+			return;
+		}
 		Integer fullPage = getResultSize() / getPageSize();
 		boolean isLastPageFull = getResultSize() % getPageSize() == 0;
 		if (!isLastPageFull || fullPage == 0)
