@@ -28,7 +28,7 @@ public class VoAgentCompteur implements Comparable<VoAgentCompteur> {
 	}
 
 	public int compareTo(VoAgentCompteur arg) {
-		return this.nom.compareTo(arg.nom);
+		return this.agent.idAgent.compareTo(arg.agent.idAgent);
 	}
 
 	public String getNom() {
