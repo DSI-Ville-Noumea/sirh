@@ -13,6 +13,7 @@ import nc.mairie.gestionagent.absence.dto.CompteurDto;
 import nc.mairie.gestionagent.absence.dto.MotifCompteurDto;
 import nc.mairie.gestionagent.absence.vo.VoAgentCompteur;
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
+import nc.mairie.gestionagent.process.OePaginable;
 import nc.mairie.gestionagent.radi.dto.LightUserDto;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.Agent;
@@ -41,7 +42,7 @@ import flexjson.JSONSerializer;
 /**
  *
  */
-public class OeELECSaisieCompteurA55 extends BasicProcess {
+public class OeELECSaisieCompteurA55 extends OePaginable {
 
 	/**
      *
@@ -115,8 +116,18 @@ public class OeELECSaisieCompteurA55 extends BasicProcess {
 
 		// Initialisation des listes deroulantes
 		initialiseListeDeroulante();
+		
+		if (getResultSize() == null)
+			getAllResultCount();
+		
+		initialisePagination();
 
 		initialiseListeCompteur(request);
+	}
+	
+	@Override
+	public void getAllResultCount() {
+		setResultSize(absService.getCountAllCompteursByYearAndOS("asaA55", null, null));
 	}
 
 	private void initialiseListeDeroulante() {
@@ -145,7 +156,7 @@ public class OeELECSaisieCompteurA55 extends BasicProcess {
 	}
 
 	private void initialiseListeCompteur(HttpServletRequest request) throws Exception {
-		ArrayList<CompteurDto> listeCompteur = (ArrayList<CompteurDto>) absService.getListeCompteursA55();
+		ArrayList<CompteurDto> listeCompteur = (ArrayList<CompteurDto>) absService.getListeCompteursA55(getPageSize(), getPageNumber());
 		logger.debug("Taille liste des compteurs ASA A55 : " + listeCompteur.size());
 		// #14737 tri par ordre alpha
 		List<VoAgentCompteur> listCompteurAgent = new ArrayList<VoAgentCompteur>();
@@ -188,6 +199,8 @@ public class OeELECSaisieCompteurA55 extends BasicProcess {
 		// Si on arrive de la JSP alors on traite le get
 		if (request.getParameter("JSP") != null && request.getParameter("JSP").equals(getJSP())) {
 
+			super.recupererStatut(request);
+			
 			// Si clic sur le bouton PB_AJOUTER
 			if (testerParametre(request, getNOM_PB_AJOUTER())) {
 				return performPB_AJOUTER(request);
@@ -216,6 +229,24 @@ public class OeELECSaisieCompteurA55 extends BasicProcess {
 		}
 		// Si TAG INPUT non géré par le process
 		setStatut(STATUT_MEME_PROCESS);
+		return true;
+	}
+
+	public boolean performPB_CHANGE_PAGINATION(HttpServletRequest request) throws Exception {
+		super.updatePagination(request);
+		initialiseListeCompteur(request);
+		return true;
+	}
+
+	public boolean performPB_NEXT_PAGE(HttpServletRequest request) throws Exception {
+		super.performPB_NEXT_PAGE(request);
+		initialiseListeCompteur(request);
+		return true;
+	}
+
+	public boolean performPB_PREVIOUS_PAGE(HttpServletRequest request) throws Exception {
+		super.performPB_PREVIOUS_PAGE(request);
+		initialiseListeCompteur(request);
 		return true;
 	}
 

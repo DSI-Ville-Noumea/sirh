@@ -20,6 +20,7 @@ import nc.mairie.gestionagent.absence.dto.MotifCompteurDto;
 import nc.mairie.gestionagent.absence.dto.OrganisationSyndicaleDto;
 import nc.mairie.gestionagent.absence.vo.VoAgentCompteur;
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
+import nc.mairie.gestionagent.process.OePaginable;
 import nc.mairie.gestionagent.radi.dto.LightUserDto;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.Agent;
@@ -27,7 +28,6 @@ import nc.mairie.spring.dao.metier.agent.AgentDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.spring.ws.MSDateTransformer;
-import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.UserAppli;
@@ -42,7 +42,7 @@ import nc.noumea.spring.service.IRadiService;
 /**
  *
  */
-public class OeELECSaisieCompteurA48 extends BasicProcess {
+public class OeELECSaisieCompteurA48 extends OePaginable {
 
 	/**
 	 *
@@ -112,9 +112,14 @@ public class OeELECSaisieCompteurA48 extends BasicProcess {
 				addZone(getNOM_ST_AGENT_CREATE(), agt.getNomatr().toString());
 			}
 		}
-
+		
 		// Initialisation des listes deroulantes
 		initialiseListeDeroulante();
+		
+		if (getResultSize() == null)
+			getAllResultCount();
+
+		initialisePagination();
 
 		if (getListeCompteur().size() == 0) {
 			initialiseListeCompteur(request);
@@ -230,6 +235,23 @@ public class OeELECSaisieCompteurA48 extends BasicProcess {
 		return getZone(getNOM_ST_ACTION());
 	}
 
+	@Override
+	public void getAllResultCount() {
+		// recupération année du filtre
+		int indiceAnnee = (Services.estNumerique(getVAL_LB_ANNEE_FILTRE_SELECT()) ? Integer.parseInt(getVAL_LB_ANNEE_FILTRE_SELECT()) : -1);
+		String anneeFiltre = getListeAnneeFiltre().get(indiceAnnee);
+		
+		// recupération OS du filtre
+		int indiceOS = (Services.estNumerique(getVAL_LB_OS_FILTRE_SELECT()) ? Integer.parseInt(getVAL_LB_OS_FILTRE_SELECT()) : -1);
+		Integer orgaFiltreId = null;
+		if (indiceOS > 0) {
+			OrganisationSyndicaleDto orgaFiltre = getListeOrganisationSyndicale().get(indiceOS - 1);
+			orgaFiltreId = orgaFiltre.getIdOrganisation();
+		}
+		
+		setResultSize(absService.getCountAllCompteursByYearAndOS("asaA48", anneeFiltre, orgaFiltreId));
+	}
+
 	private void initialiseListeCompteur(HttpServletRequest request) throws Exception {
 		// recupération OS du filtre
 		int indiceOS = (Services.estNumerique(getVAL_LB_OS_FILTRE_SELECT()) ? Integer.parseInt(getVAL_LB_OS_FILTRE_SELECT()) : -1);
@@ -242,7 +264,7 @@ public class OeELECSaisieCompteurA48 extends BasicProcess {
 		String anneeFiltre = getListeAnneeFiltre().get(indiceAnnee);
 
 		ArrayList<CompteurDto> listeCompteur = (ArrayList<CompteurDto>) absService.getListeCompteursA48(new Integer(anneeFiltre),
-				orgaFiltre == null ? null : orgaFiltre.getIdOrganisation());
+				orgaFiltre == null ? null : orgaFiltre.getIdOrganisation(), getPageSize(), getPageNumber());
 
 		logger.debug("Taille liste des compteurs ASA A48 : " + listeCompteur.size());
 		setListeCompteur(listeCompteur);
@@ -287,6 +309,8 @@ public class OeELECSaisieCompteurA48 extends BasicProcess {
 
 		// Si on arrive de la JSP alors on traite le get
 		if (request.getParameter("JSP") != null && request.getParameter("JSP").equals(getJSP())) {
+			
+			super.recupererStatut(request);
 
 			// Si clic sur le bouton PB_VALIDER
 			if (testerParametre(request, getNOM_PB_VALIDER())) {
@@ -865,7 +889,8 @@ public class OeELECSaisieCompteurA48 extends BasicProcess {
 	}
 
 	public boolean performPB_FILTRER(HttpServletRequest request) throws Exception {
-
+		getAllResultCount();
+		updatePagination(request);
 		initialiseListeCompteur(request);
 		return true;
 	}
@@ -894,6 +919,24 @@ public class OeELECSaisieCompteurA48 extends BasicProcess {
 		return "NOM_PB_DUPLIQUER";
 	}
 
+	public boolean performPB_CHANGE_PAGINATION(HttpServletRequest request) throws Exception {
+		super.updatePagination(request);
+		initialiseListeCompteur(request);
+		return true;
+	}
+
+	public boolean performPB_NEXT_PAGE(HttpServletRequest request) throws Exception {
+		super.performPB_NEXT_PAGE(request);
+		initialiseListeCompteur(request);
+		return true;
+	}
+
+	public boolean performPB_PREVIOUS_PAGE(HttpServletRequest request) throws Exception {
+		super.performPB_PREVIOUS_PAGE(request);
+		initialiseListeCompteur(request);
+		return true;
+	}
+
 	public boolean performPB_DUPLIQUER(HttpServletRequest request) throws Exception {
 		if (!isDuplicationPossible()) {
 			getTransaction().declarerErreur("ERREUR : La duplication ne peut se faire que sur l'année en cours, merci de choisir l'année en cours.");
@@ -914,7 +957,7 @@ public class OeELECSaisieCompteurA48 extends BasicProcess {
 		int indiceAnnee = (Services.estNumerique(getVAL_LB_ANNEE_FILTRE_SELECT()) ? Integer.parseInt(getVAL_LB_ANNEE_FILTRE_SELECT()) : -1);
 		String anneeChoisie = getListeAnneeFiltre().get(indiceAnnee);
 
-		ArrayList<CompteurDto> listeCompteur = (ArrayList<CompteurDto>) absService.getListeCompteursA48(new Integer(anneeChoisie), null);
+		ArrayList<CompteurDto> listeCompteur = (ArrayList<CompteurDto>) absService.getListeCompteursA48(new Integer(anneeChoisie), null, getPageSize(), getPageNumber());
 
 		// on met le motif "reprise de données"
 		MotifCompteurDto motifReprise = null;
