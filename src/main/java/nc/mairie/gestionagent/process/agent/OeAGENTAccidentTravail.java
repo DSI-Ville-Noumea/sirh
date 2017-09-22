@@ -2,9 +2,7 @@ package nc.mairie.gestionagent.process.agent;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -16,7 +14,6 @@ import java.util.ListIterator;
 import javax.activation.MimetypesFileTypeMap;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -30,10 +27,8 @@ import nc.mairie.enums.EnumTypeAbsence;
 import nc.mairie.enums.EnumTypeGroupeAbsence;
 import nc.mairie.gestionagent.absence.dto.DemandeDto;
 import nc.mairie.gestionagent.absence.dto.PieceJointeDto;
-import nc.mairie.gestionagent.absence.dto.RefGroupeAbsenceDto;
 import nc.mairie.gestionagent.absence.dto.RefTypeDto;
-import nc.mairie.gestionagent.absence.dto.RefTypeSaisiDto;
-import nc.mairie.gestionagent.absence.dto.TypeAbsenceDto;
+import nc.mairie.gestionagent.absence.dto.ResultListDemandeDto;
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
 import nc.mairie.gestionagent.radi.dto.LightUserDto;
 import nc.mairie.gestionagent.robot.MaClasse;
@@ -254,11 +249,13 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 		// AT de référence
 		if (getHashATReference().size() == 0) {
 
-			List<DemandeDto> listeATReference = absService.getListeDemandesAgent(getAgentCourant().getIdAgent(), "TOUTES", null, null,
+			ResultListDemandeDto resultListDemandeDto = absService.getListeDemandesAgent(getAgentCourant().getIdAgent(), "TOUTES", null, null,
 					null, Arrays.asList(EnumEtatAbsence.VALIDEE.getCode(), EnumEtatAbsence.PRISE.getCode()).toString().replace("[", "")
 							.replace("]", "").replace(" ", ""),
 					EnumTypeAbsence.MALADIES_ACCIDENT_TRAVAIL.getCode(), EnumTypeGroupeAbsence.MALADIES.getValue());
 
+			ArrayList<DemandeDto> listeATReference = (ArrayList<DemandeDto>) resultListDemandeDto.getListDemandesDto();
+			
 			if (null != listeATReference) {
 				int tailles[] = { 40 };
 				String padding[] = { "G" };
