@@ -2070,7 +2070,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 		// Lieu
 		int numLigneLoc = (Services.estNumerique(getZone(getNOM_LB_LOC_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_LOC_SELECT())) : -1);
 
-		if (numLigneLoc == -1 || getListeLocalisation().isEmpty() || numLigneLoc > getListeLocalisation().size()) {
+		if (numLigneLoc == 0 || getListeLocalisation().isEmpty() || numLigneLoc > getListeLocalisation().size()) {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "localisations"));
 			return false;
 		}
