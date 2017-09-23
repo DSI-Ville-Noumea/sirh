@@ -12,6 +12,7 @@ import nc.mairie.enums.EnumTypeAbsence;
 import nc.mairie.enums.EnumTypeGroupeAbsence;
 import nc.mairie.gestionagent.absence.dto.DemandeDto;
 import nc.mairie.gestionagent.absence.dto.RefGroupeAbsenceDto;
+import nc.mairie.gestionagent.absence.dto.ResultListDemandeDto;
 import nc.mairie.gestionagent.absence.dto.TypeAbsenceDto;
 import nc.mairie.gestionagent.robot.MaClasse;
 import nc.mairie.metier.Const;
@@ -204,9 +205,9 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 	private void initialiseHistoAgentToutes(HttpServletRequest request, String dateDebut, String dateFin, String dateDemande, List<Integer> listeIdRefEtat, Integer idRefGroupeAbsence) {
 
 		// Recherche des absences non prises de l'agent
-		ArrayList<DemandeDto> a = (ArrayList<DemandeDto>) absService.getListeDemandesAgent(getAgentCourant().getIdAgent(), "TOUTES", dateDebut, dateFin, dateDemande, listeIdRefEtat == null
+		ResultListDemandeDto a = absService.getListeDemandesAgent(getAgentCourant().getIdAgent(), "TOUTES", dateDebut, dateFin, dateDemande, listeIdRefEtat == null
 				|| listeIdRefEtat.size() == 0 ? null : listeIdRefEtat.toString().replace("[", "").replace("]", "").replace(" ", ""), null, idRefGroupeAbsence);
-		setListeToutesDemandes(a);
+		setListeToutesDemandes(null != a.getListDemandesDto() ? new ArrayList<>(a.getListDemandesDto()) : new ArrayList<DemandeDto>());
 
 		SimpleDateFormat sdfDate = new SimpleDateFormat("dd/MM/yyyy");
 		SimpleDateFormat sdfHeure = new SimpleDateFormat("HH:mm");
@@ -289,9 +290,9 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 	private void initialiseHistoAgentEnCours(HttpServletRequest request, String dateDebut, String dateFin, String dateDemande, List<Integer> listeIdRefEtat, Integer idRefGroupeAbsence) {
 
 		// Recherche des absences non prises de l'agent
-		ArrayList<DemandeDto> a = (ArrayList<DemandeDto>) absService.getListeDemandesAgent(getAgentCourant().getIdAgent(), "EN_COURS", dateDebut, dateFin, dateDemande, listeIdRefEtat == null
+		ResultListDemandeDto a = (ResultListDemandeDto) absService.getListeDemandesAgent(getAgentCourant().getIdAgent(), "EN_COURS", dateDebut, dateFin, dateDemande, listeIdRefEtat == null
 				|| listeIdRefEtat.size() == 0 ? null : listeIdRefEtat.toString().replace("[", "").replace("]", "").replace(" ", ""), null, idRefGroupeAbsence);
-		setListeDemandeEnCours(a);
+		setListeDemandeEnCours(null != a.getListDemandesDto() ? new ArrayList<>(a.getListDemandesDto()) : new ArrayList<DemandeDto>());
 
 		SimpleDateFormat sdfDate = new SimpleDateFormat("dd/MM/yyyy");
 		SimpleDateFormat sdfHeure = new SimpleDateFormat("HH:mm");
@@ -371,9 +372,9 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 	private void initialiseHistoAgentNonPrises(HttpServletRequest request, String dateDebut, String dateFin, String dateDemande, List<Integer> listeIdRefEtat, Integer idRefGroupeAbsence) {
 
 		// Recherche des absences non prises de l'agent
-		ArrayList<DemandeDto> a = (ArrayList<DemandeDto>) absService.getListeDemandesAgent(getAgentCourant().getIdAgent(), "NON_PRISES", dateDebut, dateFin, dateDemande, listeIdRefEtat == null
+		ResultListDemandeDto a = absService.getListeDemandesAgent(getAgentCourant().getIdAgent(), "NON_PRISES", dateDebut, dateFin, dateDemande, listeIdRefEtat == null
 				|| listeIdRefEtat.size() == 0 ? null : listeIdRefEtat.toString().replace("[", "").replace("]", "").replace(" ", ""), null, idRefGroupeAbsence);
-		setListeDemandeNonPrises(a);
+		setListeDemandeNonPrises(null != a.getListDemandesDto() ? new ArrayList<>(a.getListDemandesDto()) : new ArrayList<DemandeDto>());
 
 		SimpleDateFormat sdfDate = new SimpleDateFormat("dd/MM/yyyy");
 		SimpleDateFormat sdfHeure = new SimpleDateFormat("HH:mm");

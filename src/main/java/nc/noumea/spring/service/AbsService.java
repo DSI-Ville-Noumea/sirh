@@ -20,6 +20,7 @@ import nc.mairie.gestionagent.absence.dto.RefAlimCongesAnnuelsDto;
 import nc.mairie.gestionagent.absence.dto.RefGroupeAbsenceDto;
 import nc.mairie.gestionagent.absence.dto.RefTypeDto;
 import nc.mairie.gestionagent.absence.dto.RestitutionMassiveDto;
+import nc.mairie.gestionagent.absence.dto.ResultListDemandeDto;
 import nc.mairie.gestionagent.absence.dto.SoldeDto;
 import nc.mairie.gestionagent.absence.dto.TypeAbsenceDto;
 import nc.mairie.gestionagent.absence.dto.UnitePeriodeQuotaDto;
@@ -248,7 +249,7 @@ public class AbsService implements IAbsService {
 	}
 
 	@Override
-	public List<DemandeDto> getListeDemandesAgent(Integer idAgent, String onglet, String dateDebut, String dateFin, String dateDemande,
+	public ResultListDemandeDto getListeDemandesAgent(Integer idAgent, String onglet, String dateDebut, String dateFin, String dateDemande,
 			String listIdRefEtat, Integer idRefType, Integer idRefGroupeAbsence) {
 		return absConsumer.getListeDemandesAgent(idAgent, onglet, dateDebut, dateFin, dateDemande, listIdRefEtat, idRefType, idRefGroupeAbsence);
 	}
