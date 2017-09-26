@@ -29,11 +29,11 @@ public class ActiviteMetierSavoirFPDao extends SirhDao implements ActiviteMetier
     @Override
     public void ajouterActiviteMetierSavoirFP(ActiviteMetierSavoirFP activiteMetierSavoirFP) {
         if (activiteMetierSavoirFP.getIdSavoirFaire() == null) {
-            String sql = "INSERT INTO " + NOM_TABLE + "(ID_FICHE_POSTE, ID_ACTIVITE_METIER, ID_SAVOIR_FAIRE) VALUES(?,?, NULL)";
-            jdbcTemplate.update(sql, new Object[] { activiteMetierSavoirFP.getIdFichePoste(), activiteMetierSavoirFP.getIdActiviteMetier() });
+            String sql = "INSERT INTO " + NOM_TABLE + "(ID_FICHE_POSTE, ID_ACTIVITE_METIER, ID_SAVOIR_FAIRE, ORDRE) VALUES(?,?, NULL, ?)";
+            jdbcTemplate.update(sql, new Object[] { activiteMetierSavoirFP.getIdFichePoste(), activiteMetierSavoirFP.getIdActiviteMetier(), activiteMetierSavoirFP.getOrdre() });
         } else {
-            String sql = "INSERT INTO " + NOM_TABLE + "(ID_FICHE_POSTE, ID_ACTIVITE_METIER, ID_SAVOIR_FAIRE) VALUES(?,?,?)";
-            jdbcTemplate.update(sql, new Object[] { activiteMetierSavoirFP.getIdFichePoste(), activiteMetierSavoirFP.getIdActiviteMetier(), activiteMetierSavoirFP.getIdSavoirFaire() });
+            String sql = "INSERT INTO " + NOM_TABLE + "(ID_FICHE_POSTE, ID_ACTIVITE_METIER, ID_SAVOIR_FAIRE, ORDRE) VALUES(?,?,?,?)";
+            jdbcTemplate.update(sql, new Object[] { activiteMetierSavoirFP.getIdFichePoste(), activiteMetierSavoirFP.getIdActiviteMetier(), activiteMetierSavoirFP.getIdSavoirFaire(), activiteMetierSavoirFP.getOrdre() });
         }
     }
 }

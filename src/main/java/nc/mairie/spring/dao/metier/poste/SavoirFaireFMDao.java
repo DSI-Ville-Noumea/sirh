@@ -20,8 +20,8 @@ public class SavoirFaireFMDao extends SirhDao implements SavoirFaireFMInterface 
     }
 
     public void ajouterSavoirFaireFP(SavoirFaireFP savoirFaireFP) {
-        String sql = "INSERT INTO " + NOM_TABLE + "(ID_FICHE_POSTE, ID_SAVOIR_FAIRE) VALUES(?,?)";
-        jdbcTemplate.update(sql, new Object[] { savoirFaireFP.getIdFichePoste(), savoirFaireFP.getIdSavoirFaire() });
+        String sql = "INSERT INTO " + NOM_TABLE + "(ID_FICHE_POSTE, ID_SAVOIR_FAIRE, ORDRE) VALUES(?,?,?)";
+        jdbcTemplate.update(sql, new Object[] { savoirFaireFP.getIdFichePoste(), savoirFaireFP.getIdSavoirFaire(), savoirFaireFP.getOrdre() });
     }
 
 }

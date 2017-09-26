@@ -22,7 +22,7 @@ public class ActiviteGeneraleFPDao extends SirhDao implements ActiviteGeneraleFP
 
     @Override
     public void ajouterActiviteGeneraleFP(ActiviteGeneraleFP activiteGeneraleFP) {
-        String sql = "INSERT INTO " + NOM_TABLE + "(ID_FICHE_POSTE, ID_ACTIVITE_GENERALE) VALUES(?,?)";
-        jdbcTemplate.update(sql, new Object[] { activiteGeneraleFP.getIdFichePoste(), activiteGeneraleFP.getIdActiviteGenerale() });
+        String sql = "INSERT INTO " + NOM_TABLE + "(ID_FICHE_POSTE, ID_ACTIVITE_GENERALE, ORDRE) VALUES(?,?, ?)";
+        jdbcTemplate.update(sql, new Object[] { activiteGeneraleFP.getIdFichePoste(), activiteGeneraleFP.getIdActiviteGenerale(), activiteGeneraleFP.getOrdre()});
     }
 }

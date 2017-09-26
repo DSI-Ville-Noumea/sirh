@@ -22,7 +22,7 @@ public class ConditionExerciceFPDao extends SirhDao implements ConditionExercice
 
     @Override
     public void ajouterConditionExerciceFP(ConditionExerciceFP conditionExerciceFP) {
-        String sql = "INSERT INTO " + NOM_TABLE + "(ID_FICHE_POSTE, ID_CONDITION_EXERCICE) VALUES(?,?)";
-        jdbcTemplate.update(sql, new Object[] { conditionExerciceFP.getIdFichePoste(), conditionExerciceFP.getIdConditionExercice() });
+        String sql = "INSERT INTO " + NOM_TABLE + "(ID_FICHE_POSTE, ID_CONDITION_EXERCICE, ORDRE) VALUES(?,?,?)";
+        jdbcTemplate.update(sql, new Object[] { conditionExerciceFP.getIdFichePoste(), conditionExerciceFP.getIdConditionExercice(), conditionExerciceFP.getOrdre()});
     }
 }
