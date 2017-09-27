@@ -7776,4 +7776,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 	public boolean versionFicheMetier() {
 		return getMetierPrimaire() != null;
 	}
+
+	public boolean ficheMetierEnMigration() {
+		return getFicheMetierDao().chercherFicheMetierAvecFichePoste(getFichePosteCourante().getIdFichePoste(), true) == null;
+	}
 }
