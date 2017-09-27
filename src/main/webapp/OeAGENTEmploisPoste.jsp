@@ -179,6 +179,31 @@ document.formu.elements[nom].focus();
 			</div>
 			<br/>
 		</FIELDSET>
+        <% if (process.versionFicheMetier() && !process.getVAL_ST_NIVEAU_MANAGEMENT().toLowerCase().equals("aucun")) { %>
+        <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
+            <legend class="sigp2Legend">Compétences managériales</legend>
+            <table class="display" >
+                <thead>
+                <tr>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <%
+                    if (process.getListCompetenceManagement()!=null){
+                        for (int indiceCM = 0; indiceCM < process.getListCompetenceManagement().size(); indiceCM++) {
+                %>
+                <tr>
+                    <td class="sigp2-statique">* <%=process.getVAL_ST_LIB_CM(indiceCM)%></td>
+                </tr>
+                <%
+                        }
+                    }
+                %>
+                </tbody>
+            </table>
+        </FIELDSET>
+        <% } %>
 	    <FIELDSET class="sigp2Fieldset" style="text-align:left;margin:10px;width:1030px;">
 		    <legend class="sigp2Legend">Titulaire du poste</legend>
 		    <table>
@@ -484,31 +509,7 @@ document.formu.elements[nom].focus();
             </table>
         </FIELDSET>
         <% }%>
-        <% if (process.versionFicheMetier() && !process.getVAL_ST_NIVEAU_MANAGEMENT().toLowerCase().equals("aucun")) { %>
-            <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
-                <legend class="sigp2Legend">Compétence managériales</legend>
-                <table class="display" >
-                    <thead>
-                    <tr>
-                        <th></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <%
-                        if (process.getListCompetenceManagement()!=null){
-                            for (int indiceCM = 0; indiceCM < process.getListCompetenceManagement().size(); indiceCM++) {
-                    %>
-                    <tr>
-                        <td class="sigp2-statique">* <%=process.getVAL_ST_LIB_CE(indiceCM)%></td>
-                    </tr>
-                    <%
-                            }
-                        }
-                    %>
-                    </tbody>
-                </table>
-            </FIELDSET>
-        <% } %>
+
 
         <FIELDSET class="sigp2Fieldset" style="text-align:left;margin:10px;width:1030px;">
             <legend class="sigp2Legend">Spécificités</legend>
