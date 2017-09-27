@@ -256,3 +256,22 @@
 .selectLigne {
 	background-color: #EFEFEF;
 }
+
+.activite-metier {
+	text-transform: uppercase;
+	background-color: beige;
+	font-weight: 600;
+	font-size: 1.2em;
+}
+
+.block-element-odd {
+	background-color: rgb(226, 228, 255);
+}
+
+.block-element-even {
+	background-color: white;
+}
+
+.masqued-id {
+	display: none;
+}

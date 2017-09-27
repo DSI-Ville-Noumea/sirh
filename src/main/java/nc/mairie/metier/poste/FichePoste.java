@@ -34,6 +34,9 @@ public class FichePoste implements Cloneable {
 	public Integer idBaseHorairePointage;
 	public Integer idBaseHoraireAbsence;
 	public Integer idServiceAds;
+	public String specialisation;
+	public String informations_complementaires;
+	public Integer idNiveauManagement;
 
 	/**
 	 * Constructeur FichePoste.
@@ -299,6 +302,22 @@ public class FichePoste implements Cloneable {
 		this.observation = observation;
 	}
 
+	public String getSpecialisation() {
+		return specialisation;
+	}
+
+	public void setSpecialisation(String specialisation) {
+		this.specialisation = specialisation;
+	}
+
+	public String getInformations_complementaires() {
+		return informations_complementaires;
+	}
+
+	public void setInformations_complementaires(String informations_complementaires) {
+		this.informations_complementaires = informations_complementaires;
+	}
+
 	/**
 	 * Getter de l'attribut missions.
 	 */
@@ -311,6 +330,14 @@ public class FichePoste implements Cloneable {
 	 */
 	public void setMissions(String newMissions) {
 		missions = newMissions;
+	}
+
+	public Integer getIdNiveauManagement() {
+		return idNiveauManagement;
+	}
+
+	public void setIdNiveauManagement(Integer idNiveauManagement) {
+		this.idNiveauManagement = idNiveauManagement;
 	}
 
 	public Integer getIdRemplacement() {
