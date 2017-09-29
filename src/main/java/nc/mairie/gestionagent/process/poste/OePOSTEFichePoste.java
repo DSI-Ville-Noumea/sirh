@@ -2070,7 +2070,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 		// Lieu
 		int numLigneLoc = (Services.estNumerique(getZone(getNOM_LB_LOC_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_LOC_SELECT())) : -1);
 
-		if (numLigneLoc == -1 || getListeLocalisation().isEmpty() || numLigneLoc > getListeLocalisation().size()) {
+		if (numLigneLoc == 0 || getListeLocalisation().isEmpty() || numLigneLoc > getListeLocalisation().size()) {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "localisations"));
 			return false;
 		}
@@ -2498,7 +2498,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 		//Mise à jour des activités et compétences liées si il en a
 		for (int i = 0; i < listActiviteMetier.size(); i++) {
 			ActiviteMetier am = getListActiviteMetier().get(i);
-			ActiviteMetierSavoirFP amsLien = new ActiviteMetierSavoirFP(getFichePosteCourante().getIdFichePoste(), am.getIdActiviteMetier(), null);
+			ActiviteMetierSavoirFP amsLien = new ActiviteMetierSavoirFP(getFichePosteCourante().getIdFichePoste(), am.getIdActiviteMetier(), null, i);
 			//Cas d'une activité avec des sous compétences
 			boolean unSavoirfaireChecked = false;
 			for (int j = 0; j < am.getListSavoirFaire().size(); j++) {
@@ -2528,7 +2528,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 		getSavoirFaireDao().supprimerTousSavoirFaireGeneraux(getFichePosteCourante()); //tabula rasa
 		for (int i = 0; i < getListSavoirFaire().size(); i++) {
 			SavoirFaire sfEnBase = getListSavoirFaire().get(i);
-			SavoirFaireFP sfLien = new SavoirFaireFP(getFichePosteCourante().getIdFichePoste(), sfEnBase.getIdSavoirFaire());
+			SavoirFaireFP sfLien = new SavoirFaireFP(getFichePosteCourante().getIdFichePoste(), sfEnBase.getIdSavoirFaire(), i);
 			if (getVAL_CK_SELECT_LIGNE_SF(i).equals(getCHECKED_OFF())) {
 				//Delete existing link
 				getSavoirFaireFMDao().supprimerSavoirFaireFP(sfLien);
@@ -2543,7 +2543,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 		getActiviteGeneraleDao().supprimerToutesActiviteGenerale(getFichePosteCourante()); //tabula rasa
         for (int i = 0; i < getListActiviteGenerale().size(); i++) {
             ActiviteGenerale agEnBase = getListActiviteGenerale().get(i);
-            ActiviteGeneraleFP agLien = new ActiviteGeneraleFP(getFichePosteCourante().getIdFichePoste(), agEnBase.getIdActiviteGenerale());
+            ActiviteGeneraleFP agLien = new ActiviteGeneraleFP(getFichePosteCourante().getIdFichePoste(), agEnBase.getIdActiviteGenerale(), i);
             if (getVAL_CK_SELECT_LIGNE_AG(i).equals(getCHECKED_OFF())) {
                 getActiviteGeneraleFPDao().supprimerActiviteGeneraleFP(agLien);
             } else if (getVAL_CK_SELECT_LIGNE_AG(i).equals(getCHECKED_ON())) {
@@ -2557,7 +2557,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 		getConditionExerciceDao().supprimerToutesConditionExercice(getFichePosteCourante()); //tabula rasa
         for (int i = 0; i < getListConditionExercice().size(); i++) {
             ConditionExercice ceEnBase = getListConditionExercice().get(i);
-            ConditionExerciceFP ceLien = new ConditionExerciceFP(getFichePosteCourante().getIdFichePoste(), ceEnBase.getIdConditionExercice());
+            ConditionExerciceFP ceLien = new ConditionExerciceFP(getFichePosteCourante().getIdFichePoste(), ceEnBase.getIdConditionExercice(), i);
             if (getVAL_CK_SELECT_LIGNE_CE(i).equals(getCHECKED_OFF())) {
                 getConditionExerciceFPDao().supprimerConditionExerciceFP(ceLien);
             } else if (getVAL_CK_SELECT_LIGNE_CE(i).equals(getCHECKED_ON())) {

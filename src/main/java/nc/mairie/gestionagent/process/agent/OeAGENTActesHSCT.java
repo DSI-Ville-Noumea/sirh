@@ -5,7 +5,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.ListIterator;
@@ -22,6 +21,7 @@ import nc.mairie.enums.EnumTypeAbsence;
 import nc.mairie.enums.EnumTypeGroupeAbsence;
 import nc.mairie.gestionagent.absence.dto.DemandeDto;
 import nc.mairie.gestionagent.absence.dto.RefTypeDto;
+import nc.mairie.gestionagent.absence.dto.ResultListDemandeDto;
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
 import nc.mairie.gestionagent.radi.dto.LightUserDto;
 import nc.mairie.gestionagent.robot.MaClasse;
@@ -272,21 +272,21 @@ public class OeAGENTActesHSCT extends BasicProcess {
 			if (null != getAgentCourant()) {
 
 				// Recherche des accidents du travail de l'agent
-				ArrayList<DemandeDto> listeAT = (ArrayList<DemandeDto>) absService.getListeDemandesAgent(getAgentCourant().getIdAgent(), "TOUTES",
+				ResultListDemandeDto listeAT = absService.getListeDemandesAgent(getAgentCourant().getIdAgent(), "TOUTES",
 						null, null,
 						null, Arrays.asList(EnumEtatAbsence.VALIDEE.getCode(), EnumEtatAbsence.PRISE.getCode()).toString().replace("[", "")
 								.replace("]", "").replace(" ", ""),
 						EnumTypeAbsence.MALADIES_ACCIDENT_TRAVAIL.getCode(), EnumTypeGroupeAbsence.MALADIES.getValue());
 
-				ArrayList<DemandeDto> listeRechute = (ArrayList<DemandeDto>) absService.getListeDemandesAgent(getAgentCourant().getIdAgent(),
+				ResultListDemandeDto listeRechute = absService.getListeDemandesAgent(getAgentCourant().getIdAgent(),
 						"TOUTES", null, null,
 						null, Arrays.asList(EnumEtatAbsence.VALIDEE.getCode(), EnumEtatAbsence.PRISE.getCode()).toString().replace("[", "")
 								.replace("]", "").replace(" ", ""),
 						EnumTypeAbsence.MALADIES_RECHUTE.getCode(), EnumTypeGroupeAbsence.MALADIES.getValue());
 
 				ArrayList<DemandeDto> listeAT_MP = new ArrayList<DemandeDto>();
-				listeAT_MP.addAll(listeAT);
-				listeAT_MP.addAll(listeRechute);
+				listeAT_MP.addAll(null != listeAT.getListDemandesDto() ? new ArrayList<>(listeAT.getListDemandesDto()) : new ArrayList<DemandeDto>());
+				listeAT_MP.addAll(null != listeRechute.getListDemandesDto() ? new ArrayList<>(listeRechute.getListDemandesDto()) : new ArrayList<DemandeDto>());
 
 				Collections.sort(listeAT_MP, new DemandeDtoDateAccidentTravailComparator());
 
@@ -315,12 +315,14 @@ public class OeAGENTActesHSCT extends BasicProcess {
 		if (getLB_MP() == LBVide) {
 			if (null != getAgentCourant()) {
 
-				ArrayList<DemandeDto> listeMP = (ArrayList<DemandeDto>) absService.getListeDemandesAgent(getAgentCourant().getIdAgent(), "TOUTES",
+				ResultListDemandeDto resultListeMP = absService.getListeDemandesAgent(getAgentCourant().getIdAgent(), "TOUTES",
 						null, null,
 						null, Arrays.asList(EnumEtatAbsence.VALIDEE.getCode(), EnumEtatAbsence.PRISE.getCode()).toString().replace("[", "")
 								.replace("]", "").replace(" ", ""),
 						EnumTypeAbsence.MALADIES_PROFESSIONNELLE.getCode(), EnumTypeGroupeAbsence.MALADIES.getValue());
 
+				ArrayList<DemandeDto> listeMP = (ArrayList<DemandeDto>) resultListeMP.getListDemandesDto();
+				
 				Collections.sort(listeMP, new DemandeDtoDateAccidentTravailComparator());
 
 				if (listeMP.size() > 0) {
