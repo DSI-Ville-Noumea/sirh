@@ -74,7 +74,7 @@
 		<versioneye-maven-plugin.apiKey>${env.VERSIONEYE_APIKEY}</versioneye-maven-plugin.apiKey>
 		<versioneye-maven-plugin.projectId>${env.VERSIONEYE_PROJECTID}</versioneye-maven-plugin.projectId>
 		<checksum-maven-plugin.version>1.4</checksum-maven-plugin.version>
-		<jersey.version>1.19.2</jersey.version>
+		<jersey.version>1.19.4</jersey.version>
 	</properties>
 
 	<scm>
