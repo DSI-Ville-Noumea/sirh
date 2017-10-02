@@ -66,7 +66,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<spring.version>4.3.3.RELEASE</spring.version>
+		<spring.version>4.3.11.RELEASE</spring.version>
 		<jacoco.version>0.7.9</jacoco.version>
 		<coveralls-maven-plugin.version>4.3.0</coveralls-maven-plugin.version>
 		<coveralls-maven-plugin.repoToken>${env.COVERALLS_REPOTOKEN}</coveralls-maven-plugin.repoToken>
@@ -74,6 +74,7 @@
 		<versioneye-maven-plugin.apiKey>${env.VERSIONEYE_APIKEY}</versioneye-maven-plugin.apiKey>
 		<versioneye-maven-plugin.projectId>${env.VERSIONEYE_PROJECTID}</versioneye-maven-plugin.projectId>
 		<checksum-maven-plugin.version>1.4</checksum-maven-plugin.version>
+		<jersey.version>1.19.2</jersey.version>
 	</properties>
 
 	<scm>
@@ -100,7 +101,7 @@
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
-			<version>2.8.3</version>
+			<version>2.9.1</version>
 		</dependency>
 		<dependency>
 			<groupId>net.sf.flexjson</groupId>
@@ -111,12 +112,12 @@
 		<dependency>
 			<groupId>joda-time</groupId>
 			<artifactId>joda-time</artifactId>
-			<version>2.9.4</version>
+			<version>2.9.9</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
-			<version>4.5.2</version>
+			<version>4.5.3</version>
 		</dependency>
 		<!-- Spring -->
 		<dependency>
@@ -134,20 +135,20 @@
 		<dependency>
 			<groupId>net.sf.jt400</groupId>
 			<artifactId>jt400</artifactId>
-			<version>9.1</version>
+			<version>9.3</version>
 			<!-- Ne pas passer cette dependance en provided car SIRH_WAR a besoin 
 				de certaines classes AS400 -->
 		</dependency>
 		<dependency>
 			<groupId>org.apache.tomcat</groupId>
 			<artifactId>servlet-api</artifactId>
-			<version>6.0.45</version>
+			<version>6.0.53</version>
 		</dependency>
 		<!-- pour les logs -->
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
-			<version>1.1.7</version>
+			<version>1.2.3</version>
 		</dependency>
 		<!-- Pour la gestion des documents -->
 		<dependency>
@@ -164,12 +165,12 @@
 		<dependency>
 			<groupId>com.sun.jersey</groupId>
 			<artifactId>jersey-client</artifactId>
-			<version>1.19.2</version>
+			<version>${jersey.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.sun.jersey.contribs</groupId>
 			<artifactId>jersey-multipart</artifactId>
-			<version>1.19.2</version>
+			<version>${jersey.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-httpclient</groupId>
@@ -194,7 +195,7 @@
 		<dependency>
 			<groupId>org.codehaus.plexus</groupId>
 			<artifactId>plexus-utils</artifactId>
-			<version>3.0.24</version>
+			<version>3.1.0</version>
 		</dependency>
 
 		<!-- CMIS ALfresco Client -->
@@ -216,7 +217,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
-				<version>2.2</version>
+				<version>3.1.0</version>
 				<configuration>
 					<packagingExcludes>META-INF/context.xml</packagingExcludes>
 					<webResources>
@@ -239,7 +240,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.5.1</version>
+				<version>3.7.0</version>
 				<configuration>
 					<source>1.7</source>
 					<target>1.7</target>
@@ -249,7 +250,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-resources-plugin</artifactId>
-				<version>2.5</version>
+				<version>3.0.2</version>
 				<configuration>
 					<encoding>${project.build.sourceEncoding}</encoding>
 				</configuration>
@@ -257,12 +258,12 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-scm-plugin</artifactId>
-				<version>1.7</version>
+				<version>1.9.5</version>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-pdf-plugin</artifactId>
-				<version>1.2</version>
+				<version>1.3</version>
 				<executions>
 					<execution>
 						<id>pdf</id>
@@ -282,7 +283,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
-				<version>2.1.2</version>
+				<version>3.0.1</version>
 				<executions>
 					<execution>
 						<id>attach-sources</id>
@@ -391,7 +392,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-project-info-reports-plugin</artifactId>
-				<version>2.4</version>
+				<version>2.9</version>
 				<configuration>
 					<webAccessUrl>https://svn.ville-noumea.nc/sed/sirh/trunk/SIRH_war</webAccessUrl>
 					<anonymousConnection>scm:svn:https://svn.ville-noumea.nc/sed/sirh/trunk/SIRH_war</anonymousConnection>
