@@ -2496,20 +2496,23 @@ public class OePOSTEFichePoste extends BasicProcess {
 		/*** 4. Mise à jour des activités et compétences ***/
 		getActiviteMetierDao().supprimerToutesActiviteMetier(getFichePosteCourante());//tabula rasa
 		//Mise à jour des activités et compétences liées si il en a
+		int k = 0;
 		for (int i = 0; i < listActiviteMetier.size(); i++) {
 			ActiviteMetier am = getListActiviteMetier().get(i);
-			ActiviteMetierSavoirFP amsLien = new ActiviteMetierSavoirFP(getFichePosteCourante().getIdFichePoste(), am.getIdActiviteMetier(), null, i);
+			ActiviteMetierSavoirFP amsLien = new ActiviteMetierSavoirFP(getFichePosteCourante().getIdFichePoste(), am.getIdActiviteMetier(), null, k);
 			//Cas d'une activité avec des sous compétences
 			boolean unSavoirfaireChecked = false;
 			for (int j = 0; j < am.getListSavoirFaire().size(); j++) {
 				SavoirFaire sf = am.getListSavoirFaire().get(j);
 				amsLien.setIdSavoirFaire(sf.getIdSavoirFaire());
+				amsLien.setOrdre(k);
 				if (getVAL_CK_SELECT_LIGNE_ACTI_METIER_SAVOIR(i, j).equals(getCHECKED_OFF())) {
 					getActiviteMetierSavoirFPDao().supprimerActiviteMetierSavoirFP(amsLien);
 				} else if (getVAL_CK_SELECT_LIGNE_ACTI_METIER_SAVOIR(i, j).equals(getCHECKED_ON())) {
 					unSavoirfaireChecked = true;
 					getActiviteMetierSavoirFPDao().ajouterActiviteMetierSavoirFP(amsLien);
 				}
+				k++;
 			}
 			//Cas d'une activité sans sous compétences
 			if (am.getListSavoirFaire().isEmpty() || !unSavoirfaireChecked) {
@@ -2519,6 +2522,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 				} else if (getVAL_CK_SELECT_LIGNE_ACTI_METIER(i).equals(getCHECKED_ON())) {
 					getActiviteMetierSavoirFPDao().ajouterActiviteMetierSavoirFP(amsLien);
 				}
+				k++;
 			}
 		}
 		//On recharge ce qui est maintenant en base
@@ -7775,5 +7779,9 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 	public boolean versionFicheMetier() {
 		return getMetierPrimaire() != null;
+	}
+
+	public boolean ficheMetierEnMigration() {
+		return getFicheMetierDao().chercherFicheMetierAvecFichePoste(getFichePosteCourante().getIdFichePoste(), true) == null;
 	}
 }
