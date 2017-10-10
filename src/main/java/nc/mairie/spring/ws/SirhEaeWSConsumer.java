@@ -48,6 +48,7 @@ public class SirhEaeWSConsumer extends BaseWsConsumer implements ISirhEaeWSConsu
 	private static final String	sirhDeleteDocumentEaeUrl			= "sirhEaes/deleteDocumentEae";
 	private static final String	sirhSetEaeUrl						= "sirhEaes/eae";
 	private static final String	sirhListeEaeUrl						= "sirhEaes/listeEae";
+	private static final String	sirhGetCountListUrl					= "sirhEaes/countAll";
 	private static final String	sirhListeEaeLightUrl				= "sirhEaes/listeEaeLight";
 
 	private static final String	sirhEaeCampagneTaskUrl				= "sirhEaes/eaeCampagneTask";
@@ -85,6 +86,19 @@ public class SirhEaeWSConsumer extends BaseWsConsumer implements ISirhEaeWSConsu
 
 		ClientResponse res = createAndFireRequest(params, url);
 		return readResponse(EaeDto.class, res, url);
+	}
+
+	@Override
+	public List<EaeDto> getListeEaeDto(Integer idAgentSirh, FormRehercheGestionEae form, Integer pageSize, Integer pageNumber) {
+		String url = eaeWsBaseUrl + sirhListeEaeUrl;
+			
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idAgent", idAgentSirh.toString());
+		params.put("pageSize", pageSize.toString());
+		params.put("pageNumber", pageNumber.toString());
+		
+		ClientResponse res = createAndPostRequest(params, url, new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class).deepSerialize(form));
+		return readResponseAsList(EaeDto.class, res, url);
 	}
 
 	@Override
@@ -213,19 +227,6 @@ public class SirhEaeWSConsumer extends BaseWsConsumer implements ISirhEaeWSConsu
 		ClientResponse res = createAndPostRequest(params, url,
 				new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class).deepSerialize(eaeDto));
 		return readResponse(ReturnMessageDto.class, res, url);
-	}
-
-	@Override
-	public List<EaeDto> getListeEaeDto(Integer idAgentSirh, FormRehercheGestionEae form) {
-
-		String url = eaeWsBaseUrl + sirhListeEaeUrl;
-
-		HashMap<String, String> params = new HashMap<>();
-		params.put("idAgent", idAgentSirh.toString());
-
-		ClientResponse res = createAndPostRequest(params, url,
-				new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class).deepSerialize(form));
-		return readResponseAsList(EaeDto.class, res, url);
 	}
 
 	@Override
@@ -358,5 +359,16 @@ public class SirhEaeWSConsumer extends BaseWsConsumer implements ISirhEaeWSConsu
 
 		ClientResponse res = createAndFireRequest(params, url);
 		return readResponse(CampagneEaeDto.class, res, url);
+	}
+
+	@Override
+	public Integer getCountList(FormRehercheGestionEae form) {
+
+		String url = eaeWsBaseUrl + sirhGetCountListUrl;
+
+		HashMap<String, String> params = new HashMap<>();
+
+		ClientResponse res = createAndPostRequest(params, url, new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class).deepSerialize(form));
+		return readResponseAsInteger(res, url);
 	}
 }
