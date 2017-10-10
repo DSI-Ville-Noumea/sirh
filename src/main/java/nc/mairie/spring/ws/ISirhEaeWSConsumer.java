@@ -42,7 +42,7 @@ public interface ISirhEaeWSConsumer {
 
 	ReturnMessageDto setEae(Integer idAgentSirh, EaeDto eaeDto);
 
-	List<EaeDto> getListeEaeDto(Integer idAgentSirh, FormRehercheGestionEae form);
+	List<EaeDto> getListeEaeDto(Integer idAgentSirh, FormRehercheGestionEae form, Integer pageSize, Integer pageNumber);
 
 	ReturnMessageDto saveEaeCampagneTask(Integer idAgentSirh, EaeCampagneTaskDto campagneTaskDto);
 
@@ -64,5 +64,7 @@ public interface ISirhEaeWSConsumer {
 	List<EaeDto> getListeEaeDtoLight(Integer idAgentSirh, FormRehercheGestionEae form);
 
 	CampagneEaeDto getCampagneAnneePrecedenteLight(Integer idAgentSirh, Integer anneePrecedente);
+	
+	Integer getCountList(FormRehercheGestionEae form);
 
 }

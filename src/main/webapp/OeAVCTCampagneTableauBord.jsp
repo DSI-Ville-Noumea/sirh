@@ -56,8 +56,9 @@ document.formu.elements[nom].focus();
 				<thead>
 					<tr>
 						<th>Direction</th>
+						<th>Service</th>
 						<th>Section</th>
-						<th>Non affecté</th>
+						<th>Sans évaluateur</th>
 						<th>Non débuté</th>
 						<th>Crée</th>
 						<th>En cours</th>
@@ -76,6 +77,7 @@ document.formu.elements[nom].focus();
 				<%for (int indiceAvct = 0;indiceAvct<process.getListeTableauBord().size();indiceAvct++){%>
 						<tr>
 							<td><%=process.getVAL_ST_DIRECTION(indiceAvct)%></td>
+							<td><%=process.getVAL_ST_SERVICE(indiceAvct)%></td>
 							<td><%=process.getVAL_ST_SECTION(indiceAvct)%></td>
 							<td><%=process.getVAL_ST_NON_AFF(indiceAvct)%></td>
 							<td><%=process.getVAL_ST_NON_DEB(indiceAvct)%></td>
@@ -252,7 +254,7 @@ document.formu.elements[nom].focus();
 							
 						},
 						"oLanguage": {"sUrl": "media/dataTables/language/fr_FR.txt"},
-						"aoColumns": [null,null,{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false}],
+						"aoColumns": [null,null,null,{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false}],
 						"sDom": '<"H"fl>t<"F"iT>',
 						"oTableTools": {
 							"aButtons": [{"sExtends":"xls","sButtonText":"Export Excel","mColumns":"visible","sTitle":"tableauBordCampagne","sFileName":"*.xls"}], //OU : "mColumns":[1,2,3,4]
