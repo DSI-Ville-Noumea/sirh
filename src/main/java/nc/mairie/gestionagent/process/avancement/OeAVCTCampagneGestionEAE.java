@@ -8,11 +8,9 @@ import java.util.ListIterator;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.slf4j.Logger;
 import org.springframework.context.ApplicationContext;
 
 import nc.mairie.enums.EnumEtatEAE;
-import nc.mairie.gestionagent.absence.dto.OrganisationSyndicaleDto;
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
 import nc.mairie.gestionagent.eae.dto.AgentEaeDto;
 import nc.mairie.gestionagent.eae.dto.BirtDto;
@@ -1790,6 +1788,10 @@ public class OeAVCTCampagneGestionEAE extends OePaginable {
 
 			if (!result.getErrors().isEmpty()) {
 				getTransaction().declarerErreur(result.getErrors().get(0).toString());
+				return false;
+			}
+			if (!result.getInfos().isEmpty()) {
+				getTransaction().declarerErreur(result.getInfos().get(0).toString());
 				return false;
 			}
 		}
