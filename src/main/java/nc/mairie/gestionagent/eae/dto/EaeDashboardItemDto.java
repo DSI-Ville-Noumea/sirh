@@ -18,6 +18,7 @@ public class EaeDashboardItemDto {
 	private int changClasse;
 	
 	private String direction;
+	private String service;
 	private String section;
 	private int nbEaeControle;
 	private int nbEaeCAP;
@@ -169,6 +170,14 @@ public class EaeDashboardItemDto {
 
 	public void setTotalEAE(int totalEAE) {
 		this.totalEAE = totalEAE;
+	}
+
+	public String getService() {
+		return service;
+	}
+
+	public void setService(String service) {
+		this.service = service;
 	}
 	
 }

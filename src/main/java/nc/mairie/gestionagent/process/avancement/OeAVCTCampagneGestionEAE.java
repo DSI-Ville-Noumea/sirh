@@ -21,6 +21,7 @@ import nc.mairie.gestionagent.eae.dto.EaeEvaluationDto;
 import nc.mairie.gestionagent.eae.dto.EaeFichePosteDto;
 import nc.mairie.gestionagent.eae.dto.EaeFinalizationDto;
 import nc.mairie.gestionagent.eae.dto.FormRehercheGestionEae;
+import nc.mairie.gestionagent.process.OePaginable;
 import nc.mairie.gestionagent.radi.dto.LightUserDto;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.Agent;
@@ -51,7 +52,6 @@ import nc.mairie.spring.dao.metier.referentiel.AutreAdministrationDao;
 import nc.mairie.spring.dao.metier.referentiel.TypeCompetenceDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
-import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.UserAppli;
@@ -71,7 +71,7 @@ import nc.noumea.spring.service.cmis.AlfrescoCMISService;
  * Process OeAVCTFonctionnaires Date de crï¿½ation : (21/11/11 09:55:36)
  * 
  */
-public class OeAVCTCampagneGestionEAE extends BasicProcess {
+public class OeAVCTCampagneGestionEAE extends OePaginable {
 
 	/**
 	 * 
@@ -188,6 +188,9 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 			addZone(getNOM_ST_AGENT_EVALUE(), agt.getNomatr().toString());
 		}
 
+		if (getPageNumber() == null || getPageSize() == null)
+			initialisePagination();
+		
 		// initialisation de l'affichage la liste des eae
 		initialiseAffichageListeEAE(request);
 
@@ -268,10 +271,9 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 			BirtDto evalue = eae.getEvalue();
 			try {
 				EaeFichePosteDto eaeFDP = eae.getFichePoste();
-				addZone(getNOM_ST_DIRECTION(i),
-						(eaeFDP.getDirectionService() == null ? "&nbsp;" : eaeFDP.getDirectionService()) + " <br> "
-								+ (eaeFDP.getSectionService() == null ? "&nbsp;" : eaeFDP.getSectionService()) + " <br> "
-								+ (eaeFDP.getService() == null ? "&nbsp;" : eaeFDP.getService()));
+				addZone(getNOM_ST_DIRECTION(i), (eaeFDP.getDirectionService() == null ? "&nbsp;" : eaeFDP.getDirectionService()));
+				addZone(getNOM_ST_SECTION(i), eaeFDP.getSectionService() == null ? "&nbsp;" : eaeFDP.getSectionService());
+				addZone(getNOM_ST_SERVICE(i), eaeFDP.getService() == null ? "&nbsp;" : eaeFDP.getService());
 				if (eaeFDP.getIdAgentShd() != null) {
 					try {
 						Agent agentResp = getAgentDao().chercherAgent(eaeFDP.getIdAgentShd());
@@ -284,6 +286,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 				}
 			} catch (Exception e) {
 				addZone(getNOM_ST_DIRECTION(i), "&nbsp;");
+				addZone(getNOM_ST_SECTION(i), "&nbsp;");
+				addZone(getNOM_ST_SERVICE(i), "&nbsp;");
 				addZone(getNOM_ST_SHD(i), "&nbsp;");
 			}
 			EaeEvaluationDto evaluation = null;
@@ -522,6 +526,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 
 		// Si on arrive de la JSP alors on traite le get
 		if (request.getParameter("JSP") != null && request.getParameter("JSP").equals(getJSP())) {
+			
+			super.recupererStatut(request);
 
 			// Si clic sur le bouton PB_FILTRER
 			if (testerParametre(request, getNOM_PB_FILTRER())) {
@@ -695,17 +701,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	public String getNOM_PB_FILTRER() {
 		return "NOM_PB_FILTRER";
 	}
-
-	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (28/11/11)
-	 * 
-	 */
-	public boolean performPB_FILTRER(HttpServletRequest request) throws Exception {
-		// setMessage(Const.CHAINE_VIDE);
-		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+	
+	public FormRehercheGestionEae getFormForFilter(HttpServletRequest request) throws NumberFormatException, Exception {
 
 		int indiceCampagne = (Services.estNumerique(getVAL_LB_ANNEE_SELECT()) ? Integer.parseInt(getVAL_LB_ANNEE_SELECT()) : -1);
 		setCampagneCourante((CampagneEaeDto) getListeCampagneEAE().get(indiceCampagne));
@@ -773,10 +770,62 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 		form.setIdAgentEvaluateur(agentEvaluateur == null || null == agentEvaluateur.getIdAgent() ? null : agentEvaluateur.getIdAgent());
 		form.setIdAgentEvalue(agentEvalue == null || null == agentEvalue.getIdAgent() ? null : agentEvalue.getIdAgent());
 		form.setIsEstDetache(affecte.equals(Const.CHAINE_VIDE) ? null : affecte.equals("oui") ? true : false);
+		
+		return form;
+	}
 
-		List<EaeDto> listeEAE = eaeService.getListeEaeDto(getAgentConnecte(request).getIdAgent(), form);
+	/**
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * règles de gestion du process - Positionne un statut en fonction de ces
+	 * règles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (28/11/11)
+	 * 
+	 */
+	public boolean performPB_FILTRER(HttpServletRequest request) throws Exception {
+		getAllResultCount();
+		updatePagination(request);
+		// setMessage(Const.CHAINE_VIDE);
+		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+		
+		FormRehercheGestionEae form = getFormForFilter(request);
+
+		List<EaeDto> listeEAE = eaeService.getListeEaeDto(getAgentConnecte(request).getIdAgent(), form, getPageSize(), getPageNumber());
 
 		setListeEAE(listeEAE);
+		return true;
+	}
+
+	@Override
+	public void getAllResultCount() {
+		FormRehercheGestionEae form = null;
+		
+		try {
+			form = getFormForFilter(null);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		setResultSize(eaeService.getCountList(form));
+	}
+	
+	@Override
+	public boolean performPB_CHANGE_PAGINATION(HttpServletRequest request) throws Exception {
+		super.updatePagination(request);
+		performPB_FILTRER(request);
+		return true;
+	}
+	
+	@Override
+	public boolean performPB_NEXT_PAGE(HttpServletRequest request) throws Exception {
+		super.performPB_NEXT_PAGE(request);
+		performPB_FILTRER(request);
+		return true;
+	}
+	
+	@Override
+	public boolean performPB_PREVIOUS_PAGE(HttpServletRequest request) throws Exception {
+		super.performPB_PREVIOUS_PAGE(request);
+		performPB_FILTRER(request);
 		return true;
 	}
 
@@ -961,6 +1010,42 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	 */
 	public String getVAL_ST_DIRECTION(int i) {
 		return getZone(getNOM_ST_DIRECTION(i));
+	}
+
+	/**
+	 * Retourne pour la JSP le nom de la zone statique : ST_DIRECTION Date de
+	 * création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getNOM_ST_SERVICE(int i) {
+		return "NOM_ST_SERVICE_" + i;
+	}
+
+	/**
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_DIRECTION
+	 * Date de création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getVAL_ST_SERVICE(int i) {
+		return getZone(getNOM_ST_SERVICE(i));
+	}
+
+	/**
+	 * Retourne pour la JSP le nom de la zone statique : ST_DIRECTION Date de
+	 * création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getNOM_ST_SECTION(int i) {
+		return "NOM_ST_SECTION_" + i;
+	}
+
+	/**
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_DIRECTION
+	 * Date de création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getVAL_ST_SECTION(int i) {
+		return getZone(getNOM_ST_SECTION(i));
 	}
 
 	/**
@@ -1703,6 +1788,10 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 
 			if (!result.getErrors().isEmpty()) {
 				getTransaction().declarerErreur(result.getErrors().get(0).toString());
+				return false;
+			}
+			if (!result.getInfos().isEmpty()) {
+				getTransaction().declarerErreur(result.getInfos().get(0).toString());
 				return false;
 			}
 		}

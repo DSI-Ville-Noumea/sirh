@@ -185,6 +185,7 @@ public class OeAVCTCampagneTableauBord extends BasicProcess {
 				EaeDashboardItemDto eaeFDP = listeDirectionSection.get(i);
 				
 				addZone(getNOM_ST_DIRECTION(i), eaeFDP.getDirection());
+				addZone(getNOM_ST_SERVICE(i), eaeFDP.getService());
 				addZone(getNOM_ST_SECTION(i), eaeFDP.getSection());
 				addZone(getNOM_ST_NON_AFF(i), eaeFDP.getNonAffecte() == 0 ? "&nbsp;" : new Integer(eaeFDP.getNonAffecte()).toString());
 				addZone(getNOM_ST_NON_DEB(i), eaeFDP.getNonDebute() == 0 ? "&nbsp;" : new Integer(eaeFDP.getNonDebute()).toString());
@@ -237,6 +238,24 @@ public class OeAVCTCampagneTableauBord extends BasicProcess {
 	 */
 	public String getVAL_ST_DIRECTION(int i) {
 		return getZone(getNOM_ST_DIRECTION(i));
+	}
+
+	/**
+	 * Retourne pour la JSP le nom de la zone statique : ST_SECTION Date de
+	 * création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getNOM_ST_SERVICE(int i) {
+		return "NOM_ST_SERVICE_" + i;
+	}
+
+	/**
+	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_SECTION Date
+	 * de création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getVAL_ST_SERVICE(int i) {
+		return getZone(getNOM_ST_SERVICE(i));
 	}
 
 	/**

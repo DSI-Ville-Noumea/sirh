@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import nc.mairie.metier.Const;
 
 public enum EnumEtatEAE {
-	NON_AFFECTE("NA", "Non affecté"), NON_DEBUTE("ND", "Non débuté"), CREE("C", "Crée"), EN_COURS("EC", "En cours"), FINALISE("F", "Finalisé"), CONTROLE(
+	NON_AFFECTE("NA", "Sans évaluateur"), NON_DEBUTE("ND", "Non débuté"), CREE("C", "Crée"), EN_COURS("EC", "En cours"), FINALISE("F", "Finalisé"), CONTROLE(
 			"CO", "Contrôlé"), SUPPRIME("S", "Supprimé");
 
 	/** L'attribut qui contient le code associe a l'enum */
