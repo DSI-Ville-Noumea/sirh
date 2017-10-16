@@ -825,8 +825,10 @@ public class OeABSVisualisation extends BasicProcess {
 
 		afficheListeAbsence();
 		if (299 < listeDemande.size()) {
-			getTransaction().declarerErreur("Attention, les demandes sont limitées a 300 résultats. Utiliser les filtres.");
-		}
+			getTransaction().declarerErreur("Attention, les demandes sont limitées a 300 résultats. Utilisez les filtres.");
+		} else if (0 == listeDemande.size()) {
+			getTransaction().declarerErreur("Aucun résultat ne correspond à ces filtres");
+		} 
 		setTypeFiltre("GLOBAL");
 
 		return true;
@@ -3224,7 +3226,11 @@ public class OeABSVisualisation extends BasicProcess {
 		// loadHistory();
 		
 		afficheListeAbsence();
-
+		if (299 < listeDemande.size()) {
+			getTransaction().declarerErreur("Attention, les demandes sont limitées a 300 résultats. Utilisez les filtres.");
+		} else if (0 == listeDemande.size()) {
+			getTransaction().declarerErreur("Aucun résultat ne correspond à ces filtres");
+		}
 		setTypeFiltre("VALIDER");
 
 		return true;
