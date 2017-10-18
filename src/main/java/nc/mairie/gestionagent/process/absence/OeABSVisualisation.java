@@ -1967,18 +1967,21 @@ public class OeABSVisualisation extends BasicProcess {
 	 * @throws ParseException
 	 */
 	public boolean performPB_SET_ITT(HttpServletRequest request) throws ParseException {
+
+		// #41504 : Si la case "Sans arrêt de travail" est cochée, alors le nombre d'ITT doit être 0
+		// #41701 : Il faut aussi mettre à jour la date de fin
+		if (getVAL_CK_SANS_AT().equals(getCHECKED_ON())) {
+			addZone(getNOM_ST_NOMBRE_ITT(), "0");
+			addZone(getNOM_ST_DATE_FIN(), getVAL_ST_DATE_DEBUT());
+			return true;
+		}
+		
 		if (StringUtils.isEmpty(getVAL_ST_DATE_DEBUT())
 				|| StringUtils.isEmpty(getVAL_ST_DATE_FIN()))
 			return true;
 
 		Long nbITT = null;
-
-		// #41504 : Si la case "Sans arrêt de travail" est cochée, alors le nombre d'ITT doit être 0
-		if (getVAL_CK_SANS_AT().equals(getCHECKED_ON())) {
-			addZone(getNOM_ST_NOMBRE_ITT(), "0");
-			return true;
-		}
-			
+		
 		switch (EnumTypeAbsence.getRefTypeAbsenceEnum(typeCreation.getIdRefTypeAbsence())) {
 			case MALADIES_ACCIDENT_TRAVAIL :
 				nbITT = ChronoUnit.DAYS.between(sdf.parse(getVAL_ST_DATE_DEBUT()).toInstant(), sdf.parse(getVAL_ST_DATE_FIN()).toInstant());
