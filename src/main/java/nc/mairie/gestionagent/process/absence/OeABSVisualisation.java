@@ -825,8 +825,10 @@ public class OeABSVisualisation extends BasicProcess {
 
 		afficheListeAbsence();
 		if (299 < listeDemande.size()) {
-			getTransaction().declarerErreur("Attention, les demandes sont limitées a 300 résultats. Utiliser les filtres.");
-		}
+			getTransaction().declarerErreur("Attention, les demandes sont limitées a 300 résultats. Utilisez les filtres.");
+		} else if (0 == listeDemande.size()) {
+			getTransaction().declarerErreur("Aucun résultat ne correspond à ces filtres");
+		} 
 		setTypeFiltre("GLOBAL");
 
 		return true;
@@ -1965,18 +1967,21 @@ public class OeABSVisualisation extends BasicProcess {
 	 * @throws ParseException
 	 */
 	public boolean performPB_SET_ITT(HttpServletRequest request) throws ParseException {
+
+		// #41504 : Si la case "Sans arrêt de travail" est cochée, alors le nombre d'ITT doit être 0
+		// #41701 : Il faut aussi mettre à jour la date de fin
+		if (getVAL_CK_SANS_AT().equals(getCHECKED_ON())) {
+			addZone(getNOM_ST_NOMBRE_ITT(), "0");
+			addZone(getNOM_ST_DATE_FIN(), getVAL_ST_DATE_DEBUT());
+			return true;
+		}
+		
 		if (StringUtils.isEmpty(getVAL_ST_DATE_DEBUT())
 				|| StringUtils.isEmpty(getVAL_ST_DATE_FIN()))
 			return true;
 
 		Long nbITT = null;
-
-		// #41504 : Si la case "Sans arrêt de travail" est cochée, alors le nombre d'ITT doit être 0
-		if (getVAL_CK_SANS_AT().equals(getCHECKED_ON())) {
-			addZone(getNOM_ST_NOMBRE_ITT(), "0");
-			return true;
-		}
-			
+		
 		switch (EnumTypeAbsence.getRefTypeAbsenceEnum(typeCreation.getIdRefTypeAbsence())) {
 			case MALADIES_ACCIDENT_TRAVAIL :
 				nbITT = ChronoUnit.DAYS.between(sdf.parse(getVAL_ST_DATE_DEBUT()).toInstant(), sdf.parse(getVAL_ST_DATE_FIN()).toInstant());
@@ -3175,7 +3180,7 @@ public class OeABSVisualisation extends BasicProcess {
 		int numType = (Services.estNumerique(getZone(getNOM_LB_FAMILLE_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_FAMILLE_SELECT())) : -1);
 		TypeAbsenceDto type = null;
 		if (numType != -1 && numType != 0) {
-			type = (TypeAbsenceDto) getListeFamilleAbsenceCreation().get(numType - 1);
+			type = (TypeAbsenceDto) getListeFamilleAbsence().get(numType - 1);
 		}
 		// groupe
 		int numGroupe = (Services.estNumerique(getZone(getNOM_LB_GROUPE_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_GROUPE_SELECT())) : -1);
@@ -3224,7 +3229,11 @@ public class OeABSVisualisation extends BasicProcess {
 		// loadHistory();
 		
 		afficheListeAbsence();
-
+		if (299 < listeDemande.size()) {
+			getTransaction().declarerErreur("Attention, les demandes sont limitées a 300 résultats. Utilisez les filtres.");
+		} else if (0 == listeDemande.size()) {
+			getTransaction().declarerErreur("Aucun résultat ne correspond à ces filtres");
+		}
 		setTypeFiltre("VALIDER");
 
 		return true;
