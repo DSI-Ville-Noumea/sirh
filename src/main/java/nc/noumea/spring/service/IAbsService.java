@@ -85,6 +85,8 @@ public interface IAbsService {
 
 	TypeAbsenceDto getTypeAbsence(Integer idBaseHoraireAbsence);
 
+	TypeAbsenceDto getTypeAbsenceById(Integer idTypeAbsence);
+
 	List<OrganisationSyndicaleDto> getListeOrganisationSyndicaleActiveByAgent(Integer idAgent, Integer idRefTypeAbsence);
 
 	List<DemandeDto> getVisualisationHistory(Integer absId);
