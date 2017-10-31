@@ -812,16 +812,17 @@ public class OeABSVisualisation extends BasicProcess {
 			return false;
 		}
 
+		Integer idType = type == null ? null : type.getIdRefTypeAbsence();
+		if (groupe != null && groupe.getIdRefGroupeAbsence().equals(RefTypeGroupeAbsenceEnum.CONGES_ANNUELS.getValue()) && type != null)
+			idType = type.getTypeSaisiCongeAnnuelDto().getIdRefTypeSaisiCongeAnnuel();
+		
 		List<DemandeDto> listeDemande = absService.getListeDemandes(dateMin, dateMax,
 				listeEtat.size() == 0 ? null : listeEtat.toString().replace("[", "").replace("]", "").replace(" ", ""),
-				type == null ? null : type.getIdRefTypeAbsence(), idAgentDemande == null ? null : Integer.valueOf(idAgentDemande),
+						idType, idAgentDemande == null ? null : Integer.valueOf(idAgentDemande),
 				groupe == null ? null : groupe.getIdRefGroupeAbsence(), false, idAgentService);
 
 		logger.debug("Taille liste absences : " + listeDemande.size());
 		setListeAbsence((ArrayList<DemandeDto>) listeDemande);
-
-		// redmine #13453
-		// loadHistory();
 
 		afficheListeAbsence();
 		if (299 < listeDemande.size()) {
@@ -3218,8 +3219,12 @@ public class OeABSVisualisation extends BasicProcess {
 			}
 		}
 
+		Integer idType = type == null ? null : type.getIdRefTypeAbsence();
+		if (groupe != null && groupe.getIdRefGroupeAbsence().equals(RefTypeGroupeAbsenceEnum.CONGES_ANNUELS.getValue()) && type != null)
+			idType = type.getTypeSaisiCongeAnnuelDto().getIdRefTypeSaisiCongeAnnuel();
+
 		List<DemandeDto> listeDemande = absService.getListeDemandes(dateMin, dateMax, listeEtat.size() == 0 ? null : listeEtat.toString().replace("[", "").replace("]", "").replace(" ", ""),
-				type == null ? null : type.getIdRefTypeAbsence(), idAgentDemande == null ? null : Integer.valueOf(idAgentDemande), groupe == null ? null : groupe.getIdRefGroupeAbsence(), true,
+				idType, idAgentDemande == null ? null : Integer.valueOf(idAgentDemande), groupe == null ? null : groupe.getIdRefGroupeAbsence(), true,
 				idAgentService);
 
 		logger.debug("Taille liste absences à valider : " + listeDemande.size());
