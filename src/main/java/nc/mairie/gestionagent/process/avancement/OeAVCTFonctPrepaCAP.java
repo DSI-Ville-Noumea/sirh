@@ -233,18 +233,21 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 
 				if (eaeAgent.getEtat().equals(EnumEtatEAE.CONTROLE.getCode()) || eaeAgent.getEtat().equals(EnumEtatEAE.FINALISE.getCode())) {
 					EaeEvaluationDto eaeEvaluation = eaeAgent.getEvaluation();
-					if (String.valueOf(av.getIdMotifAvct()).equals("7")) {
-						avisSHD = eaeEvaluation.getPropositionAvancement() == null ? Const.CHAINE_VIDE
-								: eaeEvaluation.getPropositionAvancement().getCourant();
-					} else if (String.valueOf(av.getIdMotifAvct()).equals("5")) {
-						avisSHD = eaeEvaluation.getAvisRevalorisation() == null ? Const.CHAINE_VIDE
-								: eaeEvaluation.getAvisRevalorisation() ? "FAV" : "DEFAV";
-					} else if (String.valueOf(av.getIdMotifAvct()).equals("4")) {
-						avisSHD = eaeEvaluation.getAvisChangementClasse() == null ? Const.CHAINE_VIDE
-								: eaeEvaluation.getAvisChangementClasse() ? "FAV" : "DEFAV";
-					} else if (String.valueOf(av.getIdMotifAvct()).equals("6")) {
-						avisSHD = "MOY";
-					}
+					if (eaeEvaluation != null) {
+						if (String.valueOf(av.getIdMotifAvct()).equals("7")) {
+							avisSHD = eaeEvaluation.getPropositionAvancement() == null ? Const.CHAINE_VIDE
+									: eaeEvaluation.getPropositionAvancement().getCourant();
+						} else if (String.valueOf(av.getIdMotifAvct()).equals("5")) {
+							avisSHD = eaeEvaluation.getAvisRevalorisation() == null ? Const.CHAINE_VIDE
+									: eaeEvaluation.getAvisRevalorisation() ? "FAV" : "DEFAV";
+						} else if (String.valueOf(av.getIdMotifAvct()).equals("4")) {
+							avisSHD = eaeEvaluation.getAvisChangementClasse() == null ? Const.CHAINE_VIDE
+									: eaeEvaluation.getAvisChangementClasse() ? "FAV" : "DEFAV";
+						} else if (String.valueOf(av.getIdMotifAvct()).equals("6")) {
+							avisSHD = "MOY";
+						}
+					} else
+						logger.warn("L'évaluation de l'agent matricule {} n'a pas été trouvé.", agent.getIdAgent());
 				}
 			}
 			// motif Avct

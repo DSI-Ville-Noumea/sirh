@@ -7,6 +7,10 @@ import java.util.ListIterator;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
+
 import nc.mairie.enums.EnumCivilite;
 import nc.mairie.enums.EnumCollectivite;
 import nc.mairie.enums.EnumNationalite;
@@ -47,14 +51,14 @@ import nc.noumea.mairie.alfresco.cmis.CmisUtils;
 import nc.noumea.spring.service.cmis.AlfrescoCMISService;
 import nc.noumea.spring.service.cmis.IAlfrescoCMISService;
 
-import org.springframework.context.ApplicationContext;
-
 /**
  * Process OeAGENTEtatCivil Date de création : (15/03/11 10:49:55)
  * 
  * 
  */
 public class OeAGENTEtatCivil extends BasicProcess {
+	
+	private Logger logger = LoggerFactory.getLogger(OeAGENTEtatCivil.class);
 
 	/**
 	 *
@@ -2640,6 +2644,12 @@ public class OeAGENTEtatCivil extends BasicProcess {
 				setLieuNaissance(((Commune) getCommNaissanceCourant()).getLibCommune() + " - " + Const.COMMUNE_FRANCE);
 			} else {
 				setPaysNaissanceCourant(Pays.chercherPays(getTransaction(), getAgentCourant().getCodePaysNaissEt()));
+				// #42741
+				if (getAgentCourant().getCodeCommuneNaissEt() == null) {
+					logger.warn("La commune de naissance à l'étranger n'est pas renseignée pour l'agent matricule " + getAgentCourant().getIdAgent());
+					getTransaction().declarerErreur("La commune de naissance à l'étranger n'est pas renseignée pour cet agent. Veuillez mettre à jour son état civil.");
+					return;
+				}
 				setCommNaissanceCourant(CommuneEtrangere.chercherCommuneEtrangere(getTransaction(), getPaysNaissanceCourant().getCodPays(),
 						getAgentCourant().getCodeCommuneNaissEt()));
 				setLieuNaissance(
