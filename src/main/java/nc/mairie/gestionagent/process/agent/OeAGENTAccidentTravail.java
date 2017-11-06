@@ -263,7 +263,8 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 				for (DemandeDto atReference : listeATReference) {
 					if (null != atReference.getTypeSiegeLesion()) {
 						RefTypeDto s = getHashSiegeLesion().get(atReference.getTypeSiegeLesion().getIdRefType());
-						String ligne[] = { sdf.format(atReference.getDateAccidentTravail()) + " - " + s.getLibelle() };
+						String dateATFormat = atReference.getDateAccidentTravail() == null ? "" : sdf.format(atReference.getDateAccidentTravail());
+						String ligne[] = { dateATFormat + " - " + s.getLibelle() };
 						aFormat.ajouteLigne(ligne);
 					}
 					getHashATReference().put(atReference.getIdDemande(), atReference);
