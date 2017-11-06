@@ -125,7 +125,6 @@ public class SirhAbsWSConsumer extends BaseWsConsumer implements ISirhAbsWSConsu
 	private static final String	sirhAbsAddCongeExcep								= "typeAbsence/setTypeAbsence";
 	private static final String	sirhAbsInactiveCongeExcep							= "typeAbsence/inactiveTypeAbsence";
 	private static final String	sirhAbsRefTypeAbs									= "typeAbsence/getTypeAbsence";
-	private static final String	sirhAbsRefTypeAbsById								= "typeAbsence/getTypeAbsenceById";
 
 	private static final String	sirhAbsListeUnitePeriodeQuota						= "filtres/getUnitePeriodeQuota";
 	private static final String	sirhAbsGroupeAbsenceUrl								= "filtres/getGroupesAbsence";
@@ -687,16 +686,6 @@ public class SirhAbsWSConsumer extends BaseWsConsumer implements ISirhAbsWSConsu
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idBaseHoraireAbsence", idBaseHoraireAbsence.toString());
 		logger.debug("Call " + url + " with idBaseHoraireAbsence : " + idBaseHoraireAbsence);
-		ClientResponse res = createAndFireRequest(params, url);
-		return readResponse(TypeAbsenceDto.class, res, url);
-	}
-
-	@Override
-	public TypeAbsenceDto getTypeAbsenceById(Integer idTypeAbsence) {
-		String url = String.format(absWsBaseUrl + sirhAbsRefTypeAbsById);
-		HashMap<String, String> params = new HashMap<>();
-		params.put("idTypeAbsence", idTypeAbsence.toString());
-		logger.debug("Call " + url + " with idTypeAbsence : " + idTypeAbsence);
 		ClientResponse res = createAndFireRequest(params, url);
 		return readResponse(TypeAbsenceDto.class, res, url);
 	}
