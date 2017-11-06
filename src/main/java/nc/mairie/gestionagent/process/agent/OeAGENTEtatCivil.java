@@ -458,7 +458,6 @@ public class OeAGENTEtatCivil extends BasicProcess {
 
 		// /////////////////////////////////////////////////////////////////////////
 		// ////////////////////// ALIMENTATION DU COMPTE
-		// ///////////////////////////
 		// /////////////////////////////////////////////////////////////////////////
 		int indiceBanqueGuichet = (Services.estNumerique(getVAL_LB_BANQUE_GUICHET_SELECT()) ? Integer.parseInt(getVAL_LB_BANQUE_GUICHET_SELECT())
 				: -1);
@@ -480,7 +479,6 @@ public class OeAGENTEtatCivil extends BasicProcess {
 
 		// /////////////////////////////////////////////////////////////////////////
 		// ////////////////////// ALIMENTATION DU SERVICE NATIONAL
-		// /////////////////
 		// /////////////////////////////////////////////////////////////////////////
 		int indiceEtatService = (Services.estNumerique(getVAL_LB_TYPE_SERVICE_SELECT()) ? Integer.parseInt(getVAL_LB_TYPE_SERVICE_SELECT()) : -1);
 		EtatServiceMilitaire aEtatService;
@@ -496,7 +494,6 @@ public class OeAGENTEtatCivil extends BasicProcess {
 
 		// /////////////////////////////////////////////////////////////////////////
 		// ////////////////////// ALIMENTATION DES CHARGES
-		// /////////////////////////
 		// /////////////////////////////////////////////////////////////////////////
 		getAgentCourant().setNumCafat(getVAL_EF_NUM_CAFAT());
 		getAgentCourant().setNumRuamm(getVAL_EF_NUM_RUAMM());
@@ -505,11 +502,11 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		getAgentCourant().setNumIrcafex(getVAL_EF_NUM_IRCAFEX());
 		getAgentCourant().setNumClr(getVAL_EF_NUM_CLR());
 
-		// /////////////////////////////////////////////////////////////////////////
-		// ////////////////////// TITRE REPAS
-		// /////////////////////////
-		// /////////////////////////////////////////////////////////////////////////
+		// TITRE REPAS
 		getAgentCourant().setIdTitreRepas(getVAL_EF_ID_TITRE_REPAS().equals(Const.CHAINE_VIDE) ? null :Integer.valueOf(getVAL_EF_ID_TITRE_REPAS()));
+
+		// TIARHE
+		getAgentCourant().setIdTiarhe(getVAL_EF_ID_TIARHE().equals(Const.CHAINE_VIDE) ? null : getVAL_EF_ID_TIARHE());
 
 		return true;
 	}
@@ -965,6 +962,23 @@ public class OeAGENTEtatCivil extends BasicProcess {
 				}
 			} catch (Exception e) {
 
+			}
+		}
+
+		// **************************************
+		// Vérification num tiarhé
+		// **************************************
+		if (getVAL_EF_ID_TIARHE().length() != 0) {
+			try {
+				Agent titreRepasAg = getAgentDao().chercherIdTiarhe(getVAL_EF_ID_TIARHE(), getAgentCourant() != null ? getAgentCourant().getIdAgent() : null);
+
+				if (titreRepasAg != null && titreRepasAg.getIdAgent() != null) {
+					// "ERR997", "Ce numéro de @ est déjà  utilise, il doit être unique."
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR997", "Tiarhé"));
+					result &= false;
+				}
+			} catch (Exception e) {
+				logger.warn("Erreur lors de la validation du matricule Tiarhé : " + e.getMessage());
 			}
 		}
 
@@ -2355,6 +2369,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		addZone(getNOM_EF_NUM_IRCAFEX(), Const.CHAINE_VIDE);
 		addZone(getNOM_EF_NUM_CLR(), Const.CHAINE_VIDE);
 		addZone(getNOM_EF_ID_TITRE_REPAS(), Const.CHAINE_VIDE);
+		addZone(getNOM_EF_ID_TIARHE(), Const.CHAINE_VIDE);
 
 	}
 
@@ -2604,6 +2619,11 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		// Zones Titre Repas
 		// //////////////////////////////////////////////////////////////////////////////////////
 		addZone(getNOM_EF_ID_TITRE_REPAS(), getAgentCourant().getIdTitreRepas() == null ? Const.CHAINE_VIDE : getAgentCourant().getIdTitreRepas().toString());
+
+		// //////////////////////////////////////////////////////////////////////////////////////
+		// Zones Tiarhé
+		// //////////////////////////////////////////////////////////////////////////////////////
+		addZone(getNOM_EF_ID_TIARHE(), getAgentCourant().getIdTiarhe() == null ? Const.CHAINE_VIDE : getAgentCourant().getIdTiarhe());
 	}
 
 	/**
@@ -4614,5 +4634,13 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	
 	public String getVAL_EF_ID_TITRE_REPAS() {
 		return getZone(getNOM_EF_ID_TITRE_REPAS());
+	}
+
+	public String getNOM_EF_ID_TIARHE() {
+		return "NOM_EF_ID_TIARHE";
+	}
+	
+	public String getVAL_EF_ID_TIARHE() {
+		return getZone(getNOM_EF_ID_TIARHE());
 	}
 }
