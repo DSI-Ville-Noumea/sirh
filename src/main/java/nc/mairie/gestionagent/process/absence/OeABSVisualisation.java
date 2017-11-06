@@ -2636,7 +2636,7 @@ public class OeABSVisualisation extends BasicProcess {
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "date de déclaration"));
 					return false;
 				}
-				dto.setDateAccidentTravail(sdf.parse(getVAL_ST_DATE_DECLARATION()));
+				dto.setDateDeclaration(sdf.parse(getVAL_ST_DATE_DECLARATION()));
 			}
 			if (type.getTypeSaisiDto().isProlongation()) {
 				dto.setProlongation(null != getVAL_CK_PROLONGATION() && getVAL_CK_PROLONGATION().equals(getCHECKED_ON()));
@@ -2687,7 +2687,7 @@ public class OeABSVisualisation extends BasicProcess {
 			}
 			if (type.getTypeSaisiDto().isMaladiePro()) {
 				int numTypeMaladiePro = (Services.estNumerique(getZone(getNOM_LB_MALADIE_PRO_SELECT()))
-						? Integer.parseInt(getZone(getNOM_LB_SIEGE_LESION_SELECT())) : -1);
+						? Integer.parseInt(getZone(getNOM_LB_MALADIE_PRO_SELECT())) : -1);
 				RefTypeDto typeMaladiePro = null;
 				if (numTypeMaladiePro != -1) {
 					typeMaladiePro = (RefTypeDto) getListeMaladiesPro().get(numTypeMaladiePro);
