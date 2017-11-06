@@ -51,7 +51,7 @@ function SelectLigne(id,tailleTableau)
 	<%@ include file="BanniereErreur.jsp" %>
 	<FORM name="formu" <%=process.isImporting ? "ENCTYPE=\"multipart/form-data\"" : ""%> method="POST" class="sigp2-titre">
 		<BR/>
-		<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;" title="Recherche avancée d'une fiche de poste">
+		<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;" title="Recherche avancée">
 				<LEGEND class="sigp2Legend">Choix de la campagne</LEGEND>
 				<BR/>
 				<span class="sigp2Mandatory" style="width:60px;">Année :</span>

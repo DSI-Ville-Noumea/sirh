@@ -30,7 +30,7 @@
 	<BODY bgcolor="#FFFFFF" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="window.parent.frames['refAgent'].location.reload();return setfocus('<%= process.getFocus() %>')">
 		<%@ include file="BanniereErreur.jsp"%>
 		<FORM name="formu" method="POST" class="sigp2-titre">
-			<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;" title="Recherche avancée d'une fiche de poste">
+			<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;" title="Recherche avancée">
 				<LEGEND class="sigp2Legend">Simulation des avancements des conventions collectives</LEGEND>
 				<BR/>
 				<span class="sigp2Mandatory" style="width:70px;">Année :</span>
