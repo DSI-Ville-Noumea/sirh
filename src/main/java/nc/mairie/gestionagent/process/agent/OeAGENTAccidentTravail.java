@@ -99,7 +99,6 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 
 	public String							ACTION_CONSULTATION			= "Consultation d'une fiche";
 	private String							ACTION_MODIFICATION			= "Modification d'une fiche";
-	public String							ACTION_CREATION_DOCUMENT_CREATION = "Ajout d'un document";
 	public String							ACTION_CREATION				= "Création d'une maladie";
 	public String							TYPE_CREATION_MP			= "Création d'une MP";
 	public String							TYPE_CREATION_AT			= "Création d'un AT";
@@ -423,7 +422,6 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 	}
 
 	public boolean performPB_ANNULER(HttpServletRequest request) throws Exception {
-		clearUploadFile();
 		if (Const.CHAINE_VIDE.equals(getVAL_ST_ACTION())) {
 			setStatut(STATUT_PROCESS_APPELANT);
 		} else {
@@ -1009,7 +1007,10 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 		addZone(getNOM_EF_COMMENTAIRE(), Const.CHAINE_VIDE);
 
 		// on supprime le fichier temporaire
-		clearUploadFile();
+		fichierUpload.delete();
+		isImporting = false;
+		fichierUpload = null;
+
 		return true;
 	}
 
@@ -1072,11 +1073,6 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 				return performPB_ANNULER(request);
 			}
 
-			// Si clic sur le bouton PB_ANNULER
-			if (testerParametre(request, getNOM_PB_ANNULER_CREATION_DOCUMENT())) {
-				return performPB_ANNULER_CREATION_DOCUMENT(request);
-			}
-
 			// Si clic sur le bouton PB_CALCUL_DUREE
 			if (testerParametre(request, getNOM_PB_TYPE_CREATION())) {
 				return setTypeCreation(request);
@@ -1123,16 +1119,6 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 				return performPB_CREER_DOC(request);
 			}
 
-			// Si clic sur le bouton PB_CREER_DOC
-			if (testerParametre(request, getNOM_PB_CREER_DOCUMENT())) {
-				return performPB_CREER_DOCUMENT(request);
-			}
-
-			// Si clic sur le bouton PB_CREER_DOC
-			if (testerParametre(request, getNOM_PB_SUPPRIMER_CREATION_DOC())) {
-				return performPB_SUPPRIMER_CREATION_DOC(request);
-			}
-
 			// Si clic sur le bouton PB_SUPPRIMER_DOC
 			if (getDemandeCourant() != null && getDemandeCourant().getPiecesJointes() != null) {
 				for (int i = 0; i < getDemandeCourant().getPiecesJointes().size(); i++) {
@@ -1150,11 +1136,6 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 			// Si clic sur le bouton PB_VALIDER_DOCUMENT_CREATION
 			if (testerParametre(request, getNOM_PB_VALIDER_DOCUMENT_CREATION())) {
 				return performPB_VALIDER_DOCUMENT_CREATION(request);
-			}
-
-			// Si clic sur le bouton PB_VALIDER_DOCUMENT_CREATION
-			if (testerParametre(request, getNOM_PB_VALIDER_CREATION_DOCUMENT_CREATION())) {
-				return performPB_VALIDER_CREATION_DOCUMENT_CREATION(request);
 			}
 		}
 		// Si TAG INPUT non géré par le process
@@ -1340,10 +1321,6 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 
 	public String getNOM_PB_VALIDER_DOCUMENT_CREATION() {
 		return "NOM_PB_VALIDER_DOCUMENT_CREATION";
-	}
-
-	public String getNOM_PB_VALIDER_CREATION_DOCUMENT_CREATION() {
-		return "NOM_PB_VALIDER_CREATION_DOCUMENT_CREATION";
 	}
 
 	public String getNOM_ST_WARNING() {
@@ -1932,24 +1909,13 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 		return "NOM_PB_SET_ITT";
 	}
 	
+	
+	
+	
+
+
 	public String getNOM_PB_VALIDER_CREATION_DEMANDE() {
 		return "NOM_PB_VALIDER_CREATION_DEMANDE";
-	}
-
-	public String getNOM_EF_LIENDOCUMENT_CREATION() {
-		return "NOM_EF_LIENDOCUMENT_CREATION";
-	}
-
-	public String getVAL_EF_LIENDOCUMENT_CREATION() {
-		return getZone(getNOM_EF_LIENDOCUMENT_CREATION());
-	}
-
-	public String getNOM_PB_CREER_DOCUMENT() {
-		return "NOM_PB_CREER_DOCUMENT";
-	}
-
-	public String getNOM_PB_SUPPRIMER_CREATION_DOC() {
-		return "NOM_PB_SUPPRIMER_CREATION_DOC";
 	}
 	
 	public boolean performPB_CREER(HttpServletRequest request) throws Exception {
@@ -1961,8 +1927,6 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 	}
 	
 	public void viderZonesCreation() {
-		clearUploadFile();
-		
 		addZone(getNOM_ST_DATE_DEBUT(), Const.CHAINE_VIDE);
 		addZone(getNOM_ST_DATE_FIN(), Const.CHAINE_VIDE);
 		addZone(getNOM_ST_PRESCRIPTEUR(), Const.CHAINE_VIDE);
@@ -1973,8 +1937,6 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 		
 		addZone(getNOM_CK_PROLONGATION(), Const.CHAINE_VIDE);
 		addZone(getNOM_CK_SANS_AT(), Const.CHAINE_VIDE);
-
-		addZone(getNOM_EF_LIENDOCUMENT(), Const.CHAINE_VIDE);
 
 		addZone(getNOM_LB_TYPE_AT_SELECT(), Const.ZERO);
 		addZone(getNOM_LB_SIEGE_LESION_SELECT(), Const.ZERO);
@@ -2113,21 +2075,24 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 				}
 			}
 			// /////////////// PIECES JOINTES ////////////////////
-			if (type.getTypeSaisiDto().isPieceJointe()) {
-				if (null != fichierUpload) {
-					FileInputStream in = new FileInputStream(fichierUpload);
-					try {
-						byte[] byteBuffer = new byte[in.available()];
-						in.read(byteBuffer);
-						PieceJointeDto pj = new PieceJointeDto();
-						pj.setbFile(byteBuffer);
-						pj.setTypeFile(new MimetypesFileTypeMap().getContentType(fichierUpload));
-						dto.getPiecesJointes().add(pj);
-					} finally {
-						in.close();
-					}
-				}
-			}
+//			if (type.getTypeSaisiDto().isPieceJointe()) {
+//				if (null != listFichierUpload && !listFichierUpload.isEmpty()) {
+//					for (File file : listFichierUpload) {
+//
+//						FileInputStream in = new FileInputStream(file);
+//						try {
+//							byte[] byteBuffer = new byte[in.available()];
+//							in.read(byteBuffer);
+//							PieceJointeDto pj = new PieceJointeDto();
+//							pj.setbFile(byteBuffer);
+//							pj.setTypeFile(new MimetypesFileTypeMap().getContentType(file));
+//							dto.getPiecesJointes().add(pj);
+//						} finally {
+//							in.close();
+//						}
+//					}
+//				}
+//			}
 
 			dto.setDateDebut(dateDebut);
 			dto.setDateFin(dateFin);
@@ -2168,10 +2133,7 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 			// On nomme l'action
 			addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 
-			// on supprime le fichier temporaire
-			clearUploadFile();
-			
-			viderZonesCreation();
+//			listFichierUpload.clear();
 
 			return true;
 
@@ -2221,58 +2183,5 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 			addZone(getNOM_ST_NOMBRE_ITT(), nbITT.toString());
 		}
 		return true;
-	}
-	
-	public boolean performPB_CREER_DOCUMENT(HttpServletRequest request) throws Exception {
-		isImporting = true;
-
-		// On nomme l'action
-		addZone(getNOM_ST_ACTION(), ACTION_CREATION_DOCUMENT_CREATION);
-
-		// On pose le statut
-		setStatut(STATUT_MEME_PROCESS);
-		return true;
-	}
-	
-	public boolean performPB_SUPPRIMER_CREATION_DOC(HttpServletRequest request) throws Exception {
-		clearUploadFile();
-		addZone(getNOM_EF_LIENDOCUMENT_CREATION(), Const.CHAINE_VIDE);
-		return true;
-	}
-
-	public boolean performPB_VALIDER_CREATION_DOCUMENT_CREATION(HttpServletRequest request) throws Exception {
-		// on sauvegarde le nom du fichier parcourir
-		if (multi.getFile(getNOM_EF_LIENDOCUMENT_CREATION()) != null) {
-			fichierUpload = multi.getFile(getNOM_EF_LIENDOCUMENT_CREATION());
-		}
-		// Controle des champs
-		if (!performControlerSaisieDocument(request))
-			return false;
-		
-		addZone(getNOM_EF_LIENDOCUMENT_CREATION(), fichierUpload != null ? fichierUpload.getPath() : Const.CHAINE_VIDE);
-		addZone(getNOM_ST_ACTION(), ACTION_CREATION);
-
-		isImporting = false;
-		
-		return true;
-	}
-
-	public String getNOM_PB_ANNULER_CREATION_DOCUMENT() {
-		return "NOM_PB_ANNULER_CREATION_DOCUMENT";
-	}
-
-	public boolean performPB_ANNULER_CREATION_DOCUMENT(HttpServletRequest request) throws Exception {
-		clearUploadFile();
-		addZone(getNOM_ST_ACTION(), ACTION_CREATION);
-		setStatut(STATUT_MEME_PROCESS);
-		return true;
-	}
-	
-	private void clearUploadFile() {
-		isImporting = false;
-		if (fichierUpload != null)
-			fichierUpload.delete();
-		fichierUpload = null;
-		multi = null;
 	}
 }
