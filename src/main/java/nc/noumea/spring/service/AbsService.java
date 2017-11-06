@@ -199,11 +199,6 @@ public class AbsService implements IAbsService {
 	}
 
 	@Override
-	public TypeAbsenceDto getTypeAbsenceById(Integer idTypeAbsence) {
-		return absConsumer.getTypeAbsenceById(idTypeAbsence);
-	}
-
-	@Override
 	public List<OrganisationSyndicaleDto> getListeOrganisationSyndicaleActiveByAgent(Integer idAgent, Integer idRefTypeAbsence) {
 		return absConsumer.getListeOrganisationSyndicaleActiveByAgent(idAgent, idRefTypeAbsence);
 	}

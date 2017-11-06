@@ -1,5 +1,3 @@
-<%@page import="java.io.File"%>
-<%@page import="nc.mairie.gestionagent.absence.dto.TypeAbsenceDto"%>
 <%@ page contentType="text/html; charset=UTF-8" %> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <%@page import="nc.mairie.utils.MairieUtils"%>
 <%@page import="nc.mairie.enums.EnumTypeDroit"%>
@@ -63,7 +61,6 @@
 						<table class="sigp2NewTab" style="text-align:left;width:980px;">
 							<tr bgcolor="#EFEFEF"  valign="bottom">
 					    		<td align="left">
-					    			<INPUT style="margin-left: 5px;" title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_CREER()%>">
 					    		</td>
 								<td align="center">AT / MP</td>
 								<td align="center">Date de l'accident du travail</td>
@@ -113,8 +110,7 @@
 			<%if(!process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT) 
 					&& !process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT_CREATION)
 					&& !process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT_SUPPRESSION) 
-					&& !process.getVAL_ST_ACTION().equals(process.ACTION_CONSULTATION)
-					&& !process.getVAL_ST_ACTION().equals(process.ACTION_CREATION) ){ %>
+					&& !process.getVAL_ST_ACTION().equals(process.ACTION_CONSULTATION) ){ %>
 			<table>
 				<% if(process.getDemandeCourant().getTypeSaisi().isDateAccidentTravail()) { %>
 				<tr>
@@ -350,224 +346,7 @@
 						<INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
 					</div>
 				<%} %>
-			
-			<!-- Création d'une MP ou d'un AT -->
-				
-			<% } else if (process.getVAL_ST_ACTION().equals(process.ACTION_CREATION)){
-				TypeAbsenceDto typeCreation = process.getTypeCreation(); %>
-				<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
-					<legend class="sigp2Legend"><%=process.getVAL_ST_TYPE_CREATION()%></legend>
-						<div>
-							<td>
-				                <input type="radio" <%= process.forRadioHTML(process.getNOM_RG_TYPE_CREATION(), process.getNOM_RB_TYPE_AT()) %> onclick="executeBouton('<%=process.getNOM_PB_TYPE_CREATION()%>');" > <span class="sigp2Mandatory">AT</span> 
-							</td>
-							<td>
-								<input type="radio" <%= process.forRadioHTML(process.getNOM_RG_TYPE_CREATION(), process.getNOM_RB_TYPE_MP()) %> onclick="executeBouton('<%=process.getNOM_PB_TYPE_CREATION()%>');" > <span class="sigp2Mandatory">MP</span> 
-							</td>
-						</div>
-						
-				        <% if(typeCreation != null && typeCreation.getTypeSaisiDto()!=null) { %>
-						<FIELDSET class="sigp2Fieldset" style="text-align:left;" id="<%=process.getNOM_RG_TYPE_CREATION() %>">
-			            	<legend class="sigp2Legend"><%=process.getVAL_ST_TYPE_CREATION() %></legend>
-			            		<INPUT name="JSP" type="hidden" value="<%= process.getJSP()%>">
-				            	<table>
-				            		<tr>
-				            			<% if(typeCreation.getTypeSaisiDto().isCalendarDateDebut()) { %>
-				            			<td width="100px">
-			                        		<span class="sigp2Mandatory">Date de début :</span>
-				            			</td>
-				            			<td>
-				            				<% if(typeCreation.getTypeSaisiDto().isNombreITT()) { %>
-						                        <input id="<%=process.getNOM_ST_DATE_DEBUT()%>" class="sigp2-saisie" maxlength="10"	
-						                        	name="<%= process.getNOM_ST_DATE_DEBUT()%>" size="10" type="text" value="<%= process.getVAL_ST_DATE_DEBUT()%>" 
-						                        	onblur='executeBouton("<%=process.getNOM_PB_SET_ITT() %>")' >
-				            				<% } else { %>
-						                        <input id="<%=process.getNOM_ST_DATE_DEBUT()%>" class="sigp2-saisie" maxlength="10"	
-						                        	name="<%= process.getNOM_ST_DATE_DEBUT()%>" size="10" type="text" value="<%= process.getVAL_ST_DATE_DEBUT()%>" >
-				            				<% } %>
-					                        <IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_DEBUT()%>', 'dd/mm/y');" >
-				            			</td>
-				            			<% } %>
-				            		</tr>
-				            		<tr>
-				            			<% if(typeCreation.getTypeSaisiDto().isCalendarDateFin()) { %>
-				            			<td>
-			                        		<span class="sigp2Mandatory">Date de fin :</span>
-				            			</td>
-				            			<td>
-				            				<% if(typeCreation.getTypeSaisiDto().isNombreITT()) { %>
-						                        <input id="<%=process.getNOM_ST_DATE_FIN()%>" class="sigp2-saisie" maxlength="10"	
-						                        	name="<%= process.getNOM_ST_DATE_FIN()%>" size="10" type="text" value="<%= process.getVAL_ST_DATE_FIN()%>"
-						                        	onblur='executeBouton("<%=process.getNOM_PB_SET_ITT() %>")' >
-				            				<% } else { %>
-						                        <input id="<%=process.getNOM_ST_DATE_FIN()%>" class="sigp2-saisie" maxlength="10"	
-						                        	name="<%= process.getNOM_ST_DATE_FIN()%>" size="10" type="text" value="<%= process.getVAL_ST_DATE_FIN()%>" >
-				            				<% } %>
-						                    <IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_FIN()%>', 'dd/mm/y');">
-				            			</td>
-				            			<% } %>
-				            		</tr>
-				            		
-				            		<!-- Maladies -->
-				            		<% if(typeCreation.getTypeSaisiDto().isPrescripteur()) { %>
-				            		<tr>
-				            			<td>
-			                        		<span class="sigp2Mandatory">Prescripteur :</span>
-				            			</td>
-				            			<td colspan="2">
-									       <INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_PRESCRIPTEUR() %>" size="18" type="text" value="<%= process.getVAL_ST_PRESCRIPTEUR() %>">
-				            			</td>
-				            		</tr>
-				            		<% } %>
-			            			<% if(typeCreation.getTypeSaisiDto().isDateAccidentTravail()) { %>
-			            			<tr>
-				            			<td>
-			                        		<span class="sigp2Mandatory">Date de l'accident du travail :</span>
-				            			</td>
-				            			<td>
-					                        <input id="<%=process.getNOM_ST_DATE_ACCIDENT_TRAVAIL()%>" class="sigp2-saisie" maxlength="10"	
-					                        	name="<%= process.getNOM_ST_DATE_ACCIDENT_TRAVAIL()%>" size="10" type="text" value="<%= process.getVAL_ST_DATE_ACCIDENT_TRAVAIL()%>" >
-					                        <IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_ACCIDENT_TRAVAIL()%>', 'dd/mm/y');">
-				            			</td>
-			            			</tr>
-			            			<% } %>
-			            			<% if(typeCreation.getTypeSaisiDto().isDateDeclaration()) { %>
-			            			<tr>
-				            			<td>
-			                        		<span class="sigp2Mandatory">Date de déclaration :</span>
-				            			</td>
-				            			<td>
-					                        <input id="<%=process.getNOM_ST_DATE_DECLARATION()%>" class="sigp2-saisie" maxlength="10"	
-					                        	name="<%= process.getNOM_ST_DATE_DECLARATION()%>" size="10" type="text" value="<%= process.getVAL_ST_DATE_DECLARATION()%>" >
-					                        <IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_DECLARATION()%>', 'dd/mm/y');">
-				            			</td>
-			            			</tr>
-			            			<% } %>
-			            			<% if(typeCreation.getTypeSaisiDto().isProlongation()) { %>
-			            			<tr>
-				            			<td>
-			                        		<span class="sigp2Mandatory">Prolongation :</span>
-				            			</td>
-				            			<td>
-				            				<% if(typeCreation.getTypeSaisiDto().isNombreITT()) { %>
-						                        <input type="checkbox" name="<%=process.getNOM_CK_PROLONGATION() %>" <% if(process.getVAL_CK_PROLONGATION().equals(process.getCHECKED_ON())){ %> checked="checked" <% } %> 
-						                        onclick='executeBouton("<%=process.getNOM_PB_SET_ITT() %>")' />
-						            		<% } else { %>
-						                        <input type="checkbox" name="<%=process.getNOM_CK_PROLONGATION() %>" <% if(process.getVAL_CK_PROLONGATION().equals(process.getCHECKED_ON())){ %> checked="checked" <% } %> />
-						            		<% } %>
-				            			</td>
-			            			</tr>
-			            			<% } %>
-			            			<% if(typeCreation.getTypeSaisiDto().isSansArretTravail()) { %>
-			            			<tr>
-				            			<td>
-			                        		<span class="sigp2Mandatory">Sans arrêt de travail :</span>
-				            			</td>
-				            			<td>
-				            				<% if(typeCreation.getTypeSaisiDto().isNombreITT()) { %>
-						                        <input type="checkbox" name="<%=process.getNOM_CK_SANS_AT() %>" <% if(process.getVAL_CK_SANS_AT().equals(process.getCHECKED_ON())){ %> checked="checked" <% } %> 
-						                        onclick='executeBouton("<%=process.getNOM_PB_SET_ITT() %>")' />
-						            		<% } else { %>
-						                        <input type="checkbox" name="<%=process.getNOM_CK_SANS_AT() %>" <% if(process.getVAL_CK_SANS_AT().equals(process.getCHECKED_ON())){ %> checked="checked" <% } %> />
-						            		<% } %>
-				            			</td>
-			            			</tr>
-			            			<% } %>
-				            		<% if(typeCreation.getTypeSaisiDto().isNombreITT()) { %>
-				            		<tr>
-				            			<td>
-			                        		<span class="sigp2Mandatory">Nombre ITT :</span>
-				            			</td>
-				            			<td colspan="2">
-											<INPUT class="sigp2-saisie" maxlength="6" name="<%= process.getNOM_ST_NOMBRE_ITT() %>" 
-											size="6" type="text" value="<%= process.getVAL_ST_NOMBRE_ITT() %>" >
-											<span class="sigp2Mandatory"> jour(s)</span>
-				            			</td>
-				            		</tr>
-			            			<% } %>
-				            		<% if(process.getVAL_RG_TYPE_CREATION().equals(process.getNOM_RB_TYPE_AT())) { %>
-				            		<tr>
-				            			<td>
-			                        		<span class="sigp2Mandatory">Type :</span>
-				            			</td>
-				            			<td colspan="2">
-											<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_TYPE_AT() %>" style="width:340px;">
-												<%=process.forComboHTML(process.getVAL_LB_TYPE_AT(), process.getVAL_LB_TYPE_AT_SELECT()) %>
-											</SELECT>
-				            			</td>
-				            		</tr>
-			            			<% } %>
-				            		<% if(typeCreation.getTypeSaisiDto().isSiegeLesion()) { %>
-				            		<tr>
-				            			<td>
-			                        		<span class="sigp2Mandatory">Siège des lésions :</span>
-				            			</td>
-				            			<td colspan="2">
-									        <SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_SIEGE_LESION()%>" style="width:340px;">
-									        	<%=process.forComboHTML(process.getVAL_LB_SIEGE_LESION(), process.getVAL_LB_SIEGE_LESION_SELECT())%>
-									        </SELECT>
-				            			</td>
-				            		</tr>
-			            			<% } %>
-				            		<% if(typeCreation.getTypeSaisiDto().isMaladiePro()) { %>
-				            		<tr>
-				            			<td>
-			                        		<span class="sigp2Mandatory">Maladie professionnelle :</span>
-				            			</td>
-				            			<td colspan="2">
-								        <SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_MALADIE_PRO()%>" style="width:500px;">
-								        	<%=process.forComboHTML(process.getVAL_LB_MALADIE_PRO(), process.getVAL_LB_MALADIE_PRO_SELECT())%>
-								        </SELECT>
-				            			</td>
-				            		</tr>
-			            			<% } %>
-				            		<tr>
-				            			<td>
-			                        		<span class="sigp2Mandatory">Commentaire :</span>
-				            			</td>
-				            			<td>
-											<textarea cols="15" rows="3" name="<%=process.getNOM_ST_MOTIF_CREATION()%>" title="Zone de saisie du commentaire"><%=process.getVAL_ST_MOTIF_CREATION().trim() %></textarea>
-											<%
-											String infoCompl = "";
-											if(null != typeCreation.getTypeSaisiDto().getInfosComplementaires()) {
-												infoCompl = typeCreation.getTypeSaisiDto().getInfosComplementaires();
-											} %>
-											<%=infoCompl %>
-				            			</td>
-				            		</tr>
-		
-				            		<% if(typeCreation.getTypeSaisiDto().isPieceJointe()) { %>
-<!-- 				            		<tr> -->
-<!-- 				            			<td> -->
-<!-- 			                        		<span class="sigp2Mandatory">Pièces jointes :</span> -->
-<!-- 				            			</td> -->
-<!-- 				            			<td> -->
-<%-- 					                		<img onkeydown="" onkeypress="" onkeyup="" border="0" src="images/ajout.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_GERER_PIECE_JOINTE()%>');"> --%>
-<%-- 				            				<% if(null != process.listFichierUpload && !process.listFichierUpload.isEmpty()) { --%>
-<%--  				            					for(File file : process.listFichierUpload) { %> --%>
-<!-- 				            						<div> -->
-<%-- 					            						<%=file.getName() %> --%>
-<!-- 					            						<INPUT title="supprimer" type="image" src="images/suppression.gif"  height="15px" width="15px"  -->
-<%-- 				            								class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>"  --%>
-<%-- 				            								name="<%=process.getNOM_PB_SUPPRIMER_DOC(file.getName())%>"> --%>
-<!-- 				            						</div> -->
-<%-- 				            					<% } --%>
-<%--  				            				} %>  --%>
-<!-- 				            			</td> -->
-<!-- 				            		</tr> -->
-				            		<% } %>
-				            	</table>
-				            	<%} %>
-				            	<BR/>
-			                    <INPUT onkeydown="" onkeypress="" onkeyup="" type="submit" class="sigp2-Bouton-100" value="Valider" name="<%=process.getNOM_PB_VALIDER_CREATION_DEMANDE() %>">
-			                    <INPUT onkeydown="" onkeypress="" onkeyup="" type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER() %>">
-			            </FIELDSET>
-				</FIELDSET>
-
-			<!-- Fin de la création d'un AT/MP -->
-
 			<% } else { %>
-
 			<div>
 			<% if (!process.getVAL_ST_ACTION().equals(process.ACTION_CONSULTATION) ){ %>
 		    	<FONT color='red'>Veuillez valider votre choix.</FONT>
@@ -725,8 +504,7 @@
 			<BR/>
 			<% if (!process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT) 
 					&& !process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT_CREATION) 
-					&& !process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT_SUPPRESSION)
-					&& !process.getVAL_ST_ACTION().equals(process.ACTION_CREATION)){ %>
+					&& !process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT_SUPPRESSION)){ %>
 			<TABLE align="center" border="0" cellpadding="0" cellspacing="0">
 				<TBODY>
 					<TR>
@@ -745,8 +523,6 @@
 			</TABLE>
 			<%} %>
 		</FIELDSET>
-    	<INPUT type="submit" style="display:none;" name="<%=process.getNOM_PB_TYPE_CREATION()%>" value="TYPE_CREATION">
-		<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_SET_ITT()%>" value="">
 	</FORM>
 		
 		<% } %>
