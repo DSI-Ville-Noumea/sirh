@@ -93,6 +93,8 @@ public interface ISirhAbsWSConsumer {
 	ReturnMessageDto inactiveTypeAbsence(Integer idAgentConnecte, Integer idRefTypeAbsence);
 
 	TypeAbsenceDto getTypeAbsence(Integer idBaseHoraireAbsence);
+	
+	TypeAbsenceDto getTypeAbsenceById(Integer idTypeAbsence);
 
 	// Motifs
 	List<MotifDto> getListeMotif();

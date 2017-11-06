@@ -534,6 +534,22 @@ document.formu.elements[nom].focus();
 			</TABLE>
 		</FIELDSET>	
 		
+		<FIELDSET class="sigp2Fieldset" style="text-align:left;margin:10px;width:1030px;">
+			<legend class="sigp2Legend">Tiarhé</legend>
+			<TABLE border="0" cellpadding="0" cellspacing="0">
+				<TBODY>
+					<TR>
+						<TD class="sigp2" style="text-align : center;" width="150">Matricule Tiarhé</TD>
+					</TR>
+					<TR>
+						<TD class="sigp2-saisie" style="text-align : center;" width="150">
+							<INPUT class="sigp2-saisie" maxlength="15" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> name="<%= process.getNOM_EF_ID_TIARHE() %>" size="15" type="text" value="<%= process.getVAL_EF_ID_TIARHE() %>">
+						</TD>
+					</TR>
+				</TBODY>
+			</TABLE>
+		</FIELDSET>	
+		
 		<br/><br/>
 		<FIELDSET style="text-align:center;margin:10px;width:1030px;"  class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "sigp2Fieldset") %>">
 			<span class="sigp2"><INPUT type="submit" value="Valider" name="<%=process.getNOM_PB_VALIDER()%>" class="sigp2-Bouton-100"></span>

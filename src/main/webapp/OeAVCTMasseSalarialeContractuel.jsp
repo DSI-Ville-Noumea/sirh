@@ -106,7 +106,7 @@ if (document.formu.elements[nom] != null)
 		<INPUT name="JSP" type="hidden" value="<%= process.getJSP() %>">
 		<BR/>
 		
-	    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;" title="Recherche avancée d'une fiche de poste">
+	    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;" title="Recherche avancée">
 				<LEGEND class="sigp2Legend">Simulation des avancements des contractuels</LEGEND>
 				<BR/>
 				<span class="sigp2Mandatory" style="width:70px;">Année :</span>

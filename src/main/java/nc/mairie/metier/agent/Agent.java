@@ -66,6 +66,7 @@ public class Agent implements Serializable {
 	public String rueNonNoumea;
 	public String quartier;
 	public Integer idTitreRepas;
+	public String idTiarhe;
 
 	/**
 	 * Retourne le libelle associe a la civilite de l'agent
@@ -797,5 +798,13 @@ public class Agent implements Serializable {
 
 	public void setIdTitreRepas(Integer idTitreRepas) {
 		this.idTitreRepas = idTitreRepas;
+	}
+
+	public String getIdTiarhe() {
+		return idTiarhe;
+	}
+
+	public void setIdTiarhe(String idTiarhe) {
+		this.idTiarhe = idTiarhe;
 	}
 }

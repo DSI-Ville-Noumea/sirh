@@ -73,4 +73,6 @@ public interface AgentDaoInterface {
 
 	public Agent chercherIdTitreRepas(String idTitreRepas, Integer idAgent) throws Exception;
 
+	public Agent chercherIdTiarhe(String idTiarhe, Integer idAgent) throws Exception;
+
 }
