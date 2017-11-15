@@ -155,7 +155,7 @@ public class OeELECSaisieCompteurA54 extends OePaginable {
 			orgaFiltreId = orgaFiltre.getIdOrganisation();
 		}
 		
-		setResultSize(absService.getCountAllCompteursByYearAndOS("asaA54", anneeFiltre, orgaFiltreId));
+		setResultSize(absService.getCountAllCompteursByYearAndOS("asaA54", anneeFiltre, orgaFiltreId, null, null, null));
 	}
 
 	private void initialiseListeDeroulante() {

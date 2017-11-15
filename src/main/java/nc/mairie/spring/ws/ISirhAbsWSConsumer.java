@@ -1,5 +1,6 @@
 package nc.mairie.spring.ws;
 
+import java.util.Date;
 import java.util.List;
 
 import nc.mairie.gestionagent.absence.dto.ActeursDto;
@@ -108,7 +109,7 @@ public interface ISirhAbsWSConsumer {
 	SoldeDto getSoldeAgent(Integer idAgent, String json);
 
 	// compteurs
-	Integer getCountAllCompteursByYearAndOS(String typeCompteur, String year, Integer idOS);
+	Integer getCountAllCompteursByYearAndOS(String typeCompteur, String year, Integer idOS, Integer idAgentRecherche, String dateDeb, String dateFin);
 	
 	ReturnMessageDto addCompteurRecup(Integer idAgentConnecte, String json);
 
@@ -136,7 +137,7 @@ public interface ISirhAbsWSConsumer {
 
 	List<CompteurDto> getListeCompteursA54(Integer annee, Integer idOrganisation, Integer pageSize, Integer pageNumber);
 
-	List<CompteurDto> getListeCompteursA55(Integer pageSize, Integer pageNumber);
+	List<CompteurDto> getListeCompteursA55(Integer pageSize, Integer pageNumber, String idAgentRecherche, String dateMin, String dateMax);
 
 	List<CompteurDto> getListeCompteursAmicale();
 

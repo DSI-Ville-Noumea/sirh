@@ -295,8 +295,8 @@ public class AbsService implements IAbsService {
 	}
 
 	@Override
-	public Integer getCountAllCompteursByYearAndOS(String typeCompteur, String year, Integer idOS) {
-		return absConsumer.getCountAllCompteursByYearAndOS(typeCompteur, year, idOS);
+	public Integer getCountAllCompteursByYearAndOS(String typeCompteur, String year, Integer idOS, Integer idAgentRecherche, String dateDeb, String dateFin) {
+		return absConsumer.getCountAllCompteursByYearAndOS(typeCompteur, year, idOS, idAgentRecherche, dateDeb, dateFin);
 	}
 
 	@Override
@@ -345,8 +345,8 @@ public class AbsService implements IAbsService {
 	}
 
 	@Override
-	public List<CompteurDto> getListeCompteursA55(Integer pageSize, Integer pageNumber) {
-		return absConsumer.getListeCompteursA55(pageSize, pageNumber);
+	public List<CompteurDto> getListeCompteursA55(Integer pageSize, Integer pageNumber, String idAgentRecherche, String dateMin, String dateMax) {
+		return absConsumer.getListeCompteursA55(pageSize, pageNumber, idAgentRecherche, dateMin, dateMax);
 	}
 
 	@Override

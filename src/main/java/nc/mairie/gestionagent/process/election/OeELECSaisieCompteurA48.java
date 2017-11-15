@@ -249,7 +249,7 @@ public class OeELECSaisieCompteurA48 extends OePaginable {
 			orgaFiltreId = orgaFiltre.getIdOrganisation();
 		}
 		
-		setResultSize(absService.getCountAllCompteursByYearAndOS("asaA48", anneeFiltre, orgaFiltreId));
+		setResultSize(absService.getCountAllCompteursByYearAndOS("asaA48", anneeFiltre, orgaFiltreId, null, null, null));
 	}
 
 	private void initialiseListeCompteur(HttpServletRequest request) throws Exception {
