@@ -1068,9 +1068,19 @@ public class SirhAbsWSConsumer extends BaseWsConsumer implements ISirhAbsWSConsu
 	}
 
 	@Override
-	public List<CompteurDto> getListeCompteursAmicale() {
+	public List<CompteurDto> getListeCompteursAmicale(String idAgentRecherche, String annee, Boolean actif) {
 		String url = String.format(absWsBaseUrl + sirhAbsListeCompteurAmicale);
 		HashMap<String, String> params = new HashMap<>();
+
+		if (idAgentRecherche != null)
+			params.put("idAgentRecherche", idAgentRecherche.toString());
+
+		if (annee != null)
+			params.put("annee", annee.toString());
+
+		if (actif != null)
+			params.put("actif", actif.toString());
+		
 		ClientResponse res = createAndFireRequest(params, url);
 		return readResponseAsList(CompteurDto.class, res, url);
 	}

@@ -420,8 +420,8 @@ public class AbsService implements IAbsService {
 	}
 
 	@Override
-	public List<CompteurDto> getListeCompteursAmicale() {
-		return absConsumer.getListeCompteursAmicale();
+	public List<CompteurDto> getListeCompteursAmicale(String idAgentRecherche, String annee, Boolean actif) {
+		return absConsumer.getListeCompteursAmicale(idAgentRecherche, annee, actif);
 	}
 
 	@Override

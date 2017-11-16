@@ -139,7 +139,7 @@ public interface ISirhAbsWSConsumer {
 
 	List<CompteurDto> getListeCompteursA55(Integer pageSize, Integer pageNumber, String idAgentRecherche, String dateMin, String dateMax);
 
-	List<CompteurDto> getListeCompteursAmicale();
+	List<CompteurDto> getListeCompteursAmicale(String idAgentRecherche, String annee, Boolean actif);
 
 	List<CompteurDto> getListeCompteursA52(Integer idOrganisation);
 

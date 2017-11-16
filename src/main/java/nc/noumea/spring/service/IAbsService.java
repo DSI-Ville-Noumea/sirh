@@ -150,7 +150,7 @@ public interface IAbsService {
 
 	ReturnMessageDto addCompteurAsaAmicale(Integer idAgent, String json);
 
-	List<CompteurDto> getListeCompteursAmicale();
+	List<CompteurDto> getListeCompteursAmicale(String idAgentRecherche, String annee, Boolean actif);
 
 	ReturnMessageDto saveMotifCompteur(String json);
 
