@@ -2599,6 +2599,9 @@ public class OeABSVisualisation extends BasicProcess {
 							in.close();
 						}
 					}
+				} else {
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "pièce jointe"));
+					return false;
 				}
 			}
 
