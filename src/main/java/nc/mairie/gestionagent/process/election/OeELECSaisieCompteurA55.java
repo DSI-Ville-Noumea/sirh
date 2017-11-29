@@ -8,6 +8,12 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
+
+import flexjson.JSONSerializer;
 import nc.mairie.enums.EnumTypeAbsence;
 import nc.mairie.gestionagent.absence.dto.CompteurDto;
 import nc.mairie.gestionagent.absence.dto.MotifCompteurDto;
@@ -15,13 +21,13 @@ import nc.mairie.gestionagent.absence.vo.VoAgentCompteur;
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
 import nc.mairie.gestionagent.process.OePaginable;
 import nc.mairie.gestionagent.radi.dto.LightUserDto;
+import nc.mairie.gestionagent.robot.MaClasse;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.Agent;
 import nc.mairie.spring.dao.metier.agent.AgentDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.spring.ws.MSDateTransformer;
-import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.UserAppli;
@@ -32,12 +38,6 @@ import nc.mairie.utils.VariablesActivite;
 import nc.noumea.spring.service.AbsService;
 import nc.noumea.spring.service.IAbsService;
 import nc.noumea.spring.service.IRadiService;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationContext;
-
-import flexjson.JSONSerializer;
 
 /**
  *
@@ -113,6 +113,13 @@ public class OeELECSaisieCompteurA55 extends OePaginable {
 				addZone(getNOM_ST_AGENT_CREATE(), agt.getNomatr().toString());
 			}
 		}
+		if (etatStatut() == MaClasse.STATUT_RECHERCHE_AGENT) {
+			Agent agt = (Agent) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
+			VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
+			if (agt != null) {
+				addZone(getNOM_ST_AGENT_DEMANDE(), agt.getNomatr().toString());
+			}
+		}
 
 		// Initialisation des listes deroulantes
 		initialiseListeDeroulante();
@@ -127,7 +134,13 @@ public class OeELECSaisieCompteurA55 extends OePaginable {
 	
 	@Override
 	public void getAllResultCount() {
-		setResultSize(absService.getCountAllCompteursByYearAndOS("asaA55", null, null));
+		// Filtres
+		Integer idAgentDemande = getVAL_ST_AGENT_DEMANDE().equals(Const.CHAINE_VIDE) ? null : Integer.valueOf("900" + getVAL_ST_AGENT_DEMANDE());
+
+		String dateDeb = StringUtils.isNotBlank(getVAL_ST_DATE_MIN()) ? getVAL_ST_DATE_MIN() : null;
+		String dateFin = StringUtils.isNotBlank(getVAL_ST_DATE_MAX()) ? getVAL_ST_DATE_MAX() : null;
+		
+		setResultSize(absService.getCountAllCompteursByYearAndOS("asaA55", null, null, idAgentDemande, dateDeb, dateFin));
 	}
 
 	private void initialiseListeDeroulante() {
@@ -156,7 +169,14 @@ public class OeELECSaisieCompteurA55 extends OePaginable {
 	}
 
 	private void initialiseListeCompteur(HttpServletRequest request) throws Exception {
-		ArrayList<CompteurDto> listeCompteur = (ArrayList<CompteurDto>) absService.getListeCompteursA55(getPageSize(), getPageNumber());
+		// Filtres
+		String idAgentDemande = getVAL_ST_AGENT_DEMANDE().equals(Const.CHAINE_VIDE) ? null : "900" + getVAL_ST_AGENT_DEMANDE();
+
+		String dateDeb = StringUtils.isNotBlank(getVAL_ST_DATE_MIN()) ? getVAL_ST_DATE_MIN() : null;
+		String dateFin = StringUtils.isNotBlank(getVAL_ST_DATE_MAX()) ? getVAL_ST_DATE_MAX() : null;
+		
+		// Recherche
+		ArrayList<CompteurDto> listeCompteur = (ArrayList<CompteurDto>) absService.getListeCompteursA55(getPageSize(), getPageNumber(), idAgentDemande, dateDeb, dateFin);
 		logger.debug("Taille liste des compteurs ASA A55 : " + listeCompteur.size());
 		// #14737 tri par ordre alpha
 		List<VoAgentCompteur> listCompteurAgent = new ArrayList<VoAgentCompteur>();
@@ -215,16 +235,30 @@ public class OeELECSaisieCompteurA55 extends OePaginable {
 			if (testerParametre(request, getNOM_PB_VALIDER())) {
 				return performPB_VALIDER(request);
 			}
+			
+			// Si clic sur le bouton PB_FILTRER
+			if (testerParametre(request, getNOM_PB_FILTRER())) {
+				return performPB_FILTRER(request);
+			}
+			
+			// Si clic sur le bouton PB_RECHERCHER_AGENT_DEMANDE
+			if (testerParametre(request, getNOM_PB_RECHERCHER_AGENT_DEMANDE())) {
+				return performPB_RECHERCHER_AGENT_DEMANDE(request);
+			}
+
+			if (testerParametre(request, getNOM_PB_RECHERCHER_AGENT_CREATE())) {
+				return performPB_RECHERCHER_AGENT_CREATE(request);
+			}
+
+			if (testerParametre(request, getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_DEMANDE())) {
+				return performPB_SUPPRIMER_RECHERCHER_AGENT_DEMANDE(request);
+			}
 
 			// Si clic sur le bouton PB_MODIFIER
 			for (int i = 0; i < getListeCompteur().size(); i++) {
 				if (testerParametre(request, getNOM_PB_MODIFIER(i))) {
 					return performPB_MODIFIER(request, i);
 				}
-			}
-
-			if (testerParametre(request, getNOM_PB_RECHERCHER_AGENT_CREATE())) {
-				return performPB_RECHERCHER_AGENT_CREATE(request);
 			}
 		}
 		// Si TAG INPUT non géré par le process
@@ -486,6 +520,13 @@ public class OeELECSaisieCompteurA55 extends OePaginable {
 		return true;
 	}
 
+	public boolean performPB_FILTRER(HttpServletRequest request) throws Exception {
+		getAllResultCount();
+		updatePagination(request);
+		initialiseListeCompteur(request);
+		return true;
+	}
+
 	public boolean performPB_VALIDER(HttpServletRequest request) throws Exception {
 
 		// Vérification de la validité du formulaire
@@ -629,5 +670,63 @@ public class OeELECSaisieCompteurA55 extends OePaginable {
 
 	public void setAgentDao(AgentDao agentDao) {
 		this.agentDao = agentDao;
+	}
+	
+	// Filtres	
+	public String getNOM_EF_MATRICULE() {
+		return "NOM_EF_MATRICULE";
+	}
+
+	public String getVAL_EF_MATRICULE() {
+		return getZone(getNOM_EF_MATRICULE());
+	}
+
+	public String getNOM_PB_FILTRER() {
+		return "NOM_PB_FILTRER";
+	}
+
+	public String getNOM_ST_AGENT_DEMANDE() {
+		return "NOM_ST_AGENT_DEMANDE";
+	}
+
+	public String getVAL_ST_AGENT_DEMANDE() {
+		return getZone(getNOM_ST_AGENT_DEMANDE());
+	}
+
+	public String getNOM_PB_RECHERCHER_AGENT_DEMANDE() {
+		return "NOM_PB_RECHERCHER_AGENT_DEMANDE";
+	}
+
+	public boolean performPB_RECHERCHER_AGENT_DEMANDE(HttpServletRequest request) throws Exception {
+		// On met l'agent courant en var d'activité
+		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new Agent());
+		setStatut(MaClasse.STATUT_RECHERCHE_AGENT, true);
+		return true;
+	}
+
+	public String getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_DEMANDE() {
+		return "NOM_PB_SUPPRIMER_RECHERCHER_AGENT_DEMANDE";
+	}
+
+	public boolean performPB_SUPPRIMER_RECHERCHER_AGENT_DEMANDE(HttpServletRequest request) throws Exception {
+		// On enleve l'agent selectionnée
+		addZone(getNOM_ST_AGENT_DEMANDE(), Const.CHAINE_VIDE);
+		return true;
+	}
+
+	public String getNOM_ST_DATE_MIN() {
+		return "NOM_ST_DATE_MIN";
+	}
+
+	public String getVAL_ST_DATE_MIN() {
+		return getZone(getNOM_ST_DATE_MIN());
+	}
+
+	public String getNOM_ST_DATE_MAX() {
+		return "NOM_ST_DATE_MAX";
+	}
+
+	public String getVAL_ST_DATE_MAX() {
+		return getZone(getNOM_ST_DATE_MAX());
 	}
 }

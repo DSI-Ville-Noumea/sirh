@@ -8,12 +8,19 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
+
+import flexjson.JSONSerializer;
 import nc.mairie.enums.EnumTypeAbsence;
 import nc.mairie.gestionagent.absence.dto.CompteurDto;
 import nc.mairie.gestionagent.absence.dto.MotifCompteurDto;
 import nc.mairie.gestionagent.absence.vo.VoAgentCompteur;
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
 import nc.mairie.gestionagent.radi.dto.LightUserDto;
+import nc.mairie.gestionagent.robot.MaClasse;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.Agent;
 import nc.mairie.spring.dao.metier.agent.AgentDao;
@@ -32,13 +39,6 @@ import nc.noumea.spring.service.AbsService;
 import nc.noumea.spring.service.IAbsService;
 import nc.noumea.spring.service.IRadiService;
 
-import org.joda.time.DateTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationContext;
-
-import flexjson.JSONSerializer;
-
 /**
  *
  */
@@ -54,8 +54,12 @@ public class OeELECSaisieCompteurAmicale extends BasicProcess {
 
 	private ArrayList<CompteurDto> listeCompteur;
 	private ArrayList<String> listeAnnee;
+	private ArrayList<String> listeAnneeFiltre;
+	private ArrayList<String> listeActif;
 	private String[] LB_ANNEE;
+	private String[] LB_ANNEE_FILTRE;
 	private String[] LB_MOTIF;
+	private String[] LB_ACTIF;
 	private ArrayList<MotifCompteurDto> listeMotifCompteur;
 
 	public String ACTION_MODIFICATION = "Modification d'un compteur.";
@@ -115,6 +119,13 @@ public class OeELECSaisieCompteurAmicale extends BasicProcess {
 				addZone(getNOM_ST_AGENT_CREATE(), agt.getNomatr().toString());
 			}
 		}
+		if (etatStatut() == MaClasse.STATUT_RECHERCHE_AGENT) {
+			Agent agt = (Agent) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
+			VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
+			if (agt != null) {
+				addZone(getNOM_ST_AGENT_DEMANDE(), agt.getNomatr().toString());
+			}
+		}
 
 		// Initialisation des listes deroulantes
 		initialiseListeDeroulante();
@@ -142,6 +153,26 @@ public class OeELECSaisieCompteurAmicale extends BasicProcess {
 			setLB_ANNEE(list);
 			addZone(getNOM_LB_ANNEE_SELECT(), Const.ZERO);
 		}
+		if (getLB_ANNEE_FILTRE() == LBVide) {
+			List<String> listeAnnee = new ArrayList<>();
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(new Date());
+			Integer anneeCourante = cal.get(Calendar.YEAR);
+			listeAnnee.add("");
+			for (int i = 2015; i <= anneeCourante + 1; i++) {
+				listeAnnee.add(i + "");
+			}
+			setListeAnneeFiltre((ArrayList<String>) listeAnnee);
+
+			int[] tailles = { 50 };
+			FormateListe aFormat = new FormateListe(tailles);
+			for (String annee : getListeAnneeFiltre()) {
+				String ligne[] = { annee };
+				aFormat.ajouteLigne(ligne);
+			}
+			setLB_ANNEE_FILTRE(aFormat.getListeFormatee(false));
+			addZone(getNOM_LB_ANNEE_FILTRE_SELECT(), Const.ZERO);
+		}
 		// Si liste motifs vide alors affectation
 		if (getLB_MOTIF() == LBVide) {
 			ArrayList<MotifCompteurDto> listeMotifs = (ArrayList<MotifCompteurDto>) absService.getListeMotifCompteur(EnumTypeAbsence.ASA_AMICALE.getCode());
@@ -156,6 +187,23 @@ public class OeELECSaisieCompteurAmicale extends BasicProcess {
 			setLB_MOTIF(aFormat.getListeFormatee(true));
 			addZone(getNOM_LB_MOTIF_SELECT(), Const.ZERO);
 		}
+		// Si liste motifs vide alors affectation
+		if (getLB_ACTIF() == LBVide) {
+			ArrayList<String> listActif = new ArrayList<>();
+			listActif.add("");
+			listActif.add("Oui");
+			listActif.add("Non");
+			setListeActif(listActif);
+
+			int[] tailles = { 50 };
+			FormateListe aFormat = new FormateListe(tailles);
+			for (String actif : listActif) {
+				String ligne[] = { actif };
+				aFormat.ajouteLigne(ligne);
+			}
+			setLB_ACTIF(aFormat.getListeFormatee(false));
+			addZone(getNOM_LB_ACTIF_SELECT(), Const.ZERO);
+		}
 	}
 
 	public String getNOM_ST_ACTION() {
@@ -167,7 +215,22 @@ public class OeELECSaisieCompteurAmicale extends BasicProcess {
 	}
 
 	private void initialiseListeCompteur(HttpServletRequest request) throws Exception {
-		ArrayList<CompteurDto> listeCompteur = (ArrayList<CompteurDto>) absService.getListeCompteursAmicale();
+		// On récupère les filtres
+		int indiceAnnee = (Services.estNumerique(getVAL_LB_ANNEE_FILTRE_SELECT()) ? Integer.parseInt(getVAL_LB_ANNEE_FILTRE_SELECT()) : -1);
+		String anneeFiltre = getListeAnneeFiltre().get(indiceAnnee);
+
+		int indiceActif = (Services.estNumerique(getVAL_LB_ACTIF_SELECT()) ? Integer.parseInt(getVAL_LB_ACTIF_SELECT()) : -1);
+		String actifFiltre = getListeActif().get(indiceActif);
+		Boolean actif = null;
+		if (actifFiltre == "Oui")
+			actif = true;
+		else if (actifFiltre == "Non")
+			actif = false;
+		
+		String idAgentDemande = getVAL_ST_AGENT_DEMANDE().equals(Const.CHAINE_VIDE) ? null : "900" + getVAL_ST_AGENT_DEMANDE();
+		
+		ArrayList<CompteurDto> listeCompteur = (ArrayList<CompteurDto>) absService.getListeCompteursAmicale(idAgentDemande, anneeFiltre, actif);
+		
 		logger.debug("Taille liste des compteurs ASA Amicale : " + listeCompteur.size());
 		// #14737 tri par ordre alpha
 		List<VoAgentCompteur> listCompteurAgent = new ArrayList<VoAgentCompteur>();
@@ -227,15 +290,23 @@ public class OeELECSaisieCompteurAmicale extends BasicProcess {
 				return performPB_VALIDER(request);
 			}
 
+			if (testerParametre(request, getNOM_PB_RECHERCHER_AGENT_CREATE())) {
+				return performPB_RECHERCHER_AGENT_CREATE(request);
+			}
+
+			if (testerParametre(request, getNOM_PB_RECHERCHER_AGENT_DEMANDE())) {
+				return performPB_RECHERCHER_AGENT_DEMANDE(request);
+			}
+
+			if (testerParametre(request, getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_DEMANDE())) {
+				return performPB_SUPPRIMER_RECHERCHER_AGENT_DEMANDE(request);
+			}
+
 			// Si clic sur le bouton PB_MODIFIER
 			for (int i = 0; i < getListeCompteur().size(); i++) {
 				if (testerParametre(request, getNOM_PB_MODIFIER(i))) {
 					return performPB_MODIFIER(request, i);
 				}
-			}
-
-			if (testerParametre(request, getNOM_PB_RECHERCHER_AGENT_CREATE())) {
-				return performPB_RECHERCHER_AGENT_CREATE(request);
 			}
 		}
 		// Si TAG INPUT non géré par le process
@@ -683,5 +754,115 @@ public class OeELECSaisieCompteurAmicale extends BasicProcess {
 
 	public void setListeAnnee(ArrayList<String> listeAnnee) {
 		this.listeAnnee = listeAnnee;
+	}
+	
+	// Filtres	
+	public String getNOM_EF_MATRICULE() {
+		return "NOM_EF_MATRICULE";
+	}
+
+	public String getVAL_EF_MATRICULE() {
+		return getZone(getNOM_EF_MATRICULE());
+	}
+
+	public String getNOM_PB_FILTRER() {
+		return "NOM_PB_FILTRER";
+	}
+
+	public String getNOM_ST_AGENT_DEMANDE() {
+		return "NOM_ST_AGENT_DEMANDE";
+	}
+
+	public String getVAL_ST_AGENT_DEMANDE() {
+		return getZone(getNOM_ST_AGENT_DEMANDE());
+	}
+
+	public String getNOM_PB_RECHERCHER_AGENT_DEMANDE() {
+		return "NOM_PB_RECHERCHER_AGENT_DEMANDE";
+	}
+
+	public boolean performPB_RECHERCHER_AGENT_DEMANDE(HttpServletRequest request) throws Exception {
+		// On met l'agent courant en var d'activité
+		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new Agent());
+		setStatut(MaClasse.STATUT_RECHERCHE_AGENT, true);
+		return true;
+	}
+
+	public String getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_DEMANDE() {
+		return "NOM_PB_SUPPRIMER_RECHERCHER_AGENT_DEMANDE";
+	}
+
+	public boolean performPB_SUPPRIMER_RECHERCHER_AGENT_DEMANDE(HttpServletRequest request) throws Exception {
+		// On enleve l'agent selectionnée
+		addZone(getNOM_ST_AGENT_DEMANDE(), Const.CHAINE_VIDE);
+		return true;
+	}
+
+	private String[] getLB_ACTIF() {
+		if (LB_ACTIF == null)
+			LB_ACTIF = initialiseLazyLB();
+		return LB_ACTIF;
+	}
+
+	private void setLB_ACTIF(String[] newLB_ACTIF) {
+		LB_ACTIF = newLB_ACTIF;
+	}
+
+	public String getNOM_LB_ACTIF() {
+		return "NOM_LB_ACTIF";
+	}
+
+	public String getNOM_LB_ACTIF_SELECT() {
+		return "NOM_LB_ACTIF_SELECT";
+	}
+
+	public String[] getVAL_LB_ACTIF() {
+		return getLB_ACTIF();
+	}
+
+	public String getVAL_LB_ACTIF_SELECT() {
+		return getZone(getNOM_LB_ACTIF_SELECT());
+	}
+
+	public ArrayList<String> getListeActif() {
+		return listeActif;
+	}
+
+	public void setListeActif(ArrayList<String> listeActif) {
+		this.listeActif = listeActif;
+	}
+
+	private String[] getLB_ANNEE_FILTRE() {
+		if (LB_ANNEE_FILTRE == null)
+			LB_ANNEE_FILTRE = initialiseLazyLB();
+		return LB_ANNEE_FILTRE;
+	}
+
+	private void setLB_ANNEE_FILTRE(String[] newLB_ANNEE_FILTRE) {
+		LB_ANNEE_FILTRE = newLB_ANNEE_FILTRE;
+	}
+
+	public String getNOM_LB_ANNEE_FILTRE() {
+		return "NOM_LB_ANNEE_FILTRE";
+	}
+
+	public String getNOM_LB_ANNEE_FILTRE_SELECT() {
+		return "NOM_LB_ANNEE_FILTRE_SELECT";
+	}
+
+	public String[] getVAL_LB_ANNEE_FILTRE() {
+		return getLB_ANNEE_FILTRE();
+	}
+
+	public String getVAL_LB_ANNEE_FILTRE_SELECT() {
+		return getZone(getNOM_LB_ANNEE_FILTRE_SELECT());
+	}
+
+	public ArrayList<String> getListeAnneeFiltre() {
+		return listeAnneeFiltre;
+	}
+
+	public void setListeAnneeFiltre(ArrayList<String> listeAnneeFiltre) {
+		this.listeAnneeFiltre = listeAnneeFiltre;
 	}
 }

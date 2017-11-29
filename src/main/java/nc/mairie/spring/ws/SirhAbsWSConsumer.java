@@ -291,7 +291,7 @@ public class SirhAbsWSConsumer extends BaseWsConsumer implements ISirhAbsWSConsu
 	}
 
 	@Override
-	public Integer getCountAllCompteursByYearAndOS(String typeCompteur, String year, Integer idOS) {
+	public Integer getCountAllCompteursByYearAndOS(String typeCompteur, String year, Integer idOS, Integer idAgentRecherche, String dateMin, String dateMax) {
 		String url = String.format(absWsBaseUrl + typeCompteur + sirhAbsCountAllCompteurs);
 		HashMap<String, String> params = new HashMap<>();
 
@@ -300,6 +300,15 @@ public class SirhAbsWSConsumer extends BaseWsConsumer implements ISirhAbsWSConsu
 
 		if (idOS != null)
 			params.put("idOS", idOS.toString());
+
+		if (idAgentRecherche != null)
+			params.put("idAgentRecherche", idAgentRecherche.toString());
+
+		if (dateMin != null)
+			params.put("dateMin", dateMin);
+
+		if (dateMax != null)
+			params.put("dateMax", dateMax);
 		
 		ClientResponse res = createAndFireRequest(params, url);
 		return readResponseAsInteger(res, url);
@@ -453,7 +462,7 @@ public class SirhAbsWSConsumer extends BaseWsConsumer implements ISirhAbsWSConsu
 	}
 
 	@Override
-	public List<CompteurDto> getListeCompteursA55(Integer pageSize, Integer pageNumber) {
+	public List<CompteurDto> getListeCompteursA55(Integer pageSize, Integer pageNumber, String idAgentRecherche, String dateMin, String dateMax) {
 		String url = String.format(absWsBaseUrl + sirhAbsListeCompteurA55);
 		HashMap<String, String> params = new HashMap<>();
 		
@@ -462,6 +471,15 @@ public class SirhAbsWSConsumer extends BaseWsConsumer implements ISirhAbsWSConsu
 		
 		if (pageNumber != null)
 			params.put("pageNumber", pageNumber.toString());
+		
+		if (idAgentRecherche != null)
+			params.put("idAgentRecherche", idAgentRecherche);
+		
+		if (dateMin != null)
+			params.put("dateMin", dateMin);
+		
+		if (dateMax != null)
+			params.put("dateMax", dateMax);
 		
 		ClientResponse res = createAndFireRequest(params, url);
 		return readResponseAsList(CompteurDto.class, res, url);
@@ -1050,9 +1068,19 @@ public class SirhAbsWSConsumer extends BaseWsConsumer implements ISirhAbsWSConsu
 	}
 
 	@Override
-	public List<CompteurDto> getListeCompteursAmicale() {
+	public List<CompteurDto> getListeCompteursAmicale(String idAgentRecherche, String annee, Boolean actif) {
 		String url = String.format(absWsBaseUrl + sirhAbsListeCompteurAmicale);
 		HashMap<String, String> params = new HashMap<>();
+
+		if (idAgentRecherche != null)
+			params.put("idAgentRecherche", idAgentRecherche.toString());
+
+		if (annee != null)
+			params.put("annee", annee.toString());
+
+		if (actif != null)
+			params.put("actif", actif.toString());
+		
 		ClientResponse res = createAndFireRequest(params, url);
 		return readResponseAsList(CompteurDto.class, res, url);
 	}

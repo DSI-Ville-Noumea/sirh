@@ -705,6 +705,7 @@ public class RobotAgent extends Robot {
 		navigation.put(OePARAMETRAGERubrique.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 		navigation.put(OePARAMETRAGEJour.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 		navigation.put(OePARAMETRAGEAbsence.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OePARAMETRAGEAbsenceMaladies.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 		navigation.put(OePARAMETRAGEAbsenceCongesExceptionnels.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 		navigation.put(OePARAMETRAGEElection.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 		navigation.put(OePARAMETRAGEKiosque.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());

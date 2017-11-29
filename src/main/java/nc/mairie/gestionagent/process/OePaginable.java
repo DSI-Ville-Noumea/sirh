@@ -8,6 +8,12 @@ import nc.mairie.metier.Const;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.Services;
 
+/**
+ * HowTo use this class : 
+ * https://redmine.ville-noumea.nc/projects/sirh/wiki/Pagination
+ * 
+ * @author teo
+ */
 public abstract class OePaginable extends BasicProcess {
 
 	private static final long serialVersionUID = -4517335279542055010L;
