@@ -282,8 +282,8 @@
 											<label class="sigp2Mandatory">Filière:</label>
 					            		</td>
 					            		<td>
-											<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_FILIERE() %>">
-													<%=process.forComboHTML(process.getVAL_LB_FILIERE(), process.getVAL_LB_FILIERE_SELECT()) %>
+											<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_FILIERE_GRADE() %>">
+													<%=process.forComboHTML(process.getVAL_LB_FILIERE_GRADE(), process.getVAL_LB_FILIERE_GRADE_SELECT()) %>
 											</SELECT>
 										</td>
 					            	</tr>
@@ -388,7 +388,57 @@
 				            <%}%>		
 						</FIELDSET>		
 					</td>
-					<td>&nbsp;
+					<td>
+						<FIELDSET class="sigp2Fieldset"  style="text-align: left;">
+					    	<legend class="sigp2Legend">Filières</legend>
+							<span style="margin-left:0px;">Code</span>
+							<span style="margin-left:10px;">Libellé</span>
+							
+							<br/>
+							<span class="sigp2-titre" align="center" colspan="2">
+							<SELECT name="<%= process.getNOM_LB_FILIERE() %>" size="10" style="width:100%;" class="sigp2-liste">
+								<%=process.forComboHTML(process.getVAL_LB_FILIERE(), process.getVAL_LB_FILIERE_SELECT()) %>
+							</SELECT>
+							
+			            	</span>
+			
+							<div class=<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>>
+								<INPUT type="image" src="images/ajout.gif" height="20px" width="20px" name="<%=process.getNOM_PB_CREER_FILIERE()%>">
+			        	    	<INPUT type="image" src="images/modifier.gif" height="20px" width="20px" name="<%=process.getNOM_PB_MODIFIER_FILIERE()%>">
+			        	    </div>
+			            	
+			            	<% if (process.getVAL_ST_ACTION_FILIERE() != null && !process.getVAL_ST_ACTION_FILIERE().equals("")) {%>
+			            	<br>
+				            <table width="400px">
+					            	<tr>
+					            		<td width="50px">
+											<label class="sigp2Mandatory">Code:</label>
+					            		</td>
+					            		<td>
+					            			<INPUT class="sigp2-saisiemajuscule" maxlength="4" <%= process.ACTION_MODIFICATION.equals(process.getVAL_ST_ACTION_FILIERE()) ? "disabled='disabled'" : Const.CHAINE_VIDE %> name="<%= process.getNOM_EF_CODE_FILIERE() %>" size="4" type="text" value="<%= process.getVAL_EF_CODE_FILIERE() %>">
+										</td>
+					            	</tr>	
+					            	<tr>
+					            		<td>
+											<label class="sigp2Mandatory">Libellé:</label>
+					            		</td>
+					            		<td>
+					            			<INPUT class="sigp2-saisiemajuscule" maxlength="50"	  name="<%= process.getNOM_EF_LIBELLE_FILIERE() %>" size="50" type="text" value="<%= process.getVAL_EF_LIBELLE_FILIERE() %>">
+										</td>
+					            	</tr>
+									<tr>
+					            		<td colspan="2" align="center">
+											<% if (process.ACTION_CREATION.equals(process.getVAL_ST_ACTION_FILIERE())) { %>
+					            				<INPUT type="submit" class="sigp2-Bouton-100" value="Ajouter" name="<%=process.getNOM_PB_VALIDER_FILIERE()%>">
+											<% } else { %>
+					            			<INPUT type="submit" class="sigp2-Bouton-100" value="Modifier" name="<%=process.getNOM_PB_VALIDER_FILIERE()%>">
+											<% } %>
+											<INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER_FILIERE()%>">						
+					            		</td>
+					            	</tr>	
+				            </table>
+				            <%}%>
+						</FIELDSET>
 					</td>
 				</tr>
 			</table>

@@ -39,6 +39,18 @@ public class FiliereGradeBroker extends BasicBroker {
 	protected String definirNomTable() {
 		return "SPFILI";
 	}
+	
+	public boolean creerFiliere(Transaction aTransaction) throws Exception {
+		return creer(aTransaction);
+	}
+
+	/**
+	 * Methode modifierObjetMetierBroker qui retourne
+	 * true ou false
+	 */
+	public boolean modifierFiliere(Transaction aTransaction) throws Exception {
+		return modifier(aTransaction);
+	}
 
 	/**
 	 * Retourne le mappage de chaque colonne de la table.

@@ -6,6 +6,8 @@ import java.util.ListIterator;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.context.ApplicationContext;
+
 import nc.mairie.metier.Const;
 import nc.mairie.metier.carriere.Bareme;
 import nc.mairie.metier.carriere.Categorie;
@@ -28,8 +30,6 @@ import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
 
-import org.springframework.context.ApplicationContext;
-
 /**
  * Process OePARAMETRAGEGradeRef Date de création : (29/09/11 15:07:35)
  * 
@@ -46,6 +46,7 @@ public class OePARAMETRAGEGradeRef extends BasicProcess {
 	private String[] LB_CATEGORIE;
 	private String[] LB_CADRE_EMPLOI_GRADE;
 	private String[] LB_CADRE_EMPLOI;
+	private String[] LB_FILIERE_GRADE;
 	private String[] LB_FILIERE;
 	private String[] LB_DELIB_TERR_GRADE;
 	private String[] LB_DELIB_COMM_GRADE;
@@ -70,6 +71,7 @@ public class OePARAMETRAGEGradeRef extends BasicProcess {
 	private CadreEmploi cadreEmploiCourant;
 
 	private ArrayList<FiliereGrade> listeFiliere;
+	private FiliereGrade filiereCourante;
 	private Hashtable<String, FiliereGrade> hashFiliere;
 
 	private DeliberationDao deliberationDao;
@@ -102,7 +104,8 @@ public class OePARAMETRAGEGradeRef extends BasicProcess {
 		// ----------------------------------//
 		if (MairieUtils.estInterdit(request, getNomEcran())) {
 			// "ERR190",
-			// "Operation impossible. Vous ne disposez pas des droits d'acces a cette option."
+			// "Operation impossible. Vous ne disposez pas des droits d'acces a
+			// cette option."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
@@ -329,8 +332,19 @@ public class OePARAMETRAGEGradeRef extends BasicProcess {
 		setListeFiliere(liste);
 
 		int[] tailles = { 40 };
+		
 		String[] champs = { "libFiliere" };
-		setLB_FILIERE(new FormateListe(tailles, liste, champs).getListeFormatee(true));
+		setLB_FILIERE_GRADE(new FormateListe(tailles, liste, champs).getListeFormatee(true));
+		
+		
+		int[] tailles2 = { 5, 40 };
+		String padding[] = { "G", "G" };
+		FormateListe aFormat = new FormateListe(tailles2, padding, false);
+		for (FiliereGrade filiere : liste) {
+			String ligne[] = { filiere.getCodeFiliere(), filiere.getLibFiliere() };
+			aFormat.ajouteLigne(ligne);
+		}
+		setLB_FILIERE(aFormat.getListeFormatee());
 
 		// remplissage de la hashTable
 		for (FiliereGrade filiere : liste)
@@ -574,7 +588,7 @@ public class OePARAMETRAGEGradeRef extends BasicProcess {
 		addZone(getNOM_EF_NB_PTS_CATEGORIE(), Const.ZERO);
 		addZone(getNOM_RG_INACTIF(), getNOM_RB_NON());
 		addZone(getNOM_LB_CADRE_EMPLOI_GRADE_SELECT(), Const.ZERO);
-		addZone(getNOM_LB_FILIERE_SELECT(), Const.ZERO);
+		addZone(getNOM_LB_FILIERE_GRADE_SELECT(), Const.ZERO);
 		addZone(getNOM_LB_DELIB_COMM_GRADE_SELECT(), Const.ZERO);
 		addZone(getNOM_LB_DELIB_TERR_GRADE_SELECT(), Const.ZERO);
 
@@ -838,7 +852,8 @@ public class OePARAMETRAGEGradeRef extends BasicProcess {
 	private boolean performControlerRegleGestionClasse(HttpServletRequest request) throws Exception {
 
 		// verif conrainte unicité classe
-		if (getVAL_ST_ACTION_CLASSE().equals(ACTION_CREATION) || getVAL_ST_ACTION_CLASSE().equals(ACTION_MODIFICATION)) {
+		if (getVAL_ST_ACTION_CLASSE().equals(ACTION_CREATION)
+				|| getVAL_ST_ACTION_CLASSE().equals(ACTION_MODIFICATION)) {
 
 			for (Classe classe : getListeClasse()) {
 
@@ -985,25 +1000,25 @@ public class OePARAMETRAGEGradeRef extends BasicProcess {
 		if (!performControlerRegleGestionGradeGenerique(request))
 			return false;
 
-		int numCategorie = (Services.estNumerique(getZone(getNOM_LB_CATEGORIE_SELECT())) ? Integer
-				.parseInt(getZone(getNOM_LB_CATEGORIE_SELECT())) : -1);
+		int numCategorie = (Services.estNumerique(getZone(getNOM_LB_CATEGORIE_SELECT()))
+				? Integer.parseInt(getZone(getNOM_LB_CATEGORIE_SELECT())) : -1);
 		Categorie categorie = numCategorie > 0 ? (Categorie) getListeCategorie().get(numCategorie - 1) : null;
 
-		int numFiliere = (Services.estNumerique(getZone(getNOM_LB_FILIERE_SELECT())) ? Integer
-				.parseInt(getZone(getNOM_LB_FILIERE_SELECT())) : -1);
+		int numFiliere = (Services.estNumerique(getZone(getNOM_LB_FILIERE_GRADE_SELECT()))
+				? Integer.parseInt(getZone(getNOM_LB_FILIERE_GRADE_SELECT())) : -1);
 		FiliereGrade filiere = numFiliere > 0 ? (FiliereGrade) getListeFiliere().get(numFiliere - 1) : null;
 
-		int numCadreEmp = (Services.estNumerique(getZone(getNOM_LB_CADRE_EMPLOI_GRADE_SELECT())) ? Integer
-				.parseInt(getZone(getNOM_LB_CADRE_EMPLOI_GRADE_SELECT())) : -1);
+		int numCadreEmp = (Services.estNumerique(getZone(getNOM_LB_CADRE_EMPLOI_GRADE_SELECT()))
+				? Integer.parseInt(getZone(getNOM_LB_CADRE_EMPLOI_GRADE_SELECT())) : -1);
 		CadreEmploi cadreEmp = numCadreEmp > 0 ? (CadreEmploi) getListeCadreEmploi().get(numCadreEmp - 1) : null;
 
-		int numDelibTerr = (Services.estNumerique(getZone(getNOM_LB_DELIB_TERR_GRADE_SELECT())) ? Integer
-				.parseInt(getZone(getNOM_LB_DELIB_TERR_GRADE_SELECT())) : -1);
+		int numDelibTerr = (Services.estNumerique(getZone(getNOM_LB_DELIB_TERR_GRADE_SELECT()))
+				? Integer.parseInt(getZone(getNOM_LB_DELIB_TERR_GRADE_SELECT())) : -1);
 		Deliberation delibTerr = numDelibTerr > 0 ? (Deliberation) getListeDeliberationTerr().get(numDelibTerr - 1)
 				: null;
 
-		int numDelibComm = (Services.estNumerique(getZone(getNOM_LB_DELIB_COMM_GRADE_SELECT())) ? Integer
-				.parseInt(getZone(getNOM_LB_DELIB_COMM_GRADE_SELECT())) : -1);
+		int numDelibComm = (Services.estNumerique(getZone(getNOM_LB_DELIB_COMM_GRADE_SELECT()))
+				? Integer.parseInt(getZone(getNOM_LB_DELIB_COMM_GRADE_SELECT())) : -1);
 		Deliberation delibComm = numDelibComm > 0 ? (Deliberation) getListeDeliberationComm().get(numDelibComm - 1)
 				: null;
 
@@ -1013,13 +1028,13 @@ public class OePARAMETRAGEGradeRef extends BasicProcess {
 				Boolean inactif = getZone(getNOM_RG_INACTIF()).equals(getNOM_RB_OUI());
 				setGradeGeneriqueCourant(new GradeGenerique());
 				getGradeGeneriqueCourant().setCdgeng(getVAL_EF_CODE_GRADE_GENERIQUE());
-				getGradeGeneriqueCourant().setCodCadre(
-						categorie != null ? categorie.getLibCategorieStatut() : Const.CHAINE_VIDE);
+				getGradeGeneriqueCourant()
+						.setCodCadre(categorie != null ? categorie.getLibCategorieStatut() : Const.CHAINE_VIDE);
 				getGradeGeneriqueCourant().setLibGradeGenerique(getVAL_EF_LIBELLE_GRADE_GENERIQUE());
 				getGradeGeneriqueCourant().setCodeInactif(inactif ? "I" : Const.CHAINE_VIDE);
 				getGradeGeneriqueCourant().setNbPointsAvct(getVAL_EF_NB_PTS_CATEGORIE());
-				getGradeGeneriqueCourant().setIdCadreEmploi(
-						cadreEmp != null ? cadreEmp.getIdCadreEmploi().toString() : null);
+				getGradeGeneriqueCourant()
+						.setIdCadreEmploi(cadreEmp != null ? cadreEmp.getIdCadreEmploi().toString() : null);
 				getGradeGeneriqueCourant().setCdfili(filiere != null ? filiere.getCodeFiliere() : Const.CHAINE_VIDE);
 				getGradeGeneriqueCourant().setTexteCapCadreEmploi(getVAL_EF_TEXTE_CAP_GRADE_GENERIQUE());
 				getGradeGeneriqueCourant().setIdDeliberationTerritoriale(
@@ -1031,13 +1046,13 @@ public class OePARAMETRAGEGradeRef extends BasicProcess {
 					getListeGradeGenerique().add(getGradeGeneriqueCourant());
 			} else if (getVAL_ST_ACTION_GRADE_GENERIQUE().equals(ACTION_MODIFICATION)) {
 				Boolean inactif = getZone(getNOM_RG_INACTIF()).equals(getNOM_RB_OUI());
-				getGradeGeneriqueCourant().setCodCadre(
-						categorie != null ? categorie.getLibCategorieStatut() : Const.CHAINE_VIDE);
+				getGradeGeneriqueCourant()
+						.setCodCadre(categorie != null ? categorie.getLibCategorieStatut() : Const.CHAINE_VIDE);
 				getGradeGeneriqueCourant().setLibGradeGenerique(getVAL_EF_LIBELLE_GRADE_GENERIQUE());
 				getGradeGeneriqueCourant().setCodeInactif(inactif ? "I" : Const.CHAINE_VIDE);
 				getGradeGeneriqueCourant().setNbPointsAvct(getVAL_EF_NB_PTS_CATEGORIE());
-				getGradeGeneriqueCourant().setIdCadreEmploi(
-						cadreEmp != null ? cadreEmp.getIdCadreEmploi().toString() : null);
+				getGradeGeneriqueCourant()
+						.setIdCadreEmploi(cadreEmp != null ? cadreEmp.getIdCadreEmploi().toString() : null);
 				getGradeGeneriqueCourant().setCdfili(filiere != null ? filiere.getCodeFiliere() : Const.CHAINE_VIDE);
 				getGradeGeneriqueCourant().setTexteCapCadreEmploi(getVAL_EF_TEXTE_CAP_GRADE_GENERIQUE());
 				getGradeGeneriqueCourant().setIdDeliberationTerritoriale(
@@ -1048,9 +1063,10 @@ public class OePARAMETRAGEGradeRef extends BasicProcess {
 				// désactive/active tous les sous grades lies.
 				if (!mettreAjourActiveGrille(getGradeGeneriqueCourant(), inactif)) {
 					// "ERR145",
-					// "Impossible d'activer/désactiver des grilles associées au grade @. Merci de contacter le responsable du projet."
-					getTransaction().declarerErreur(
-							MessageUtils.getMessage("ERR145", getGradeGeneriqueCourant().getCdgeng()));
+					// "Impossible d'activer/désactiver des grilles associées au
+					// grade @. Merci de contacter le responsable du projet."
+					getTransaction()
+							.declarerErreur(MessageUtils.getMessage("ERR145", getGradeGeneriqueCourant().getCdgeng()));
 
 					return false;
 
@@ -1139,8 +1155,8 @@ public class OePARAMETRAGEGradeRef extends BasicProcess {
 			for (GradeGenerique gradeGenerique : getListeGradeGenerique()) {
 
 				if (gradeGenerique.getLibGradeGenerique().equals(getVAL_EF_LIBELLE_GRADE_GENERIQUE().toUpperCase())) {
-					getTransaction().declarerErreur(
-							MessageUtils.getMessage("ERR974", "un grade générique", "ce libellé"));
+					getTransaction()
+							.declarerErreur(MessageUtils.getMessage("ERR974", "un grade générique", "ce libellé"));
 					return false;
 				}
 
@@ -1153,9 +1169,10 @@ public class OePARAMETRAGEGradeRef extends BasicProcess {
 			for (GradeGenerique gradeGenerique : getListeGradeGenerique()) {
 
 				if (!gradeGenerique.getCdgeng().equals(getVAL_EF_CODE_GRADE_GENERIQUE().toUpperCase())) {
-					if (gradeGenerique.getLibGradeGenerique().equals(getVAL_EF_LIBELLE_GRADE_GENERIQUE().toUpperCase())) {
-						getTransaction().declarerErreur(
-								MessageUtils.getMessage("ERR974", "un grade générique", "ce libellé"));
+					if (gradeGenerique.getLibGradeGenerique()
+							.equals(getVAL_EF_LIBELLE_GRADE_GENERIQUE().toUpperCase())) {
+						getTransaction()
+								.declarerErreur(MessageUtils.getMessage("ERR974", "un grade générique", "ce libellé"));
 						return false;
 					}
 				}
@@ -1212,8 +1229,8 @@ public class OePARAMETRAGEGradeRef extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_ACTION_ECHELON
-	 * Date de création : (29/09/11 15:07:35)
+	 * Retourne la valeur à  afficher par la JSP pour la zone :
+	 * ST_ACTION_ECHELON Date de création : (29/09/11 15:07:35)
 	 * 
 	 */
 	public String getVAL_ST_ACTION_ECHELON() {
@@ -1290,24 +1307,6 @@ public class OePARAMETRAGEGradeRef extends BasicProcess {
 	 */
 	public String getVAL_EF_CODE_ECHELON() {
 		return getZone(getNOM_EF_CODE_ECHELON());
-	}
-
-	/**
-	 * Retourne le nom d'une zone de saisie pour la JSP : EF_CODE_FILIERE Date
-	 * de création : (29/09/11 15:07:35)
-	 * 
-	 */
-	public String getNOM_EF_CODE_FILIERE() {
-		return "NOM_EF_CODE_FILIERE";
-	}
-
-	/**
-	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
-	 * EF_CODE_FILIERE Date de création : (29/09/11 15:07:35)
-	 * 
-	 */
-	public String getVAL_EF_CODE_FILIERE() {
-		return getZone(getNOM_EF_CODE_FILIERE());
 	}
 
 	/**
@@ -1492,8 +1491,8 @@ public class OePARAMETRAGEGradeRef extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
-	 * JSP : LB_BAREME Date de création : (29/09/11 15:07:35)
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de
+	 * la JSP : LB_BAREME Date de création : (29/09/11 15:07:35)
 	 * 
 	 */
 	public String[] getVAL_LB_BAREME() {
@@ -1547,8 +1546,8 @@ public class OePARAMETRAGEGradeRef extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
-	 * JSP : LB_CLASSE Date de création : (29/09/11 15:07:35)
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de
+	 * la JSP : LB_CLASSE Date de création : (29/09/11 15:07:35)
 	 * 
 	 */
 	public String[] getVAL_LB_CLASSE() {
@@ -1602,8 +1601,8 @@ public class OePARAMETRAGEGradeRef extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
-	 * JSP : LB_ECHELON Date de création : (29/09/11 15:07:35)
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de
+	 * la JSP : LB_ECHELON Date de création : (29/09/11 15:07:35)
 	 * 
 	 */
 	public String[] getVAL_LB_ECHELON() {
@@ -1658,8 +1657,8 @@ public class OePARAMETRAGEGradeRef extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
-	 * JSP : LB_GRADE_GENERIQUE Date de création : (29/09/11 15:07:35)
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de
+	 * la JSP : LB_GRADE_GENERIQUE Date de création : (29/09/11 15:07:35)
 	 * 
 	 */
 	public String[] getVAL_LB_GRADE_GENERIQUE() {
@@ -1790,8 +1789,8 @@ public class OePARAMETRAGEGradeRef extends BasicProcess {
 	 * 
 	 */
 	public boolean performPB_MODIFIER_GRADE_GENERIQUE(HttpServletRequest request) throws Exception {
-		int indice = (Services.estNumerique(getVAL_LB_GRADE_GENERIQUE_SELECT()) ? Integer
-				.parseInt(getVAL_LB_GRADE_GENERIQUE_SELECT()) : -1);
+		int indice = (Services.estNumerique(getVAL_LB_GRADE_GENERIQUE_SELECT())
+				? Integer.parseInt(getVAL_LB_GRADE_GENERIQUE_SELECT()) : -1);
 
 		if (indice != -1 && indice < getListeGradeGenerique().size()) {
 			GradeGenerique grade = getListeGradeGenerique().get(indice);
@@ -1804,9 +1803,9 @@ public class OePARAMETRAGEGradeRef extends BasicProcess {
 			if (grade.getCdfili() != null) {
 				FiliereGrade filiere = (FiliereGrade) getHashFiliere().get(grade.getCdfili());
 				int ligneFiliere = getListeFiliere().indexOf(filiere);
-				addZone(getNOM_LB_FILIERE_SELECT(), String.valueOf(ligneFiliere + 1));
+				addZone(getNOM_LB_FILIERE_GRADE_SELECT(), String.valueOf(ligneFiliere + 1));
 			} else {
-				addZone(getNOM_LB_FILIERE_SELECT(), Const.ZERO);
+				addZone(getNOM_LB_FILIERE_GRADE_SELECT(), Const.ZERO);
 			}
 
 			if (grade.getIdCadreEmploi() != null) {
@@ -1819,8 +1818,8 @@ public class OePARAMETRAGEGradeRef extends BasicProcess {
 
 			// delib communale
 			if (grade.getIdDeliberationCommunale() != null) {
-				Deliberation delibComm = (Deliberation) getHashDeliberationComm().get(
-						grade.getIdDeliberationCommunale());
+				Deliberation delibComm = (Deliberation) getHashDeliberationComm()
+						.get(grade.getIdDeliberationCommunale());
 				int ligneDelibComm = getListeDeliberationComm().indexOf(delibComm);
 				addZone(getNOM_LB_DELIB_COMM_GRADE_SELECT(), String.valueOf(ligneDelibComm + 1));
 			} else {
@@ -1829,8 +1828,8 @@ public class OePARAMETRAGEGradeRef extends BasicProcess {
 
 			// delib territoriale
 			if (grade.getIdDeliberationTerritoriale() != null) {
-				Deliberation delibTerr = (Deliberation) getHashDeliberationTerr().get(
-						grade.getIdDeliberationTerritoriale());
+				Deliberation delibTerr = (Deliberation) getHashDeliberationTerr()
+						.get(grade.getIdDeliberationTerritoriale());
 				int ligneDelibTerr = getListeDeliberationTerr().indexOf(delibTerr);
 				addZone(getNOM_LB_DELIB_TERR_GRADE_SELECT(), String.valueOf(ligneDelibTerr + 1));
 			} else {
@@ -1945,8 +1944,8 @@ public class OePARAMETRAGEGradeRef extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
-	 * JSP : LB_CATEGORIE Date de création : (30/09/11 09:50:04)
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de
+	 * la JSP : LB_CATEGORIE Date de création : (30/09/11 09:50:04)
 	 * 
 	 */
 	public String[] getVAL_LB_CATEGORIE() {
@@ -2069,6 +2068,22 @@ public class OePARAMETRAGEGradeRef extends BasicProcess {
 			// Si clic sur le bouton PB_ANNULER_CADRE
 			if (testerParametre(request, getNOM_PB_ANNULER_CADRE_EMPLOI())) {
 				return performPB_ANNULER_CADRE_EMPLOI(request);
+			}
+
+			if (testerParametre(request, getNOM_PB_ANNULER_FILIERE())) {
+				return performPB_ANNULER_FILIERE(request);
+			}
+
+			if (testerParametre(request, getNOM_PB_VALIDER_FILIERE())) {
+				return performPB_VALIDER_CREATION_FILIERE(request);
+			}
+
+			if (testerParametre(request, getNOM_PB_CREER_FILIERE())) {
+				return performPB_CREER_FILIERE(request);
+			}
+
+			if (testerParametre(request, getNOM_PB_MODIFIER_FILIERE())) {
+				return performPB_MODIFIER_FILIERE(request);
 			}
 
 			// Si clic sur le bouton PB_CREER_CADRE
@@ -2224,8 +2239,8 @@ public class OePARAMETRAGEGradeRef extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
-	 * JSP : LB_CADRE_EMPLOI Date de création : (30/09/11 09:50:04)
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de
+	 * la JSP : LB_CADRE_EMPLOI Date de création : (30/09/11 09:50:04)
 	 * 
 	 */
 	public String[] getVAL_LB_CADRE_EMPLOI_GRADE() {
@@ -2321,8 +2336,8 @@ public class OePARAMETRAGEGradeRef extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
-	 * JSP : LB_CADRE Date de création : (09/09/11 13:36:47)
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de
+	 * la JSP : LB_CADRE Date de création : (09/09/11 13:36:47)
 	 * 
 	 */
 	public String[] getVAL_LB_CADRE_EMPLOI() {
@@ -2396,7 +2411,7 @@ public class OePARAMETRAGEGradeRef extends BasicProcess {
 
 		addZone(getNOM_EF_ACTION_CADRE_EMPLOI(), ACTION_CREATION);
 		addZone(getNOM_EF_CADRE_EMPLOI(), Const.CHAINE_VIDE);
-		addZone(getNOM_LB_FILIERE_SELECT(), "0");
+		addZone(getNOM_LB_FILIERE_GRADE_SELECT(), "0");
 
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
@@ -2420,8 +2435,8 @@ public class OePARAMETRAGEGradeRef extends BasicProcess {
 	 */
 	public boolean performPB_SUPPRIMER_CADRE_EMPLOI(HttpServletRequest request) throws Exception {
 
-		int indice = (Services.estNumerique(getVAL_LB_CADRE_EMPLOI_SELECT()) ? Integer
-				.parseInt(getVAL_LB_CADRE_EMPLOI_SELECT()) : -1);
+		int indice = (Services.estNumerique(getVAL_LB_CADRE_EMPLOI_SELECT())
+				? Integer.parseInt(getVAL_LB_CADRE_EMPLOI_SELECT()) : -1);
 
 		if (indice != -1 && indice < getListeCadreEmploi().size()) {
 			CadreEmploi c = getListeCadreEmploi().get(indice);
@@ -2510,8 +2525,8 @@ public class OePARAMETRAGEGradeRef extends BasicProcess {
 
 		// Verification si suppression d'un cadre emploi utilisee sur
 		// un grade generique
-		if (getVAL_EF_ACTION_CADRE_EMPLOI().equals(ACTION_SUPPRESSION)
-				&& GradeGenerique.listerGradeGeneriqueAvecCadreEmploi(getTransaction(), getCadreEmploiCourant()).size() > 0) {
+		if (getVAL_EF_ACTION_CADRE_EMPLOI().equals(ACTION_SUPPRESSION) && GradeGenerique
+				.listerGradeGeneriqueAvecCadreEmploi(getTransaction(), getCadreEmploiCourant()).size() > 0) {
 
 			// "ERR989",
 			// "Suppression impossible. Il existe au moins @ rattaché a @."
@@ -2526,8 +2541,8 @@ public class OePARAMETRAGEGradeRef extends BasicProcess {
 			if (getVAL_EF_ACTION_CADRE_EMPLOI().equals(ACTION_CREATION)) {
 				for (CadreEmploi cadre : getListeCadreEmploi()) {
 					if (cadre.getLibCadreEmploi().equals(getVAL_EF_CADRE_EMPLOI().toUpperCase())) {
-						getTransaction().declarerErreur(
-								MessageUtils.getMessage("ERR974", "un cadre emploi", "ce libellé"));
+						getTransaction()
+								.declarerErreur(MessageUtils.getMessage("ERR974", "un cadre emploi", "ce libellé"));
 						return false;
 					}
 				}
@@ -2542,17 +2557,17 @@ public class OePARAMETRAGEGradeRef extends BasicProcess {
 	 * : (13/09/11 15:49:10)
 	 * 
 	 */
-	public String getNOM_LB_FILIERE() {
-		return "NOM_LB_FILIERE";
+	public String getNOM_LB_FILIERE_GRADE() {
+		return "NOM_LB_FILIERE_GRADE";
 	}
 
 	/**
-	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
-	 * JSP : LB_FILIERE Date de création : (13/09/11 15:49:10)
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de
+	 * la JSP : LB_FILIERE Date de création : (13/09/11 15:49:10)
 	 * 
 	 */
-	public String[] getVAL_LB_FILIERE() {
-		return getLB_FILIERE();
+	public String[] getVAL_LB_FILIERE_GRADE() {
+		return getLB_FILIERE_GRADE();
 	}
 
 	/**
@@ -2560,18 +2575,18 @@ public class OePARAMETRAGEGradeRef extends BasicProcess {
 	 * : (13/09/11 15:49:10)
 	 * 
 	 */
-	private String[] getLB_FILIERE() {
-		if (LB_FILIERE == null)
-			LB_FILIERE = initialiseLazyLB();
-		return LB_FILIERE;
+	private String[] getLB_FILIERE_GRADE() {
+		if (LB_FILIERE_GRADE == null)
+			LB_FILIERE_GRADE = initialiseLazyLB();
+		return LB_FILIERE_GRADE;
 	}
 
 	/**
 	 * Setter de la liste: LB_FILIERE Date de création : (13/09/11 15:49:10)
 	 * 
 	 */
-	private void setLB_FILIERE(String[] newLB_FILIERE) {
-		LB_FILIERE = newLB_FILIERE;
+	private void setLB_FILIERE_GRADE(String[] newLB_FILIERE_GRADE) {
+		LB_FILIERE_GRADE = newLB_FILIERE_GRADE;
 	}
 
 	/**
@@ -2579,8 +2594,8 @@ public class OePARAMETRAGEGradeRef extends BasicProcess {
 	 * la JSP : LB_FILIERE Date de création : (13/09/11 15:49:10)
 	 * 
 	 */
-	public String getVAL_LB_FILIERE_SELECT() {
-		return getZone(getNOM_LB_FILIERE_SELECT());
+	public String getVAL_LB_FILIERE_GRADE_SELECT() {
+		return getZone(getNOM_LB_FILIERE_GRADE_SELECT());
 	}
 
 	/**
@@ -2588,8 +2603,8 @@ public class OePARAMETRAGEGradeRef extends BasicProcess {
 	 * NOM_LB_FILIERE_SELECT Date de création : (13/09/11 15:49:10)
 	 * 
 	 */
-	public String getNOM_LB_FILIERE_SELECT() {
-		return "NOM_LB_FILIERE_SELECT";
+	public String getNOM_LB_FILIERE_GRADE_SELECT() {
+		return "NOM_LB_FILIERE_GRADE_SELECT";
 	}
 
 	/**
@@ -2702,8 +2717,8 @@ public class OePARAMETRAGEGradeRef extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
-	 * JSP : LB_DELIB_TERR_GRADE Date de création : (29/09/11 15:07:35)
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de
+	 * la JSP : LB_DELIB_TERR_GRADE Date de création : (29/09/11 15:07:35)
 	 * 
 	 */
 	public String[] getVAL_LB_DELIB_TERR_GRADE() {
@@ -2758,8 +2773,8 @@ public class OePARAMETRAGEGradeRef extends BasicProcess {
 	}
 
 	/**
-	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
-	 * JSP : LB_DELIB_COMM_GRADE Date de création : (29/09/11 15:07:35)
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de
+	 * la JSP : LB_DELIB_COMM_GRADE Date de création : (29/09/11 15:07:35)
 	 * 
 	 */
 	public String[] getVAL_LB_DELIB_COMM_GRADE() {
@@ -2789,5 +2804,185 @@ public class OePARAMETRAGEGradeRef extends BasicProcess {
 
 	public void setCategorieDao(CategorieDao categorieDao) {
 		this.categorieDao = categorieDao;
+	}
+
+	/* FILIERES */
+
+	public String getNOM_LB_FILIERE() {
+		return "NOM_LB_FILIERE";
+	}
+	
+	private String[] getLB_FILIERE() {
+		if (LB_FILIERE == null)
+			LB_FILIERE = initialiseLazyLB();
+		return LB_FILIERE;
+	}
+	
+	public String[] getVAL_LB_FILIERE() {
+		return getLB_FILIERE();
+	}
+
+	/**
+	 * Setter de la liste: LB_FILIERE Date de création : (13/09/11 15:49:10)
+	 * 
+	 */
+	private void setLB_FILIERE(String[] newLB_FILIERE) {
+		LB_FILIERE = newLB_FILIERE;
+	}
+
+	public String getNOM_ST_ACTION_FILIERE() {
+		return "NOM_ST_ACTION_FILIERE";
+	}
+
+	public String getVAL_ST_ACTION_FILIERE() {
+		return getZone(getNOM_ST_ACTION_FILIERE());
+	}
+
+	public String getNOM_PB_CREER_FILIERE() {
+		return "NOM_PB_CREER_FILIERE";
+	}
+
+	public String getNOM_PB_MODIFIER_FILIERE() {
+		return "NOM_PB_MODIFIER_FILIERE";
+	}
+
+	public String getNOM_EF_CODE_FILIERE() {
+		return "NOM_EF_CODE_FILIERE";
+	}
+
+	public String getVAL_EF_CODE_FILIERE() {
+		return getZone(getNOM_EF_CODE_FILIERE());
+	}
+
+	public String getNOM_EF_LIBELLE_FILIERE() {
+		return "NOM_EF_LIBELLE_FILIERE";
+	}
+
+	public String getVAL_EF_LIBELLE_FILIERE() {
+		return getZone(getNOM_EF_LIBELLE_FILIERE());
+	}
+	
+	public String getNOM_PB_ANNULER_FILIERE() {
+		return "NOM_PB_ANNULER_FILIERE";
+	}
+	
+	public String getNOM_PB_VALIDER_FILIERE() {
+		return "NOM_PB_VALIDER_FILIERE";
+	}
+	
+	public String getVAL_LB_FILIERE_SELECT() {
+		return getZone(getNOM_LB_FILIERE_SELECT());
+	}
+
+	public String getNOM_LB_FILIERE_SELECT() {
+		return "NOM_LB_FILIERE_SELECT";
+	}
+
+	public FiliereGrade getFiliereCourante() {
+		return filiereCourante;
+	}
+
+	public void setFiliereCourante(FiliereGrade filiereCourante) {
+		this.filiereCourante = filiereCourante;
+	}
+
+	public boolean performPB_CREER_FILIERE(HttpServletRequest request) throws Exception {
+		addZone(getNOM_ST_ACTION_FILIERE(), ACTION_CREATION);
+		addZone(getNOM_EF_CODE_FILIERE(), Const.CHAINE_VIDE);
+		addZone(getNOM_EF_LIBELLE_FILIERE(), Const.CHAINE_VIDE);
+		setStatut(STATUT_MEME_PROCESS);
+		return true;
+	}
+
+	public boolean performPB_MODIFIER_FILIERE(HttpServletRequest request) throws Exception {
+		int indice = (Services.estNumerique(getVAL_LB_FILIERE_SELECT()) ? Integer.parseInt(getVAL_LB_FILIERE_SELECT()) : -1);
+
+		if (indice != -1 && indice < getListeEchelon().size()) {
+			FiliereGrade filiere = getListeFiliere().get(indice);
+			setFiliereCourante(filiere);
+			addZone(getNOM_EF_CODE_FILIERE(), filiere.getCodeFiliere());
+			addZone(getNOM_EF_LIBELLE_FILIERE(), filiere.getLibFiliere());
+			addZone(getNOM_ST_ACTION_FILIERE(), ACTION_MODIFICATION);
+		} else {
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "filières"));
+		}
+
+		return true;
+	}
+	
+	public boolean performPB_VALIDER_CREATION_FILIERE(HttpServletRequest request) throws Exception {
+
+		if (getVAL_ST_ACTION_FILIERE() != null && getVAL_ST_ACTION_FILIERE() != Const.CHAINE_VIDE) {
+
+			if (!performControlerSaisieFiliere(request))
+				return false;
+
+			if (getVAL_ST_ACTION_FILIERE().equals(ACTION_CREATION))
+				setFiliereCourante(new FiliereGrade());
+			getFiliereCourante().setCodeFiliere(getVAL_EF_CODE_FILIERE());
+			getFiliereCourante().setLibFiliere(getVAL_EF_LIBELLE_FILIERE());
+
+			if (!performControlerRegleGestionFiliere(request))
+				return false;
+
+			if (getVAL_ST_ACTION_FILIERE().equals(ACTION_CREATION))
+				getFiliereCourante().creerFiliere(getTransaction());
+			else
+				getFiliereCourante().modifierFiliere(getTransaction());
+
+			if (!getTransaction().isErreur()) {
+				if (getVAL_ST_ACTION_CLASSE().equals(ACTION_CREATION)) {
+					getListeFiliere().add(getFiliereCourante());
+					getListeFiliere().add(getFiliereCourante());
+				}
+			} else
+				return false;
+
+			commitTransaction();
+			initialiseListeFiliere(request);
+			addZone(getNOM_ST_ACTION_FILIERE(), Const.CHAINE_VIDE);
+		}
+
+		return true;
+	}
+	
+	private boolean performControlerRegleGestionFiliere(HttpServletRequest request) throws Exception {
+		// verif conrainte unicité classe
+		if (getVAL_ST_ACTION_FILIERE().equals(ACTION_CREATION) || getVAL_ST_ACTION_FILIERE().equals(ACTION_MODIFICATION)) {
+			for (FiliereGrade filiere : getListeFiliere()) {
+				if (!filiere.equals(getFiliereCourante())) {
+					if (filiere.getLibFiliere().equals(getVAL_EF_LIBELLE_FILIERE().toUpperCase())) {
+						getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "une filière", "ce libellé"));
+						return false;
+					}
+					if (filiere.getCodeFiliere().equals(getVAL_EF_CODE_FILIERE().toUpperCase())) {
+						getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "une filière", "ce code"));
+						return false;
+					}
+				}
+
+			}
+		}
+		return true;
+	}
+	
+	private boolean performControlerSaisieFiliere(HttpServletRequest request) throws Exception {
+		if (getZone(getNOM_EF_LIBELLE_FILIERE()).length() == 0) {
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "libellé"));
+			return false;
+		}
+		
+		if (getZone(getNOM_EF_CODE_FILIERE()).length() == 0) {
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "code"));
+			return false;
+		}
+
+		return true;
+	}
+
+	public boolean performPB_ANNULER_FILIERE(HttpServletRequest request) throws Exception {
+		addZone(getNOM_ST_ACTION_FILIERE(), Const.CHAINE_VIDE);
+		setStatut(STATUT_MEME_PROCESS);
+		return true;
 	}
 }
