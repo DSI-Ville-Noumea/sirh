@@ -116,6 +116,7 @@ public class ListeMessagesSIRH {
 			listeMessages.put("ERR1118", "Une FDP ne peut pas être supprimée si elle a déjà  été affectée.");
 			listeMessages.put("ERR1119", "Plusieurs agents correspondent à  votre recherche. Merci de passer par la recherche avancée des agents.");
 			listeMessages.put("ERR1120", "Aucun agent correspondant à  votre recherche. Merci de passer par la recherche avancée des agents.");
+			listeMessages.put("ERR1121", "Veuillez sélectionner une fiche de poste primaire avant de choisir une fiche de poste secondaire.");
 
 			// P&E-
 			listeMessages.put("ERR120", "Impossible de supprimer @ actuellement utilisée par @.");
