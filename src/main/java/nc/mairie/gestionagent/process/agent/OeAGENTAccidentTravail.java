@@ -380,23 +380,37 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 				addZone(getNOM_ST_DATE_DEBUT(indiceAcc), null == demande.getDateDebut() ? "" : sdf.format(demande.getDateDebut()));
 				addZone(getNOM_ST_DATE_FIN(indiceAcc), null == demande.getDateFin() ? "" : sdf.format(demande.getDateFin()));
 
-				// Calcul de l'ITT avec les rechutes et les prolongations
-				boolean hasRechute = false;
+				// Calcul de l'ITT avec les rechutes et les prolongations, pour les demandes valides.
+				int nbRechutes = 0;
+				int nbProlongations = 0;
+				Date dateFin = demande.getDateFin();
 				Double nbITT = demande.getNombreITT() == null ? 0 : demande.getNombreITT();
+				
 				for (DemandeDto rechute : listeRechutes) {
 					if (rechute.getAccidentTravailReference() != null && rechute.getAccidentTravailReference().getIdDemande().equals(demande.getIdDemande())) {
-						hasRechute = true;
-						if (rechute.getNombreITT() != null)
+						if (isValid(rechute) && rechute.getNombreITT() != null) {
 							nbITT += rechute.getNombreITT();
+							nbRechutes++;
+						}
 					}
 				}
+				
 				for (DemandeDto prolongation : listeProlongations) {
 					if (prolongation.getDateAccidentTravail() != null && prolongation.getDateAccidentTravail().equals(demande.getDateAccidentTravail())) {
-						if (prolongation.getNombreITT() != null)
+						if (isValid(prolongation) && prolongation.getNombreITT() != null) {
 							nbITT += prolongation.getNombreITT();
+							nbProlongations++;
+							// #39547 : La date de fin affichée doit correspondre à celle de la dernière rechute
+							if (dateFin != null && prolongation.getDateFin().after(dateFin)) {
+								dateFin = prolongation.getDateFin();
+							}
+						}
 					}
 				}
-				addZone(getNOM_ST_RECHUTE(indiceAcc), hasRechute ? "X" : "&nbsp;");
+
+				addZone(getNOM_ST_DATE_FIN(indiceAcc), null == dateFin ? "" : sdf.format(dateFin));
+				addZone(getNOM_ST_RECHUTE(indiceAcc), Integer.toString(nbRechutes));
+				addZone(getNOM_ST_PROLONGATION(indiceAcc), Integer.toString(nbProlongations));
 				addZone(getNOM_ST_NB_JOURS(indiceAcc), nbITT == 0 ? "&nbsp;" : nbITT.toString());
 				addZone(getNOM_ST_NB_DOC(indiceAcc), null == demande.getPiecesJointes() || demande.getPiecesJointes().size() == 0 ? "&nbsp;"
 						: String.valueOf(demande.getPiecesJointes().size()));
@@ -408,6 +422,11 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 
 	public String getNOM_PB_ANNULER() {
 		return "NOM_PB_ANNULER";
+	}
+	
+	// On ne test que le cas du "Annulée par l'agent", car c'est le seul état invalide que l'on récupère.
+	public boolean isValid(DemandeDto dto) {
+		return !dto.getIdRefEtat().equals(EnumEtatAbsence.ANNULEE.getCode());
 	}
 
 	public boolean performPB_ANNULER(HttpServletRequest request) throws Exception {
@@ -1144,6 +1163,14 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 
 	public String getVAL_ST_RECHUTE(int i) {
 		return getZone(getNOM_ST_RECHUTE(i));
+	}
+
+	public String getNOM_ST_PROLONGATION(int i) {
+		return "NOM_ST_PROLONGATION" + i;
+	}
+
+	public String getVAL_ST_PROLONGATION(int i) {
+		return getZone(getNOM_ST_PROLONGATION(i));
 	}
 
 	public String getNOM_ST_NB_JOURS(int i) {
