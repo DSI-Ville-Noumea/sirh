@@ -800,6 +800,10 @@ public class OeABSVisualisation extends BasicProcess {
 				idAgentService = getListMatriculeByGestionnaire(gestionnaire, idAgentService);
 				if (getTransaction().isErreur())
 					return false;
+				if (idAgentService.isEmpty()) {
+					getTransaction().declarerErreur("Aucun agent n'est associé à ce gestionnaire.");
+					return false;
+				}
 			} else {
 				getTransaction().declarerErreur("Vous ne pouvez pas utiliser le filtre 'gestionnaire' avec les filtres 'service' et 'agent'.");
 				return false;
@@ -829,7 +833,7 @@ public class OeABSVisualisation extends BasicProcess {
 			getTransaction().declarerErreur("Attention, les demandes sont limitées a 300 résultats. Utilisez les filtres.");
 		} else if (0 == listeDemande.size()) {
 			getTransaction().declarerErreur("Aucun résultat ne correspond à ces filtres");
-		} 
+		}
 		setTypeFiltre("GLOBAL");
 
 		return true;
