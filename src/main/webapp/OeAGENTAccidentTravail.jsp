@@ -68,6 +68,7 @@
 								<td align="center">Date début</td>
 								<td align="center">Date fin</td>
 								<td align="center">Rechute</td>
+								<td align="center">Prolong.</td>
 								<td align="center">Nbr jour(s) IIT</td>
 								<td align="left">Type</td>
 								<td align="left">Siège des lésions</td>
@@ -91,6 +92,7 @@
 										<td class="sigp2NewTab-liste" style="position:relative;width:90px;text-align: center;"><%=process.getVAL_ST_DATE_DEBUT(indiceAcc)%></td>
 										<td class="sigp2NewTab-liste" style="position:relative;width:90px;text-align: center;"><%=process.getVAL_ST_DATE_FIN(indiceAcc)%></td>
 										<td class="sigp2NewTab-liste" style="position:relative;width:40px;text-align: center;"><%=process.getVAL_ST_RECHUTE(indiceAcc)%></td>
+										<td class="sigp2NewTab-liste" style="position:relative;width:40px;text-align: center;"><%=process.getVAL_ST_PROLONGATION(indiceAcc)%></td>
 										<td class="sigp2NewTab-liste" style="position:relative;width:40px;text-align: right;"><%=process.getVAL_ST_NB_JOURS(indiceAcc)%></td>
 										<td class="sigp2NewTab-liste" style="position:relative;width:230px;text-align: left;"><%=process.getVAL_ST_TYPE(indiceAcc)%></td>
 										<td class="sigp2NewTab-liste" style="position:relative;width:170px;text-align: left;"><%=process.getVAL_ST_SIEGE(indiceAcc)%></td>
@@ -115,20 +117,20 @@
 				<% if(process.getDemandeCourant().getTypeSaisi().isDateAccidentTravail()) { %>
 				<tr>
 					<td width="155px;">
-						<span class="sigp2Mandatory">Date de l'accident du travail :</span>
+						<span class="sigp2">Date de l'accident du travail :</span>
 					</td>
 					<td width="320px;">
-						<input id="<%=process.getNOM_EF_DATE_ACCIDENT_TRAVAIL()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DATE_ACCIDENT_TRAVAIL() %>" size="10" type="text" value="<%= process.getVAL_EF_DATE_ACCIDENT_TRAVAIL() %>">
+						<input id="<%=process.getNOM_EF_DATE_ACCIDENT_TRAVAIL()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DATE_ACCIDENT_TRAVAIL() %>" size="10" type="text" value="<%= process.getVAL_EF_DATE_ACCIDENT_TRAVAIL() %>" readonly="readonly">
 					</td>
 				</tr>
 				<% } %>
 				<% if(process.getDemandeCourant().getTypeSaisi().isDateDeclaration()) { %>
 				<tr>
 					<td width="155px;">
-						<span class="sigp2Mandatory">Date de déclaration :</span>
+						<span class="sigp2">Date de déclaration :</span>
 					</td>
 					<td width="320px;">
-						<input id="<%=process.getNOM_EF_DATE()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DATE() %>" size="10" type="text" value="<%= process.getVAL_EF_DATE() %>">
+						<input id="<%=process.getNOM_EF_DATE()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DATE() %>" size="10" type="text" value="<%= process.getVAL_EF_DATE() %>" readonly="readonly">
 					</td>
 				</tr>
 				<% } %>
@@ -163,7 +165,7 @@
 				<% if(process.getDemandeCourant().getTypeSaisi().isPrescripteur()) { %>
 				<tr>
 					<td>
-						<span class="sigp2">Prescripteur :</span>
+						<span class="sigp2">Prescripteur initial :</span>
 					</td>
 					<td><span class="sigp2-saisie"><%= process.getVAL_EF_PRESCRIPTEUR() %></span></td>
 				</tr>
@@ -410,7 +412,7 @@
 			<% if(process.getDemandeCourant().getTypeSaisi().isPrescripteur()) { %>
 				<tr>
 					<td>
-						<span class="sigp2">Prescripteur :</span>
+						<span class="sigp2">Prescripteur initial :</span>
 					</td>
 					<td>
 						<span class="sigp2-saisie"><%=process.getVAL_EF_PRESCRIPTEUR()%></span>

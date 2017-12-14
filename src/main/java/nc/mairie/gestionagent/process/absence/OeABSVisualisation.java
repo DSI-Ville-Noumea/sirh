@@ -800,6 +800,10 @@ public class OeABSVisualisation extends BasicProcess {
 				idAgentService = getListMatriculeByGestionnaire(gestionnaire, idAgentService);
 				if (getTransaction().isErreur())
 					return false;
+				if (idAgentService.isEmpty()) {
+					getTransaction().declarerErreur("Aucun agent n'est associé à ce gestionnaire.");
+					return false;
+				}
 			} else {
 				getTransaction().declarerErreur("Vous ne pouvez pas utiliser le filtre 'gestionnaire' avec les filtres 'service' et 'agent'.");
 				return false;
@@ -829,7 +833,7 @@ public class OeABSVisualisation extends BasicProcess {
 			getTransaction().declarerErreur("Attention, les demandes sont limitées a 300 résultats. Utilisez les filtres.");
 		} else if (0 == listeDemande.size()) {
 			getTransaction().declarerErreur("Aucun résultat ne correspond à ces filtres");
-		} 
+		}
 		setTypeFiltre("GLOBAL");
 
 		return true;
@@ -1929,8 +1933,13 @@ public class OeABSVisualisation extends BasicProcess {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR803", "mettre en attente"));
 			TypeAbsenceDto t = new TypeAbsenceDto();
 			t.setIdRefTypeAbsence(dem.getIdTypeDemande());
-			String info = "Demande " + getListeFamilleAbsenceCreation().get(getListeFamilleAbsenceCreation().indexOf(t)).getLibelle() + " de l'agent " + ag.getNomatr() + " du "
-					+ sdf.format(dem.getDateDebut()) + ".";
+			
+			String info;
+			if (getListeFamilleAbsenceCreation().indexOf(t) != -1) {
+				info = "Demande " + getListeFamilleAbsenceCreation().get(getListeFamilleAbsenceCreation().indexOf(t)).getLibelle() + " de l'agent " + ag.getNomatr() + " du " + sdf.format(dem.getDateDebut()) + ".";
+			} else {
+				info = "Demande " + getListeFamilleAbsence().get(getListeFamilleAbsence().indexOf(t)).getLibelle() + " de l'agent " + ag.getNomatr() + " du " + sdf.format(dem.getDateDebut()) + ".";
+			}
 			addZone(getNOM_ST_INFO_MOTIF_EN_ATTENTE(), info);
 			addZone(getNOM_ST_MOTIF_EN_ATTENTE(), Const.CHAINE_VIDE);
 			addZone(getNOM_ST_ID_DEMANDE_EN_ATTENTE(), new Integer(idDemande).toString());

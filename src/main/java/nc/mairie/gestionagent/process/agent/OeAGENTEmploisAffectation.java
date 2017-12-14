@@ -8,6 +8,7 @@ import java.util.ListIterator;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.context.ApplicationContext;
 
 import nc.mairie.connecteur.Connecteur;
@@ -3909,8 +3910,13 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	 * RG_AG_AF_C05 RG_AG_AF_C07
 	 */
 	public boolean performPB_RECHERCHER_FP_SECONDAIRE(HttpServletRequest request) throws Exception {
-		// RG_AG_AF_C05
-		// RG_AG_AF_C07
+		
+		// On ne doit pas ajouter une FDP secondaire s'il n'y en a pas de primaire.
+		if (getFichePosteCourant() == null) {
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR1121"));
+			return false;
+		}
+		
 		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_RECHERCHE_POSTE_AVANCEE, Boolean.TRUE);
 		setStatut(STATUT_RECHERCHE_FP_SECONDAIRE, true);
 		return true;
@@ -4694,8 +4700,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			// Alimentation de l'objet
 			RegimeIndemnitaire regIndemn = new RegimeIndemnitaire();
 
-			regIndemn.setForfait(Double.valueOf(getVAL_EF_FORFAIT_REGIME()));
-			regIndemn.setNombrePoints(Integer.valueOf(getVAL_EF_NB_POINTS_REGIME()));
+			regIndemn.setForfait(Double.valueOf(StringUtils.isEmpty(getVAL_EF_FORFAIT_REGIME()) ? "0" : getVAL_EF_FORFAIT_REGIME()));
+			regIndemn.setNombrePoints(Integer.valueOf(StringUtils.isEmpty(getVAL_EF_NB_POINTS_REGIME()) ? "0" : getVAL_EF_NB_POINTS_REGIME()));
 
 			int indiceRegIndemn = (Services.estNumerique(getVAL_LB_TYPE_REGIME_SELECT()) ? Integer.parseInt(getVAL_LB_TYPE_REGIME_SELECT()) : -1);
 			regIndemn.setIdTypeRegIndemn(((TypeRegIndemn) getListeTypeRegIndemn().get(indiceRegIndemn)).getIdTypeRegIndemn());

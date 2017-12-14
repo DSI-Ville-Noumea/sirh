@@ -90,4 +90,24 @@ public class FiliereGrade extends BasicMetier {
 		FiliereGrade unFiliereGrade = new FiliereGrade();
 		return unFiliereGrade.getMyFiliereGradeBroker().chercherFiliereGrade(aTransaction, code);
 	}
+
+	/**
+	 * Methode creerObjetMetier qui retourne true ou false
+	 */
+	public boolean creerFiliere(Transaction aTransaction) throws Exception {
+		// Creation du Classe
+		setCodeFiliere(getCodeFiliere().toUpperCase());
+		setLibFiliere(getLibFiliere().toUpperCase());
+		return getMyFiliereGradeBroker().creerFiliere(aTransaction);
+	}
+
+	/**
+	 * Methode modifierObjetMetier qui retourne true ou false
+	 */
+	public boolean modifierFiliere(Transaction aTransaction) throws Exception {
+		// Modification du Classe
+		setCodeFiliere(getCodeFiliere().toUpperCase());
+		setLibFiliere(getLibFiliere().toUpperCase());
+		return getMyFiliereGradeBroker().modifierFiliere(aTransaction);
+	}
 }
