@@ -773,32 +773,22 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		// **************************************
 		// Vérification des coordonnées bancaires
 		// **************************************
-		// si au moins 1 champ rempli les autres sont obligatoires
-		if (getVAL_EF_NUM_COMPTE().length() != 0 || getVAL_EF_RIB().length() != 0 || getVAL_EF_INTITULE_COMPTE().length() != 0) {
-			// Code banque/Guichet obligatoire
-			if (getVAL_LB_BANQUE_GUICHET_SELECT().equals("0")) {
-				// "ERR002", "La zone @ est obligatoire."
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "Code banque / Guichet"));
-				setFocus(getNOM_LB_BANQUE_GUICHET());
-				result &= false;
-			}
-
-			// nÂ° compte obligatoire
-			if (getVAL_EF_NUM_COMPTE().length() == 0 || getVAL_EF_RIB().length() == 0 || getVAL_EF_INTITULE_COMPTE().length() == 0) {
-				// "ERR002", "La zone @ est obligatoire."
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "NÂ° de compte, RIB et Intitulé de compte"));
-				setFocus(getNOM_EF_NUM_COMPTE());
-				result &= false;
-			}
-
+		// #43805 : Tous les champs sont obligatoires
+		
+		// Code banque/Guichet
+		if (getVAL_LB_BANQUE_GUICHET_SELECT().equals("0")) {
+			// "ERR002", "La zone @ est obligatoire."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "Code banque / Guichet"));
+			setFocus(getNOM_LB_BANQUE_GUICHET());
+			result &= false;
 		}
-		if (!getVAL_LB_BANQUE_GUICHET_SELECT().equals("0")) {
-			if (getVAL_EF_NUM_COMPTE().length() == 0 || getVAL_EF_RIB().length() == 0 || getVAL_EF_INTITULE_COMPTE().length() == 0) {
-				// "ERR002", "La zone @ est obligatoire."
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "NÂ° de compte, RIB et Intitulé de compte"));
-				setFocus(getNOM_EF_NUM_COMPTE());
-				result &= false;
-			}
+
+		// n° compte
+		if (getVAL_EF_NUM_COMPTE().length() == 0 || getVAL_EF_RIB().length() == 0 || getVAL_EF_INTITULE_COMPTE().length() == 0) {
+			// "ERR002", "La zone @ est obligatoire."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "N° de compte, RIB et Intitulé de compte"));
+			setFocus(getNOM_EF_NUM_COMPTE());
+			result &= false;
 		}
 
 		// ******************************************
@@ -806,7 +796,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		// ******************************************
 
 		// **************************************
-		// Vérification nÂ° CAFAT
+		// Vérification n° CAFAT
 		// **************************************
 
 		if (getVAL_EF_NUM_CAFAT().length() != 0) {
@@ -816,7 +806,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 				result &= false;
 			}
 			// **************************************
-			// Vérification unicité nÂ° CAFAT
+			// Vérification unicité n° CAFAT
 			// **************************************
 			try {
 				Agent cafatAg = getAgentDao().chercherCafat(getVAL_EF_NUM_CAFAT(), getAgentCourant().getIdAgent());
@@ -834,7 +824,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		}
 
 		// **************************************
-		// Vérification nÂ° RUAM
+		// Vérification n° RUAM
 		// **************************************
 
 		if (getVAL_EF_NUM_RUAMM().length() != 0) {
@@ -845,7 +835,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 			}
 
 			// **************************************
-			// Vérification unicité nÂ° RUAM
+			// Vérification unicité n° RUAM
 			// **************************************
 			try {
 				Agent ruamAg = getAgentDao().chercherRuam(getVAL_EF_NUM_RUAMM(), getAgentCourant().getIdAgent());
@@ -862,7 +852,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		}
 
 		// **************************************
-		// Vérification unicité nÂ° MUTUELLE
+		// Vérification unicité n° MUTUELLE
 		// **************************************
 
 		if (getVAL_EF_NUM_MUTUELLE().length() != 0) {
@@ -881,7 +871,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		}
 
 		// **************************************
-		// Vérification unicité nÂ° CLR
+		// Vérification unicité n° CLR
 		// **************************************
 
 		if (getVAL_EF_NUM_CLR().length() != 0) {
@@ -899,7 +889,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		}
 
 		// **************************************
-		// Vérification unicité nÂ° CRE
+		// Vérification unicité n° CRE
 		// **************************************
 
 		if (getVAL_EF_NUM_CRE().length() != 0) {
@@ -918,7 +908,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		}
 
 		// **************************************
-		// Vérification unicité nÂ° IRCAFEX
+		// Vérification unicité n° IRCAFEX
 		// **************************************
 
 		if (getVAL_EF_NUM_IRCAFEX().length() != 0) {
@@ -1096,7 +1086,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 
 	private int calculCleRIB(Agent a, boolean compteNumerique) {
 		String numCompte = a.getNumCompte();
-		// si nÂ° compte numerique
+		// si n° compte numerique
 		if (!compteNumerique) {
 			numCompte = transformeNumCompteEnNumerique(numCompte);
 		}
