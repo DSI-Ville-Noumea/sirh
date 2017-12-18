@@ -9,6 +9,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -561,9 +562,22 @@ public class OeELECSaisieCompteurA55 extends OePaginable {
 
 		int dureeTotaleSaisie = (Integer.valueOf(dureeHeure) * 60) + (Integer.valueOf(dureeMin));
 
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 		String dateDeb = Services.formateDate(getVAL_ST_DATE_DEBUT()) + " 00:00:00";
 		String dateFin = Services.formateDate(getVAL_ST_DATE_FIN()) + " 23:59:59";
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+		
+		// #43463 : Les dates doivent correspondre aux début et fin de mois
+		DateTime tmpDate = new DateTime(sdf.parse(dateDeb)).withDayOfMonth(01);
+		if (!new DateTime(sdf.parse(dateDeb)).equals(tmpDate)) {
+			getTransaction().declarerErreur("La date de début ne correspond pas au premier jour du mois.");
+			return false;
+		}
+		tmpDate = new DateTime(sdf.parse(dateFin)).withDayOfMonth(01).plusMonths(1).minusDays(1);
+		if (!new DateTime(sdf.parse(dateFin)).equals(tmpDate)) {
+			getTransaction().declarerErreur("La date de fin ne correspond pas au dernier jour du mois.");
+			return false;
+		}
+		
 		CompteurDto compteurDto = new CompteurDto();
 		compteurDto.setIdAgent(agCompteur.getIdAgent());
 		MotifCompteurDto motifDto = new MotifCompteurDto();
