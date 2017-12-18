@@ -322,10 +322,10 @@ document.formu.elements[nom].focus();
 			<TABLE border="0" cellpadding="0" cellspacing="0">
 				<TBODY>
 					<TR>
-						<TD colspan="2" class="sigp2Mandatory" style="text-align : center;" width="514">Code banque / Guichet</TD>
-						<TD class="sigp2Mandatory" style="text-align : center;" width="116">N° de compte</TD>
-						<TD class="sigp2Mandatory" style="text-align : center;" width="100">clé RIB</TD>
-						<TD class="sigp2Mandatory" style="text-align : center;">Intitulé de compte</TD>
+						<TD colspan="2" class="sigp2" style="text-align : center;" width="514">Code banque / Guichet</TD>
+						<TD class="sigp2" style="text-align : center;" width="116">N° de compte</TD>
+						<TD class="sigp2" style="text-align : center;" width="100">clé RIB</TD>
+						<TD class="sigp2" style="text-align : center;">Intitulé de compte</TD>
 					</TR>
 					<TR>
 						<TD class="sigp2-saisie" style="text-align : center;" width="134">
