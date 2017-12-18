@@ -566,10 +566,15 @@ public class OeELECSaisieCompteurA55 extends OePaginable {
 		String dateDeb = Services.formateDate(getVAL_ST_DATE_DEBUT()) + " 00:00:00";
 		String dateFin = Services.formateDate(getVAL_ST_DATE_FIN()) + " 23:59:59";
 		
-		// #43463 : Les dates doivent correspondre aux début et fin de mois
+		// #43463 : Les dates doivent correspondre aux début et fin de mois.
 		DateTime tmpDate = new DateTime(sdf.parse(dateDeb)).withDayOfMonth(01);
 		if (!new DateTime(sdf.parse(dateDeb)).equals(tmpDate)) {
 			getTransaction().declarerErreur("La date de début ne correspond pas au premier jour du mois.");
+			return false;
+		}
+		// #43463 : La date de début ne peut être rétroactive.
+		if (sdf.parse(dateDeb).before(new DateTime().withDayOfMonth(1).minusDays(1).toDate())) {
+			getTransaction().declarerErreur("La date de début ne peut pas être inférieure au mois courant.");
 			return false;
 		}
 		tmpDate = new DateTime(sdf.parse(dateFin)).withDayOfMonth(01).plusMonths(1).minusDays(1);
