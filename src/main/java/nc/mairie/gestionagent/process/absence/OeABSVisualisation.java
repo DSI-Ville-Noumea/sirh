@@ -910,6 +910,11 @@ public class OeABSVisualisation extends BasicProcess {
 		dto.setDateReprise(dateReprise);
 		dto.setTypeSaisi(type.getTypeSaisiDto());
 		dto.setIdTypeDemande(type.getIdRefTypeAbsence());
+		
+		// On laisse l'état 'En attente de validation DRH' !
+		RefEtatDto refEtat = new RefEtatDto();
+		refEtat.setIdRefEtat(EnumEtatAbsence.A_VALIDER.getCode());
+		dto.setEtatDto(refEtat);
 
 		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class).deepSerialize(dto);
 
