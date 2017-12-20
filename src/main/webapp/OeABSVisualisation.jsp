@@ -404,15 +404,32 @@
                 </FIELDSET>
             <%} %>
 
-			<!-- ------------------------ CREATION D UNE DEMANDE ----------------------------- -->
-			<%if(process.getVAL_ST_ACTION().equals(process.ACTION_CREATION_DEMANDE)){ 
-					TypeAbsenceDto typeCreation = process.getTypeCreation(); %>
+			<!-- ------------------------ CREATION / MODIFICATION D'UNE DEMANDE ----------------------------- -->
+			<%if(process.getVAL_ST_ACTION().equals(process.ACTION_CREATION_DEMANDE) || process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION_DEMANDE)){ 
+				TypeAbsenceDto typeCreation = process.getTypeCreation();
+				String typeModification = process.getVAL_ST_ACTION().equals(process.ACTION_CREATION_DEMANDE) ? "Création" : "Modification";
+				%>
 			
 				<FIELDSET class="sigp2Fieldset" style="text-align:left;" id="<%=process.ACTION_CREATION_DEMANDE %>">
-	            	<legend class="sigp2Legend">Création d'une demande de type <%=typeCreation.getLibelle() %> pour l'agent <%=process.getAgentCreation().getPrenomUsage() %> <%=process.getAgentCreation().getNomUsage() %> (<%=process.getAgentCreation().getNomatr() %>)</legend>
+	            	<legend class="sigp2Legend"><%= typeModification %> d'une demande de type <%=typeCreation.getLibelle() %> pour l'agent <%=process.getAgentCreation().getPrenomUsage() %> <%=process.getAgentCreation().getNomUsage() %> (<%=process.getAgentCreation().getNomatr() %>)</legend>
 	            		<INPUT name="JSP" type="hidden" value="<%= process.getJSP()%>">
+						<INPUT type="submit" class="sigp2-displayNone" name="<%=process.getNOM_PB_SELECT_FAMILLE_MODIFICATION()%>">	
 		            	<% if(typeCreation.getTypeSaisiDto()!=null) { %>
 		            	<table>
+							<!-- #43462 : On peut modifier la famille d'une demande pour les maladies -->
+	            			<% if(process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION_DEMANDE) 
+	            					&& typeCreation.getGroupeAbsence().getIdRefGroupeAbsence().equals(RefTypeGroupeAbsenceEnum.MALADIES.getValue())) { %>
+		            			<tr>
+			            			<td width="100px">
+		                        		<span class="sigp2Mandatory">Famille :</span>
+			            			</td>
+			                		<td colspan="4">
+						                <SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_FAMILLE_MODIFICATION()%>" onchange='executeBouton("<%=process.getNOM_PB_SELECT_FAMILLE_MODIFICATION()%>")' >
+		                    				<%=process.forComboHTML(process.getVAL_LB_FAMILLE_MODIFICATION(), process.getVAL_LB_FAMILLE_MODIFICATION_SELECT()) %>
+						                </SELECT>
+			                		</td>
+		            			</tr>
+		            		<% } %>
 		            		<tr>
 		            			<% if(typeCreation.getTypeSaisiDto().isCalendarDateDebut()) { %>
 		            			<td width="100px">
@@ -643,8 +660,6 @@
 		            		</tr>
 	            			<% } %>
 		            		
-		            		<!-- Fin Maladies -->
-		            		
 		            		<tr>
 		            			<td>
 	                        		<span class="sigp2Mandatory">Commentaire :</span>
@@ -660,7 +675,7 @@
 		            			</td>
 		            		</tr>
 
-		            		<% if(typeCreation.getTypeSaisiDto().isPieceJointe()) { %>
+		            		<% if(typeCreation.getTypeSaisiDto().isPieceJointe() && process.getVAL_ST_ACTION().equals(process.ACTION_CREATION_DEMANDE)) { %>
 		            		<tr>
 		            			<td>
 	                        		<span class="sigp2Mandatory">Pièces jointes :</span>
@@ -681,7 +696,7 @@
 		            			</td>
 		            		</tr>
 		            		<% } %>
-		            		<% if(!typeCreation.getTypeSaisiDto().isSaisieKiosque()) { %>
+		            		<% if(!typeCreation.getTypeSaisiDto().isSaisieKiosque() && process.getVAL_ST_ACTION().equals(process.ACTION_CREATION_DEMANDE)) { %>
 		            		<tr>
 		            			<td>
 	                        		<span class="sigp2Mandatory">Etat :</span>
@@ -793,7 +808,11 @@
 		            	</table>
 		            	<%} %>
 		            	<BR/>
-	                    <INPUT onkeydown="" onkeypress="" onkeyup="" type="submit" class="sigp2-Bouton-100" value="Valider" name="<%=process.getNOM_PB_VALIDER_CREATION_DEMANDE() %>">
+		            	<% if (process.getVAL_ST_ACTION().equals(process.ACTION_CREATION_DEMANDE)) { %>
+	                    	<INPUT onkeydown="" onkeypress="" onkeyup="" type="submit" class="sigp2-Bouton-100" value="Valider" name="<%=process.getNOM_PB_VALIDER_CREATION_DEMANDE() %>">
+		            	<%} else if (process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION_DEMANDE)) { %>
+	                    	<INPUT onkeydown="" onkeypress="" onkeyup="" type="submit" class="sigp2-Bouton-100" value="Valider" name="<%=process.getNOM_PB_VALIDER_MODIFICATION_DEMANDE() %>">
+						<% } %>
 	                    <INPUT onkeydown="" onkeypress="" onkeyup="" type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER() %>">
 	            </FIELDSET>
 			<% } %>
@@ -919,14 +938,18 @@
                         	int indiceAbs = absMap.getKey();
                         %>
                         <tr id="tr<%=indiceAbs %>">
-                            <td width="20px" align="center">
-                            <%if(abs.isAffichageBoutonDupliquer()){ %>                            	
+                            <td width="46px" align="center">
+                            <%if(abs.isAffichageBoutonDupliquer()){ %>
                             	<img onkeydown="" onkeypress="" onkeyup="" title="dupliquer" type="image" src="images/dupliquer.gif"  height="15px" width="15px" class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_DUPLIQUER(indiceAbs)%>" onclick="executeBouton('<%=process.getNOM_PB_DUPLIQUER(indiceAbs)%>');">
-								<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_DUPLIQUER(indiceAbs)%>" value="">
+								<INPUT type="submit" style="display : none;" name="<%=process.getNOM_PB_DUPLIQUER(indiceAbs)%>" value="">
                             <%} %>
                             <%if(abs.isAffichageBoutonAnnuler()){ %>
                             	<img onkeydown="" onkeypress="" onkeyup="" title="annuler" type="image" src="images/suppression.gif"  height="15px" width="15px" class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_ANNULER_DEMANDE(indiceAbs)%>" onclick="executeBouton('<%=process.getNOM_PB_ANNULER_DEMANDE(indiceAbs)%>');">
-								<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_ANNULER_DEMANDE(indiceAbs)%>" value="">
+								<INPUT type="submit" style="display : none;" name="<%=process.getNOM_PB_ANNULER_DEMANDE(indiceAbs)%>" value="">
+                            <%} %>
+                            <%if(abs.isAffichageBoutonModifier()){ %>
+                            	<img onkeydown="" onkeypress="" onkeyup="" title="modifier" type="image" src="images/modifier.gif"  height="15px" width="15px" class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_MODIFIER_DEMANDE(indiceAbs)%>" onclick="executeBouton('<%=process.getNOM_PB_MODIFIER_DEMANDE(indiceAbs)%>');">
+								<INPUT type="submit" style="display : none;" name="<%=process.getNOM_PB_MODIFIER_DEMANDE(indiceAbs)%>" value="">
                             <%} %>
 							</td>  
                             <td width="30px" align="center">
