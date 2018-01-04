@@ -58,7 +58,13 @@ function testClickEnrigistrer(){
 				<span class="sigp2" style="width:40px">OS : </span>
 				<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_OS_FILTRE() %>" style="width:100px;margin-right:20px;">
 					<%=process.forComboHTML(process.getVAL_LB_OS_FILTRE(), process.getVAL_LB_OS_FILTRE_SELECT()) %>
-				</SELECT>
+				</SELECT>					
+				<span class="sigp2" style="width:40px">Matricule : </span>
+            	<span width="150px">
+	                <INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_AGENT_DEMANDE()%>" size="4" maxlength="4" type="text" value="<%= process.getVAL_ST_AGENT_DEMANDE()%>">
+	                <img onkeydown="" onkeypress="" onkeyup="" border="0" src="images/loupe.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_RECHERCHER_AGENT_DEMANDE()%>');">
+	                <img onkeydown="" onkeypress="" onkeyup="" border="0" src="images/suppression.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_DEMANDE()%>');">
+            	</span>
 	          	<INPUT type="submit" class="sigp2-Bouton-100" value="Filtrer" name="<%=process.getNOM_PB_FILTRER()%>">
 	          	<% if(process.isDuplicationPossible()){ %>
 	          		<INPUT type="submit" class="sigp2-Bouton-200" value="Dupliquer sur l'année suivante" name="<%=process.getNOM_PB_DUPLIQUER()%>">
@@ -80,10 +86,9 @@ function testClickEnrigistrer(){
 							</tr>
 							<%
 							if (process.getListeCompteurAgent()!=null){
-								for (int j = 0;j<process.getListeCompteurAgent().size();j++){
-									Integer  i = process.getListeCompteurAgent().get(j).getAgent().getIdAgent();
+								for (int i = 0;i<process.getListeCompteurAgent().size();i++){
 							%>
-									<tr id="<%=i%>" onmouseover="SelectLigne(<%=j%>,<%=process.getListeCompteur().size()%>)">
+									<tr id="<%=i%>" onmouseover="SelectLigne(<%=i%>,<%=process.getListeCompteur().size()%>)">
 										<td class="sigp2NewTab-liste" align="center">
 											<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, "") %>" name="<%=process.getNOM_PB_VISUALISATION(i)%>">
 				    						<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_VISUALISATION(i)%>">
@@ -257,6 +262,8 @@ function testClickEnrigistrer(){
 
     <INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_RECHERCHER_AGENT_CREATE()%>" value="RECHERCHERAGENTCREATE">
     <INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_AJOUTER()%>" value="AJOUTER">
+	<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_RECHERCHER_AGENT_DEMANDE()%>" value="RECHERCHERAGENTDEMANDE">
+    <INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_DEMANDE()%>" value="SUPPRECHERCHERAGENTDEMANDE">
 	</FORM>
 </BODY>
 </HTML>

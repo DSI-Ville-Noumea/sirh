@@ -1,6 +1,5 @@
 package nc.mairie.spring.ws;
 
-import java.util.Date;
 import java.util.List;
 
 import nc.mairie.gestionagent.absence.dto.ActeursDto;
@@ -133,9 +132,9 @@ public interface ISirhAbsWSConsumer {
 
 	ReturnMessageDto addCompteurCongeAnnuel(Integer idAgent, String json);
 
-	List<CompteurDto> getListeCompteursA48(Integer annee, Integer idOrganisation, Integer pageSize, Integer pageNumber);
+	List<CompteurDto> getListeCompteursA48(Integer annee, Integer idOrganisation, Integer pageSize, Integer pageNumber, String idAgentRecherche);
 
-	List<CompteurDto> getListeCompteursA54(Integer annee, Integer idOrganisation, Integer pageSize, Integer pageNumber);
+	List<CompteurDto> getListeCompteursA54(Integer annee, Integer idOrganisation, Integer pageSize, Integer pageNumber, String idAgentRecherche);
 
 	List<CompteurDto> getListeCompteursA55(Integer pageSize, Integer pageNumber, String idAgentRecherche, String dateMin, String dateMax);
 

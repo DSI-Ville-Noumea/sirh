@@ -13,8 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 
-import com.sun.jersey.core.spi.scanning.PackageNamesScanner;
-
 import flexjson.JSONSerializer;
 import nc.mairie.enums.EnumTypeAbsence;
 import nc.mairie.gestionagent.absence.dto.CompteurDto;
@@ -24,13 +22,13 @@ import nc.mairie.gestionagent.absence.vo.VoAgentCompteur;
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
 import nc.mairie.gestionagent.process.OePaginable;
 import nc.mairie.gestionagent.radi.dto.LightUserDto;
+import nc.mairie.gestionagent.robot.MaClasse;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.Agent;
 import nc.mairie.spring.dao.metier.agent.AgentDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.spring.ws.MSDateTransformer;
-import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.UserAppli;
@@ -127,6 +125,13 @@ public class OeELECSaisieCompteurA54 extends OePaginable {
 				addZone(getNOM_ST_AGENT_CREATE(), agt.getNomatr().toString());
 			}
 		}
+		if (etatStatut() == MaClasse.STATUT_RECHERCHE_AGENT) {
+			Agent agt = (Agent) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
+			VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
+			if (agt != null) {
+				addZone(getNOM_ST_AGENT_DEMANDE(), agt.getNomatr().toString());
+			}
+		}
 
 		// Initialisation des listes deroulantes
 		initialiseListeDeroulante();
@@ -154,8 +159,10 @@ public class OeELECSaisieCompteurA54 extends OePaginable {
 			OrganisationSyndicaleDto orgaFiltre = getListeOrganisationSyndicale().get(indiceOS - 1);
 			orgaFiltreId = orgaFiltre.getIdOrganisation();
 		}
-		
-		setResultSize(absService.getCountAllCompteursByYearAndOS("asaA54", anneeFiltre, orgaFiltreId, null, null, null));
+		Integer idAgentDemande = getVAL_ST_AGENT_DEMANDE().equals(Const.CHAINE_VIDE) ? null : new Integer("900" + getVAL_ST_AGENT_DEMANDE());
+
+		setResultSize(
+				absService.getCountAllCompteursByYearAndOS("asaA54", anneeFiltre, orgaFiltreId, idAgentDemande, null, null));
 	}
 
 	private void initialiseListeDeroulante() {
@@ -190,6 +197,7 @@ public class OeELECSaisieCompteurA54 extends OePaginable {
 			Calendar cal = Calendar.getInstance();
 			cal.setTime(new Date());
 			Integer anneeCourante = cal.get(Calendar.YEAR);
+			listeAnnee.add("");
 			for (int i = 2015; i <= anneeCourante + 1; i++) {
 				listeAnnee.add(i + "");
 			}
@@ -262,8 +270,11 @@ public class OeELECSaisieCompteurA54 extends OePaginable {
 		int indiceAnnee = (Services.estNumerique(getVAL_LB_ANNEE_FILTRE_SELECT()) ? Integer.parseInt(getVAL_LB_ANNEE_FILTRE_SELECT()) : -1);
 		String anneeFiltre = getListeAnneeFiltre().get(indiceAnnee);
 
-		ArrayList<CompteurDto> listeCompteur = (ArrayList<CompteurDto>) absService.getListeCompteursA54(new Integer(anneeFiltre),
-				orgaFiltre == null ? null : orgaFiltre.getIdOrganisation(), getPageSize(), getPageNumber());
+		String idAgentDemande = getVAL_ST_AGENT_DEMANDE().equals(Const.CHAINE_VIDE) ? null : "900" + getVAL_ST_AGENT_DEMANDE();
+
+		ArrayList<CompteurDto> listeCompteur = (ArrayList<CompteurDto>) absService.getListeCompteursA54(
+				anneeFiltre.equals("")?null : new Integer(anneeFiltre), orgaFiltre == null ? null : orgaFiltre.getIdOrganisation(), getPageSize(),
+				getPageNumber(),idAgentDemande);
 		logger.debug("Taille liste des compteurs ASA A54 : " + listeCompteur.size());
 		setListeCompteur(listeCompteur);
 
@@ -284,8 +295,8 @@ public class OeELECSaisieCompteurA54 extends OePaginable {
 		Collections.sort(listCompteurAgent);
 		setListeCompteurAgent((ArrayList<VoAgentCompteur>) listCompteurAgent);
 
+		int indiceLigne = 0;
 		for (VoAgentCompteur vo : listCompteurAgent) {
-			Integer indiceLigne = vo.getAgent().getIdAgent();
 
 			Calendar cal = Calendar.getInstance();
 			cal.setTime(vo.getCompteur().getDateDebut());
@@ -299,6 +310,7 @@ public class OeELECSaisieCompteurA54 extends OePaginable {
 			addZone(getNOM_ST_MOTIF(indiceLigne),
 					vo.getCompteur().getMotifCompteurDto() == null ? Const.CHAINE_VIDE : vo.getCompteur().getMotifCompteurDto().getLibelle());
 			addZone(getNOM_ST_ACTIF(indiceLigne), vo.isActif() ? "oui" : "non");
+			indiceLigne++;
 		}
 	}
 
@@ -340,8 +352,7 @@ public class OeELECSaisieCompteurA54 extends OePaginable {
 				return performPB_CHANGE_PAGINATION(request);
 			}
 
-			for (int j = 0; j < getListeCompteurAgent().size(); j++) {
-				Integer i = getListeCompteurAgent().get(j).getAgent().getIdAgent();
+			for (int i = 0; i < getListeCompteurAgent().size(); i++) {
 				// Si clic sur le bouton PB_MODIFIER
 				if (testerParametre(request, getNOM_PB_MODIFIER(i))) {
 					return performPB_MODIFIER(request, i);
@@ -354,6 +365,14 @@ public class OeELECSaisieCompteurA54 extends OePaginable {
 
 			if (testerParametre(request, getNOM_PB_RECHERCHER_AGENT_CREATE())) {
 				return performPB_RECHERCHER_AGENT_CREATE(request);
+			}
+
+			if (testerParametre(request, getNOM_PB_RECHERCHER_AGENT_DEMANDE())) {
+				return performPB_RECHERCHER_AGENT_DEMANDE(request);
+			}
+
+			if (testerParametre(request, getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_DEMANDE())) {
+				return performPB_SUPPRIMER_RECHERCHER_AGENT_DEMANDE(request);
 			}
 		}
 		// Si TAG INPUT non géré par le process
@@ -458,14 +477,12 @@ public class OeELECSaisieCompteurA54 extends OePaginable {
 		return "NOM_PB_MODIFIER" + i;
 	}
 
-	public boolean performPB_MODIFIER(HttpServletRequest request, int idAgent) throws Exception {
+	public boolean performPB_MODIFIER(HttpServletRequest request, int indiceEltAModifier) throws Exception {
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 		videZonesDeSaisie(request);
 
-		CompteurDto ag = new CompteurDto();
-		ag.setIdAgent(idAgent);
-		CompteurDto compteurCourant = (CompteurDto) getListeCompteur().get(getListeCompteur().indexOf(ag));
+		CompteurDto compteurCourant = (CompteurDto) getListeCompteur().get(indiceEltAModifier);
 
 		if (!initialiseCompteurCourant(request, compteurCourant))
 			return false;
@@ -500,14 +517,13 @@ public class OeELECSaisieCompteurA54 extends OePaginable {
 		return "NOM_PB_VISUALISATION" + i;
 	}
 
-	public boolean performPB_VISUALISATION(HttpServletRequest request, int idAgent) throws Exception {
+	public boolean performPB_VISUALISATION(HttpServletRequest request, int indiceEltAModifier) throws Exception {
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 		videZonesDeSaisie(request);
 
-		CompteurDto ag = new CompteurDto();
-		ag.setIdAgent(idAgent);
-		CompteurDto compteurCourant = (CompteurDto) getListeCompteur().get(getListeCompteur().indexOf(ag));
+
+		CompteurDto compteurCourant = (CompteurDto) getListeCompteur().get(indiceEltAModifier);
 
 		if (!initialiseCompteurCourant(request, compteurCourant))
 			return false;
@@ -774,10 +790,9 @@ public class OeELECSaisieCompteurA54 extends OePaginable {
 		this.listeAnnee = listeAnnee;
 	}
 
-	public boolean peutModifierCompteur(int idAgent) {
-		CompteurDto ag = new CompteurDto();
-		ag.setIdAgent(idAgent);
-		CompteurDto compteurCourant = (CompteurDto) getListeCompteur().get(getListeCompteur().indexOf(ag));
+	public boolean peutModifierCompteur(int indiceEltAModifier) {
+
+		CompteurDto compteurCourant = (CompteurDto) getListeCompteur().get(indiceEltAModifier);
 
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(new Date());
@@ -908,6 +923,8 @@ public class OeELECSaisieCompteurA54 extends OePaginable {
 		// recupération année du filtre
 		int indiceAnnee = (Services.estNumerique(getVAL_LB_ANNEE_FILTRE_SELECT()) ? Integer.parseInt(getVAL_LB_ANNEE_FILTRE_SELECT()) : -1);
 		String anneeFiltre = getListeAnneeFiltre().get(indiceAnnee);
+		if(anneeFiltre.equals(""))
+			return false;
 		if (new Integer(anneeFiltre).equals(anneeCourante)) {
 			return true;
 		}if (new Integer(anneeFiltre).equals(anneePrec)) {
@@ -956,7 +973,13 @@ public class OeELECSaisieCompteurA54 extends OePaginable {
 		// recupération année du filtre
 		int indiceAnnee = (Services.estNumerique(getVAL_LB_ANNEE_FILTRE_SELECT()) ? Integer.parseInt(getVAL_LB_ANNEE_FILTRE_SELECT()) : -1);
 		String anneeChoisie = getListeAnneeFiltre().get(indiceAnnee);
-		ArrayList<CompteurDto> listeCompteur = (ArrayList<CompteurDto>) absService.getListeCompteursA54(new Integer(anneeChoisie), null, getPageSize(), getPageNumber());
+		if (anneeChoisie.equals("") ) {
+			// "ERR002", "La zone @ est obligatoire."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "année"));
+			return false;
+		}
+		ArrayList<CompteurDto> listeCompteur = (ArrayList<CompteurDto>) absService
+				.getListeCompteursA54(new Integer(anneeChoisie), null, getPageSize(), getPageNumber(),null);
 
 		// on met le motif "reprise de données"
 		MotifCompteurDto motifReprise = null;
@@ -1072,5 +1095,34 @@ public class OeELECSaisieCompteurA54 extends OePaginable {
 
 	public void setListeCompteurAgent(ArrayList<VoAgentCompteur> listeCompteurAgent) {
 		this.listeCompteurAgent = listeCompteurAgent;
+	}
+
+	public String getNOM_ST_AGENT_DEMANDE() {
+		return "NOM_ST_AGENT_DEMANDE";
+	}
+
+	public String getVAL_ST_AGENT_DEMANDE() {
+		return getZone(getNOM_ST_AGENT_DEMANDE());
+	}
+
+	public String getNOM_PB_RECHERCHER_AGENT_DEMANDE() {
+		return "NOM_PB_RECHERCHER_AGENT_DEMANDE";
+	}
+
+	public boolean performPB_RECHERCHER_AGENT_DEMANDE(HttpServletRequest request) throws Exception {
+		// On met l'agent courant en var d'activité
+		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new Agent());
+		setStatut(MaClasse.STATUT_RECHERCHE_AGENT, true);
+		return true;
+	}
+
+	public String getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_DEMANDE() {
+		return "NOM_PB_SUPPRIMER_RECHERCHER_AGENT_DEMANDE";
+	}
+
+	public boolean performPB_SUPPRIMER_RECHERCHER_AGENT_DEMANDE(HttpServletRequest request) throws Exception {
+		// On enleve l'agent selectionnée
+		addZone(getNOM_ST_AGENT_DEMANDE(), Const.CHAINE_VIDE);
+		return true;
 	}
 }

@@ -122,7 +122,7 @@ public interface IAbsService {
 
 	ReturnMessageDto initialiseCompteurConge(Integer agentConnecte, Integer agentConcerne);
 
-	List<CompteurDto> getListeCompteursA48(Integer annee, Integer idOrganisation, Integer pageSize, Integer pageNumber);
+	List<CompteurDto> getListeCompteursA48(Integer annee, Integer idOrganisation, Integer pageSize, Integer pageNumber, String idAgentRecherche);
 
 	Integer getCountAllCompteursByYearAndOS(String typeCompteur, String year, Integer idOS, Integer idAgentRecherche, String dateDeb, String dateFin);
 
@@ -142,7 +142,7 @@ public interface IAbsService {
 
 	ReturnMessageDto addCompteurAsaA54ByList(Integer idAgent, String json);
 
-	List<CompteurDto> getListeCompteursA54(Integer annee, Integer idOrganisation, Integer pageSize, Integer offset);
+	List<CompteurDto> getListeCompteursA54(Integer annee, Integer idOrganisation, Integer pageSize, Integer offset, String idAgentRecherche);
 
 	ReturnMessageDto addCompteurAsaA55(Integer idAgent, String json);
 
