@@ -465,7 +465,6 @@ public class OeELECSaisieCompteurA54 extends OePaginable {
 
 		// si on a choisi un OS dans le filtre, alors on positionne par defaut
 		int indiceOS = (Services.estNumerique(getVAL_LB_OS_FILTRE_SELECT()) ? Integer.parseInt(getVAL_LB_OS_FILTRE_SELECT()) : -1);
-				: -1);
 		if (indiceOS > 0) {
 			addZone(getNOM_LB_OS_SELECT(), String.valueOf(indiceOS));
 		}
