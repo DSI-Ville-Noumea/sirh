@@ -290,8 +290,8 @@ public class AbsService implements IAbsService {
 	}
 
 	@Override
-	public List<CompteurDto> getListeCompteursA48(Integer annee, Integer idOrganisation, Integer pageSize, Integer pageNumber) {
-		return absConsumer.getListeCompteursA48(annee, idOrganisation, pageSize, pageNumber);
+	public List<CompteurDto> getListeCompteursA48(Integer annee, Integer idOrganisation, Integer pageSize, Integer pageNumber, String idAgentRecherche) {
+		return absConsumer.getListeCompteursA48(annee, idOrganisation, pageSize, pageNumber,idAgentRecherche);
 	}
 
 	@Override
@@ -335,8 +335,8 @@ public class AbsService implements IAbsService {
 	}
 
 	@Override
-	public List<CompteurDto> getListeCompteursA54(Integer annee, Integer idOrganisation, Integer pageSize, Integer offset) {
-		return absConsumer.getListeCompteursA54(annee, idOrganisation, pageSize, offset);
+	public List<CompteurDto> getListeCompteursA54(Integer annee, Integer idOrganisation, Integer pageSize, Integer offset, String idAgentRecherche) {
+		return absConsumer.getListeCompteursA54(annee, idOrganisation, pageSize, offset,idAgentRecherche);
 	}
 
 	@Override

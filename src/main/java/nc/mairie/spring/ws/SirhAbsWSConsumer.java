@@ -276,16 +276,20 @@ public class SirhAbsWSConsumer extends BaseWsConsumer implements ISirhAbsWSConsu
 	}
 
 	@Override
-	public List<CompteurDto> getListeCompteursA48(Integer annee, Integer idOrganisation, Integer pageSize, Integer pageNumber) {
+	public List<CompteurDto> getListeCompteursA48(Integer annee, Integer idOrganisation, Integer pageSize, Integer pageNumber, String idAgentRecherche) {
 		String url = String.format(absWsBaseUrl + sirhAbsListeCompteurA48);
 		HashMap<String, String> params = new HashMap<>();
-		params.put("annee", annee.toString());
+		if (annee != null)
+			params.put("annee", annee.toString());
 		if (idOrganisation != null)
 			params.put("idOrganisation", idOrganisation.toString());
 		if (pageSize != null)
 			params.put("pageSize", pageSize.toString());
 		if (pageNumber != null)
 			params.put("pageNumber", pageNumber.toString());
+		
+		if (idAgentRecherche != null)
+			params.put("idAgentRecherche", idAgentRecherche);
 		ClientResponse res = createAndFireRequest(params, url);
 		return readResponseAsList(CompteurDto.class, res, url);
 	}
@@ -446,16 +450,20 @@ public class SirhAbsWSConsumer extends BaseWsConsumer implements ISirhAbsWSConsu
 	}
 
 	@Override
-	public List<CompteurDto> getListeCompteursA54(Integer annee, Integer idOrganisation, Integer pageSize, Integer pageNumber) {
+	public List<CompteurDto> getListeCompteursA54(Integer annee, Integer idOrganisation, Integer pageSize, Integer pageNumber, String idAgentRecherche) {
 		String url = String.format(absWsBaseUrl + sirhAbsListeCompteurA54);
 		HashMap<String, String> params = new HashMap<>();
-		params.put("annee", annee.toString());
+		if (annee != null)
+			params.put("annee", annee.toString());
 		if (idOrganisation != null)
 			params.put("idOrganisation", idOrganisation.toString());
 		if (pageSize != null)
 			params.put("pageSize", pageSize.toString());
 		if (pageNumber != null)
 			params.put("pageNumber", pageNumber.toString());
+		
+		if (idAgentRecherche != null)
+			params.put("idAgentRecherche", idAgentRecherche);
 
 		ClientResponse res = createAndFireRequest(params, url);
 		return readResponseAsList(CompteurDto.class, res, url);
