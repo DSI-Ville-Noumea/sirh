@@ -978,8 +978,18 @@ public class OeELECSaisieCompteurA48 extends OePaginable {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "année"));
 			return false;
 		}
+		// recupération OS du filtre
+		int indiceOS = (Services.estNumerique(getVAL_LB_OS_FILTRE_SELECT()) ? Integer.parseInt(getVAL_LB_OS_FILTRE_SELECT()) : -1);
+		OrganisationSyndicaleDto orgaFiltre = null;
+		if (indiceOS > 0) {
+			orgaFiltre = getListeOrganisationSyndicale().get(indiceOS - 1);
+		}else {
+			// "ERR002", "La zone @ est obligatoire."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "OS"));
+			return false;
+		}
 
-		ArrayList<CompteurDto> listeCompteur = (ArrayList<CompteurDto>) absService.getListeCompteursA48(new Integer(anneeChoisie), null, getPageSize(), getPageNumber(),null);
+		ArrayList<CompteurDto> listeCompteur = (ArrayList<CompteurDto>) absService.getListeCompteursA48(new Integer(anneeChoisie), orgaFiltre.getIdOrganisation(), null, null,null);
 
 		// on met le motif "reprise de données"
 		MotifCompteurDto motifReprise = null;
