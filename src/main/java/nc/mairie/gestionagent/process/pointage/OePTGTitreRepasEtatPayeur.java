@@ -14,6 +14,7 @@ import org.springframework.context.ApplicationContext;
 
 import com.oreilly.servlet.MultipartRequest;
 
+import nc.mairie.comparator.ErreurTitreRepasComparator;
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
 import nc.mairie.gestionagent.pointage.dto.TitreRepasEtatPayeurDto;
 import nc.mairie.gestionagent.pointage.dto.TitreRepasEtatPayeurTaskDto;
@@ -353,6 +354,7 @@ public class OePTGTitreRepasEtatPayeur extends BasicProcess {
 	}
 
 	public void setListErreurTaskEtatsPayeurDto(ArrayList<TitreRepasEtatPayeurTaskDto> listErreurEtatsPayeurTaskDto) {
+		listErreurEtatsPayeurTaskDto.sort(new ErreurTitreRepasComparator());
 		this.listErreurEtatsPayeurTaskDto = listErreurEtatsPayeurTaskDto;
 	}
 	public String getNOM_EF_LIENDOCUMENT() {
