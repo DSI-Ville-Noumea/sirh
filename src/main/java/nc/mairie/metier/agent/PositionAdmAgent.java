@@ -211,6 +211,12 @@ public class PositionAdmAgent extends BasicMetier {
 		return unPositionAdmAgent.getMyPositionAdmAgentBroker().chercherPositionAdmAgentSuiv(aTransaction, nomatr,
 				codepa, datedeb);
 	}
+	
+
+	public static PositionAdmAgent chercherPositionAdmAgentSuiv(Transaction aTransaction, String nomatr, String datedeb) throws Exception {
+		PositionAdmAgent unPositionAdmAgent = new PositionAdmAgent();
+		return unPositionAdmAgent.getMyPositionAdmAgentBroker().chercherPositionAdmAgentSuiv(aTransaction, nomatr, datedeb);
+	}
 
 	/**
 	 * Methode creerObjetMetier qui retourne true ou false RG_AG_PA_A01

@@ -1,11 +1,25 @@
 package nc.mairie.gestionagent.process.agent;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.Hashtable;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
+
+import com.ibm.as400.access.AS400;
+import com.ibm.as400.access.CharacterDataArea;
+import com.ibm.as400.access.QSYSObjectPathName;
+
+import nc.mairie.enums.EnumModificationPA;
 import nc.mairie.enums.EnumTypeHisto;
+import nc.mairie.gestionagent.radi.dto.LightUserDto;
 import nc.mairie.gestionagent.robot.MaClasse;
 import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
@@ -13,8 +27,14 @@ import nc.mairie.metier.agent.Agent;
 import nc.mairie.metier.agent.PositionAdm;
 import nc.mairie.metier.agent.PositionAdmAgent;
 import nc.mairie.metier.carriere.HistoPositionAdm;
+import nc.mairie.metier.carriere.MATMUT;
+import nc.mairie.metier.carriere.MATMUTHIST;
 import nc.mairie.metier.paye.Matricule;
+import nc.mairie.spring.dao.metier.agent.AgentDao;
 import nc.mairie.spring.dao.metier.carriere.HistoPositionAdmDao;
+import nc.mairie.spring.dao.metier.carriere.MATMUTDao;
+import nc.mairie.spring.dao.metier.carriere.MATMUTHistDao;
+import nc.mairie.spring.dao.utils.MairieDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
@@ -23,12 +43,7 @@ import nc.mairie.technique.UserAppli;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
-
-import org.springframework.context.ApplicationContext;
-
-import com.ibm.as400.access.AS400;
-import com.ibm.as400.access.CharacterDataArea;
-import com.ibm.as400.access.QSYSObjectPathName;
+import nc.noumea.spring.service.IRadiService;
 
 /**
  * Process OeAGENTPosAdm Date de création : (04/08/11 09:22:55)
@@ -59,6 +74,21 @@ public class OeAGENTPosAdm extends BasicProcess {
 
 	private String messageInf = Const.CHAINE_VIDE;
 	public boolean DateDebutEditable = true;
+
+	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+	private SimpleDateFormat perrepSdf = new SimpleDateFormat("YYYYMM");
+	
+	private MATMUTDao matmutDao;
+	private MATMUTHistDao matmutHistDao;
+	private AgentDao agentDao;
+	
+	private Logger logger = LoggerFactory.getLogger(OeAGENTPosAdm.class);
+	
+	private IRadiService radiService;
+
+	// #44481 : Liste des PA provoquant ou non la charge de cotisation mutuelle.
+	private static final List<String> PA_INACTIVES = Arrays.asList("26", "40", "41", "45", "24");
+	private static final List<String> PA_ACTIVES = Arrays.asList("01");
 
 	private static QSYSObjectPathName CALC_PATH = new QSYSObjectPathName((String) ServletAgent.getMesParametres().get(
 			"DTAARA_SCHEMA"), (String) ServletAgent.getMesParametres().get("DTAARA_NAME"), "DTAARA");
@@ -131,6 +161,18 @@ public class OeAGENTPosAdm extends BasicProcess {
 		ApplicationContext context = ApplicationContextProvider.getContext();
 		if (getHistoPositionAdmDao() == null) {
 			setHistoPositionAdmDao(new HistoPositionAdmDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getMatmutDao() == null) {
+			setMatmutDao(new MATMUTDao((MairieDao) context.getBean("mairieDao")));
+		}
+		if (getMatmutHistDao() == null) {
+			setMatmutHistDao(new MATMUTHistDao((MairieDao) context.getBean("mairieDao")));
+		}
+		if (getAgentDao() == null) {
+			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (null == radiService) {
+			radiService = (IRadiService) context.getBean("radiService");
 		}
 	}
 
@@ -413,6 +455,13 @@ public class OeAGENTPosAdm extends BasicProcess {
 					messageInf = MessageUtils.getMessage("INF006");
 			}
 
+			// #44481 : régularisations mutuelle
+			supprimerMatmut(request);
+			
+			// On ne peut pas supprimer une PA s'il y a eu une charge générée en paye.
+			if (getTransaction().isErreur())
+				return false;
+
 			// suppression
 			// RG_AG_PA_A01
 			HistoPositionAdm histo = new HistoPositionAdm(getPaCourante());
@@ -473,6 +522,11 @@ public class OeAGENTPosAdm extends BasicProcess {
 
 			if (getZone(getNOM_ST_ACTION()).equals(ACTION_MODIFICATION)) {
 				// Modification
+				
+				// #44481 : régularisations mutuelle
+				modifierMatmut(request);
+				if (getTransaction().isErreur())
+					return false;
 
 				// RG_AG_PA_A01
 				HistoPositionAdm histo = new HistoPositionAdm(getPaCourante());
@@ -485,6 +539,14 @@ public class OeAGENTPosAdm extends BasicProcess {
 				}
 			} else if (getZone(getNOM_ST_ACTION()).equals(ACTION_CREATION)) {
 				// RG_AG_PA_A01
+
+				// #44481 : régularisations mutuelle
+				if (isRegularisationMutuelle())
+					createMatmut(request);
+
+				if (getTransaction().isErreur())
+					return false;
+				
 				HistoPositionAdm histo = new HistoPositionAdm(getPaCourante());
 				getHistoPositionAdmDao().creerHistoPositionAdm(histo, user, EnumTypeHisto.CREATION);
 				if (!getPaCourante().creerPositionAdmAgent(getTransaction(), user)) {
@@ -494,6 +556,10 @@ public class OeAGENTPosAdm extends BasicProcess {
 					return false;
 				}
 			}
+
+			if (getTransaction().isErreur())
+				return false;
+			
 			// RG_AG_PA_A09
 			if (!Matricule.updateMatricule(getTransaction(), getAgentCourant(), getPaCourante().getDatdeb())) {
 				// "ERR009",
@@ -524,6 +590,223 @@ public class OeAGENTPosAdm extends BasicProcess {
 
 		return true;
 	}
+	
+	/* DEBUT DU CODE SPECIFIQUE A MATMUT */
+
+	private Agent getAgentConnecte(HttpServletRequest request) throws Exception {
+		Agent agent = null;
+
+		UserAppli uUser = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
+		// on fait la correspondance entre le login et l'agent via RADI
+		LightUserDto user = radiService.getAgentCompteADByLogin(uUser.getUserName());
+		if (user == null) {
+			getTransaction().traiterErreur();
+			// "Votre login ne nous permet pas de trouver votre identifiant.
+			// Merci de contacter le responsable du projet."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
+			return null;
+		} else {
+			if (user != null && user.getEmployeeNumber() != null && user.getEmployeeNumber() != 0) {
+				try {
+					agent = getAgentDao().chercherAgentParMatricule(radiService.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
+				} catch (Exception e) {
+					// "Votre login ne nous permet pas de trouver votre
+					// identifiant. Merci de contacter le responsable du
+					// projet."
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
+					return null;
+				}
+			}
+		}
+
+		return agent;
+	}
+	
+	private void isMatmutVentile() throws Exception {
+		// On regarde si une ligne existe dans MATMUTHIST (Les lignes à l'état 'V' vont directement dans cette table)
+		MATMUTHIST hist = getMatmutHistDao().chercherMATMUTHISTVentileByAgentAndPeriod(getAgentCourant().getNomatr(), getFormattedPerrep(false));
+		if (hist != null) {
+			getTransaction().declarerErreur("Modification impossible, car une charge a déjà été passée en paye pour cet agent à cette période !");
+			logger.error("Modification de la PA impossible pour l'agent matr {}, car une charge a déjà été passée en paye pour cet agent à cette période ({}) !", hist.getNomatr(), hist.getPerrep());
+		}
+	}
+
+	private Integer getFormattedPerrep(boolean getOldDateDeb) throws Exception {
+		String periode = getPaCourante().getDatfin() == null ? getPaCourante().getDatdeb() : getPaCourante().getDatfin();
+		
+		if (getOldDateDeb && getPaCourante().oldDateDeb != null)
+			periode = getPaCourante().oldDateDeb;
+			
+		Date dateDebut = sdf.parse(periode);
+		return Integer.valueOf(perrepSdf.format(dateDebut));
+	}
+
+	/**
+	 * Cette fonction détermine si l'enchainement des PA doit entrainer une ligne dans MATMUT
+	 * @return
+	 * @throws Exception
+	 */
+	private boolean isRegularisationMutuelle() throws Exception {
+		PositionAdmAgent currentPA = getPaCourante();
+		
+		if (!(PA_ACTIVES.contains(currentPA.getCdpadm()) || PA_INACTIVES.contains(currentPA.getCdpadm())))
+			return false;
+
+		PositionAdmAgent firstPA = null;
+		PositionAdmAgent secondPA = null;
+		
+		// Il faut prendre l'ancienne date de début dans le cas d'une modification de date.
+		String dateDebut = currentPA.oldDateDeb == null ? currentPA.getDatdeb() : currentPA.oldDateDeb;
+		
+		// Si la PA est active, on cherche la précédente
+		if (PA_ACTIVES.contains(currentPA.getCdpadm())) {
+			firstPA = PositionAdmAgent.chercherPositionAdmAgentPrec(getTransaction(),
+					getAgentCourant().getNomatr(),
+					Services.convertitDate(Services.formateDate(dateDebut), "dd/MM/yyyy", "yyyyMMdd"));
+			secondPA = currentPA;
+		}
+		
+		// Si la PA est inactive, on cherche la suivante
+		if (PA_INACTIVES.contains(currentPA.getCdpadm())) {
+			firstPA = currentPA;
+			secondPA = PositionAdmAgent.chercherPositionAdmAgentSuiv(getTransaction(),
+							getAgentCourant().getNomatr().toString(),
+							Services.convertitDate(Services.formateDate(dateDebut), "dd/MM/yyyy", "yyyyMMdd"));
+		}
+		
+		return PA_INACTIVES.contains(firstPA.getCdpadm()) &&
+				PA_ACTIVES.contains(secondPA.getCdpadm());
+	}
+	
+	private void modifierMatmut(HttpServletRequest request) throws Exception {
+		isMatmutVentile();
+		if (getTransaction().isErreur())
+			return;
+		
+		// On regarde si une ligne existe dans MATMUT
+		MATMUT previousMatmut = getMatmutDao().chercherMatmutByMatrAndPeriod(getAgentCourant().getNomatr(), getFormattedPerrep(false));
+
+		Agent agentConnecte = getAgentConnecte(request);
+
+		// Si une ligne existait sur l'ancienne date, on va la supprimer
+		MATMUT matmutIfDateChanged = getMatmutDao().chercherMatmutByMatrAndPeriod(getAgentCourant().getNomatr(), getFormattedPerrep(true));
+		if (matmutIfDateChanged != null && (previousMatmut == null || !previousMatmut.equals(matmutIfDateChanged))) {
+			logger.debug("Changement de période pour la charge concernant l'agent matricule {}, pour la période {}", matmutIfDateChanged.getNomatr(), matmutIfDateChanged.getPerrep());
+			MATMUT matmutToCancel = new MATMUT(matmutIfDateChanged);
+			matmutToCancel.setIduser(agentConnecte.getIdAgent().toString());
+			matmutToCancel.setCodval(EnumModificationPA.ANNULE.getCode());
+			matmutToCancel.setPkey(getMatmutDao().getNextPKVal());
+			
+			updateMatmut(matmutIfDateChanged, matmutToCancel);
+		}
+
+		// S'il n'y a pas d'enregistrement, et que les conditions sont remplies, on créé l'enregistrement
+		if (previousMatmut == null) {
+			if (isRegularisationMutuelle())
+				createMatmut(request);
+		}
+		// Si un enregistrement existe, il faut mettre à jour l'historique.
+		else {
+			MATMUT newMatmut = new MATMUT();
+			// S'il est éligible, et que la période diffère, on va mettre à jour ce champ
+			if (isRegularisationMutuelle()) {
+				if (!getFormattedPerrep(false).equals(previousMatmut.getPerrep()) 
+						|| !previousMatmut.getCodval().equals(EnumModificationPA.CREE.getCode())) {
+					newMatmut.setPkey(getMatmutDao().getNextPKVal());
+					newMatmut.setNomatr(previousMatmut.getNomatr());
+					newMatmut.setPerrep(getFormattedPerrep(false));
+					newMatmut.setCodval(EnumModificationPA.CREE.getCode());
+					newMatmut.setIduser(agentConnecte.getIdAgent().toString());
+				}
+			}
+			// Sinon on est dans le cas de la suppression
+			else if (!previousMatmut.getCodval().equals(EnumModificationPA.ANNULE.getCode())) {
+				newMatmut.setPkey(getMatmutDao().getNextPKVal());
+				newMatmut.setNomatr(previousMatmut.getNomatr());
+				newMatmut.setPerrep(previousMatmut.getPerrep());
+				newMatmut.setCodval(EnumModificationPA.ANNULE.getCode());
+				newMatmut.setIduser(agentConnecte.getIdAgent().toString());
+			}
+			
+			if (newMatmut.getCodval() != null)
+				updateMatmut(previousMatmut, newMatmut);
+		}
+	}
+	
+	private void supprimerMatmut(HttpServletRequest request) throws Exception {
+		
+		isMatmutVentile();
+		if (getTransaction().isErreur())
+			return;
+
+		// On regarde si une ligne existe dans MATMUT
+		MATMUT previousMatmut = getMatmutDao().chercherMatmutByMatrAndPeriod(getAgentCourant().getNomatr(), getFormattedPerrep(false));
+		
+		if (previousMatmut != null) {
+			Agent agentConnecte = getAgentConnecte(request);
+			// Copie, suppression, creation
+			MATMUT newMatmut = new MATMUT();
+			newMatmut.setPkey(getMatmutDao().getNextPKVal());
+			newMatmut.setNomatr(previousMatmut.getNomatr());
+			newMatmut.setPerrep(previousMatmut.getPerrep());
+			newMatmut.setCodval(EnumModificationPA.ANNULE.getCode());
+			newMatmut.setTimelog(new Date());
+			newMatmut.setIduser(agentConnecte.getIdAgent().toString());
+			
+			updateMatmut(previousMatmut, newMatmut);
+		}
+	}
+	
+	/**
+	 * Etapes de la mise à jour de MATMUT :
+	 * - Copie de l'ancienne ligne vers MATMUTHISTO
+	 * - Suppression de l'ancienne ligne dans MATMUT
+	 * - Ajout de la nouvelle ligne dans MATMUT
+	 * 
+	 * @param previousMatmut : l'ancienne ligne
+	 * @param newMatmut : la ligne à insérer
+	 */
+	private void updateMatmut(MATMUT previousMatmut, MATMUT newMatmut) {
+		logger.debug("Historisation du MATMUT ID {}, et création du MATMUT de l'agent {} pour la période {}.", previousMatmut.getPkey(), newMatmut.getNomatr(), newMatmut.getPerrep());
+		// 1 - Copie de l'ancienne ligne vers MATMUTHISTO
+		getMatmutHistDao().creerMATMUTHIST(previousMatmut);
+		
+		// 2 - Suppression de l'ancienne ligne dans MATMUT
+		getMatmutDao().supprimerMATMUT(previousMatmut);
+		
+		// 2 - Suppression de l'ancienne ligne dans MATMUT
+		getMatmutDao().creerMATMUT(newMatmut);
+	}
+	
+	// #44481 : Création d'une charge pour la régularisation de la mutuelle.
+	private void createMatmut(HttpServletRequest request) throws Exception {
+		isMatmutVentile();
+		if (getTransaction().isErreur())
+			return;
+		
+		MATMUT matmut = new MATMUT();
+		Agent agentConnecte = getAgentConnecte(request);
+		
+		matmut.setPkey(getMatmutDao().getNextPKVal());
+		matmut.setNomatr(getAgentCourant().getNomatr());
+		matmut.setPerrep(getFormattedPerrep(false));
+		matmut.setCodval(EnumModificationPA.CREE.getCode());
+		matmut.setTimelog(new Date());
+		matmut.setIduser(agentConnecte.getIdAgent().toString());
+		
+		// Si une ligne existe déjà (cas : Création / Suppression / Création), il faut l'archiver
+		MATMUT existingMatmut = getMatmutDao().chercherMatmutByMatrAndPeriod(getAgentCourant().getNomatr(), getFormattedPerrep(false));
+		
+		if (existingMatmut != null) {
+			if (existingMatmut.getCodval() != EnumModificationPA.CREE.getCode())
+				updateMatmut(existingMatmut, matmut);
+		} else {
+			logger.debug("Création du MATMUT de l'agent {} pour la période {}.", matmut.getNomatr(), matmut.getPerrep());
+			getMatmutDao().creerMATMUT(matmut);
+		}
+	}
+	
+	/* FIN DU CODE SPECIFIQUE A MATMUT */
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_AJOUTER Date de création :
@@ -1073,5 +1356,29 @@ public class OeAGENTPosAdm extends BasicProcess {
 
 	public void setHistoPositionAdmDao(HistoPositionAdmDao histoPositionAdmDao) {
 		this.histoPositionAdmDao = histoPositionAdmDao;
+	}
+
+	public MATMUTDao getMatmutDao() {
+		return matmutDao;
+	}
+
+	public void setMatmutDao(MATMUTDao matmutDao) {
+		this.matmutDao = matmutDao;
+	}
+
+	public MATMUTHistDao getMatmutHistDao() {
+		return matmutHistDao;
+	}
+
+	public void setMatmutHistDao(MATMUTHistDao matmutHistDao) {
+		this.matmutHistDao = matmutHistDao;
+	}
+
+	public AgentDao getAgentDao() {
+		return agentDao;
+	}
+
+	public void setAgentDao(AgentDao agentDao) {
+		this.agentDao = agentDao;
 	}
 }
