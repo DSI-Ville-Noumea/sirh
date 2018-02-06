@@ -139,6 +139,12 @@ public class PositionAdmAgentBroker extends BasicBroker {
 				+ " where datdeb>" + datedeb + ")" + " WITH UR ");
 	}
 
+	public PositionAdmAgent chercherPositionAdmAgentSuiv(Transaction aTransaction, String nomatr, String datedeb) throws Exception {
+		return (PositionAdmAgent) executeSelect(aTransaction, "select * from " + getTable() + " where nomatr = "
+				+ nomatr + " and datdeb in (select min(datdeb) from " + getTable()
+				+ " where datdeb>" + datedeb + " and nomatr = " + nomatr + " )" + " WITH UR ");
+	}
+
 	public PositionAdmAgent chercherPositionAdmAgentDateComprise(Transaction aTransaction, String noMatricule,
 			String date) throws Exception {
 		return (PositionAdmAgent) executeSelect(aTransaction, "select * from " + getTable() + " where nomatr = "
