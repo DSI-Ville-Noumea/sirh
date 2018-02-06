@@ -71,11 +71,12 @@ function ConfirmMessage(nom) {
 		        <%}else{ %>
 					<span class="sigp2Mandatory">Fichier issu de tickets restaurants : </span> 
 					<% if(process.fichierUpload == null){ %>
-					<INPUT name="<%= process.getNOM_EF_LIENDOCUMENT() %>" class="sigp2-saisie" type="file" value="<%= process.getVAL_EF_LIENDOCUMENT() %>" >
+						<INPUT name="<%= process.getNOM_EF_LIENDOCUMENT() %>" class="sigp2-saisie" type="file" value="<%= process.getVAL_EF_LIENDOCUMENT() %>" >
 					<%}else{ %>
-					<INPUT name="<%= process.getNOM_EF_LIENDOCUMENT() %>" class="sigp2-saisie" disabled="disabled" type="text" value="<%= process.getVAL_EF_LIENDOCUMENT() %>" >
+						<INPUT name="<%= process.getNOM_EF_LIENDOCUMENT() %>" class="sigp2-saisie" disabled="disabled" type="text" value="<%= process.getVAL_EF_LIENDOCUMENT() %>" >
 					<% }%>
-					</td>
+					<br />
+					<br />
 					<span class="sigp2Mandatory">Générer l'état du payeur et le fichier prestataire pour le mois en cours</span>
                 	<INPUT type="button" class="sigp2-Bouton-100" value="Générer" onclick="ConfirmMessage('<%=process.getNOM_PB_GENERER()%>');">                	
 				<%} %>

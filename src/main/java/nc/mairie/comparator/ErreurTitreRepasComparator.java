@@ -8,7 +8,7 @@ public class ErreurTitreRepasComparator implements Comparator<TitreRepasEtatPaye
 
 	@Override
 	public int compare(TitreRepasEtatPayeurTaskDto arg0, TitreRepasEtatPayeurTaskDto arg1) {
-		return arg1.getDateMonth().compareTo(arg0.getDateMonth());
+		return arg1.getDateExport().compareTo(arg0.getDateExport());
 	}
 
 }
