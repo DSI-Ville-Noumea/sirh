@@ -88,7 +88,7 @@ public class OeAGENTPosAdm extends BasicProcess {
 
 	// #44481 : Liste des PA provoquant ou non la charge de cotisation mutuelle.
 	private static final List<String> PA_INACTIVES = Arrays.asList("26", "40", "41", "45");
-	private static final List<String> PA_ACTIVES = Arrays.asList("01");
+	private static final List<String> PA_ACTIVES = Arrays.asList("01", "23", "24");
 
 	private static QSYSObjectPathName CALC_PATH = new QSYSObjectPathName((String) ServletAgent.getMesParametres().get(
 			"DTAARA_SCHEMA"), (String) ServletAgent.getMesParametres().get("DTAARA_NAME"), "DTAARA");
