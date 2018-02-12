@@ -1,6 +1,7 @@
 package nc.mairie.spring.dao.metier.carriere;
 
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 
 import nc.mairie.enums.EnumModificationPA;
@@ -43,6 +44,8 @@ public class MATMUTHistDao extends MairieDao implements MATMUTHISTDaoInterface {
 			matmutHist = (MATMUTHIST) jdbcTemplate.queryForObject(sql, new Object[] { idAgent, perrep, EnumModificationPA.VENTILE.getCode() }, new BeanPropertyRowMapper<MATMUTHIST>(MATMUTHIST.class));
 		} catch (EmptyResultDataAccessException e) {
 			return null;
+		} catch (IncorrectResultSizeDataAccessException e) {
+			return new MATMUTHIST();
 		}
 		return matmutHist;
 	}
