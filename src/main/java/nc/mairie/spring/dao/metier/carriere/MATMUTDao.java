@@ -70,6 +70,9 @@ public class MATMUTDao extends MairieDao implements MATMUTDaoInterface {
 		if (num == null && numHist == null)
 			return 1;
 		
+		if (num == null)
+			return numHist + 1;
+		
 		return (numHist == null ? (num + 1) : num > numHist ? (num+1) : (numHist+1));
 	}
 

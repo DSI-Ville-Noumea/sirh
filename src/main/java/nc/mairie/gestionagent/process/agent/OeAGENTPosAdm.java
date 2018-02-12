@@ -624,17 +624,24 @@ public class OeAGENTPosAdm extends BasicProcess {
 	
 	private void isMatmutVentile() throws Exception {
 		// On regarde si une ligne existe dans MATMUTHIST (Les lignes à l'état 'V' vont directement dans cette table)
-		MATMUTHIST hist = getMatmutHistDao().chercherMATMUTHISTVentileByAgentAndPeriod(getAgentCourant().getNomatr(), getFormattedPerrep(false));
+		MATMUTHIST hist = getMatmutHistDao().chercherMATMUTHISTVentileByAgentAndPeriod(getAgentCourant().getNomatr(), getFormattedPerrep(true));
+		// #44664 : On autorise la modification dans le futur, mais pas dans le passé.
 		if (hist != null) {
-			getTransaction().declarerErreur("Modification impossible, car une charge a déjà été passée en paye pour cet agent à cette période !");
-			logger.error("Modification de la PA impossible pour l'agent matr {}, car une charge a déjà été passée en paye pour cet agent à cette période ({}) !", hist.getNomatr(), hist.getPerrep());
-		}
+			logger.debug("Une charge MATMUT ventilée a été trouvée pour l'agent {} à la date du {}.", getAgentCourant().getNomatr(), getFormattedPerrep(true));
+			if (getFormattedPerrep(false) < getFormattedPerrep(true)) {
+				getTransaction().declarerErreur("Modification impossible, car une charge a déjà été passée en paye pour cet agent à cette période !");
+				logger.error("Modification de la PA impossible pour l'agent matr {}, car une charge a déjà été passée en paye pour cet agent à cette période ({}) !", hist.getNomatr(), hist.getPerrep());
+			} else {
+				logger.debug("Modification autorisée, car l'ancienne période est antérieur à la nouvelle période.");
+			}
+		} else
+			logger.debug("Aucune MATMUT ventilée trouvée pour l'agent {}, à la date du {}.", getAgentCourant().getNomatr(), getFormattedPerrep(true));
 	}
 
-	private Integer getFormattedPerrep(boolean getOldDateDeb) throws Exception {
+	private Integer getFormattedPerrep(boolean getPreviousDateDeb) throws Exception {
 		String periode = getPaCourante().getDatfin() == null ? getPaCourante().getDatdeb() : getPaCourante().getDatfin();
 		
-		if (getOldDateDeb && getPaCourante().oldDateDeb != null)
+		if (getPreviousDateDeb && getPaCourante().oldDateDeb != null)
 			periode = getPaCourante().oldDateDeb;
 			
 		Date dateDebut = sdf.parse(periode);
