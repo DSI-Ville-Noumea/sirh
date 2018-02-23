@@ -675,6 +675,11 @@ public class OeAGENTPosAdm extends BasicProcess {
 		
 		// Si la PA est inactive, on cherche la suivante
 		if (PA_INACTIVES.contains(currentPA.getCdpadm())) {
+			
+			// #44877 : Il ne faut pas continuer lors de l'ajout d'un PA inactive s'il n'y a pas de PA après.
+			if (sdf.parse(getPaCourante().getDatdeb()).after(sdf.parse((getLastPA().getDatdeb()))))
+				return false;
+			
 			firstPA = currentPA;
 			secondPA = PositionAdmAgent.chercherPositionAdmAgentSuiv(getTransaction(),
 							getAgentCourant().getNomatr().toString(),
