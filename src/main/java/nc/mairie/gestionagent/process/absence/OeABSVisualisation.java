@@ -2979,7 +2979,6 @@ public class OeABSVisualisation extends BasicProcess {
 				}
 				RefEtatDto dtoEtat = new RefEtatDto();
 				// #43923 : Les solde ne sont pas mis à jour rétroactivement si l'état passe à 'Validée'.
-				// TODO : Remettre l'état 'Validée par la DRH' (EnumEtatAbsence.VALIDEE.getCode()) lorsque la redmine #40807 sera traitée !
 				dtoEtat.setIdRefEtat(getZone(getNOM_RG_ETAT()).equals(getNOM_RB_ETAT_EN_ATTENTE()) ? EnumEtatAbsence.EN_ATTENTE.getCode() : EnumEtatAbsence.A_VALIDER.getCode());
 				dto.setEtatDto(dtoEtat);
 			}
