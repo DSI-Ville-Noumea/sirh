@@ -656,6 +656,10 @@ public class OeAGENTPosAdm extends BasicProcess {
 	private boolean isRegularisationMutuelle() throws Exception {
 		PositionAdmAgent currentPA = getPaCourante();
 		
+		// #44877 : Il faut déjà une ligne pour ne pas avoir de 'Aucun résultat trouvé'
+		if (getLastPA() == null)
+			return false;
+		
 		if (!(PA_ACTIVES.contains(currentPA.getCdpadm()) || PA_INACTIVES.contains(currentPA.getCdpadm())))
 			return false;
 
