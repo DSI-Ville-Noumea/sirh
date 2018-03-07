@@ -71,6 +71,15 @@ public class OePARAMETRAGEAbsenceMaladies extends BasicProcess {
 	public String								ACTION_CREATION_DESTINATAIRE_MAIL		= "Ajout d'un nouveau groupe dans les destinataires des alertes mail des maladies";
 	public String								ACTION_SUPPRESSION_MAIL_DESTINATAIRE	= "Suppression d'un groupe dans les destinataires des alertes mail des maladies";
 
+	// Pour les listes mails des maladies prises
+	private String[]							LB_GROUPE_PRISE;
+	private ArrayList<DestinataireMailMaladie>	listeDestinataireMailMaladiePrise;
+	private DestinataireMailMaladie				destinataireCourantPrise;
+	private ArrayList<Groupe>					listeGroupePrise;
+	private Groupe								groupeCourantPrise;
+	public String								ACTION_CREATION_DESTINATAIRE_MAIL_PRISE		= "Ajout d'un groupe informé lorsque les maladies passent à l'état 'Prise'";
+	public String								ACTION_SUPPRESSION_MAIL_DESTINATAIRE_PRISE	= "Suppression d'un groupe informé lorsque les maladies passent à l'état 'Prise'";
+
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
@@ -102,10 +111,15 @@ public class OePARAMETRAGEAbsenceMaladies extends BasicProcess {
 			initialiseListeDestinataireMailMaladie(request);
 		}
 
+		if (getListeDestinataireMailMaladiePrise().size() == 0) {
+			initialiseListeDestinataireMailMaladiePrise(request);
+		}
+
 		// Si liste groupe vide alors affectation
 		if (getLB_GROUPE() == LBVide) {
 			ArrayList<Groupe> listeGroupe = (ArrayList<Groupe>) getGroupeDao().listerGroupe();
 			setListeGroupe(listeGroupe);
+			setListeGroupePrise(listeGroupe);
 			if (getListeGroupe().size() != 0) {
 				int tailles[] = { 50 };
 				String padding[] = { "G" };
@@ -116,15 +130,17 @@ public class OePARAMETRAGEAbsenceMaladies extends BasicProcess {
 					aFormat.ajouteLigne(ligne);
 				}
 				setLB_GROUPE(aFormat.getListeFormatee(true));
+				setLB_GROUPE_PRISE(aFormat.getListeFormatee(true));
 			} else {
 				setLB_GROUPE(null);
+				setLB_GROUPE_PRISE(null);
 			}
 		}
 	}
 
 	private void initialiseListeDestinataireMailMaladie(HttpServletRequest request) {
 		try {
-			setListeDestinataireMailMaladie(getDestinataireMailMaladieDao().listerDestinataireMailMaladie());
+			setListeDestinataireMailMaladie(getDestinataireMailMaladieDao().listerDestinataireMailMaladie(false));
 		} catch (Exception e) {
 			setListeDestinataireMailMaladie(null);
 		}
@@ -141,6 +157,26 @@ public class OePARAMETRAGEAbsenceMaladies extends BasicProcess {
 			}
 		}
 
+	}
+
+	private void initialiseListeDestinataireMailMaladiePrise(HttpServletRequest request) {
+		try {
+			setListeDestinataireMailMaladiePrise(getDestinataireMailMaladieDao().listerDestinataireMailMaladie(true));
+		} catch (Exception e) {
+			setListeDestinataireMailMaladiePrise(null);
+		}
+
+		for (DestinataireMailMaladie dest : getListeDestinataireMailMaladiePrise()) {
+			Integer i = dest.getIdDestinataireMailMaladie();
+			// on recupere le groupe
+			Groupe gr;
+			try {
+				gr = getGroupeDao().chercherGroupeById(dest.getIdGroupe());
+				addZone(getNOM_ST_GROUPE_DESTINATAIRE_MAIL_PRISE(i), gr.getLibGroupe());
+			} catch (Exception e) {
+				addZone(getNOM_ST_GROUPE_DESTINATAIRE_MAIL_PRISE(i), "Erreur de recuperation du groupe, merci de contacter le responsable du projet.");
+			}
+		}
 	}
 
 	private void initialiseDao() {
@@ -225,7 +261,7 @@ public class OePARAMETRAGEAbsenceMaladies extends BasicProcess {
 
 			// Si clic sur le bouton PB_AJOUTER_DESTINATAIRE_MAIL
 			if (testerParametre(request, getNOM_PB_AJOUTER_DESTINATAIRE_MAIL())) {
-				return performPB_AJOUTER_DESTINATAIRE_MAIL(request);
+				return performPB_AJOUTER_DESTINATAIRE_MAIL(request, false);
 			}
 
 			// Si clic sur le bouton PB_VALIDER_DESTINATAIRE_MAIL_MALADIE
@@ -233,11 +269,29 @@ public class OePARAMETRAGEAbsenceMaladies extends BasicProcess {
 				return performPB_VALIDER_DESTINATAIRE_MAIL_MALADIE(request);
 			}
 
+			// Si clic sur le bouton PB_VALIDER_DESTINATAIRE_MAIL_MALADIE
+			if (testerParametre(request, getNOM_PB_VALIDER_DESTINATAIRE_MAIL_MALADIE_PRISE())) {
+				return performPB_VALIDER_DESTINATAIRE_MAIL_MALADIE_PRISE(request);
+			}
+
+			// Si clic sur le bouton PB_AJOUTER_DESTINATAIRE_MAIL
+			if (testerParametre(request, getNOM_PB_AJOUTER_DESTINATAIRE_MAIL_PRISE())) {
+				return performPB_AJOUTER_DESTINATAIRE_MAIL(request, true);
+			}
+
 			for (int i = 0; i < getListeDestinataireMailMaladie().size(); i++) {
 				Integer indice = getListeDestinataireMailMaladie().get(i).getIdDestinataireMailMaladie();
 				// Si clic sur le bouton PB_SUPPRIMER_DESTINATAIRE_MAIL
 				if (testerParametre(request, getNOM_PB_SUPPRIMER_DESTINATAIRE_MAIL(indice))) {
 					return performPB_SUPPRIMER_DESTINATAIRE_MAIL(request, indice);
+				}
+			}
+
+			for (int i = 0; i < getListeDestinataireMailMaladiePrise().size(); i++) {
+				Integer indice = getListeDestinataireMailMaladiePrise().get(i).getIdDestinataireMailMaladie();
+				// Si clic sur le bouton PB_SUPPRIMER_DESTINATAIRE_MAIL
+				if (testerParametre(request, getNOM_PB_SUPPRIMER_DESTINATAIRE_MAIL_PRISE(indice))) {
+					return performPB_SUPPRIMER_DESTINATAIRE_MAIL_PRISE(request, indice);
 				}
 			}
 
@@ -1215,6 +1269,18 @@ public class OePARAMETRAGEAbsenceMaladies extends BasicProcess {
 		return true;
 	}
 
+	public boolean performPB_SUPPRIMER_DESTINATAIRE_MAIL_PRISE(HttpServletRequest request, int indiceEltASupprimer) throws Exception {
+		DestinataireMailMaladie dest = getDestinataireMailMaladieDao().chercherDestinataireMailMaladieById(indiceEltASupprimer);
+		setDestinataireCourantPrise(dest);
+		setGroupeCourantPrise(getGroupeDao().chercherGroupeById(dest.getIdGroupe()));
+
+		// On nomme l'action
+		addZone(getNOM_ST_ACTION(), ACTION_SUPPRESSION_MAIL_DESTINATAIRE_PRISE);
+
+		setStatut(STATUT_MEME_PROCESS);
+		return true;
+	}
+
 	public DestinataireMailMaladieDao getDestinataireMailMaladieDao() {
 		return destinataireMailMaladieDao;
 	}
@@ -1235,13 +1301,21 @@ public class OePARAMETRAGEAbsenceMaladies extends BasicProcess {
 		return "NOM_PB_AJOUTER_DESTINATAIRE_MAIL";
 	}
 
-	public boolean performPB_AJOUTER_DESTINATAIRE_MAIL(HttpServletRequest request) throws Exception {
+	public boolean performPB_AJOUTER_DESTINATAIRE_MAIL(HttpServletRequest request, boolean isForJob) throws Exception {
 
-		setDestinataireCourant(new DestinataireMailMaladie());
-		setGroupeCourant(new Groupe());
-
-		// On nomme l'action
-		addZone(getNOM_ST_ACTION(), ACTION_CREATION_DESTINATAIRE_MAIL);
+		if (isForJob) {
+			setDestinataireCourantPrise(new DestinataireMailMaladie());
+			setGroupeCourantPrise(new Groupe());
+	
+			// On nomme l'action
+			addZone(getNOM_ST_ACTION(), ACTION_CREATION_DESTINATAIRE_MAIL_PRISE);
+		} else {
+			setDestinataireCourant(new DestinataireMailMaladie());
+			setGroupeCourant(new Groupe());
+	
+			// On nomme l'action
+			addZone(getNOM_ST_ACTION(), ACTION_CREATION_DESTINATAIRE_MAIL);
+		} 
 
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
@@ -1299,13 +1373,45 @@ public class OePARAMETRAGEAbsenceMaladies extends BasicProcess {
 
 			Groupe groupe = (Groupe) getListeGroupe().get(numLigneGroupe - 1);
 
-			getDestinataireMailMaladieDao().creerDestinataireMailMaladie(groupe.getIdGroupe());
+			getDestinataireMailMaladieDao().creerDestinataireMailMaladie(groupe.getIdGroupe(), false);
 		}
 
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 		// on vide la liste afin qu'elle soit re-affichée
 		getListeDestinataireMailMaladie().clear();
+		return true;
+	}
+
+	public boolean performPB_VALIDER_DESTINATAIRE_MAIL_MALADIE_PRISE(HttpServletRequest request) throws Exception {
+
+		if (getDestinataireCourantPrise() == null) {
+			// "ERR009", "Une erreur s'est produite sur la base de données."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR009"));
+			return false;
+		}
+
+		if (getVAL_ST_ACTION().equals(ACTION_SUPPRESSION_MAIL_DESTINATAIRE_PRISE)) {
+			getDestinataireMailMaladieDao().supprimerDestinataireMailMaladie(getDestinataireCourantPrise().getIdDestinataireMailMaladie());
+		} else if (getVAL_ST_ACTION().equals(ACTION_CREATION_DESTINATAIRE_MAIL_PRISE)) {
+			// on recupere le groupe selectionné
+
+			int numLigneGroupe = (Services.estNumerique(getZone(getNOM_LB_GROUPE_PRISE_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_GROUPE_PRISE_SELECT())) : -1);
+
+			if (numLigneGroupe == 0 || getListeGroupe().isEmpty() || numLigneGroupe > getListeGroupePrise().size()) {
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "groupe"));
+				return false;
+			}
+
+			Groupe groupe = (Groupe) getListeGroupePrise().get(numLigneGroupe - 1);
+
+			getDestinataireMailMaladieDao().creerDestinataireMailMaladie(groupe.getIdGroupe(), true);
+		}
+
+		// On nomme l'action
+		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+		// on vide la liste afin qu'elle soit re-affichée
+		getListeDestinataireMailMaladiePrise().clear();
 		return true;
 	}
 
@@ -1341,6 +1447,85 @@ public class OePARAMETRAGEAbsenceMaladies extends BasicProcess {
 
 	public void setListeGroupe(ArrayList<Groupe> listeGroupe) {
 		this.listeGroupe = listeGroupe;
+	}
+	
+	// #44774 : Paramètres du groupe pour le job absencesPrise.
+	private String[] getLB_GROUPE_PRISE() {
+		if (LB_GROUPE_PRISE == null)
+			LB_GROUPE_PRISE = initialiseLazyLB();
+		return LB_GROUPE_PRISE;
+	}
+
+	private void setLB_GROUPE_PRISE(String[] newLB_GROUPE_PRISE) {
+		LB_GROUPE_PRISE = newLB_GROUPE_PRISE;
+	}
+
+	public String getNOM_LB_GROUPE_PRISE() {
+		return "NOM_LB_GROUPE_PRISE";
+	}
+
+	public String getNOM_LB_GROUPE_PRISE_SELECT() {
+		return "NOM_LB_GROUPE_PRISE_SELECT";
+	}
+
+	public String[] getVAL_LB_GROUPE_PRISE() {
+		return getLB_GROUPE_PRISE();
+	}
+
+	public String getVAL_LB_GROUPE_PRISE_SELECT() {
+		return getZone(getNOM_LB_GROUPE_PRISE_SELECT());
+	}
+
+	public ArrayList<Groupe> getListeGroupePrise() {
+		return listeGroupePrise;
+	}
+
+	public void setListeGroupePrise(ArrayList<Groupe> listeGroupePrise) {
+		this.listeGroupePrise = listeGroupePrise;
+	}
+
+	public ArrayList<DestinataireMailMaladie> getListeDestinataireMailMaladiePrise() {
+		return listeDestinataireMailMaladiePrise == null ? new ArrayList<DestinataireMailMaladie>() : listeDestinataireMailMaladiePrise;
+	}
+
+	public void setListeDestinataireMailMaladiePrise(ArrayList<DestinataireMailMaladie> listeDestinataireMailMaladiePrise) {
+		this.listeDestinataireMailMaladiePrise = listeDestinataireMailMaladiePrise;
+	}
+
+	public DestinataireMailMaladie getDestinataireCourantPrise() {
+		return destinataireCourantPrise;
+	}
+
+	public void setDestinataireCourantPrise(DestinataireMailMaladie destinataireCourantPrise) {
+		this.destinataireCourantPrise = destinataireCourantPrise;
+	}
+
+	public Groupe getGroupeCourantPrise() {
+		return groupeCourantPrise;
+	}
+
+	public void setGroupeCourantPrise(Groupe groupeCourantPrise) {
+		this.groupeCourantPrise = groupeCourantPrise;
+	}
+
+	public String getNOM_ST_GROUPE_DESTINATAIRE_MAIL_PRISE(int i) {
+		return "NOM_ST_GROUPE_DESTINATAIRE_MAIL_PRISE_" + i;
+	}
+
+	public String getVAL_ST_GROUPE_DESTINATAIRE_MAIL_PRISE(int i) {
+		return getZone(getNOM_ST_GROUPE_DESTINATAIRE_MAIL_PRISE(i));
+	}
+
+	public String getNOM_PB_AJOUTER_DESTINATAIRE_MAIL_PRISE() {
+		return "NOM_PB_AJOUTER_DESTINATAIRE_MAIL_PRISE";
+	}
+	
+	public String getNOM_PB_VALIDER_DESTINATAIRE_MAIL_MALADIE_PRISE() {
+		return "NOM_PB_VALIDER_DESTINATAIRE_MAIL_MALADIE_PRISE";
+	}
+
+	public String getNOM_PB_SUPPRIMER_DESTINATAIRE_MAIL_PRISE(int i) {
+		return "NOM_PB_SUPPRIMER_DESTINATAIRE_MAIL_PRISE" + i;
 	}
 
 }
