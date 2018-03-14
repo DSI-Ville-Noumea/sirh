@@ -12,10 +12,12 @@ public class RefTypeSaisiCongeAnnuelDto {
 	private boolean calendarDateReprise;
 	private Integer quotaMultiple;
 	private boolean decompteSamedi;
-	private boolean consecutif;
 	private boolean pieceJointe;
 	private boolean motif;
 	private String infosComplementaires;
+
+	// #45163 : This field seems not used...
+	private boolean consecutif;
 
 	public RefTypeSaisiCongeAnnuelDto() {
 	}

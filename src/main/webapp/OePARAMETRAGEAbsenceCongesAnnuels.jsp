@@ -145,11 +145,6 @@
 	 							<INPUT disabled="disabled" type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_DECOMPTE_SAMEDI(),process.getNOM_RB_DECOMPTE_SAMEDI_OUI())%>><span class="sigp2-saisie">Oui</span>
 			            		<INPUT disabled="disabled" type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_DECOMPTE_SAMEDI(),process.getNOM_RB_DECOMPTE_SAMEDI_NON())%>><span class="sigp2-saisie">Non</span>
 			            	</td>
-		            		<td>
-								<span class="sigp2Mandatory">Consécutif : </span>
-		                		<INPUT disabled="disabled" type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_CONSECUTIF(),process.getNOM_RB_CONSECUTIF_OUI())%>><span class="sigp2-saisie">Oui</span>
-			            		<INPUT disabled="disabled" type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_CONSECUTIF(),process.getNOM_RB_CONSECUTIF_NON())%>><span class="sigp2-saisie">Non</span>
-							</td>
 		            	</tr>
 		            </table>
 			        <BR/><BR/>
@@ -203,18 +198,13 @@
 	 							<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_DECOMPTE_SAMEDI(),process.getNOM_RB_DECOMPTE_SAMEDI_OUI())%>><span class="sigp2-saisie">Oui</span>
 			            		<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_DECOMPTE_SAMEDI(),process.getNOM_RB_DECOMPTE_SAMEDI_NON())%>><span class="sigp2-saisie">Non</span>
 			            	</td>
-		            		<td>
-								<span class="sigp2Mandatory">Consécutif : </span>
-		                		<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_CONSECUTIF(),process.getNOM_RB_CONSECUTIF_OUI())%>><span class="sigp2-saisie">Oui</span>
-			            		<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_CONSECUTIF(),process.getNOM_RB_CONSECUTIF_NON())%>><span class="sigp2-saisie">Non</span>
-							</td>
 		            	</tr>
 		            </table>  
 			        <BR/><BR/>
                     <div align="center">	 
 	                    <INPUT type="submit" class="sigp2-Bouton-100" value="Valider" name="<%=process.getNOM_PB_VALIDER_CONGES()%>" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>">
 	                    <INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
-                    </div>          
+                    </div>
             	</FIELDSET>  
             <%}else if(process.getVAL_ST_ACTION().equals(process.ACTION_ALIM_MENSUELLE)){ %>
 						<FIELDSET class="sigp2Fieldset" style="text-align: left;">
@@ -226,19 +216,19 @@
 			                            <th width="30px">
 											<INPUT type="image" src="images/ajout.gif" height="20px" width="20px" name="<%=process.getNOM_PB_CREER_ALIM_MENSUELLE()%>" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>">
 										</th> 
-			                            <th>Année</th>     
-			                            <th>Janvier</th>     
-			                            <th>Février</th>     
-			                            <th>Mars</th>     
-			                            <th>Avril</th>     
-			                            <th>Mai</th>     
-			                            <th>Juin</th>     
-			                            <th>Juillet</th>     
-			                            <th>Aout</th>     
-			                            <th>Septembre</th>     
-			                            <th>Octobre</th>     
-			                            <th>Novembre</th>     
-			                            <th>Décembre</th>                           
+			                            <th>Année</th>
+			                            <th>Janvier</th>
+			                            <th>Février</th>
+			                            <th>Mars</th>
+			                            <th>Avril</th>
+			                            <th>Mai</th>
+			                            <th>Juin</th>
+			                            <th>Juillet</th>
+			                            <th>Aout</th>
+			                            <th>Septembre</th>
+			                            <th>Octobre</th>
+			                            <th>Novembre</th>
+			                            <th>Décembre</th>
 			                        </tr>
 			                    </thead>
 			                    <tbody>
