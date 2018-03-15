@@ -129,8 +129,6 @@ public class OeELECSaisieCompteurAmicale extends BasicProcess {
 
 		// Initialisation des listes deroulantes
 		initialiseListeDeroulante();
-
-		initialiseListeCompteur(request);
 	}
 
 	private void initialiseListeDeroulante() {
@@ -285,6 +283,11 @@ public class OeELECSaisieCompteurAmicale extends BasicProcess {
 				return performPB_ANNULER(request);
 			}
 
+			// Si clic sur le bouton PB_FILTRER
+			if (testerParametre(request, getNOM_PB_FILTRER())) {
+				return performPB_FILTRER(request);
+			}
+
 			// Si clic sur le bouton PB_VALIDER
 			if (testerParametre(request, getNOM_PB_VALIDER())) {
 				return performPB_VALIDER(request);
@@ -374,6 +377,11 @@ public class OeELECSaisieCompteurAmicale extends BasicProcess {
 
 	public String getNOM_PB_AJOUTER() {
 		return "NOM_PB_AJOUTER";
+	}
+
+	public boolean performPB_FILTRER(HttpServletRequest request) throws Exception {
+		initialiseListeCompteur(request);
+		return true;
 	}
 
 	public boolean performPB_AJOUTER(HttpServletRequest request) throws Exception {
