@@ -1,14 +1,14 @@
 package nc.mairie.spring.dao.metier.poste;
 
-import nc.mairie.metier.poste.FicheMetier;
-import nc.mairie.metier.poste.NiveauManagement;
-import nc.mairie.spring.dao.utils.SirhDao;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
-
 import java.util.List;
 
-public class NiveauManagementDao extends SirhDao implements NiveauManagementDaoInterface {
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 
+import nc.mairie.metier.poste.NiveauManagement;
+import nc.mairie.spring.dao.utils.SirhDao;
+
+public class NiveauManagementDao extends SirhDao implements NiveauManagementDaoInterface {
+	
     public NiveauManagementDao(SirhDao sirhDao) {
         super.dataSource = sirhDao.getDataSource();
         super.jdbcTemplate = sirhDao.getJdbcTemplate();
@@ -23,8 +23,13 @@ public class NiveauManagementDao extends SirhDao implements NiveauManagementDaoI
     }
 
     public NiveauManagement getNiveauManagement(Integer idNiveauManagement) {
+    	
+    	if (idNiveauManagement == null)
+    		return null;
+    	
         String sql = "SELECT ID_NIVEAU_MANAGEMENT, LIB_NIVEAU_MANAGEMENT FROM " + NOM_TABLE
                 + " WHERE ID_NIVEAU_MANAGEMENT=?";
+
         return jdbcTemplate.queryForObject(sql, new Object[] {idNiveauManagement}, new BeanPropertyRowMapper<>(NiveauManagement.class));
     }
 

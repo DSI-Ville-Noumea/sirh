@@ -24,9 +24,13 @@ public class ActiviteGeneraleDao extends SirhDao implements ActiviteGeneraleInte
     public List<ActiviteGenerale> listerToutesActiviteGenerale(FichePoste fp, Integer idFicheMetierPrimaire, Integer idFicheMetierSecondaire) {
         Integer idFichePoste = fp != null ? fp.getIdFichePoste() : null;
         Integer idFMSecondaire = idFicheMetierSecondaire != null ? idFicheMetierSecondaire : idFicheMetierPrimaire;
-        String sql = "SELECT ID_ACTIVITE_GENERALE, NOM_ACTIVITE_GENERALE, CHECKED, MIN(FM_ORDRE) AS AGR_ORDRE, MIN(AG_ORDRE) AS AG_ORDRE FROM " +
+        // #45020 : Le premier SUM() permet de prendre l'ordre de la FEV primaire 
+        // Le 2e SUM() permet de prendre l'ordre de la FEV secondaire
+        String sql = "SELECT ID_ACTIVITE_GENERALE, NOM_ACTIVITE_GENERALE, CHECKED, MIN(FM_ORDRE) AS AGR_ORDRE, " + 
+        		"SUM(CASE WHEN FM_PRIMAIRE = 1 THEN AG_ORDRE ELSE 0 END) AS AG_ORDRE_F1, " +
+        		"SUM(CASE WHEN FM_PRIMAIRE is null OR FM_PRIMAIRE = 0 THEN AG_ORDRE ELSE 0 END) AS AG_ORDRE_F2 FROM " +
                 "(SELECT DISTINCT AG_FM.ID_ACTIVITE_GENERALE, AG.NOM_ACTIVITE_GENERALE, FM_FP.FM_PRIMAIRE, " +
-                "CASE WHEN AG_FP.ORDRE IS NULL THEN AG_FM.ORDRE ELSE AG_FP.ORDRE END AS AG_ORDRE, " +
+                "AG_FM.ORDRE AS AG_ORDRE, " +
                 "CASE WHEN AG_FP.ID_ACTIVITE_GENERALE IS NULL THEN '0' ELSE '1' END AS CHECKED, " +
                 "CASE WHEN AG_FM.ID_FICHE_METIER = ? THEN '0' ELSE '1' END AS FM_ORDRE " +
                 "FROM ACTIVITE_GENERALE_FM AG_FM " +
@@ -36,7 +40,7 @@ public class ActiviteGeneraleDao extends SirhDao implements ActiviteGeneraleInte
                 "WHERE AG_FM.ID_FICHE_METIER IN (?, ?) " +
                 "ORDER BY FM_ORDRE, AG_ORDRE) AGR " +
                 "GROUP BY ID_ACTIVITE_GENERALE, NOM_ACTIVITE_GENERALE, CHECKED " +
-                "ORDER BY AGR_ORDRE, AG_ORDRE";
+                "ORDER BY AGR_ORDRE, AG_ORDRE_F1, AG_ORDRE_F2";
         return jdbcTemplate.query(sql, new Object[]{idFicheMetierPrimaire, idFichePoste, idFichePoste, idFicheMetierPrimaire, idFMSecondaire}, new BeanPropertyRowMapper<>(ActiviteGenerale.class));
     }
 

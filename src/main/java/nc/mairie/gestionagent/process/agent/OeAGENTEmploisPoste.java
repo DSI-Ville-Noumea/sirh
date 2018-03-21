@@ -9,6 +9,9 @@ import javax.servlet.http.HttpServletRequest;
 import nc.mairie.metier.poste.*;
 import nc.mairie.spring.dao.metier.poste.*;
 import nc.mairie.technique.Services;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 
 import nc.mairie.enums.EnumTypeCompetence;
@@ -66,6 +69,7 @@ import nc.noumea.spring.service.PtgService;
  * 
  */
 public class OeAGENTEmploisPoste extends BasicProcess {
+	private Logger logger = LoggerFactory.getLogger(OeAGENTEmploisPoste.class);
 
 	private static final long				serialVersionUID	= 1L;
 	private ArrayList<AvantageNature>		listeAvantage;
@@ -688,6 +692,10 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 	private void initialiseCompetenceManagement() {
 		NiveauManagement niveauManagement = getNiveauManagementDao().getNiveauManagement(getFichePosteCourant().getIdNiveauManagement());
 		setNiveauManagement(niveauManagement);
+		if (niveauManagement == null) {
+        	logger.info("Aucun niveau de management n'est défini pour la fiche de poste num. {} !", getFichePosteCourant().getNumFp());
+			return;
+		}
 		addZone(getNOM_ST_NIVEAU_MANAGEMENT(), niveauManagement.getLibNiveauManagement());
 		setListCompetenceManagement(getCompetenceManagementDao().listerToutesCompetencesManagement(niveauManagement.getIdNiveauManagement()));
 		for (int i = 0; i < listCompetenceManagement.size(); i++) {

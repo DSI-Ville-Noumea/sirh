@@ -289,7 +289,6 @@ public class OePARAMETRAGEAbsenceCongesAnnuels extends BasicProcess {
 				.getQuotaMultiple().toString());
 		addZone(getNOM_RG_DECOMPTE_SAMEDI(), type.isDecompteSamedi() ? getNOM_RB_DECOMPTE_SAMEDI_OUI()
 				: getNOM_RB_DECOMPTE_SAMEDI_NON());
-		addZone(getNOM_RG_CONSECUTIF(), type.isConsecutif() ? getNOM_RB_CONSECUTIF_OUI() : getNOM_RB_CONSECUTIF_NON());
 		addZone(getNOM_RG_DATE_DEBUT(), getNOM_RB_DATE_DEBUT_OUI());
 		addZone(getNOM_RG_DATE_FIN(), type.isCalendarDateFin() ? getNOM_RB_DATE_FIN_OUI() : getNOM_RB_DATE_FIN_NON());
 		addZone(getNOM_RG_DATE_REPRISE(), type.isCalendarDateReprise() ? getNOM_RB_DATE_REPRISE_OUI()
@@ -318,7 +317,6 @@ public class OePARAMETRAGEAbsenceCongesAnnuels extends BasicProcess {
 		addZone(getNOM_ST_QUOTA_MULTIPLE(), Const.CHAINE_VIDE);
 
 		addZone(getNOM_RG_DECOMPTE_SAMEDI(), getNOM_RB_DECOMPTE_SAMEDI_NON());
-		addZone(getNOM_RG_CONSECUTIF(), getNOM_RB_CONSECUTIF_NON());
 		addZone(getNOM_RG_DATE_DEBUT(), getNOM_RB_DATE_DEBUT_OUI());
 		addZone(getNOM_RG_DATE_FIN(), getNOM_RB_DATE_FIN_NON());
 		addZone(getNOM_RG_DATE_REPRISE(), getNOM_RB_DATE_REPRISE_NON());
@@ -354,7 +352,6 @@ public class OePARAMETRAGEAbsenceCongesAnnuels extends BasicProcess {
 				.getQuotaMultiple().toString());
 		addZone(getNOM_RG_DECOMPTE_SAMEDI(), type.isDecompteSamedi() ? getNOM_RB_DECOMPTE_SAMEDI_OUI()
 				: getNOM_RB_DECOMPTE_SAMEDI_NON());
-		addZone(getNOM_RG_CONSECUTIF(), type.isConsecutif() ? getNOM_RB_CONSECUTIF_OUI() : getNOM_RB_CONSECUTIF_NON());
 		addZone(getNOM_RG_DATE_DEBUT(), getNOM_RB_DATE_DEBUT_OUI());
 		addZone(getNOM_RG_DATE_FIN(), type.isCalendarDateFin() ? getNOM_RB_DATE_FIN_OUI() : getNOM_RB_DATE_FIN_NON());
 		addZone(getNOM_RG_DATE_REPRISE(), type.isCalendarDateReprise() ? getNOM_RB_DATE_REPRISE_OUI()
@@ -454,8 +451,6 @@ public class OePARAMETRAGEAbsenceCongesAnnuels extends BasicProcess {
 					getVAL_RG_DATE_REPRISE().equals(getNOM_RB_DATE_REPRISE_OUI()) ? true : false);
 			getTypeAbsenceCourant().setChkDateDebut(getVAL_RG_AM_PM().equals(getNOM_RB_AM_PM_OUI()) ? true : false);
 			getTypeAbsenceCourant().setChkDateFin(getVAL_RG_AM_PM().equals(getNOM_RB_AM_PM_OUI()) ? true : false);
-			getTypeAbsenceCourant().setConsecutif(
-					getVAL_RG_CONSECUTIF().equals(getNOM_RB_CONSECUTIF_OUI()) ? true : false);
 			getTypeAbsenceCourant().setDecompteSamedi(
 					getVAL_RG_DECOMPTE_SAMEDI().equals(getNOM_RB_DECOMPTE_SAMEDI_OUI()) ? true : false);
 			getTypeAbsenceCourant().setDescription(
@@ -568,22 +563,6 @@ public class OePARAMETRAGEAbsenceCongesAnnuels extends BasicProcess {
 
 	public String getNOM_RB_DECOMPTE_SAMEDI_NON() {
 		return "NOM_RB_DECOMPTE_SAMEDI_NON";
-	}
-
-	public String getNOM_RG_CONSECUTIF() {
-		return "NOM_RG_CONSECUTIF";
-	}
-
-	public String getVAL_RG_CONSECUTIF() {
-		return getZone(getNOM_RG_CONSECUTIF());
-	}
-
-	public String getNOM_RB_CONSECUTIF_OUI() {
-		return "NOM_RB_CONSECUTIF_OUI";
-	}
-
-	public String getNOM_RB_CONSECUTIF_NON() {
-		return "NOM_RB_CONSECUTIF_NON";
 	}
 
 	public String getNOM_RG_DATE_DEBUT() {

@@ -368,6 +368,54 @@
             <%} %>
 			
 			 
+			
+			<!-- #44774 : Pour la gestion des emails lors du passages des maladies à l'état 'Prise' -->
+			<FIELDSET class="sigp2Fieldset" style="text-align:left;">
+				    <legend class="sigp2Legend">Groupes destinataires des alertes mail lorsque les maladies saisies par anticipation passent à l'état 'Prise'</legend>
+						<table class="sigp2NewTab" style="text-align:left;">
+							<tr bgcolor="#EFEFEF">
+								<td>											
+								    <INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_AJOUTER_DESTINATAIRE_MAIL_PRISE()%>">
+								</td>
+								<td align="left">Groupe</td>
+							</tr>
+							<%
+							if (process.getListeDestinataireMailMaladiePrise()!=null){
+								for (int i = 0;i<process.getListeDestinataireMailMaladiePrise().size();i++){
+									Integer indiceGroupeMail = process.getListeDestinataireMailMaladiePrise().get(i).getIdDestinataireMailMaladie();
+							%>
+									<tr id="<%=indiceGroupeMail%>" onmouseover="SelectLigne(<%=indiceGroupeMail%>,<%=process.getListeDestinataireMailMaladiePrise().size()%>)">
+										<td class="sigp2NewTab-liste" style="position:relative;width:50px;" align="center">
+											<INPUT title="supprimer" type="image" src="images/suppression.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_SUPPRIMER_DESTINATAIRE_MAIL_PRISE(indiceGroupeMail)%>">
+										</td>
+										<td class="sigp2NewTab-liste" style="position:relative;width:100%;text-align: left;"><%=process.getVAL_ST_GROUPE_DESTINATAIRE_MAIL_PRISE(indiceGroupeMail)%></td>
+									</tr>
+									<%
+								}
+							}%>
+						</table>	
+				</FIELDSET>
+			<% if(process.getVAL_ST_ACTION().equals(process.ACTION_SUPPRESSION_MAIL_DESTINATAIRE_PRISE)){%>
+            	<div>
+					<FONT color='red'>Etes-vous sûr de vouloir supprimer le groupe : <%=process.getGroupeCourantPrise().getLibGroupe() %></FONT>
+			        <BR/><BR/>
+	                <INPUT type="submit" class="sigp2-Bouton-100" value="Supprimer" name="<%=process.getNOM_PB_VALIDER_DESTINATAIRE_MAIL_MALADIE_PRISE()%>" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>">
+	                <INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
+		    	</div>
+            <%}else if(process.getVAL_ST_ACTION().equals(process.ACTION_CREATION_DESTINATAIRE_MAIL_PRISE)){ %>
+           		<FIELDSET class="sigp2Fieldset" style="text-align:left;">				
+	            	<legend class="sigp2Legend"><%=process.ACTION_CREATION_DESTINATAIRE_MAIL_PRISE %> </legend>					
+					<span class="sigp2Mandatory" style="margin-left: 20px; position: relative; width: 120px;">Groupes :</span> 
+					<SELECT class="sigp2-saisie" name="<%=process.getNOM_LB_GROUPE_PRISE()%>" style="width: 140px;">
+						<%=process.forComboHTML(process.getVAL_LB_GROUPE_PRISE(), process.getVAL_LB_GROUPE_PRISE_SELECT())%>
+					</SELECT>
+				<BR/>
+                    <div align="center">	 
+	                    <INPUT type="submit" class="sigp2-Bouton-100" value="Valider" name="<%=process.getNOM_PB_VALIDER_DESTINATAIRE_MAIL_MALADIE_PRISE()%>" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>">
+	                    <INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
+                    </div>          
+            	</FIELDSET>  
+            <%} %>
 		</FORM>
 	</BODY>
 </HTML>
