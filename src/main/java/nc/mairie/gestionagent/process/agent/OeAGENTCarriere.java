@@ -111,10 +111,8 @@ public class OeAGENTCarriere extends BasicProcess {
 	public boolean showDateFin = false;
 	public boolean showAccBM = false;
 
-	private static QSYSObjectPathName CALC_PATH = new QSYSObjectPathName((String) ServletAgent.getMesParametres().get("DTAARA_SCHEMA"), (String) ServletAgent.getMesParametres().get("DTAARA_NAME"),
-			"DTAARA");
-	public static CharacterDataArea DTAARA_CALC = new CharacterDataArea(new AS400((String) ServletAgent.getMesParametres().get("HOST_SGBD_PAYE"), (String) ServletAgent.getMesParametres().get(
-			"HOST_SGBD_ADMIN"), (String) ServletAgent.getMesParametres().get("HOST_SGBD_PWD")), CALC_PATH.getPath());
+	private static QSYSObjectPathName CALC_PATH;
+	public static CharacterDataArea DTAARA_CALC;
 	private String calculPaye;
 
 	private MotifAvancementDao motifAvancementDao;
@@ -142,6 +140,13 @@ public class OeAGENTCarriere extends BasicProcess {
 	 */
 	public OeAGENTCarriere() {
 		super();
+        System.out.println("Creating a new instance of "+OeAGENTCarriere.class.getName()+"...");
+		if (CALC_PATH == null)
+			CALC_PATH = new QSYSObjectPathName((String) ServletAgent.getMesParametres().get("DTAARA_SCHEMA"), (String) ServletAgent.getMesParametres().get("DTAARA_NAME"),
+				"DTAARA");
+		if (DTAARA_CALC == null)
+			DTAARA_CALC = new CharacterDataArea(new AS400((String) ServletAgent.getMesParametres().get("HOST_SGBD_PAYE"), (String) ServletAgent.getMesParametres().get(
+				"HOST_SGBD_ADMIN"), (String) ServletAgent.getMesParametres().get("HOST_SGBD_PWD")), CALC_PATH.getPath());
 	}
 
 	/**

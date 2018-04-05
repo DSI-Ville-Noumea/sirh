@@ -62,11 +62,8 @@ public class OeAGENTPrime extends BasicProcess {
 	private String ACTION_MODIFICATION = "Modification d'une fiche Prime.";
 	private String ACTION_CREATION = "Création d'une fiche Prime.";
 
-	private static QSYSObjectPathName CALC_PATH = new QSYSObjectPathName((String) ServletAgent.getMesParametres().get(
-			"DTAARA_SCHEMA"), (String) ServletAgent.getMesParametres().get("DTAARA_NAME"), "DTAARA");
-	public static CharacterDataArea DTAARA_CALC = new CharacterDataArea(new AS400((String) ServletAgent
-			.getMesParametres().get("HOST_SGBD_PAYE"), (String) ServletAgent.getMesParametres().get("HOST_SGBD_ADMIN"),
-			(String) ServletAgent.getMesParametres().get("HOST_SGBD_PWD")), CALC_PATH.getPath());
+	private static QSYSObjectPathName CALC_PATH;
+	public static CharacterDataArea DTAARA_CALC;
 	private String calculPaye;
 
 	private RubriqueDao rubriqueDao;
@@ -240,6 +237,14 @@ public class OeAGENTPrime extends BasicProcess {
 	 */
 	public OeAGENTPrime() {
 		super();
+        System.out.println("Creating a new instance of "+OeAGENTPrime.class.getName()+"...");
+		if (CALC_PATH == null)
+			CALC_PATH = new QSYSObjectPathName((String) ServletAgent.getMesParametres().get(
+				"DTAARA_SCHEMA"), (String) ServletAgent.getMesParametres().get("DTAARA_NAME"), "DTAARA");
+		if (DTAARA_CALC == null)
+			DTAARA_CALC = new CharacterDataArea(new AS400((String) ServletAgent
+				.getMesParametres().get("HOST_SGBD_PAYE"), (String) ServletAgent.getMesParametres().get("HOST_SGBD_ADMIN"),
+				(String) ServletAgent.getMesParametres().get("HOST_SGBD_PWD")), CALC_PATH.getPath());
 	}
 
 	/**

@@ -123,15 +123,8 @@ public class OeELECSaisieCompteurA48 extends OePaginable {
 		
 		// Initialisation des listes deroulantes
 		initialiseListeDeroulante();
-		
-		if (getResultSize() == null)
-			getAllResultCount();
 
 		initialisePagination();
-
-		if (getListeCompteur().size() == 0) {
-			initialiseListeCompteur(request);
-		}
 	}
 
 	private void initialiseDao() {

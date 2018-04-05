@@ -50,9 +50,6 @@ import nc.noumea.spring.service.IRadiService;
  * 
  */
 public class OeAGENTPosAdm extends BasicProcess {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	public static final int STATUT_RECHERCHER_AGENT = 1;
@@ -90,11 +87,9 @@ public class OeAGENTPosAdm extends BasicProcess {
 	private static final List<String> PA_INACTIVES = Arrays.asList("26", "40", "41", "45");
 	private static final List<String> PA_ACTIVES = Arrays.asList("01", "23", "24");
 
-	private static QSYSObjectPathName CALC_PATH = new QSYSObjectPathName((String) ServletAgent.getMesParametres().get(
-			"DTAARA_SCHEMA"), (String) ServletAgent.getMesParametres().get("DTAARA_NAME"), "DTAARA");
-	public static CharacterDataArea DTAARA_CALC = new CharacterDataArea(new AS400((String) ServletAgent
-			.getMesParametres().get("HOST_SGBD_PAYE"), (String) ServletAgent.getMesParametres().get("HOST_SGBD_ADMIN"),
-			(String) ServletAgent.getMesParametres().get("HOST_SGBD_PWD")), CALC_PATH.getPath());
+	private static QSYSObjectPathName CALC_PATH;
+	public static CharacterDataArea DTAARA_CALC;
+	
 	private String calculPaye;
 
 	/**
@@ -228,10 +223,18 @@ public class OeAGENTPosAdm extends BasicProcess {
 	/**
 	 * Constructeur du process OeAGENTPosAdm. Date de création : (04/08/11
 	 * 09:22:55)
-	 * 
 	 */
 	public OeAGENTPosAdm() {
 		super();
+        System.out.println("Creating a new instance of "+OeAGENTPosAdm.class.getName()+"...");
+		if (CALC_PATH == null)
+			CALC_PATH = new QSYSObjectPathName((String) ServletAgent.getMesParametres().get(
+				"DTAARA_SCHEMA"), (String) ServletAgent.getMesParametres().get("DTAARA_NAME"), "DTAARA");
+
+		if (DTAARA_CALC == null)
+			DTAARA_CALC = new CharacterDataArea(new AS400((String) ServletAgent
+				.getMesParametres().get("HOST_SGBD_PAYE"), (String) ServletAgent.getMesParametres().get("HOST_SGBD_ADMIN"),
+				(String) ServletAgent.getMesParametres().get("HOST_SGBD_PWD")), CALC_PATH.getPath());
 	}
 
 	/**
@@ -681,7 +684,8 @@ public class OeAGENTPosAdm extends BasicProcess {
 		if (PA_INACTIVES.contains(currentPA.getCdpadm())) {
 			
 			// #44877 : Il ne faut pas continuer lors de l'ajout d'un PA inactive s'il n'y a pas de PA après.
-			if (sdf.parse(getPaCourante().getDatdeb()).after(sdf.parse((getLastPA().getDatdeb()))))
+			if (sdf.parse(getPaCourante().getDatdeb()).after(sdf.parse((getLastPA().getDatdeb()))) || 
+					sdf.parse(getPaCourante().getDatdeb()).equals(sdf.parse((getLastPA().getDatdeb()))))
 				return false;
 			
 			firstPA = currentPA;
