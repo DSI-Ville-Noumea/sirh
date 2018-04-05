@@ -418,11 +418,17 @@ public class OeAGENTEtatCivil extends BasicProcess {
 
 		getAgentCourant().setDateNaissance(sdf.parse(getVAL_EF_DATE_NAISSANCE()));
 
+		
 		if (getPaysNaissanceCourant() != null) {
 			getAgentCourant().setCodePaysNaissEt(Integer.valueOf(getPaysNaissanceCourant().getCodPays()));
 			getAgentCourant().setCodeCommuneNaissEt(Integer.valueOf(((CommuneEtrangere) getCommNaissanceCourant()).getCodCommuneEtrangere()));
+			// Redmine : #45186
+			getAgentCourant().setCodeCommuneNaissFr(null);
 		} else {
 			getAgentCourant().setCodeCommuneNaissFr(Integer.valueOf(((Commune) getCommNaissanceCourant()).getCodCommune()));
+			// Redmine : #45186
+			getAgentCourant().setCodePaysNaissEt(null);
+			getAgentCourant().setCodeCommuneNaissEt(null);
 		}
 
 		getAgentCourant().setDatePremiereEmbauche(sdf.parse(getVAL_EF_DATE_PREM_EMB()));
