@@ -24,9 +24,13 @@ public class ConditionExerciceDao extends SirhDao implements ConditionExerciceIn
     public List<ConditionExercice> listerToutesConditionExercice(FichePoste fp, Integer idFicheMetierPrimaire, Integer idFicheMetierSecondaire) {
         Integer idFichePoste = fp != null ? fp.getIdFichePoste() : null;
         Integer idFMSecondaire = idFicheMetierSecondaire != null ? idFicheMetierSecondaire : idFicheMetierPrimaire;
-        String sql = "SELECT ID_CONDITION_EXERCICE, NOM_CONDITION_EXERCICE, CHECKED, MIN(FM_ORDRE) AS CER_ORDRE, MIN(CE_ORDRE) AS CE_ORDRE FROM " +
+        // #45020 : Le premier SUM() permet de prendre l'ordre de la FEV primaire 
+        // Le 2e SUM() permet de prendre l'ordre de la FEV secondaire
+        String sql = "SELECT ID_CONDITION_EXERCICE, NOM_CONDITION_EXERCICE, CHECKED, MIN(FM_ORDRE) AS CER_ORDRE, " +
+        		"SUM(CASE WHEN FM_PRIMAIRE = 1 THEN CE_ORDRE ELSE 0 END) AS CE_ORDRE_F1, " +
+        		"SUM(CASE WHEN FM_PRIMAIRE is null OR FM_PRIMAIRE = 0 THEN CE_ORDRE ELSE 0 END) AS CE_ORDRE_F2 FROM " +
                 "(SELECT DISTINCT CE_FM.ID_CONDITION_EXERCICE, CE.NOM_CONDITION_EXERCICE, FM_FP.FM_PRIMAIRE, " +
-                "CASE WHEN CE_FP.ORDRE IS NULL THEN CE_FM.ORDRE ELSE CE_FP.ORDRE END AS CE_ORDRE, " +
+                "CE_FM.ORDRE AS CE_ORDRE, " +
                 "CASE WHEN CE_FP.ID_CONDITION_EXERCICE IS NULL THEN '0' ELSE '1' END AS CHECKED, " +
                 "CASE WHEN CE_FM.ID_FICHE_METIER = ? THEN '0' ELSE '1' END AS FM_ORDRE " +
                 "FROM CONDITION_EXERCICE_FM CE_FM " +
@@ -36,7 +40,7 @@ public class ConditionExerciceDao extends SirhDao implements ConditionExerciceIn
                 "WHERE CE_FM.ID_FICHE_METIER IN (?, ?) " +
                 "ORDER BY FM_ORDRE, CE_ORDRE) CER " +
                 "GROUP BY ID_CONDITION_EXERCICE, NOM_CONDITION_EXERCICE, CHECKED " +
-                "ORDER BY CER_ORDRE, CE_ORDRE";
+                "ORDER BY CER_ORDRE, CE_ORDRE_F1, CE_ORDRE_F2";
         return jdbcTemplate.query(sql, new Object[]{idFicheMetierPrimaire, idFichePoste, idFichePoste, idFicheMetierPrimaire, idFMSecondaire}, new BeanPropertyRowMapper<>(ConditionExercice.class));
     }
 

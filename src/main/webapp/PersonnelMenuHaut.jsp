@@ -86,7 +86,7 @@ menuAgentEmplois.ajouterFils(new Lien("AgtEmploisPoste", "POSTE", "Informations 
 document.write(menuAgentEmplois.afficher());
 
 var menuAgentEltsSalaires = new MenuHaut("Module_agent_eltsSalaires");
-menuAgentEltsSalaires.ajouterFils(new Lien("PAGestion", "PA", "Gestion des P.A", true, false,"PA"));
+menuAgentEltsSalaires.ajouterFils(new Lien("PAGestion", "PA", "Gestion des PA", true, false,"PA"));
 menuAgentEltsSalaires.ajouterFils(new Lien("CarriereGestion", "CARRIERES", "Gestion des carrières", true, false,"CARRIERES"));
 menuAgentEltsSalaires.ajouterFils(new Lien("ChargeGestion", "CHARGES", "Gestion des charges", true, false,"CHARGES"));
 menuAgentEltsSalaires.ajouterFils(new Lien("PrimeGestion", "PRIMES", "Gestion des primes", true, false,"PRIMES"));

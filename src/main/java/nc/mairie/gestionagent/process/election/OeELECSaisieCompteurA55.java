@@ -125,12 +125,7 @@ public class OeELECSaisieCompteurA55 extends OePaginable {
 		// Initialisation des listes deroulantes
 		initialiseListeDeroulante();
 		
-		if (getResultSize() == null)
-			getAllResultCount();
-		
 		initialisePagination();
-
-		initialiseListeCompteur(request);
 	}
 	
 	@Override
