@@ -526,11 +526,14 @@ public class OeAGENTPosAdm extends BasicProcess {
 			if (getZone(getNOM_ST_ACTION()).equals(ACTION_MODIFICATION)) {
 				// Modification
 				
-				// #44481 : régularisations mutuelle
-				modifierMatmut(request);
-				if (getTransaction().isErreur())
-					return false;
-
+				// #45798 : Regul Mutuelle si on modifie la date de début et si plus d'une PA
+				if ( !( paCourante.oldDateDeb.equals( paCourante.getDatdeb() ))
+				  && getListePAAgent().size() > 1 ) {
+					// #44481 : régularisations mutuelle
+					modifierMatmut(request);
+					if (getTransaction().isErreur())
+						return false;
+				}
 				// RG_AG_PA_A01
 				HistoPositionAdm histo = new HistoPositionAdm(getPaCourante());
 				getHistoPositionAdmDao().creerHistoPositionAdm(histo, user, EnumTypeHisto.MODIFICATION);
