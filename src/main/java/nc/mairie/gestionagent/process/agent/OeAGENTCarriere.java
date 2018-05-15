@@ -7,6 +7,7 @@ import java.util.ListIterator;
 
 import javax.servlet.http.HttpServletRequest;
 
+import nc.mairie.enums.EnumTypeContrat;
 import nc.mairie.enums.EnumTypeHisto;
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
 import nc.mairie.gestionagent.robot.MaClasse;
@@ -80,6 +81,7 @@ public class OeAGENTCarriere extends BasicProcess {
 	private String[] LB_BASE_REGLEMENT;
 	private String[] LB_REGIMES;
 	private String[] LB_STATUTS;
+	private String[] LB_CDICDD;
 
 	private Agent agentCourant;
 	private Carriere carriereCourante;
@@ -277,7 +279,10 @@ public class OeAGENTCarriere extends BasicProcess {
 			for (StatutCarriere sc : listeStatut)
 				getHashStatut().put(sc.getCdCate(), sc);
 		}
-
+		// R-45796 : Si liste type contrat vide alors affectation
+		if ( getLB_CDICDD() == LBVide ) {
+			setLB_CDICDD(EnumTypeContrat.getValues());
+		}
 		// Si liste grade vide alors affectation
 		// RG_AG_CA_C03
 		// RG_AG_CA_C11
@@ -429,6 +434,7 @@ public class OeAGENTCarriere extends BasicProcess {
 	 */
 	private void videZonesDeSaisie(HttpServletRequest request) throws Exception {
 		addZone(getNOM_LB_STATUTS_SELECT(), Const.ZERO);
+		addZone(getNOM_LB_CDICDD_SELECT(), Const.ZERO);
 		addZone(getNOM_LB_REGIMES_SELECT(), Const.ZERO);
 		addZone(getNOM_LB_BASE_HORAIRE_SELECT(), Const.ZERO);
 
@@ -457,7 +463,6 @@ public class OeAGENTCarriere extends BasicProcess {
 		addZone(getNOM_EF_DATE_ARR(), Const.CHAINE_VIDE);
 		addZone(getNOM_EF_GRADE(), Const.CHAINE_VIDE);
 		addZone(getNOM_ST_GRADE(), Const.CHAINE_VIDE);
-		addZone(getNOM_ST_CDICDD(), Const.CHAINE_VIDE);
 
 		// Contrat contrat = Contrat.chercherContratCourant(getTransaction(),
 		// getAgentCourant());
@@ -466,9 +471,9 @@ public class OeAGENTCarriere extends BasicProcess {
 		// TypeContrat typeContrat =
 		// TypeContrat.chercherTypeContrat(getTransaction(),
 		// contrat.getIdTypeContrat());
-		// addZone(getNOM_ST_CDICDD(), typeContrat.getLibTypeContrat());
+		// addZone(getNOM_LB_CDICDD(), typeContrat.getLibTypeContrat());
 		// } else
-		// addZone(getNOM_ST_CDICDD(), Const.CHAINE_VIDE);
+		// addZone(getNOM_LB_CDICDD(), Const.CHAINE_VIDE);
 
 	}
 
@@ -640,14 +645,15 @@ public class OeAGENTCarriere extends BasicProcess {
 					// pas de contrat
 				}
 				if (contrat != null && contrat.getIdTypeContrat() != null) {
-					TypeContrat typeContrat = getTypeContratDao().chercherTypeContrat(contrat.getIdTypeContrat());
-					addZone(getNOM_ST_CDICDD(), typeContrat.getLibTypeContrat());
+					//TypeContrat typeContrat = getTypeContratDao().chercherTypeContrat(contrat.getIdTypeContrat());
+					addZone(getNOM_LB_CDICDD_SELECT(), contrat.getIdTypeContrat().toString() );
 				} else {
-					addZone(getNOM_ST_CDICDD(), Const.CHAINE_VIDE);
+					addZone(getNOM_LB_CDICDD_SELECT(), Const.ZERO);
 				}
 			}
 		} else {
-			addZone(getNOM_ST_CDICDD(), getCarriereCourante().getTypeContrat());
+			addZone(getNOM_LB_CDICDD_SELECT(),
+					String.valueOf(  EnumTypeContrat.getCodeForValue( getCarriereCourante().getTypeContrat() ) ));
 		}
 
 		addZone(getNOM_EF_REF_ARR(), getCarriereCourante().getReferenceArrete());
@@ -910,6 +916,13 @@ public class OeAGENTCarriere extends BasicProcess {
 		getCarriereCourante().setBMAnnee(bmAnnees);
 		getCarriereCourante().setIban(iban);
 
+		/* 
+		 * R-45796 : Laisser la possibilité de changer manuellement le type de contrat
+		 */
+		getCarriereCourante().setTypeContrat(
+				EnumTypeContrat.getValueForCode( Integer.parseInt( getVAL_LB_CDICDD_SELECT() ))
+		);
+		/*
 		if (getCarriereCourante().getTypeContrat().equals(Const.CHAINE_VIDE)) {
 			Contrat contrat = null;
 			try {
@@ -918,17 +931,21 @@ public class OeAGENTCarriere extends BasicProcess {
 				// aucun contrat trouvé
 			}
 			if (contrat != null && contrat.getIdTypeContrat() != null) {
-				TypeContrat typeContrat = getTypeContratDao().chercherTypeContrat(contrat.getIdTypeContrat());
-				addZone(getNOM_ST_CDICDD(), typeContrat.getLibTypeContrat());
+				//TypeContrat typeContrat = getTypeContratDao().chercherTypeContrat(contrat.getIdTypeContrat());
+				addZone(getNOM_LB_CDICDD_SELECT(), contrat.getIdTypeContrat().toString() );
 			} else
-				addZone(getNOM_ST_CDICDD(), Const.CHAINE_VIDE);
+				addZone(getNOM_LB_CDICDD_SELECT(), Const.ZERO);
 
-			getCarriereCourante().setTypeContrat(getVAL_ST_CDICDD());
+			getCarriereCourante().setTypeContrat(
+					EnumTypeContrat.getValueForCode( Integer.parseInt( getVAL_LB_CDICDD_SELECT() ))
+			);
 
 		}
-		if (!getVAL_ST_CDICDD().equals(Const.CHAINE_VIDE)) {
-			getCarriereCourante().setTypeContrat(getVAL_ST_CDICDD());
-		}
+		if (!getVAL_LB_CDICDD_SELECT().equals(Const.ZERO)) {
+			getCarriereCourante().setTypeContrat(
+					EnumTypeContrat.getValueForCode( Integer.parseInt( getVAL_LB_CDICDD_SELECT() ))
+			);
+		}*/
 
 		// grade
 		if (gradeObligatoire) {
@@ -1504,6 +1521,63 @@ public class OeAGENTCarriere extends BasicProcess {
 		return getZone(getNOM_LB_STATUTS_SELECT());
 	}
 
+	/**
+	 * Getter de la liste avec un lazy initialize : LB_CDICDD Date de création
+	 * : (15/05/18 09:50:00)
+	 * 
+	 */
+	public String[] getLB_CDICDD() {
+		if ( LB_CDICDD == null )
+			LB_CDICDD = initialiseLazyLB();
+		return LB_CDICDD;
+	}
+
+	/**
+	 * Setter de la liste: LB_CDICDD Date de création : (15/05/18 09:50:00)
+	 * 
+	 */
+	public void setLB_CDICDD(String[] newLB_CDICDD) {
+		LB_CDICDD = newLB_CDICDD;
+	}
+	
+	/**
+	 * Retourne pour la JSP le nom de la liste : ST_CDICDD Date de
+	 * création : (15/05/18 09:50:00)
+	 * 
+	 */
+	public String getNOM_LB_CDICDD() {
+		return "NOM_LB_CDICDD";
+	}
+	
+	/**
+	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
+	 * NOM_LB_CDICDD_SELECT Date de création : (15/05/18 09:50:00)
+	 * 
+	 */
+	public String getNOM_LB_CDICDD_SELECT() {
+		return "NOM_LB_CDICDD_SELECT";
+	}
+	
+	/**
+	 * Méthode à  personnaliser Retourne la valeur à  afficher pour la zone de la
+	 * JSP : LB_CDICDD Date de création : (15/05/18 09:50:00)
+	 * 
+	 */
+	public String[] getVAL_LB_CDICDD() {
+		return getLB_CDICDD();
+	}
+	
+	/**
+	 * Retourne la valeur à  afficher par la JSP pour la liste : LB_CDICDD Date de
+	 * création : (15/05/18 09:50:00)
+	 * 
+	 */
+	public String getVAL_LB_CDICDD_SELECT() {
+		return getZone(getNOM_LB_CDICDD_SELECT());
+	}
+
+
+
 	private String[] LB_MOTIFS;
 
 	/**
@@ -1747,24 +1821,6 @@ public class OeAGENTCarriere extends BasicProcess {
 	 */
 	public String getVAL_EF_REF_ARR() {
 		return getZone(getNOM_EF_REF_ARR());
-	}
-
-	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_CDICDD Date de
-	 * création : (06/09/11 09:41:00)
-	 * 
-	 */
-	public String getNOM_ST_CDICDD() {
-		return "NOM_ST_CDICDD";
-	}
-
-	/**
-	 * Retourne la valeur à  afficher par la JSP pour la zone : ST_CDICDD Date de
-	 * création : (06/09/11 09:41:00)
-	 * 
-	 */
-	public String getVAL_ST_CDICDD() {
-		return getZone(getNOM_ST_CDICDD());
 	}
 
 	/**
@@ -3169,10 +3225,10 @@ public class OeAGENTCarriere extends BasicProcess {
 			}
 
 			if (contrat != null && contrat.getIdTypeContrat() != null) {
-				TypeContrat typeContrat = getTypeContratDao().chercherTypeContrat(contrat.getIdTypeContrat());
-				addZone(getNOM_ST_CDICDD(), typeContrat.getLibTypeContrat());
+				//TypeContrat typeContrat = getTypeContratDao().chercherTypeContrat(contrat.getIdTypeContrat());
+				addZone(getNOM_LB_CDICDD_SELECT(), contrat.getIdTypeContrat().toString() );
 			} else
-				addZone(getNOM_ST_CDICDD(), Const.CHAINE_VIDE);
+				addZone(getNOM_LB_CDICDD_SELECT(), Const.ZERO);
 		}
 		return true;
 	}

@@ -238,7 +238,9 @@
 						<span class="sigp2">Type de contrat :</span>
 					</td>
 					<td>
-						<INPUT class="sigp2-saisie" maxlength="5" name="<%= process.getNOM_ST_CDICDD() %>" size="5" type="text"  readonly="readonly" value="<%= process.getVAL_ST_CDICDD() %>">
+						<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_CDICDD() %>">
+							<%=process.forComboHTML(process.getVAL_LB_CDICDD(), process.getVAL_LB_CDICDD_SELECT()) %>
+						</SELECT>
 					</td>
 				</tr>
 				<tr>
@@ -397,7 +399,7 @@
 							<span class="sigp2">Type de contrat: </span>
 		    			</td>
 		    			<td>
-							<span class="sigp2-saisie"><%=process.getVAL_ST_CDICDD()%></span>
+							<span class="sigp2-saisie"><%=process.getVAL_LB_CDICDD()%></span>
 		    			</td>
 		    		</tr>
 		    		<tr>

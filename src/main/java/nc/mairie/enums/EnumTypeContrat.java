@@ -1,7 +1,7 @@
 package nc.mairie.enums;
 
 public enum EnumTypeContrat {
-	CDD(1, "CDD"), CDI(2, "CDI");
+	AUCUN(0, ""), CDD(1, "CDD"), CDI(2, "CDI");
 
 	/** L'attribut qui contient le code associe a l'enum */
 	private final Integer code;
@@ -33,5 +33,19 @@ public enum EnumTypeContrat {
 			typesContrat[i++] = elt.getValue();
 		}
 		return typesContrat;
+	}
+	/** La methode accesseur qui renvoit le code à partir de la valeur */
+	public static int getCodeForValue ( String value ) {
+		for ( EnumTypeContrat etc : EnumTypeContrat.values() )
+			if ( value.equals( etc.getValue() ) ) return etc.getCode();
+		
+		return -1;
+	}
+	/** La methode accesseur qui renvoit la valeur à partir du code */
+	public static String getValueForCode ( int code ) {
+		for ( EnumTypeContrat etc : EnumTypeContrat.values() )
+			if ( code == etc.getCode() ) return etc.getValue();
+		
+		return null;
 	}
 }
