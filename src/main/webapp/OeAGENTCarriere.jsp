@@ -399,7 +399,7 @@
 							<span class="sigp2">Type de contrat: </span>
 		    			</td>
 		    			<td>
-							<span class="sigp2-saisie"><%=process.getVAL_LB_CDICDD()%></span>
+							<span class="sigp2-saisie"><%=process.getVAL_ST_CDICDD()%></span>
 		    			</td>
 		    		</tr>
 		    		<tr>
