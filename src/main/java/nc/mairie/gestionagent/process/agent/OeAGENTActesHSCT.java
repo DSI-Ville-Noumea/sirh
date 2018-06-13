@@ -777,13 +777,9 @@ public class OeAGENTActesHSCT extends BasicProcess {
 				TypeDocument td = (TypeDocument) getTypeDocumentDao().chercherTypeDocument(doc.getIdTypeDocument());
 				String info = "&nbsp;";
 				if (td.getCodTypeDocument().equals(CmisUtils.CODE_TYPE_VM)) {
-					String nomDoc = doc.getNomDocument();
-					// on recupere l'id du document
-					nomDoc = nomDoc.substring(nomDoc.indexOf("_") + 1, nomDoc.length());
-					String id = nomDoc.substring(0, nomDoc.indexOf("_"));
 					VisiteMedicale vm = null;
 					try {
-						vm = getVisiteMedicaleDao().chercherVisiteMedicale(Integer.valueOf(id));
+						vm = getVisiteMedicaleDao().chercherVisiteMedicale(doc.getReference());
 					} catch (org.springframework.dao.EmptyResultDataAccessException e) {
 
 					}
