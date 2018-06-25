@@ -7,6 +7,12 @@ import java.util.ListIterator;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.context.ApplicationContext;
+
+import com.ibm.as400.access.AS400;
+import com.ibm.as400.access.CharacterDataArea;
+import com.ibm.as400.access.QSYSObjectPathName;
+
 import nc.mairie.enums.EnumTypeContrat;
 import nc.mairie.enums.EnumTypeHisto;
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
@@ -35,7 +41,6 @@ import nc.mairie.metier.paye.Matricule;
 import nc.mairie.metier.poste.Affectation;
 import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.poste.Horaire;
-import nc.mairie.metier.referentiel.TypeContrat;
 import nc.mairie.spring.dao.metier.agent.AutreAdministrationAgentDao;
 import nc.mairie.spring.dao.metier.agent.ContratDao;
 import nc.mairie.spring.dao.metier.carriere.HistoCarriereDao;
@@ -58,12 +63,6 @@ import nc.noumea.spring.service.AdsService;
 import nc.noumea.spring.service.IAdsService;
 import nc.noumea.spring.service.IAvancementService;
 import nc.noumea.spring.service.ISirhService;
-
-import org.springframework.context.ApplicationContext;
-
-import com.ibm.as400.access.AS400;
-import com.ibm.as400.access.CharacterDataArea;
-import com.ibm.as400.access.QSYSObjectPathName;
 
 /**
  * Process OeAGENTCarriere Date de création : (05/09/11 11:31:37)
@@ -463,18 +462,7 @@ public class OeAGENTCarriere extends BasicProcess {
 		addZone(getNOM_EF_DATE_ARR(), Const.CHAINE_VIDE);
 		addZone(getNOM_EF_GRADE(), Const.CHAINE_VIDE);
 		addZone(getNOM_ST_GRADE(), Const.CHAINE_VIDE);
-
-		// Contrat contrat = Contrat.chercherContratCourant(getTransaction(),
-		// getAgentCourant());
-		//
-		// if (contrat != null) {
-		// TypeContrat typeContrat =
-		// TypeContrat.chercherTypeContrat(getTransaction(),
-		// contrat.getIdTypeContrat());
-		// addZone(getNOM_LB_CDICDD(), typeContrat.getLibTypeContrat());
-		// } else
-		// addZone(getNOM_LB_CDICDD(), Const.CHAINE_VIDE);
-
+		addZone(getNOM_ST_CDICDD(), Const.CHAINE_VIDE);
 	}
 
 	/**
@@ -645,15 +633,14 @@ public class OeAGENTCarriere extends BasicProcess {
 					// pas de contrat
 				}
 				if (contrat != null && contrat.getIdTypeContrat() != null) {
-					//TypeContrat typeContrat = getTypeContratDao().chercherTypeContrat(contrat.getIdTypeContrat());
-					addZone(getNOM_LB_CDICDD_SELECT(), contrat.getIdTypeContrat().toString() );
+					addZone(getNOM_ST_CDICDD(), EnumTypeContrat.getValueForCode(contrat.getIdTypeContrat()));
 				} else {
-					addZone(getNOM_LB_CDICDD_SELECT(), Const.ZERO);
+					addZone(getNOM_ST_CDICDD(), Const.CHAINE_VIDE);
 				}
 			}
 		} else {
-			addZone(getNOM_LB_CDICDD_SELECT(),
-					String.valueOf(  EnumTypeContrat.getCodeForValue( getCarriereCourante().getTypeContrat() ) ));
+			addZone(getNOM_ST_CDICDD(), getCarriereCourante().getTypeContrat());
+			addZone(getNOM_LB_CDICDD_SELECT(), String.valueOf(EnumTypeContrat.getCodeForValue(getCarriereCourante().getTypeContrat())));
 		}
 
 		addZone(getNOM_EF_REF_ARR(), getCarriereCourante().getReferenceArrete());
@@ -922,30 +909,6 @@ public class OeAGENTCarriere extends BasicProcess {
 		getCarriereCourante().setTypeContrat(
 				EnumTypeContrat.getValueForCode( Integer.parseInt( getVAL_LB_CDICDD_SELECT() ))
 		);
-		/*
-		if (getCarriereCourante().getTypeContrat().equals(Const.CHAINE_VIDE)) {
-			Contrat contrat = null;
-			try {
-				contrat = getContratDao().chercherContratAgentDateComprise(getAgentCourant().getIdAgent(), sdf.parse(dateDebut));
-			} catch (Exception e) {
-				// aucun contrat trouvé
-			}
-			if (contrat != null && contrat.getIdTypeContrat() != null) {
-				//TypeContrat typeContrat = getTypeContratDao().chercherTypeContrat(contrat.getIdTypeContrat());
-				addZone(getNOM_LB_CDICDD_SELECT(), contrat.getIdTypeContrat().toString() );
-			} else
-				addZone(getNOM_LB_CDICDD_SELECT(), Const.ZERO);
-
-			getCarriereCourante().setTypeContrat(
-					EnumTypeContrat.getValueForCode( Integer.parseInt( getVAL_LB_CDICDD_SELECT() ))
-			);
-
-		}
-		if (!getVAL_LB_CDICDD_SELECT().equals(Const.ZERO)) {
-			getCarriereCourante().setTypeContrat(
-					EnumTypeContrat.getValueForCode( Integer.parseInt( getVAL_LB_CDICDD_SELECT() ))
-			);
-		}*/
 
 		// grade
 		if (gradeObligatoire) {
@@ -1547,6 +1510,14 @@ public class OeAGENTCarriere extends BasicProcess {
 	 */
 	public String getNOM_LB_CDICDD() {
 		return "NOM_LB_CDICDD";
+	}
+	
+	public String getVAL_ST_CDICDD() {
+		return getZone(getNOM_ST_CDICDD());
+	}
+	
+	public String getNOM_ST_CDICDD() {
+		return "NOM_ST_CDICDD";
 	}
 	
 	/**

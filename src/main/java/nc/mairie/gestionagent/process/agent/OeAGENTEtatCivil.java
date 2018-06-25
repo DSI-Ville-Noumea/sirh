@@ -2668,6 +2668,8 @@ public class OeAGENTEtatCivil extends BasicProcess {
 			if (getAgentCourant().getCodePaysNaissEt() == null) {
 				setCommNaissanceCourant(Commune.chercherCommune(getTransaction(), getAgentCourant().getCodeCommuneNaissFr()));
 				setLieuNaissance(((Commune) getCommNaissanceCourant()).getLibCommune() + " - " + Const.COMMUNE_FRANCE);
+				// #46846 : On remet le paramètre à zéro afin de ne pas garder l'information précédente
+				setPaysNaissanceCourant(null);
 			} else {
 				setPaysNaissanceCourant(Pays.chercherPays(getTransaction(), getAgentCourant().getCodePaysNaissEt()));
 				// #42741

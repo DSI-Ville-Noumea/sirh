@@ -60,6 +60,10 @@ public class OePTGSaisie extends BasicProcess {
 	private static final long serialVersionUID = 1L;
 
 	public static final int STATUT_RECHERCHER_AGENT = 1;
+	public static final int INDEMNITE_ROULEMENT_DPM = 7715;
+	public static final int RENFORT_DE_GARDE = 7717;
+	public static final int REGIME_INDEMN_DJF = 7756;
+	public static final int REGIME_INDEMN_NUIT = 7757;
 
 	private Integer idAgent = null;
 	private Date dateLundi = new Date();
@@ -267,7 +271,7 @@ public class OePTGSaisie extends BasicProcess {
 				if (primeAajouter != null) {
 					// HEURE INDEMNITE ROULEMENT DPM
 					// Vérification date debut > date fin
-					if (primeAajouter.getNumRubrique() == 7715 && primeAajouter.getHeureDebut() != null) {
+					if (primeAajouter.getNumRubrique() == INDEMNITE_ROULEMENT_DPM && primeAajouter.getHeureDebut() != null) {
 						if (primeAajouter.getHeureDebut().getTime() > primeAajouter.getHeureFin().getTime()) {
 							Calendar cal = Calendar.getInstance();
 							cal.set(Calendar.YEAR, primeAajouter.getHeureFin().getYear());
@@ -277,9 +281,14 @@ public class OePTGSaisie extends BasicProcess {
 							primeAajouter.setHeureFin(cal.getTime());
 						}
 					}
-					// # HEURE RENFORT DE GARDE
+					// # HEURE RENFORT DE GARDE + Régimes indemnitaires (#46840)
 					// Vérification date debut > date fin
-					if (primeAajouter.getNumRubrique() == 7717 && primeAajouter.getHeureDebut() != null) {
+					if ((primeAajouter.getNumRubrique() == RENFORT_DE_GARDE 
+							|| primeAajouter.getNumRubrique() == REGIME_INDEMN_DJF 
+							|| primeAajouter.getNumRubrique() == REGIME_INDEMN_NUIT) 
+							&& primeAajouter.getHeureDebut() != null 
+							&& primeAajouter.getHeureFin() != null) {
+						
 						if (primeAajouter.getHeureDebut().getTime() >= primeAajouter.getHeureFin().getTime()) {
 							DateTime dateTimeFin = new DateTime(primeAajouter.getHeureFin()).plusDays(1);
 							primeAajouter.setHeureFin(dateTimeFin.toDate());
