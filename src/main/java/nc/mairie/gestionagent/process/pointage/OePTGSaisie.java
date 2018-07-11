@@ -62,8 +62,8 @@ public class OePTGSaisie extends BasicProcess {
 	public static final int STATUT_RECHERCHER_AGENT = 1;
 	public static final int INDEMNITE_ROULEMENT_DPM = 7715;
 	public static final int RENFORT_DE_GARDE = 7717;
-	public static final int REGIME_INDEMN_DJF = 7756;
-	public static final int REGIME_INDEMN_NUIT = 7757;
+	public static final int REGIME_INDEMN_DJF = 7656;
+	public static final int REGIME_INDEMN_NUIT = 7657;
 
 	private Integer idAgent = null;
 	private Date dateLundi = new Date();
