@@ -297,7 +297,7 @@ public class OeAGENTActesHSCT extends BasicProcess {
 						DemandeDto demande = (DemandeDto) list.next();
 						RefTypeDto tAt = demande.getTypeAccidentTravail();
 						if (null != tAt) {
-							String dateDeclaration = null != demande.getDateAccidentTravail() ? "AT - " + sdf.format(demande.getDateDeclaration())
+							String dateDeclaration = null != demande.getDateAccidentTravail() ? "AT - " + sdf.format(demande.getDateAccidentTravail())
 									: "AT Rechute ";
 							String ligne[] = { dateDeclaration, tAt.getLibelle() };
 							aFormat.ajouteLigne(ligne);
