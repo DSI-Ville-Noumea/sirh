@@ -479,7 +479,7 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 			int ligneAtReference = getListeATReference().indexOf(atReference);
 			addZone(getNOM_LB_AT_REFERENCE_SELECT(), String.valueOf(ligneAtReference + 1));
 			RefTypeDto s = getHashSiegeLesion().get(atReference.getTypeSiegeLesion().getIdRefType());
-			addZone(getNOM_LB_AT_REFERENCE(), sdf.format(atReference.getDateAccidentTravail()) + " - " + s.getLibelle());
+			addZone(getNOM_LB_AT_REFERENCE(), atReference.getDateAccidentTravail() != null ? sdf.format(atReference.getDateAccidentTravail()) : Const.CHAINE_VIDE + " - " + s.getLibelle());
 		}
 
 		if (getDemandeCourant().getTypeSaisi().isMaladiePro() && null != getDemandeCourant().getTypeMaladiePro()) {

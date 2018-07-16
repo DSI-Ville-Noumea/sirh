@@ -1575,8 +1575,10 @@ public class OeABSVisualisation extends BasicProcess {
 			else
 				libelle = "Siège des lésions non renseigné";
 
-			String ligne[] = { 
-			sdf.format(at.getDateAccidentTravail()) + " - " + libelle };
+			// #47019 : Certains AT n'ont pas de date d'accident du travail...
+			String formattedDate = at.getDateAccidentTravail() == null ? "Date inconnue" : sdf.format(at.getDateAccidentTravail());
+			
+			String ligne[] = { formattedDate + " - " + libelle };
 			aFormat.ajouteLigne(ligne);
 		}
 		setLB_AT_REFERENCE(aFormat.getListeFormatee(false));
@@ -2098,7 +2100,8 @@ public class OeABSVisualisation extends BasicProcess {
 		if (null != type.getTypeSaisiDto()) {
 			// date de l'accident du travail
 			if (type.getTypeSaisiDto().isDateAccidentTravail()) {
-				addZone(getNOM_ST_DATE_ACCIDENT_TRAVAIL(), sdf.format(dem.getDateAccidentTravail()));
+				String formattedDate = dem.getDateAccidentTravail() != null ? sdf.format(dem.getDateAccidentTravail()) : Const.CHAINE_VIDE;
+				addZone(getNOM_ST_DATE_ACCIDENT_TRAVAIL(), formattedDate);
 			}
 			if (type.getTypeSaisiDto().isPrescripteur()) {
 				addZone(getNOM_ST_PRESCRIPTEUR(), dem.getPrescripteur() == null ? Const.CHAINE_VIDE : dem.getPrescripteur().trim());
