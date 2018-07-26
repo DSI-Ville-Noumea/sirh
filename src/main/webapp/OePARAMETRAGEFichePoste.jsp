@@ -126,6 +126,7 @@
 			            	</span>
 							<div class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>">
 								<INPUT type="image" src="images/ajout.gif" height="20px" width="20px" name="<%=process.getNOM_PB_CREER_TITRE()%>">
+								<INPUT type="image" src="images/modifier.gif" height="20px" width="20px" name="<%=process.getNOM_PB_MODIFIER_TITRE()%>">
 			        	    	<INPUT type="image" src="images/suppression.gif" height="20px" width="20px" name="<%=process.getNOM_PB_SUPPRIMER_TITRE()%>">
 			        	    </div>  
 			            	
@@ -135,17 +136,40 @@
 								<% if (!process.ACTION_SUPPRESSION.equals(process.getVAL_ST_ACTION_TITRE())) { %>
 					            	<tr>
 					            		<td width="50px">
-											<label class="sigp2Mandatory">Libellé:</label>
+											<label class="sigp2Mandatory">Libellé :</label>
 					            		</td>
 					            		<td>
-					            			<INPUT class="sigp2-saisiemajuscule" maxlength="100" name="<%= process.getNOM_EF_TITRE() %>" size="35" type="text" value="<%= process.getVAL_EF_TITRE() %>">
+											<% if (process.ACTION_CREATION.equals(process.getVAL_ST_ACTION_TITRE())) { %>
+					            				<INPUT class="sigp2-saisiemajuscule" maxlength="100" name="<%= process.getNOM_EF_TITRE() %>" size="35" type="text" value="<%= process.getVAL_EF_TITRE() %>">		            	
+											<%} else {%>
+					            				<INPUT class="sigp2-saisiemajuscule" disabled="disabled" maxlength="100" name="<%= process.getNOM_EF_TITRE() %>" size="35" type="text" value="<%= process.getVAL_EF_TITRE() %>">		            	
+											<% } %>
+										</td>
+					            	</tr>	
+					            	<tr>
+					            		<td width="50px">
+											<label class="sigp2">Libellé court :</label>
+					            		</td>
+					            		<td>
+					            			<INPUT class="sigp2-saisiemajuscule" maxlength="100" name="<%= process.getNOM_EF_TITRE_COURT() %>" size="35" type="text" value="<%= process.getVAL_EF_TITRE_COURT() %>">
+										</td>
+					            	</tr>	
+					            	<tr>
+					            		<td width="50px">
+											<label class="sigp2">Libellé long :</label>
+					            		</td>
+					            		<td>
+					            			<INPUT class="sigp2-saisiemajuscule" maxlength="100" name="<%= process.getNOM_EF_TITRE_LONG() %>" size="35" type="text" value="<%= process.getVAL_EF_TITRE_LONG() %>">
 										</td>
 					            	</tr>	
 									<tr>
 					            		<td colspan="2" align="center">
 											<% if (process.ACTION_CREATION.equals(process.getVAL_ST_ACTION_TITRE())) { %>
-					            				<INPUT type="submit" class="sigp2-Bouton-100" value="Ajouter" name="<%=process.getNOM_PB_VALIDER_TITRE()%>">	
-											<% }%>	
+					            				<INPUT type="submit" class="sigp2-Bouton-100" value="Ajouter" name="<%=process.getNOM_PB_VALIDER_TITRE()%>">
+											<%} else {%>
+					            				<INPUT type="submit" class="sigp2-Bouton-100" value="Modifier" name="<%=process.getNOM_PB_VALIDER_TITRE()%>">		            	
+											<% } %>
+					            			
 											<INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER_TITRE()%>">						
 					            		</td>
 					            	</tr>		            	

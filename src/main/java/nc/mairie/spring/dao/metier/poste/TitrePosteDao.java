@@ -4,12 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
+
 import nc.mairie.metier.poste.TitrePoste;
 import nc.mairie.spring.dao.utils.SirhDao;
 
 public class TitrePosteDao extends SirhDao implements TitrePosteDaoInterface {
 
 	public static final String CHAMP_LIB_TITRE_POSTE = "LIB_TITRE_POSTE";
+	public static final String CHAMP_LIB_TITRE_COURT = "LIB_TITRE_COURT";
+	public static final String CHAMP_LIB_TITRE_LONG = "LIB_TITRE_LONG";
 
 	public TitrePosteDao(SirhDao sirhDao) {
 		super.dataSource = sirhDao.getDataSource();
@@ -29,6 +33,8 @@ public class TitrePosteDao extends SirhDao implements TitrePosteDaoInterface {
 			TitrePoste a = new TitrePoste();
 			a.setIdTitrePoste((Integer) row.get(CHAMP_ID));
 			a.setLibTitrePoste((String) row.get(CHAMP_LIB_TITRE_POSTE));
+			a.setLibTitreCourt((String) row.get(CHAMP_LIB_TITRE_COURT));
+			a.setLibTitreLong((String) row.get(CHAMP_LIB_TITRE_LONG));
 			liste.add(a);
 		}
 
@@ -41,9 +47,27 @@ public class TitrePosteDao extends SirhDao implements TitrePosteDaoInterface {
 	}
 
 	@Override
-	public void creerTitrePoste(String libTitrePoste) throws Exception {
-		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_LIB_TITRE_POSTE + ") " + "VALUES (?)";
-		jdbcTemplate.update(sql, new Object[] { libTitrePoste.toUpperCase() });
+	public void creerTitrePoste(TitrePoste titrePoste) throws Exception {
+		if (titrePoste == null)
+			return;
+		String titreCourt = StringUtils.isNotEmpty(titrePoste.getLibTitreCourt()) ? titrePoste.getLibTitreCourt().toUpperCase() : null;
+		String titreLong = StringUtils.isNotEmpty(titrePoste.getLibTitreLong()) ? titrePoste.getLibTitreLong().toUpperCase() : null;
+		
+		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_LIB_TITRE_POSTE + ", " + CHAMP_LIB_TITRE_COURT + ", " + CHAMP_LIB_TITRE_LONG + ") " + "VALUES (?,?,?)";
+		jdbcTemplate.update(sql, new Object[] { titrePoste.getLibTitrePoste().toUpperCase(), titreCourt, titreLong  });
+	}
+
+	@Override
+	public void modifierTitrePoste(TitrePoste titrePoste) throws Exception {
+		if (titrePoste == null)
+			return;
+		
+		String titreCourt = StringUtils.isNotEmpty(titrePoste.getLibTitreCourt()) ? titrePoste.getLibTitreCourt().toUpperCase() : null;
+		String titreLong = StringUtils.isNotEmpty(titrePoste.getLibTitreLong()) ? titrePoste.getLibTitreLong().toUpperCase() : null;
+		
+		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_LIB_TITRE_COURT + "=?," + CHAMP_LIB_TITRE_LONG + "=? where " + CHAMP_ID + " =?";
+		
+		jdbcTemplate.update(sql, new Object[] { titreCourt, titreLong, titrePoste.getIdTitrePoste()  });
 	}
 
 	@Override

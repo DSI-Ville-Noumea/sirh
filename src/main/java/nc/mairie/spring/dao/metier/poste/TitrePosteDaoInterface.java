@@ -10,7 +10,9 @@ public interface TitrePosteDaoInterface {
 
 	public TitrePoste chercherTitrePoste(Integer idTitrePoste) throws Exception;
 
-	public void creerTitrePoste(String libTitrePoste) throws Exception;
+	public void creerTitrePoste(TitrePoste libTitrePoste) throws Exception;
+
+	public void modifierTitrePoste(TitrePoste libTitrePoste) throws Exception;
 
 	public void supprimerTitrePoste(Integer idTitrePoste) throws Exception;
 
