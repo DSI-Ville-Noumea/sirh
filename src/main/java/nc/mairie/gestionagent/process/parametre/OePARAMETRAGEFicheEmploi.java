@@ -5,6 +5,8 @@ import java.util.ListIterator;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.context.ApplicationContext;
+
 import nc.mairie.metier.Const;
 import nc.mairie.metier.carriere.Categorie;
 import nc.mairie.metier.parametrage.CodeRome;
@@ -12,10 +14,7 @@ import nc.mairie.metier.parametrage.DiplomeGenerique;
 import nc.mairie.metier.parametrage.DomaineEmploi;
 import nc.mairie.metier.parametrage.FamilleEmploi;
 import nc.mairie.metier.poste.DiplomeFE;
-import nc.mairie.metier.poste.Ecole;
-import nc.mairie.metier.poste.EntiteGeo;
 import nc.mairie.metier.poste.FicheMetier;
-import nc.mairie.metier.poste.TitrePoste;
 import nc.mairie.spring.dao.metier.carriere.CategorieDao;
 import nc.mairie.spring.dao.metier.parametrage.CodeRomeDao;
 import nc.mairie.spring.dao.metier.parametrage.DiplomeGeneriqueDao;
@@ -33,8 +32,6 @@ import nc.mairie.technique.Services;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
-
-import org.springframework.context.ApplicationContext;
 
 /**
  * Process OePARAMETRAGEFicheEmploi Date de création : (09/09/11 11:54:33)

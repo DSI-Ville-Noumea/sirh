@@ -1,15 +1,14 @@
 package nc.mairie.spring.dao.metier.poste;
 
-import nc.mairie.metier.poste.FMFP;
-import nc.mairie.metier.poste.FicheMetier;
-import nc.mairie.metier.poste.TitrePoste;
-import nc.mairie.spring.dao.utils.SirhDao;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 
-import java.util.List;
+import nc.mairie.metier.poste.FMFP;
+import nc.mairie.metier.poste.FicheMetier;
+import nc.mairie.spring.dao.utils.SirhDao;
 
 /**
  * Created by gael on 29/06/2017.
