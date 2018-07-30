@@ -2,7 +2,10 @@ package nc.mairie.spring.dao.metier.poste;
 
 import nc.mairie.metier.poste.FMFP;
 import nc.mairie.metier.poste.FicheMetier;
+import nc.mairie.metier.poste.TitrePoste;
 import nc.mairie.spring.dao.utils.SirhDao;
+
+import org.apache.commons.lang.StringUtils;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 
@@ -18,6 +21,7 @@ public class FicheMetierDao extends SirhDao implements FicheMetierDaoInterface {
     public static final String CHAMP_ID_FAMILLE_METIER = "ID_FAMILLE_METIER";
     public static final String CHAMP_REF_MAIRIE = "REF_MAIRIE";
     public static final String CHAMP_NOM_METIER = "NOM_METIER";
+    public static final String CHAMP_NOM_METIER_LONG = "NOM_METIER_LONG";
     public static final String CHAMP_DEFINITION_METIER = "DEFINITION_METIER";
     public static final String CHAMP_CADRE_STATUTAIRE = "CADRE_STATUTAIRE";
 
@@ -53,6 +57,16 @@ public class FicheMetierDao extends SirhDao implements FicheMetierDaoInterface {
             return null;
         }
     }
+
+	@Override
+	public void modifierFicheMetier(FicheMetier fm) {
+		
+		String titreLong = StringUtils.isNotEmpty(fm.getNomMetierLong()) ? fm.getNomMetierLong().toUpperCase() : null;
+		
+		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_NOM_METIER_LONG + "=? where " + CHAMP_ID_FICHE_METIER + " =?";
+		
+		jdbcTemplate.update(sql, new Object[] { titreLong, fm.getIdFicheMetier()  });
+	}
 
     @Override
     public List<FicheMetier> listerFicheMetierAvecRefMairieOuLibelle(String keyword) {

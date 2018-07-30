@@ -347,7 +347,52 @@
 				            <%}%>	
 						</FIELDSET>
 					</td>
-					<td>&nbsp;
+					<td>
+						<FIELDSET class="sigp2Fieldset"  style="text-align: left;">
+					    	<legend class="sigp2Legend">Fiches emploi ville</legend>
+							<SELECT name="<%= process.getNOM_LB_FEV() %>" size="10" style="width:100%;" class="sigp2-liste">
+								<%=process.forComboHTML(process.getVAL_LB_FEV(), process.getVAL_LB_FEV_SELECT()) %>
+							</SELECT>
+							<div class=<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>>
+			    	        	<INPUT type="image" src="images/modifier.gif" height="20px" width="20px" name="<%=process.getNOM_PB_MODIFIER_FEV()%>">
+			    	        </div>
+			            	
+			            <% if (process.getVAL_EF_ACTION_FEV() != null && process.ACTION_MODIFICATION.equals(process.getVAL_EF_ACTION_FEV())) {%>
+			            	<br>
+				            <table>
+				            	<tr>
+				            		<td width="30px">
+										<label class="sigp2Mandatory">Réf. mairie : </label>
+				            		</td>
+				            		<td>
+				            			<INPUT class="sigp2-saisie" disabled="disabled" maxlength="100" name="<%= process.getNOM_EF_FEV_REF_MAIRIE() %>" size="20" type="text" value="<%= process.getVAL_EF_FEV_REF_MAIRIE() %>">
+									</td>
+				            	</tr>
+				            	<tr>
+				            		<td width="30px">
+										<label class="sigp2Mandatory">Libellé : </label>
+				            		</td>
+				            		<td>
+				            			<INPUT class="sigp2-saisiemajuscule" disabled="disabled" maxlength="100" name="<%= process.getNOM_EF_FEV_LABEL() %>" size="100" type="text" value="<%= process.getVAL_EF_FEV_LABEL() %>">
+									</td>
+				            	</tr>	
+				            	<tr>
+				            		<td width="30px">
+										<label class="sigp2">Libellé long : </label>
+				            		</td>
+				            		<td>
+				            			<INPUT class="sigp2-saisiemajuscule" maxlength="255" name="<%= process.getNOM_EF_FEV_LABEL_LONG() %>" height="30" size="100" type="text" value="<%= process.getVAL_EF_FEV_LABEL_LONG() %>">
+									</td>
+				            	</tr>
+								<tr>
+				            		<td colspan="2" align="center">
+				            			<INPUT type="submit" class="sigp2-Bouton-100" value="Modifier" name="<%=process.getNOM_PB_VALIDIER_MODIFICATION_FEV()%>">
+										<INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER_FEV()%>">
+				            		</td>
+				            	</tr>
+				            </table>
+				            <%}%>
+						</FIELDSET>
 					</td>
 				</tr>
 			</table>
