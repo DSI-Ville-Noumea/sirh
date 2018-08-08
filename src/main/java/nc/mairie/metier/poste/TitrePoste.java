@@ -9,6 +9,8 @@ public class TitrePoste {
 
 	public Integer idTitrePoste;
 	public String libTitrePoste;
+	public String libTitreLong;
+	public String libTitreCourt;
 
 	/**
 	 * Constructeur TitrePoste.
@@ -43,6 +45,22 @@ public class TitrePoste {
 	 */
 	public void setLibTitrePoste(String newLibTitrePoste) {
 		libTitrePoste = newLibTitrePoste;
+	}
+
+	public String getLibTitreLong() {
+		return libTitreLong;
+	}
+
+	public void setLibTitreLong(String libTitreLong) {
+		this.libTitreLong = libTitreLong;
+	}
+
+	public String getLibTitreCourt() {
+		return libTitreCourt;
+	}
+
+	public void setLibTitreCourt(String libTitreCourt) {
+		this.libTitreCourt = libTitreCourt;
 	}
 
 	@Override

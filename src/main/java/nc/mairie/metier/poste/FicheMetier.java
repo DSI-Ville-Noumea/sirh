@@ -10,6 +10,7 @@ public class FicheMetier implements Cloneable {
     private Integer idFamilleMetier;
     private String refMairie;
     private String nomMetier;
+    private String nomMetierLong;
     private String definitionMetier;
     private String cadreStatutaire;
 
@@ -53,7 +54,15 @@ public class FicheMetier implements Cloneable {
         this.nomMetier = nomMetier;
     }
 
-    public String getDefinitionMetier() {
+    public String getNomMetierLong() {
+		return nomMetierLong;
+	}
+
+	public void setNomMetierLong(String nomMetierLong) {
+		this.nomMetierLong = nomMetierLong;
+	}
+
+	public String getDefinitionMetier() {
         return definitionMetier;
     }
 

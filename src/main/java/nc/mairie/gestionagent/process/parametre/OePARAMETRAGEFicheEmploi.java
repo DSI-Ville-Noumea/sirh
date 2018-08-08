@@ -5,6 +5,8 @@ import java.util.ListIterator;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.context.ApplicationContext;
+
 import nc.mairie.metier.Const;
 import nc.mairie.metier.carriere.Categorie;
 import nc.mairie.metier.parametrage.CodeRome;
@@ -12,6 +14,7 @@ import nc.mairie.metier.parametrage.DiplomeGenerique;
 import nc.mairie.metier.parametrage.DomaineEmploi;
 import nc.mairie.metier.parametrage.FamilleEmploi;
 import nc.mairie.metier.poste.DiplomeFE;
+import nc.mairie.metier.poste.FicheMetier;
 import nc.mairie.spring.dao.metier.carriere.CategorieDao;
 import nc.mairie.spring.dao.metier.parametrage.CodeRomeDao;
 import nc.mairie.spring.dao.metier.parametrage.DiplomeGeneriqueDao;
@@ -20,6 +23,7 @@ import nc.mairie.spring.dao.metier.parametrage.FamilleEmploiDao;
 import nc.mairie.spring.dao.metier.poste.CategorieFEDao;
 import nc.mairie.spring.dao.metier.poste.DiplomeFEDao;
 import nc.mairie.spring.dao.metier.poste.FicheEmploiDao;
+import nc.mairie.spring.dao.metier.poste.FicheMetierDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
@@ -28,8 +32,6 @@ import nc.mairie.technique.Services;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
-
-import org.springframework.context.ApplicationContext;
 
 /**
  * Process OePARAMETRAGEFicheEmploi Date de création : (09/09/11 11:54:33)
@@ -44,6 +46,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	private String[] LB_CATEGORIE;
 	private String[] LB_CODE_ROME;
 	private String[] LB_DIPLOME;
+	private String[] LB_FEV;
 
 	private ArrayList<DomaineEmploi> listeDomaine;
 	private DomaineEmploi domaineEmploiCourant;
@@ -60,8 +63,12 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	private ArrayList<CodeRome> listeCodeRome;
 	private CodeRome codeRomeCourant;
 
+	private ArrayList<FicheMetier> listeFicheMetier;
+	private FicheMetier ficheMetierCourant;
+
 	public String ACTION_SUPPRESSION = "0";
 	public String ACTION_CREATION = "1";
+	public String ACTION_MODIFICATION = "2";
 
 	private CodeRomeDao codeRomeDao;
 	private DiplomeGeneriqueDao diplomeGeneriqueDao;
@@ -71,6 +78,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	private CategorieDao categorieDao;
 	private DiplomeFEDao diplomeFEDao;
 	private FicheEmploiDao ficheEmploiDao;
+	private FicheMetierDao ficheMetierDao;
 
 	/**
 	 * Initialisation des zones à  afficher dans la JSP Alimentation des listes,
@@ -134,6 +142,13 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 			initialiseListeCodeRome(request);
 		}
 
+		if (getListeFicheMetier() == null) {
+			// Recherche des codes rome d'emploi
+			ArrayList<FicheMetier> liste = (ArrayList<FicheMetier>) getFicheMetierDao().listerFicheMetierAvecRefMairieOuLibelle(null);
+			setListeFicheMetier(liste);
+			initialiseListeFEV(request);
+		}
+
 	}
 
 	private void initialiseDao() {
@@ -164,6 +179,9 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 		if (getFicheEmploiDao() == null) {
 			setFicheEmploiDao(new FicheEmploiDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (getFicheMetierDao() == null) {
+			setFicheMetierDao(new FicheMetierDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	/**
@@ -185,6 +203,24 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 			setLB_CODE_ROME(aFormat.getListeFormatee());
 		} else {
 			setLB_CODE_ROME(null);
+		}
+	}
+	
+	private void initialiseListeFEV(HttpServletRequest request) throws Exception {
+		setListeFicheMetier((ArrayList<FicheMetier>) getFicheMetierDao().listerFicheMetierAvecRefMairieOuLibelle(null));
+		if (getListeFicheMetier().size() != 0) {
+			int tailles[] = { 12, 100 };
+			String padding[] = { "G", "G" };
+			FormateListe aFormat = new FormateListe(tailles, padding, false);
+			for (ListIterator<FicheMetier> list = getListeFicheMetier().listIterator(); list.hasNext();) {
+				FicheMetier fm = (FicheMetier) list.next();
+				String ligne[] = { fm.getRefMairie(), fm.getNomMetier() };
+
+				aFormat.ajouteLigne(ligne);
+			}
+			setLB_FEV(aFormat.getListeFormatee());
+		} else {
+			setLB_FEV(null);
 		}
 	}
 
@@ -1599,6 +1635,16 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 				return performPB_VALIDER_CODE_ROME(request);
 			}
 
+			// Si clic sur le bouton PB_CREER_CODE_ROME
+			if (testerParametre(request, getNOM_PB_MODIFIER_FEV())) {
+				return performPB_MODIFIER_FEV(request);
+			}
+
+			// Si clic sur le bouton PB_CREER_CODE_ROME
+			if (testerParametre(request, getNOM_PB_VALIDIER_MODIFICATION_FEV())) {
+				return performPB_VALIDIER_MODIFICATION_FEV(request);
+			}
+
 		}
 		// Si TAG INPUT non géré par le process
 		setStatut(STATUT_MEME_PROCESS);
@@ -1695,7 +1741,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
-
+	
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMER_CODE_ROME Date de
 	 * création : (09/09/11 13:36:47)
@@ -2008,5 +2054,137 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 
 	public void setFicheEmploiDao(FicheEmploiDao ficheEmploiDao) {
 		this.ficheEmploiDao = ficheEmploiDao;
+	}
+	
+	// Fiches emploi villes
+	public FicheMetierDao getFicheMetierDao() {
+		return ficheMetierDao;
+	}
+
+	public void setFicheMetierDao(FicheMetierDao ficheMetierDao) {
+		this.ficheMetierDao = ficheMetierDao;
+	}
+	
+	public String getNOM_LB_FEV() {
+		return "NOM_LB_FEV";
+	}
+
+	public String[] getVAL_LB_FEV() {
+		return getLB_FEV();
+	}
+	
+	public String getVAL_LB_FEV_SELECT() {
+		return getZone(getNOM_LB_FEV_SELECT());
+	}
+	
+	public String getNOM_LB_FEV_SELECT() {
+		return "NOM_LB_FEV_SELECT";
+	}
+	
+	private String[] getLB_FEV() {
+		if (LB_FEV == null)
+			LB_FEV = initialiseLazyLB();
+		return LB_FEV;
+	}
+
+	private void setLB_FEV(String[] newLB_FEV) {
+		LB_FEV = newLB_FEV;
+	}
+
+	public ArrayList<FicheMetier> getListeFicheMetier() {
+		return listeFicheMetier;
+	}
+
+	public void setListeFicheMetier(ArrayList<FicheMetier> listeFicheMetier) {
+		this.listeFicheMetier = listeFicheMetier;
+	}
+
+	public FicheMetier getFicheMetierCourant() {
+		return ficheMetierCourant;
+	}
+
+	public void setFicheMetierCourant(FicheMetier ficheMetierCourant) {
+		this.ficheMetierCourant = ficheMetierCourant;
+	}
+	
+	public String getNOM_PB_MODIFIER_FEV() {
+		return "NOM_PB_MODIFIER_FEV";
+	}
+	
+	public String getNOM_EF_ACTION_FEV() {
+		return "NOM_EF_ACTION_FEV";
+	}
+
+	public String getVAL_EF_ACTION_FEV() {
+		return getZone(getNOM_EF_ACTION_FEV());
+	}
+	
+	public String getNOM_EF_FEV_REF_MAIRIE() {
+		return "NOM_EF_FEV_REF_MAIRIE";
+	}
+
+	public String getVAL_EF_FEV_REF_MAIRIE() {
+		return getZone(getNOM_EF_FEV_REF_MAIRIE());
+	}
+	
+	public String getNOM_EF_FEV_LABEL() {
+		return "NOM_EF_FEV_LABEL";
+	}
+
+	public String getVAL_EF_FEV_LABEL() {
+		return getZone(getNOM_EF_FEV_LABEL());
+	}
+	
+	public String getNOM_EF_FEV_LABEL_LONG() {
+		return "NOM_EF_FEV_LABEL_LONG";
+	}
+
+	public String getVAL_EF_FEV_LABEL_LONG() {
+		return getZone(getNOM_EF_FEV_LABEL_LONG());
+	}
+	
+	public String getNOM_PB_ANNULER_FEV() {
+		return "NOM_PB_ANNULER_FEV";
+	}
+	
+	public String getNOM_PB_VALIDIER_MODIFICATION_FEV() {
+		return "NOM_PB_VALIDIER_MODIFICATION_FEV";
+	}
+	
+	public boolean performPB_VALIDIER_MODIFICATION_FEV(HttpServletRequest request) throws Exception {
+
+		if (getVAL_EF_ACTION_FEV() != null && getVAL_EF_ACTION_FEV().equals(ACTION_MODIFICATION)) {
+			
+			getFicheMetierCourant().setNomMetierLong(getVAL_EF_FEV_LABEL_LONG());
+			ficheMetierDao.modifierFicheMetier(getFicheMetierCourant());
+
+			if (getTransaction().isErreur())
+				return false;
+
+			commitTransaction();
+			initialiseListeFEV(request);
+			addZone(getNOM_EF_ACTION_FEV(), Const.CHAINE_VIDE);
+		}
+
+		return true;
+	}
+
+	public boolean performPB_MODIFIER_FEV(HttpServletRequest request) throws Exception {
+		int indice = (Services.estNumerique(getVAL_LB_FEV_SELECT()) ? Integer.parseInt(getVAL_LB_FEV_SELECT()) : -1);
+
+		if (indice != -1 && indice < getListeFicheMetier().size()) {
+			FicheMetier ficheMetier = getListeFicheMetier().get(indice);
+			setFicheMetierCourant(ficheMetier);
+
+			addZone(getNOM_EF_FEV_REF_MAIRIE(), ficheMetier.getRefMairie());
+			addZone(getNOM_EF_FEV_LABEL(), ficheMetier.getNomMetier());
+			addZone(getNOM_EF_FEV_LABEL_LONG(), ficheMetier.getNomMetierLong());
+			addZone(getNOM_EF_ACTION_FEV(), ACTION_MODIFICATION);
+		} else {
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "fiches métier"));
+		}
+
+		setStatut(STATUT_MEME_PROCESS);
+		return true;
 	}
 }

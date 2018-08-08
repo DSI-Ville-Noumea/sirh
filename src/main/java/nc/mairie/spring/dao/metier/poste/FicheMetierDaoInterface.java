@@ -16,4 +16,6 @@ public interface FicheMetierDaoInterface {
 
     public FicheMetier chercherFicheMetierAvecFichePoste(Integer idFichePoste, boolean fmPrimaire);
 
+    public void modifierFicheMetier(FicheMetier fm);
+
 }

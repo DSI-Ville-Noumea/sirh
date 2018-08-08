@@ -6,7 +6,9 @@ import java.util.ListIterator;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.context.ApplicationContext;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import nc.mairie.metier.Const;
 import nc.mairie.metier.parametrage.BaseHorairePointage;
@@ -642,6 +644,28 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 		return "NOM_PB_MODIFIER_ENTITE_GEO";
 	}
 
+	public String getNOM_PB_MODIFIER_TITRE() {
+		return "NOM_PB_MODIFIER_TITRE";
+	}
+	public boolean performPB_MODIFIER_TITRE(HttpServletRequest request) throws Exception {
+		int indice = (Services.estNumerique(getVAL_LB_TITRE_SELECT()) ? Integer.parseInt(getVAL_LB_TITRE_SELECT()) : -1);
+
+		if (indice != -1 && indice < getListeTitrePoste().size()) {
+			TitrePoste titrePoste = getListeTitrePoste().get(indice);
+			setTitrePosteCourante(titrePoste);
+
+			addZone(getNOM_EF_TITRE(), titrePoste.getLibTitrePoste());
+			addZone(getNOM_EF_TITRE_COURT(), titrePoste.getLibTitreCourt());
+			addZone(getNOM_EF_TITRE_LONG(), titrePoste.getLibTitreLong());
+			addZone(getNOM_ST_ACTION_TITRE(), ACTION_MODIFICATION);
+		} else {
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "titres de poste"));
+		}
+
+		setStatut(STATUT_MEME_PROCESS);
+		return true;
+	}
+
 	/**
 	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
 	 * regles de gestion du process - Positionne un statut en fonction de ces
@@ -717,6 +741,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION_TITRE(), ACTION_CREATION);
 		addZone(getNOM_EF_TITRE(), Const.CHAINE_VIDE);
+		addZone(getNOM_EF_TITRE_LONG(), Const.CHAINE_VIDE);
+		addZone(getNOM_EF_TITRE_COURT(), Const.CHAINE_VIDE);
 
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
@@ -890,6 +916,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 			TitrePoste tp = getListeTitrePoste().get(indice);
 			setTitrePosteCourante(tp);
 			addZone(getNOM_EF_TITRE(), tp.getLibTitrePoste());
+			addZone(getNOM_EF_TITRE_LONG(), tp.getLibTitreLong());
+			addZone(getNOM_EF_TITRE_COURT(), tp.getLibTitreCourt());
 			addZone(getNOM_ST_ACTION_TITRE(), ACTION_SUPPRESSION);
 		} else {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "titres de poste"));
@@ -1242,7 +1270,9 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 			if (getVAL_ST_ACTION_TITRE().equals(ACTION_CREATION)) {
 				setTitrePosteCourante(new TitrePoste());
 				getTitrePosteCourante().setLibTitrePoste(getVAL_EF_TITRE());
-				getTitrePosteDao().creerTitrePoste(getTitrePosteCourante().getLibTitrePoste());
+				getTitrePosteCourante().setLibTitreLong(getVAL_EF_TITRE_LONG());
+				getTitrePosteCourante().setLibTitreCourt(getVAL_EF_TITRE_COURT());
+				getTitrePosteDao().creerTitrePoste(getTitrePosteCourante());
 				if (!getTransaction().isErreur())
 					getListeTitrePoste().add(getTitrePosteCourante());
 			} else if (getVAL_ST_ACTION_TITRE().equals(ACTION_SUPPRESSION)) {
@@ -1250,6 +1280,15 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 				if (!getTransaction().isErreur())
 					getListeTitrePoste().remove(getTitrePosteCourante());
 				setTitrePosteCourante(null);
+			} else if (getVAL_ST_ACTION_TITRE().equals(ACTION_MODIFICATION)) {
+				getTitrePosteCourante().setLibTitreCourt(getVAL_EF_TITRE_COURT());
+				getTitrePosteCourante().setLibTitreLong(getVAL_EF_TITRE_LONG());
+				try {
+					titrePosteDao.modifierTitrePoste(getTitrePosteCourante());
+				} catch (DataIntegrityViolationException e) {
+					getTransaction().setMessageErreur("Un des libellés contient trop de caractères.");
+					getTransaction().setErreur(true);
+				}
 			}
 
 			if (getTransaction().isErreur())
@@ -1310,6 +1349,39 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 					// "ERR974",
 					// "Attention, il existe déjà  @ avec @. Veuillez contrôler."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "un titre de poste", "ce libellé"));
+					return false;
+				}
+				if (titre.getLibTitreCourt() != null && StringUtils.isNotEmpty(getVAL_EF_TITRE_COURT())
+						&& titre.getLibTitreCourt().equals(getVAL_EF_TITRE_COURT().toUpperCase())) {
+					// "ERR974",
+					// "Attention, il existe déjà  @ avec @. Veuillez contrôler."
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "un libellé court", "ce libellé court"));
+					return false;
+				}
+				if (titre.getLibTitreLong() != null && StringUtils.isNotEmpty(getVAL_EF_TITRE_LONG())
+						&& titre.getLibTitreLong().equals(getVAL_EF_TITRE_LONG().toUpperCase())) {
+					// "ERR974",
+					// "Attention, il existe déjà  @ avec @. Veuillez contrôler."
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "un libellé long", "ce libellé long"));
+					return false;
+				}
+			}
+		} else if (getVAL_ST_ACTION_TITRE().equals(ACTION_MODIFICATION)) {
+			for (TitrePoste titre : getListeTitrePoste()) {
+				if (titre.getLibTitreCourt() != null && StringUtils.isNotEmpty(getVAL_EF_TITRE_COURT())
+						&& titre.getLibTitreCourt().equals(getVAL_EF_TITRE_COURT().toUpperCase())
+						&& titre.getIdTitrePoste() != getTitrePosteCourante().getIdTitrePoste()) {
+					// "ERR974",
+					// "Attention, il existe déjà  @ avec @. Veuillez contrôler."
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "un libellé court", "ce libellé court"));
+					return false;
+				}
+				if (titre.getLibTitreLong() != null && StringUtils.isNotEmpty(getVAL_EF_TITRE_LONG())
+						&& titre.getLibTitreLong().equals(getVAL_EF_TITRE_LONG().toUpperCase())
+						&& titre.getIdTitrePoste() != getTitrePosteCourante().getIdTitrePoste()) {
+					// "ERR974",
+					// "Attention, il existe déjà  @ avec @. Veuillez contrôler."
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "un libellé long", "ce libellé long"));
 					return false;
 				}
 			}
@@ -1751,6 +1823,42 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	 */
 	public String getVAL_EF_NATURE_AVANTAGE() {
 		return getZone(getNOM_EF_NATURE_AVANTAGE());
+	}
+
+	/**
+	 * Retourne le nom d'une zone de saisie pour la JSP : EF_TITRE Date de
+	 * création : (13/09/11 15:49:10)
+	 * 
+	 */
+	public String getNOM_EF_TITRE_COURT() {
+		return "NOM_EF_TITRE_COURT";
+	}
+
+	/**
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
+	 * EF_TITRE Date de création : (13/09/11 15:49:10)
+	 * 
+	 */
+	public String getVAL_EF_TITRE_COURT() {
+		return getZone(getNOM_EF_TITRE_COURT());
+	}
+
+	/**
+	 * Retourne le nom d'une zone de saisie pour la JSP : EF_TITRE Date de
+	 * création : (13/09/11 15:49:10)
+	 * 
+	 */
+	public String getNOM_EF_TITRE_LONG() {
+		return "NOM_EF_TITRE_LONG";
+	}
+
+	/**
+	 * Retourne la valeur à  afficher par la JSP pour la zone de saisie :
+	 * EF_TITRE Date de création : (13/09/11 15:49:10)
+	 * 
+	 */
+	public String getVAL_EF_TITRE_LONG() {
+		return getZone(getNOM_EF_TITRE_LONG());
 	}
 
 	/**
@@ -2391,6 +2499,11 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 			// Si clic sur le bouton PB_MODIFIER_ENTITE_GEO
 			if (testerParametre(request, getNOM_PB_MODIFIER_ENTITE_GEO())) {
 				return performPB_MODIFIER_ENTITE_GEO(request);
+			}
+
+			// Si clic sur le bouton PB_MODIFIER_TITRE
+			if (testerParametre(request, getNOM_PB_MODIFIER_TITRE())) {
+				return performPB_MODIFIER_TITRE(request);
 			}
 
 			// Si clic sur le bouton PB_CREER_NATURE_AVANTAGE
