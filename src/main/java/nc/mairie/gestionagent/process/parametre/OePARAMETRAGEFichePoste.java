@@ -1351,39 +1351,6 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "un titre de poste", "ce libellé"));
 					return false;
 				}
-				if (titre.getLibTitreCourt() != null && StringUtils.isNotEmpty(getVAL_EF_TITRE_COURT())
-						&& titre.getLibTitreCourt().equals(getVAL_EF_TITRE_COURT().toUpperCase())) {
-					// "ERR974",
-					// "Attention, il existe déjà  @ avec @. Veuillez contrôler."
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "un libellé court", "ce libellé court"));
-					return false;
-				}
-				if (titre.getLibTitreLong() != null && StringUtils.isNotEmpty(getVAL_EF_TITRE_LONG())
-						&& titre.getLibTitreLong().equals(getVAL_EF_TITRE_LONG().toUpperCase())) {
-					// "ERR974",
-					// "Attention, il existe déjà  @ avec @. Veuillez contrôler."
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "un libellé long", "ce libellé long"));
-					return false;
-				}
-			}
-		} else if (getVAL_ST_ACTION_TITRE().equals(ACTION_MODIFICATION)) {
-			for (TitrePoste titre : getListeTitrePoste()) {
-				if (titre.getLibTitreCourt() != null && StringUtils.isNotEmpty(getVAL_EF_TITRE_COURT())
-						&& titre.getLibTitreCourt().equals(getVAL_EF_TITRE_COURT().toUpperCase())
-						&& titre.getIdTitrePoste() != getTitrePosteCourante().getIdTitrePoste()) {
-					// "ERR974",
-					// "Attention, il existe déjà  @ avec @. Veuillez contrôler."
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "un libellé court", "ce libellé court"));
-					return false;
-				}
-				if (titre.getLibTitreLong() != null && StringUtils.isNotEmpty(getVAL_EF_TITRE_LONG())
-						&& titre.getLibTitreLong().equals(getVAL_EF_TITRE_LONG().toUpperCase())
-						&& titre.getIdTitrePoste() != getTitrePosteCourante().getIdTitrePoste()) {
-					// "ERR974",
-					// "Attention, il existe déjà  @ avec @. Veuillez contrôler."
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "un libellé long", "ce libellé long"));
-					return false;
-				}
 			}
 		}
 
