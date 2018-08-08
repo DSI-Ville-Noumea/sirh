@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.context.ApplicationContext;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import nc.mairie.metier.Const;
 import nc.mairie.metier.parametrage.BaseHorairePointage;
@@ -1282,7 +1283,12 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 			} else if (getVAL_ST_ACTION_TITRE().equals(ACTION_MODIFICATION)) {
 				getTitrePosteCourante().setLibTitreCourt(getVAL_EF_TITRE_COURT());
 				getTitrePosteCourante().setLibTitreLong(getVAL_EF_TITRE_LONG());
-				titrePosteDao.modifierTitrePoste(getTitrePosteCourante());
+				try {
+					titrePosteDao.modifierTitrePoste(getTitrePosteCourante());
+				} catch (DataIntegrityViolationException e) {
+					getTransaction().setMessageErreur("Un des libellés contient trop de caractères.");
+					getTransaction().setErreur(true);
+				}
 			}
 
 			if (getTransaction().isErreur())
