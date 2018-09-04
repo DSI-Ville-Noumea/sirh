@@ -1,5 +1,6 @@
 package nc.mairie.spring.dao.metier.carriere;
 
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -30,10 +31,15 @@ public class MATMUTHistDao extends MairieDao implements MATMUTHISTDaoInterface {
 		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_PKEY + "," + CHAMP_NOMATR + "," + CHAMP_PERREP
 				+ "," + CHAMP_CODVAL + "," + CHAMP_TIMELOG + "," + CHAMP_IDUSER +") " 
 				+ "VALUES (?,?,?,?,?,?)";
-		jdbcTemplate.update(
+		try { jdbcTemplate.update(
 				sql,
 				new Object[] { matmut.getPkey(), matmut.getNomatr(), matmut.getPerrep(),
 						matmut.getCodval(), matmut.getTimelog(), matmut.getIduser() });
+		} catch (DuplicateKeyException e) {
+			// #48751 Dans la situation d'une PK déjà existante.
+			jdbcTemplate.update(sql, new Object[] { getNextPKVal(), matmut.getNomatr(), matmut.getPerrep(),
+							matmut.getCodval(), matmut.getTimelog(), matmut.getIduser() });
+		}
 	}
 
 	@Override
@@ -48,5 +54,16 @@ public class MATMUTHistDao extends MairieDao implements MATMUTHISTDaoInterface {
 			return new MATMUTHIST();
 		}
 		return matmutHist;
+	}
+	
+	@Override
+	public Integer getNextPKVal() {		
+		String sqlHist = "select max(" + CHAMP_PKEY + ") from MATMUTHIST";
+		Integer numHist = (Integer) jdbcTemplate.queryForObject(sqlHist, Integer.class);
+		
+		if (numHist == null)
+			return 1;
+		
+		return (numHist+1);
 	}
 }
