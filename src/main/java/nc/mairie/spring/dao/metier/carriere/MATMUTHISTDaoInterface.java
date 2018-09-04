@@ -9,4 +9,5 @@ public interface MATMUTHISTDaoInterface {
 
 	MATMUTHIST chercherMATMUTHISTVentileByAgentAndPeriod(Integer idAgent, Integer perrep);
 	
+	public Integer getNextPKVal();
 }
