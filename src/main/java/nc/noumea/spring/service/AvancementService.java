@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.ObjectUtils.Null;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import nc.mairie.enums.EnumEtatAvancement;
@@ -45,6 +48,8 @@ import nc.noumea.mairie.ads.dto.EntiteDto;
 
 @Service(value = "avancementService")
 public class AvancementService implements IAvancementService {
+	
+	private static final Logger logger = LoggerFactory.getLogger(AvancementService.class);
 
 	@Override
 	public AvancementConvCol calculAvancementConventionCollective(Transaction aTransaction, Agent a, String annee, IAdsService adsService,
@@ -442,9 +447,22 @@ public class AvancementService implements IAvancementService {
 			avct.setCdcadr(gg.getCodCadre());
 			// on calcul le nouvel INM
 			String nouvINM = String.valueOf(Integer.valueOf(bareme.getInm()) + Integer.valueOf(gg.getNbPointsAvct()));
-			// avec ce nouvel INM on recupere l'iban et l'ina
-			// correspondant
-			Bareme nouvBareme = (Bareme) Bareme.listerBaremeByINM(aTransaction, nouvINM).get(0);
+			// avec ce nouvel INM on recupere l'iban et l'ina correspondant
+			
+			// #48914 : Si l'INM n'est pas présent dans la table de référence, on renvoit un message d'erreur.
+			Bareme nouvBareme;
+			try {
+				nouvBareme = (Bareme) Bareme.listerBaremeByINM(aTransaction, nouvINM).get(0);
+			} catch (IndexOutOfBoundsException e) {
+				logger.warn("Aucune correspondance INM n'a été trouvée pour l'agent {} et son nouvel INM {}.", agent.getIdAgent(), nouvINM);
+				
+				// #48914 : Sauf pour l'agent matricule 4416, en 2019. C'est très moche, mais bon ...
+				// Cette portion du code (le if) pourra être enlevée après les avancements de 2019.
+				if (agent.getIdAgent().equals(9004416) && annee.equals("2019"))
+					nouvBareme = (Bareme) Bareme.getPreviousBareme(aTransaction, nouvINM);
+				else
+					return null;
+			}
 			// on rempli les champs
 			avct.setNouvIban(nouvBareme.getIban());
 			avct.setNouvInm(Integer.valueOf(nouvBareme.getInm()));

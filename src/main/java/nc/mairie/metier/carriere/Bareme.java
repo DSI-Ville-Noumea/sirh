@@ -120,6 +120,11 @@ public class Bareme extends BasicMetier {
 		Bareme unBareme = new Bareme();
 		return unBareme.getMyBaremeBroker().listerBaremeByINM(aTransaction, inm);
 	}
+	
+	public static Bareme getPreviousBareme(Transaction aTransaction, String inm) throws Exception {
+		Bareme unBareme = new Bareme();
+		return unBareme.getMyBaremeBroker().getPreviousBareme(aTransaction, inm);
+	}
 
 	/**
 	 * Methode creerObjetMetier qui retourne true ou false
