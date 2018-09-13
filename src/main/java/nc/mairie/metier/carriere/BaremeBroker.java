@@ -99,4 +99,10 @@ public class BaremeBroker extends BasicBroker {
 	public ArrayList<Bareme> listerBaremeByINM(Transaction aTransaction, String inm) throws Exception {
 		return executeSelectListe(aTransaction, "select * from " + getTable() + " where INM = " + inm + " order by INA WITH UR ");
 	}
+	
+
+	public Bareme getPreviousBareme(Transaction aTransaction, String inm) throws Exception {
+		ArrayList<Bareme> list = executeSelectListe(aTransaction, "select * from " + getTable() + " WHERE inm < " + inm + " ORDER BY INM desc, INA WITH UR ");
+		return list.get(0);
+	}
 }
