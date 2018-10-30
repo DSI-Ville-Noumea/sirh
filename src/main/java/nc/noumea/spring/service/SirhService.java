@@ -16,6 +16,7 @@ import nc.mairie.gestionagent.eae.dto.AutreAdministrationAgentDto;
 import nc.mairie.gestionagent.eae.dto.CalculEaeInfosDto;
 import nc.mairie.spring.ws.ISirhWSConsumer;
 
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -77,6 +78,12 @@ public class SirhService implements ISirhService {
 
 		if (null != listBaseHorairePointageDto && !listBaseHorairePointageDto.isEmpty()) {
 			return listBaseHorairePointageDto.get(0);
+		} else {
+			// S'il n'y a pas de carrière le lundi, mais dans le courant de la semaine, alors on récupère la suivante (ex. matr 5750 le 08/10/2018)
+			listBaseHorairePointageDto = sirhConsumer.getListBaseHorairePointageAgent(idAgent, new DateTime(dateDebut).plusDays(7).toDate(), new DateTime(dateDebut).plusDays(7).toDate());
+			if (null != listBaseHorairePointageDto && !listBaseHorairePointageDto.isEmpty()) {
+				return listBaseHorairePointageDto.get(0);
+			}
 		}
 		return null;
 	}
