@@ -5,10 +5,11 @@ import java.util.Date;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
+import nc.mairie.gestionagent.absence.vo.VoAgentCompteur;
 import nc.noumea.mairie.ads.dto.JsonDateDeserializer;
 import nc.noumea.mairie.ads.dto.JsonDateSerializer;
 
-public class CompteurDto {
+public class CompteurDto implements Comparable<CompteurDto> {
 
 	private Integer						idCompteur;
 
@@ -112,6 +113,10 @@ public class CompteurDto {
 			return false;
 		}
 		return idAgent.toString().equals(((CompteurDto) obj).getIdAgent().toString());
+	}
+
+	public int compareTo(CompteurDto arg) {
+		return this.idAgent == null ? -1 : this.idAgent.compareTo(arg.idAgent);
 	}
 
 	public boolean isActif() {

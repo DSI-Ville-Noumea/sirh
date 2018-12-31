@@ -1012,6 +1012,7 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 
 	public void setListeCompteur(ArrayList<CompteurDto> listeCompteur) {
 		this.listeCompteur = listeCompteur;
+		Collections.sort(this.listeCompteur);
 	}
 
 	public CompteurDto getCompteurCourant() {

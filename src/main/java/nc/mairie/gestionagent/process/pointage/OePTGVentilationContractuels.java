@@ -1019,6 +1019,8 @@ public class OePTGVentilationContractuels extends BasicProcess {
 
 	public double getWeekBase(Agent agent, Date dateLundi) throws Exception {
 		BaseHorairePointageDto dto = sirhService.getBaseHorairePointageAgent(agent.getIdAgent(), dateLundi);
+		if (dto == null)
+			return 0d;
 		return dto.getBaseLegale();
 	}
 }

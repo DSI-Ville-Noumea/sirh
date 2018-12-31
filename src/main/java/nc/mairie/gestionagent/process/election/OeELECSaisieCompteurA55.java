@@ -286,6 +286,7 @@ public class OeELECSaisieCompteurA55 extends OePaginable {
 
 	public void setListeCompteur(ArrayList<CompteurDto> listeCompteur) {
 		this.listeCompteur = listeCompteur;
+		Collections.sort(this.listeCompteur);
 	}
 
 	public String getNOM_ST_MATRICULE(int i) {
