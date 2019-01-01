@@ -260,6 +260,7 @@ public class OeELECSaisieCompteurA53 extends BasicProcess {
 
 	public void setListeCompteur(ArrayList<CompteurDto> listeCompteur) {
 		this.listeCompteur = listeCompteur;
+		Collections.sort(this.listeCompteur);
 	}
 
 	public String getNOM_ST_OS(int i) {

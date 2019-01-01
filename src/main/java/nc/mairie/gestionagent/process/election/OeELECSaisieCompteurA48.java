@@ -287,7 +287,6 @@ public class OeELECSaisieCompteurA48 extends OePaginable {
 			VoAgentCompteur voCompteur = new VoAgentCompteur(dto, ag);
 			listCompteurAgent.add(voCompteur);
 		}
-		Collections.sort(listCompteurAgent);
 		setListeCompteurAgent((ArrayList<VoAgentCompteur>) listCompteurAgent);
 
 		int indiceLigne = 0;
@@ -377,6 +376,7 @@ public class OeELECSaisieCompteurA48 extends OePaginable {
 
 	public void setListeCompteur(ArrayList<CompteurDto> listeCompteur) {
 		this.listeCompteur = listeCompteur;
+		Collections.sort(this.listeCompteur);
 	}
 
 	public String getNOM_ST_MATRICULE(int i) {
@@ -1098,6 +1098,7 @@ public class OeELECSaisieCompteurA48 extends OePaginable {
 
 	public void setListeCompteurAgent(ArrayList<VoAgentCompteur> listeCompteurAgent) {
 		this.listeCompteurAgent = listeCompteurAgent;
+		Collections.sort(this.listeCompteurAgent);
 	}
 
 	public String getNOM_ST_AGENT_DEMANDE() {
