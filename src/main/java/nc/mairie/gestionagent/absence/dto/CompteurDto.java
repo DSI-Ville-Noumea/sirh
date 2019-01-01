@@ -5,7 +5,6 @@ import java.util.Date;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
-import nc.mairie.gestionagent.absence.vo.VoAgentCompteur;
 import nc.noumea.mairie.ads.dto.JsonDateDeserializer;
 import nc.noumea.mairie.ads.dto.JsonDateSerializer;
 
