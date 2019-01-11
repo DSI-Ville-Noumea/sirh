@@ -29,7 +29,7 @@ public class RadiWSConsumer extends BaseWsConsumer implements IRadiWSConsumer {
 	public boolean asAgentCompteAD(Integer nomatr) {
 		String url = String.format(radiWsBaseUrl + searchAgentRadi);
 		HashMap<String, String> params = new HashMap<>();
-		params.put("employeenumber", getEmployeeNumberWithNomatr(nomatr).toString());
+		params.put("employeeID", getEmployeeNumberWithNomatr(nomatr).toString());
 		logger.debug("Call " + url + " with employeenumber=" + getEmployeeNumberWithNomatr(nomatr));
 		ClientResponse res = createAndFireRequest(params, url);
 
