@@ -976,45 +976,15 @@ public class OeELECSaisieCompteurA48 extends OePaginable {
 		OrganisationSyndicaleDto orgaFiltre = null;
 		if (indiceOS > 0) {
 			orgaFiltre = getListeOrganisationSyndicale().get(indiceOS - 1);
-		}else {
+		} else {
 			// "ERR002", "La zone @ est obligatoire."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "OS"));
 			return false;
 		}
 
-		ArrayList<CompteurDto> listeCompteur = (ArrayList<CompteurDto>) absService.getListeCompteursA48(new Integer(anneeChoisie), orgaFiltre.getIdOrganisation(), null, null,null);
-
-		// on met le motif "reprise de données"
-		MotifCompteurDto motifReprise = null;
-		for (MotifCompteurDto mo : getListeMotifCompteur()) {
-			if (mo.getLibelle().equals("Reprise de données")) {
-				motifReprise = mo;
-				break;
-			}
-		}
-
-		// on construit le DTO
-		List<CompteurDto> listeDto = new ArrayList<>();
-		for (CompteurDto dtoExist : listeCompteur) {
-			// on ne prend que les actifs
-			if (dtoExist.isActif()) {
-
-				CompteurDto compteurDto = new CompteurDto();
-				compteurDto.setIdAgent(dtoExist.getIdAgent());
-
-				compteurDto.setMotifCompteurDto(motifReprise);
-				compteurDto.setDureeAAjouter(10.0);
-				compteurDto.setDateDebut(new DateTime(new Integer(anneeChoisie) + 1, 1, 1, 0, 0, 0).toDate());
-				compteurDto.setDateFin(new DateTime(new Integer(anneeChoisie) + 1, 12, 31, 23, 59, 0).toDate());
-				compteurDto.setActif(true);
-				// on ajoute le DTO
-				listeDto.add(compteurDto);
-			}
-		}
-
-		// on sauvegarde
-		ReturnMessageDto message = absService.addCompteurAsaA48ByList(agentConnecte.getIdAgent(),
-				new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class).serialize(listeDto));
+		// On lance la duplication
+		ReturnMessageDto message = absService.dupliqueCompteurForNextYear(EnumTypeAbsence.ASA_A48, 
+				agentConnecte.getIdAgent(), new Integer(anneeChoisie), orgaFiltre.getIdOrganisation());
 
 		if (message.getErrors().size() > 0) {
 			String err = Const.CHAINE_VIDE;

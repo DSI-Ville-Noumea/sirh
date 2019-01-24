@@ -524,4 +524,9 @@ public class AbsService implements IAbsService {
 		return absConsumer.findControleMedicalByDemandeId(idDemande);
 	}
 
+	@Override
+	public ReturnMessageDto dupliqueCompteurForNextYear(EnumTypeAbsence typeAbsence, Integer idAgent, Integer annee, Integer idOS) {
+		return absConsumer.dupliqueCompteurForNextYear(typeAbsence, idAgent, annee, idOS);
+	}
+
 }

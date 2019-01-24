@@ -1,10 +1,12 @@
 package nc.mairie.spring.ws;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import nc.mairie.enums.EnumTypeAbsence;
 import nc.mairie.gestionagent.absence.dto.ActeursDto;
 import nc.mairie.gestionagent.absence.dto.AgentOrganisationSyndicaleDto;
 import nc.mairie.gestionagent.absence.dto.CompteurDto;
@@ -148,6 +150,9 @@ public class SirhAbsWSConsumer extends BaseWsConsumer implements ISirhAbsWSConsu
 
 	private static final String	sirhAbsHistoAlimAutoRecupUrl						= "recuperations/getHistoAlimAutoRecup";
 	private static final String	sirhAbsHistoAlimAutoReposCompUrl					= "reposcomps/getHistoAlimAutoReposComp";
+
+	private static final String	sirhDupliqueCompteurAsaA48Url						= "asaA48/dupliqueCompteurs";
+	private static final String	sirhDupliqueCompteurAsaA54Url						= "asaA54/dupliqueCompteurs";
 
 	private Logger				logger												= LoggerFactory.getLogger(SirhAbsWSConsumer.class);
 
@@ -1169,5 +1174,28 @@ public class SirhAbsWSConsumer extends BaseWsConsumer implements ISirhAbsWSConsu
 		params.put("idDemandeMaladie", idDemande.toString());
 		ClientResponse res = createAndFireRequest(params, url);
 		return readResponse(ControleMedicalDto.class, res, url);
+	}
+
+	@Override
+	public ReturnMessageDto dupliqueCompteurForNextYear(EnumTypeAbsence typeAbsence, Integer idAgent, Integer annee, Integer idOS) {
+		String url = "";
+		if (typeAbsence == EnumTypeAbsence.ASA_A48)
+			url = String.format(absWsBaseUrl + sirhDupliqueCompteurAsaA48Url);
+		else if (typeAbsence == EnumTypeAbsence.ASA_A54)
+			url = String.format(absWsBaseUrl + sirhDupliqueCompteurAsaA54Url);
+		else {
+			ReturnMessageDto returnMessage = new ReturnMessageDto();
+			returnMessage.setErrors(Arrays.asList("Seuls les compteurs 'Bureau du directeur' et 'Congrès et conseil syndical' peuvent être dupliqués."));
+			return returnMessage;
+		}
+			
+		HashMap<String, String> params = new HashMap<>();
+		
+		params.put("idAgent", idAgent.toString());
+		params.put("annee", annee.toString());
+		params.put("idOS", idOS.toString());
+		
+		ClientResponse res = createAndFireRequest(params, url);
+		return readResponse(ReturnMessageDto.class, res, url);
 	}
 }

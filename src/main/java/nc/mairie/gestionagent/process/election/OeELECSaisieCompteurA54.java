@@ -982,40 +982,9 @@ public class OeELECSaisieCompteurA54 extends OePaginable {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "OS"));
 			return false;
 		}
-		ArrayList<CompteurDto> listeCompteur = (ArrayList<CompteurDto>) absService
-				.getListeCompteursA54(new Integer(anneeChoisie), orgaFiltre.getIdOrganisation(), null,null,null);
 
-		// on met le motif "reprise de données"
-		MotifCompteurDto motifReprise = null;
-		for (MotifCompteurDto mo : getListeMotifCompteur()) {
-			if (mo.getLibelle().equals("Reprise de données")) {
-				motifReprise = mo;
-				break;
-			}
-		}
-
-		// on construit le DTO
-		List<CompteurDto> listeDto = new ArrayList<>();
-		for (CompteurDto dtoExist : listeCompteur) {
-			// on ne prend que les actifs
-			if (dtoExist.isActif()) {
-
-				CompteurDto compteurDto = new CompteurDto();
-				compteurDto.setIdAgent(dtoExist.getIdAgent());
-
-				compteurDto.setMotifCompteurDto(motifReprise);
-				compteurDto.setDureeAAjouter(10.0);
-				compteurDto.setDateDebut(new DateTime(new Integer(anneeChoisie) + 1, 1, 1, 0, 0, 0).toDate());
-				compteurDto.setDateFin(new DateTime(new Integer(anneeChoisie) + 1, 12, 31, 23, 59, 0).toDate());
-				compteurDto.setActif(true);
-				// on ajoute le DTO
-				listeDto.add(compteurDto);
-			}
-		}
-
-		// on sauvegarde
-		ReturnMessageDto message = absService.addCompteurAsaA54ByList(agentConnecte.getIdAgent(),
-				new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class).serialize(listeDto));
+		ReturnMessageDto message = absService.dupliqueCompteurForNextYear(EnumTypeAbsence.ASA_A54, 
+				agentConnecte.getIdAgent(), new Integer(anneeChoisie), orgaFiltre.getIdOrganisation());
 
 		if (message.getErrors().size() > 0) {
 			String err = Const.CHAINE_VIDE;

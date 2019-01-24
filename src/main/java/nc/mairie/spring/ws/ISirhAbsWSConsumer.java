@@ -2,6 +2,7 @@ package nc.mairie.spring.ws;
 
 import java.util.List;
 
+import nc.mairie.enums.EnumTypeAbsence;
 import nc.mairie.gestionagent.absence.dto.ActeursDto;
 import nc.mairie.gestionagent.absence.dto.AgentOrganisationSyndicaleDto;
 import nc.mairie.gestionagent.absence.dto.CompteurDto;
@@ -225,5 +226,7 @@ public interface ISirhAbsWSConsumer {
 	ReturnMessageDto persistDemandeControleMedical(ControleMedicalDto dto);
 
 	ControleMedicalDto findControleMedicalByDemandeId(Integer idDemande);
+	
+	ReturnMessageDto dupliqueCompteurForNextYear(EnumTypeAbsence typeAbsence, Integer idAgent, Integer annee, Integer idOS);
 
 }
