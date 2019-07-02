@@ -532,18 +532,13 @@ public class SirhPtgWSConsumer extends BaseWsConsumer implements ISirhPtgWSConsu
 	}
 
 	@Override
-	public boolean startDeversementPaie(Integer idAgent, String statut) {
+	public ReturnMessageDto startDeversementPaie(Integer idAgent, String statut) {
 		String url = String.format(ptgWsBaseUrl + sirhPtgStartDeversement);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgent.toString());
 		params.put("statut", statut);
 		ClientResponse res = createAndFireRequest(params, url);
-		if (res.getStatus() == HttpStatus.OK.value()) {
-			return true;
-		} else {
-			logger.debug("StartDeversement NON OK : " + res.getStatus());
-			return false;
-		}
+		return readResponse(ReturnMessageDto.class, res, url);
 	}
 
 	@Override

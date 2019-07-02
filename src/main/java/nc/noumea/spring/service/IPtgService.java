@@ -74,7 +74,7 @@ public interface IPtgService {
 	List<Integer> getListeAgentsForShowVentilation(Integer idDateVentil, Integer idRefTypePointage, String statut, Date ventilationDate,
 			String agentMin, String agentMax, boolean allVentilation);
 
-	boolean startDeversementPaie(Integer idAgent, String statut);
+	ReturnMessageDto startDeversementPaie(Integer idAgent, String statut);
 
 	<T> List<T> getVentilations(Class<T> targetClass, Integer idDateVentil, Integer idRefTypePointage, String agentsJson, boolean allVentilation);
 
