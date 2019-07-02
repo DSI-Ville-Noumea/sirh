@@ -16,6 +16,7 @@ import java.util.TimeZone;
 import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.gestionagent.dto.BaseHorairePointageDto;
+import nc.mairie.gestionagent.dto.ReturnMessageDto;
 import nc.mairie.gestionagent.pointage.dto.VentilAbsenceDto;
 import nc.mairie.gestionagent.pointage.dto.VentilDateDto;
 import nc.mairie.gestionagent.pointage.dto.VentilHSupDto;
@@ -701,10 +702,11 @@ public class OePTGVentilationConvCol extends BasicProcess {
 		}
 
 		// on lance le deversement
-		if (!ptgService.startDeversementPaie(agentConnecte.getIdAgent(), "CC")) {
+		ReturnMessageDto result = ptgService.startDeversementPaie(agentConnecte.getIdAgent(), "CC");
+		if (!result.getErrors().isEmpty()) {
 			// "ERR603",
 			// "La déversement dans la paie des @ n'a pu être lancee. Merci de contacter le responsable du projet.");
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR603", "conventions collectives"));
+			getTransaction().declarerErreur(result.getErrors().get(0));
 			return false;
 		}
 		return true;
