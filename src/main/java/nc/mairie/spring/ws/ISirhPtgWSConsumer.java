@@ -67,7 +67,7 @@ public interface ISirhPtgWSConsumer {
 
 	boolean isValidEnCours(String agentStatus);
 
-	boolean startDeversementPaie(Integer idAgent, String statut);
+	ReturnMessageDto startDeversementPaie(Integer idAgent, String statut);
 
 	boolean canStartExportEtatsPayeur(String statut);
 

@@ -154,7 +154,7 @@ public class PtgService implements IPtgService {
 	}
 
 	@Override
-	public boolean startDeversementPaie(Integer idAgent, String statut) {
+	public ReturnMessageDto startDeversementPaie(Integer idAgent, String statut) {
 		return ptgConsumer.startDeversementPaie(idAgent, statut);
 	}
 
